@@ -1,0 +1,129 @@
+#include "bsp_gpio.h"
+
+#include "bsp_time.h"
+#include "main.h"
+#include "project_config.h"
+
+static bool s_w02_pwrkey_asserted;
+static bsp_time_ms_t s_w02_assert_start_ms;
+
+static void BSP_GPIO_Write(GPIO_TypeDef *port, uint16_t pin, bool high)
+{
+    HAL_GPIO_WritePin(port, pin, high ? GPIO_PIN_SET : GPIO_PIN_RESET);
+}
+
+bool BSP_GPIO_Init(void)
+{
+    BSP_RS485_SetTransmit(false);
+    BSP_InternalBuzzer_Set(false);
+    BSP_ExternalBuzzer_Set(false);
+    BSP_LimitOutputsOff();
+    BSP_CS1237_SetClock(false);
+    BSP_CS1237_SetEnable(false);
+    BSP_TM1628_SetDio(true);
+    BSP_TM1628_SetClock(true);
+    BSP_TM1628_SetStrobe(true);
+    BSP_W02_PwrKeyRelease();
+    return true;
+}
+
+void BSP_GPIO_Process(void)
+{
+    if (s_w02_pwrkey_asserted &&
+        BSP_TimeElapsed(BSP_TimeNowMs(), s_w02_assert_start_ms,
+                        W02_PWRKEY_MAX_ASSERT_MS))
+    {
+        BSP_W02_PwrKeyRelease();
+    }
+}
+
+void BSP_RS485_SetTransmit(bool enable)
+{
+    BSP_GPIO_Write(MCU_DE_GPIO_Port, MCU_DE_Pin, enable);
+}
+
+void BSP_InternalBuzzer_Set(bool enable)
+{
+    BSP_GPIO_Write(MCU_BUZZER_GPIO_Port, MCU_BUZZER_Pin, enable);
+}
+
+void BSP_ExternalBuzzer_Set(bool enable)
+{
+    BSP_GPIO_Write(MCU_RGY_BUZZER_GPIO_Port, MCU_RGY_BUZZER_Pin, enable);
+}
+
+void BSP_LimitGreen_Set(bool enable)
+{
+    BSP_GPIO_Write(MCU_RGY_G_GPIO_Port, MCU_RGY_G_Pin, enable);
+}
+
+void BSP_LimitRed_Set(bool enable)
+{
+    BSP_GPIO_Write(MCU_RGY_R_GPIO_Port, MCU_RGY_R_Pin, enable);
+}
+
+void BSP_LimitYellow_Set(bool enable)
+{
+    BSP_GPIO_Write(MCU_RGY_Y_GPIO_Port, MCU_RGY_Y_Pin, enable);
+}
+
+void BSP_LimitOutputsOff(void)
+{
+    BSP_LimitGreen_Set(false);
+    BSP_LimitRed_Set(false);
+    BSP_LimitYellow_Set(false);
+}
+
+void BSP_CS1237_SetClock(bool high)
+{
+    BSP_GPIO_Write(MCU_AD_SCLK_GPIO_Port, MCU_AD_SCLK_Pin, high);
+}
+
+bool BSP_CS1237_ReadData(void)
+{
+    return HAL_GPIO_ReadPin(MCU_AD_DOUT_GPIO_Port, MCU_AD_DOUT_Pin) == GPIO_PIN_SET;
+}
+
+void BSP_CS1237_SetEnable(bool enable)
+{
+    BSP_GPIO_Write(MCU_AD_EN_GPIO_Port, MCU_AD_EN_Pin, enable);
+}
+
+void BSP_TM1628_SetDio(bool release_high)
+{
+    BSP_GPIO_Write(MCU_TM_DIO_GPIO_Port, MCU_TM_DIO_Pin, release_high);
+}
+
+bool BSP_TM1628_ReadDio(void)
+{
+    return HAL_GPIO_ReadPin(MCU_TM_DIO_GPIO_Port, MCU_TM_DIO_Pin) == GPIO_PIN_SET;
+}
+
+void BSP_TM1628_SetClock(bool release_high)
+{
+    BSP_GPIO_Write(MCU_TM_CLK_GPIO_Port, MCU_TM_CLK_Pin, release_high);
+}
+
+void BSP_TM1628_SetStrobe(bool release_high)
+{
+    BSP_GPIO_Write(MCU_TM_STB_GPIO_Port, MCU_TM_STB_Pin, release_high);
+}
+
+void BSP_W02_PwrKeyRelease(void)
+{
+    BSP_GPIO_Write(W02_PWRKEY_GPIO_Port, W02_PWRKEY_Pin, true);
+    s_w02_pwrkey_asserted = false;
+}
+
+bool BSP_W02_PwrKeyAssertLow(void)
+{
+    if (s_w02_pwrkey_asserted)
+    {
+        return false;
+    }
+
+    BSP_GPIO_Write(W02_PWRKEY_GPIO_Port, W02_PWRKEY_Pin, false);
+    s_w02_assert_start_ms = BSP_TimeNowMs();
+    s_w02_pwrkey_asserted = true;
+    return true;
+}

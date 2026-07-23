@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"E:/VScode_STM32_Project/stm32f103rbt6_a33/build/Debug/cmake_install.cmake",
+		"E:/VScode_STM32_Project/stm32f103rbt6_a33/build/Debug/cmake/stm32cubemx/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

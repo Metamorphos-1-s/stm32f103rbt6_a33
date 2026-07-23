@@ -1,0 +1,26 @@
+#ifndef PROJECT_CONFIG_H
+#define PROJECT_CONFIG_H
+
+#define BOARD_NAME                    "STM32F103RBT6_A33"
+#define BOARD_HW_VERSION              "A33"
+#define BOARD_FW_ARCH_VERSION         "1.0"
+
+#define FW_ARCH_VERSION_MAJOR         1U
+#define FW_ARCH_VERSION_MINOR         0U
+#define DEVICE_CONFIG_SCHEMA_VERSION  1U
+
+#define SYSTEM_TICK_HZ                1000U
+#define SCHEDULER_MAX_TASKS           8U
+#define EVENT_QUEUE_CAPACITY          16U
+#define APP_MAX_EVENTS_PER_RUN        8U
+
+#define PROJECT_ENABLE_IWDG           0U
+#define PROJECT_ENABLE_USB_RESERVED   0U
+
+#define W02_PWRKEY_MAX_ASSERT_MS      2500U
+#define BATTERY_ADC_FULL_SCALE        4095U
+#define BATTERY_DIVIDER_TOP_OHM       30000U
+#define BATTERY_DIVIDER_BOTTOM_OHM    10000U
+#define BATTERY_DEFAULT_VDDA_MV       3300U
+
+#endif
