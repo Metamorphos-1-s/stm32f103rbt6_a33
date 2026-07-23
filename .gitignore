@@ -4,3 +4,4 @@ build/
 .vscode/.cache/
 *.log
 Tests/host/out/
+Tests/host/build/

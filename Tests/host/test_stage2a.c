@@ -1,8 +1,13 @@
 #include "battery_adc.h"
 #include "bsp_time.h"
 #include "cs1237.h"
+#include "measurement_bridge.h"
 #include "mock_hal.h"
+#include "output_gpio.h"
 #include "project_config.h"
+#include "raw_measurement.h"
+#include "stage2b_board_diagnostics.h"
+#include "stage2b_display_font.h"
 #include "tm1628.h"
 #include "tm1628_board_map.h"
 #include "w02_pwrkey.h"
@@ -160,6 +165,186 @@ static void TestTimeWrap(void)
     CHECK(!BSP_TimeCyclesElapsed(0x00000020U, 0xFFFFFFF0U, 49U));
 }
 
+static void TestRawMeasurement(void)
+{
+    RawMeasurementSample sample = {100, 0xFFFFFFF0U, true};
+    const RawMeasurementState *state;
+
+    RawMeasurement_Init();
+    CHECK(RawMeasurement_Accept(&sample));
+    state = RawMeasurement_GetState();
+    CHECK(state->has_sample);
+    CHECK(state->minimum == 100 && state->maximum == 100);
+    CHECK(state->accepted_sample_count == 1U);
+    CHECK(state->last_sample_interval_ms == 0U);
+
+    sample.raw_value = -20;
+    sample.timestamp_ms = 0x00000010U;
+    CHECK(RawMeasurement_Accept(&sample));
+    sample.raw_value = 250;
+    sample.timestamp_ms = 0x00000040U;
+    CHECK(RawMeasurement_Accept(&sample));
+    state = RawMeasurement_GetState();
+    CHECK(state->minimum == -20 && state->maximum == 250);
+    CHECK(state->last_sample_interval_ms == 48U);
+    CHECK(state->minimum_sample_interval_ms == 32U);
+    CHECK(state->maximum_sample_interval_ms == 48U);
+
+    sample.valid = false;
+    CHECK(!RawMeasurement_Accept(&sample));
+    CHECK(RawMeasurement_GetState()->invalid_sample_count == 1U);
+    CHECK(RawMeasurement_GetState()->accepted_sample_count == 3U);
+    RawMeasurement_ResetStatistics();
+    CHECK(!RawMeasurement_GetState()->has_sample);
+    CHECK(RawMeasurement_GetState()->accepted_sample_count == 0U);
+}
+
+static void TestMeasurementBridge(void)
+{
+    CS1237_Config config = {
+        CS1237_RATE_10_HZ, CS1237_GAIN_128, CS1237_CHANNEL_A, true
+    };
+    CS1237_Sample sample = {0};
+    AppEvent event;
+    uint32_t published_count = 0U;
+    uint16_t index;
+
+    TestMock_Reset();
+    CHECK(CS1237_Init(&config));
+    MeasurementBridge_Init();
+    for (index = 0U; index < CS1237_SAMPLE_BUFFER_CAPACITY; ++index)
+    {
+        sample.raw = (int32_t)index - 8;
+        sample.timestamp_ms = (uint32_t)index * 10U;
+        sample.valid = true;
+        CHECK(CS1237_TestPushSample(&sample));
+    }
+    CHECK(MeasurementBridge_Process(0U) == 0U);
+    CHECK(MeasurementBridge_GetLastBacklog() ==
+          CS1237_SAMPLE_BUFFER_CAPACITY);
+    for (index = 0U; index < 4U; ++index)
+    {
+        CHECK(MeasurementBridge_Process(4U) == 4U);
+    }
+    CHECK(MeasurementBridge_GetConsumedCount() ==
+          CS1237_SAMPLE_BUFFER_CAPACITY);
+    CHECK(MeasurementBridge_GetLastBacklog() == 0U);
+    CHECK(MeasurementBridge_GetObservedOverrunCount() == 0U);
+    CHECK(RawMeasurement_GetState()->accepted_sample_count ==
+          CS1237_SAMPLE_BUFFER_CAPACITY);
+    CHECK(MeasurementBridge_BuildUpdateEvent(published_count, &event));
+    CHECK(event.type == EVENT_RAW_MEASUREMENT_UPDATED);
+    CHECK(event.arg0 == (uint32_t)7);
+    CHECK(event.arg1 == CS1237_SAMPLE_BUFFER_CAPACITY);
+    CHECK(EventQueue_Push(&event));
+    published_count = event.arg1;
+    CHECK(TestMock_GetEventTypeCount(EVENT_RAW_MEASUREMENT_UPDATED) == 1U);
+    CHECK(!MeasurementBridge_BuildUpdateEvent(published_count, &event));
+}
+
+static void TestStage2BFormatting(void)
+{
+    char text[6];
+    uint8_t decimal_points;
+
+    CHECK(Stage2B_FormatHex24(0x000000UL, text));
+    CHECK(memcmp(text, "000000", 6U) == 0);
+    CHECK(Stage2B_FormatHex24(0x7FFFFFUL, text));
+    CHECK(memcmp(text, "7FFFFF", 6U) == 0);
+    CHECK(Stage2B_FormatHex24(0x800000UL, text));
+    CHECK(memcmp(text, "800000", 6U) == 0);
+    CHECK(Stage2B_FormatHex24(0xFFFFFFUL, text));
+    CHECK(memcmp(text, "FFFFFF", 6U) == 0);
+    CHECK(Stage2B_FormatBatteryMv(12600U, true, text, &decimal_points));
+    CHECK(memcmp(text, " 12600", 6U) == 0);
+    CHECK(decimal_points == (uint8_t)(1U << 2U));
+    CHECK(Stage2B_FormatBatteryMv(0U, false, text, &decimal_points));
+    CHECK(memcmp(text, "------", 6U) == 0);
+    CHECK(Stage2B_FormatBatteryMv(100000U, true, text, &decimal_points));
+    CHECK(memcmp(text, "    HI", 6U) == 0);
+
+    CHECK(Stage2B_FormatKeyMask(0x01U, text));
+    CHECK(memcmp(text, "P-0001", 6U) == 0);
+    CHECK(Stage2B_FormatKeyMask(0x02U, text));
+    CHECK(memcmp(text, "P-0002", 6U) == 0);
+    CHECK(Stage2B_FormatKeyMask(0x04U, text));
+    CHECK(memcmp(text, "P-0004", 6U) == 0);
+    CHECK(Stage2B_FormatKeyMask(0x08U, text));
+    CHECK(memcmp(text, "P-0008", 6U) == 0);
+    CHECK(Stage2B_FormatKeyMask(0x10U, text));
+    CHECK(memcmp(text, "P-0010", 6U) == 0);
+    CHECK(Stage2B_FormatKeyMask(0x15U, text));
+    CHECK(memcmp(text, "P-0015", 6U) == 0);
+    CHECK(!Stage2B_FormatKeyMask(0x80U, text));
+}
+
+static void InitDiagnosticsAt(uint32_t now_ms)
+{
+    TestMock_Reset();
+    TestMock_SetTimeMs(now_ms);
+    CHECK(TM1628_Init(3U));
+    OutputGpio_Init();
+    W02PwrKey_Init();
+    RawMeasurement_Init();
+    Stage2B_DiagnosticsInit();
+    CHECK(Stage2B_DiagnosticsIsActive());
+}
+
+static void TestStage2BDiagnostics(void)
+{
+    const Stage2BDiagnosticSnapshot *snapshot;
+
+    InitDiagnosticsAt(1000U);
+    CHECK(!Stage2B_DiagnosticsRequestLampTest(OUTPUT_GREEN_LAMP, 49U));
+    CHECK(!Stage2B_DiagnosticsRequestOutputTest(OUTPUT_INTERNAL_BUZZER,
+                                                301U));
+    CHECK(Stage2B_DiagnosticsRequestLampTest(OUTPUT_GREEN_LAMP, 50U));
+    CHECK(TestMock_IsOutputEnabled(OUTPUT_GREEN_LAMP));
+    CHECK(!Stage2B_DiagnosticsRequestLampTest(OUTPUT_RED_LAMP, 50U));
+    TestMock_SetTimeMs(1049U);
+    Stage2B_DiagnosticsProcess();
+    CHECK(TestMock_IsOutputEnabled(OUTPUT_GREEN_LAMP));
+    TestMock_SetTimeMs(1050U);
+    Stage2B_DiagnosticsProcess();
+    CHECK(!TestMock_IsOutputEnabled(OUTPUT_GREEN_LAMP));
+
+    CHECK(!Stage2B_DiagnosticsRequestW02Pulse(49U));
+    CHECK(!Stage2B_DiagnosticsRequestW02Pulse(201U));
+    CHECK(Stage2B_DiagnosticsRequestW02Pulse(80U));
+    CHECK(TestMock_IsW02Asserted());
+    CHECK(Stage2B_DiagnosticsRequestOutputTest(OUTPUT_EXTERNAL_BUZZER, 20U));
+    Stage2B_DiagnosticsEnterFault();
+    snapshot = Stage2B_DiagnosticsGetSnapshot();
+    CHECK(!Stage2B_DiagnosticsIsActive());
+    CHECK(snapshot->state == STAGE2B_DIAG_STATE_ERROR);
+    CHECK(!snapshot->output_test_active);
+    CHECK(!TestMock_IsOutputEnabled(OUTPUT_EXTERNAL_BUZZER));
+    CHECK(!TestMock_IsW02Asserted());
+
+    InitDiagnosticsAt(0xFFFFFFF0U);
+    CHECK(Stage2B_DiagnosticsGetState() == STAGE2B_DIAG_STATE_STARTUP);
+    TestMock_SetTimeMs(0x0000011BU);
+    Stage2B_DiagnosticsProcess();
+    CHECK(Stage2B_DiagnosticsGetState() == STAGE2B_DIAG_STATE_STARTUP);
+    TestMock_SetTimeMs(0x0000011CU);
+    Stage2B_DiagnosticsProcess();
+    CHECK(Stage2B_DiagnosticsGetState() == STAGE2B_DIAG_STATE_SEGMENT_TEST);
+
+    InitDiagnosticsAt(0xFFFFFFF0U);
+    CHECK(Stage2B_DiagnosticsSelectState(STAGE2B_DIAG_STATE_LIVE_RAW));
+    Stage2B_DiagnosticsSetRawKeyMask(0x1FU);
+    CHECK(Stage2B_DiagnosticsGetState() == STAGE2B_DIAG_STATE_KEY_DISPLAY);
+    TestMock_SetTimeMs(0x000003D7U);
+    Stage2B_DiagnosticsProcess();
+    CHECK(Stage2B_DiagnosticsGetState() == STAGE2B_DIAG_STATE_KEY_DISPLAY);
+    TestMock_SetTimeMs(0x000003D8U);
+    Stage2B_DiagnosticsProcess();
+    CHECK(Stage2B_DiagnosticsGetState() == STAGE2B_DIAG_STATE_LIVE_RAW);
+    Stage2B_DiagnosticsStop();
+    CHECK(!Stage2B_DiagnosticsIsActive());
+    CHECK(Stage2B_DiagnosticsGetState() == STAGE2B_DIAG_STATE_DISABLED);
+}
+
 int main(void)
 {
     TestCs1237SignExtension();
@@ -169,12 +354,16 @@ int main(void)
     TestBatteryConversion();
     TestW02PulseGuard();
     TestTimeWrap();
+    TestRawMeasurement();
+    TestMeasurementBridge();
+    TestStage2BFormatting();
+    TestStage2BDiagnostics();
 
     if (s_failures != 0U)
     {
-        (void)printf("Stage 2A host tests: %u failure(s)\n", s_failures);
+        (void)printf("Stage 2B host tests: %u failure(s)\n", s_failures);
         return 1;
     }
-    (void)printf("Stage 2A host tests: all checks passed\n");
+    (void)printf("Stage 2B host tests: all checks passed\n");
     return 0;
 }

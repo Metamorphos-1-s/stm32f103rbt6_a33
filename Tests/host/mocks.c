@@ -5,15 +5,21 @@
 #include "bsp_time.h"
 #include "event_queue.h"
 
+#include <string.h>
+
 static uint32_t s_now_ms;
 static bool s_w02_asserted;
 static uint32_t s_event_count;
+static uint32_t s_event_type_count[32];
+static bool s_outputs[OUTPUT_COUNT];
 
 void TestMock_Reset(void)
 {
     s_now_ms = 0U;
     s_w02_asserted = false;
     s_event_count = 0U;
+    (void)memset(s_event_type_count, 0, sizeof(s_event_type_count));
+    (void)memset(s_outputs, 0, sizeof(s_outputs));
 }
 
 void TestMock_SetTimeMs(uint32_t now_ms)
@@ -29,6 +35,20 @@ bool TestMock_IsW02Asserted(void)
 uint32_t TestMock_GetEventCount(void)
 {
     return s_event_count;
+}
+
+uint32_t TestMock_GetEventTypeCount(EventType type)
+{
+    uint32_t index = (uint32_t)type;
+
+    return (index < 32U) ? s_event_type_count[index] : 0U;
+}
+
+bool TestMock_IsOutputEnabled(OutputId output)
+{
+    uint32_t index = (uint32_t)output;
+
+    return (index < (uint32_t)OUTPUT_COUNT) ? s_outputs[index] : false;
 }
 
 bsp_time_ms_t BSP_TimeNowMs(void)
@@ -112,6 +132,31 @@ void BSP_W02_PwrKeyRelease(void)
     s_w02_asserted = false;
 }
 
+void BSP_InternalBuzzer_Set(bool enable)
+{
+    s_outputs[OUTPUT_INTERNAL_BUZZER] = enable;
+}
+
+void BSP_ExternalBuzzer_Set(bool enable)
+{
+    s_outputs[OUTPUT_EXTERNAL_BUZZER] = enable;
+}
+
+void BSP_LimitGreen_Set(bool enable)
+{
+    s_outputs[OUTPUT_GREEN_LAMP] = enable;
+}
+
+void BSP_LimitRed_Set(bool enable)
+{
+    s_outputs[OUTPUT_RED_LAMP] = enable;
+}
+
+void BSP_LimitYellow_Set(bool enable)
+{
+    s_outputs[OUTPUT_YELLOW_LAMP] = enable;
+}
+
 bool BSP_W02_PwrKeyAssertLow(void)
 {
     if (s_w02_asserted)
@@ -144,5 +189,9 @@ bool EventQueue_Push(const AppEvent *event)
         return false;
     }
     ++s_event_count;
+    if ((uint32_t)event->type < 32U)
+    {
+        ++s_event_type_count[(uint32_t)event->type];
+    }
     return true;
 }

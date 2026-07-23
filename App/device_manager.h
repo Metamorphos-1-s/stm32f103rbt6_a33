@@ -21,6 +21,12 @@ void DeviceManager_Process20ms(void);
 void DeviceManager_Process500ms(void);
 bool DeviceManager_IsReady(void);
 uint32_t DeviceManager_GetErrorMask(void);
+void DeviceManager_ObserveCs1237Consumption(uint32_t consumed_count,
+                                            uint16_t backlog,
+                                            uint32_t overrun_count);
+uint16_t DeviceManager_GetOverrunBacklog(void);
+uint32_t DeviceManager_GetOverrunConsumedCount(void);
+uint32_t DeviceManager_GetRecordedOverrunCount(void);
 void DeviceManager_EnterSafeState(void);
 uint8_t DeviceManager_GetLastRawKeyMask(void);
 

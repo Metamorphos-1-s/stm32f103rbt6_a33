@@ -6,8 +6,11 @@
 #include "device_manager.h"
 #include "event_queue.h"
 #include "fault_manager.h"
+#include "measurement_bridge.h"
 #include "project_config.h"
+#include "raw_measurement.h"
 #include "scheduler.h"
+#include "stage2b_board_diagnostics.h"
 #include "system_context.h"
 
 #include <stddef.h>
@@ -21,9 +24,11 @@ static void App_500msTask(void *context);
 static void App_HandleEvent(const AppEvent *event);
 static void App_RunStateMachine(void);
 static bool App_PushStartupEvent(EventType type);
+static void App_PublishRawMeasurement(void);
 
 static bool s_device_manager_init_attempted;
 static bool s_fault_entry_applied;
+static uint32_t s_last_published_raw_count;
 
 bool App_Init(void)
 {
@@ -40,8 +45,10 @@ bool App_Init(void)
   EventQueue_Init();
   FaultManager_Init();
   ConfigStore_Init();
+  MeasurementBridge_Init();
   s_device_manager_init_attempted = false;
   s_fault_entry_applied = false;
+  s_last_published_raw_count = 0U;
 
   load_result = ConfigStore_Load(&config);
   if (load_result == CONFIG_STORE_NOT_FOUND)
@@ -87,6 +94,15 @@ void App_Run(void)
   static uint32_t observed_dropped_count;
 
   DeviceManager_ProcessFast();
+  (void)MeasurementBridge_Process(
+      MEASUREMENT_BRIDGE_MAX_SAMPLES_PER_RUN);
+  DeviceManager_ObserveCs1237Consumption(
+      MeasurementBridge_GetConsumedCount(),
+      MeasurementBridge_GetLastBacklog(),
+      MeasurementBridge_GetObservedOverrunCount());
+  Stage2B_DiagnosticsUpdateCs1237Stats(
+      MeasurementBridge_GetLastBacklog(),
+      MeasurementBridge_GetObservedOverrunCount());
   Scheduler_RunPending();
 
   while ((processed < APP_MAX_EVENTS_PER_RUN) && EventQueue_Pop(&event))
@@ -101,7 +117,23 @@ void App_Run(void)
     FaultManager_Set(FAULT_EVENT_QUEUE_OVERFLOW);
   }
 
+  Stage2B_DiagnosticsProcess();
   App_RunStateMachine();
+}
+
+bool App_ExitDiagnostics(void)
+{
+#if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS != 0U)
+  if (SystemContext_GetState() != APP_STATE_DIAGNOSTIC)
+  {
+    return false;
+  }
+
+  Stage2B_DiagnosticsStop();
+  return SystemContext_SetState(APP_STATE_RUN, BSP_TimeNowMs());
+#else
+  return false;
+#endif
 }
 
 static void App_1msTask(void *context)
@@ -126,6 +158,7 @@ static void App_20msTask(void *context)
 {
   (void)context;
   DeviceManager_Process20ms();
+  App_PublishRawMeasurement();
 }
 
 static void App_500msTask(void *context)
@@ -161,9 +194,15 @@ static void App_HandleEvent(const AppEvent *event)
     case EVENT_W02_PWRKEY_PULSE_DONE:
     case EVENT_DRIVER_READY:
     case EVENT_DRIVER_ERROR:
+    case EVENT_RAW_MEASUREMENT_UPDATED:
     case EVENT_NONE:
     default:
       break;
+  }
+
+  if (event->type == EVENT_TM1628_KEY_RAW_CHANGED)
+  {
+    Stage2B_DiagnosticsSetRawKeyMask((uint8_t)event->arg0);
   }
 }
 
@@ -208,7 +247,11 @@ static void App_RunStateMachine(void)
       case APP_STATE_WARMUP:
         if (DeviceManager_IsReady())
         {
+#if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS != 0U)
+          next_state = APP_STATE_DIAGNOSTIC;
+#else
           next_state = APP_STATE_RUN;
+#endif
         }
         else if ((context != NULL) &&
                  BSP_TimeElapsed(BSP_TimeNowMs(), context->state_enter_time_ms,
@@ -219,6 +262,7 @@ static void App_RunStateMachine(void)
         }
         break;
       case APP_STATE_RUN:
+      case APP_STATE_DIAGNOSTIC:
       case APP_STATE_MENU:
       case APP_STATE_CALIBRATION:
       case APP_STATE_FAULT:
@@ -233,12 +277,28 @@ static void App_RunStateMachine(void)
     {
       return;
     }
+    if (next_state == APP_STATE_DIAGNOSTIC)
+    {
+      Stage2B_DiagnosticsInit();
+    }
   }
 
   if ((next_state == APP_STATE_FAULT) && !s_fault_entry_applied)
   {
+    Stage2B_DiagnosticsEnterFault();
     DeviceManager_EnterSafeState();
     s_fault_entry_applied = true;
+  }
+}
+
+static void App_PublishRawMeasurement(void)
+{
+  AppEvent event;
+
+  if (MeasurementBridge_BuildUpdateEvent(s_last_published_raw_count, &event) &&
+      EventQueue_Push(&event))
+  {
+    s_last_published_raw_count = event.arg1;
   }
 }
 

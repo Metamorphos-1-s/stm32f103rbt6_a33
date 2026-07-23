@@ -46,6 +46,7 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     App/app_main.c
     App/device_manager.c
+    App/measurement_bridge.c
     App/system_context.c
     BSP/bsp_adc.c
     BSP/bsp_board.c
@@ -54,6 +55,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     BSP/bsp_uart.c
     Config/default_config.c
     Diagnostics/stage2a_driver_diagnostics.c
+    Diagnostics/stage2b_board_diagnostics.c
+    Diagnostics/stage2b_display_font.c
+    Domain/measurement/raw_measurement.c
     Drivers/battery_adc/battery_adc.c
     Drivers/cs1237/cs1237.c
     Drivers/output_gpio/output_gpio.c
@@ -72,6 +76,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     BSP
     Config
     Diagnostics
+    Domain/measurement
     Drivers/battery_adc
     Drivers/cs1237
     Drivers/output_gpio

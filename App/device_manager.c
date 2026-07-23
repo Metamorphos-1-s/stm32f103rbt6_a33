@@ -17,6 +17,9 @@
 static bool s_initialized;
 static uint32_t s_error_mask;
 static uint32_t s_last_cs_overrun_count;
+static uint16_t s_overrun_backlog;
+static uint32_t s_overrun_consumed_count;
+static uint32_t s_recorded_overrun_count;
 static uint32_t s_last_battery_error_count;
 static uint8_t s_last_raw_key_mask;
 static uint8_t s_tm_error_streak;
@@ -39,6 +42,9 @@ bool DeviceManager_Init(const DeviceConfig *config)
     s_initialized = false;
     s_error_mask = 0U;
     s_last_cs_overrun_count = 0U;
+    s_overrun_backlog = 0U;
+    s_overrun_consumed_count = 0U;
+    s_recorded_overrun_count = 0U;
     s_last_battery_error_count = 0U;
     s_last_raw_key_mask = 0U;
     s_tm_error_streak = 0U;
@@ -71,21 +77,12 @@ bool DeviceManager_Init(const DeviceConfig *config)
 
 void DeviceManager_ProcessFast(void)
 {
-    uint32_t overrun_count;
-
     if (!s_initialized)
     {
         return;
     }
 
     CS1237_Process();
-    overrun_count = CS1237_GetBufferOverrunCount();
-    if (overrun_count != s_last_cs_overrun_count)
-    {
-        s_last_cs_overrun_count = overrun_count;
-        s_error_mask |= DEVICE_ERROR_CS1237_BUFFER;
-        FaultManager_Set(FAULT_CS1237_BUFFER_OVERRUN);
-    }
     if (CS1237_GetState() == CS1237_STATE_ERROR)
     {
         s_error_mask |= DEVICE_ERROR_CS1237_CONFIG;
@@ -226,6 +223,40 @@ uint32_t DeviceManager_GetErrorMask(void)
     return s_error_mask;
 }
 
+void DeviceManager_ObserveCs1237Consumption(uint32_t consumed_count,
+                                            uint16_t backlog,
+                                            uint32_t overrun_count)
+{
+    if (!s_initialized || (overrun_count == s_last_cs_overrun_count))
+    {
+        return;
+    }
+
+    s_last_cs_overrun_count = overrun_count;
+    s_overrun_backlog = backlog;
+    s_overrun_consumed_count = consumed_count;
+    s_recorded_overrun_count = overrun_count;
+    s_error_mask |= DEVICE_ERROR_CS1237_BUFFER;
+#if (CS1237_OVERRUN_FATAL != 0U)
+    FaultManager_Set(FAULT_CS1237_BUFFER_OVERRUN);
+#endif
+}
+
+uint16_t DeviceManager_GetOverrunBacklog(void)
+{
+    return s_overrun_backlog;
+}
+
+uint32_t DeviceManager_GetOverrunConsumedCount(void)
+{
+    return s_overrun_consumed_count;
+}
+
+uint32_t DeviceManager_GetRecordedOverrunCount(void)
+{
+    return s_recorded_overrun_count;
+}
+
 void DeviceManager_EnterSafeState(void)
 {
     BSP_RS485_SetTransmit(false);
@@ -233,6 +264,7 @@ void DeviceManager_EnterSafeState(void)
     W02PwrKey_Init();
     TM1628_ReleaseBus();
     CS1237_EnterSafeState();
+    s_initialized = false;
 }
 
 uint8_t DeviceManager_GetLastRawKeyMask(void)

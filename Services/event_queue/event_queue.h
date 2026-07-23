@@ -24,7 +24,8 @@ typedef enum
   EVENT_BATTERY_SAMPLE_UPDATED,
   EVENT_W02_PWRKEY_PULSE_DONE,
   EVENT_DRIVER_READY,
-  EVENT_DRIVER_ERROR
+  EVENT_DRIVER_ERROR,
+  EVENT_RAW_MEASUREMENT_UPDATED
 } EventType;
 
 typedef struct
@@ -41,6 +42,8 @@ typedef struct
  * CS1237_AVAILABLE: arg0=buffered count; TM1628_KEY: arg0=5-bit raw mask;
  * BATTERY_UPDATED: arg0=mV, arg1=raw average; W02_DONE: arg0=low time ms.
  * DRIVER events use arg0 as a driver/error bit mask. source remains NULL.
+ * RAW_MEASUREMENT_UPDATED: arg0 is the int32 raw bit pattern and must be cast
+ * back to int32_t; arg1 is the accepted sample count. It is rate-limited to 20 ms.
  */
 
 /* Main-context only. ISR producers need a critical section or a separate API. */
