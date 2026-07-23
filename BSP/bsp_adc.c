@@ -3,7 +3,7 @@
 #include "adc.h"
 #include "project_config.h"
 
-#define BSP_ADC_POLL_TIMEOUT_MS  10U
+#define BSP_ADC_POLL_TIMEOUT_MS  1U
 
 bool BSP_BatteryAdcCalibrate(void)
 {

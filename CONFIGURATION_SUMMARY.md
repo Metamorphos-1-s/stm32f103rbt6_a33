@@ -7,7 +7,7 @@
 | PA1 | RS485方向控制 | MCU_DE | GPIO推挽输出，低速，无上下拉，初始低 |
 | PA2 | USART2_TX | MCU_TX | 异步串口发送 |
 | PA3 | USART2_RX | MCU_RX | 异步串口接收 |
-| PA8 | 蓝牙电源/使能 | MCU_BLE_PWR | GPIO推挽输出，低速，无上下拉，初始低 |
+| PA8 | W02 PWR按键/唤醒 | W02_PWRKEY | GPIO开漏输出，低速，无上下拉，初始高（释放） |
 | PA9 | USART1_TX | MCU_BLE_TX | 异步串口发送 |
 | PA10 | USART1_RX | MCU_BLE_RX | 异步串口接收 |
 | PA11 | USB_DM预留 | USB_DM_RESERVE | 当前未配置，不作为GPIO使用 |
@@ -62,7 +62,8 @@
 | 初始低 | 初始高（开漏释放） | 输入 |
 |---|---|---|
 | PA1 MCU_DE | PC7 MCU_TM_DIO | PB11 MCU_AD_DOUT（浮空） |
-| PA8 MCU_BLE_PWR | PC8 MCU_TM_CLK | PC0 MCU_VBAT_AD（模拟） |
+|  | PA8 W02_PWRKEY | PC0 MCU_VBAT_AD（模拟） |
+|  | PC8 MCU_TM_CLK |  |
 | PB5 MCU_BUZZER | PC9 MCU_TM_STB |  |
 | PB6 MCU_RGY_G |  |  |
 | PB7 MCU_RGY_R |  |  |
@@ -72,6 +73,9 @@
 | PB12 MCU_AD_EN |  |  |
 
 初始化代码在配置GPIO模式之前先写输出数据寄存器，以减少上电瞬态误动作。
+
+PB12 `MCU_AD_EN` 已由硬件负责人确认为高电平使能、低电平关闭；初始低电平为安全关闭状态。
+TM1628 的 GRID1～GRID6 已确认为面板从左到右第1～第6位。
 
 ## ADC分压与换算
 

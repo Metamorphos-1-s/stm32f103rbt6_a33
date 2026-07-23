@@ -3,6 +3,12 @@
 
 #include <stdbool.h>
 
+typedef enum
+{
+    BSP_CS1237_DATA_INPUT = 0,
+    BSP_CS1237_DATA_OUTPUT
+} BspCs1237DataDirection;
+
 bool BSP_GPIO_Init(void);
 void BSP_GPIO_Process(void);
 
@@ -14,12 +20,15 @@ void BSP_LimitRed_Set(bool enable);
 void BSP_LimitYellow_Set(bool enable);
 void BSP_LimitOutputsOff(void);
 void BSP_CS1237_SetClock(bool high);
+bool BSP_CS1237_SetDataDirection(BspCs1237DataDirection direction);
+void BSP_CS1237_WriteData(bool high);
 bool BSP_CS1237_ReadData(void);
 void BSP_CS1237_SetEnable(bool enable);
 void BSP_TM1628_SetDio(bool release_high);
 bool BSP_TM1628_ReadDio(void);
 void BSP_TM1628_SetClock(bool release_high);
 void BSP_TM1628_SetStrobe(bool release_high);
+void BSP_TM1628_ReleaseBus(void);
 
 /*
  * W02 PWRKEY is an active-low open-drain key input, not a power enable.

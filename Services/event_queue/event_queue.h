@@ -18,7 +18,13 @@ typedef enum
   EVENT_UART_FRAME_RECEIVED,
   EVENT_BLE_STATE_CHANGED,
   EVENT_FAULT_RAISED,
-  EVENT_FAULT_CLEARED
+  EVENT_FAULT_CLEARED,
+  EVENT_CS1237_SAMPLE_AVAILABLE,
+  EVENT_TM1628_KEY_RAW_CHANGED,
+  EVENT_BATTERY_SAMPLE_UPDATED,
+  EVENT_W02_PWRKEY_PULSE_DONE,
+  EVENT_DRIVER_READY,
+  EVENT_DRIVER_ERROR
 } EventType;
 
 typedef struct
@@ -29,6 +35,13 @@ typedef struct
   uint32_t arg1;
   void *source;
 } AppEvent;
+
+/*
+ * Stage 2A event arguments:
+ * CS1237_AVAILABLE: arg0=buffered count; TM1628_KEY: arg0=5-bit raw mask;
+ * BATTERY_UPDATED: arg0=mV, arg1=raw average; W02_DONE: arg0=low time ms.
+ * DRIVER events use arg0 as a driver/error bit mask. source remains NULL.
+ */
 
 /* Main-context only. ISR producers need a critical section or a separate API. */
 void EventQueue_Init(void);

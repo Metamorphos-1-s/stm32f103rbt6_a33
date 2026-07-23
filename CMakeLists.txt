@@ -45,6 +45,7 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     App/app_main.c
+    App/device_manager.c
     App/system_context.c
     BSP/bsp_adc.c
     BSP/bsp_board.c
@@ -52,6 +53,13 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     BSP/bsp_time.c
     BSP/bsp_uart.c
     Config/default_config.c
+    Diagnostics/stage2a_driver_diagnostics.c
+    Drivers/battery_adc/battery_adc.c
+    Drivers/cs1237/cs1237.c
+    Drivers/output_gpio/output_gpio.c
+    Drivers/tm1628/tm1628.c
+    Drivers/tm1628/tm1628_board_map.c
+    Drivers/w02/w02_pwrkey.c
     Services/config_store/config_store.c
     Services/event_queue/event_queue.c
     Services/fault_manager/fault_manager.c
@@ -63,6 +71,12 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     App
     BSP
     Config
+    Diagnostics
+    Drivers/battery_adc
+    Drivers/cs1237
+    Drivers/output_gpio
+    Drivers/tm1628
+    Drivers/w02
     Services/config_store
     Services/event_queue
     Services/fault_manager

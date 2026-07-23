@@ -1,0 +1,6 @@
+# Build artifacts are currently tracked by the repository; this prevents new ones.
+build/
+.vscode/.cmake/
+.vscode/.cache/
+*.log
+Tests/host/out/

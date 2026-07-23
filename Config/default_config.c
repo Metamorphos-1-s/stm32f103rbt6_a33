@@ -19,7 +19,8 @@ void DefaultConfig_Load(DeviceConfig *config)
     config->metrology.decimal_places = 3U;
     config->metrology.unit = WEIGHT_UNIT_KG;
     config->metrology.sample_mode = SAMPLE_MODE_NORMAL;
-    config->metrology.cs1237_gain = CS1237_GAIN_128;
+    config->metrology.cs1237_gain = DEVICE_CS1237_GAIN_128;
+    config->metrology.cs1237_data_rate = DEVICE_CS1237_DATA_RATE_10_HZ;
     config->metrology.filter_mode = FILTER_MODE_NONE;
     config->metrology.overload_threshold = 10000U;
 

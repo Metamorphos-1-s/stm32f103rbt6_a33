@@ -3,6 +3,7 @@
 #include "bsp_board.h"
 #include "bsp_time.h"
 #include "config_store.h"
+#include "device_manager.h"
 #include "event_queue.h"
 #include "fault_manager.h"
 #include "project_config.h"
@@ -21,6 +22,9 @@ static void App_HandleEvent(const AppEvent *event);
 static void App_RunStateMachine(void);
 static bool App_PushStartupEvent(EventType type);
 
+static bool s_device_manager_init_attempted;
+static bool s_fault_entry_applied;
+
 bool App_Init(void)
 {
   DeviceConfig config;
@@ -36,6 +40,8 @@ bool App_Init(void)
   EventQueue_Init();
   FaultManager_Init();
   ConfigStore_Init();
+  s_device_manager_init_attempted = false;
+  s_fault_entry_applied = false;
 
   load_result = ConfigStore_Load(&config);
   if (load_result == CONFIG_STORE_NOT_FOUND)
@@ -80,6 +86,7 @@ void App_Run(void)
   uint8_t processed = 0U;
   static uint32_t observed_dropped_count;
 
+  DeviceManager_ProcessFast();
   Scheduler_RunPending();
 
   while ((processed < APP_MAX_EVENTS_PER_RUN) && EventQueue_Pop(&event))
@@ -101,11 +108,13 @@ static void App_1msTask(void *context)
 {
   (void)context;
   BSP_BoardProcess();
+  DeviceManager_Process1ms();
 }
 
 static void App_10msTask(void *context)
 {
   (void)context;
+  DeviceManager_Process10ms();
 }
 
 static void App_100msTask(void *context)
@@ -116,11 +125,13 @@ static void App_100msTask(void *context)
 static void App_20msTask(void *context)
 {
   (void)context;
+  DeviceManager_Process20ms();
 }
 
 static void App_500msTask(void *context)
 {
   (void)context;
+  DeviceManager_Process500ms();
 }
 
 static void App_HandleEvent(const AppEvent *event)
@@ -144,6 +155,12 @@ static void App_HandleEvent(const AppEvent *event)
     case EVENT_BLE_STATE_CHANGED:
     case EVENT_FAULT_RAISED:
     case EVENT_FAULT_CLEARED:
+    case EVENT_CS1237_SAMPLE_AVAILABLE:
+    case EVENT_TM1628_KEY_RAW_CHANGED:
+    case EVENT_BATTERY_SAMPLE_UPDATED:
+    case EVENT_W02_PWRKEY_PULSE_DONE:
+    case EVENT_DRIVER_READY:
+    case EVENT_DRIVER_ERROR:
     case EVENT_NONE:
     default:
       break;
@@ -152,6 +169,7 @@ static void App_HandleEvent(const AppEvent *event)
 
 static void App_RunStateMachine(void)
 {
+  const SystemContext *context = SystemContext_Get();
   AppState state = SystemContext_GetState();
   AppState next_state = state;
 
@@ -173,10 +191,32 @@ static void App_RunStateMachine(void)
         next_state = APP_STATE_DEVICE_INIT;
         break;
       case APP_STATE_DEVICE_INIT:
-        next_state = APP_STATE_WARMUP;
+        if (!s_device_manager_init_attempted)
+        {
+          s_device_manager_init_attempted = true;
+          if ((context == NULL) || !DeviceManager_Init(&context->config))
+          {
+            FaultManager_Set(FAULT_CS1237_CONFIG_ERROR);
+            next_state = APP_STATE_FAULT;
+          }
+          else
+          {
+            next_state = APP_STATE_WARMUP;
+          }
+        }
         break;
       case APP_STATE_WARMUP:
-        next_state = APP_STATE_RUN;
+        if (DeviceManager_IsReady())
+        {
+          next_state = APP_STATE_RUN;
+        }
+        else if ((context != NULL) &&
+                 BSP_TimeElapsed(BSP_TimeNowMs(), context->state_enter_time_ms,
+                                 APP_DRIVER_WARMUP_TIMEOUT_MS))
+        {
+          FaultManager_Set(FAULT_CS1237_NOT_READY);
+          next_state = APP_STATE_FAULT;
+        }
         break;
       case APP_STATE_RUN:
       case APP_STATE_MENU:
@@ -193,6 +233,12 @@ static void App_RunStateMachine(void)
     {
       return;
     }
+  }
+
+  if ((next_state == APP_STATE_FAULT) && !s_fault_entry_applied)
+  {
+    DeviceManager_EnterSafeState();
+    s_fault_entry_applied = true;
   }
 }
 

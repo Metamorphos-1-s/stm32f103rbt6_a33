@@ -1,10 +1,15 @@
 #include "bsp_board.h"
 
 #include "bsp_gpio.h"
+#include "bsp_time.h"
 
 bool BSP_BoardInit(void)
 {
-    return BSP_GPIO_Init();
+    if (!BSP_GPIO_Init())
+    {
+        return false;
+    }
+    return BSP_TimeInitMicrosecondCounter();
 }
 
 void BSP_BoardProcess(void)

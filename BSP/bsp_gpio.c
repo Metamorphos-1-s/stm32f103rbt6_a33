@@ -9,7 +9,7 @@ static bsp_time_ms_t s_w02_assert_start_ms;
 
 static void BSP_GPIO_Write(GPIO_TypeDef *port, uint16_t pin, bool high)
 {
-    HAL_GPIO_WritePin(port, pin, high ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    port->BSRR = high ? (uint32_t)pin : ((uint32_t)pin << 16U);
 }
 
 bool BSP_GPIO_Init(void)
@@ -79,6 +79,38 @@ void BSP_CS1237_SetClock(bool high)
     BSP_GPIO_Write(MCU_AD_SCLK_GPIO_Port, MCU_AD_SCLK_Pin, high);
 }
 
+bool BSP_CS1237_SetDataDirection(BspCs1237DataDirection direction)
+{
+    GPIO_InitTypeDef gpio = {0};
+
+    gpio.Pin = MCU_AD_DOUT_Pin;
+    gpio.Pull = GPIO_NOPULL;
+
+    if (direction == BSP_CS1237_DATA_INPUT)
+    {
+        gpio.Mode = GPIO_MODE_INPUT;
+    }
+    else if (direction == BSP_CS1237_DATA_OUTPUT)
+    {
+        /* Match the device's released-high level before enabling push-pull. */
+        BSP_GPIO_Write(MCU_AD_DOUT_GPIO_Port, MCU_AD_DOUT_Pin, true);
+        gpio.Mode = GPIO_MODE_OUTPUT_PP;
+        gpio.Speed = GPIO_SPEED_FREQ_HIGH;
+    }
+    else
+    {
+        return false;
+    }
+
+    HAL_GPIO_Init(MCU_AD_DOUT_GPIO_Port, &gpio);
+    return true;
+}
+
+void BSP_CS1237_WriteData(bool high)
+{
+    BSP_GPIO_Write(MCU_AD_DOUT_GPIO_Port, MCU_AD_DOUT_Pin, high);
+}
+
 bool BSP_CS1237_ReadData(void)
 {
     return HAL_GPIO_ReadPin(MCU_AD_DOUT_GPIO_Port, MCU_AD_DOUT_Pin) == GPIO_PIN_SET;
@@ -86,7 +118,10 @@ bool BSP_CS1237_ReadData(void)
 
 void BSP_CS1237_SetEnable(bool enable)
 {
-    BSP_GPIO_Write(MCU_AD_EN_GPIO_Port, MCU_AD_EN_Pin, enable);
+    bool active_high = (CS1237_ENABLE_ACTIVE_LEVEL != 0U);
+    bool pin_high = enable ? active_high : !active_high;
+
+    BSP_GPIO_Write(MCU_AD_EN_GPIO_Port, MCU_AD_EN_Pin, pin_high);
 }
 
 void BSP_TM1628_SetDio(bool release_high)
@@ -107,6 +142,13 @@ void BSP_TM1628_SetClock(bool release_high)
 void BSP_TM1628_SetStrobe(bool release_high)
 {
     BSP_GPIO_Write(MCU_TM_STB_GPIO_Port, MCU_TM_STB_Pin, release_high);
+}
+
+void BSP_TM1628_ReleaseBus(void)
+{
+    BSP_TM1628_SetDio(true);
+    BSP_TM1628_SetClock(true);
+    BSP_TM1628_SetStrobe(true);
 }
 
 void BSP_W02_PwrKeyRelease(void)

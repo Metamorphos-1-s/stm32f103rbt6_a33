@@ -21,12 +21,21 @@ typedef enum
 
 typedef enum
 {
-    CS1237_GAIN_1 = 0,
-    CS1237_GAIN_2,
-    CS1237_GAIN_64,
-    CS1237_GAIN_128,
-    CS1237_GAIN_COUNT
+    DEVICE_CS1237_GAIN_1 = 0,
+    DEVICE_CS1237_GAIN_2,
+    DEVICE_CS1237_GAIN_64,
+    DEVICE_CS1237_GAIN_128,
+    DEVICE_CS1237_GAIN_COUNT
 } Cs1237Gain;
+
+typedef enum
+{
+    DEVICE_CS1237_DATA_RATE_10_HZ = 0,
+    DEVICE_CS1237_DATA_RATE_40_HZ,
+    DEVICE_CS1237_DATA_RATE_640_HZ,
+    DEVICE_CS1237_DATA_RATE_1280_HZ,
+    DEVICE_CS1237_DATA_RATE_COUNT
+} Cs1237DataRate;
 
 typedef enum
 {
@@ -80,6 +89,7 @@ typedef struct
     WeightUnit unit;
     SampleMode sample_mode;
     Cs1237Gain cs1237_gain;
+    Cs1237DataRate cs1237_data_rate;
     FilterMode filter_mode;
     uint8_t filter_strength;
     uint32_t zero_range;
