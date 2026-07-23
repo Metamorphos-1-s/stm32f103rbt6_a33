@@ -293,6 +293,7 @@ static CS1237_Config DeviceManager_MakeCs1237Config(
     cs_config.rate = (CS1237_DataRate)config->metrology.cs1237_data_rate;
     cs_config.gain = (CS1237_Gain)config->metrology.cs1237_gain;
     cs_config.channel = CS1237_CHANNEL_A;
-    cs_config.reference_output_enabled = true;
+    cs_config.reference_output_enabled =
+        (CS1237_REFERENCE_OUTPUT_ENABLED != 0U);
     return cs_config;
 }

@@ -215,7 +215,7 @@ prepare a meter plus oscilloscope or logic analyzer.
 - Verify PA1 low (RS485 receive), PA8 and PC7-PC9 released high, loads off,
   PB12 initial/enable transition, PB10 idle low, and PB11 DRDY low.
 - Measure SCLK high well below 100 us and configured microsecond high/low phases.
-- Confirm config readback `0x0C`, settling completion, increasing
+- Confirm internal-reference config readback `0x0C`, settling completion, increasing
   `raw_sample_count`, bounded `cs1237_backlog`, and zero overrun.
 - Check unloaded variation, monotonic response under load, and return near the
   original code after unloading. Confirm RUN/DIAGNOSTIC does not enter FAULT.

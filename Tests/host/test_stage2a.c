@@ -48,6 +48,12 @@ static void TestCs1237ConfigCodec(void)
     CHECK(decoded.channel == expected.channel);
     CHECK(decoded.reference_output_enabled);
 
+    expected.reference_output_enabled = false;
+    CHECK(CS1237_EncodeConfig(&expected, &value));
+    CHECK(value == 0x4CU);
+    CHECK(CS1237_DecodeConfig(value, &decoded));
+    CHECK(!decoded.reference_output_enabled);
+
     expected.rate = CS1237_RATE_1280_HZ;
     expected.gain = CS1237_GAIN_2;
     expected.channel = CS1237_CHANNEL_INTERNAL_SHORT;
