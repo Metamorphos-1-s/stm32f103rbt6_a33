@@ -11,6 +11,9 @@ static uint32_t s_now_ms;
 static bool s_w02_asserted;
 static uint32_t s_event_count;
 static uint32_t s_event_type_count[32];
+static uint32_t s_rejected_event_pushes;
+static EventType s_rejected_event_type;
+static bool s_reject_event_type_once;
 static bool s_outputs[OUTPUT_COUNT];
 
 void TestMock_Reset(void)
@@ -18,6 +21,9 @@ void TestMock_Reset(void)
     s_now_ms = 0U;
     s_w02_asserted = false;
     s_event_count = 0U;
+    s_rejected_event_pushes = 0U;
+    s_rejected_event_type = EVENT_NONE;
+    s_reject_event_type_once = false;
     (void)memset(s_event_type_count, 0, sizeof(s_event_type_count));
     (void)memset(s_outputs, 0, sizeof(s_outputs));
 }
@@ -49,6 +55,17 @@ bool TestMock_IsOutputEnabled(OutputId output)
     uint32_t index = (uint32_t)output;
 
     return (index < (uint32_t)OUTPUT_COUNT) ? s_outputs[index] : false;
+}
+
+void TestMock_RejectNextEvents(uint32_t count)
+{
+    s_rejected_event_pushes = count;
+}
+
+void TestMock_RejectEventTypeOnce(EventType type)
+{
+    s_rejected_event_type = type;
+    s_reject_event_type_once = true;
 }
 
 bsp_time_ms_t BSP_TimeNowMs(void)
@@ -186,6 +203,17 @@ bool EventQueue_Push(const AppEvent *event)
 {
     if (event == NULL)
     {
+        return false;
+    }
+    if (s_rejected_event_pushes != 0U)
+    {
+        --s_rejected_event_pushes;
+        return false;
+    }
+    if (s_reject_event_type_once &&
+        (event->type == s_rejected_event_type))
+    {
+        s_reject_event_type_once = false;
         return false;
     }
     ++s_event_count;

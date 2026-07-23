@@ -17,6 +17,8 @@
 
 static unsigned int s_failures;
 
+unsigned int Stage3_RunTests(void);
+
 #define CHECK(condition) do { \
     if (!(condition)) { \
         ++s_failures; \
@@ -364,12 +366,13 @@ int main(void)
     TestMeasurementBridge();
     TestStage2BFormatting();
     TestStage2BDiagnostics();
+    s_failures += Stage3_RunTests();
 
     if (s_failures != 0U)
     {
-        (void)printf("Stage 2B host tests: %u failure(s)\n", s_failures);
+        (void)printf("Stage 3 host tests: %u failure(s)\n", s_failures);
         return 1;
     }
-    (void)printf("Stage 2B host tests: all checks passed\n");
+    (void)printf("Stage 3 host tests: all checks passed\n");
     return 0;
 }

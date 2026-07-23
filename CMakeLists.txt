@@ -47,6 +47,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     App/app_main.c
     App/device_manager.c
     App/measurement_bridge.c
+    App/metrology_manager.c
     App/system_context.c
     BSP/bsp_adc.c
     BSP/bsp_board.c
@@ -57,7 +58,15 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Diagnostics/stage2a_driver_diagnostics.c
     Diagnostics/stage2b_board_diagnostics.c
     Diagnostics/stage2b_display_font.c
+    Diagnostics/stage3_metrology_diagnostics.c
+    Domain/calibration/calibration_model.c
+    Domain/filter/weight_filter.c
+    Domain/measurement/metrology_config_validator.c
     Domain/measurement/raw_measurement.c
+    Domain/measurement/weight_engine.c
+    Domain/measurement/weight_math.c
+    Domain/stability/stability_detector.c
+    Domain/zero_tare/zero_tare.c
     Drivers/battery_adc/battery_adc.c
     Drivers/cs1237/cs1237.c
     Drivers/output_gpio/output_gpio.c
@@ -76,7 +85,11 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     BSP
     Config
     Diagnostics
+    Domain/calibration
+    Domain/filter
     Domain/measurement
+    Domain/stability
+    Domain/zero_tare
     Drivers/battery_adc
     Drivers/cs1237
     Drivers/output_gpio

@@ -41,6 +41,8 @@ typedef enum
 {
     FILTER_MODE_NONE = 0,
     FILTER_MODE_AVERAGE,
+    FILTER_MODE_IIR,
+    FILTER_MODE_MEDIAN3_IIR,
     FILTER_MODE_COUNT
 } FilterMode;
 

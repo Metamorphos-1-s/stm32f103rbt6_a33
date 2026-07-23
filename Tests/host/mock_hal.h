@@ -13,5 +13,7 @@ bool TestMock_IsW02Asserted(void);
 uint32_t TestMock_GetEventCount(void);
 uint32_t TestMock_GetEventTypeCount(EventType type);
 bool TestMock_IsOutputEnabled(OutputId output);
+void TestMock_RejectNextEvents(uint32_t count);
+void TestMock_RejectEventTypeOnce(EventType type);
 
 #endif /* STAGE2A_MOCK_HAL_H */

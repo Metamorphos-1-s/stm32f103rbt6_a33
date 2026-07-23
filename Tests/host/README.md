@@ -1,9 +1,11 @@
-# Stage 2B Host Tests
+# Stage 3 Host Tests
 
-These tests compile the production driver sources against HAL-free BSP mocks.
-They cover Stage 2A driver logic plus RawMeasurement statistics, bounded FIFO
-bridging, rate-limited raw events, diagnostic formatting/state transitions,
-bounded outputs, W02 wrapping, and FAULT shutdown.
+These tests compile production Stage 2A/2B drivers and Stage 3 Domain/App
+sources against HAL-free BSP and event mocks. Coverage includes checked integer
+math, all filter modes, two-point calibration in both sensor directions,
+stability and time wrap, zero/tare, `WeightEngine`, manager event rate limiting
+and retry, the bounded bridge, internal REFOUT encoding, and synthetic scale
+sequences.
 
 Run from a Visual Studio developer command prompt:
 
@@ -13,4 +15,6 @@ cmake --build Tests/host/build
 ctest --test-dir Tests/host/build --output-on-failure
 ```
 
-The target uses `/W4 /WX` with MSVC. `Tests/host/build/` is generated and ignored.
+The target is `stage3_host_tests` and uses `/W4 /WX` with MSVC.
+`Tests/host/build/` is generated and ignored. Synthetic sequences are software
+tests only and are NOT VERIFIED ON SCALE HARDWARE.

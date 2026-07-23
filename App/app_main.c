@@ -7,10 +7,12 @@
 #include "event_queue.h"
 #include "fault_manager.h"
 #include "measurement_bridge.h"
+#include "metrology_manager.h"
 #include "project_config.h"
 #include "raw_measurement.h"
 #include "scheduler.h"
 #include "stage2b_board_diagnostics.h"
+#include "stage3_metrology_diagnostics.h"
 #include "system_context.h"
 
 #include <stddef.h>
@@ -66,6 +68,7 @@ bool App_Init(void)
   {
     return false;
   }
+  (void)MetrologyManager_Init(&config, &SystemContext_Get()->runtime);
 
   if ((Scheduler_AddPeriodicTask(App_1msTask, NULL, 1U, 1U) < 0) ||
       (Scheduler_AddPeriodicTask(App_10msTask, NULL, 10U, 10U) < 0) ||
@@ -118,6 +121,7 @@ void App_Run(void)
   }
 
   Stage2B_DiagnosticsProcess();
+  Stage3MetrologyDiagnostics_Update();
   App_RunStateMachine();
 }
 
@@ -159,6 +163,7 @@ static void App_20msTask(void *context)
   (void)context;
   DeviceManager_Process20ms();
   App_PublishRawMeasurement();
+  MetrologyManager_Process20ms();
 }
 
 static void App_500msTask(void *context)

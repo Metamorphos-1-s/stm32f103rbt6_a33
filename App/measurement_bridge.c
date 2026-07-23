@@ -1,6 +1,7 @@
 #include "measurement_bridge.h"
 
 #include "cs1237.h"
+#include "metrology_manager.h"
 #include "raw_measurement.h"
 
 #include <stddef.h>
@@ -41,6 +42,10 @@ uint8_t MeasurementBridge_Process(uint8_t maximum_samples)
         if (!RawMeasurement_Accept(&raw_sample))
         {
             ++s_invalid_count;
+        }
+        else
+        {
+            (void)MetrologyManager_AcceptRawSample(&raw_sample);
         }
         ++s_consumed_count;
         ++processed;
