@@ -13,6 +13,8 @@ typedef enum
 } ConfigApplyResult;
 
 ConfigApplyResult ConfigApplication_Apply(const DeviceConfig *candidate);
+ConfigApplyResult ConfigApplication_Validate(const DeviceConfig *candidate,
+                                             bool allow_cs1237_change);
 ConfigApplyResult ConfigApplication_ApplyFactoryDefaults(
     const DeviceConfig *candidate);
 

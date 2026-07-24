@@ -57,6 +57,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     BSP/bsp_adc.c
     BSP/bsp_board.c
     BSP/bsp_flash.c
+    BSP/bsp_power_monitor.c
     BSP/bsp_gpio.c
     BSP/bsp_time.c
     BSP/bsp_uart.c
@@ -89,6 +90,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Services/event_queue/event_queue.c
     Services/fault_manager/fault_manager.c
     Services/scheduler/scheduler.c
+    Services/storage_power_guard/storage_power_guard.c
     UI/display_controller.c
     UI/display_model/display_codes.c
     UI/display_model/display_formatter.c
@@ -121,6 +123,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Services/event_queue
     Services/fault_manager
     Services/scheduler
+    Services/storage_power_guard
     UI
     UI/display_model
     UI/key_service

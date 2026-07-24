@@ -14,8 +14,17 @@ typedef enum
     PERSISTENCE_STATUS_FACTORY_RESETTING,
     PERSISTENCE_STATUS_SUCCESS,
     PERSISTENCE_STATUS_NO_CHANGE,
-    PERSISTENCE_STATUS_FAILED
+    PERSISTENCE_STATUS_FAILED,
+    PERSISTENCE_STATUS_REBOOT_REQUIRED
 } PersistenceStatus;
+
+typedef enum
+{
+    FACTORY_RESET_RESULT_NONE = 0,
+    FACTORY_RESET_RESULT_COMPLETED,
+    FACTORY_RESET_RESULT_COMMITTED_REBOOT_REQUIRED,
+    FACTORY_RESET_RESULT_FAILED
+} FactoryResetResult;
 
 bool PersistenceManager_Init(void);
 ConfigLoadResult PersistenceManager_LoadStartup(DeviceConfig *config,
@@ -27,5 +36,6 @@ bool PersistenceManager_IsBusy(void);
 PersistenceStatus PersistenceManager_GetStatus(void);
 ConfigLoadResult PersistenceManager_GetLoadResult(void);
 const ConfigLoadInfo *PersistenceManager_GetLoadInfo(void);
+FactoryResetResult PersistenceManager_GetFactoryResetResult(void);
 
 #endif /* PERSISTENCE_MANAGER_H */

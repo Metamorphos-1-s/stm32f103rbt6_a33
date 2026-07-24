@@ -9,6 +9,8 @@ FlashBackendResult BSP_FlashErasePage(uint32_t page_address);
 FlashBackendResult BSP_FlashProgramHalfWord(uint32_t address, uint16_t value);
 bool BSP_FlashIsErased(uint32_t address, uint32_t length);
 bool BSP_FlashIsConfigRange(uint32_t address, uint32_t length);
+const FlashBackendOperationInfo *BSP_FlashGetLastOperationInfo(void);
+bool BSP_FlashReinitialize(void);
 const FlashBackendOps *BSP_FlashGetBackend(void);
 bool BSP_FlashValidateLayout(void);
 

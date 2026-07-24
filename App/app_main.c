@@ -2,6 +2,7 @@
 
 #include "bsp_board.h"
 #include "bsp_flash.h"
+#include "bsp_power_monitor.h"
 #include "bsp_time.h"
 #include "calibration_controller.h"
 #include "command_service.h"
@@ -23,6 +24,7 @@
 #include "self_test_controller.h"
 #include "stage2b_board_diagnostics.h"
 #include "stage3_metrology_diagnostics.h"
+#include "storage_power_guard.h"
 #include "system_context.h"
 
 #include <stddef.h>
@@ -68,6 +70,8 @@ bool App_Init(void)
     FaultManager_Set(FAULT_CONFIG_FLASH_LAYOUT);
   }
   ConfigStore_Init(BSP_FlashGetBackend());
+  StoragePowerGuard_Init();
+  ConfigStore_SetPowerCheck(StoragePowerGuard_CanContinueFlashOperation);
   (void)PersistenceManager_Init();
   MeasurementBridge_Init();
   s_device_manager_init_attempted = false;
@@ -251,6 +255,7 @@ static void App_10msTask(void *context)
 static void App_100msTask(void *context)
 {
   (void)context;
+  StoragePowerGuard_Process100ms();
 }
 
 static void App_20msTask(void *context)

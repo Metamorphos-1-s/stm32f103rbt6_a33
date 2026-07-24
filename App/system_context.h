@@ -36,6 +36,7 @@ bool SystemContext_ApplyConfig(const DeviceConfig *config, bool dirty);
 uint32_t SystemContext_GetConfigRevision(void);
 uint32_t SystemContext_GetSavedRevision(void);
 bool SystemContext_MarkConfigChanged(void);
+/* Marks the snapshot for this exact historical revision as persisted. */
 bool SystemContext_MarkRevisionSaved(uint32_t revision);
 bool SystemContext_HasStorageRecord(void);
 

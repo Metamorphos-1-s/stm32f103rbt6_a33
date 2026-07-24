@@ -110,3 +110,34 @@ else()
     target_compile_options(stage4b_storage_tests PRIVATE -Wall -Wextra -Werror)
 endif()
 add_test(NAME stage4b_storage_logic COMMAND stage4b_storage_tests)
+
+add_executable(stage4br_persistence_tests
+    test_persistence_manager.c
+    persistence_test_adapters.c
+    fake_flash_backend.c
+    ../../App/persistence_manager.c
+    ../../App/system_context.c
+    ../../Config/default_config.c
+    ../../Domain/calibration/calibration_model.c
+    ../../Domain/measurement/metrology_config_validator.c
+    ../../Domain/measurement/weight_math.c
+    ../../Services/config_store/config_store.c
+    ../../Services/config_store/persistent_codec.c
+    ../../Services/crc32/crc32.c
+    ../../Services/storage_power_guard/storage_power_guard.c
+)
+target_compile_definitions(stage4br_persistence_tests PRIVATE
+    ENABLE_STAGE2B_BOARD_DIAGNOSTICS=0)
+target_include_directories(stage4br_persistence_tests PRIVATE
+    . ../../App ../../BSP ../../Config ../../Diagnostics
+    ../../Domain/calibration ../../Domain/filter ../../Domain/measurement
+    ../../Domain/stability ../../Protocol/command_service
+    ../../Services/config_store ../../Services/crc32 ../../Services/event_queue
+    ../../Services/fault_manager ../../Services/storage_power_guard
+    ../../UI ../../UI/display_model)
+if(MSVC)
+    target_compile_options(stage4br_persistence_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage4br_persistence_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage4br_persistence_logic COMMAND stage4br_persistence_tests)

@@ -8,7 +8,7 @@ The actual Stage 4A baseline is
 implemented incrementally on that exact delivery.
 
 Stage 4B adds linker-protected Flash A/B storage, explicit V1 serialization,
-CRC-32, power-loss-safe asynchronous commits, startup recovery, save/factory
+CRC-32, power-loss-safe cooperative commits, startup recovery, save/factory
 reset commands, revision tracking, storage maintenance, diagnostics, and host
 fault injection. It does not add Modbus, BLE application framing, W02 AT
 initialization, USB, IWDG, online update, logs, or automatic periodic saving.
@@ -160,14 +160,16 @@ IDLE -> PREPARE -> ERASE_PAGE_0 -> ERASE_PAGE_1
                          `-----------> ERROR
 ```
 
-A request immediately copies DeviceConfig/RuntimeState and encodes a normalized
-payload into internal fixed storage. External edits cannot alter the in-flight
+A request immediately encodes DeviceConfig/RuntimeState into an exact-size
+normalized V1 payload. External edits cannot alter the in-flight
 record. A second request while active is rejected.
 
 Each `Process` call performs no more than one page erase, 16 halfword body
-programs, or one verification step. The commit step writes its two halfwords.
-There are no unbounded loops, interrupt Flash operations, dynamic allocation,
-or `HAL_Delay` calls.
+programs, or one verification/commit step. There are no unbounded loops,
+interrupt Flash operations, dynamic allocation, or `HAL_Delay` calls. This is a
+bounded cooperative state machine, not a fully non-blocking implementation:
+`HAL_FLASHEx_Erase` and each halfword program are synchronous and a page erase
+may block for tens of milliseconds.
 
 The target is always the non-active slot. The active slot is never erased during
 the save. The target becomes active only after commit readback and complete
@@ -201,9 +203,9 @@ SystemContext tracks `config_revision`, `saved_revision`, and
 revision while skipping `0xFFFFFFFF`. Dirty means the current revision differs
 from the saved revision.
 
-A save records the requested revision. Successful completion clears dirty only
-when the current semantic state is marked saved; edits made while a snapshot is
-in flight remain dirty. Failure retains dirty. Loading a valid record initializes
+A save records the requested revision. Successful save and `NO_CHANGE` mark
+that exact requested revision saved; edits made while a snapshot is in flight
+remain dirty. Pre-commit failure retains the prior saved revision. Loading a valid record initializes
 both revisions to its sequence and clears dirty. Defaults use revision zero,
 dirty false, and `storage_has_record=false`, so the first explicit SAVE still
 creates slot A.
@@ -242,7 +244,7 @@ alarms, connections, tare, or intermediate calibration steps.
 The read-only Stage4B snapshot exposes slot validity/sequences, active slot,
 store state/operation, current/saved revisions, dirty state, request/success/
 no-change/failure counts, page erases, halfword programs, recoveries, CRC errors,
-and last error for SWD Watch.
+primary Flash error, lock error, failing address, and last error for SWD Watch.
 
 Save/load/factory-reset start, complete, no-change, recovery, defaults, and
 failure events carry integer metadata only. ConfigStore has no EventQueue
@@ -250,7 +252,7 @@ dependency; event queue overflow does not erase PersistenceManager status.
 
 ## 14. Host verification
 
-MSVC C11 `/W4 /WX` builds two targets and CTest reports 2/2 passed. Stage 4B
+MSVC C11 `/W4 /WX` builds three targets and CTest reports 3/3 passed. Stage 4B-R
 tests compile the production CRC, codec, ConfigStore, validators, and revision
 logic directly. Coverage includes CRC vectors/segmentation, positive and reverse
 calibration round trips, retained/cleared tare, malformed enum/bool/truncation,
@@ -263,17 +265,17 @@ These are simulated power cuts, not physical brownout tests.
 
 ## 15. ARM build and map verification
 
-| Build | Stage 4B FLASH | Stage 4B RAM | Stage 4A baseline | Delta |
+| Build | Stage 4B-R FLASH | Stage 4B-R RAM | Stage 4B baseline | RAM delta |
 |---|---:|---:|---:|---:|
-| Debug | 56036 B | 11160 B | 46368 B / 4384 B | +9668 B / +6776 B |
-| Release | 31424 B | 11152 B | 26156 B / 4392 B | +5268 B / +6760 B |
+| Debug | 58664 B | 5232 B | 56036 B / 11160 B | -5928 B |
+| Release | 32904 B | 5232 B | 31424 B / 11152 B | -5920 B |
+| BoardDiagnostics | 58344 B | 5240 B | not recorded | n/a |
 
-Debug uses 44.13% of the 124 KiB application region and 54.49% RAM. Release
-uses 24.75% application Flash and 54.45% RAM. Both retain adequate
-STM32F103RBT6 capacity.
+Debug uses 46.20% of the 124 KiB application region and 25.55% RAM. Release
+uses 25.91% application Flash and 25.55% RAM. Both retain adequate capacity.
 
-Debug and Release complete 76 compile/link steps with zero errors and zero
-warnings. The map files export:
+Debug, Release and BoardDiagnostics complete with zero errors and zero warnings.
+The map files export:
 
 ```text
 __application_flash_end__ = 0x0801F000
@@ -283,8 +285,8 @@ __config_slot_b_start__    = 0x0801F800
 __config_slot_b_end__      = 0x08020000
 ```
 
-The final Debug loadable image ends at `0x0800DAE4`; Release ends at
-`0x08007AC0`. Both are below `0x0801F000`, and CONFIG_A/CONFIG_B report zero
+The final Debug loadable image ends at `0x0800E528`; Release ends at
+`0x08008088`. Both are below `0x0801F000`, and CONFIG_A/CONFIG_B report zero
 linked bytes.
 
 ## 16. Static checks and compatibility
@@ -294,13 +296,23 @@ BSP. No dynamic memory, floating point, recursion, FreeRTOS, `HAL_Delay`, or raw
 DeviceConfig-to-Flash memcpy is used. UI and Domain boundaries remain intact.
 The original Stage 2B diagnostics and internal REFOUT `0x0C` regression remain.
 
-## 17. Hardware status and remaining risks
+## 17. Stage 4B-R power guard
+
+STM32F1 PVD level 6 is a **DEVELOPMENT DEFAULT - VERIFY ON HARDWARE**. New saves
+require 500 ms continuously safe PVD state and every write-state advance checks
+the live PVD flag. Low voltage before start returns `POWER_UNSAFE` without a
+system fault. Low voltage after an operation begins stops subsequent writes and
+records a persistence interruption fault. A page erase already executing cannot
+be aborted. Battery ADC thresholds are not a hard gate until board limits are
+qualified.
+
+## 18. Hardware status and remaining risks
 
 **NOT TESTED ON HARDWARE.** Real Flash save, reset, reboot recovery, erase time,
 program time, voltage sensitivity, endurance, SWD slot corruption, CS1237 FIFO
 behavior during erase stalls, settling, and physical brownout timing have not
-been validated. The software has no supply-voltage write inhibit, IWDG strategy,
-ECC, authenticated records, or external EEPROM fallback. V1 is the only real
+been validated. The software has no IWDG strategy, ECC, authenticated records,
+or external EEPROM fallback. V1 is the only real
 schema and has no field-level salvage policy.
 
 Board validation must exercise A/B/A rotation, retained and non-retained tare,
@@ -308,9 +320,9 @@ calibration persistence, unsaved RAM rollback, active-slot CRC corruption,
 missing commit markers, power removal during erase/body/commit, firmware-region
 protection, and CS1237 return to internal REFOUT `0x0C`.
 
-## 18. Stage 5 recommendation
+## 19. Stage 5 recommendation
 
-Stage 5 should add protocol transports that reuse CommandService, a controlled
-low-voltage Flash-write guard, real brownout/endurance qualification, and an
+Stage 5 should add protocol transports that reuse CommandService, real
+brownout/endurance qualification, and an
 explicit V1 migration policy before any V2 schema is released. It should not
 weaken the fixed linker boundary or A/B commit contract.

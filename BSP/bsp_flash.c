@@ -23,6 +23,36 @@ _Static_assert(CONFIG_FLASH_END_ADDRESS ==
                CONFIG_FLASH_SLOT_B_ADDRESS + CONFIG_FLASH_SLOT_SIZE,
                "configuration area must end at 128 KiB boundary");
 
+static FlashBackendOperationInfo s_last_operation;
+static bool s_write_disabled;
+
+static void BeginOperation(uint32_t address)
+{
+    s_last_operation.operation_result = FLASH_BACKEND_OK;
+    s_last_operation.lock_result = FLASH_BACKEND_OK;
+    s_last_operation.hal_error = 0U;
+    s_last_operation.address = address;
+}
+
+const FlashBackendOperationInfo *BSP_FlashGetLastOperationInfo(void)
+{
+    return &s_last_operation;
+}
+
+bool BSP_FlashReinitialize(void)
+{
+    BeginOperation(0U);
+    if (HAL_FLASH_Lock() != HAL_OK)
+    {
+        s_last_operation.lock_result = FLASH_BACKEND_LOCK_ERROR;
+        s_last_operation.hal_error = HAL_FLASH_GetError();
+        s_write_disabled = true;
+        return false;
+    }
+    s_write_disabled = false;
+    return true;
+}
+
 bool BSP_FlashValidateLayout(void)
 {
     return ((uintptr_t)__application_flash_end__ ==
@@ -91,17 +121,28 @@ FlashBackendResult BSP_FlashErasePage(uint32_t page_address)
     HAL_StatusTypeDef status;
     FlashBackendResult result = FLASH_BACKEND_OK;
 
+    BeginOperation(page_address);
+    if (s_write_disabled)
+    {
+        s_last_operation.operation_result = FLASH_BACKEND_LOCK_ERROR;
+        return FLASH_BACKEND_LOCK_ERROR;
+    }
+
     if ((page_address % CONFIG_FLASH_PAGE_SIZE) != 0U)
     {
-        return FLASH_BACKEND_ALIGNMENT_ERROR;
+        s_last_operation.operation_result = FLASH_BACKEND_ALIGNMENT_ERROR;
+        return s_last_operation.operation_result;
     }
     if (!BSP_FlashIsConfigRange(page_address, CONFIG_FLASH_PAGE_SIZE))
     {
-        return FLASH_BACKEND_OUT_OF_RANGE;
+        s_last_operation.operation_result = FLASH_BACKEND_OUT_OF_RANGE;
+        return s_last_operation.operation_result;
     }
     if (HAL_FLASH_Unlock() != HAL_OK)
     {
-        return FLASH_BACKEND_UNLOCK_ERROR;
+        s_last_operation.operation_result = FLASH_BACKEND_UNLOCK_ERROR;
+        s_last_operation.hal_error = HAL_FLASH_GetError();
+        return s_last_operation.operation_result;
     }
     erase.TypeErase = FLASH_TYPEERASE_PAGES;
     erase.PageAddress = page_address;
@@ -110,6 +151,7 @@ FlashBackendResult BSP_FlashErasePage(uint32_t page_address)
     if (status != HAL_OK)
     {
         result = FLASH_BACKEND_ERASE_ERROR;
+        s_last_operation.hal_error = HAL_FLASH_GetError();
     }
     else if (!BSP_FlashIsErased(page_address, CONFIG_FLASH_PAGE_SIZE))
     {
@@ -117,30 +159,45 @@ FlashBackendResult BSP_FlashErasePage(uint32_t page_address)
     }
     if (HAL_FLASH_Lock() != HAL_OK)
     {
-        result = FLASH_BACKEND_LOCK_ERROR;
+        s_last_operation.lock_result = FLASH_BACKEND_LOCK_ERROR;
+        s_last_operation.hal_error = HAL_FLASH_GetError();
+        s_write_disabled = true;
     }
-    return result;
+    s_last_operation.operation_result = result;
+    return (result != FLASH_BACKEND_OK) ? result : s_last_operation.lock_result;
 }
 
 FlashBackendResult BSP_FlashProgramHalfWord(uint32_t address, uint16_t value)
 {
     FlashBackendResult result = FLASH_BACKEND_OK;
 
+    BeginOperation(address);
+    if (s_write_disabled)
+    {
+        s_last_operation.operation_result = FLASH_BACKEND_LOCK_ERROR;
+        return FLASH_BACKEND_LOCK_ERROR;
+    }
+
     if ((address & 1U) != 0U)
     {
-        return FLASH_BACKEND_ALIGNMENT_ERROR;
+        s_last_operation.operation_result = FLASH_BACKEND_ALIGNMENT_ERROR;
+        return s_last_operation.operation_result;
     }
     if (!BSP_FlashIsConfigRange(address, 2U))
     {
-        return FLASH_BACKEND_OUT_OF_RANGE;
+        s_last_operation.operation_result = FLASH_BACKEND_OUT_OF_RANGE;
+        return s_last_operation.operation_result;
     }
     if (HAL_FLASH_Unlock() != HAL_OK)
     {
-        return FLASH_BACKEND_UNLOCK_ERROR;
+        s_last_operation.operation_result = FLASH_BACKEND_UNLOCK_ERROR;
+        s_last_operation.hal_error = HAL_FLASH_GetError();
+        return s_last_operation.operation_result;
     }
     if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, address, value) != HAL_OK)
     {
         result = FLASH_BACKEND_PROGRAM_ERROR;
+        s_last_operation.hal_error = HAL_FLASH_GetError();
     }
     else if (*(const volatile uint16_t *)(uintptr_t)address != value)
     {
@@ -148,16 +205,21 @@ FlashBackendResult BSP_FlashProgramHalfWord(uint32_t address, uint16_t value)
     }
     if (HAL_FLASH_Lock() != HAL_OK)
     {
-        result = FLASH_BACKEND_LOCK_ERROR;
+        s_last_operation.lock_result = FLASH_BACKEND_LOCK_ERROR;
+        s_last_operation.hal_error = HAL_FLASH_GetError();
+        s_write_disabled = true;
     }
-    return result;
+    s_last_operation.operation_result = result;
+    return (result != FLASH_BACKEND_OK) ? result : s_last_operation.lock_result;
 }
 
 static const FlashBackendOps s_backend = {
     BSP_FlashRead,
     BSP_FlashErasePage,
     BSP_FlashProgramHalfWord,
-    BSP_FlashIsErased
+    BSP_FlashIsErased,
+    BSP_FlashGetLastOperationInfo,
+    BSP_FlashReinitialize
 };
 
 const FlashBackendOps *BSP_FlashGetBackend(void)

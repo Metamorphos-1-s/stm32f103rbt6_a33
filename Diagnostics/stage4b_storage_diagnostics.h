@@ -28,6 +28,9 @@ typedef struct
     uint32_t recovery_count;
     uint32_t crc_error_count;
     uint32_t last_error;
+    FlashBackendResult last_primary_flash_error;
+    FlashBackendResult last_lock_error;
+    uint32_t last_flash_address;
 } Stage4BStorageDiagnosticSnapshot;
 
 void Stage4BStorageDiagnostics_Update(void);

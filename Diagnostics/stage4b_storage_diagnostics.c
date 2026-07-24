@@ -34,6 +34,10 @@ void Stage4BStorageDiagnostics_Update(void)
     s_snapshot.recovery_count = statistics->recovery_count;
     s_snapshot.crc_error_count = statistics->crc_error_count;
     s_snapshot.last_error = ConfigStore_GetLastError();
+    s_snapshot.last_primary_flash_error =
+        ConfigStore_GetLastPrimaryFlashError();
+    s_snapshot.last_lock_error = ConfigStore_GetLastLockError();
+    s_snapshot.last_flash_address = ConfigStore_GetLastFlashAddress();
 }
 
 const Stage4BStorageDiagnosticSnapshot *

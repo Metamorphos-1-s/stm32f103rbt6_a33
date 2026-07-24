@@ -16,5 +16,10 @@ void FakeFlash_Corrupt(uint32_t address, uint8_t value);
 uint32_t FakeFlash_GetEraseCount(void);
 uint32_t FakeFlash_GetProgramCount(void);
 uint32_t FakeFlash_GetMutationCount(void);
+void FakeFlash_FailLockAtProgramCount(uint32_t program_count);
+void FakeFlash_InjectNextEraseFailure(FlashBackendResult primary,
+                                      bool lock_failure);
+void FakeFlash_InjectNextProgramFailure(FlashBackendResult primary,
+                                        bool lock_failure);
 
 #endif /* FAKE_FLASH_BACKEND_H */

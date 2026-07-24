@@ -87,4 +87,8 @@
 #define BATTERY_DIVIDER_BOTTOM_OHM    10000U
 #define BATTERY_DEFAULT_VDDA_MV       3300U
 
+/* DEVELOPMENT DEFAULT: PVD level 6 is nominally about 2.8 V. VERIFY ON HARDWARE. */
+#define STORAGE_PVD_LEVEL_INDEX           6U
+#define STORAGE_POWER_SAFE_HOLD_MS      500U
+
 #endif

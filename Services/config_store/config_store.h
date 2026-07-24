@@ -12,6 +12,7 @@
 #define CONFIG_STORE_SLOT_NONE 0U
 #define CONFIG_STORE_SLOT_A    1U
 #define CONFIG_STORE_SLOT_B    2U
+#define CONFIG_STORE_VERIFY_CHUNK_SIZE 64U
 
 typedef enum
 {
@@ -55,8 +56,12 @@ typedef enum
     CONFIG_STORE_OPERATION_NO_CHANGE,
     CONFIG_STORE_OPERATION_INVALID,
     CONFIG_STORE_OPERATION_IO_ERROR,
-    CONFIG_STORE_OPERATION_VERIFY_ERROR
+    CONFIG_STORE_OPERATION_VERIFY_ERROR,
+    CONFIG_STORE_OPERATION_POWER_UNSAFE,
+    CONFIG_STORE_OPERATION_COMMITTED_LOCK_ERROR
 } ConfigStoreOperationResult;
+
+typedef bool (*ConfigStorePowerCheck)(void);
 
 typedef struct
 {
@@ -83,6 +88,7 @@ typedef struct
 } ConfigStoreStatistics;
 
 void ConfigStore_Init(const FlashBackendOps *backend);
+void ConfigStore_SetPowerCheck(ConfigStorePowerCheck power_check);
 ConfigLoadResult ConfigStore_Load(DeviceConfig *config, RuntimeState *runtime,
                                   ConfigLoadInfo *info);
 bool ConfigStore_RequestSave(const DeviceConfig *config,
@@ -102,6 +108,16 @@ uint8_t ConfigStore_GetActiveSlot(void);
 uint32_t ConfigStore_GetLastError(void);
 const ConfigStoreStatistics *ConfigStore_GetStatistics(void);
 void ConfigStore_AcknowledgeResult(void);
+bool ConfigStore_CancelPending(void);
 bool ConfigStore_IsSequenceNewer(uint32_t candidate, uint32_t reference);
+bool ConfigStore_IsActivePayloadValid(void);
+uint16_t ConfigStore_AlignedProgramLength(uint16_t logical_length);
+bool ConfigStore_GetProgramHalfword(const uint8_t *body,
+                                    uint16_t logical_length,
+                                    uint16_t offset,
+                                    uint16_t *value);
+FlashBackendResult ConfigStore_GetLastPrimaryFlashError(void);
+FlashBackendResult ConfigStore_GetLastLockError(void);
+uint32_t ConfigStore_GetLastFlashAddress(void);
 
 #endif /* CONFIG_STORE_H */

@@ -11,6 +11,12 @@
 #include <string.h>
 
 static unsigned int s_failures;
+static bool s_power_safe = true;
+
+_Static_assert(CONFIG_STORE_VERIFY_CHUNK_SIZE <= 128U,
+               "verify chunk must remain bounded");
+_Static_assert(PERSISTENT_V1_PAYLOAD_SIZE == 164U,
+               "V1 payload size changed");
 
 #define CHECK(condition) do { \
     if (!(condition)) { \
@@ -18,6 +24,8 @@ static unsigned int s_failures;
         (void)printf("FAIL %s:%d: %s\n", __FILE__, __LINE__, #condition); \
     } \
 } while (0)
+
+static bool PowerSafe(void) { return s_power_safe; }
 
 static void MakeConfig(DeviceConfig *config, RuntimeState *runtime)
 {
@@ -129,6 +137,7 @@ static void TestStoreAndRecovery(void)
     MakeConfig(&config, &runtime);
     FakeFlash_Reset();
     ConfigStore_Init(FakeFlash_GetBackend());
+    CHECK(!ConfigStore_IsActivePayloadValid());
     CHECK(ConfigStore_Load(&loaded, &loaded_runtime, &info) ==
           CONFIG_LOAD_NOT_FOUND);
     CHECK(ConfigStore_RequestSave(&config, &runtime, 1U));
@@ -156,6 +165,7 @@ static void TestStoreAndRecovery(void)
     ConfigStore_Init(FakeFlash_GetBackend());
     CHECK(ConfigStore_Load(&loaded, &loaded_runtime, &info) ==
           CONFIG_LOAD_BOTH_VALID);
+    CHECK(ConfigStore_IsActivePayloadValid());
     CHECK(loaded.display.brightness == 4U);
 
     FakeFlash_Corrupt(CONFIG_FLASH_SLOT_B_ADDRESS + CONFIG_STORE_HEADER_SIZE,
@@ -226,6 +236,115 @@ static void TestRevision(void)
     CHECK(SystemContext_Get()->runtime.config_dirty);
     CHECK(SystemContext_MarkRevisionSaved(11U));
     CHECK(!SystemContext_Get()->runtime.config_dirty);
+    CHECK(SystemContext_InitRestored(&config, &runtime, 0xFFFFFFFEUL,
+                                     true, 0U));
+    CHECK(SystemContext_MarkConfigChanged());
+    CHECK(SystemContext_GetConfigRevision() == 0U);
+    CHECK(!SystemContext_MarkRevisionSaved(0xFFFFFFFFUL));
+}
+
+static void TestOddProgramLengths(void)
+{
+    static uint8_t body[CONFIG_STORE_HEADER_SIZE +
+                        CONFIG_STORE_PAYLOAD_MAX_SIZE];
+    uint16_t value = 0U;
+
+    (void)memset(body, 0x5AU, sizeof(body));
+    CHECK(ConfigStore_AlignedProgramLength(1U) == 2U);
+    CHECK(ConfigStore_GetProgramHalfword(body, 1U, 0U, &value));
+    CHECK(value == 0xFF5AU);
+    CHECK(ConfigStore_AlignedProgramLength(3U) == 4U);
+    CHECK(ConfigStore_GetProgramHalfword(body, 3U, 2U, &value));
+    CHECK(value == 0xFF5AU);
+    CHECK(ConfigStore_AlignedProgramLength(
+          CONFIG_STORE_HEADER_SIZE + CONFIG_STORE_PAYLOAD_MAX_SIZE - 1U) ==
+          CONFIG_STORE_HEADER_SIZE + CONFIG_STORE_PAYLOAD_MAX_SIZE);
+    CHECK(ConfigStore_GetProgramHalfword(body,
+          CONFIG_STORE_HEADER_SIZE + CONFIG_STORE_PAYLOAD_MAX_SIZE - 1U,
+          CONFIG_STORE_HEADER_SIZE + CONFIG_STORE_PAYLOAD_MAX_SIZE - 2U,
+          &value));
+    CHECK(value == 0xFF5AU);
+}
+
+static void TestPowerGate(void)
+{
+    DeviceConfig old_config;
+    DeviceConfig candidate;
+    DeviceConfig loaded;
+    RuntimeState runtime;
+    RuntimeState loaded_runtime;
+    ConfigLoadInfo info;
+
+    MakeConfig(&old_config, &runtime);
+    FakeFlash_Reset();
+    ConfigStore_Init(FakeFlash_GetBackend());
+    CHECK(ConfigStore_RequestSave(&old_config, &runtime, 1U));
+    RunStore();
+    ConfigStore_AcknowledgeResult();
+    candidate = old_config;
+    candidate.display.brightness = 6U;
+    s_power_safe = true;
+    ConfigStore_SetPowerCheck(PowerSafe);
+    CHECK(ConfigStore_RequestSave(&candidate, &runtime, 2U));
+    ConfigStore_Process();
+    ConfigStore_Process();
+    s_power_safe = false;
+    ConfigStore_Process();
+    CHECK(ConfigStore_GetLastOperationResult() ==
+          CONFIG_STORE_OPERATION_POWER_UNSAFE);
+    ConfigStore_AcknowledgeResult();
+    s_power_safe = true;
+    ConfigStore_Init(FakeFlash_GetBackend());
+    CHECK(ConfigStore_Load(&loaded, &loaded_runtime, &info) == CONFIG_LOAD_OK);
+    CHECK(loaded.display.brightness == old_config.display.brightness);
+}
+
+static void TestFlashErrorPreservation(void)
+{
+    DeviceConfig config;
+    RuntimeState runtime;
+    uint32_t lock_at;
+
+    MakeConfig(&config, &runtime);
+    FakeFlash_Reset();
+    ConfigStore_Init(FakeFlash_GetBackend());
+    FakeFlash_InjectNextEraseFailure(FLASH_BACKEND_ERASE_ERROR, true);
+    CHECK(ConfigStore_RequestSave(&config, &runtime, 1U));
+    ConfigStore_Process();
+    ConfigStore_Process();
+    CHECK(ConfigStore_GetLastPrimaryFlashError() == FLASH_BACKEND_ERASE_ERROR);
+    CHECK(ConfigStore_GetLastLockError() == FLASH_BACKEND_LOCK_ERROR);
+    ConfigStore_AcknowledgeResult();
+
+    ConfigStore_Init(FakeFlash_GetBackend());
+    CHECK(ConfigStore_RequestSave(&config, &runtime, 2U));
+    ConfigStore_Process();
+    ConfigStore_Process();
+    ConfigStore_Process();
+    FakeFlash_InjectNextProgramFailure(FLASH_BACKEND_PROGRAM_ERROR, true);
+    ConfigStore_Process();
+    CHECK(ConfigStore_GetLastPrimaryFlashError() == FLASH_BACKEND_PROGRAM_ERROR);
+    CHECK(ConfigStore_GetLastLockError() == FLASH_BACKEND_LOCK_ERROR);
+    ConfigStore_AcknowledgeResult();
+
+    ConfigStore_Init(FakeFlash_GetBackend());
+    lock_at = FakeFlash_GetProgramCount() +
+              (CONFIG_STORE_V1_BODY_SIZE / 2U) + 2U;
+    FakeFlash_FailLockAtProgramCount(lock_at);
+    CHECK(ConfigStore_RequestSave(&config, &runtime, 3U));
+    RunStore();
+    CHECK(ConfigStore_GetLastOperationResult() ==
+          CONFIG_STORE_OPERATION_COMMITTED_LOCK_ERROR);
+    CHECK(ConfigStore_GetActiveSlot() == CONFIG_STORE_SLOT_A);
+    ConfigStore_AcknowledgeResult();
+    config.display.brightness = 4U;
+    CHECK(ConfigStore_RequestSave(&config, &runtime, 4U));
+    ConfigStore_Process();
+    ConfigStore_Process();
+    CHECK(ConfigStore_GetState() == CONFIG_STORE_STATE_ERROR);
+    ConfigStore_AcknowledgeResult();
+    ConfigStore_Init(FakeFlash_GetBackend());
+    CHECK(ConfigStore_RequestSave(&config, &runtime, 5U));
 }
 
 int main(void)
@@ -235,6 +354,9 @@ int main(void)
     TestStoreAndRecovery();
     TestPowerCuts();
     TestRevision();
+    TestOddProgramLengths();
+    TestPowerGate();
+    TestFlashErrorPreservation();
     if (s_failures != 0U)
     {
         (void)printf("Stage 4B storage tests: %u failure(s)\n", s_failures);

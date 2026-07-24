@@ -9,11 +9,10 @@
 
 #include <stddef.h>
 
-static ConfigApplyResult ConfigApplication_ApplyInternal(
-    const DeviceConfig *candidate, bool allow_cs1237_change)
+ConfigApplyResult ConfigApplication_Validate(const DeviceConfig *candidate,
+                                             bool allow_cs1237_change)
 {
     const SystemContext *context = SystemContext_Get();
-    DeviceConfig original;
 
     if ((candidate == NULL) || (context == NULL) ||
         (MetrologyConfig_Validate(&candidate->metrology,
@@ -30,15 +29,27 @@ static ConfigApplyResult ConfigApplication_ApplyInternal(
     {
         return CONFIG_APPLY_INVALID;
     }
-    original = context->config;
     if (!allow_cs1237_change &&
         ((candidate->metrology.cs1237_data_rate !=
-         original.metrology.cs1237_data_rate) ||
+         context->config.metrology.cs1237_data_rate) ||
         (candidate->metrology.cs1237_gain !=
-         original.metrology.cs1237_gain)))
+         context->config.metrology.cs1237_gain)))
     {
         return CONFIG_APPLY_UNSUPPORTED_RUNTIME_CHANGE;
     }
+    return CONFIG_APPLY_OK;
+}
+
+static ConfigApplyResult ConfigApplication_ApplyInternal(
+    const DeviceConfig *candidate, bool allow_cs1237_change)
+{
+    const SystemContext *context = SystemContext_Get();
+    DeviceConfig original;
+    ConfigApplyResult validation = ConfigApplication_Validate(
+        candidate, allow_cs1237_change);
+
+    if (validation != CONFIG_APPLY_OK) return validation;
+    original = context->config;
     if (!DisplayController_SetBrightness(candidate->display.brightness))
     {
         return CONFIG_APPLY_DISPLAY_ERROR;
