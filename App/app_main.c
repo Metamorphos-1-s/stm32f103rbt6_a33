@@ -2,15 +2,22 @@
 
 #include "bsp_board.h"
 #include "bsp_time.h"
+#include "calibration_controller.h"
+#include "command_service.h"
 #include "config_store.h"
 #include "device_manager.h"
+#include "display_codes.h"
+#include "display_controller.h"
 #include "event_queue.h"
 #include "fault_manager.h"
 #include "measurement_bridge.h"
+#include "key_service.h"
+#include "menu_controller.h"
 #include "metrology_manager.h"
 #include "project_config.h"
 #include "raw_measurement.h"
 #include "scheduler.h"
+#include "self_test_controller.h"
 #include "stage2b_board_diagnostics.h"
 #include "stage3_metrology_diagnostics.h"
 #include "system_context.h"
@@ -27,6 +34,9 @@ static void App_HandleEvent(const AppEvent *event);
 static void App_RunStateMachine(void);
 static bool App_PushStartupEvent(EventType type);
 static void App_PublishRawMeasurement(void);
+static void App_ProcessKeyEvent(const KeyEvent *event);
+static CommandResult App_ExecuteLocalCommand(CommandId id, int32_t value0);
+static void App_ShowCommandResult(CommandResult result, bool tare_action);
 
 static bool s_device_manager_init_attempted;
 static bool s_fault_entry_applied;
@@ -69,6 +79,17 @@ bool App_Init(void)
     return false;
   }
   (void)MetrologyManager_Init(&config, &SystemContext_Get()->runtime);
+  CommandService_Init();
+  MenuController_Init();
+  SelfTestController_Init();
+  if (!KeyService_Init(&g_key_map_development_default))
+  {
+    FaultManager_Set(FAULT_UI_KEY_MAP_INVALID);
+  }
+  if (!DisplayController_Init())
+  {
+    FaultManager_Set(FAULT_UI_DISPLAY_ERROR);
+  }
 
   if ((Scheduler_AddPeriodicTask(App_1msTask, NULL, 1U, 1U) < 0) ||
       (Scheduler_AddPeriodicTask(App_10msTask, NULL, 10U, 10U) < 0) ||
@@ -121,7 +142,6 @@ void App_Run(void)
   }
 
   Stage2B_DiagnosticsProcess();
-  Stage3MetrologyDiagnostics_Update();
   App_RunStateMachine();
 }
 
@@ -134,6 +154,7 @@ bool App_ExitDiagnostics(void)
   }
 
   Stage2B_DiagnosticsStop();
+  (void)DisplayController_Init();
   return SystemContext_SetState(APP_STATE_RUN, BSP_TimeNowMs());
 #else
   return false;
@@ -149,8 +170,41 @@ static void App_1msTask(void *context)
 
 static void App_10msTask(void *context)
 {
+  KeyEvent event;
+  uint8_t processed = 0U;
+
   (void)context;
   DeviceManager_Process10ms();
+  if (SystemContext_GetState() != APP_STATE_DIAGNOSTIC)
+  {
+    KeyService_Process10ms(DeviceManager_GetLastRawKeyMask(), BSP_TimeNowMs());
+    while ((processed < KEY_EVENTS_PER_TICK_MAX) &&
+           KeyService_TryPopEvent(&event))
+    {
+      App_ProcessKeyEvent(&event);
+      ++processed;
+    }
+  }
+  SelfTestController_Process10ms();
+  MenuController_Process10ms();
+  CalibrationController_Process10ms();
+
+  if (MenuController_TakeCalibrationRequest())
+  {
+    if (CalibrationController_Begin())
+    {
+      (void)SystemContext_SetState(APP_STATE_CALIBRATION, BSP_TimeNowMs());
+    }
+    else
+    {
+      FaultManager_Set(FAULT_UI_STATE_ERROR);
+    }
+  }
+  if (MenuController_TakeExitRequest())
+  {
+    DisplayController_SetPage(DISPLAY_PAGE_NET);
+    (void)SystemContext_SetState(APP_STATE_RUN, BSP_TimeNowMs());
+  }
 }
 
 static void App_100msTask(void *context)
@@ -164,6 +218,8 @@ static void App_20msTask(void *context)
   DeviceManager_Process20ms();
   App_PublishRawMeasurement();
   MetrologyManager_Process20ms();
+  DisplayController_Process20ms();
+  Stage3MetrologyDiagnostics_Update();
 }
 
 static void App_500msTask(void *context)
@@ -226,9 +282,6 @@ static void App_RunStateMachine(void)
     switch (state)
     {
       case APP_STATE_BOOT:
-        next_state = APP_STATE_SELF_TEST;
-        break;
-      case APP_STATE_SELF_TEST:
         next_state = APP_STATE_LOAD_CONFIG;
         break;
       case APP_STATE_LOAD_CONFIG:
@@ -245,8 +298,32 @@ static void App_RunStateMachine(void)
           }
           else
           {
+#if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS != 0U)
             next_state = APP_STATE_WARMUP;
+#else
+            if (SelfTestController_Begin())
+            {
+              next_state = APP_STATE_SELF_TEST;
+            }
+            else
+            {
+              FaultManager_Set(FAULT_UI_DISPLAY_ERROR);
+              next_state = APP_STATE_FAULT;
+            }
+#endif
           }
+        }
+        break;
+      case APP_STATE_SELF_TEST:
+        if (SelfTestController_GetState() == SELF_TEST_COMPLETE)
+        {
+          (void)DisplayController_Init();
+          next_state = APP_STATE_WARMUP;
+        }
+        else if (SelfTestController_GetState() == SELF_TEST_FAILED)
+        {
+          FaultManager_Set(FAULT_UI_DISPLAY_ERROR);
+          next_state = APP_STATE_FAULT;
         }
         break;
       case APP_STATE_WARMUP:
@@ -269,7 +346,20 @@ static void App_RunStateMachine(void)
       case APP_STATE_RUN:
       case APP_STATE_DIAGNOSTIC:
       case APP_STATE_MENU:
+        break;
       case APP_STATE_CALIBRATION:
+      {
+        const CalibrationSession *session = CalibrationController_GetSession();
+        if (((session->state == CAL_STATE_COMPLETE) ||
+             (session->state == CAL_STATE_CANCELLED)) &&
+            ((uint32_t)(BSP_TimeNowMs() - session->state_enter_ms) >=
+             UI_MESSAGE_DEFAULT_MS))
+        {
+          next_state = APP_STATE_MENU;
+          (void)MenuController_Enter();
+        }
+        break;
+      }
       case APP_STATE_FAULT:
       default:
         break;
@@ -291,8 +381,125 @@ static void App_RunStateMachine(void)
   if ((next_state == APP_STATE_FAULT) && !s_fault_entry_applied)
   {
     Stage2B_DiagnosticsEnterFault();
+    SelfTestController_Cancel();
+    MenuController_Cancel();
+    CalibrationController_Cancel();
+    DisplayController_SetPage(DISPLAY_PAGE_FAULT);
     DeviceManager_EnterSafeState();
     s_fault_entry_applied = true;
+  }
+}
+
+static CommandResult App_ExecuteLocalCommand(CommandId id, int32_t value0)
+{
+  CommandRequest request = {id, COMMAND_SOURCE_LOCAL_KEY, value0, 0, 0U};
+  CommandResponse response;
+  return CommandService_Execute(&request, &response);
+}
+
+static void App_ShowCommandResult(CommandResult result, bool tare_action)
+{
+  DisplayCode code;
+  char text[6];
+
+  if ((result == COMMAND_RESULT_OK) || (result == COMMAND_RESULT_ACCEPTED))
+  {
+    code = DISPLAY_CODE_DONE;
+  }
+  else if (result == COMMAND_RESULT_NOT_CALIBRATED)
+  {
+    code = DISPLAY_CODE_NOCAL;
+  }
+  else if (result == COMMAND_RESULT_NOT_STABLE)
+  {
+    code = DISPLAY_CODE_UNSTABLE;
+  }
+  else if (result == COMMAND_RESULT_OVERLOAD)
+  {
+    code = DISPLAY_CODE_OVERLOAD;
+  }
+  else
+  {
+    code = tare_action ? DISPLAY_CODE_TARE_ERROR : DISPLAY_CODE_ZERO_ERROR;
+  }
+  if (DisplayCodes_Get(code, text))
+  {
+    DisplayController_ShowMessage(text, UI_MESSAGE_DEFAULT_MS);
+  }
+}
+
+static void App_ProcessKeyEvent(const KeyEvent *event)
+{
+  AppState state = SystemContext_GetState();
+
+  if ((event == NULL) || ((event->type != KEY_EVENT_SHORT) &&
+      (event->type != KEY_EVENT_LONG) &&
+      (event->type != KEY_EVENT_REPEAT)))
+  {
+    return;
+  }
+  if (state == APP_STATE_MENU)
+  {
+    (void)MenuController_HandleKeyEvent(event);
+    return;
+  }
+  if (state == APP_STATE_CALIBRATION)
+  {
+    (void)CalibrationController_HandleKeyEvent(event);
+    return;
+  }
+  if (state != APP_STATE_RUN)
+  {
+    return;
+  }
+
+  if ((event->key == KEY_ID_FUNCTION) &&
+      (event->type == KEY_EVENT_SHORT))
+  {
+    DisplayPage page = DisplayController_GetPage();
+    if (page == DISPLAY_PAGE_NET) page = DISPLAY_PAGE_GROSS;
+    else if (page == DISPLAY_PAGE_GROSS) page = DISPLAY_PAGE_TARE;
+    else if (page == DISPLAY_PAGE_TARE) page = DISPLAY_PAGE_BATTERY;
+    else page = DISPLAY_PAGE_NET;
+    DisplayController_SetPage(page);
+    if (page == DISPLAY_PAGE_NET)
+      (void)App_ExecuteLocalCommand(COMMAND_SET_WEIGHT_VIEW, WEIGHT_VIEW_NET);
+    else if (page == DISPLAY_PAGE_GROSS)
+      (void)App_ExecuteLocalCommand(COMMAND_SET_WEIGHT_VIEW, WEIGHT_VIEW_GROSS);
+  }
+  else if ((event->key == KEY_ID_FUNCTION) &&
+           (event->type == KEY_EVENT_LONG))
+  {
+    if (MenuController_Enter())
+      (void)SystemContext_SetState(APP_STATE_MENU, event->timestamp_ms);
+  }
+  else if ((event->key == KEY_ID_TARE) &&
+           (event->type == KEY_EVENT_SHORT))
+    App_ShowCommandResult(App_ExecuteLocalCommand(COMMAND_TARE, 0), true);
+  else if ((event->key == KEY_ID_TARE) &&
+           (event->type == KEY_EVENT_LONG))
+    App_ShowCommandResult(App_ExecuteLocalCommand(COMMAND_CLEAR_TARE, 0), true);
+  else if ((event->key == KEY_ID_ZERO) &&
+           (event->type == KEY_EVENT_SHORT))
+    App_ShowCommandResult(App_ExecuteLocalCommand(COMMAND_ZERO, 0), false);
+  else if ((event->key == KEY_ID_ZERO) &&
+           (event->type == KEY_EVENT_LONG))
+    App_ShowCommandResult(App_ExecuteLocalCommand(COMMAND_RESET_ZERO, 0), false);
+  else if ((event->key == KEY_ID_STAR) &&
+           (event->type == KEY_EVENT_SHORT))
+    App_ShowCommandResult(App_ExecuteLocalCommand(
+        COMMAND_REQUEST_MANUAL_OUTPUT, 0), false);
+  else if ((event->key == KEY_ID_STAR) &&
+           (event->type == KEY_EVENT_LONG))
+    DisplayController_SetPage(DISPLAY_PAGE_STATUS);
+  else if ((event->key == KEY_ID_HASH) &&
+           (event->type == KEY_EVENT_SHORT))
+  {
+    DisplayPage page = (DisplayController_GetPage() == DISPLAY_PAGE_GROSS) ?
+                       DISPLAY_PAGE_NET : DISPLAY_PAGE_GROSS;
+    DisplayController_SetPage(page);
+    (void)App_ExecuteLocalCommand(COMMAND_SET_WEIGHT_VIEW,
+        (page == DISPLAY_PAGE_NET) ? WEIGHT_VIEW_NET : WEIGHT_VIEW_GROSS);
   }
 }
 

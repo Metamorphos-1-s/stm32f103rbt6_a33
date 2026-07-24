@@ -21,6 +21,7 @@ WeightActionResult MetrologyManager_ClearTare(void);
 bool MetrologyManager_ApplyCalibration(
     const CalibrationConfig *calibration);
 bool MetrologyManager_ReconfigureFilter(FilterMode mode, uint8_t strength);
+bool MetrologyManager_Reconfigure(const DeviceConfig *config);
 uint32_t MetrologyManager_GetRejectedSampleCount(void);
 int32_t MetrologyManager_GetZeroOffsetRaw(void);
 bool MetrologyManager_IsInitialized(void);

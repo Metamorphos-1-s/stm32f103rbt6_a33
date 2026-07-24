@@ -18,6 +18,7 @@
 static unsigned int s_failures;
 
 unsigned int Stage3_RunTests(void);
+unsigned int Stage4A_RunTests(void);
 
 #define CHECK(condition) do { \
     if (!(condition)) { \
@@ -367,12 +368,13 @@ int main(void)
     TestStage2BFormatting();
     TestStage2BDiagnostics();
     s_failures += Stage3_RunTests();
+    s_failures += Stage4A_RunTests();
 
     if (s_failures != 0U)
     {
-        (void)printf("Stage 3 host tests: %u failure(s)\n", s_failures);
+        (void)printf("Stage 4A host tests: %u failure(s)\n", s_failures);
         return 1;
     }
-    (void)printf("Stage 3 host tests: all checks passed\n");
+    (void)printf("Stage 4A host tests: all checks passed\n");
     return 0;
 }

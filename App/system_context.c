@@ -75,3 +75,14 @@ bool SystemContext_SetWeightView(WeightViewMode view)
   s_system_context.runtime.weight_view = view;
   return true;
 }
+
+bool SystemContext_ApplyConfig(const DeviceConfig *config, bool dirty)
+{
+  if (!s_system_context.initialized || (config == NULL))
+  {
+    return false;
+  }
+  s_system_context.config = *config;
+  s_system_context.runtime.config_dirty = dirty;
+  return true;
+}

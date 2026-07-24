@@ -15,6 +15,18 @@ static uint32_t s_rejected_sample_count;
 static uint32_t s_last_published_sequence;
 static bool s_last_published_stable;
 
+static bool MetrologyManager_CalibrationChanged(
+    const CalibrationConfig *left, const CalibrationConfig *right)
+{
+    return (left->raw_zero != right->raw_zero) ||
+           (left->raw_span != right->raw_span) ||
+           (left->span_weight != right->span_weight) ||
+           (left->scale_numerator != right->scale_numerator) ||
+           (left->scale_denominator != right->scale_denominator) ||
+           (left->calibration_sequence != right->calibration_sequence) ||
+           (left->calibration_valid != right->calibration_valid);
+}
+
 static void MetrologyManager_SyncTare(void)
 {
     const WeightSnapshot *snapshot = WeightEngine_GetSnapshot(&s_engine);
@@ -219,6 +231,51 @@ bool MetrologyManager_ReconfigureFilter(FilterMode mode, uint8_t strength)
         return false;
     }
     (void)SystemContext_SetConfigDirty(true);
+    return true;
+}
+
+bool MetrologyManager_Reconfigure(const DeviceConfig *config)
+{
+    WeightEngine replacement;
+    RawMeasurementSample sample;
+    bool restore_tare;
+    bool calibration_changed;
+    int32_t zero_offset;
+
+    if (!s_initialized || (config == NULL) ||
+        (MetrologyConfig_Validate(&config->metrology, &config->stability) !=
+         METROLOGY_CONFIG_OK) ||
+        (config->calibration.calibration_valid &&
+         (CalibrationModel_Validate(&config->calibration) !=
+          CALIBRATION_RESULT_OK)))
+    {
+        return false;
+    }
+    calibration_changed = MetrologyManager_CalibrationChanged(
+        &config->calibration, &s_engine.calibration);
+    restore_tare = !calibration_changed && s_engine.zero_tare.tare_active;
+    zero_offset = calibration_changed ? 0 : s_engine.zero_tare.zero_offset_raw;
+    if (!WeightEngine_Init(&replacement, &config->metrology,
+            &config->calibration, &config->stability,
+            restore_tare ? s_engine.zero_tare.tare_weight : 0, restore_tare))
+    {
+        return false;
+    }
+    replacement.zero_tare.zero_offset_raw = zero_offset;
+    if (s_engine.has_raw_sample)
+    {
+        sample.raw_value = s_engine.snapshot.raw_value;
+        sample.timestamp_ms = s_engine.snapshot.sample_timestamp_ms;
+        sample.valid = true;
+        if (!WeightEngine_ProcessRawSample(&replacement, &sample))
+        {
+            return false;
+        }
+    }
+    s_engine = replacement;
+    s_last_published_sequence = 0U;
+    s_last_published_stable = false;
+    MetrologyManager_SyncTare();
     return true;
 }
 
