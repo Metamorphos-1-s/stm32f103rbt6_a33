@@ -7,17 +7,39 @@ static SystemContext s_system_context;
 
 bool SystemContext_Init(const DeviceConfig *config, uint32_t now_ms)
 {
+  RuntimeState runtime;
+
   if (config == NULL)
+  {
+    return false;
+  }
+
+  (void)memset(&runtime, 0, sizeof(runtime));
+  runtime.weight_view = WEIGHT_VIEW_NET;
+  return SystemContext_InitRestored(config, &runtime, 0U, false, now_ms);
+}
+
+bool SystemContext_InitRestored(const DeviceConfig *config,
+                                const RuntimeState *runtime,
+                                uint32_t stored_revision,
+                                bool storage_has_record,
+                                uint32_t now_ms)
+{
+  if ((config == NULL) || (runtime == NULL))
   {
     return false;
   }
 
   (void)memset(&s_system_context, 0, sizeof(s_system_context));
   s_system_context.config = *config;
-  s_system_context.runtime.weight_view = WEIGHT_VIEW_NET;
-  s_system_context.runtime.boot_count = 1U;
+  s_system_context.runtime = *runtime;
+  s_system_context.runtime.config_dirty = false;
+  s_system_context.runtime.boot_count += 1U;
   s_system_context.state = APP_STATE_BOOT;
   s_system_context.state_enter_time_ms = now_ms;
+  s_system_context.config_revision = stored_revision;
+  s_system_context.saved_revision = stored_revision;
+  s_system_context.storage_has_record = storage_has_record;
   s_system_context.initialized = true;
   return true;
 }
@@ -50,8 +72,14 @@ bool SystemContext_SetTareState(int32_t tare_weight, bool tare_active)
   {
     return false;
   }
-  s_system_context.runtime.current_tare = tare_active ? tare_weight : 0;
-  s_system_context.runtime.tare_active = tare_active;
+  tare_weight = tare_active ? tare_weight : 0;
+  if ((s_system_context.runtime.current_tare != tare_weight) ||
+      (s_system_context.runtime.tare_active != tare_active))
+  {
+    s_system_context.runtime.current_tare = tare_weight;
+    s_system_context.runtime.tare_active = tare_active;
+    (void)SystemContext_MarkConfigChanged();
+  }
   return true;
 }
 
@@ -72,7 +100,11 @@ bool SystemContext_SetWeightView(WeightViewMode view)
   {
     return false;
   }
-  s_system_context.runtime.weight_view = view;
+  if (s_system_context.runtime.weight_view != view)
+  {
+    s_system_context.runtime.weight_view = view;
+    (void)SystemContext_MarkConfigChanged();
+  }
   return true;
 }
 
@@ -82,7 +114,64 @@ bool SystemContext_ApplyConfig(const DeviceConfig *config, bool dirty)
   {
     return false;
   }
-  s_system_context.config = *config;
-  s_system_context.runtime.config_dirty = dirty;
+  if (memcmp(&s_system_context.config, config, sizeof(*config)) != 0)
+  {
+    s_system_context.config = *config;
+    if (dirty)
+    {
+      (void)SystemContext_MarkConfigChanged();
+    }
+  }
+  else if (dirty)
+  {
+    s_system_context.runtime.config_dirty =
+        s_system_context.config_revision != s_system_context.saved_revision;
+  }
   return true;
+}
+
+uint32_t SystemContext_GetConfigRevision(void)
+{
+  return s_system_context.config_revision;
+}
+
+uint32_t SystemContext_GetSavedRevision(void)
+{
+  return s_system_context.saved_revision;
+}
+
+bool SystemContext_MarkConfigChanged(void)
+{
+  uint32_t next;
+  if (!s_system_context.initialized)
+  {
+    return false;
+  }
+  next = s_system_context.config_revision + 1U;
+  if (next == 0xFFFFFFFFUL)
+  {
+    next = 0U;
+  }
+  s_system_context.config_revision = next;
+  s_system_context.runtime.config_dirty =
+      next != s_system_context.saved_revision;
+  return true;
+}
+
+bool SystemContext_MarkRevisionSaved(uint32_t revision)
+{
+  if (!s_system_context.initialized || (revision == 0xFFFFFFFFUL))
+  {
+    return false;
+  }
+  s_system_context.saved_revision = revision;
+  s_system_context.storage_has_record = true;
+  s_system_context.runtime.config_dirty =
+      s_system_context.config_revision != s_system_context.saved_revision;
+  return true;
+}
+
+bool SystemContext_HasStorageRecord(void)
+{
+  return s_system_context.storage_has_record;
 }

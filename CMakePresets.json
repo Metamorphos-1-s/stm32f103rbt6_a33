@@ -23,6 +23,14 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
+        },
+        {
+            "name": "BoardDiagnostics",
+            "inherits": "default",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "A33_ENABLE_BOARD_DIAGNOSTICS": "ON"
+            }
         }
     ],
     "buildPresets": [
@@ -33,6 +41,10 @@
         {
             "name": "Release",
             "configurePreset": "Release"
+        },
+        {
+            "name": "BoardDiagnostics",
+            "configurePreset": "BoardDiagnostics"
         }
     ]
 }

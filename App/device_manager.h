@@ -29,5 +29,8 @@ uint32_t DeviceManager_GetOverrunConsumedCount(void);
 uint32_t DeviceManager_GetRecordedOverrunCount(void);
 void DeviceManager_EnterSafeState(void);
 uint8_t DeviceManager_GetLastRawKeyMask(void);
+bool DeviceManager_EnterStorageMaintenance(void);
+bool DeviceManager_ExitStorageMaintenance(void);
+bool DeviceManager_IsInStorageMaintenance(void);
 
 #endif /* DEVICE_MANAGER_H */

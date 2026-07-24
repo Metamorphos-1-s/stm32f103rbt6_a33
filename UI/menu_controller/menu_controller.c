@@ -17,7 +17,8 @@ static const char s_labels[MENU_ITEM_COUNT][6] = {
     {'Z','r','n','G',' ',' '}, {'O','L',' ',' ',' ',' '},
     {'b','r','I','G','H','t'}, {'S','P','d',' ',' ',' '},
     {'G','A','I','n',' ',' '}, {'t','r','r','E','t',' '},
-    {'S','A','U','E',' ',' '}, {'E','H','I','t',' ',' '}
+    {'S','A','U','E',' ',' '}, {'r','E','S','E','t',' '},
+    {'E','H','I','t',' ',' '}
 };
 
 static MenuItem s_item;
@@ -29,6 +30,7 @@ static bool s_active;
 static bool s_editing;
 static bool s_calibration_request;
 static bool s_exit_request;
+static bool s_factory_confirmation;
 
 static bool MenuController_ItemField(MenuItem item, ConfigFieldId *field,
                                      int32_t *value)
@@ -93,13 +95,15 @@ static CommandResult MenuController_Command(CommandId id, int32_t value0,
 void MenuController_Init(void)
 {
     s_active=false; s_editing=false; s_calibration_request=false;
-    s_exit_request=false; s_item=MENU_ITEM_CALIBRATION; s_step=1;
+    s_exit_request=false; s_factory_confirmation=false;
+    s_item=MENU_ITEM_CALIBRATION; s_step=1;
 }
 
 bool MenuController_Enter(void)
 {
     if (s_active) return false;
-    s_active=true; s_editing=false; s_item=MENU_ITEM_CALIBRATION;
+    s_active=true; s_editing=false; s_factory_confirmation=false;
+    s_item=MENU_ITEM_CALIBRATION;
     s_last_activity_ms=BSP_TimeNowMs(); MenuController_Render(); return true;
 }
 
@@ -108,7 +112,10 @@ void MenuController_Process10ms(void)
     if (s_active && ((uint32_t)(BSP_TimeNowMs()-s_last_activity_ms)>=MENU_TIMEOUT_MS))
     {
         if (s_editing) (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,0,0);
-        s_active=false; s_editing=false; s_exit_request=true;
+        if (s_factory_confirmation)
+            (void)MenuController_Command(COMMAND_FACTORY_RESET_CANCEL,0,0);
+        s_active=false; s_editing=false; s_factory_confirmation=false;
+        s_exit_request=true;
     }
 }
 
@@ -121,6 +128,23 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
          (event->type!=KEY_EVENT_REPEAT) &&
          (event->type!=KEY_EVENT_LONG))) return false;
     s_last_activity_ms=event->timestamp_ms;
+    if (s_factory_confirmation)
+    {
+        if ((event->key==KEY_ID_FUNCTION) &&
+            (event->type==KEY_EVENT_LONG))
+        {
+            (void)MenuController_Command(COMMAND_FACTORY_RESET_CONFIRM,0,0);
+            s_factory_confirmation=false;
+        }
+        else if ((event->key==KEY_ID_TARE) &&
+                 (event->type==KEY_EVENT_SHORT))
+        {
+            (void)MenuController_Command(COMMAND_FACTORY_RESET_CANCEL,0,0);
+            s_factory_confirmation=false;
+            MenuController_Render();
+        }
+        return true;
+    }
     if ((event->key==KEY_ID_FUNCTION) && (event->type==KEY_EVENT_LONG))
     {
         if (s_editing)
@@ -188,9 +212,21 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         {
             CommandResult result=MenuController_Command(
                 COMMAND_REQUEST_CONFIG_SAVE,0,0);
-            if((result==COMMAND_RESULT_STORAGE_UNAVAILABLE) &&
-               DisplayCodes_Get(DISPLAY_CODE_NO_SAVE,text))
+            if((result!=COMMAND_RESULT_ACCEPTED) &&
+               (result!=COMMAND_RESULT_OK) &&
+               DisplayCodes_Get(DISPLAY_CODE_SAVE_ERROR,text))
                 DisplayController_ShowMessage(text,UI_MESSAGE_DEFAULT_MS);
+            return true;
+        }
+        else if (s_item==MENU_ITEM_FACTORY_RESET)
+        {
+            if (MenuController_Command(COMMAND_FACTORY_RESET_REQUEST,0,0)==
+                COMMAND_RESULT_ACCEPTED)
+            {
+                s_factory_confirmation=true;
+                if(DisplayCodes_Get(DISPLAY_CODE_RESET_QUERY,text))
+                    DisplayController_ShowMessage(text,UI_MESSAGE_DEFAULT_MS);
+            }
             return true;
         }
         else if ((s_item==MENU_ITEM_SAMPLE_RATE)||(s_item==MENU_ITEM_GAIN))
@@ -207,7 +243,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
 }
 
 void MenuController_Cancel(void)
-{ if(s_editing) (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,0,0); s_active=false; s_editing=false; }
+{ if(s_editing) (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,0,0); if(s_factory_confirmation) (void)MenuController_Command(COMMAND_FACTORY_RESET_CANCEL,0,0); s_active=false; s_editing=false; s_factory_confirmation=false; }
 bool MenuController_IsActive(void) { return s_active; }
 bool MenuController_TakeCalibrationRequest(void) { bool value=s_calibration_request; s_calibration_request=false; return value; }
 bool MenuController_TakeExitRequest(void) { bool value=s_exit_request; s_exit_request=false; return value; }

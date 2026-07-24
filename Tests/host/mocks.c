@@ -4,6 +4,7 @@
 #include "bsp_gpio.h"
 #include "bsp_time.h"
 #include "event_queue.h"
+#include "command_types.h"
 
 #include <string.h>
 
@@ -15,6 +16,21 @@ static uint32_t s_rejected_event_pushes;
 static EventType s_rejected_event_type;
 static bool s_reject_event_type_once;
 static bool s_outputs[OUTPUT_COUNT];
+
+bool PersistenceManager_IsBusy(void)
+{
+    return false;
+}
+
+CommandResult PersistenceManager_RequestSave(void)
+{
+    return COMMAND_RESULT_STORAGE_UNAVAILABLE;
+}
+
+CommandResult PersistenceManager_RequestFactoryReset(void)
+{
+    return COMMAND_RESULT_STORAGE_UNAVAILABLE;
+}
 
 void TestMock_Reset(void)
 {

@@ -27,6 +27,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 # Core project settings
 project(${CMAKE_PROJECT_NAME})
 message("Build type: " ${CMAKE_BUILD_TYPE})
+option(A33_ENABLE_BOARD_DIAGNOSTICS "Enable Stage 2B board diagnostics" OFF)
 
 # Enable CMake support for ASM and C languages
 enable_language(C ASM)
@@ -50,10 +51,12 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     App/device_manager.c
     App/measurement_bridge.c
     App/metrology_manager.c
+    App/persistence_manager.c
     App/self_test_controller.c
     App/system_context.c
     BSP/bsp_adc.c
     BSP/bsp_board.c
+    BSP/bsp_flash.c
     BSP/bsp_gpio.c
     BSP/bsp_time.c
     BSP/bsp_uart.c
@@ -62,6 +65,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Diagnostics/stage2b_board_diagnostics.c
     Diagnostics/stage2b_display_font.c
     Diagnostics/stage3_metrology_diagnostics.c
+    Diagnostics/stage4b_storage_diagnostics.c
     Domain/calibration/calibration_model.c
     Domain/calibration/raw_calibration_stability.c
     Domain/filter/weight_filter.c
@@ -80,6 +84,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Protocol/command_service/command_service.c
     Services/config_edit/config_edit.c
     Services/config_store/config_store.c
+    Services/config_store/persistent_codec.c
+    Services/crc32/crc32.c
     Services/event_queue/event_queue.c
     Services/fault_manager/fault_manager.c
     Services/scheduler/scheduler.c
@@ -110,6 +116,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Drivers/tm1628
     Drivers/w02
     Services/config_store
+    Services/crc32
     Services/config_edit
     Services/event_queue
     Services/fault_manager
@@ -121,9 +128,13 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 # Add project symbols (macros)
-target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined symbols
-)
+if(A33_ENABLE_BOARD_DIAGNOSTICS)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        ENABLE_STAGE2B_BOARD_DIAGNOSTICS=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        ENABLE_STAGE2B_BOARD_DIAGNOSTICS=0)
+endif()
 
 # Remove wrong libob.a library dependency when using cpp files
 list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)

@@ -1,10 +1,12 @@
 #include "app_main.h"
 
 #include "bsp_board.h"
+#include "bsp_flash.h"
 #include "bsp_time.h"
 #include "calibration_controller.h"
 #include "command_service.h"
 #include "config_store.h"
+#include "default_config.h"
 #include "device_manager.h"
 #include "display_codes.h"
 #include "display_controller.h"
@@ -15,6 +17,7 @@
 #include "menu_controller.h"
 #include "metrology_manager.h"
 #include "project_config.h"
+#include "persistence_manager.h"
 #include "raw_measurement.h"
 #include "scheduler.h"
 #include "self_test_controller.h"
@@ -33,6 +36,7 @@ static void App_500msTask(void *context);
 static void App_HandleEvent(const AppEvent *event);
 static void App_RunStateMachine(void);
 static bool App_PushStartupEvent(EventType type);
+static bool App_PushEvent(EventType type, uint32_t arg0, uint32_t arg1);
 static void App_PublishRawMeasurement(void);
 static void App_ProcessKeyEvent(const KeyEvent *event);
 static CommandResult App_ExecuteLocalCommand(CommandId id, int32_t value0);
@@ -45,7 +49,10 @@ static uint32_t s_last_published_raw_count;
 bool App_Init(void)
 {
   DeviceConfig config;
-  ConfigStoreResult load_result;
+  RuntimeState runtime = {0};
+  ConfigLoadResult load_result;
+  const ConfigLoadInfo *load_info;
+  bool storage_has_record;
   uint32_t now_ms;
 
   if (!BSP_BoardInit())
@@ -56,25 +63,37 @@ bool App_Init(void)
   Scheduler_Init();
   EventQueue_Init();
   FaultManager_Init();
-  ConfigStore_Init();
+  if (!BSP_FlashValidateLayout())
+  {
+    FaultManager_Set(FAULT_CONFIG_FLASH_LAYOUT);
+  }
+  ConfigStore_Init(BSP_FlashGetBackend());
+  (void)PersistenceManager_Init();
   MeasurementBridge_Init();
   s_device_manager_init_attempted = false;
   s_fault_entry_applied = false;
   s_last_published_raw_count = 0U;
 
-  load_result = ConfigStore_Load(&config);
-  if (load_result == CONFIG_STORE_NOT_FOUND)
+  load_result = PersistenceManager_LoadStartup(&config, &runtime);
+  storage_has_record = (load_result == CONFIG_LOAD_OK) ||
+      (load_result == CONFIG_LOAD_RECOVERED_SLOT_A) ||
+      (load_result == CONFIG_LOAD_RECOVERED_SLOT_B) ||
+      (load_result == CONFIG_LOAD_BOTH_VALID);
+  if (!storage_has_record)
   {
-    ConfigStore_LoadDefaults(&config);
+    DefaultConfig_Load(&config);
+    runtime.weight_view = WEIGHT_VIEW_NET;
+    if (load_result == CONFIG_LOAD_IO_ERROR)
+    {
+      FaultManager_Set(FAULT_CONFIG_FLASH_IO);
+    }
   }
-  else if (load_result != CONFIG_STORE_OK)
-  {
-    ConfigStore_LoadDefaults(&config);
-    FaultManager_Set(FAULT_CONFIG_INVALID);
-  }
+  load_info = PersistenceManager_GetLoadInfo();
 
   now_ms = BSP_TimeNowMs();
-  if (!SystemContext_Init(&config, now_ms))
+  if (!SystemContext_InitRestored(&config, &runtime,
+      storage_has_record ? load_info->active_sequence : 0U,
+      storage_has_record, now_ms))
   {
     return false;
   }
@@ -107,6 +126,20 @@ bool App_Init(void)
     FaultManager_Set(FAULT_EVENT_QUEUE_OVERFLOW);
     return false;
   }
+  if (((load_result == CONFIG_LOAD_RECOVERED_SLOT_A) ||
+       (load_result == CONFIG_LOAD_RECOVERED_SLOT_B)) &&
+      !App_PushEvent(EVENT_CONFIG_LOAD_RECOVERED,
+                     load_info->active_slot, load_info->active_sequence))
+  {
+    FaultManager_Set(FAULT_EVENT_QUEUE_OVERFLOW);
+    return false;
+  }
+  if (!storage_has_record &&
+      !App_PushEvent(EVENT_CONFIG_LOAD_DEFAULTS, (uint32_t)load_result, 0U))
+  {
+    FaultManager_Set(FAULT_EVENT_QUEUE_OVERFLOW);
+    return false;
+  }
 
   return true;
 }
@@ -118,8 +151,11 @@ void App_Run(void)
   static uint32_t observed_dropped_count;
 
   DeviceManager_ProcessFast();
-  (void)MeasurementBridge_Process(
-      MEASUREMENT_BRIDGE_MAX_SAMPLES_PER_RUN);
+  if (!DeviceManager_IsInStorageMaintenance())
+  {
+    (void)MeasurementBridge_Process(
+        MEASUREMENT_BRIDGE_MAX_SAMPLES_PER_RUN);
+  }
   DeviceManager_ObserveCs1237Consumption(
       MeasurementBridge_GetConsumedCount(),
       MeasurementBridge_GetLastBacklog(),
@@ -128,6 +164,7 @@ void App_Run(void)
       MeasurementBridge_GetLastBacklog(),
       MeasurementBridge_GetObservedOverrunCount());
   Scheduler_RunPending();
+  PersistenceManager_Process();
 
   while ((processed < APP_MAX_EVENTS_PER_RUN) && EventQueue_Pop(&event))
   {
@@ -191,7 +228,11 @@ static void App_10msTask(void *context)
 
   if (MenuController_TakeCalibrationRequest())
   {
-    if (CalibrationController_Begin())
+    if (PersistenceManager_IsBusy())
+    {
+      (void)MenuController_Enter();
+    }
+    else if (CalibrationController_Begin())
     {
       (void)SystemContext_SetState(APP_STATE_CALIBRATION, BSP_TimeNowMs());
     }
@@ -256,6 +297,15 @@ static void App_HandleEvent(const AppEvent *event)
     case EVENT_DRIVER_READY:
     case EVENT_DRIVER_ERROR:
     case EVENT_RAW_MEASUREMENT_UPDATED:
+    case EVENT_CONFIG_SAVE_STARTED:
+    case EVENT_CONFIG_SAVE_COMPLETED:
+    case EVENT_CONFIG_SAVE_NO_CHANGE:
+    case EVENT_CONFIG_SAVE_FAILED:
+    case EVENT_CONFIG_LOAD_RECOVERED:
+    case EVENT_CONFIG_LOAD_DEFAULTS:
+    case EVENT_FACTORY_RESET_STARTED:
+    case EVENT_FACTORY_RESET_COMPLETED:
+    case EVENT_FACTORY_RESET_FAILED:
     case EVENT_NONE:
     default:
       break;
@@ -516,12 +566,17 @@ static void App_PublishRawMeasurement(void)
 
 static bool App_PushStartupEvent(EventType type)
 {
+  return App_PushEvent(type, 0U, 0U);
+}
+
+static bool App_PushEvent(EventType type, uint32_t arg0, uint32_t arg1)
+{
   AppEvent event;
 
   event.type = type;
   event.timestamp_ms = BSP_TimeNowMs();
-  event.arg0 = 0U;
-  event.arg1 = 0U;
+  event.arg0 = arg0;
+  event.arg1 = arg1;
   event.source = NULL;
   return EventQueue_Push(&event);
 }

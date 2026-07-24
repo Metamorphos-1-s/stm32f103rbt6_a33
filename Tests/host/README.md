@@ -1,4 +1,4 @@
-# Stage 4A Host Tests
+# Stage 4A/4B Host Tests
 
 These tests compile production Stage 2A/2B drivers, Stage 3 metrology, and
 Stage 4A UI/command/configuration/calibration logic sources against HAL-free BSP
@@ -16,6 +16,9 @@ cmake --build Tests/host/build
 ctest --test-dir Tests/host/build --output-on-failure
 ```
 
-The target is `stage4a_host_tests` and uses `/W4 /WX` with MSVC.
+The targets are `stage4a_host_tests` and `stage4b_storage_tests`; both use
+`/W4 /WX` with MSVC. Stage 4B directly tests the production CRC, explicit V1
+codec, A/B store, revision logic, and a fixed 4 KiB fault-injectable Flash model.
+Its power-cut sweep is software simulation, not a physical brownout result.
 `Tests/host/build/` is generated and ignored. Synthetic sequences are software
 tests only and are NOT VERIFIED ON SCALE HARDWARE.

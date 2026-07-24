@@ -8,11 +8,13 @@
 #include "fault_manager.h"
 #include "output_gpio.h"
 #include "project_config.h"
+#include "system_context.h"
 #include "tm1628.h"
 #include "w02_pwrkey.h"
 
 #include <limits.h>
 #include <stddef.h>
+#include <string.h>
 
 static bool s_initialized;
 static uint32_t s_error_mask;
@@ -24,6 +26,8 @@ static uint32_t s_last_battery_error_count;
 static uint8_t s_last_raw_key_mask;
 static uint8_t s_tm_error_streak;
 static uint8_t s_battery_error_streak;
+static bool s_storage_maintenance;
+static DeviceConfig s_device_config;
 
 static void DeviceManager_PushEvent(EventType type, uint32_t arg0,
                                     uint32_t arg1);
@@ -49,6 +53,8 @@ bool DeviceManager_Init(const DeviceConfig *config)
     s_last_raw_key_mask = 0U;
     s_tm_error_streak = 0U;
     s_battery_error_streak = 0U;
+    s_storage_maintenance = false;
+    s_device_config = *config;
 
     OutputGpio_Init();
     W02PwrKey_Init();
@@ -77,7 +83,7 @@ bool DeviceManager_Init(const DeviceConfig *config)
 
 void DeviceManager_ProcessFast(void)
 {
-    if (!s_initialized)
+    if (!s_initialized || s_storage_maintenance)
     {
         return;
     }
@@ -216,6 +222,54 @@ bool DeviceManager_IsReady(void)
 #else
     return CS1237_IsReady();
 #endif
+}
+
+bool DeviceManager_EnterStorageMaintenance(void)
+{
+    W02PwrKeyState w02_state;
+
+    if (!s_initialized || s_storage_maintenance)
+    {
+        return false;
+    }
+    w02_state = W02PwrKey_GetState();
+    if (w02_state != W02_PWRKEY_IDLE)
+    {
+        return false;
+    }
+    BSP_RS485_SetTransmit(false);
+    W02PwrKey_Init();
+    CS1237_EnterSafeState();
+    s_storage_maintenance = true;
+    return true;
+}
+
+bool DeviceManager_ExitStorageMaintenance(void)
+{
+    CS1237_Config cs_config;
+    const SystemContext *context;
+
+    if (!s_initialized || !s_storage_maintenance)
+    {
+        return false;
+    }
+    context = SystemContext_Get();
+    if (context != NULL)
+    {
+        s_device_config = context->config;
+    }
+    cs_config = DeviceManager_MakeCs1237Config(&s_device_config);
+    if (!CS1237_Init(&cs_config))
+    {
+        return false;
+    }
+    s_storage_maintenance = false;
+    return true;
+}
+
+bool DeviceManager_IsInStorageMaintenance(void)
+{
+    return s_storage_maintenance;
 }
 
 uint32_t DeviceManager_GetErrorMask(void)

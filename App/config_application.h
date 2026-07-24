@@ -13,5 +13,7 @@ typedef enum
 } ConfigApplyResult;
 
 ConfigApplyResult ConfigApplication_Apply(const DeviceConfig *candidate);
+ConfigApplyResult ConfigApplication_ApplyFactoryDefaults(
+    const DeviceConfig *candidate);
 
 #endif /* CONFIG_APPLICATION_H */

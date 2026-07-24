@@ -54,6 +54,7 @@ bool DisplayFormatter_EncodeCharacter(char character,
         case 'U': case 'u': mask = S_B | S_C | S_D | S_E | S_F; break;
         case 'Y': case 'y': mask = S_B | S_C | S_D | S_F | S_G; break;
         case 'Z': case 'z': mask = S_A | S_B | S_D | S_E | S_G; break;
+        case '?': mask = S_A | S_B | S_E | S_G; break;
         case '-': mask = S_G; break;
         case '_': mask = S_D; break;
         case ' ': mask = 0U; break;

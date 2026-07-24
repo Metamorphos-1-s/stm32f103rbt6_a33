@@ -14,6 +14,9 @@
 # EXTERNAL cache entries
 ########################
 
+//Enable Stage 2B board diagnostics
+A33_ENABLE_BOARD_DIAGNOSTICS:BOOL=OFF
+
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-addr2line.exe
 

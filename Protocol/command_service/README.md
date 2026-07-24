@@ -6,5 +6,6 @@ configuration transaction, and `ConfigApplication`; it contains no weighing
 math, display, GPIO, HAL, or wire protocol code.
 
 Configuration and calibration commits update RAM and mark `config_dirty`.
-Save and factory reset requests return `COMMAND_RESULT_STORAGE_UNAVAILABLE`;
-Stage 4A never claims that data was persisted.
+Stage 4B routes save and confirmed factory-reset requests through
+`PersistenceManager`. Acceptance is asynchronous and is not completion; final
+success, no-change, or failure is exposed by events and persistence status.

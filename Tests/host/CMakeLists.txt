@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(stage4a_host_tests C)
+project(stage4b_host_tests C)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -70,6 +70,7 @@ target_include_directories(stage4a_host_tests PRIVATE
     ../../Drivers/w02
     ../../Services/event_queue
     ../../Services/config_edit
+    ../../Services/config_store
     ../../Services/fault_manager
     ../../UI
     ../../UI/display_model
@@ -85,3 +86,27 @@ endif()
 
 enable_testing()
 add_test(NAME stage4a_host_logic COMMAND stage4a_host_tests)
+
+add_executable(stage4b_storage_tests
+    test_stage4b.c
+    fake_flash_backend.c
+    ../../App/system_context.c
+    ../../Config/default_config.c
+    ../../Domain/calibration/calibration_model.c
+    ../../Domain/measurement/metrology_config_validator.c
+    ../../Domain/measurement/weight_math.c
+    ../../Services/config_store/config_store.c
+    ../../Services/config_store/persistent_codec.c
+    ../../Services/crc32/crc32.c
+)
+target_include_directories(stage4b_storage_tests PRIVATE
+    . ../../App ../../Config ../../Domain/calibration ../../Domain/filter
+    ../../Domain/measurement ../../Domain/stability
+    ../../Services/config_store ../../Services/crc32
+)
+if(MSVC)
+    target_compile_options(stage4b_storage_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage4b_storage_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage4b_storage_logic COMMAND stage4b_storage_tests)

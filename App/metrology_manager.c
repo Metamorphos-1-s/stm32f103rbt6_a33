@@ -279,6 +279,40 @@ bool MetrologyManager_Reconfigure(const DeviceConfig *config)
     return true;
 }
 
+bool MetrologyManager_RestartAfterStorage(const DeviceConfig *config)
+{
+    WeightEngine replacement;
+    bool calibration_changed;
+    bool restore_tare;
+    int32_t zero_offset;
+
+    if (!s_initialized || (config == NULL) ||
+        (MetrologyConfig_Validate(&config->metrology, &config->stability) !=
+         METROLOGY_CONFIG_OK) ||
+        (config->calibration.calibration_valid &&
+         (CalibrationModel_Validate(&config->calibration) !=
+          CALIBRATION_RESULT_OK)))
+    {
+        return false;
+    }
+    calibration_changed = MetrologyManager_CalibrationChanged(
+        &config->calibration, &s_engine.calibration);
+    restore_tare = !calibration_changed && s_engine.zero_tare.tare_active;
+    zero_offset = calibration_changed ? 0 : s_engine.zero_tare.zero_offset_raw;
+    if (!WeightEngine_Init(&replacement, &config->metrology,
+            &config->calibration, &config->stability,
+            restore_tare ? s_engine.zero_tare.tare_weight : 0, restore_tare))
+    {
+        return false;
+    }
+    replacement.zero_tare.zero_offset_raw = zero_offset;
+    s_engine = replacement;
+    s_last_published_sequence = 0U;
+    s_last_published_stable = false;
+    MetrologyManager_SyncTare();
+    return true;
+}
+
 uint32_t MetrologyManager_GetRejectedSampleCount(void)
 {
     return s_rejected_sample_count;

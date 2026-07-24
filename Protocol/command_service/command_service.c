@@ -4,6 +4,7 @@
 #include "config_application.h"
 #include "config_edit.h"
 #include "metrology_manager.h"
+#include "persistence_manager.h"
 #include "system_context.h"
 
 #include <stddef.h>
@@ -22,6 +23,7 @@ typedef struct
 } CommandCalibrationState;
 
 static CommandCalibrationState s_calibration;
+static bool s_factory_reset_requested;
 
 static CommandResult CommandService_MapWeightAction(WeightActionResult result)
 {
@@ -49,6 +51,7 @@ void CommandService_Init(void)
 {
     (void)ConfigEdit_Init();
     (void)memset(&s_calibration, 0, sizeof(s_calibration));
+    s_factory_reset_requested = false;
 }
 
 static CommandResult CommandService_GetWeight(CommandResponse *response)
@@ -140,6 +143,18 @@ CommandResult CommandService_Execute(const CommandRequest *request,
         return COMMAND_RESULT_INVALID_ARGUMENT;
     }
     (void)memset(response, 0, sizeof(*response));
+    if (PersistenceManager_IsBusy() &&
+        ((request->id == COMMAND_ZERO) ||
+         (request->id == COMMAND_RESET_ZERO) ||
+         (request->id == COMMAND_TARE) ||
+         (request->id == COMMAND_CLEAR_TARE) ||
+         (request->id == COMMAND_BEGIN_CONFIG_EDIT) ||
+         (request->id == COMMAND_CALIBRATION_BEGIN) ||
+         (request->id == COMMAND_REQUEST_CONFIG_SAVE)))
+    {
+        response->result = COMMAND_RESULT_BUSY;
+        return COMMAND_RESULT_BUSY;
+    }
     if (s_calibration.active &&
         ((request->id == COMMAND_ZERO) ||
          (request->id == COMMAND_RESET_ZERO) ||
@@ -201,7 +216,7 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             result = COMMAND_RESULT_OK;
             break;
         case COMMAND_REQUEST_CONFIG_SAVE:
-            result = COMMAND_RESULT_STORAGE_UNAVAILABLE;
+            result = PersistenceManager_RequestSave();
             break;
         case COMMAND_CALIBRATION_BEGIN:
             if (s_calibration.active ||
@@ -263,7 +278,26 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             result = COMMAND_RESULT_ACCEPTED;
             break;
         case COMMAND_FACTORY_RESET_REQUEST:
-            result = COMMAND_RESULT_STORAGE_UNAVAILABLE;
+            if (PersistenceManager_IsBusy())
+                result = COMMAND_RESULT_BUSY;
+            else
+            {
+                s_factory_reset_requested = true;
+                result = COMMAND_RESULT_ACCEPTED;
+            }
+            break;
+        case COMMAND_FACTORY_RESET_CONFIRM:
+            if (!s_factory_reset_requested)
+                result = COMMAND_RESULT_INVALID_STATE;
+            else
+            {
+                s_factory_reset_requested = false;
+                result = PersistenceManager_RequestFactoryReset();
+            }
+            break;
+        case COMMAND_FACTORY_RESET_CANCEL:
+            s_factory_reset_requested = false;
+            result = COMMAND_RESULT_OK;
             break;
         case COMMAND_COUNT:
         default:

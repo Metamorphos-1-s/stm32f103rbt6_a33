@@ -24,7 +24,12 @@ static const char s_codes[DISPLAY_CODE_COUNT][6] = {
     {' ', 'G', 'r', 'o', 'S', 'S'},
     {' ', ' ', 't', 'A', 'r', 'E'},
     {' ', 'S', 't', 'A', 't', ' '},
-    {' ', ' ', 'E', 'r', 'r', ' '}
+    {' ', ' ', 'E', 'r', 'r', ' '},
+    {' ', 'S', 'A', 'U', 'E', ' '},
+    {'n', 'o', 'C', 'H', 'G', ' '},
+    {'E', 'r', 'r', 'S', 'A', 'U'},
+    {'r', 'E', 'S', 'E', 't', '?'},
+    {'r', 'E', 'S', 'E', 't', ' '}
 };
 
 bool DisplayCodes_Get(DisplayCode code, char text[6])

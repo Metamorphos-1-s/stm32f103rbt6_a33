@@ -9,7 +9,8 @@
 
 #include <stddef.h>
 
-ConfigApplyResult ConfigApplication_Apply(const DeviceConfig *candidate)
+static ConfigApplyResult ConfigApplication_ApplyInternal(
+    const DeviceConfig *candidate, bool allow_cs1237_change)
 {
     const SystemContext *context = SystemContext_Get();
     DeviceConfig original;
@@ -30,10 +31,11 @@ ConfigApplyResult ConfigApplication_Apply(const DeviceConfig *candidate)
         return CONFIG_APPLY_INVALID;
     }
     original = context->config;
-    if ((candidate->metrology.cs1237_data_rate !=
+    if (!allow_cs1237_change &&
+        ((candidate->metrology.cs1237_data_rate !=
          original.metrology.cs1237_data_rate) ||
         (candidate->metrology.cs1237_gain !=
-         original.metrology.cs1237_gain))
+         original.metrology.cs1237_gain)))
     {
         return CONFIG_APPLY_UNSUPPORTED_RUNTIME_CHANGE;
     }
@@ -58,4 +60,15 @@ ConfigApplyResult ConfigApplication_Apply(const DeviceConfig *candidate)
         return CONFIG_APPLY_METROLOGY_ERROR;
     }
     return CONFIG_APPLY_OK;
+}
+
+ConfigApplyResult ConfigApplication_Apply(const DeviceConfig *candidate)
+{
+    return ConfigApplication_ApplyInternal(candidate, false);
+}
+
+ConfigApplyResult ConfigApplication_ApplyFactoryDefaults(
+    const DeviceConfig *candidate)
+{
+    return ConfigApplication_ApplyInternal(candidate, true);
 }
