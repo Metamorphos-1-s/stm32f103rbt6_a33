@@ -297,6 +297,22 @@ void ModbusRegisterModel_Init(void)
     }
 }
 
+bool ModbusRegisterModel_GetPendingCommunication(CommunicationConfig *config)
+{
+    if (config == NULL) return false;
+    *config = s_pending_communication;
+    return s_pending_communication.pending_apply;
+}
+
+bool ModbusRegisterModel_CompleteCommunicationApply(
+    const CommunicationConfig *active)
+{
+    if (active == NULL) return false;
+    s_pending_communication = *active;
+    s_pending_communication.pending_apply = false;
+    return true;
+}
+
 ModbusRegisterResult ModbusRegisterModel_ReadHolding(uint16_t start_address,
     uint16_t count,uint16_t *destination)
 {
@@ -317,7 +333,9 @@ static bool CommunicationValueValid(uint16_t address,uint16_t value)
     if(address==0x01A3U)return value<=2U;
     if(address==0x01A4U)return (value==1U)||(value==2U);
     if(address==0x01A5U)return value<MODBUS_WORD_ORDER_COUNT;
+    if(address==0x01A6U)return value<=1000U;
     if(address==0x01A7U)return value!=0U;
+    if(address==0x01A8U)return value==0U;
     return true;
 }
 

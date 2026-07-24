@@ -35,7 +35,9 @@ static void TestCodec(void)
     DeviceConfig config,decoded;
     RuntimeState runtime={0},decoded_runtime;
     uint8_t bytes[PERSISTENT_V2_PAYLOAD_SIZE];
+    uint8_t roundtrip[PERSISTENT_V2_PAYLOAD_SIZE];
     uint16_t length=0U;
+    uint16_t roundtrip_length=0U;
     PersistentCodecResult result;
     DefaultConfig_Load(&config);
     runtime.weight_view=WEIGHT_VIEW_NET;
@@ -45,7 +47,9 @@ static void TestCodec(void)
     if(result==PERSISTENT_CODEC_OK)
     {
         CHECK(PersistentCodec_DecodeV2(bytes,length,&decoded,&decoded_runtime)==PERSISTENT_CODEC_OK);
-        CHECK(memcmp(&config,&decoded,sizeof(config))==0);
+        CHECK(PersistentCodec_EncodeV2(&decoded,&decoded_runtime,roundtrip,
+            sizeof(roundtrip),&roundtrip_length)==PERSISTENT_CODEC_OK);
+        CHECK(roundtrip_length==length&&memcmp(bytes,roundtrip,length)==0);
         CHECK(!decoded_runtime.migration_pending_save);
     }
     result=PersistentCodec_EncodeV1(&config,&runtime,bytes,sizeof(bytes),&length);

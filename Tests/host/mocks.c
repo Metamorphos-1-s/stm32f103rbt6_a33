@@ -17,6 +17,16 @@ static EventType s_rejected_event_type;
 static bool s_reject_event_type_once;
 static bool s_outputs[OUTPUT_COUNT];
 
+CommandResult CommunicationManager_RequestApply(void)
+{
+    return COMMAND_RESULT_NOT_IMPLEMENTED;
+}
+
+CommandResult CommunicationManager_RequestDeferredSave(void)
+{
+    return COMMAND_RESULT_STORAGE_UNAVAILABLE;
+}
+
 bool PersistenceManager_IsBusy(void)
 {
     return false;

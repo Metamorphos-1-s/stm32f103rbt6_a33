@@ -44,7 +44,7 @@ static bool MapCommand(uint16_t id, CommandId *command)
         COMMAND_CALIBRATION_CAPTURE_SPAN, COMMAND_COUNT,
         COMMAND_CALIBRATION_COMMIT, COMMAND_CALIBRATION_CANCEL,
         COMMAND_FACTORY_RESET_REQUEST, COMMAND_FACTORY_RESET_CONFIRM,
-        COMMAND_FACTORY_RESET_CANCEL
+        COMMAND_FACTORY_RESET_CANCEL, COMMAND_COMMUNICATION_APPLY
     };
     if (id >= (uint16_t)(sizeof(map) / sizeof(map[0]))) return false;
     *command = map[id];

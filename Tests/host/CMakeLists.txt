@@ -180,3 +180,38 @@ else()
     target_compile_options(stage5a_host_tests PRIVATE -Wall -Wextra -Werror)
 endif()
 add_test(NAME stage5a_host_logic COMMAND stage5a_host_tests)
+
+add_executable(stage5b_host_tests
+    test_stage5b.c
+    stage5a_model_adapters.c
+    stage5b_transport_adapters.c
+    ../../App/communication_manager.c
+    ../../Config/default_config.c
+    ../../Domain/calibration/calibration_model.c
+    ../../Domain/measurement/mass_math.c
+    ../../Domain/measurement/metrology_config_validator.c
+    ../../Domain/measurement/metrology_standard_validator.c
+    ../../Domain/measurement/unit_converter.c
+    ../../Domain/measurement/weight_math.c
+    ../../Protocol/modbus/modbus_crc16.c
+    ../../Protocol/modbus/modbus_command_mailbox.c
+    ../../Protocol/modbus/modbus_register_model.c
+    ../../Protocol/modbus/modbus_rtu_server.c
+    ../../Protocol/modbus/modbus_rtu_framer.c
+    ../../Protocol/modbus/modbus_rtu_timing.c
+    ../../Drivers/serial/rs485_tx_controller.c
+    ../../UI/key_service/key_service.c
+    ../../UI/key_service/key_map.c
+)
+target_include_directories(stage5b_host_tests PRIVATE
+    . ../../App ../../BSP ../../Config ../../Domain/calibration ../../Domain/filter
+    ../../Domain/measurement ../../Domain/stability ../../Drivers/cs1237
+    ../../Drivers/serial ../../Protocol/command_service ../../Protocol/modbus
+    ../../Services/config_store ../../Services/fault_manager
+    ../../Services/storage_power_guard ../../UI/key_service)
+if(MSVC)
+    target_compile_options(stage5b_host_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5b_host_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5b_host_logic COMMAND stage5b_host_tests)

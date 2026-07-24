@@ -6,6 +6,7 @@
 #include "bsp_time.h"
 #include "calibration_controller.h"
 #include "command_service.h"
+#include "communication_manager.h"
 #include "config_store.h"
 #include "default_config.h"
 #include "device_manager.h"
@@ -107,6 +108,7 @@ bool App_Init(void)
   (void)MetrologyManager_Init(&config, &SystemContext_Get()->runtime);
   CommandService_Init();
   ModbusRegisterModel_Init();
+  (void)CommunicationManager_Init(&config.communication);
   MenuController_Init();
   SelfTestController_Init();
   if (!KeyService_Init(&g_key_map_development_default))
@@ -169,6 +171,7 @@ void App_Run(void)
       MeasurementBridge_GetConsumedCount(),
       MeasurementBridge_GetLastBacklog(),
       MeasurementBridge_GetObservedOverrunCount());
+  CommunicationManager_Process();
   Stage2B_DiagnosticsUpdateCs1237Stats(
       MeasurementBridge_GetLastBacklog(),
       MeasurementBridge_GetObservedOverrunCount());

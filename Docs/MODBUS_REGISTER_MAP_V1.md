@@ -33,6 +33,27 @@ Active fields include compliance/unit/mask/word order, Max/e, zero policies, eac
 
 FC16 validates the whole address range before mutation. EXECUTE must be the final register when present. Active and response registers are read-only. APPLY_RAM never saves flash; SAVE is a separate mailbox command.
 
-## Transport boundary
+## RTU transport
 
-This document defines register semantics only. Stage 5A has no RTU frame parser, CRC16, UART ring buffer, slave-address processing, 3.5-character timer or RS485 direction control. RS232 and RS485 will use this same model in Stage 5B.
+Default settings are 115200 baud, 8 data bits, no parity, one stop bit, slave
+address 1, and zero response delay. EVEN/ODD uses STM32F1 9-bit word length so
+the application still has eight data bits.
+
+An ADU is `address | PDU | crc_low | crc_high`, maximum 256 bytes. CRC-16/MODBUS
+uses initial `FFFF`, reflected polynomial `A001`, and low-byte-first wire order.
+Supported functions are 03, 06, and 16. Exceptions are 01 illegal function,
+02 illegal/read-only address, 03 illegal value or malformed quantity, 04 device
+failure, and 06 busy. Bad CRC and nonmatching addresses are silent.
+
+Address 0 is broadcast. Broadcasts never receive a response and default policy
+0 executes no FC06/FC16 writes; broadcast FC03 is also ignored.
+
+Write communication staging registers, then execute mailbox command ID 24
+(`COMMUNICATION_APPLY`). The response uses the old address and serial settings;
+new settings become active only after TX DMA, USART TC, and RS485 DE release.
+APPLY changes RAM only. SAVE remains mailbox command ID 13 and is asynchronous:
+its acceptance response completes before flash maintenance starts.
+
+RS232 and RS485 share USART2 bytes, address, CRC, functions, and this register
+map. Firmware does not read the external interface selector. Modbus reference
+`40001` corresponds to protocol holding-register offset `0000`.

@@ -46,6 +46,7 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     App/calibration_controller.c
+    App/communication_manager.c
     App/config_application.c
     App/app_main.c
     App/device_manager.c
@@ -59,15 +60,18 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     BSP/bsp_board.c
     BSP/bsp_flash.c
     BSP/bsp_power_monitor.c
+    BSP/bsp_rtu_timer.c
     BSP/bsp_gpio.c
     BSP/bsp_time.c
     BSP/bsp_uart.c
+    BSP/bsp_uart_dma.c
     Config/default_config.c
     Diagnostics/stage2a_driver_diagnostics.c
     Diagnostics/stage2b_board_diagnostics.c
     Diagnostics/stage2b_display_font.c
     Diagnostics/stage3_metrology_diagnostics.c
     Diagnostics/stage4b_storage_diagnostics.c
+    Diagnostics/stage5b_modbus_diagnostics.c
     Domain/calibration/calibration_model.c
     Domain/calibration/raw_calibration_stability.c
     Domain/filter/weight_filter.c
@@ -83,12 +87,18 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Drivers/battery_adc/battery_adc.c
     Drivers/cs1237/cs1237.c
     Drivers/output_gpio/output_gpio.c
+    Drivers/serial/rs485_tx_controller.c
+    Drivers/serial/uart2_dma_transport.c
     Drivers/tm1628/tm1628.c
     Drivers/tm1628/tm1628_board_map.c
     Drivers/w02/w02_pwrkey.c
     Protocol/command_service/command_service.c
     Protocol/modbus/modbus_command_mailbox.c
     Protocol/modbus/modbus_register_model.c
+    Protocol/modbus/modbus_crc16.c
+    Protocol/modbus/modbus_rtu_timing.c
+    Protocol/modbus/modbus_rtu_framer.c
+    Protocol/modbus/modbus_rtu_server.c
     Services/config_edit/config_edit.c
     Services/config_store/config_store.c
     Services/config_store/persistent_codec.c
@@ -122,6 +132,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Drivers/battery_adc
     Drivers/cs1237
     Drivers/output_gpio
+    Drivers/serial
     Drivers/tm1628
     Drivers/w02
     Services/config_store

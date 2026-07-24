@@ -1,5 +1,7 @@
 #include "command_service.h"
 
+#include "communication_manager.h"
+
 #include "calibration_model.h"
 #include "config_application.h"
 #include "config_edit.h"
@@ -233,7 +235,9 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             result = COMMAND_RESULT_OK;
             break;
         case COMMAND_REQUEST_CONFIG_SAVE:
-            result = PersistenceManager_RequestSave();
+            result = (request->source == COMMAND_SOURCE_MODBUS) ?
+                CommunicationManager_RequestDeferredSave() :
+                PersistenceManager_RequestSave();
             break;
         case COMMAND_CALIBRATION_BEGIN:
             if (s_calibration.active ||
@@ -346,7 +350,7 @@ CommandResult CommandService_Execute(const CommandRequest *request,
                 COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
             break;
         case COMMAND_COMMUNICATION_APPLY:
-            result = COMMAND_RESULT_NOT_IMPLEMENTED;
+            result = CommunicationManager_RequestApply();
             break;
         case COMMAND_COUNT:
         default:

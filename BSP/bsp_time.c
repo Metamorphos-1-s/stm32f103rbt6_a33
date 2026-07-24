@@ -76,6 +76,11 @@ uint32_t BSP_TimeNowCycles(void)
     return DWT->CYCCNT;
 }
 
+uint32_t BSP_TimeNowUs(void)
+{
+    return (s_cycles_per_us == 0U) ? 0U : (DWT->CYCCNT / s_cycles_per_us);
+}
+
 uint32_t BSP_InterruptSaveAndDisable(void)
 {
     uint32_t primask = __get_PRIMASK();
