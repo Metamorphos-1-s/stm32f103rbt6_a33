@@ -88,6 +88,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Drivers/cs1237/cs1237.c
     Drivers/output_gpio/output_gpio.c
     Drivers/serial/rs485_tx_controller.c
+    Drivers/serial/uart2_dma_position.c
     Drivers/serial/uart2_dma_transport.c
     Drivers/tm1628/tm1628.c
     Drivers/tm1628/tm1628_board_map.c

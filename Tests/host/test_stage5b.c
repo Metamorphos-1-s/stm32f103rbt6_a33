@@ -8,6 +8,7 @@
 #include "rs485_tx_controller.h"
 #include "stage5a_model_adapters.h"
 #include "stage5b_transport_adapters.h"
+#include "uart2_dma_position.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -190,6 +191,47 @@ static void TestFramerAndRs485(void)
     Rs485TxController_Process();
     Rs485TxController_Process();
     CHECK(!Stage5B_IsDeAsserted() && Rs485TxController_TakeCompleted());
+
+    Stage5B_TransportReset();
+    Rs485TxController_Init();
+    CHECK(Rs485TxController_Start(tx,sizeof(tx)));
+    Rs485TxController_Process();
+    Stage5B_SetNowUs(10U);
+    Rs485TxController_Process();
+    Stage5B_SetNowUs(200001U);
+    Rs485TxController_Process();
+    CHECK(Rs485TxController_GetState()==RS485_TX_ERROR);
+    CHECK(Rs485TxController_GetLastError()==RS485_TX_ERROR_TIMEOUT);
+
+    Stage5B_TransportReset();
+    Stage5B_SetNowUs(UINT32_MAX-5U);
+    Rs485TxController_Init();
+    CHECK(Rs485TxController_Start(tx,sizeof(tx)));
+    Rs485TxController_Process();
+    Stage5B_SetNowUs(4U);
+    Rs485TxController_Process();
+    CHECK(Rs485TxController_GetState()==RS485_TX_DMA_ACTIVE);
+    CHECK(Rs485TxController_GetLastError()==RS485_TX_ERROR_NONE);
+}
+
+static void TestDmaPositionResolution(void)
+{
+    uint32_t resolved = 0U;
+    bool compensated = false;
+    CHECK(Uart2DmaPosition_Resolve(1000U,0U,1008U,1024U,
+                                  &resolved,&compensated));
+    CHECK(resolved==1008U && !compensated);
+    CHECK(Uart2DmaPosition_Resolve(1020U,0U,4U,1024U,
+                                  &resolved,&compensated));
+    CHECK(resolved==1028U && compensated);
+    CHECK(Uart2DmaPosition_Resolve(2040U,1U,8U,1024U,
+                                  &resolved,&compensated));
+    CHECK(resolved==2056U && compensated);
+    CHECK(!Uart2DmaPosition_Resolve(4096U,0U,4U,1024U,
+                                   &resolved,&compensated));
+    CHECK(Uart2DmaPosition_Resolve(0xFFFFFFF0U,0x00400000U,16U,1024U,
+                                  &resolved,&compensated));
+    CHECK(resolved==16U && !compensated);
 }
 
 static void TestDeterministicBadFrames(void)
@@ -229,6 +271,7 @@ int main(void)
     TestCommunicationManagerStart();
     TestServer();
     TestFramerAndRs485();
+    TestDmaPositionResolution();
     TestDeterministicBadFrames();
     CHECK(checks >= 128U);
     if(failures==0U) printf("Stage 5B host tests passed (%u checks).\n",checks);

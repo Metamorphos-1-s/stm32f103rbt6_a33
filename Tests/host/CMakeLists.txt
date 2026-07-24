@@ -200,6 +200,7 @@ add_executable(stage5b_host_tests
     ../../Protocol/modbus/modbus_rtu_framer.c
     ../../Protocol/modbus/modbus_rtu_timing.c
     ../../Drivers/serial/rs485_tx_controller.c
+    ../../Drivers/serial/uart2_dma_position.c
     ../../UI/key_service/key_service.c
     ../../UI/key_service/key_map.c
 )

@@ -1,6 +1,7 @@
 #include "uart2_dma_transport.h"
 
 #include "bsp_time.h"
+#include "uart2_dma_position.h"
 
 #include <stddef.h>
 #include <string.h>
@@ -17,16 +18,6 @@ static bool s_receive_error;
 static bool s_initialized;
 static bool s_suspended;
 static uint8_t s_recovery_failures;
-
-static uint32_t ProducerAbsolute(const BspUart2DmaEvents *events,
-                                 uint16_t position)
-{
-    uint32_t wraps = events->rx_complete_count;
-    uint32_t absolute = wraps * UART2_RX_DMA_BUFFER_SIZE + position;
-    if ((position == 0U) && (events->rx_complete_count != 0U))
-        absolute = wraps * UART2_RX_DMA_BUFFER_SIZE;
-    return absolute;
-}
 
 bool Uart2DmaTransport_Init(const BspUart2Config *config)
 {
@@ -54,14 +45,20 @@ void Uart2DmaTransport_Process(void)
     BspUart2DmaEvents events;
     uint16_t position;
     uint32_t producer;
+    bool wrap_race_compensated;
     if (!s_initialized || s_suspended) return;
     BSP_Uart2DmaGetEvents(&events);
     position = BSP_Uart2DmaGetRxPosition(UART2_RX_DMA_BUFFER_SIZE);
-    producer = ProducerAbsolute(&events, position);
-    if (producer < s_producer_absolute)
+    if (!Uart2DmaPosition_Resolve(s_producer_absolute,
+        events.rx_complete_count, position, UART2_RX_DMA_BUFFER_SIZE,
+        &producer, &wrap_race_compensated))
     {
         s_receive_error = true;
         producer = s_producer_absolute;
+    }
+    else if (wrap_race_compensated)
+    {
+        ++s_statistics.rx_wrap_race_recovery_count;
     }
     s_producer_absolute = producer;
     if ((producer - s_consumer_absolute) > UART2_RX_DMA_BUFFER_SIZE)

@@ -26,6 +26,7 @@ bool BSP_TimeInitMicrosecondCounter(void);
 void BSP_DelayUs(uint32_t delay_us);
 uint32_t BSP_TimeNowCycles(void);
 uint32_t BSP_TimeNowUs(void);
+bool BSP_TimeUsToCycles(uint32_t interval_us, uint32_t *interval_cycles);
 uint32_t BSP_InterruptSaveAndDisable(void);
 void BSP_InterruptRestore(uint32_t primask);
 

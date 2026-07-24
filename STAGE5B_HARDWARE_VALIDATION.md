@@ -5,9 +5,9 @@
 - Firmware baseline: `6954a90d7de9996fcc4800cf97c181a4dcd367f0` (`6954a90 阶段5B`)
 - Register map: `0x0100`; firmware register: `0x050A`; persistent Schema V2: `2`
 - Available equipment stated by the task: Windows PC, ST-Link, USB-RS232, USB-RS485, Python 3, STM32CubeProgrammer, manual power switching
-- This delivery adds PC tools, tests and documentation only. Firmware files are unchanged.
+- This delivery adds PC tools, tests, diagnostics, and the firmware fixes described below.
 
-The Python source compiles and the offline CRC/frame/map/slot tests passed. A clean Release build also passed: FLASH 51,736 bytes, RAM 10,608 bytes, ELF SHA-256 `B114BB895D4C03442587F2D1D6560E3C36EF3FB24ADCA567CBD0088E275CCCA4`. STM32CubeProgrammer 2.19.0 programmed and verified this ELF through ST-Link V2 (`V2J47S7`) at 3.29 V, then reset the MCU successfully. The operation erased application sectors 0 through 50; no Mass Erase was issued and the A/B configuration region was not erased. After the board connection was adjusted, COM5 returned and read-only address-1 probes at 115200 N1 validated CRC, map `0x0100`, firmware `0x050A`, Schema V2, power-safe state and sample data. A post-reset 100-request smoke run passed with zero errors. Two zero-tolerance soak attempts each stopped on one timeout. A third classified run completed 4,946 normal logical requests and recorded three timeouts; each timeout recovered on the first retry of the same register in the same open serial session. The run then stopped on one truncated response: the expected 7-byte FC03 response ended after byte 6, missing the final CRC byte. SWD Hot Plug capture after the run found `framer.transport_error_count=5` (up by three from the prior snapshot), zero UART/DMA hardware errors, `server.tx_error_count=1`, and one fewer TX completion/response than valid request. Framer/server were idle and DMA read/write positions matched. No Modbus write, SAVE, or manual power-cycle test was performed.
+The Python source compiles and the offline CRC/frame/map/slot tests passed. The original Release build exposed repeatable RX and TX failures under stress: stale DMA wrap sampling discarded requests, while dividing DWT cycles before elapsed-time subtraction caused a false RS485 TX timeout near the 16 MHz cycle-counter wrap at about 268 seconds. Both defects were fixed and covered by 1,094 Stage 5B host checks, including the DMA absolute counter's natural 32-bit rollover. The final Release build used 51,944 bytes of FLASH and 10,624 bytes of RAM; ELF SHA-256 is `FDB15806A72C02FC4766B98E7A0F6C6D2DB57905BAB7ED91DDB28655034D0400`. STM32CubeProgrammer 2.19.0 programmed and verified it through normal SWD with software reset because NRST was not connected. The final zero-tolerance 600-second run completed 5,261 logical requests with zero timeout, CRC, exception, or retry. SWD captured 15,787 valid/addressed FC03 requests and exactly 15,787 completed responses, five compensated DMA wrap races, zero framer transport errors, zero TX start/timeout errors, zero UART/DMA errors, idle state machines, and matching DMA read/write positions. After the rollover boundary adjustment, a further probe and 100-read smoke test passed; its SWD snapshot captured 108/108 completed FC03 responses and all error counters at zero. No Modbus write, SAVE, or manual power-cycle test was performed.
 
 ## Setup
 
@@ -35,8 +35,8 @@ Build and flash with `build_and_flash.ps1 -AllowFlash`. This records the Git sta
 | SAVE and storage state | `save --allow-write --allow-flash` | NOT RUN |
 | A/B CRC, commit and sequence | dump before/after, then `parse_config_slots.py` | NOT RUN |
 | Manual power-cycle recovery | `save --manual-power-cycle` | NOT RUN |
-| Long polling | two zero-tolerance plus one classified run | FAIL: repeatable transient RX drops and one truncated TX response |
-| DMA/UART/server counters | SWD Hot Plug snapshots after stress test | CAPTURED; RX transport errors and one TX error found |
+| Long polling | final 600 s zero-tolerance run after fixes | PASS: 5261/5261 logical requests; zero timeout/CRC/exception |
+| DMA/UART/server counters | SWD Hot Plug snapshots after stress test | PASS after fixes; final snapshots have zero error counters |
 
 The current register model has no battery-voltage or hardware-revision register. Probe reports both as unavailable instead of inventing values. The complete Stage 5B DMA/UART/server diagnostic snapshot is also not Modbus-mapped, so it must be captured over SWD.
 
@@ -81,11 +81,19 @@ Generated probe reports:
 - `Tools/stage5b_hw/reports/20260725_020147_unknown/` (second post-timeout probe passed without reset)
 - `Tools/stage5b_hw/reports/20260725_021341_rs485/` (classified soak: 3 retry-recovered timeouts, 1 truncated response)
 - `Tools/stage5b_hw/reports/20260725_swd_after_classified_soak/` (post-failure Hot Plug RAM dump and parsed counters)
+- `Tools/stage5b_hw/reports/20260725_024156_rs485/` (RX-only fix: zero RX timeout, TX cycle-wrap failure reproduced)
+- `Tools/stage5b_hw/reports/20260725_swd_after_rx_fix_soak/` (RX fix verification and TX timeout classification)
+- `Tools/stage5b_hw/reports/20260725_025028_rs485/` (final RX/TX fixes: 600-second zero-tolerance PASS)
+- `Tools/stage5b_hw/reports/20260725_swd_after_rx_tx_fix_pass/` (final Hot Plug RAM dump and parsed zero-error counters)
+- `Tools/stage5b_hw/reports/20260725_dma_counter_wrap_flash/` (final rollover-boundary build programmed and verified)
+- `Tools/stage5b_hw/reports/20260725_030641_rs485/` (final read-only probe passed)
+- `Tools/stage5b_hw/reports/20260725_030650_rs485/` (final 100-read smoke passed)
+- `Tools/stage5b_hw/reports/20260725_swd_after_counter_wrap_smoke/` (final smoke Hot Plug snapshot; 108/108 responses and zero errors)
 
-## Confirmed defects from stress diagnostics
+## Resolved defects from stress diagnostics
 
-1. RX producer sampling is not atomic across DMA wrap. `Uart2DmaTransport_Process()` snapshots `rx_complete_count` and then reads the DMA remaining counter separately. A wrap between those operations can combine the old wrap count with the new low position, making `producer < s_producer_absolute`. The transport then flags a receive error and the framer discards the pending request. The three newly observed framer transport errors match the three classified timeouts, while all UART/DMA hardware error counters remain zero.
-2. One FC03 response was truncated after six of seven bytes. The simultaneous server TX error and missing TX completion/response counter confirm a target-side TX completion failure; exact DE/UART/DMA timing still requires a logic analyzer.
+1. RX producer sampling was not atomic across DMA wrap. `Uart2DmaPosition_Resolve()` now compensates a single stale wrap when the apparent regression is less than one DMA buffer, rejects genuine larger regressions, and treats the absolute byte count modulo 32 bits so long-running operation continues across its natural rollover. The final long-run SWD snapshot recorded five successful compensations and zero transport errors.
+2. `BSP_TimeNowUs()` divided `DWT->CYCCNT` before elapsed-time subtraction. At the hardware cycle-counter wrap, the RS485 controller interpreted the discontinuous microsecond value as more than 200 ms elapsed and aborted an active response. The controller now uses raw cycles plus wrap-safe `BSP_TimeCyclesElapsed()` and explicit microsecond-to-cycle conversion. The final 600-second run crossed at least two hardware cycle wraps with zero TX errors.
 
 Before repeating, identify whether COM5 is the RS232 or RS485 adapter, select the matching board switch, verify common ground, and for RS485 verify A/B polarity. Do not infer the interface type from the CH340 descriptor.
 

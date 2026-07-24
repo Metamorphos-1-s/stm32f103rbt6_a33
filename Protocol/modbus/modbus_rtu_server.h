@@ -33,6 +33,8 @@ typedef struct
     uint32_t exception_response_count;
     uint32_t tx_response_count;
     uint32_t tx_error_count;
+    uint32_t tx_start_error_count;
+    uint32_t tx_timeout_error_count;
     uint32_t protocol_violation_count;
     uint8_t last_request_address;
     uint8_t last_function;

@@ -19,6 +19,7 @@ typedef struct
     uint32_t rx_wrap_count;
     uint32_t rx_dma_error_count;
     uint32_t rx_overrun_count;
+    uint32_t rx_wrap_race_recovery_count;
     uint32_t uart_parity_error_count;
     uint32_t uart_frame_error_count;
     uint32_t uart_noise_error_count;

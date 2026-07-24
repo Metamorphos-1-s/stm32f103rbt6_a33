@@ -3,7 +3,8 @@ param(
     [string]$Programmer = "",
     [string]$LogPath = "flash.log",
     [switch]$AllowFlash,
-    [switch]$Yes
+    [switch]$Yes,
+    [switch]$NoNrst
 )
 $ErrorActionPreference = "Stop"
 if (-not $AllowFlash) { throw "Flashing requires -AllowFlash" }
@@ -35,7 +36,13 @@ $metadata = [ordered]@{
     programmer = $Programmer
     mass_erase = $false
     config_region_preserved = $true
+    nrst_connected = (-not $NoNrst)
 }
 $metadata | ConvertTo-Json | Set-Content -Encoding UTF8 ([IO.Path]::ChangeExtension($logFullPath, ".json"))
-& $Programmer -c port=SWD mode=UR reset=HWrst -w $elfPath -v -rst 2>&1 | Tee-Object -FilePath $logFullPath
+$connectArgs = if ($NoNrst) {
+    @("-c", "port=SWD", "mode=Normal", "reset=SWrst")
+} else {
+    @("-c", "port=SWD", "mode=UR", "reset=HWrst")
+}
+& $Programmer @connectArgs -w $elfPath -v -rst 2>&1 | Tee-Object -FilePath $logFullPath
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

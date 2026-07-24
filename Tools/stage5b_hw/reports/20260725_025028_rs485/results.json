@@ -1,0 +1,29 @@
+[
+  {
+    "name": "soak",
+    "status": "PASS",
+    "detail": "5261 requests",
+    "data": {
+      "requests": 5261,
+      "successes": 5261,
+      "timeouts": 0,
+      "crc_errors": 0,
+      "exceptions": 0,
+      "retry_recoveries": 0,
+      "retry_failures": 0,
+      "timeout_details": [],
+      "sample_sequence_growth": 6108,
+      "latency_min_ms": 43.7547,
+      "latency_max_ms": 45.4563,
+      "latency_mean_ms": 44.241740486599504,
+      "latency_p50_ms": 44.1371,
+      "latency_p95_ms": 44.5919,
+      "latency_p99_ms": 45.1295
+    }
+  },
+  {
+    "name": "DMA/UART/server counters",
+    "status": "NOT VERIFIED WITH CURRENT EQUIPMENT",
+    "detail": "not mapped to Modbus; inspect Stage5BModbusDiagnosticSnapshot over SWD"
+  }
+]

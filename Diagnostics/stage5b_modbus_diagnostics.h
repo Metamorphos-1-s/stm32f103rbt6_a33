@@ -40,8 +40,11 @@ typedef struct
     uint32_t exception_response_count;
     uint32_t tx_response_count;
     uint32_t tx_error_count;
+    uint32_t tx_start_error_count;
+    uint32_t tx_timeout_error_count;
     uint32_t uart_error_count;
     uint32_t dma_overrun_count;
+    uint32_t dma_wrap_race_recovery_count;
     uint8_t last_request_address;
     uint8_t last_function;
     uint8_t last_exception;

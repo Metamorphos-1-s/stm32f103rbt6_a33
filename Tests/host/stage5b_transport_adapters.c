@@ -18,6 +18,13 @@ static Uart2DmaTransportStatistics s_transport;
 
 uint32_t BSP_TimeNowMs(void) { return 0U; }
 uint32_t BSP_TimeNowUs(void) { return s_now_us; }
+uint32_t BSP_TimeNowCycles(void) { return s_now_us; }
+bool BSP_TimeUsToCycles(uint32_t interval_us, uint32_t *interval_cycles)
+{
+    if (interval_cycles == NULL) return false;
+    *interval_cycles = interval_us;
+    return true;
+}
 
 void Stage5B_TransportReset(void)
 {

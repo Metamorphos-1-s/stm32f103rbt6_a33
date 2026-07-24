@@ -905,6 +905,8 @@ Discarded input sections
  .text          0x00000000        0x0 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_time.c.obj
  .data          0x00000000        0x0 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_time.c.obj
  .bss           0x00000000        0x0 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_time.c.obj
+ .text.BSP_TimeNowUs
+                0x00000000       0x18 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_time.c.obj
  .text          0x00000000        0x0 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart.c.obj
  .data          0x00000000        0x0 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart.c.obj
  .bss           0x00000000        0x0 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart.c.obj
@@ -990,7 +992,7 @@ Discarded input sections
  .data          0x00000000        0x0 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage5b_modbus_diagnostics.c.obj
  .bss           0x00000000        0x0 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage5b_modbus_diagnostics.c.obj
  .text.Stage5BModbusDiagnostics_Get
-                0x00000000      0x108 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage5b_modbus_diagnostics.c.obj
+                0x00000000      0x11a CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage5b_modbus_diagnostics.c.obj
  .comment       0x00000000       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage5b_modbus_diagnostics.c.obj
  .ARM.attributes
                 0x00000000       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage5b_modbus_diagnostics.c.obj
@@ -1086,6 +1088,9 @@ Discarded input sections
  .bss           0x00000000        0x0 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
  .text.Rs485TxController_IsBusy
                 0x00000000       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+ .text          0x00000000        0x0 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_position.c.obj
+ .data          0x00000000        0x0 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_position.c.obj
+ .bss           0x00000000        0x0 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_position.c.obj
  .text          0x00000000        0x0 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
  .data          0x00000000        0x0 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
  .bss           0x00000000        0x0 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
@@ -1739,6 +1744,7 @@ LOAD CMakeFiles/stm32f103rbt6_a33.dir/Drivers/battery_adc/battery_adc.c.obj
 LOAD CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
 LOAD CMakeFiles/stm32f103rbt6_a33.dir/Drivers/output_gpio/output_gpio.c.obj
 LOAD CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+LOAD CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_position.c.obj
 LOAD CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
 LOAD CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
 LOAD CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj
@@ -1798,7 +1804,7 @@ LOAD E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/
                 0x08000000                g_pfnVectors
                 0x0800010c                        . = ALIGN (0x4)
 
-.text           0x08000110     0xc674
+.text           0x08000110     0xc748
                 0x08000110                        . = ALIGN (0x4)
  *(.text)
  .text          0x08000110       0x40 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
@@ -2577,955 +2583,963 @@ LOAD E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/
  .text.BSP_TimeNowCycles
                 0x08005424        0xc CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_time.c.obj
                 0x08005424                BSP_TimeNowCycles
- .text.BSP_TimeNowUs
-                0x08005430       0x18 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_time.c.obj
-                0x08005430                BSP_TimeNowUs
+ .text.BSP_TimeUsToCycles
+                0x08005430       0x28 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_time.c.obj
+                0x08005430                BSP_TimeUsToCycles
  .text.BSP_InterruptSaveAndDisable
-                0x08005448        0x8 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_time.c.obj
-                0x08005448                BSP_InterruptSaveAndDisable
+                0x08005458        0x8 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_time.c.obj
+                0x08005458                BSP_InterruptSaveAndDisable
  .text.BSP_InterruptRestore
-                0x08005450        0x6 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_time.c.obj
-                0x08005450                BSP_InterruptRestore
- *fill*         0x08005456        0x2 
+                0x08005460        0x6 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_time.c.obj
+                0x08005460                BSP_InterruptRestore
+ *fill*         0x08005466        0x2 
  .text.IsConfigValid
-                0x08005458       0x48 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x08005468       0x48 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
  .text.BSP_Uart2DmaStartRx
-                0x080054a0       0x34 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x080054a0                BSP_Uart2DmaStartRx
+                0x080054b0       0x34 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x080054b0                BSP_Uart2DmaStartRx
  .text.BSP_Uart2DmaStartTx
-                0x080054d4       0x3c CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x080054d4                BSP_Uart2DmaStartTx
+                0x080054e4       0x3c CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x080054e4                BSP_Uart2DmaStartTx
  .text.BSP_Uart2DmaGetRxPosition
-                0x08005510       0x30 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x08005510                BSP_Uart2DmaGetRxPosition
+                0x08005520       0x30 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x08005520                BSP_Uart2DmaGetRxPosition
  .text.BSP_Uart2DmaStopRx
-                0x08005540       0x18 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x08005540                BSP_Uart2DmaStopRx
+                0x08005550       0x18 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x08005550                BSP_Uart2DmaStopRx
  .text.BSP_Uart2DmaAbortTx
-                0x08005558       0x20 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x08005558                BSP_Uart2DmaAbortTx
+                0x08005568       0x20 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x08005568                BSP_Uart2DmaAbortTx
  .text.BSP_Uart2IsTxCompletelyFinished
-                0x08005578       0x1c CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x08005578                BSP_Uart2IsTxCompletelyFinished
+                0x08005588       0x1c CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x08005588                BSP_Uart2IsTxCompletelyFinished
  .text.BSP_Uart2EnableIdleInterrupt
-                0x08005594       0x30 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x08005594                BSP_Uart2EnableIdleInterrupt
+                0x080055a4       0x30 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x080055a4                BSP_Uart2EnableIdleInterrupt
  .text.BSP_Uart2DmaInit
-                0x080055c4       0x6c CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x080055c4                BSP_Uart2DmaInit
+                0x080055d4       0x6c CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x080055d4                BSP_Uart2DmaInit
  .text.BSP_Rs485SetTransmit
-                0x08005630        0x4 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x08005630                BSP_Rs485SetTransmit
+                0x08005640        0x4 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x08005640                BSP_Rs485SetTransmit
  .text.BSP_Uart2DmaGetEvents
-                0x08005634       0x28 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x08005634                BSP_Uart2DmaGetEvents
+                0x08005644       0x28 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x08005644                BSP_Uart2DmaGetEvents
  .text.BSP_Uart2IrqHandler
-                0x0800565c       0x7c CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x0800565c                BSP_Uart2IrqHandler
+                0x0800566c       0x7c CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x0800566c                BSP_Uart2IrqHandler
  .text.BSP_Uart2RxDmaIrqHandler
-                0x080056d8        0xc CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x080056d8                BSP_Uart2RxDmaIrqHandler
+                0x080056e8        0xc CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x080056e8                BSP_Uart2RxDmaIrqHandler
  .text.BSP_Uart2TxDmaIrqHandler
-                0x080056e4        0xc CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x080056e4                BSP_Uart2TxDmaIrqHandler
+                0x080056f4        0xc CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x080056f4                BSP_Uart2TxDmaIrqHandler
  .text.HAL_UART_RxHalfCpltCallback
-                0x080056f0       0x18 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x080056f0                HAL_UART_RxHalfCpltCallback
+                0x08005700       0x18 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x08005700                HAL_UART_RxHalfCpltCallback
  .text.HAL_UART_RxCpltCallback
-                0x08005708       0x18 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x08005708                HAL_UART_RxCpltCallback
+                0x08005718       0x18 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x08005718                HAL_UART_RxCpltCallback
  .text.HAL_UART_TxCpltCallback
-                0x08005720       0x18 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x08005720                HAL_UART_TxCpltCallback
+                0x08005730       0x18 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x08005730                HAL_UART_TxCpltCallback
  .text.HAL_UART_ErrorCallback
-                0x08005738       0x30 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
-                0x08005738                HAL_UART_ErrorCallback
+                0x08005748       0x30 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+                0x08005748                HAL_UART_ErrorCallback
  .text.DefaultConfig_Load
-                0x08005768       0xe8 CMakeFiles/stm32f103rbt6_a33.dir/Config/default_config.c.obj
-                0x08005768                DefaultConfig_Load
+                0x08005778       0xe8 CMakeFiles/stm32f103rbt6_a33.dir/Config/default_config.c.obj
+                0x08005778                DefaultConfig_Load
  .text.Stage2B_DiagnosticsProcess
-                0x08005850        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage2b_board_diagnostics.c.obj
-                0x08005850                Stage2B_DiagnosticsProcess
+                0x08005860        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage2b_board_diagnostics.c.obj
+                0x08005860                Stage2B_DiagnosticsProcess
  .text.Stage2B_DiagnosticsEnterFault
-                0x08005852        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage2b_board_diagnostics.c.obj
-                0x08005852                Stage2B_DiagnosticsEnterFault
+                0x08005862        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage2b_board_diagnostics.c.obj
+                0x08005862                Stage2B_DiagnosticsEnterFault
  .text.Stage2B_DiagnosticsSetRawKeyMask
-                0x08005854       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage2b_board_diagnostics.c.obj
-                0x08005854                Stage2B_DiagnosticsSetRawKeyMask
+                0x08005864       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage2b_board_diagnostics.c.obj
+                0x08005864                Stage2B_DiagnosticsSetRawKeyMask
  .text.Stage2B_DiagnosticsUpdateCs1237Stats
-                0x08005864        0xc CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage2b_board_diagnostics.c.obj
-                0x08005864                Stage2B_DiagnosticsUpdateCs1237Stats
+                0x08005874        0xc CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage2b_board_diagnostics.c.obj
+                0x08005874                Stage2B_DiagnosticsUpdateCs1237Stats
  .text.Stage3MetrologyDiagnostics_Update
-                0x08005870       0x78 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage3_metrology_diagnostics.c.obj
-                0x08005870                Stage3MetrologyDiagnostics_Update
+                0x08005880       0x78 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage3_metrology_diagnostics.c.obj
+                0x08005880                Stage3MetrologyDiagnostics_Update
  .text.Stage4BStorageDiagnostics_Update
-                0x080058e8       0xa4 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage4b_storage_diagnostics.c.obj
-                0x080058e8                Stage4BStorageDiagnostics_Update
+                0x080058f8       0xa4 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage4b_storage_diagnostics.c.obj
+                0x080058f8                Stage4BStorageDiagnostics_Update
  .text.CalibrationModel_BuildMass
-                0x0800598c       0x98 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/calibration_model.c.obj
-                0x0800598c                CalibrationModel_BuildMass
+                0x0800599c       0x98 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/calibration_model.c.obj
+                0x0800599c                CalibrationModel_BuildMass
  .text.CalibrationModel_Build
-                0x08005a24       0x12 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/calibration_model.c.obj
-                0x08005a24                CalibrationModel_Build
+                0x08005a34       0x12 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/calibration_model.c.obj
+                0x08005a34                CalibrationModel_Build
  .text.CalibrationModel_Validate
-                0x08005a36       0x76 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/calibration_model.c.obj
-                0x08005a36                CalibrationModel_Validate
+                0x08005a46       0x76 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/calibration_model.c.obj
+                0x08005a46                CalibrationModel_Validate
  .text.CalibrationModel_ConvertMass
-                0x08005aac       0x62 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/calibration_model.c.obj
-                0x08005aac                CalibrationModel_ConvertMass
+                0x08005abc       0x62 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/calibration_model.c.obj
+                0x08005abc                CalibrationModel_ConvertMass
  .text.CalibrationModel_GetSensorDirection
-                0x08005b0e       0x22 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/calibration_model.c.obj
-                0x08005b0e                CalibrationModel_GetSensorDirection
+                0x08005b1e       0x22 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/calibration_model.c.obj
+                0x08005b1e                CalibrationModel_GetSensorDirection
  .text.RawCalibrationStability_Init
-                0x08005b30       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/raw_calibration_stability.c.obj
-                0x08005b30                RawCalibrationStability_Init
+                0x08005b40       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/raw_calibration_stability.c.obj
+                0x08005b40                RawCalibrationStability_Init
  .text.RawCalibrationStability_Reset
-                0x08005b60       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/raw_calibration_stability.c.obj
-                0x08005b60                RawCalibrationStability_Reset
+                0x08005b70       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/raw_calibration_stability.c.obj
+                0x08005b70                RawCalibrationStability_Reset
  .text.RawCalibrationStability_Process
-                0x08005b78       0xa8 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/raw_calibration_stability.c.obj
-                0x08005b78                RawCalibrationStability_Process
+                0x08005b88       0xa8 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/raw_calibration_stability.c.obj
+                0x08005b88                RawCalibrationStability_Process
  .text.RawCalibrationStability_GetAverage
-                0x08005c20       0x56 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/raw_calibration_stability.c.obj
-                0x08005c20                RawCalibrationStability_GetAverage
+                0x08005c30       0x56 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/raw_calibration_stability.c.obj
+                0x08005c30                RawCalibrationStability_GetAverage
  .text.WeightFilter_ProcessIir
-                0x08005c76       0x72 CMakeFiles/stm32f103rbt6_a33.dir/Domain/filter/weight_filter.c.obj
+                0x08005c86       0x72 CMakeFiles/stm32f103rbt6_a33.dir/Domain/filter/weight_filter.c.obj
  .text.WeightFilter_Init
-                0x08005ce8       0x3e CMakeFiles/stm32f103rbt6_a33.dir/Domain/filter/weight_filter.c.obj
-                0x08005ce8                WeightFilter_Init
+                0x08005cf8       0x3e CMakeFiles/stm32f103rbt6_a33.dir/Domain/filter/weight_filter.c.obj
+                0x08005cf8                WeightFilter_Init
  .text.WeightFilter_Process
-                0x08005d26      0x14e CMakeFiles/stm32f103rbt6_a33.dir/Domain/filter/weight_filter.c.obj
-                0x08005d26                WeightFilter_Process
+                0x08005d36      0x14e CMakeFiles/stm32f103rbt6_a33.dir/Domain/filter/weight_filter.c.obj
+                0x08005d36                WeightFilter_Process
  .text.WeightFilter_IsReady
-                0x08005e74       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Domain/filter/weight_filter.c.obj
-                0x08005e74                WeightFilter_IsReady
+                0x08005e84       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Domain/filter/weight_filter.c.obj
+                0x08005e84                WeightFilter_IsReady
  .text.WeightFilter_GetAcceptedCount
-                0x08005e88       0x12 CMakeFiles/stm32f103rbt6_a33.dir/Domain/filter/weight_filter.c.obj
-                0x08005e88                WeightFilter_GetAcceptedCount
+                0x08005e98       0x12 CMakeFiles/stm32f103rbt6_a33.dir/Domain/filter/weight_filter.c.obj
+                0x08005e98                WeightFilter_GetAcceptedCount
  .text.FilterValid
-                0x08005e9a       0x26 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/metrology_config_validator.c.obj
+                0x08005eaa       0x26 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/metrology_config_validator.c.obj
  .text.MetrologyConfig_Validate
-                0x08005ec0      0x1ba CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/metrology_config_validator.c.obj
-                0x08005ec0                MetrologyConfig_Validate
+                0x08005ed0      0x1ba CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/metrology_config_validator.c.obj
+                0x08005ed0                MetrologyConfig_Validate
  .text.MassMath_Add
-                0x0800607a       0x4a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/mass_math.c.obj
-                0x0800607a                MassMath_Add
+                0x0800608a       0x4a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/mass_math.c.obj
+                0x0800608a                MassMath_Add
  .text.MassMath_Subtract
-                0x080060c4       0x3c CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/mass_math.c.obj
-                0x080060c4                MassMath_Subtract
+                0x080060d4       0x3c CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/mass_math.c.obj
+                0x080060d4                MassMath_Subtract
  .text.MassMath_Abs
-                0x08006100       0x1a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/mass_math.c.obj
-                0x08006100                MassMath_Abs
+                0x08006110       0x1a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/mass_math.c.obj
+                0x08006110                MassMath_Abs
  .text.MassMath_MulDivRound
-                0x0800611a      0x1d6 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/mass_math.c.obj
-                0x0800611a                MassMath_MulDivRound
+                0x0800612a      0x1d6 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/mass_math.c.obj
+                0x0800612a                MassMath_MulDivRound
  .text.MassMath_Quantize
-                0x080062f0       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/mass_math.c.obj
-                0x080062f0                MassMath_Quantize
+                0x08006300       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/mass_math.c.obj
+                0x08006300                MassMath_Quantize
  .text.DisplayDivisionMass
-                0x08006334       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/metrology_standard_validator.c.obj
+                0x08006344       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/metrology_standard_validator.c.obj
  .text.MetrologyStandardValidator_Validate
-                0x08006360       0xba CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/metrology_standard_validator.c.obj
-                0x08006360                MetrologyStandardValidator_Validate
+                0x08006370       0xba CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/metrology_standard_validator.c.obj
+                0x08006370                MetrologyStandardValidator_Validate
  .text.MetrologyStandardValidator_GetDisplayOverload
-                0x0800641a       0x6a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/metrology_standard_validator.c.obj
-                0x0800641a                MetrologyStandardValidator_GetDisplayOverload
+                0x0800642a       0x6a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/metrology_standard_validator.c.obj
+                0x0800642a                MetrologyStandardValidator_GetDisplayOverload
  .text.RawMeasurement_Init
-                0x08006484       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/raw_measurement.c.obj
-                0x08006484                RawMeasurement_Init
+                0x08006494       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/raw_measurement.c.obj
+                0x08006494                RawMeasurement_Init
  .text.RawMeasurement_Accept
-                0x08006494       0x70 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/raw_measurement.c.obj
-                0x08006494                RawMeasurement_Accept
+                0x080064a4       0x70 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/raw_measurement.c.obj
+                0x080064a4                RawMeasurement_Accept
  .text.RawMeasurement_GetState
-                0x08006504        0x8 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/raw_measurement.c.obj
-                0x08006504                RawMeasurement_GetState
- *fill*         0x0800650c        0x4 
+                0x08006514        0x8 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/raw_measurement.c.obj
+                0x08006514                RawMeasurement_GetState
+ *fill*         0x0800651c        0x4 
  .text.UnitConverter_CountToMass
-                0x08006510       0x68 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/unit_converter.c.obj
-                0x08006510                UnitConverter_CountToMass
+                0x08006520       0x68 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/unit_converter.c.obj
+                0x08006520                UnitConverter_CountToMass
  .text.UnitConverter_MassToDisplay
-                0x08006578       0xd0 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/unit_converter.c.obj
-                0x08006578                UnitConverter_MassToDisplay
+                0x08006588       0xd0 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/unit_converter.c.obj
+                0x08006588                UnitConverter_MassToDisplay
  .text.UnitConverter_ValidateDisplayConfig
-                0x08006648       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/unit_converter.c.obj
-                0x08006648                UnitConverter_ValidateDisplayConfig
+                0x08006658       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/unit_converter.c.obj
+                0x08006658                UnitConverter_ValidateDisplayConfig
  .text.UpdateCompatibility
-                0x08006690       0xa8 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
+                0x080066a0       0xa8 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
  .text.ClearDerived
-                0x08006738       0x40 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
+                0x08006748       0x40 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
  .text.UpdateDerived
-                0x08006778      0x14e CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
+                0x08006788      0x14e CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
  .text.WeightEngine_InitMass
-                0x080068c6       0xf2 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
-                0x080068c6                WeightEngine_InitMass
+                0x080068d6       0xf2 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
+                0x080068d6                WeightEngine_InitMass
  .text.WeightEngine_ProcessRawSample
-                0x080069b8       0x90 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
-                0x080069b8                WeightEngine_ProcessRawSample
+                0x080069c8       0x90 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
+                0x080069c8                WeightEngine_ProcessRawSample
  .text.WeightEngine_GetSnapshot
-                0x08006a48       0x12 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
-                0x08006a48                WeightEngine_GetSnapshot
+                0x08006a58       0x12 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
+                0x08006a58                WeightEngine_GetSnapshot
  .text.WeightEngine_Zero
-                0x08006a5a       0x78 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
-                0x08006a5a                WeightEngine_Zero
+                0x08006a6a       0x78 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
+                0x08006a6a                WeightEngine_Zero
  .text.WeightEngine_ResetZero
-                0x08006ad2       0x3a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
-                0x08006ad2                WeightEngine_ResetZero
+                0x08006ae2       0x3a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
+                0x08006ae2                WeightEngine_ResetZero
  .text.WeightEngine_Tare
-                0x08006b0c       0x6a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
-                0x08006b0c                WeightEngine_Tare
+                0x08006b1c       0x6a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
+                0x08006b1c                WeightEngine_Tare
  .text.WeightEngine_ClearTare
-                0x08006b76       0x3a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
-                0x08006b76                WeightEngine_ClearTare
+                0x08006b86       0x3a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
+                0x08006b86                WeightEngine_ClearTare
  .text.WeightMath_DivideRoundNearest
-                0x08006bb0       0xc8 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_math.c.obj
-                0x08006bb0                WeightMath_DivideRoundNearest
+                0x08006bc0       0xc8 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_math.c.obj
+                0x08006bc0                WeightMath_DivideRoundNearest
  .text.WeightMath_ClampInt64ToInt32
-                0x08006c78       0x1a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_math.c.obj
-                0x08006c78                WeightMath_ClampInt64ToInt32
+                0x08006c88       0x1a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_math.c.obj
+                0x08006c88                WeightMath_ClampInt64ToInt32
  .text.WeightMath_Quantize
-                0x08006c92       0x38 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_math.c.obj
-                0x08006c92                WeightMath_Quantize
+                0x08006ca2       0x38 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_math.c.obj
+                0x08006ca2                WeightMath_Quantize
  .text.StabilityDetector_InitMass
-                0x08006cca       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Domain/stability/stability_detector.c.obj
-                0x08006cca                StabilityDetector_InitMass
+                0x08006cda       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Domain/stability/stability_detector.c.obj
+                0x08006cda                StabilityDetector_InitMass
  .text.StabilityDetector_Reset
-                0x08006d26       0x26 CMakeFiles/stm32f103rbt6_a33.dir/Domain/stability/stability_detector.c.obj
-                0x08006d26                StabilityDetector_Reset
+                0x08006d36       0x26 CMakeFiles/stm32f103rbt6_a33.dir/Domain/stability/stability_detector.c.obj
+                0x08006d36                StabilityDetector_Reset
  .text.StabilityDetector_ProcessMass
-                0x08006d4c       0xee CMakeFiles/stm32f103rbt6_a33.dir/Domain/stability/stability_detector.c.obj
-                0x08006d4c                StabilityDetector_ProcessMass
+                0x08006d5c       0xee CMakeFiles/stm32f103rbt6_a33.dir/Domain/stability/stability_detector.c.obj
+                0x08006d5c                StabilityDetector_ProcessMass
  .text.StabilityDetector_GetState
-                0x08006e3a       0x12 CMakeFiles/stm32f103rbt6_a33.dir/Domain/stability/stability_detector.c.obj
-                0x08006e3a                StabilityDetector_GetState
+                0x08006e4a       0x12 CMakeFiles/stm32f103rbt6_a33.dir/Domain/stability/stability_detector.c.obj
+                0x08006e4a                StabilityDetector_GetState
  .text.StabilityDetector_GetSpreadMass
-                0x08006e4c       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Domain/stability/stability_detector.c.obj
-                0x08006e4c                StabilityDetector_GetSpreadMass
+                0x08006e5c       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Domain/stability/stability_detector.c.obj
+                0x08006e5c                StabilityDetector_GetSpreadMass
  .text.ZeroTare_InitMass
-                0x08006e64       0x3a CMakeFiles/stm32f103rbt6_a33.dir/Domain/zero_tare/zero_tare.c.obj
-                0x08006e64                ZeroTare_InitMass
+                0x08006e74       0x3a CMakeFiles/stm32f103rbt6_a33.dir/Domain/zero_tare/zero_tare.c.obj
+                0x08006e74                ZeroTare_InitMass
  .text.ZeroTare_ApplyZeroMass
-                0x08006e9e       0x78 CMakeFiles/stm32f103rbt6_a33.dir/Domain/zero_tare/zero_tare.c.obj
-                0x08006e9e                ZeroTare_ApplyZeroMass
+                0x08006eae       0x78 CMakeFiles/stm32f103rbt6_a33.dir/Domain/zero_tare/zero_tare.c.obj
+                0x08006eae                ZeroTare_ApplyZeroMass
  .text.ZeroTare_ResetZero
-                0x08006f16       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Domain/zero_tare/zero_tare.c.obj
-                0x08006f16                ZeroTare_ResetZero
+                0x08006f26       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Domain/zero_tare/zero_tare.c.obj
+                0x08006f26                ZeroTare_ResetZero
  .text.ZeroTare_ApplyTareMass
-                0x08006f2a       0x5a CMakeFiles/stm32f103rbt6_a33.dir/Domain/zero_tare/zero_tare.c.obj
-                0x08006f2a                ZeroTare_ApplyTareMass
+                0x08006f3a       0x5a CMakeFiles/stm32f103rbt6_a33.dir/Domain/zero_tare/zero_tare.c.obj
+                0x08006f3a                ZeroTare_ApplyTareMass
  .text.ZeroTare_ClearTare
-                0x08006f84       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Domain/zero_tare/zero_tare.c.obj
-                0x08006f84                ZeroTare_ClearTare
+                0x08006f94       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Domain/zero_tare/zero_tare.c.obj
+                0x08006f94                ZeroTare_ClearTare
  .text.BatteryAdc_Init
-                0x08006fa4       0x54 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/battery_adc/battery_adc.c.obj
-                0x08006fa4                BatteryAdc_Init
+                0x08006fb4       0x54 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/battery_adc/battery_adc.c.obj
+                0x08006fb4                BatteryAdc_Init
  .text.BatteryAdc_GetState
-                0x08006ff8       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/battery_adc/battery_adc.c.obj
-                0x08006ff8                BatteryAdc_GetState
+                0x08007008       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/battery_adc/battery_adc.c.obj
+                0x08007008                BatteryAdc_GetState
  .text.BatteryAdc_GetErrorCount
-                0x08007010        0xc CMakeFiles/stm32f103rbt6_a33.dir/Drivers/battery_adc/battery_adc.c.obj
-                0x08007010                BatteryAdc_GetErrorCount
+                0x08007020        0xc CMakeFiles/stm32f103rbt6_a33.dir/Drivers/battery_adc/battery_adc.c.obj
+                0x08007020                BatteryAdc_GetErrorCount
  .text.BatteryAdc_ConvertAdcMv
-                0x0800701c       0xa4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/battery_adc/battery_adc.c.obj
-                0x0800701c                BatteryAdc_ConvertAdcMv
+                0x0800702c       0xa4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/battery_adc/battery_adc.c.obj
+                0x0800702c                BatteryAdc_ConvertAdcMv
  .text.BatteryAdc_Process500ms
-                0x080070c0       0x98 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/battery_adc/battery_adc.c.obj
-                0x080070c0                BatteryAdc_Process500ms
+                0x080070d0       0x98 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/battery_adc/battery_adc.c.obj
+                0x080070d0                BatteryAdc_Process500ms
  .text.CS1237_ConfigIsValid
-                0x08007158       0x1e CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x08007168       0x1e CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
  .text.CS1237_WriteBit
-                0x08007176       0x34 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x08007186       0x34 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
  .text.CS1237_ClockOnly
-                0x080071aa       0x2a CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x080071ba       0x2a CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
  .text.CS1237_NotifySamplesAvailable
-                0x080071d4       0x3c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x080071e4       0x3c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
  .text.CS1237_ReadBit.part.0
-                0x08007210       0x32 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
- *fill*         0x08007242        0x2 
+                0x08007220       0x32 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+ *fill*         0x08007252        0x2 
  .text.CS1237_Init
-                0x08007244       0x94 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
-                0x08007244                CS1237_Init
+                0x08007254       0x94 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x08007254                CS1237_Init
  .text.CS1237_IsReady
-                0x080072d8       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
-                0x080072d8                CS1237_IsReady
+                0x080072e8       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x080072e8                CS1237_IsReady
  .text.CS1237_TryPopSample
-                0x080072e8       0x4c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
-                0x080072e8                CS1237_TryPopSample
+                0x080072f8       0x4c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x080072f8                CS1237_TryPopSample
  .text.CS1237_GetBufferedSampleCount
-                0x08007334        0xc CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
-                0x08007334                CS1237_GetBufferedSampleCount
+                0x08007344        0xc CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x08007344                CS1237_GetBufferedSampleCount
  .text.CS1237_GetBufferOverrunCount
-                0x08007340        0xc CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
-                0x08007340                CS1237_GetBufferOverrunCount
+                0x08007350        0xc CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x08007350                CS1237_GetBufferOverrunCount
  .text.CS1237_GetState
-                0x0800734c        0xc CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
-                0x0800734c                CS1237_GetState
+                0x0800735c        0xc CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x0800735c                CS1237_GetState
  .text.CS1237_WriteConfig
-                0x08007358       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
-                0x08007358                CS1237_WriteConfig
+                0x08007368       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x08007368                CS1237_WriteConfig
  .text.CS1237_EnterSafeState
-                0x080073b4       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
-                0x080073b4                CS1237_EnterSafeState
+                0x080073c4       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x080073c4                CS1237_EnterSafeState
  .text.CS1237_SignExtend24
-                0x080073d4       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
-                0x080073d4                CS1237_SignExtend24
+                0x080073e4       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x080073e4                CS1237_SignExtend24
  .text.CS1237_ReadDataFrame
-                0x080073e4       0x7a CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x080073f4       0x7a CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
  .text.CS1237_ConfigTransaction
-                0x0800745e       0xba CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x0800746e       0xba CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
  .text.CS1237_EncodeConfig
-                0x08007518       0x38 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
-                0x08007518                CS1237_EncodeConfig
+                0x08007528       0x38 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x08007528                CS1237_EncodeConfig
  .text.CS1237_VerifyConfig
-                0x08007550       0x34 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
-                0x08007550                CS1237_VerifyConfig
+                0x08007560       0x34 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x08007560                CS1237_VerifyConfig
  .text.CS1237_Process
-                0x08007584      0x15c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
-                0x08007584                CS1237_Process
+                0x08007594      0x15c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x08007594                CS1237_Process
  .text.OutputGpio_Apply
-                0x080076e0       0x28 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/output_gpio/output_gpio.c.obj
+                0x080076f0       0x28 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/output_gpio/output_gpio.c.obj
  .text.OutputGpio_Set
-                0x08007708       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/output_gpio/output_gpio.c.obj
-                0x08007708                OutputGpio_Set
+                0x08007718       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/output_gpio/output_gpio.c.obj
+                0x08007718                OutputGpio_Set
  .text.OutputGpio_AllOff
-                0x0800772c       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/output_gpio/output_gpio.c.obj
-                0x0800772c                OutputGpio_AllOff
+                0x0800773c       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/output_gpio/output_gpio.c.obj
+                0x0800773c                OutputGpio_AllOff
  .text.OutputGpio_Init
-                0x0800774c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/output_gpio/output_gpio.c.obj
-                0x0800774c                OutputGpio_Init
+                0x0800775c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/output_gpio/output_gpio.c.obj
+                0x0800775c                OutputGpio_Init
+ .text.ElapsedUs
+                0x08007760       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
  .text.Rs485TxController_Init
-                0x08007750       0x1c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
-                0x08007750                Rs485TxController_Init
+                0x08007780       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+                0x08007780                Rs485TxController_Init
  .text.Rs485TxController_Start
-                0x0800776c       0x3c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
-                0x0800776c                Rs485TxController_Start
+                0x080077a4       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+                0x080077a4                Rs485TxController_Start
  .text.Rs485TxController_Abort
-                0x080077a8       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
-                0x080077a8                Rs485TxController_Abort
+                0x080077e8       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+                0x080077e8                Rs485TxController_Abort
  .text.Rs485TxController_Process
-                0x080077c0       0xc4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
-                0x080077c0                Rs485TxController_Process
+                0x08007800       0xe0 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+                0x08007800                Rs485TxController_Process
  .text.Rs485TxController_TakeCompleted
-                0x08007884       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
-                0x08007884                Rs485TxController_TakeCompleted
+                0x080078e0       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+                0x080078e0                Rs485TxController_TakeCompleted
  .text.Rs485TxController_GetState
-                0x08007894        0xc CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
-                0x08007894                Rs485TxController_GetState
+                0x080078f0        0xc CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+                0x080078f0                Rs485TxController_GetState
+ .text.Rs485TxController_GetLastError
+                0x080078fc        0xc CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+                0x080078fc                Rs485TxController_GetLastError
+ .text.Uart2DmaPosition_Resolve
+                0x08007908       0x38 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_position.c.obj
+                0x08007908                Uart2DmaPosition_Resolve
  .text.Uart2DmaTransport_Init
-                0x080078a0       0x78 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
-                0x080078a0                Uart2DmaTransport_Init
+                0x08007940       0x78 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+                0x08007940                Uart2DmaTransport_Init
  .text.Uart2DmaTransport_Process
-                0x08007918      0x160 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
-                0x08007918                Uart2DmaTransport_Process
+                0x080079b8      0x17c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+                0x080079b8                Uart2DmaTransport_Process
  .text.Uart2DmaTransport_TryReadByte
-                0x08007a78       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
-                0x08007a78                Uart2DmaTransport_TryReadByte
+                0x08007b34       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+                0x08007b34                Uart2DmaTransport_TryReadByte
  .text.Uart2DmaTransport_Suspend
-                0x08007ad4       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
-                0x08007ad4                Uart2DmaTransport_Suspend
+                0x08007b90       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+                0x08007b90                Uart2DmaTransport_Suspend
  .text.Uart2DmaTransport_TakeIdleEvent
-                0x08007ae8       0x38 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
-                0x08007ae8                Uart2DmaTransport_TakeIdleEvent
+                0x08007ba4       0x38 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+                0x08007ba4                Uart2DmaTransport_TakeIdleEvent
  .text.Uart2DmaTransport_TakeReceiveError
-                0x08007b20       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
-                0x08007b20                Uart2DmaTransport_TakeReceiveError
+                0x08007bdc       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+                0x08007bdc                Uart2DmaTransport_TakeReceiveError
  .text.Uart2DmaTransport_DiscardPending
-                0x08007b30       0x1c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
-                0x08007b30                Uart2DmaTransport_DiscardPending
+                0x08007bec       0x1c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+                0x08007bec                Uart2DmaTransport_DiscardPending
  .text.Uart2DmaTransport_GetStatistics
-                0x08007b4c        0x8 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
-                0x08007b4c                Uart2DmaTransport_GetStatistics
+                0x08007c08        0x8 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+                0x08007c08                Uart2DmaTransport_GetStatistics
  .text.TM1628_StartTransaction
-                0x08007b54       0x1e CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x08007c10       0x1e CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
  .text.TM1628_WriteByte
-                0x08007b72       0x40 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x08007c2e       0x40 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
  .text.TM1628_EndTransaction
-                0x08007bb2       0x1e CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x08007c6e       0x1e CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
  .text.TM1628_SendCommand
-                0x08007bd0       0x16 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
- *fill*         0x08007be6        0x2 
+                0x08007c8c       0x16 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+ *fill*         0x08007ca2        0x2 
  .text.TM1628_SendDisplayControl
-                0x08007be8       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x08007ca4       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
  .text.TM1628_WriteFullRam
-                0x08007c0c       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x08007cc8       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
  .text.TM1628_Init
-                0x08007c38       0x64 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
-                0x08007c38                TM1628_Init
+                0x08007cf4       0x64 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x08007cf4                TM1628_Init
  .text.TM1628_SetBrightness
-                0x08007c9c       0x38 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
-                0x08007c9c                TM1628_SetBrightness
+                0x08007d58       0x38 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x08007d58                TM1628_SetBrightness
  .text.TM1628_SetDisplayEnabled
-                0x08007cd4       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
-                0x08007cd4                TM1628_SetDisplayEnabled
+                0x08007d90       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x08007d90                TM1628_SetDisplayEnabled
  .text.TM1628_Flush
-                0x08007cf8       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
-                0x08007cf8                TM1628_Flush
+                0x08007db4       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x08007db4                TM1628_Flush
  .text.TM1628_IsDirty
-                0x08007d3c        0xc CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
-                0x08007d3c                TM1628_IsDirty
+                0x08007df8        0xc CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x08007df8                TM1628_IsDirty
  .text.TM1628_ReleaseBus
-                0x08007d48        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
-                0x08007d48                TM1628_ReleaseBus
+                0x08007e04        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x08007e04                TM1628_ReleaseBus
  .text.TM1628_EncodeGridSegments
-                0x08007d4c       0x26 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
-                0x08007d4c                TM1628_EncodeGridSegments
- *fill*         0x08007d72        0x2 
+                0x08007e08       0x26 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x08007e08                TM1628_EncodeGridSegments
+ *fill*         0x08007e2e        0x2 
  .text.TM1628_SetGridSegments
-                0x08007d74       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
-                0x08007d74                TM1628_SetGridSegments
+                0x08007e30       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x08007e30                TM1628_SetGridSegments
  .text.TM1628_DecodeBoardKeys
-                0x08007dbc       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
-                0x08007dbc                TM1628_DecodeBoardKeys
+                0x08007e78       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x08007e78                TM1628_DecodeBoardKeys
  .text.TM1628_ReadKeys
-                0x08007dec       0xd0 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
-                0x08007dec                TM1628_ReadKeys
+                0x08007ea8       0xd0 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x08007ea8                TM1628_ReadKeys
  .text.TM1628_BoardMapSegments
-                0x08007ebc       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj
-                0x08007ebc                TM1628_BoardMapSegments
+                0x08007f78       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj
+                0x08007f78                TM1628_BoardMapSegments
  .text.W02PwrKey_Init
-                0x08007eec       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
-                0x08007eec                W02PwrKey_Init
+                0x08007fa8       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
+                0x08007fa8                W02PwrKey_Init
  .text.W02PwrKey_Process
-                0x08007f10       0x88 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
-                0x08007f10                W02PwrKey_Process
+                0x08007fcc       0x88 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
+                0x08007fcc                W02PwrKey_Process
  .text.W02PwrKey_GetState
-                0x08007f98        0xc CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
-                0x08007f98                W02PwrKey_GetState
+                0x08008054        0xc CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
+                0x08008054                W02PwrKey_GetState
  .text.CommandService_CalibrationCommit
-                0x08007fa4       0x98 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
+                0x08008060       0x98 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
  .text.CommandService_Init
-                0x0800803c       0x28 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
-                0x0800803c                CommandService_Init
+                0x080080f8       0x28 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
+                0x080080f8                CommandService_Init
  .text.CommandService_Execute
-                0x08008064      0x2b4 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
-                0x08008064                CommandService_Execute
+                0x08008120      0x2b4 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
+                0x08008120                CommandService_Execute
  .text.CommandService_SetStagedConfig
-                0x08008318       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
-                0x08008318                CommandService_SetStagedConfig
+                0x080083d4       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
+                0x080083d4                CommandService_SetStagedConfig
  .text.CommandService_ClearStagedConfig
-                0x0800833c        0xc CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
-                0x0800833c                CommandService_ClearStagedConfig
+                0x080083f8        0xc CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
+                0x080083f8                CommandService_ClearStagedConfig
  .text.ModbusCommandMailbox_Init
-                0x08008348       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
-                0x08008348                ModbusCommandMailbox_Init
+                0x08008404       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
+                0x08008404                ModbusCommandMailbox_Init
  .text.ModbusCommandMailbox_Read
-                0x08008358       0x88 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
-                0x08008358                ModbusCommandMailbox_Read
+                0x08008414       0x88 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
+                0x08008414                ModbusCommandMailbox_Read
  .text.ModbusCommandMailbox_Write
-                0x080083e0      0x110 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
-                0x080083e0                ModbusCommandMailbox_Write
+                0x0800849c      0x110 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
+                0x0800849c                ModbusCommandMailbox_Write
  .text.ModbusCommandMailbox_GetLastResult
-                0x080084f0        0xc CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
-                0x080084f0                ModbusCommandMailbox_GetLastResult
- .text.Join64   0x080084fc       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
- .text.Word32   0x0800852c       0x12 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x080085ac        0xc CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
+                0x080085ac                ModbusCommandMailbox_GetLastResult
+ .text.Join64   0x080085b8       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+ .text.Word32   0x080085e8       0x12 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
  .text.ReadActive
-                0x0800853e      0x26a CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x080085fa      0x26a CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
  .text.RefreshStaging
-                0x080087a8       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x08008864       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
  .text.ValidateWriteAddress
-                0x080087ec       0x9c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x080088a8       0x9c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
  .text.ModbusRegisterModel_WriteSingle.part.0
-                0x08008888      0x2c4 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x08008944      0x2c4 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
  .text.ModbusRegisterModel_Init
-                0x08008b4c       0x3c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
-                0x08008b4c                ModbusRegisterModel_Init
+                0x08008c08       0x3c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x08008c08                ModbusRegisterModel_Init
  .text.ModbusRegisterModel_GetPendingCommunication
-                0x08008b88       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
-                0x08008b88                ModbusRegisterModel_GetPendingCommunication
+                0x08008c44       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x08008c44                ModbusRegisterModel_GetPendingCommunication
  .text.ModbusRegisterModel_CompleteCommunicationApply
-                0x08008ba8       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
-                0x08008ba8                ModbusRegisterModel_CompleteCommunicationApply
+                0x08008c64       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x08008c64                ModbusRegisterModel_CompleteCommunicationApply
  .text.ModbusRegisterModel_ReadHolding
-                0x08008bcc      0x598 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
-                0x08008bcc                ModbusRegisterModel_ReadHolding
+                0x08008c88      0x598 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x08008c88                ModbusRegisterModel_ReadHolding
  .text.ModbusRegisterModel_WriteSingle
-                0x08009164       0x1a CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
-                0x08009164                ModbusRegisterModel_WriteSingle
+                0x08009220       0x1a CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x08009220                ModbusRegisterModel_WriteSingle
  .text.ModbusRegisterModel_WriteMultiple
-                0x0800917e       0x66 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
-                0x0800917e                ModbusRegisterModel_WriteMultiple
+                0x0800923a       0x66 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x0800923a                ModbusRegisterModel_WriteMultiple
  .text.ModbusCrc16_Update
-                0x080091e4       0x3c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_crc16.c.obj
-                0x080091e4                ModbusCrc16_Update
+                0x080092a0       0x3c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_crc16.c.obj
+                0x080092a0                ModbusCrc16_Update
  .text.ModbusCrc16_Calculate
-                0x08009220        0xc CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_crc16.c.obj
-                0x08009220                ModbusCrc16_Calculate
+                0x080092dc        0xc CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_crc16.c.obj
+                0x080092dc                ModbusCrc16_Calculate
  .text.ModbusRtuTiming_Calculate
-                0x0800922c       0xe0 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_timing.c.obj
-                0x0800922c                ModbusRtuTiming_Calculate
+                0x080092e8       0xe0 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_timing.c.obj
+                0x080092e8                ModbusRtuTiming_Calculate
  .text.DiscardUntilSilence
-                0x0800930c       0x28 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+                0x080093c8       0x28 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
  .text.ModbusRtuFramer_OnByte
-                0x08009334       0x70 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
-                0x08009334                ModbusRtuFramer_OnByte
+                0x080093f0       0x70 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+                0x080093f0                ModbusRtuFramer_OnByte
  .text.ModbusRtuFramer_OnIdleEvent
-                0x080093a4       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
-                0x080093a4                ModbusRtuFramer_OnIdleEvent
+                0x08009460       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+                0x08009460                ModbusRtuFramer_OnIdleEvent
  .text.ModbusRtuFramer_Reset
-                0x080093e8       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
-                0x080093e8                ModbusRtuFramer_Reset
+                0x080094a4       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+                0x080094a4                ModbusRtuFramer_Reset
  .text.ModbusRtuFramer_Init
-                0x08009418       0x3c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
-                0x08009418                ModbusRtuFramer_Init
+                0x080094d4       0x3c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+                0x080094d4                ModbusRtuFramer_Init
  .text.ModbusRtuFramer_OnTimerEvent
-                0x08009454       0x98 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
-                0x08009454                ModbusRtuFramer_OnTimerEvent
+                0x08009510       0x98 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+                0x08009510                ModbusRtuFramer_OnTimerEvent
  .text.ModbusRtuFramer_Process
-                0x080094ec       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
-                0x080094ec                ModbusRtuFramer_Process
+                0x080095a8       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+                0x080095a8                ModbusRtuFramer_Process
  .text.ModbusRtuFramer_TryGetFrame
-                0x08009548       0x3c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
-                0x08009548                ModbusRtuFramer_TryGetFrame
+                0x08009604       0x3c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+                0x08009604                ModbusRtuFramer_TryGetFrame
  .text.AppendCrc
-                0x08009584       0x34 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+                0x08009640       0x34 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
  .text.BuildException
-                0x080095b8       0x40 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+                0x08009674       0x40 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
  .text.ModbusRtuServer_HandleAdu
-                0x080095f8      0x234 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
-                0x080095f8                ModbusRtuServer_HandleAdu
+                0x080096b4      0x238 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+                0x080096b4                ModbusRtuServer_HandleAdu
  .text.ModbusRtuServer_Init
-                0x0800982c       0x58 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
-                0x0800982c                ModbusRtuServer_Init
+                0x080098ec       0x58 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+                0x080098ec                ModbusRtuServer_Init
  .text.ModbusRtuServer_Process
-                0x08009884      0x104 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
-                0x08009884                ModbusRtuServer_Process
+                0x08009944      0x118 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+                0x08009944                ModbusRtuServer_Process
  .text.ModbusRtuServer_IsBusy
-                0x08009988       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
-                0x08009988                ModbusRtuServer_IsBusy
+                0x08009a5c       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+                0x08009a5c                ModbusRtuServer_IsBusy
  .text.ModbusRtuServer_Suspend
-                0x08009998       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
-                0x08009998                ModbusRtuServer_Suspend
+                0x08009a6c       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+                0x08009a6c                ModbusRtuServer_Suspend
  .text.ModbusRtuServer_Resume
-                0x080099a8       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
-                0x080099a8                ModbusRtuServer_Resume
+                0x08009a7c       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+                0x08009a7c                ModbusRtuServer_Resume
  .text.ConfigEdit_Init
-                0x080099d8       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
-                0x080099d8                ConfigEdit_Init
+                0x08009aac       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
+                0x08009aac                ConfigEdit_Init
  .text.ConfigEdit_Begin
-                0x080099f8       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
-                0x080099f8                ConfigEdit_Begin
+                0x08009acc       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
+                0x08009acc                ConfigEdit_Begin
  .text.ConfigEdit_SetField
-                0x08009a24       0xd8 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
-                0x08009a24                ConfigEdit_SetField
+                0x08009af8       0xd8 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
+                0x08009af8                ConfigEdit_SetField
  .text.ConfigEdit_Validate
-                0x08009afc       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
-                0x08009afc                ConfigEdit_Validate
+                0x08009bd0       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
+                0x08009bd0                ConfigEdit_Validate
  .text.ConfigEdit_Cancel
-                0x08009b58       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
-                0x08009b58                ConfigEdit_Cancel
+                0x08009c2c       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
+                0x08009c2c                ConfigEdit_Cancel
  .text.ConfigEdit_GetState
-                0x08009b78        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
-                0x08009b78                ConfigEdit_GetState
+                0x08009c4c        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
+                0x08009c4c                ConfigEdit_GetState
  .text.ConfigEdit_GetWorkingCopy
-                0x08009b84       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
-                0x08009b84                ConfigEdit_GetWorkingCopy
- .text.ReadU32  0x08009b9c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x08009c58       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
+                0x08009c58                ConfigEdit_GetWorkingCopy
+ .text.ReadU32  0x08009c70        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
  .text.CaptureFlashInfo
-                0x08009ba0       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .text.Fail     0x08009be4       0x28 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x08009c74       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .text.Fail     0x08009cb8       0x28 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
  .text.ReadSlot
-                0x08009c0c      0x174 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x08009ce0      0x174 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
  .text.PowerSafe
-                0x08009d80       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .text.Request  0x08009da4      0x1e8 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x08009e54       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .text.Request  0x08009e78      0x1e8 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
  .text.ConfigStore_IsSequenceNewer
-                0x08009f8c       0x1c CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x08009f8c                ConfigStore_IsSequenceNewer
+                0x0800a060       0x1c CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a060                ConfigStore_IsSequenceNewer
  .text.ConfigStore_GetProgramHalfword
-                0x08009fa8       0x40 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x08009fa8                ConfigStore_GetProgramHalfword
+                0x0800a07c       0x40 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a07c                ConfigStore_GetProgramHalfword
  .text.ConfigStore_Init
-                0x08009fe8       0x88 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x08009fe8                ConfigStore_Init
+                0x0800a0bc       0x88 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a0bc                ConfigStore_Init
  .text.ConfigStore_SetPowerCheck
-                0x0800a070        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a070                ConfigStore_SetPowerCheck
+                0x0800a144        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a144                ConfigStore_SetPowerCheck
  .text.ConfigStore_Load
-                0x0800a07c      0x1a0 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a07c                ConfigStore_Load
+                0x0800a150      0x1a0 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a150                ConfigStore_Load
  .text.ConfigStore_RequestSave
-                0x0800a21c       0x12 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a21c                ConfigStore_RequestSave
+                0x0800a2f0       0x12 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a2f0                ConfigStore_RequestSave
  .text.ConfigStore_RequestFactoryReset
-                0x0800a22e       0x12 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a22e                ConfigStore_RequestFactoryReset
+                0x0800a302       0x12 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a302                ConfigStore_RequestFactoryReset
  .text.ConfigStore_Process
-                0x0800a240      0x2c4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a240                ConfigStore_Process
+                0x0800a314      0x2c4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a314                ConfigStore_Process
  .text.ConfigStore_GetState
-                0x0800a504        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a504                ConfigStore_GetState
+                0x0800a5d8        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a5d8                ConfigStore_GetState
  .text.ConfigStore_GetOperation
-                0x0800a510        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a510                ConfigStore_GetOperation
+                0x0800a5e4        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a5e4                ConfigStore_GetOperation
  .text.ConfigStore_GetLastOperationResult
-                0x0800a51c        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a51c                ConfigStore_GetLastOperationResult
+                0x0800a5f0        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a5f0                ConfigStore_GetLastOperationResult
  .text.ConfigStore_GetActiveSequence
-                0x0800a528        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a528                ConfigStore_GetActiveSequence
+                0x0800a5fc        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a5fc                ConfigStore_GetActiveSequence
  .text.ConfigStore_GetActiveSlot
-                0x0800a534        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a534                ConfigStore_GetActiveSlot
+                0x0800a608        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a608                ConfigStore_GetActiveSlot
  .text.ConfigStore_GetLastError
-                0x0800a540        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a540                ConfigStore_GetLastError
+                0x0800a614        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a614                ConfigStore_GetLastError
  .text.ConfigStore_GetStatistics
-                0x0800a54c        0x8 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a54c                ConfigStore_GetStatistics
+                0x0800a620        0x8 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a620                ConfigStore_GetStatistics
  .text.ConfigStore_GetLastPrimaryFlashError
-                0x0800a554        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a554                ConfigStore_GetLastPrimaryFlashError
+                0x0800a628        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a628                ConfigStore_GetLastPrimaryFlashError
  .text.ConfigStore_GetLastLockError
-                0x0800a560        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a560                ConfigStore_GetLastLockError
+                0x0800a634        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a634                ConfigStore_GetLastLockError
  .text.ConfigStore_GetLastFlashAddress
-                0x0800a56c        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a56c                ConfigStore_GetLastFlashAddress
+                0x0800a640        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a640                ConfigStore_GetLastFlashAddress
  .text.ConfigStore_CancelPending
-                0x0800a578       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a578                ConfigStore_CancelPending
+                0x0800a64c       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a64c                ConfigStore_CancelPending
  .text.ConfigStore_AcknowledgeResult
-                0x0800a59c       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
-                0x0800a59c                ConfigStore_AcknowledgeResult
- .text.PutU8    0x0800a5c0       0x1a CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
- .text.PutU16   0x0800a5da       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
- .text.PutU32   0x0800a5ee       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
- .text.PutU64   0x0800a602       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
- .text.GetU8    0x0800a616       0x1a CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
- .text.GetU16   0x0800a630       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
- .text.GetU32   0x0800a648       0x16 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
- .text.GetU64   0x0800a65e       0x16 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
- .text.GetBool  0x0800a674       0x22 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+                0x0800a670       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x0800a670                ConfigStore_AcknowledgeResult
+ .text.PutU8    0x0800a694       0x1a CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+ .text.PutU16   0x0800a6ae       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+ .text.PutU32   0x0800a6c2       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+ .text.PutU64   0x0800a6d6       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+ .text.GetU8    0x0800a6ea       0x1a CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+ .text.GetU16   0x0800a704       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+ .text.GetU32   0x0800a71c       0x16 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+ .text.GetU64   0x0800a732       0x16 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+ .text.GetBool  0x0800a748       0x22 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
  .text.GetReserved
-                0x0800a696       0x22 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+                0x0800a76a       0x22 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
  .text.PersistentCodec_ValidateConfig
-                0x0800a6b8      0x15c CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
-                0x0800a6b8                PersistentCodec_ValidateConfig
+                0x0800a78c      0x15c CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+                0x0800a78c                PersistentCodec_ValidateConfig
  .text.PersistentCodec_EncodeV1
-                0x0800a814      0x274 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
-                0x0800a814                PersistentCodec_EncodeV1
+                0x0800a8e8      0x274 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+                0x0800a8e8                PersistentCodec_EncodeV1
  .text.PersistentCodec_EncodeV2
-                0x0800aa88      0x1fc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
-                0x0800aa88                PersistentCodec_EncodeV2
+                0x0800ab5c      0x1fc CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+                0x0800ab5c                PersistentCodec_EncodeV2
  .text.PersistentCodec_DecodeV2
-                0x0800ac84      0x254 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
-                0x0800ac84                PersistentCodec_DecodeV2
+                0x0800ad58      0x254 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+                0x0800ad58                PersistentCodec_DecodeV2
  .text.PersistentCodec_Decode
-                0x0800aed8      0x450 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
-                0x0800aed8                PersistentCodec_Decode
+                0x0800afac      0x450 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+                0x0800afac                PersistentCodec_Decode
  .text.Crc32_Update
-                0x0800b328       0x34 CMakeFiles/stm32f103rbt6_a33.dir/Services/crc32/crc32.c.obj
-                0x0800b328                Crc32_Update
+                0x0800b3fc       0x34 CMakeFiles/stm32f103rbt6_a33.dir/Services/crc32/crc32.c.obj
+                0x0800b3fc                Crc32_Update
  .text.EventQueue_Init
-                0x0800b35c       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
-                0x0800b35c                EventQueue_Init
+                0x0800b430       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
+                0x0800b430                EventQueue_Init
  .text.EventQueue_Push
-                0x0800b380       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
-                0x0800b380                EventQueue_Push
+                0x0800b454       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
+                0x0800b454                EventQueue_Push
  .text.EventQueue_Pop
-                0x0800b3dc       0x4c CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
-                0x0800b3dc                EventQueue_Pop
+                0x0800b4b0       0x4c CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
+                0x0800b4b0                EventQueue_Pop
  .text.EventQueue_DroppedCount
-                0x0800b428        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
-                0x0800b428                EventQueue_DroppedCount
+                0x0800b4fc        0xc CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
+                0x0800b4fc                EventQueue_DroppedCount
  .text.FaultManager_Init
-                0x0800b434       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Services/fault_manager/fault_manager.c.obj
-                0x0800b434                FaultManager_Init
+                0x0800b508       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Services/fault_manager/fault_manager.c.obj
+                0x0800b508                FaultManager_Init
  .text.FaultManager_Set
-                0x0800b444       0x38 CMakeFiles/stm32f103rbt6_a33.dir/Services/fault_manager/fault_manager.c.obj
-                0x0800b444                FaultManager_Set
+                0x0800b518       0x38 CMakeFiles/stm32f103rbt6_a33.dir/Services/fault_manager/fault_manager.c.obj
+                0x0800b518                FaultManager_Set
  .text.FaultManager_GetActiveMask
-                0x0800b47c       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Services/fault_manager/fault_manager.c.obj
-                0x0800b47c                FaultManager_GetActiveMask
+                0x0800b550       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Services/fault_manager/fault_manager.c.obj
+                0x0800b550                FaultManager_GetActiveMask
  .text.Scheduler_Init
-                0x0800b48c       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Services/scheduler/scheduler.c.obj
-                0x0800b48c                Scheduler_Init
+                0x0800b560       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Services/scheduler/scheduler.c.obj
+                0x0800b560                Scheduler_Init
  .text.Scheduler_AddPeriodicTask
-                0x0800b4b8       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Services/scheduler/scheduler.c.obj
-                0x0800b4b8                Scheduler_AddPeriodicTask
+                0x0800b58c       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Services/scheduler/scheduler.c.obj
+                0x0800b58c                Scheduler_AddPeriodicTask
  .text.Scheduler_RunPending
-                0x0800b500       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Services/scheduler/scheduler.c.obj
-                0x0800b500                Scheduler_RunPending
+                0x0800b5d4       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Services/scheduler/scheduler.c.obj
+                0x0800b5d4                Scheduler_RunPending
  .text.StoragePowerGuard_Init
-                0x0800b55c       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
-                0x0800b55c                StoragePowerGuard_Init
+                0x0800b630       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
+                0x0800b630                StoragePowerGuard_Init
  .text.StoragePowerGuard_Process100ms
-                0x0800b57c       0x4c CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
-                0x0800b57c                StoragePowerGuard_Process100ms
+                0x0800b650       0x4c CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
+                0x0800b650                StoragePowerGuard_Process100ms
  .text.StoragePowerGuard_CanStartFlashOperation
-                0x0800b5c8       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
-                0x0800b5c8                StoragePowerGuard_CanStartFlashOperation
+                0x0800b69c       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
+                0x0800b69c                StoragePowerGuard_CanStartFlashOperation
  .text.StoragePowerGuard_CanContinueFlashOperation
-                0x0800b5f4        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
-                0x0800b5f4                StoragePowerGuard_CanContinueFlashOperation
+                0x0800b6c8        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
+                0x0800b6c8                StoragePowerGuard_CanContinueFlashOperation
  .text.DisplayController_ApplyModel.isra.0
-                0x0800b5f8       0x78 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+                0x0800b6cc       0x78 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
  .text.DisplayController_Init
-                0x0800b670       0x64 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
-                0x0800b670                DisplayController_Init
+                0x0800b744       0x64 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+                0x0800b744                DisplayController_Init
  .text.DisplayController_Process20ms
-                0x0800b6d4      0x1c4 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
-                0x0800b6d4                DisplayController_Process20ms
+                0x0800b7a8      0x1c4 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+                0x0800b7a8                DisplayController_Process20ms
  .text.DisplayController_SetPage
-                0x0800b898       0x20 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
-                0x0800b898                DisplayController_SetPage
+                0x0800b96c       0x20 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+                0x0800b96c                DisplayController_SetPage
  .text.DisplayController_ShowMessage
-                0x0800b8b8       0x54 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
-                0x0800b8b8                DisplayController_ShowMessage
+                0x0800b98c       0x54 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+                0x0800b98c                DisplayController_ShowMessage
  .text.DisplayController_SetTextPage
-                0x0800b90c       0x38 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
-                0x0800b90c                DisplayController_SetTextPage
+                0x0800b9e0       0x38 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+                0x0800b9e0                DisplayController_SetTextPage
  .text.DisplayController_SetBrightness
-                0x0800b944       0x16 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
-                0x0800b944                DisplayController_SetBrightness
- *fill*         0x0800b95a        0x2 
+                0x0800ba18       0x16 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+                0x0800ba18                DisplayController_SetBrightness
+ *fill*         0x0800ba2e        0x2 
  .text.DisplayController_SetTestPattern
-                0x0800b95c       0x34 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
-                0x0800b95c                DisplayController_SetTestPattern
+                0x0800ba30       0x34 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+                0x0800ba30                DisplayController_SetTestPattern
  .text.DisplayController_GetPage
-                0x0800b990        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
-                0x0800b990                DisplayController_GetPage
+                0x0800ba64        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+                0x0800ba64                DisplayController_GetPage
  .text.DisplayCodes_Get
-                0x0800b99c       0x24 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_codes.c.obj
-                0x0800b99c                DisplayCodes_Get
+                0x0800ba70       0x24 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_codes.c.obj
+                0x0800ba70                DisplayCodes_Get
  .text.DisplayFormatter_EncodeCharacter
-                0x0800b9c0       0xee CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
-                0x0800b9c0                DisplayFormatter_EncodeCharacter
+                0x0800ba94       0xee CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
+                0x0800ba94                DisplayFormatter_EncodeCharacter
  .text.DisplayFormatter_FormatText6
-                0x0800baae       0x22 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
-                0x0800baae                DisplayFormatter_FormatText6
+                0x0800bb82       0x22 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
+                0x0800bb82                DisplayFormatter_FormatText6
  .text.DisplayFormatter_FormatWeight
-                0x0800bad0       0xf0 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
-                0x0800bad0                DisplayFormatter_FormatWeight
+                0x0800bba4       0xf0 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
+                0x0800bba4                DisplayFormatter_FormatWeight
  .text.DisplayFormatter_FormatBatteryMv
-                0x0800bbc0       0x20 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
-                0x0800bbc0                DisplayFormatter_FormatBatteryMv
+                0x0800bc94       0x20 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
+                0x0800bc94                DisplayFormatter_FormatBatteryMv
  .text.DisplayModel_UpdateSegments
-                0x0800bbe0       0x30 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
+                0x0800bcb4       0x30 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
  .text.DisplayModel_Init
-                0x0800bc10       0x20 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
-                0x0800bc10                DisplayModel_Init
+                0x0800bce4       0x20 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
+                0x0800bce4                DisplayModel_Init
  .text.DisplayModel_SetText6
-                0x0800bc30       0x1a CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
-                0x0800bc30                DisplayModel_SetText6
- *fill*         0x0800bc4a        0x2 
+                0x0800bd04       0x1a CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
+                0x0800bd04                DisplayModel_SetText6
+ *fill*         0x0800bd1e        0x2 
  .text.DisplayModel_SetWeight
-                0x0800bc4c       0x3c CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
-                0x0800bc4c                DisplayModel_SetWeight
+                0x0800bd20       0x3c CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
+                0x0800bd20                DisplayModel_SetWeight
  .text.DisplayModel_SetBatteryMv
-                0x0800bc88       0x1a CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
-                0x0800bc88                DisplayModel_SetBatteryMv
- *fill*         0x0800bca2        0x2 
+                0x0800bd5c       0x1a CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
+                0x0800bd5c                DisplayModel_SetBatteryMv
+ *fill*         0x0800bd76        0x2 
  .text.DisplayModel_SetPage
-                0x0800bca4       0x24 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
-                0x0800bca4                DisplayModel_SetPage
+                0x0800bd78       0x24 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
+                0x0800bd78                DisplayModel_SetPage
  .text.DisplayModel_SetIndicators
-                0x0800bcc8       0x30 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
-                0x0800bcc8                DisplayModel_SetIndicators
+                0x0800bd9c       0x30 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
+                0x0800bd9c                DisplayModel_SetIndicators
  .text.DisplayModel_SetBrightness
-                0x0800bcf8       0x24 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
-                0x0800bcf8                DisplayModel_SetBrightness
+                0x0800bdcc       0x24 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
+                0x0800bdcc                DisplayModel_SetBrightness
  .text.DisplayModel_SetRawSegments
-                0x0800bd1c        0xe CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
-                0x0800bd1c                DisplayModel_SetRawSegments
- *fill*         0x0800bd2a        0x2 
+                0x0800bdf0        0xe CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
+                0x0800bdf0                DisplayModel_SetRawSegments
+ *fill*         0x0800bdfe        0x2 
  .text.DisplayModel_Get
-                0x0800bd2c        0x8 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
-                0x0800bd2c                DisplayModel_Get
+                0x0800be00        0x8 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
+                0x0800be00                DisplayModel_Get
  .text.KeyMap_Validate
-                0x0800bd34       0x2e CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_map.c.obj
-                0x0800bd34                KeyMap_Validate
+                0x0800be08       0x2e CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_map.c.obj
+                0x0800be08                KeyMap_Validate
  .text.KeyMap_RawMaskToLogicalMask
-                0x0800bd62       0x3e CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_map.c.obj
-                0x0800bd62                KeyMap_RawMaskToLogicalMask
+                0x0800be36       0x3e CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_map.c.obj
+                0x0800be36                KeyMap_RawMaskToLogicalMask
  .text.KeyService_Push
-                0x0800bda0       0x5c CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+                0x0800be74       0x5c CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
  .text.KeyService_Init
-                0x0800bdfc       0x98 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
-                0x0800bdfc                KeyService_Init
+                0x0800bed0       0x98 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+                0x0800bed0                KeyService_Init
  .text.KeyService_Process10ms
-                0x0800be94      0x1a0 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
-                0x0800be94                KeyService_Process10ms
+                0x0800bf68      0x1a0 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+                0x0800bf68                KeyService_Process10ms
  .text.KeyService_TryPopEvent
-                0x0800c034       0x40 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
-                0x0800c034                KeyService_TryPopEvent
+                0x0800c108       0x40 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+                0x0800c108                KeyService_TryPopEvent
  .text.KeyService_GetMultiKeyConflictCount
-                0x0800c074        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
-                0x0800c074                KeyService_GetMultiKeyConflictCount
+                0x0800c148        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+                0x0800c148                KeyService_GetMultiKeyConflictCount
  .text.KeyService_GetLastRawMask
-                0x0800c080        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
-                0x0800c080                KeyService_GetLastRawMask
+                0x0800c154        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+                0x0800c154                KeyService_GetLastRawMask
  .text.KeyService_GetLastLogicalMask
-                0x0800c08c        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
-                0x0800c08c                KeyService_GetLastLogicalMask
+                0x0800c160        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+                0x0800c160                KeyService_GetLastLogicalMask
  .text.MenuController_Command
-                0x0800c098       0x28 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x0800c16c       0x28 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
  .text.MenuController_Render
-                0x0800c0c0       0x84 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x0800c194       0x84 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
  .text.MenuController_Init
-                0x0800c144       0x50 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
-                0x0800c144                MenuController_Init
+                0x0800c218       0x50 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x0800c218                MenuController_Init
  .text.MenuController_Enter
-                0x0800c194       0x50 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
-                0x0800c194                MenuController_Enter
+                0x0800c268       0x50 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x0800c268                MenuController_Enter
  .text.MenuController_Process10ms
-                0x0800c1e4       0x60 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
-                0x0800c1e4                MenuController_Process10ms
+                0x0800c2b8       0x60 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x0800c2b8                MenuController_Process10ms
  .text.MenuController_HandleKeyEvent
-                0x0800c244      0x428 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
-                0x0800c244                MenuController_HandleKeyEvent
+                0x0800c318      0x428 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x0800c318                MenuController_HandleKeyEvent
  .text.MenuController_Cancel
-                0x0800c66c       0x4c CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
-                0x0800c66c                MenuController_Cancel
+                0x0800c740       0x4c CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x0800c740                MenuController_Cancel
  .text.MenuController_TakeCalibrationRequest
-                0x0800c6b8       0x10 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
-                0x0800c6b8                MenuController_TakeCalibrationRequest
+                0x0800c78c       0x10 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x0800c78c                MenuController_TakeCalibrationRequest
  .text.MenuController_TakeExitRequest
-                0x0800c6c8       0x10 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
-                0x0800c6c8                MenuController_TakeExitRequest
- .text.memcmp   0x0800c6d8       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
-                0x0800c6d8                memcmp
- .text.memset   0x0800c6f8       0x10 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
-                0x0800c6f8                memset
+                0x0800c79c       0x10 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x0800c79c                MenuController_TakeExitRequest
+ .text.memcmp   0x0800c7ac       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
+                0x0800c7ac                memcmp
+ .text.memset   0x0800c7cc       0x10 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
+                0x0800c7cc                memset
  .text.__libc_init_array
-                0x0800c708       0x48 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
-                0x0800c708                __libc_init_array
- .text.memcpy   0x0800c750       0x1c E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
-                0x0800c750                memcpy
+                0x0800c7dc       0x48 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
+                0x0800c7dc                __libc_init_array
+ .text.memcpy   0x0800c824       0x1c E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
+                0x0800c824                memcpy
  *(.glue_7)
- .glue_7        0x0800c76c        0x0 linker stubs
+ .glue_7        0x0800c840        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x0800c76c        0x0 linker stubs
+ .glue_7t       0x0800c840        0x0 linker stubs
  *(.eh_frame)
- .eh_frame      0x0800c76c        0x0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
+ .eh_frame      0x0800c840        0x0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
  *(.init)
- .init          0x0800c76c        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crti.o
-                0x0800c76c                _init
- .init          0x0800c770        0x8 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtn.o
+ .init          0x0800c840        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crti.o
+                0x0800c840                _init
+ .init          0x0800c844        0x8 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtn.o
  *(.fini)
- .fini          0x0800c778        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crti.o
-                0x0800c778                _fini
- .fini          0x0800c77c        0x8 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtn.o
-                0x0800c784                        . = ALIGN (0x4)
-                0x0800c784                        _etext = .
+ .fini          0x0800c84c        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crti.o
+                0x0800c84c                _fini
+ .fini          0x0800c850        0x8 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtn.o
+                0x0800c858                        . = ALIGN (0x4)
+                0x0800c858                        _etext = .
 
-.vfp11_veneer   0x0800c784        0x0
- .vfp11_veneer  0x0800c784        0x0 linker stubs
+.vfp11_veneer   0x0800c858        0x0
+ .vfp11_veneer  0x0800c858        0x0 linker stubs
 
-.v4_bx          0x0800c784        0x0
- .v4_bx         0x0800c784        0x0 linker stubs
+.v4_bx          0x0800c858        0x0
+ .v4_bx         0x0800c858        0x0 linker stubs
 
-.iplt           0x0800c784        0x0
- .iplt          0x0800c784        0x0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
+.iplt           0x0800c858        0x0
+ .iplt          0x0800c858        0x0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
 
-.rodata         0x0800c788      0x274
-                0x0800c788                        . = ALIGN (0x4)
+.rodata         0x0800c858      0x274
+                0x0800c858                        . = ALIGN (0x4)
  *(.rodata)
- .rodata        0x0800c788       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Config/default_config.c.obj
+ .rodata        0x0800c858       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Config/default_config.c.obj
  *(.rodata*)
  .rodata.APBPrescTable
-                0x0800c7d0        0x8 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
-                0x0800c7d0                APBPrescTable
+                0x0800c8a0        0x8 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
+                0x0800c8a0                APBPrescTable
  .rodata.AHBPrescTable
-                0x0800c7d8       0x10 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
-                0x0800c7d8                AHBPrescTable
+                0x0800c8a8       0x10 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
+                0x0800c8a8                AHBPrescTable
  .rodata.aPredivFactorTable.0
-                0x0800c7e8        0x2 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c.obj
+                0x0800c8b8        0x2 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c.obj
  .rodata.aPLLMULFactorTable.1
-                0x0800c7ea       0x10 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c.obj
+                0x0800c8ba       0x10 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c.obj
  .rodata.aPredivFactorTable.0
-                0x0800c7fa        0x2 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c.obj
+                0x0800c8ca        0x2 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c.obj
  .rodata.aPLLMULFactorTable.1
-                0x0800c7fc       0x10 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c.obj
+                0x0800c8cc       0x10 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c.obj
  .rodata.CalibrationController_FormatSpan.str1.1
-                0x0800c80c       0x46 CMakeFiles/stm32f103rbt6_a33.dir/App/calibration_controller.c.obj
+                0x0800c8dc       0x46 CMakeFiles/stm32f103rbt6_a33.dir/App/calibration_controller.c.obj
                                   0x7 (size before relaxing)
  .rodata.SelfTestController_Process10ms.str1.1
-                0x0800c852        0x7 CMakeFiles/stm32f103rbt6_a33.dir/App/self_test_controller.c.obj
- *fill*         0x0800c852        0x2 
+                0x0800c922        0x7 CMakeFiles/stm32f103rbt6_a33.dir/App/self_test_controller.c.obj
+ *fill*         0x0800c922        0x2 
  .rodata.s_backend
-                0x0800c854       0x18 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_flash.c.obj
- *fill*         0x0800c86c        0x4 
+                0x0800c924       0x18 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_flash.c.obj
+ *fill*         0x0800c93c        0x4 
  .rodata.scales.0
-                0x0800c870       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/unit_converter.c.obj
+                0x0800c940       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/unit_converter.c.obj
  .rodata.counts.0
-                0x0800c8a0        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x0800c970        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
  .rodata.board_to_tm_bit.0
-                0x0800c8a4        0xa CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj
+                0x0800c974        0xa CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj
  .rodata.g_board_digit_to_grid
-                0x0800c8ae        0x6 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj
-                0x0800c8ae                g_board_digit_to_grid
+                0x0800c97e        0x6 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj
+                0x0800c97e                g_board_digit_to_grid
  .rodata.CSWTCH.16
-                0x0800c8b4        0x9 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
- .rodata.map.0  0x0800c8bd       0x19 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
- *fill*         0x0800c8d6        0x2 
+                0x0800c984        0x9 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
+ .rodata.map.0  0x0800c98d       0x19 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
+ *fill*         0x0800c9a6        0x2 
  .rodata.baud.0
-                0x0800c8d8       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x0800c9a8       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
  .rodata.CSWTCH.10
-                0x0800c8ec        0x5 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+                0x0800c9bc        0x5 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
  .rodata.DisplayController_Process20ms.str1.1
-                0x0800c8f1       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+                0x0800c9c1       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
  .rodata.s_codes
-                0x0800c8f1       0x96 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_codes.c.obj
+                0x0800c9c1       0x96 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_codes.c.obj
  .rodata.DisplayFormatter_FormatWeight.str1.1
-                0x0800c987        0xe CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
+                0x0800ca57        0xe CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
  .rodata.DisplayModel_SetWeight.str1.1
-                0x0800c987        0xe CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
+                0x0800ca57        0xe CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
  .rodata.g_key_map_development_default
-                0x0800c987        0x5 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_map.c.obj
-                0x0800c987                g_key_map_development_default
+                0x0800ca57        0x5 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_map.c.obj
+                0x0800ca57                g_key_map_development_default
  .rodata.expected.0
-                0x0800c98c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x0800ca5c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
  .rodata.ordinary.1
-                0x0800c990        0x6 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x0800ca60        0x6 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
  .rodata.s_labels
-                0x0800c996       0x66 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
-                0x0800c9fc                        . = ALIGN (0x4)
+                0x0800ca66       0x66 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x0800cacc                        . = ALIGN (0x4)
 
-.ARM.extab      0x0800c9fc        0x0
-                0x0800c9fc                        . = ALIGN (0x4)
+.ARM.extab      0x0800cacc        0x0
+                0x0800cacc                        . = ALIGN (0x4)
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x0800c9fc                        . = ALIGN (0x4)
+                0x0800cacc                        . = ALIGN (0x4)
 
-.ARM            0x0800c9fc        0x8
-                0x0800c9fc                        . = ALIGN (0x4)
-                0x0800c9fc                        __exidx_start = .
+.ARM            0x0800cacc        0x8
+                0x0800cacc                        . = ALIGN (0x4)
+                0x0800cacc                        __exidx_start = .
  *(.ARM.exidx*)
- .ARM.exidx     0x0800c9fc        0x8 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_udivmoddi4.o)
-                0x0800ca04                        __exidx_end = .
-                0x0800ca04                        . = ALIGN (0x4)
+ .ARM.exidx     0x0800cacc        0x8 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_udivmoddi4.o)
+                0x0800cad4                        __exidx_end = .
+                0x0800cad4                        . = ALIGN (0x4)
 
-.preinit_array  0x0800ca04        0x0
-                0x0800ca04                        . = ALIGN (0x4)
-                0x0800ca04                        PROVIDE (__preinit_array_start = .)
+.preinit_array  0x0800cad4        0x0
+                0x0800cad4                        . = ALIGN (0x4)
+                0x0800cad4                        PROVIDE (__preinit_array_start = .)
  *(.preinit_array*)
-                0x0800ca04                        PROVIDE (__preinit_array_end = .)
-                0x0800ca04                        . = ALIGN (0x4)
+                0x0800cad4                        PROVIDE (__preinit_array_end = .)
+                0x0800cad4                        . = ALIGN (0x4)
 
-.init_array     0x0800ca04        0x4
-                0x0800ca04                        . = ALIGN (0x4)
-                0x0800ca04                        PROVIDE (__init_array_start = .)
+.init_array     0x0800cad4        0x4
+                0x0800cad4                        . = ALIGN (0x4)
+                0x0800cad4                        PROVIDE (__init_array_start = .)
  *(SORT_BY_NAME(.init_array.*))
  *(.init_array*)
- .init_array    0x0800ca04        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
-                0x0800ca08                        PROVIDE (__init_array_end = .)
-                0x0800ca08                        . = ALIGN (0x4)
+ .init_array    0x0800cad4        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
+                0x0800cad8                        PROVIDE (__init_array_end = .)
+                0x0800cad8                        . = ALIGN (0x4)
 
-.fini_array     0x0800ca08        0x4
-                0x0800ca08                        . = ALIGN (0x4)
+.fini_array     0x0800cad8        0x4
+                0x0800cad8                        . = ALIGN (0x4)
                 [!provide]                        PROVIDE (__fini_array_start = .)
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x0800ca08        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
+ .fini_array    0x0800cad8        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
                 [!provide]                        PROVIDE (__fini_array_end = .)
-                0x0800ca0c                        . = ALIGN (0x4)
-                0x0800ca0c                        _sidata = LOADADDR (.data)
+                0x0800cadc                        . = ALIGN (0x4)
+                0x0800cadc                        _sidata = LOADADDR (.data)
 
-.rel.dyn        0x0800ca0c        0x0
- .rel.iplt      0x0800ca0c        0x0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
+.rel.dyn        0x0800cadc        0x0
+ .rel.iplt      0x0800cadc        0x0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
 
-.data           0x20000000        0xc load address 0x0800ca0c
+.data           0x20000000        0xc load address 0x0800cadc
                 0x20000000                        . = ALIGN (0x4)
                 0x20000000                        _sdata = .
  *(.data)
@@ -3544,10 +3558,10 @@ LOAD E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/
  *(.RamFunc*)
                 0x2000000c                        . = ALIGN (0x4)
 
-.igot.plt       0x2000000c        0x0 load address 0x0800ca18
+.igot.plt       0x2000000c        0x0 load address 0x0800cae8
  .igot.plt      0x2000000c        0x0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
 
-.tdata          0x2000000c        0x0 load address 0x0800ca18
+.tdata          0x2000000c        0x0 load address 0x0800cae8
  *(.tdata .tdata.* .gnu.linkonce.td.*)
                 0x2000000c                        . = ALIGN (0x4)
                 0x2000000c                        _edata = .
@@ -3564,7 +3578,7 @@ LOAD E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/
                 [!provide]                        PROVIDE (__data_source_end = __tdata_source_end)
                 [!provide]                        PROVIDE (__data_source_size = (__data_source_end - __data_source))
 
-.tbss           0x2000000c        0x0 load address 0x0800ca18
+.tbss           0x2000000c        0x0 load address 0x0800cae8
                 0x2000000c                        _sbss = .
                 0x2000000c                        __bss_start__ = _sbss
  *(.tbss .tbss.*)
@@ -3581,7 +3595,7 @@ LOAD E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/
                 [!provide]                        PROVIDE (__arm32_tls_tcb_offset = MAX (0x8, __tls_align))
                 [!provide]                        PROVIDE (__arm64_tls_tcb_offset = MAX (0x10, __tls_align))
 
-.bss            0x20000010     0x255c load address 0x0800ca18
+.bss            0x20000010     0x256c load address 0x0800cae8
  *(.bss)
  .bss           0x20000010       0x1c E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
  *(.bss*)
@@ -3772,274 +3786,277 @@ LOAD E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/
  .bss.s_config  0x20000e56        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
  .bss.s_output_state
                 0x20000e5a        0x5 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/output_gpio/output_gpio.c.obj
- .bss.s_completed
-                0x20000e5f        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
- .bss.s_tx_start_us
-                0x20000e60        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
- .bss.s_state_enter_us
-                0x20000e64        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
- .bss.s_length  0x20000e68        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
- *fill*         0x20000e6a        0x2 
- .bss.s_data    0x20000e6c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
- .bss.s_state   0x20000e70        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
- .bss.s_recovery_failures
-                0x20000e71        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
- .bss.s_suspended
-                0x20000e72        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
- .bss.s_initialized
-                0x20000e73        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
- .bss.s_receive_error
-                0x20000e74        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
- *fill*         0x20000e75        0x1 
- .bss.s_idle_position
-                0x20000e76        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
- .bss.s_idle_timestamp_cycles
-                0x20000e78        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
- .bss.s_idle_pending
-                0x20000e7c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
- .bss.s_consumer_absolute
-                0x20000e80        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
- .bss.s_producer_absolute
-                0x20000e84        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
- .bss.s_observed_events
-                0x20000e88       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
- .bss.s_statistics
-                0x20000eb4       0x3c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
- .bss.s_rx_dma_buffer
-                0x20000ef0      0x400 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
- .bss.s_error_count
-                0x200012f0        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
- .bss.s_brightness
-                0x200012f4        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
- .bss.s_initialized
-                0x200012f5        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
- .bss.s_display_enabled
-                0x200012f6        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
- .bss.s_display_dirty
-                0x200012f7        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
- .bss.s_display_ram
-                0x200012f8        0xe CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
- *fill*         0x20001306        0x2 
- .bss.s_requested_low_ms
-                0x20001308        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
- .bss.s_assert_start_ms
-                0x2000130c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
- .bss.s_state   0x20001310        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
- .bss.s_staged_config_valid
-                0x20001311        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
- *fill*         0x20001312        0x6 
- .bss.s_staged_config
-                0x20001318      0x180 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
- .bss.s_factory_reset_requested
-                0x20001498        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
- *fill*         0x20001499        0x7 
- .bss.s_calibration
-                0x200014a0       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
- .bss.s_mailbox
-                0x200014e8       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
- .bss.s_pending_communication
-                0x20001518       0x1c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
- .bss.s_staging_dirty
-                0x20001534        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
- *fill*         0x20001535        0x1 
- .bss.s_staging_validation
-                0x20001536        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
- .bss.s_staging
-                0x20001538       0x80 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
- .bss.s_statistics
-                0x200015b8       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
- .bss.s_silence_dma_position
-                0x200015d0        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
- .bss.s_length  0x200015d2        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
- .bss.s_frame   0x200015d4      0x100 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
- .bss.s_state   0x200016d4        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
- *fill*         0x200016d5        0x3 
- .bss.s_timing  0x200016d8       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
- .bss.s_suspended
-                0x200016ec        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
- *fill*         0x200016ed        0x3 
- .bss.s_delay_start_ms
-                0x200016f0        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
- .bss.s_response_length
-                0x200016f4        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
- .bss.s_request_length
-                0x200016f6        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
- .bss.s_registers
-                0x200016f8       0xfa CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
- .bss.s_response
-                0x200017f2      0x100 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
- .bss.s_request
-                0x200018f2      0x100 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
- *fill*         0x200019f2        0x2 
- .bss.s_statistics
-                0x200019f4       0x40 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
- .bss.s_state   0x20001a34        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
- *fill*         0x20001a35        0x3 
- .bss.s_config  0x20001a38       0x1c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
- .bss.s_state   0x20001a54        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
- *fill*         0x20001a55        0x3 
- .bss.s_working
-                0x20001a58      0x180 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
- .bss.s_last_flash_address
-                0x20001bd8        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_last_lock_error
-                0x20001bdc        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_last_primary_flash_error
-                0x20001bdd        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_commit_lock_error
-                0x20001bde        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_active_payload_valid
-                0x20001bdf        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_active_slot
-                0x20001be0        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- *fill*         0x20001be1        0x3 
  .bss.s_last_error
-                0x20001be4        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_target_address
-                0x20001be8        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_record_sequence
-                0x20001bec        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_active_sequence
-                0x20001bf0        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_source_revision
-                0x20001bf4        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_active_payload_length
-                0x20001bf8        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_program_offset
-                0x20001bfa        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_program_body_length
-                0x20001bfc        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_logical_body_length
-                0x20001bfe        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_payload_length
-                0x20001c00        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_slot_b_payload
-                0x20001c02      0x158 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_slot_a_payload
-                0x20001d5a      0x158 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_active_payload
-                0x20001eb2      0x158 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_verify_chunk
-                0x2000200a       0x40 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_body    0x2000204a      0x179 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- *fill*         0x200021c3        0x1 
+                0x20000e5f        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+ .bss.s_completed
+                0x20000e60        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+ *fill*         0x20000e61        0x3 
+ .bss.s_tx_start_cycles
+                0x20000e64        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+ .bss.s_state_enter_cycles
+                0x20000e68        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+ .bss.s_length  0x20000e6c        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+ *fill*         0x20000e6e        0x2 
+ .bss.s_data    0x20000e70        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+ .bss.s_state   0x20000e74        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+ .bss.s_recovery_failures
+                0x20000e75        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+ .bss.s_suspended
+                0x20000e76        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+ .bss.s_initialized
+                0x20000e77        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+ .bss.s_receive_error
+                0x20000e78        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+ *fill*         0x20000e79        0x1 
+ .bss.s_idle_position
+                0x20000e7a        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+ .bss.s_idle_timestamp_cycles
+                0x20000e7c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+ .bss.s_idle_pending
+                0x20000e80        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+ .bss.s_consumer_absolute
+                0x20000e84        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+ .bss.s_producer_absolute
+                0x20000e88        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+ .bss.s_observed_events
+                0x20000e8c       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
  .bss.s_statistics
-                0x200021c4       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_result  0x200021e4        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x20000eb8       0x40 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+ .bss.s_rx_dma_buffer
+                0x20000ef8      0x400 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+ .bss.s_error_count
+                0x200012f8        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+ .bss.s_brightness
+                0x200012fc        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+ .bss.s_initialized
+                0x200012fd        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+ .bss.s_display_enabled
+                0x200012fe        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+ .bss.s_display_dirty
+                0x200012ff        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+ .bss.s_display_ram
+                0x20001300        0xe CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+ *fill*         0x2000130e        0x2 
+ .bss.s_requested_low_ms
+                0x20001310        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
+ .bss.s_assert_start_ms
+                0x20001314        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
+ .bss.s_state   0x20001318        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
+ .bss.s_staged_config_valid
+                0x20001319        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
+ *fill*         0x2000131a        0x6 
+ .bss.s_staged_config
+                0x20001320      0x180 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
+ .bss.s_factory_reset_requested
+                0x200014a0        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
+ *fill*         0x200014a1        0x7 
+ .bss.s_calibration
+                0x200014a8       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
+ .bss.s_mailbox
+                0x200014f0       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
+ .bss.s_pending_communication
+                0x20001520       0x1c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+ .bss.s_staging_dirty
+                0x2000153c        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+ *fill*         0x2000153d        0x1 
+ .bss.s_staging_validation
+                0x2000153e        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+ .bss.s_staging
+                0x20001540       0x80 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+ .bss.s_statistics
+                0x200015c0       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+ .bss.s_silence_dma_position
+                0x200015d8        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+ .bss.s_length  0x200015da        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+ .bss.s_frame   0x200015dc      0x100 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+ .bss.s_state   0x200016dc        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+ *fill*         0x200016dd        0x3 
+ .bss.s_timing  0x200016e0       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+ .bss.s_suspended
+                0x200016f4        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+ *fill*         0x200016f5        0x3 
+ .bss.s_delay_start_ms
+                0x200016f8        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+ .bss.s_response_length
+                0x200016fc        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+ .bss.s_request_length
+                0x200016fe        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+ .bss.s_registers
+                0x20001700       0xfa CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+ .bss.s_response
+                0x200017fa      0x100 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+ .bss.s_request
+                0x200018fa      0x100 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+ *fill*         0x200019fa        0x2 
+ .bss.s_statistics
+                0x200019fc       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+ .bss.s_state   0x20001a44        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+ *fill*         0x20001a45        0x3 
+ .bss.s_config  0x20001a48       0x1c CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+ .bss.s_state   0x20001a64        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
+ *fill*         0x20001a65        0x3 
+ .bss.s_working
+                0x20001a68      0x180 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
+ .bss.s_last_flash_address
+                0x20001be8        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_last_lock_error
+                0x20001bec        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_last_primary_flash_error
+                0x20001bed        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_commit_lock_error
+                0x20001bee        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_active_payload_valid
+                0x20001bef        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_active_slot
+                0x20001bf0        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ *fill*         0x20001bf1        0x3 
+ .bss.s_last_error
+                0x20001bf4        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_target_address
+                0x20001bf8        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_record_sequence
+                0x20001bfc        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_active_sequence
+                0x20001c00        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_source_revision
+                0x20001c04        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_active_payload_length
+                0x20001c08        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_program_offset
+                0x20001c0a        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_program_body_length
+                0x20001c0c        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_logical_body_length
+                0x20001c0e        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_payload_length
+                0x20001c10        0x2 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_slot_b_payload
+                0x20001c12      0x158 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_slot_a_payload
+                0x20001d6a      0x158 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_active_payload
+                0x20001ec2      0x158 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_verify_chunk
+                0x2000201a       0x40 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_body    0x2000205a      0x179 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ *fill*         0x200021d3        0x1 
+ .bss.s_statistics
+                0x200021d4       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_result  0x200021f4        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
  .bss.s_operation
-                0x200021e5        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_state   0x200021e6        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- *fill*         0x200021e7        0x1 
- .bss.s_power_check
-                0x200021e8        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_backend
-                0x200021ec        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .bss.s_dropped_count
-                0x200021f0        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
- .bss.s_count   0x200021f4        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
- .bss.s_tail    0x200021f5        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
- .bss.s_head    0x200021f6        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
+                0x200021f5        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_state   0x200021f6        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
  *fill*         0x200021f7        0x1 
- .bss.s_queue   0x200021f8      0x140 CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
+ .bss.s_power_check
+                0x200021f8        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_backend
+                0x200021fc        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .bss.s_dropped_count
+                0x20002200        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
+ .bss.s_count   0x20002204        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
+ .bss.s_tail    0x20002205        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
+ .bss.s_head    0x20002206        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
+ *fill*         0x20002207        0x1 
+ .bss.s_queue   0x20002208      0x140 CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
  .bss.s_fault_mask
-                0x20002338        0x8 CMakeFiles/stm32f103rbt6_a33.dir/Services/fault_manager/fault_manager.c.obj
+                0x20002348        0x8 CMakeFiles/stm32f103rbt6_a33.dir/Services/fault_manager/fault_manager.c.obj
  .bss.s_task_count
-                0x20002340        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/scheduler/scheduler.c.obj
- *fill*         0x20002341        0x3 
- .bss.s_tasks   0x20002344       0xa0 CMakeFiles/stm32f103rbt6_a33.dir/Services/scheduler/scheduler.c.obj
+                0x20002350        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/scheduler/scheduler.c.obj
+ *fill*         0x20002351        0x3 
+ .bss.s_tasks   0x20002354       0xa0 CMakeFiles/stm32f103rbt6_a33.dir/Services/scheduler/scheduler.c.obj
  .bss.s_safe_since_ms
-                0x200023e4        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
- .bss.s_state   0x200023e8        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
+                0x200023f4        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
+ .bss.s_state   0x200023f8        0x1 CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
  .bss.s_initialized
-                0x200023e9        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+                0x200023f9        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
  .bss.s_message_active
-                0x200023ea        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+                0x200023fa        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
  .bss.s_text_override
-                0x200023eb        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
- .bss.s_text    0x200023ec        0x6 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
- *fill*         0x200023f2        0x2 
- .bss.s_applied_revision
-                0x200023f4        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
- .bss.s_message_duration_ms
-                0x200023f8        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
- .bss.s_message_start_ms
-                0x200023fc        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
- .bss.s_restore_page
-                0x20002400        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
- .bss.s_page    0x20002401        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+                0x200023fb        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+ .bss.s_text    0x200023fc        0x6 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
  *fill*         0x20002402        0x2 
- .bss.s_model   0x20002404       0x18 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
+ .bss.s_applied_revision
+                0x20002404        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+ .bss.s_message_duration_ms
+                0x20002408        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+ .bss.s_message_start_ms
+                0x2000240c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+ .bss.s_restore_page
+                0x20002410        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+ .bss.s_page    0x20002411        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+ *fill*         0x20002412        0x2 
+ .bss.s_model   0x20002414       0x18 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
  .bss.s_initialized
-                0x2000241c        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+                0x2000242c        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
  .bss.s_release_timing
-                0x2000241d        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+                0x2000242d        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
  .bss.s_conflict
-                0x2000241e        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+                0x2000242e        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
  .bss.s_last_logical_mask
-                0x2000241f        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+                0x2000242f        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
  .bss.s_last_raw_mask
-                0x20002420        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+                0x20002430        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
  .bss.s_last_conflict_mask
-                0x20002421        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
- *fill*         0x20002422        0x2 
+                0x20002431        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+ *fill*         0x20002432        0x2 
  .bss.s_all_released_ms
-                0x20002424        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+                0x20002434        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
  .bss.s_conflict_count
-                0x20002428        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+                0x20002438        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
  .bss.s_dropped
-                0x2000242c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
- .bss.s_count   0x20002430        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
- .bss.s_tail    0x20002431        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
- .bss.s_head    0x20002432        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
- *fill*         0x20002433        0x1 
- .bss.s_events  0x20002434       0xc0 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
- .bss.s_keys    0x200024f4       0x50 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
- .bss.s_map     0x20002544        0x5 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
- *fill*         0x20002549        0x3 
+                0x2000243c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+ .bss.s_count   0x20002440        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+ .bss.s_tail    0x20002441        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+ .bss.s_head    0x20002442        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+ *fill*         0x20002443        0x1 
+ .bss.s_events  0x20002444       0xc0 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+ .bss.s_keys    0x20002504       0x50 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+ .bss.s_map     0x20002554        0x5 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+ *fill*         0x20002559        0x3 
  .bss.s_sequence_last_ms
-                0x2000254c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- .bss.s_sequence_start_ms
-                0x20002550        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- .bss.s_sequence_index
-                0x20002554        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- .bss.s_advanced
-                0x20002555        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- .bss.s_factory_confirmation
-                0x20002556        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- .bss.s_exit_request
-                0x20002557        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- .bss.s_calibration_request
-                0x20002558        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- .bss.s_editing
-                0x20002559        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- .bss.s_active  0x2000255a        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- *fill*         0x2000255b        0x1 
- .bss.s_last_activity_ms
                 0x2000255c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- .bss.s_step    0x20002560        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- .bss.s_value   0x20002564        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- .bss.s_field   0x20002568        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- .bss.s_item    0x20002569        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ .bss.s_sequence_start_ms
+                0x20002560        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ .bss.s_sequence_index
+                0x20002564        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ .bss.s_advanced
+                0x20002565        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ .bss.s_factory_confirmation
+                0x20002566        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ .bss.s_exit_request
+                0x20002567        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ .bss.s_calibration_request
+                0x20002568        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ .bss.s_editing
+                0x20002569        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ .bss.s_active  0x2000256a        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ *fill*         0x2000256b        0x1 
+ .bss.s_last_activity_ms
+                0x2000256c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ .bss.s_step    0x20002570        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ .bss.s_value   0x20002574        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ .bss.s_field   0x20002578        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ .bss.s_item    0x20002579        0x1 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
  *(COMMON)
-                0x2000256c                        . = ALIGN (0x4)
- *fill*         0x2000256a        0x2 
-                0x2000256c                        _ebss = .
-                0x2000256c                        __bss_end__ = _ebss
+                0x2000257c                        . = ALIGN (0x4)
+ *fill*         0x2000257a        0x2 
+                0x2000257c                        _ebss = .
+                0x2000257c                        __bss_end__ = _ebss
                 [!provide]                        PROVIDE (__bss_end = .)
                 [!provide]                        PROVIDE (__non_tls_bss_start = ADDR (.bss))
                 [!provide]                        PROVIDE (__bss_start = __tbss_start)
                 [!provide]                        PROVIDE (__bss_size = (__bss_end - __bss_start))
 
 ._user_heap_stack
-                0x2000256c      0x404 load address 0x0800ca18
-                0x20002570                        . = ALIGN (0x8)
- *fill*         0x2000256c        0x4 
+                0x2000257c      0x404 load address 0x0800cae8
+                0x20002580                        . = ALIGN (0x8)
+ *fill*         0x2000257c        0x4 
                 [!provide]                        PROVIDE (end = .)
-                0x20002570                        PROVIDE (_end = .)
-                0x20002570                        . = (. + _Min_Heap_Size)
-                0x20002970                        . = (. + _Min_Stack_Size)
- *fill*         0x20002570      0x400 
-                0x20002970                        . = ALIGN (0x8)
+                0x20002580                        PROVIDE (_end = .)
+                0x20002580                        . = (. + _Min_Heap_Size)
+                0x20002980                        . = (. + _Min_Stack_Size)
+ *fill*         0x20002580      0x400 
+                0x20002980                        . = ALIGN (0x8)
 
 /DISCARD/
  libc.a:*(*)
@@ -4181,75 +4198,77 @@ LOAD linker stubs
  .ARM.attributes
                 0x00000b24       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
  .ARM.attributes
-                0x00000b51       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+                0x00000b51       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_position.c.obj
  .ARM.attributes
-                0x00000b7e       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+                0x00000b7e       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
  .ARM.attributes
-                0x00000bab       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj
+                0x00000bab       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
  .ARM.attributes
-                0x00000bd8       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
+                0x00000bd8       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj
  .ARM.attributes
-                0x00000c05       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
+                0x00000c05       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
  .ARM.attributes
-                0x00000c32       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
+                0x00000c32       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
  .ARM.attributes
-                0x00000c5f       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x00000c5f       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
  .ARM.attributes
-                0x00000c8c       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_crc16.c.obj
+                0x00000c8c       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
  .ARM.attributes
-                0x00000cb9       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_timing.c.obj
+                0x00000cb9       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_crc16.c.obj
  .ARM.attributes
-                0x00000ce6       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+                0x00000ce6       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_timing.c.obj
  .ARM.attributes
-                0x00000d13       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+                0x00000d13       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
  .ARM.attributes
-                0x00000d40       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
+                0x00000d40       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
  .ARM.attributes
-                0x00000d6d       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+                0x00000d6d       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
  .ARM.attributes
-                0x00000d9a       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+                0x00000d9a       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
  .ARM.attributes
-                0x00000dc7       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/crc32/crc32.c.obj
+                0x00000dc7       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
  .ARM.attributes
-                0x00000df4       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
+                0x00000df4       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/crc32/crc32.c.obj
  .ARM.attributes
-                0x00000e21       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/fault_manager/fault_manager.c.obj
+                0x00000e21       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
  .ARM.attributes
-                0x00000e4e       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/scheduler/scheduler.c.obj
+                0x00000e4e       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/fault_manager/fault_manager.c.obj
  .ARM.attributes
-                0x00000e7b       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
+                0x00000e7b       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/scheduler/scheduler.c.obj
  .ARM.attributes
-                0x00000ea8       0x2d CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+                0x00000ea8       0x2d CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
  .ARM.attributes
-                0x00000ed5       0x2d CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_codes.c.obj
+                0x00000ed5       0x2d CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
  .ARM.attributes
-                0x00000f02       0x2d CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
+                0x00000f02       0x2d CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_codes.c.obj
  .ARM.attributes
-                0x00000f2f       0x2d CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
+                0x00000f2f       0x2d CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
  .ARM.attributes
-                0x00000f5c       0x2d CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_map.c.obj
+                0x00000f5c       0x2d CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
  .ARM.attributes
-                0x00000f89       0x2d CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+                0x00000f89       0x2d CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_map.c.obj
  .ARM.attributes
-                0x00000fb6       0x2d CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x00000fb6       0x2d CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
  .ARM.attributes
-                0x00000fe3       0x1d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_aeabi_ldivmod.o)
+                0x00000fe3       0x2d CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
  .ARM.attributes
-                0x00001000       0x1d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_aeabi_uldivmod.o)
+                0x00001010       0x1d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_aeabi_ldivmod.o)
  .ARM.attributes
-                0x0000101d       0x2d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_udivmoddi4.o)
+                0x0000102d       0x1d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_aeabi_uldivmod.o)
  .ARM.attributes
-                0x0000104a       0x1d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_dvmd_tls.o)
+                0x0000104a       0x2d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_udivmoddi4.o)
  .ARM.attributes
-                0x00001067       0x2d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
+                0x00001077       0x1d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_dvmd_tls.o)
  .ARM.attributes
-                0x00001094       0x2d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
+                0x00001094       0x2d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
  .ARM.attributes
-                0x000010c1       0x2d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
+                0x000010c1       0x2d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
  .ARM.attributes
-                0x000010ee       0x2d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
+                0x000010ee       0x2d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
  .ARM.attributes
-                0x0000111b       0x1d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtn.o
+                0x0000111b       0x2d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
+ .ARM.attributes
+                0x00001148       0x1d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtn.o
 
 .comment        0x00000000       0x43
  .comment       0x00000000       0x43 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
@@ -4315,6 +4334,7 @@ LOAD linker stubs
  .comment       0x00000043       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
  .comment       0x00000043       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/output_gpio/output_gpio.c.obj
  .comment       0x00000043       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+ .comment       0x00000043       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_position.c.obj
  .comment       0x00000043       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
  .comment       0x00000043       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
  .comment       0x00000043       0x44 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj

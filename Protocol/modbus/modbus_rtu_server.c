@@ -298,6 +298,7 @@ void ModbusRtuServer_Process(void)
             else
             {
                 ++s_statistics.tx_error_count;
+                ++s_statistics.tx_start_error_count;
                 s_state = MODBUS_SERVER_ERROR;
             }
             break;
@@ -315,6 +316,10 @@ void ModbusRtuServer_Process(void)
             else if (Rs485TxController_GetState() == RS485_TX_ERROR)
             {
                 ++s_statistics.tx_error_count;
+                if (Rs485TxController_GetLastError() == RS485_TX_ERROR_TIMEOUT)
+                    ++s_statistics.tx_timeout_error_count;
+                else
+                    ++s_statistics.tx_start_error_count;
                 Rs485TxController_Abort();
                 s_state = MODBUS_SERVER_ERROR;
             }

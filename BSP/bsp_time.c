@@ -81,6 +81,17 @@ uint32_t BSP_TimeNowUs(void)
     return (s_cycles_per_us == 0U) ? 0U : (DWT->CYCCNT / s_cycles_per_us);
 }
 
+bool BSP_TimeUsToCycles(uint32_t interval_us, uint32_t *interval_cycles)
+{
+    if ((interval_cycles == NULL) || (s_cycles_per_us == 0U) ||
+        (interval_us > (UINT32_MAX / s_cycles_per_us)))
+    {
+        return false;
+    }
+    *interval_cycles = interval_us * s_cycles_per_us;
+    return true;
+}
+
 uint32_t BSP_InterruptSaveAndDisable(void)
 {
     uint32_t primask = __get_PRIMASK();

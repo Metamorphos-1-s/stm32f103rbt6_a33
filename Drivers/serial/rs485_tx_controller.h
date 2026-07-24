@@ -19,6 +19,13 @@ typedef enum
     RS485_TX_ERROR
 } Rs485TxState;
 
+typedef enum
+{
+    RS485_TX_ERROR_NONE = 0,
+    RS485_TX_ERROR_DMA_START,
+    RS485_TX_ERROR_TIMEOUT
+} Rs485TxErrorReason;
+
 void Rs485TxController_Init(void);
 bool Rs485TxController_Start(const uint8_t *data, uint16_t length);
 void Rs485TxController_Process(void);
@@ -26,5 +33,6 @@ void Rs485TxController_Abort(void);
 bool Rs485TxController_IsBusy(void);
 bool Rs485TxController_TakeCompleted(void);
 Rs485TxState Rs485TxController_GetState(void);
+Rs485TxErrorReason Rs485TxController_GetLastError(void);
 
 #endif

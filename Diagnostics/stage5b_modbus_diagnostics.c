@@ -54,10 +54,14 @@ void Stage5BModbusDiagnostics_Get(Stage5BModbusDiagnosticSnapshot *snapshot)
     snapshot->tx_response_count = server->tx_response_count;
     snapshot->tx_error_count = server->tx_error_count +
         transport->tx_dma_error_count + transport->tx_timeout_count;
+    snapshot->tx_start_error_count = server->tx_start_error_count;
+    snapshot->tx_timeout_error_count = server->tx_timeout_error_count;
     snapshot->uart_error_count = transport->uart_parity_error_count +
         transport->uart_frame_error_count + transport->uart_noise_error_count +
         transport->uart_overrun_error_count;
     snapshot->dma_overrun_count = transport->rx_overrun_count;
+    snapshot->dma_wrap_race_recovery_count =
+        transport->rx_wrap_race_recovery_count;
     snapshot->last_request_address = server->last_request_address;
     snapshot->last_function = server->last_function;
     snapshot->last_exception = server->last_exception;
