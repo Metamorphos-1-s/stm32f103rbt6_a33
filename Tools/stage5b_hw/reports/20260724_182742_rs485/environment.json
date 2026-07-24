@@ -1,0 +1,9 @@
+{
+  "os": "Windows-10-10.0.26200-SP0",
+  "python": "3.8.10 (tags/v3.8.10:3d8993a, May  3 2021, 11:48:03) [MSC v.1928 64 bit (AMD64)]",
+  "pyserial": "3.5",
+  "port": null,
+  "timestamp_utc": "2026-07-24T10:27:42.112480+00:00",
+  "cwd_redacted": "stm32f103rbt6_a33",
+  "end_timestamp_utc": "2026-07-24T10:27:42.221778+00:00"
+}

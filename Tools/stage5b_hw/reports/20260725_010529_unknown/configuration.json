@@ -1,0 +1,10 @@
+{
+  "baud_rate": 9600,
+  "stop_bits": 1,
+  "slave_address": 1,
+  "port": "COM5",
+  "parity": "N",
+  "timeout_ms": 500,
+  "poll_interval_ms": 50,
+  "interface": "unknown"
+}

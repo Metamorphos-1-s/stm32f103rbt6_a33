@@ -1,0 +1,21 @@
+{
+  "port": "COM5",
+  "rs232_port": "COM5",
+  "rs485_port": "COM6",
+  "interface": "rs232",
+  "baud_rate": 115200,
+  "parity": "N",
+  "stop_bits": 1,
+  "slave_address": 1,
+  "timeout_ms": 300,
+  "poll_interval_ms": 50,
+  "firmware_elf": "../../build/Release/stm32f103rbt6_a33.elf",
+  "cube_programmer_cli": "",
+  "allow_write": false,
+  "allow_actions": false,
+  "allow_flash": false,
+  "allow_comm_change": false,
+  "allow_factory_reset": false,
+  "allow_calibration": false,
+  "automation_authorizations": []
+}

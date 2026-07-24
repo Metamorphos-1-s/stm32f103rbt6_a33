@@ -1,0 +1,7 @@
+[
+  {
+    "name": "execution",
+    "status": "FAIL",
+    "detail": "Modbus response timeout"
+  }
+]

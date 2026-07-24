@@ -1,0 +1,28 @@
+[
+  {
+    "name": "probe",
+    "status": "PASS",
+    "detail": "read-only identity",
+    "data": {
+      "display_weight": 0,
+      "decimals": 3,
+      "active_unit": 0,
+      "status_flags": 196608,
+      "register_map_version": 256,
+      "firmware_version": 1290,
+      "net_mass_ug": 0,
+      "sample_sequence": 45386,
+      "active_profile": 0,
+      "storage_state": 0,
+      "power_safe": 1,
+      "config_dirty": 0,
+      "schema_version": 2,
+      "active_slot": 0,
+      "storage_sequence": 0,
+      "word_order": "high",
+      "hardware_revision": "UNAVAILABLE_IN_REGISTER_MAP",
+      "battery_voltage": "UNAVAILABLE_IN_REGISTER_MAP",
+      "response_ms": 44.1563
+    }
+  }
+]
