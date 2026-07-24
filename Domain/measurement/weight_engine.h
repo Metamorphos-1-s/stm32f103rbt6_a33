@@ -29,6 +29,10 @@ bool WeightEngine_Init(WeightEngine *engine,
     const MetrologyConfig *metrology, const CalibrationConfig *calibration,
     const StabilityConfig *stability, WeightValue restored_tare,
     bool restore_tare);
+bool WeightEngine_InitMass(WeightEngine *engine,
+    const MetrologyConfig *metrology, const CalibrationConfig *calibration,
+    const StabilityConfig *stability, MassValueUg restored_tare_ug,
+    bool restore_tare);
 bool WeightEngine_ProcessRawSample(WeightEngine *engine,
                                    const RawMeasurementSample *sample);
 const WeightSnapshot *WeightEngine_GetSnapshot(const WeightEngine *engine);

@@ -17,6 +17,7 @@
 #include "key_service.h"
 #include "menu_controller.h"
 #include "metrology_manager.h"
+#include "modbus_register_model.h"
 #include "project_config.h"
 #include "persistence_manager.h"
 #include "raw_measurement.h"
@@ -26,6 +27,7 @@
 #include "stage3_metrology_diagnostics.h"
 #include "storage_power_guard.h"
 #include "system_context.h"
+#include "weighing_profile_manager.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -74,6 +76,7 @@ bool App_Init(void)
   ConfigStore_SetPowerCheck(StoragePowerGuard_CanContinueFlashOperation);
   (void)PersistenceManager_Init();
   MeasurementBridge_Init();
+  WeighingProfileManager_Init();
   s_device_manager_init_attempted = false;
   s_fault_entry_applied = false;
   s_last_published_raw_count = 0U;
@@ -103,6 +106,7 @@ bool App_Init(void)
   }
   (void)MetrologyManager_Init(&config, &SystemContext_Get()->runtime);
   CommandService_Init();
+  ModbusRegisterModel_Init();
   MenuController_Init();
   SelfTestController_Init();
   if (!KeyService_Init(&g_key_map_development_default))
@@ -155,6 +159,7 @@ void App_Run(void)
   static uint32_t observed_dropped_count;
 
   DeviceManager_ProcessFast();
+  WeighingProfileManager_Process();
   if (!DeviceManager_IsInStorageMaintenance())
   {
     (void)MeasurementBridge_Process(

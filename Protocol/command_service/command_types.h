@@ -36,6 +36,11 @@ typedef enum
     COMMAND_FACTORY_RESET_REQUEST,
     COMMAND_FACTORY_RESET_CONFIRM,
     COMMAND_FACTORY_RESET_CANCEL,
+    COMMAND_SET_DISPLAY_UNIT,
+    COMMAND_SWITCH_WEIGHING_PROFILE,
+    COMMAND_CONFIG_VALIDATE,
+    COMMAND_COMMUNICATION_APPLY,
+    COMMAND_CALIBRATION_SET_SPAN_MASS,
     COMMAND_COUNT
 } CommandId;
 
@@ -63,6 +68,7 @@ typedef struct
     int32_t value0;
     int32_t value1;
     uint32_t flags;
+    int64_t value64;
 } CommandRequest;
 
 typedef struct

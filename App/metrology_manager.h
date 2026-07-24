@@ -14,6 +14,9 @@ bool MetrologyManager_Init(const DeviceConfig *config,
 bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample);
 void MetrologyManager_Process20ms(void);
 const WeightSnapshot *MetrologyManager_GetSnapshot(void);
+const MassSnapshot *MetrologyManager_GetMassSnapshot(void);
+bool MetrologyManager_SetDisplayUnit(MassUnit unit);
+MassUnit MetrologyManager_GetDisplayUnit(void);
 WeightActionResult MetrologyManager_Zero(void);
 WeightActionResult MetrologyManager_ResetZero(void);
 WeightActionResult MetrologyManager_Tare(void);

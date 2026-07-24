@@ -20,6 +20,13 @@ static uint8_t s_head;
 static uint8_t s_tail;
 static uint8_t s_count;
 static uint32_t s_dropped;
+static uint32_t s_conflict_count;
+static uint32_t s_all_released_ms;
+static uint8_t s_last_conflict_mask;
+static uint8_t s_last_raw_mask;
+static uint8_t s_last_logical_mask;
+static bool s_conflict;
+static bool s_release_timing;
 static bool s_initialized;
 
 static void KeyService_Push(KeyId key, KeyEventType type, uint32_t now,
@@ -54,6 +61,12 @@ bool KeyService_Init(const KeyMap *map)
     s_tail = 0U;
     s_count = 0U;
     s_dropped = 0U;
+    s_conflict_count = 0U;
+    s_last_conflict_mask = 0U;
+    s_last_raw_mask = 0U;
+    s_last_logical_mask = 0U;
+    s_conflict = false;
+    s_release_timing = false;
     s_initialized = true;
     return true;
 }
@@ -66,6 +79,42 @@ void KeyService_Process10ms(uint8_t raw_key_mask, uint32_t timestamp_ms)
     if (!s_initialized ||
         !KeyMap_RawMaskToLogicalMask(&s_map, raw_key_mask, &logical_mask))
     {
+        return;
+    }
+    s_last_raw_mask = raw_key_mask;
+    s_last_logical_mask = logical_mask;
+    if ((logical_mask != 0U) &&
+        ((logical_mask & (uint8_t)(logical_mask - 1U)) != 0U))
+    {
+        if (!s_conflict)
+        {
+            s_conflict = true;
+            ++s_conflict_count;
+            s_last_conflict_mask = logical_mask;
+            s_head = 0U; s_tail = 0U; s_count = 0U;
+            (void)memset(s_keys, 0, sizeof(s_keys));
+        }
+        s_release_timing = false;
+        return;
+    }
+    if (s_conflict)
+    {
+        if (logical_mask != 0U)
+        {
+            s_release_timing = false;
+            return;
+        }
+        if (!s_release_timing)
+        {
+            s_release_timing = true;
+            s_all_released_ms = timestamp_ms;
+            return;
+        }
+        if ((uint32_t)(timestamp_ms - s_all_released_ms) < KEY_DEBOUNCE_MS)
+            return;
+        s_conflict = false;
+        s_release_timing = false;
+        (void)memset(s_keys, 0, sizeof(s_keys));
         return;
     }
     for (key = 0U; key < (uint8_t)KEY_ID_COUNT; ++key)
@@ -144,3 +193,9 @@ uint32_t KeyService_GetDroppedEventCount(void)
 {
     return s_dropped;
 }
+
+bool KeyService_IsConflictActive(void) { return s_conflict; }
+uint32_t KeyService_GetMultiKeyConflictCount(void) { return s_conflict_count; }
+uint8_t KeyService_GetLastConflictMask(void) { return s_last_conflict_mask; }
+uint8_t KeyService_GetLastRawMask(void) { return s_last_raw_mask; }
+uint8_t KeyService_GetLastLogicalMask(void) { return s_last_logical_mask; }

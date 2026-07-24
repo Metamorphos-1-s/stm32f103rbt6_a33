@@ -15,5 +15,6 @@ bool MenuController_IsActive(void);
 bool MenuController_TakeCalibrationRequest(void);
 bool MenuController_TakeExitRequest(void);
 MenuItem MenuController_GetItem(void);
+bool MenuController_IsAdvanced(void);
 
 #endif /* MENU_CONTROLLER_H */

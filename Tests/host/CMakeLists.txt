@@ -16,6 +16,7 @@ add_executable(stage4a_host_tests
     ../../App/metrology_manager.c
     ../../App/self_test_controller.c
     ../../App/system_context.c
+    ../../App/weighing_profile_manager.c
     ../../Config/default_config.c
     ../../Diagnostics/stage2b_board_diagnostics.c
     ../../Diagnostics/stage2b_display_font.c
@@ -24,7 +25,10 @@ add_executable(stage4a_host_tests
     ../../Domain/calibration/raw_calibration_stability.c
     ../../Domain/filter/weight_filter.c
     ../../Domain/measurement/metrology_config_validator.c
+    ../../Domain/measurement/mass_math.c
+    ../../Domain/measurement/metrology_standard_validator.c
     ../../Domain/measurement/raw_measurement.c
+    ../../Domain/measurement/unit_converter.c
     ../../Domain/measurement/weight_engine.c
     ../../Domain/measurement/weight_math.c
     ../../Domain/stability/stability_detector.c
@@ -94,6 +98,9 @@ add_executable(stage4b_storage_tests
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/metrology_config_validator.c
+    ../../Domain/measurement/mass_math.c
+    ../../Domain/measurement/metrology_standard_validator.c
+    ../../Domain/measurement/unit_converter.c
     ../../Domain/measurement/weight_math.c
     ../../Services/config_store/config_store.c
     ../../Services/config_store/persistent_codec.c
@@ -120,6 +127,9 @@ add_executable(stage4br_persistence_tests
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/metrology_config_validator.c
+    ../../Domain/measurement/mass_math.c
+    ../../Domain/measurement/metrology_standard_validator.c
+    ../../Domain/measurement/unit_converter.c
     ../../Domain/measurement/weight_math.c
     ../../Services/config_store/config_store.c
     ../../Services/config_store/persistent_codec.c
@@ -141,3 +151,32 @@ else()
     target_compile_options(stage4br_persistence_tests PRIVATE -Wall -Wextra -Werror)
 endif()
 add_test(NAME stage4br_persistence_logic COMMAND stage4br_persistence_tests)
+
+add_executable(stage5a_host_tests
+    test_stage5a.c
+    stage5a_model_adapters.c
+    ../../Config/default_config.c
+    ../../Domain/calibration/calibration_model.c
+    ../../Domain/measurement/mass_math.c
+    ../../Domain/measurement/metrology_config_validator.c
+    ../../Domain/measurement/metrology_standard_validator.c
+    ../../Domain/measurement/unit_converter.c
+    ../../Domain/measurement/weight_math.c
+    ../../Services/config_store/persistent_codec.c
+    ../../Protocol/modbus/modbus_command_mailbox.c
+    ../../Protocol/modbus/modbus_register_model.c
+    ../../UI/key_service/key_map.c
+    ../../UI/key_service/key_service.c
+)
+target_include_directories(stage5a_host_tests PRIVATE
+    . ../../App ../../Config ../../Domain/calibration ../../Domain/filter
+    ../../Domain/measurement ../../Domain/stability ../../Services/config_store
+    ../../Services/fault_manager ../../Services/storage_power_guard
+    ../../Protocol/command_service ../../Protocol/modbus ../../Drivers/cs1237
+    ../../UI/key_service)
+if(MSVC)
+    target_compile_options(stage5a_host_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5a_host_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5a_host_logic COMMAND stage5a_host_tests)

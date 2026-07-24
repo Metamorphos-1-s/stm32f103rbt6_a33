@@ -1,6 +1,7 @@
 #include "system_context.h"
 
 #include <stddef.h>
+#include <limits.h>
 #include <string.h>
 
 static SystemContext s_system_context;
@@ -33,12 +34,23 @@ bool SystemContext_InitRestored(const DeviceConfig *config,
   (void)memset(&s_system_context, 0, sizeof(s_system_context));
   s_system_context.config = *config;
   s_system_context.runtime = *runtime;
-  s_system_context.runtime.config_dirty = false;
+  if (s_system_context.runtime.migration_pending_save)
+  {
+    uint32_t next = stored_revision + 1U;
+    if (next == 0xFFFFFFFFUL) next = 0U;
+    s_system_context.config_revision = next;
+    s_system_context.saved_revision = stored_revision;
+    s_system_context.runtime.config_dirty = true;
+  }
+  else
+  {
+    s_system_context.runtime.config_dirty = false;
+    s_system_context.config_revision = stored_revision;
+    s_system_context.saved_revision = stored_revision;
+  }
   s_system_context.runtime.boot_count += 1U;
   s_system_context.state = APP_STATE_BOOT;
   s_system_context.state_enter_time_ms = now_ms;
-  s_system_context.config_revision = stored_revision;
-  s_system_context.saved_revision = stored_revision;
   s_system_context.storage_has_record = storage_has_record;
   s_system_context.initialized = true;
   return true;
@@ -68,15 +80,24 @@ bool SystemContext_SetState(AppState state, uint32_t now_ms)
 
 bool SystemContext_SetTareState(int32_t tare_weight, bool tare_active)
 {
+  return SystemContext_SetTareStateMass((MassValueUg)tare_weight, tare_active);
+}
+
+bool SystemContext_SetTareStateMass(MassValueUg tare_mass_ug, bool tare_active)
+{
   if (!s_system_context.initialized)
   {
     return false;
   }
-  tare_weight = tare_active ? tare_weight : 0;
-  if ((s_system_context.runtime.current_tare != tare_weight) ||
+  int32_t tare_compat;
+  tare_mass_ug = tare_active ? tare_mass_ug : 0;
+  tare_compat = (tare_mass_ug > INT32_MAX) ? INT32_MAX :
+      ((tare_mass_ug < INT32_MIN) ? INT32_MIN : (int32_t)tare_mass_ug);
+  if ((s_system_context.runtime.current_tare_ug != tare_mass_ug) ||
       (s_system_context.runtime.tare_active != tare_active))
   {
-    s_system_context.runtime.current_tare = tare_weight;
+    s_system_context.runtime.current_tare_ug = tare_mass_ug;
+    s_system_context.runtime.current_tare = tare_compat;
     s_system_context.runtime.tare_active = tare_active;
     (void)SystemContext_MarkConfigChanged();
   }

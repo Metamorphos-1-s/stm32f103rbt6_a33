@@ -22,6 +22,8 @@ typedef struct
     SlotStatus status;
     uint32_t sequence;
     uint32_t flags;
+    uint16_t schema;
+    uint16_t payload_length;
     DeviceConfig config;
     RuntimeState runtime;
 } SlotRecord;
@@ -32,11 +34,12 @@ static ConfigStoreState s_state;
 static ConfigOperationType s_operation;
 static ConfigStoreOperationResult s_result;
 static ConfigStoreStatistics s_statistics;
-static uint8_t s_body[CONFIG_STORE_V1_BODY_SIZE + 1U];
+static uint8_t s_body[CONFIG_STORE_HEADER_SIZE +
+                      CONFIG_STORE_PAYLOAD_BUFFER_SIZE + 1U];
 static uint8_t s_verify_chunk[CONFIG_STORE_VERIFY_CHUNK_SIZE];
-static uint8_t s_active_payload[PERSISTENT_V1_PAYLOAD_SIZE];
-static uint8_t s_slot_a_payload[PERSISTENT_V1_PAYLOAD_SIZE];
-static uint8_t s_slot_b_payload[PERSISTENT_V1_PAYLOAD_SIZE];
+static uint8_t s_active_payload[CONFIG_STORE_PAYLOAD_BUFFER_SIZE];
+static uint8_t s_slot_a_payload[CONFIG_STORE_PAYLOAD_BUFFER_SIZE];
+static uint8_t s_slot_b_payload[CONFIG_STORE_PAYLOAD_BUFFER_SIZE];
 static uint16_t s_payload_length;
 static uint16_t s_logical_body_length;
 static uint16_t s_program_body_length;
@@ -164,14 +167,20 @@ static SlotStatus ReadSlot(uint32_t address, SlotRecord *record,
     {
         return SLOT_CORRUPT;
     }
-    if (ReadU16(header + 6U) != CONFIG_STORE_SCHEMA_V1)
+    record->schema = ReadU16(header + 6U);
+    if ((record->schema != CONFIG_STORE_SCHEMA_V1) &&
+        (record->schema != CONFIG_STORE_SCHEMA_V2))
     {
         return SLOT_UNSUPPORTED;
     }
     payload_length = ReadU16(header + 10U);
     record->sequence = ReadU32(header + 12U);
     record->flags = ReadU32(header + 16U);
-    if ((payload_length != PERSISTENT_V1_PAYLOAD_SIZE) ||
+    record->payload_length = payload_length;
+    if ((((record->schema == CONFIG_STORE_SCHEMA_V1) &&
+          (payload_length != PERSISTENT_V1_PAYLOAD_SIZE)) ||
+         ((record->schema == CONFIG_STORE_SCHEMA_V2) &&
+          (payload_length != PERSISTENT_V2_PAYLOAD_SIZE))) ||
         ((uint32_t)CONFIG_STORE_HEADER_SIZE + payload_length > CONFIG_COMMIT_OFFSET) ||
         (record->sequence == 0xFFFFFFFFUL))
     {
@@ -201,7 +210,7 @@ static SlotStatus ReadSlot(uint32_t address, SlotRecord *record,
         ++s_statistics.crc_error_count;
         return SLOT_CORRUPT;
     }
-    codec = PersistentCodec_Decode(CONFIG_STORE_SCHEMA_V1, payload_out,
+    codec = PersistentCodec_Decode(record->schema, payload_out,
                                    payload_length, &record->config,
                                    &record->runtime);
     if (codec != PERSISTENT_CODEC_OK) return SLOT_VALIDATION_ERROR;
@@ -281,8 +290,8 @@ ConfigLoadResult ConfigStore_Load(DeviceConfig *config, RuntimeState *runtime,
     *runtime = selected->runtime;
     s_active_slot = (selected == &a) ? CONFIG_STORE_SLOT_A : CONFIG_STORE_SLOT_B;
     s_active_sequence = selected->sequence;
-    s_active_payload_length = PERSISTENT_V1_PAYLOAD_SIZE;
-    (void)memcpy(s_active_payload, selected_payload, PERSISTENT_V1_PAYLOAD_SIZE);
+    s_active_payload_length = selected->payload_length;
+    (void)memcpy(s_active_payload, selected_payload, selected->payload_length);
     s_active_payload_valid = true;
     info->active_slot = s_active_slot;
     info->active_sequence = selected->sequence;
@@ -304,11 +313,11 @@ static bool Request(const DeviceConfig *config, const RuntimeState *runtime,
         return false;
     }
     ++s_statistics.save_request_count;
-    codec = PersistentCodec_EncodeV1(config, runtime,
-        s_body + CONFIG_STORE_HEADER_SIZE, PERSISTENT_V1_PAYLOAD_SIZE,
+    codec = PersistentCodec_EncodeV2(config, runtime,
+        s_body + CONFIG_STORE_HEADER_SIZE, CONFIG_STORE_PAYLOAD_BUFFER_SIZE,
         &s_payload_length);
     if ((codec != PERSISTENT_CODEC_OK) ||
-        (s_payload_length != PERSISTENT_V1_PAYLOAD_SIZE))
+        (s_payload_length != PERSISTENT_V2_PAYLOAD_SIZE))
     {
         s_result = CONFIG_STORE_OPERATION_INVALID;
         s_last_error = (uint32_t)codec;
@@ -332,7 +341,7 @@ static bool Request(const DeviceConfig *config, const RuntimeState *runtime,
     (void)memset(s_body, 0, CONFIG_STORE_HEADER_SIZE);
     WriteU32(s_body, CONFIG_STORE_MAGIC);
     WriteU16(s_body + 4U, CONFIG_STORE_FORMAT_VERSION);
-    WriteU16(s_body + 6U, CONFIG_STORE_SCHEMA_V1);
+    WriteU16(s_body + 6U, CONFIG_STORE_SCHEMA_V2);
     WriteU16(s_body + 8U, CONFIG_STORE_HEADER_SIZE);
     WriteU16(s_body + 10U, s_payload_length);
     WriteU32(s_body + 12U, s_record_sequence);

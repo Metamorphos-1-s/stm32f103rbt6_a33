@@ -19,7 +19,7 @@
 #define WEIGHT_MEASUREMENT_EVENT_PERIOD_MS 20U
 #define KEY_EVENTS_PER_TICK_MAX       4U
 #define KEY_DEBOUNCE_MS              30U
-#define KEY_LONG_PRESS_MS          1000U
+#define KEY_LONG_PRESS_MS          1500U
 #define KEY_REPEAT_START_MS         600U
 #define KEY_REPEAT_PERIOD_MS        150U
 #define KEY_EVENT_QUEUE_CAPACITY     16U

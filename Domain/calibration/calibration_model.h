@@ -23,10 +23,18 @@ typedef enum
 CalibrationResult CalibrationModel_Build(int32_t raw_zero, int32_t raw_span,
     WeightValue span_weight, uint32_t calibration_sequence,
     CalibrationConfig *output);
+CalibrationResult CalibrationModel_BuildMass(int32_t raw_zero,
+    int32_t raw_span, MassValueUg span_mass_ug,
+    uint32_t calibration_sequence, CalibrationConfig *output);
 CalibrationResult CalibrationModel_Validate(
     const CalibrationConfig *calibration);
 CalibrationResult CalibrationModel_Convert(
     const CalibrationConfig *calibration, int32_t filtered_raw,
     int32_t zero_offset_raw, WeightValue *weight);
+CalibrationResult CalibrationModel_ConvertMass(
+    const CalibrationConfig *calibration, int32_t filtered_raw,
+    int32_t zero_offset_raw, MassValueUg *mass_ug);
+SensorDirection CalibrationModel_GetSensorDirection(
+    const CalibrationConfig *calibration);
 
 #endif /* CALIBRATION_MODEL_H */

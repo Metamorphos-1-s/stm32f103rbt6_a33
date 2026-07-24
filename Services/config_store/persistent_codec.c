@@ -1,8 +1,10 @@
 #include "persistent_codec.h"
 
 #include "calibration_model.h"
+#include "default_config.h"
 #include "metrology_config_validator.h"
 #include "persistent_schema.h"
+#include "unit_converter.h"
 
 #include <limits.h>
 #include <stddef.h>
@@ -46,6 +48,12 @@ static void PutU32(CodecWriter *writer, uint32_t value)
     PutU16(writer, (uint16_t)(value >> 16U));
 }
 
+static void PutU64(CodecWriter *writer, uint64_t value)
+{
+    PutU32(writer, (uint32_t)value);
+    PutU32(writer, (uint32_t)(value >> 32U));
+}
+
 static uint8_t GetU8(CodecReader *reader)
 {
     if (reader->position >= reader->length)
@@ -67,6 +75,13 @@ static uint32_t GetU32(CodecReader *reader)
 {
     uint32_t value = GetU16(reader);
     value |= (uint32_t)GetU16(reader) << 16U;
+    return value;
+}
+
+static uint64_t GetU64(CodecReader *reader)
+{
+    uint64_t value = GetU32(reader);
+    value |= (uint64_t)GetU32(reader) << 32U;
     return value;
 }
 
@@ -117,12 +132,15 @@ bool PersistentCodec_ValidateConfig(const DeviceConfig *config)
         (config->communication.modbus_address > 247U) ||
         ((uint32_t)config->communication.protocol_mode >= PROTOCOL_MODE_COUNT) ||
         ((uint32_t)config->communication.output_policy >= OUTPUT_POLICY_COUNT) ||
+        ((uint32_t)config->communication.word_order >= MODBUS_WORD_ORDER_COUNT) ||
+        (config->communication.recommended_poll_interval_ms == 0U) ||
         ((config->communication.output_policy == OUTPUT_POLICY_PERIODIC) &&
          (config->communication.output_period_ms == 0U)) ||
         (config->bluetooth.uart_baud_rate == 0U) ||
         (config->bluetooth.protocol_version == 0U) ||
         ((uint32_t)config->alarm.weight_source >= ALARM_WEIGHT_SOURCE_COUNT) ||
         (config->alarm.lower_limit > config->alarm.upper_limit) ||
+        (config->alarm.lower_limit_ug > config->alarm.upper_limit_ug) ||
         (config->display.brightness > 7U) ||
         (config->display.default_weight_view >= (uint8_t)WEIGHT_VIEW_COUNT) ||
         (config->battery.divider_top_ohm == 0U) ||
@@ -134,7 +152,10 @@ bool PersistentCodec_ValidateConfig(const DeviceConfig *config)
                  (int64_t)config->alarm.lower_limit;
     if (config->alarm.limit_function_enable &&
         ((alarm_span <= 0) ||
-         ((uint64_t)config->alarm.hysteresis > (uint64_t)alarm_span)))
+         ((uint64_t)config->alarm.hysteresis > (uint64_t)alarm_span) ||
+         (config->alarm.hysteresis_ug < 0) ||
+         (config->alarm.hysteresis_ug >
+          (config->alarm.upper_limit_ug-config->alarm.lower_limit_ug))))
     {
         return false;
     }
@@ -253,6 +274,82 @@ PersistentCodecResult PersistentCodec_EncodeV1(
     return PERSISTENT_CODEC_OK;
 }
 
+PersistentCodecResult PersistentCodec_EncodeV2(
+    const DeviceConfig *config, const RuntimeState *runtime,
+    uint8_t *buffer, uint16_t capacity, uint16_t *encoded_length)
+{
+    CodecWriter w;
+    DeviceConfig compatibility;
+    uint16_t v1_length;
+    uint8_t index;
+    PersistentCodecResult result;
+    if ((config == NULL) || (runtime == NULL) || (buffer == NULL) ||
+        (encoded_length == NULL)) return PERSISTENT_CODEC_NULL;
+    *encoded_length = 0U;
+    if (capacity < PERSISTENT_V2_PAYLOAD_SIZE)
+        return PERSISTENT_CODEC_BUFFER_TOO_SMALL;
+    compatibility = *config;
+    if (compatibility.calibration.calibration_valid &&
+        (compatibility.calibration.span_mass_ug > INT32_MAX))
+    {
+        compatibility.calibration.span_weight = INT32_MAX;
+        compatibility.calibration.scale_numerator = INT32_MAX;
+    }
+    result = PersistentCodec_EncodeV1(&compatibility, runtime, buffer, capacity,
+                                      &v1_length);
+    if (result != PERSISTENT_CODEC_OK) return result;
+    w.data = buffer; w.capacity = capacity; w.position = v1_length; w.failed = false;
+#define PUT_BOOL_V2(value) PutU8(&w, (value) ? 1U : 0U)
+    PutU64(&w, (uint64_t)config->metrology.capacity_ug);
+    PutU64(&w, (uint64_t)config->metrology.verification_interval_e_ug);
+    PutU64(&w, (uint64_t)config->metrology.zero_range_ug);
+    PutU64(&w, (uint64_t)config->metrology.overload_threshold_ug);
+    PutU64(&w, (uint64_t)config->metrology.auto_zero_tracking_range_ug);
+    PutU16(&w, config->metrology.initial_zero_range_permille);
+    PutU16(&w, config->metrology.semi_auto_zero_range_permille);
+    PutU8(&w, (uint8_t)config->metrology.compliance_mode);
+    PutU8(&w, (uint8_t)config->metrology.active_unit);
+    PutU8(&w, config->metrology.enabled_unit_mask);
+    for (index = 0U; index < MASS_UNIT_COUNT; ++index)
+    {
+        PUT_BOOL_V2(config->metrology.unit_display[index].enabled);
+        PutU8(&w, config->metrology.unit_display[index].decimal_places);
+        PutU32(&w, config->metrology.unit_display[index].division_digit);
+    }
+    PUT_BOOL_V2(config->metrology.load_cell.rated_capacity_known);
+    PutU64(&w, (uint64_t)config->metrology.load_cell.rated_capacity_ug);
+    PUT_BOOL_V2(config->metrology.load_cell.sensitivity_known);
+    PutU32(&w, config->metrology.load_cell.sensitivity_uv_per_v);
+    PUT_BOOL_V2(config->metrology.load_cell.safe_load_known);
+    PutU16(&w, config->metrology.load_cell.safe_load_permille);
+    for (index = 0U; index < WEIGHING_PROFILE_COUNT; ++index)
+    {
+        const WeighingProfileConfig *p = &config->metrology.profiles[index];
+        PutU8(&w, (uint8_t)p->sample_rate); PutU8(&w, (uint8_t)p->gain);
+        PutU8(&w, (uint8_t)p->filter_mode); PutU8(&w, p->filter_strength);
+        PutU8(&w, p->stability_window);
+        PutU64(&w, (uint64_t)p->stability_enter_threshold_ug);
+        PutU64(&w, (uint64_t)p->stability_exit_threshold_ug);
+        PutU32(&w, p->stability_hold_ms);
+    }
+    PutU8(&w, (uint8_t)config->metrology.active_profile);
+    PutU64(&w, (uint64_t)config->calibration.span_mass_ug);
+    PutU8(&w, (uint8_t)config->communication.word_order);
+    PutU16(&w, config->communication.response_delay_ms);
+    PutU16(&w, config->communication.recommended_poll_interval_ms);
+    PutU8(&w, config->communication.broadcast_write_policy);
+    PUT_BOOL_V2(config->communication.pending_apply);
+    PutU64(&w, (uint64_t)config->alarm.lower_limit_ug);
+    PutU64(&w, (uint64_t)config->alarm.upper_limit_ug);
+    PutU64(&w, (uint64_t)config->alarm.hysteresis_ug);
+    PutU64(&w, (uint64_t)runtime->current_tare_ug);
+#undef PUT_BOOL_V2
+    if (w.failed || (w.position != PERSISTENT_V2_PAYLOAD_SIZE))
+        return PERSISTENT_CODEC_BUFFER_TOO_SMALL;
+    *encoded_length = w.position;
+    return PERSISTENT_CODEC_OK;
+}
+
 PersistentCodecResult PersistentCodec_Decode(
     uint16_t schema_version, const uint8_t *buffer, uint16_t length,
     DeviceConfig *config, RuntimeState *runtime)
@@ -263,13 +360,15 @@ PersistentCodecResult PersistentCodec_Decode(
 
     if ((buffer == NULL) || (config == NULL) || (runtime == NULL))
         return PERSISTENT_CODEC_NULL;
+    if (schema_version == CONFIG_STORE_SCHEMA_V2)
+        return PersistentCodec_DecodeV2(buffer, length, config, runtime);
     if (schema_version != CONFIG_STORE_SCHEMA_V1)
         return PERSISTENT_CODEC_UNSUPPORTED_SCHEMA;
     if (length < CONFIG_STORE_V1_PAYLOAD_SIZE)
         return PERSISTENT_CODEC_TRUNCATED;
     if (length != CONFIG_STORE_V1_PAYLOAD_SIZE)
         return PERSISTENT_CODEC_INVALID_VALUE;
-    (void)memset(config, 0, sizeof(*config));
+    DefaultConfig_Load(config);
     (void)memset(runtime, 0, sizeof(*runtime));
 
     config->metrology.capacity = GetU32(&r);
@@ -359,8 +458,132 @@ PersistentCodecResult PersistentCodec_Decode(
         runtime->current_tare = 0;
         runtime->tare_active = false;
     }
-    runtime->config_dirty = false;
+    /* V1 values are converted to physical mass once, then V2 owns them. */
+    if (!UnitConverter_CountToMass(config->metrology.capacity,
+            config->metrology.unit, config->metrology.decimal_places,
+            &config->metrology.capacity_ug) ||
+        !UnitConverter_CountToMass(config->metrology.division,
+            config->metrology.unit, config->metrology.decimal_places,
+            &config->metrology.verification_interval_e_ug) ||
+        !UnitConverter_CountToMass(config->metrology.zero_range,
+            config->metrology.unit, config->metrology.decimal_places,
+            &config->metrology.zero_range_ug) ||
+        !UnitConverter_CountToMass(config->metrology.overload_threshold,
+            config->metrology.unit, config->metrology.decimal_places,
+            &config->metrology.overload_threshold_ug))
+        return PERSISTENT_CODEC_VALIDATION_FAILED;
+    config->metrology.active_unit = config->metrology.unit;
+    config->metrology.active_profile = WEIGHING_PROFILE_HIGH_PRECISION;
+    config->metrology.profiles[0].sample_rate = config->metrology.cs1237_data_rate;
+    config->metrology.profiles[0].gain = config->metrology.cs1237_gain;
+    config->metrology.profiles[0].filter_mode = config->metrology.filter_mode;
+    config->metrology.profiles[0].filter_strength = config->metrology.filter_strength;
+    config->metrology.profiles[0].stability_window = (uint8_t)config->stability.window_size;
+    (void)UnitConverter_CountToMass(config->stability.enter_threshold,
+        config->metrology.unit, config->metrology.decimal_places,
+        &config->metrology.profiles[0].stability_enter_threshold_ug);
+    (void)UnitConverter_CountToMass(config->stability.exit_threshold,
+        config->metrology.unit, config->metrology.decimal_places,
+        &config->metrology.profiles[0].stability_exit_threshold_ug);
+    config->metrology.profiles[0].stability_hold_ms = config->stability.stable_hold_ms;
+    (void)UnitConverter_CountToMass(config->calibration.span_weight,
+        config->metrology.unit, config->metrology.decimal_places,
+        &config->calibration.span_mass_ug);
+    (void)UnitConverter_CountToMass(runtime->current_tare,
+        config->metrology.unit, config->metrology.decimal_places,
+        &runtime->current_tare_ug);
+    runtime->migration_pending_save = true;
+    runtime->config_dirty = true;
     return PERSISTENT_CODEC_OK;
+}
+
+PersistentCodecResult PersistentCodec_DecodeV2(
+    const uint8_t *buffer, uint16_t length,
+    DeviceConfig *config, RuntimeState *runtime)
+{
+    CodecReader r;
+    uint8_t index;
+    bool valid = true;
+    bool encoded_tare_active;
+    PersistentCodecResult result;
+    if (length != PERSISTENT_V2_PAYLOAD_SIZE)
+        return (length < PERSISTENT_V2_PAYLOAD_SIZE) ?
+            PERSISTENT_CODEC_TRUNCATED : PERSISTENT_CODEC_INVALID_VALUE;
+    encoded_tare_active = buffer[PERSISTENT_V1_PAYLOAD_SIZE - 1U] != 0U;
+    result = PersistentCodec_Decode(CONFIG_STORE_SCHEMA_V1, buffer,
+        PERSISTENT_V1_PAYLOAD_SIZE, config, runtime);
+    if (result != PERSISTENT_CODEC_OK) return result;
+    r.data = buffer; r.length = length; r.position = PERSISTENT_V1_PAYLOAD_SIZE;
+    r.failed = false;
+    config->metrology.capacity_ug = (MassValueUg)GetU64(&r);
+    config->metrology.verification_interval_e_ug = (MassValueUg)GetU64(&r);
+    config->metrology.zero_range_ug = (MassValueUg)GetU64(&r);
+    config->metrology.overload_threshold_ug = (MassValueUg)GetU64(&r);
+    config->metrology.auto_zero_tracking_range_ug = (MassValueUg)GetU64(&r);
+    config->metrology.initial_zero_range_permille = GetU16(&r);
+    config->metrology.semi_auto_zero_range_permille = GetU16(&r);
+    config->metrology.compliance_mode = (MetrologyComplianceMode)GetU8(&r);
+    config->metrology.active_unit = (MassUnit)GetU8(&r);
+    config->metrology.enabled_unit_mask = GetU8(&r);
+    for (index = 0U; index < MASS_UNIT_COUNT; ++index)
+    {
+        valid &= GetBool(&r, &config->metrology.unit_display[index].enabled);
+        config->metrology.unit_display[index].decimal_places = GetU8(&r);
+        config->metrology.unit_display[index].division_digit =
+            (uint8_t)GetU32(&r);
+    }
+    valid &= GetBool(&r, &config->metrology.load_cell.rated_capacity_known);
+    config->metrology.load_cell.rated_capacity_ug = (MassValueUg)GetU64(&r);
+    valid &= GetBool(&r, &config->metrology.load_cell.sensitivity_known);
+    config->metrology.load_cell.sensitivity_uv_per_v = GetU32(&r);
+    valid &= GetBool(&r, &config->metrology.load_cell.safe_load_known);
+    config->metrology.load_cell.safe_load_permille = GetU16(&r);
+    for (index = 0U; index < WEIGHING_PROFILE_COUNT; ++index)
+    {
+        WeighingProfileConfig *p = &config->metrology.profiles[index];
+        p->sample_rate = (Cs1237DataRate)GetU8(&r); p->gain = (Cs1237Gain)GetU8(&r);
+        p->filter_mode = (FilterMode)GetU8(&r); p->filter_strength = GetU8(&r);
+        p->stability_window = GetU8(&r);
+        p->stability_enter_threshold_ug = (MassValueUg)GetU64(&r);
+        p->stability_exit_threshold_ug = (MassValueUg)GetU64(&r);
+        p->stability_hold_ms = GetU32(&r);
+    }
+    config->metrology.active_profile = (WeighingProfileId)GetU8(&r);
+    config->calibration.span_mass_ug = (MassValueUg)GetU64(&r);
+    config->communication.word_order = (ModbusWordOrder)GetU8(&r);
+    config->communication.response_delay_ms = GetU16(&r);
+    config->communication.recommended_poll_interval_ms = GetU16(&r);
+    config->communication.broadcast_write_policy = GetU8(&r);
+    valid &= GetBool(&r, &config->communication.pending_apply);
+    config->alarm.lower_limit_ug = (MassValueUg)GetU64(&r);
+    config->alarm.upper_limit_ug = (MassValueUg)GetU64(&r);
+    config->alarm.hysteresis_ug = (MassValueUg)GetU64(&r);
+    runtime->current_tare_ug = (MassValueUg)GetU64(&r);
+    if (encoded_tare_active && config->system.tare_power_loss_retention &&
+        config->calibration.calibration_valid &&
+        (runtime->current_tare_ug > 0) &&
+        (runtime->current_tare_ug <= config->metrology.overload_threshold_ug))
+        runtime->tare_active = true;
+    else
+    {
+        runtime->current_tare_ug = 0;
+        runtime->current_tare = 0;
+        runtime->tare_active = false;
+    }
+    runtime->migration_pending_save = false;
+    runtime->config_dirty = false;
+    if (r.failed) return PERSISTENT_CODEC_TRUNCATED;
+    if (!valid || (r.position != length)) return PERSISTENT_CODEC_INVALID_VALUE;
+    return PersistentCodec_ValidateConfig(config) ? PERSISTENT_CODEC_OK :
+        PERSISTENT_CODEC_VALIDATION_FAILED;
+}
+
+PersistentCodecResult PersistentCodec_MigrateV1ToV2(
+    const uint8_t *source, uint16_t source_length,
+    DeviceConfig *config, RuntimeState *runtime)
+{
+    return PersistentCodec_Decode(CONFIG_STORE_SCHEMA_V1, source,
+                                  source_length, config, runtime);
 }
 
 PersistentCodecResult PersistentCodec_Migrate(
@@ -369,6 +592,6 @@ PersistentCodecResult PersistentCodec_Migrate(
 {
     if (source_schema != CONFIG_STORE_SCHEMA_V1)
         return PERSISTENT_CODEC_UNSUPPORTED_SCHEMA;
-    return PersistentCodec_Decode(source_schema, source, source_length,
-                                  config, runtime);
+    return PersistentCodec_MigrateV1ToV2(source, source_length,
+                                         config, runtime);
 }

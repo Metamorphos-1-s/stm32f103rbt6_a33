@@ -7,6 +7,7 @@
 #include "system_context.h"
 #include "tm1628.h"
 #include "tm1628_board_map.h"
+#include "unit_converter.h"
 
 #include <stddef.h>
 #include <string.h>
@@ -55,8 +56,9 @@ static bool DisplayController_BuildModel(void)
     uint8_t top;
     uint8_t bottom;
     uint32_t flags = (snapshot != NULL) ? snapshot->status_flags : 0U;
-    uint8_t decimals = (context != NULL) ?
-        context->config.metrology.decimal_places : 0U;
+    DisplayWeightValue converted;
+    MassValueUg mass = 0;
+    const UnitDisplayConfig *unit_display;
 
     (void)DisplayModel_SetPage(s_page);
     DisplayController_BuildIndicators(snapshot, &top, &bottom);
@@ -71,14 +73,14 @@ static bool DisplayController_BuildModel(void)
     switch (s_page)
     {
         case DISPLAY_PAGE_NET:
-            return DisplayModel_SetWeight((snapshot != NULL) ?
-                snapshot->net_weight : 0, decimals, true, (uint8_t)flags);
+            mass = (snapshot != NULL) ? snapshot->net_mass_ug : 0;
+            break;
         case DISPLAY_PAGE_GROSS:
-            return DisplayModel_SetWeight((snapshot != NULL) ?
-                snapshot->gross_weight : 0, decimals, true, (uint8_t)flags);
+            mass = (snapshot != NULL) ? snapshot->gross_mass_ug : 0;
+            break;
         case DISPLAY_PAGE_TARE:
-            return DisplayModel_SetWeight((snapshot != NULL) ?
-                snapshot->tare_weight : 0, decimals, true, (uint8_t)flags);
+            mass = (snapshot != NULL) ? snapshot->tare_mass_ug : 0;
+            break;
         case DISPLAY_PAGE_BATTERY:
             return (battery != NULL) && battery->valid ?
                 DisplayModel_SetBatteryMv(battery->battery_mv) :
@@ -95,6 +97,14 @@ static bool DisplayController_BuildModel(void)
         default:
             return true;
     }
+    if (context == NULL) return false;
+    unit_display = &context->config.metrology.unit_display[
+        context->config.metrology.active_unit];
+    if (!UnitConverter_MassToDisplay(mass,
+            context->config.metrology.active_unit, unit_display, &converted))
+        return DisplayModel_SetText6("  Lo  ");
+    return DisplayModel_SetWeight(converted.display_count,
+        converted.decimal_places, true, (uint8_t)flags);
 }
 
 static bool DisplayController_ApplyModel(void)

@@ -3,6 +3,7 @@
 #include "cs1237.h"
 #include "metrology_manager.h"
 #include "raw_measurement.h"
+#include "weighing_profile_manager.h"
 
 #include <stddef.h>
 
@@ -26,7 +27,7 @@ uint8_t MeasurementBridge_Process(uint8_t maximum_samples)
     RawMeasurementSample raw_sample;
     uint8_t processed = 0U;
 
-    if (maximum_samples == 0U)
+    if ((maximum_samples == 0U) || WeighingProfileManager_IsBusy())
     {
         s_last_backlog = CS1237_GetBufferedSampleCount();
         s_observed_overrun_count = CS1237_GetBufferOverrunCount();

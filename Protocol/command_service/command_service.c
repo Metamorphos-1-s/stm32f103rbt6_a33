@@ -6,6 +6,7 @@
 #include "metrology_manager.h"
 #include "persistence_manager.h"
 #include "system_context.h"
+#include "weighing_profile_manager.h"
 
 #include <stddef.h>
 #include <string.h>
@@ -15,6 +16,7 @@ typedef struct
     int32_t raw_zero;
     int32_t raw_span;
     WeightValue span_weight;
+    MassValueUg span_mass_ug;
     CalibrationConfig candidate;
     bool active;
     bool have_zero;
@@ -24,6 +26,8 @@ typedef struct
 
 static CommandCalibrationState s_calibration;
 static bool s_factory_reset_requested;
+static DeviceConfig s_staged_config;
+static bool s_staged_config_valid;
 
 static CommandResult CommandService_MapWeightAction(WeightActionResult result)
 {
@@ -52,6 +56,7 @@ void CommandService_Init(void)
     (void)ConfigEdit_Init();
     (void)memset(&s_calibration, 0, sizeof(s_calibration));
     s_factory_reset_requested = false;
+    s_staged_config_valid = false;
 }
 
 static CommandResult CommandService_GetWeight(CommandResponse *response)
@@ -71,6 +76,18 @@ static CommandResult CommandService_GetWeight(CommandResponse *response)
 
 static CommandResult CommandService_CommitConfig(void)
 {
+    if (s_staged_config_valid)
+    {
+        ConfigApplyResult staged_result = ConfigApplication_Apply(&s_staged_config);
+        if (staged_result == CONFIG_APPLY_OK)
+        {
+            s_staged_config_valid = false;
+            ConfigEdit_Cancel();
+            return COMMAND_RESULT_OK;
+        }
+        return (staged_result == CONFIG_APPLY_INVALID) ?
+            COMMAND_RESULT_INVALID_ARGUMENT : COMMAND_RESULT_INTERNAL_ERROR;
+    }
     const DeviceConfig *working = ConfigEdit_GetWorkingCopy();
     ConfigApplyResult result;
 
@@ -106,15 +123,14 @@ static CommandResult CommandService_CalibrationCommit(void)
     {
         return COMMAND_RESULT_INVALID_STATE;
     }
-    if ((s_calibration.span_weight <= 0) ||
-        ((uint32_t)s_calibration.span_weight >
-         context->config.metrology.capacity))
+    if ((s_calibration.span_mass_ug <= 0) ||
+        (s_calibration.span_mass_ug > context->config.metrology.capacity_ug))
     {
         return COMMAND_RESULT_INVALID_ARGUMENT;
     }
     sequence = context->config.calibration.calibration_sequence + 1U;
-    build_result = CalibrationModel_Build(s_calibration.raw_zero,
-        s_calibration.raw_span, s_calibration.span_weight, sequence,
+    build_result = CalibrationModel_BuildMass(s_calibration.raw_zero,
+        s_calibration.raw_span, s_calibration.span_mass_ug, sequence,
         &s_calibration.candidate);
     if (build_result != CALIBRATION_RESULT_OK)
     {
@@ -213,6 +229,7 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             break;
         case COMMAND_CANCEL_CONFIG_EDIT:
             ConfigEdit_Cancel();
+            s_staged_config_valid = false;
             result = COMMAND_RESULT_OK;
             break;
         case COMMAND_REQUEST_CONFIG_SAVE:
@@ -250,6 +267,20 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             else
             {
                 s_calibration.span_weight = request->value0;
+                s_calibration.span_mass_ug = request->value0;
+                s_calibration.have_weight = true;
+                result = COMMAND_RESULT_OK;
+            }
+            break;
+        case COMMAND_CALIBRATION_SET_SPAN_MASS:
+            context = SystemContext_Get();
+            if (!s_calibration.active || (context == NULL) ||
+                (request->value64 <= 0) ||
+                (request->value64 > context->config.metrology.capacity_ug))
+                result = COMMAND_RESULT_INVALID_ARGUMENT;
+            else
+            {
+                s_calibration.span_mass_ug = request->value64;
                 s_calibration.have_weight = true;
                 result = COMMAND_RESULT_OK;
             }
@@ -299,6 +330,24 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             s_factory_reset_requested = false;
             result = COMMAND_RESULT_OK;
             break;
+        case COMMAND_SET_DISPLAY_UNIT:
+            result = MetrologyManager_SetDisplayUnit((MassUnit)request->value0) ?
+                COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
+            break;
+        case COMMAND_SWITCH_WEIGHING_PROFILE:
+            result = WeighingProfileManager_Request(
+                (WeighingProfileId)request->value0);
+            break;
+        case COMMAND_CONFIG_VALIDATE:
+            context = SystemContext_Get();
+            result = ((context != NULL) && (ConfigApplication_Validate(
+                s_staged_config_valid ? &s_staged_config : &context->config,
+                true) == CONFIG_APPLY_OK)) ?
+                COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
+            break;
+        case COMMAND_COMMUNICATION_APPLY:
+            result = COMMAND_RESULT_NOT_IMPLEMENTED;
+            break;
         case COMMAND_COUNT:
         default:
             result = COMMAND_RESULT_INVALID_ARGUMENT;
@@ -313,3 +362,13 @@ const CalibrationConfig *CommandService_GetCalibrationCandidate(void)
     return s_calibration.candidate.calibration_valid ?
            &s_calibration.candidate : NULL;
 }
+
+bool CommandService_SetStagedConfig(const DeviceConfig *candidate)
+{
+    if (candidate == NULL) return false;
+    s_staged_config = *candidate;
+    s_staged_config_valid = true;
+    return true;
+}
+
+void CommandService_ClearStagedConfig(void) { s_staged_config_valid = false; }

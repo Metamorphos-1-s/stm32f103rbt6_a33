@@ -7,10 +7,12 @@
 #include "display_codes.h"
 #include "project_config.h"
 #include "system_context.h"
+#include "metrology_manager.h"
 
 #include <stddef.h>
 
 static const char s_labels[MENU_ITEM_COUNT][6] = {
+    {'U','n','I','t',' ',' '}, {'P','r','O','F',' ',' '},
     {'C','A','L',' ',' ',' '}, {'C','A','P',' ',' ',' '},
     {'d','I','U',' ',' ',' '}, {'d','P',' ',' ',' ',' '},
     {'F','I','L','t',' ',' '}, {'S','t','A','b',' ',' '},
@@ -31,6 +33,50 @@ static bool s_editing;
 static bool s_calibration_request;
 static bool s_exit_request;
 static bool s_factory_confirmation;
+static bool s_advanced;
+static uint8_t s_sequence_index;
+static uint32_t s_sequence_start_ms;
+static uint32_t s_sequence_last_ms;
+static void MenuController_Render(void);
+
+static bool MenuController_HandleAdvancedSequence(const KeyEvent *event)
+{
+    static const KeyId expected[4] = {
+        KEY_ID_STAR, KEY_ID_HASH, KEY_ID_STAR, KEY_ID_HASH};
+    if (s_advanced || s_editing || (s_item != MENU_ITEM_UNIT) ||
+        (event->type != KEY_EVENT_SHORT))
+    {
+        s_sequence_index = 0U;
+        return false;
+    }
+    if ((event->key != KEY_ID_STAR) && (event->key != KEY_ID_HASH))
+    {
+        s_sequence_index = 0U;
+        return false;
+    }
+    if ((s_sequence_index != 0U) &&
+        (((uint32_t)(event->timestamp_ms-s_sequence_last_ms)>1000U) ||
+         ((uint32_t)(event->timestamp_ms-s_sequence_start_ms)>4000U)))
+        s_sequence_index=0U;
+    if (event->key != expected[s_sequence_index])
+    {
+        s_sequence_index = (event->key == KEY_ID_STAR) ? 1U : 0U;
+        s_sequence_start_ms = event->timestamp_ms;
+        s_sequence_last_ms = event->timestamp_ms;
+        return true;
+    }
+    if (s_sequence_index == 0U) s_sequence_start_ms=event->timestamp_ms;
+    s_sequence_last_ms=event->timestamp_ms;
+    ++s_sequence_index;
+    if (s_sequence_index == 4U)
+    {
+        s_sequence_index=0U;
+        s_advanced=true;
+        s_item=MENU_ITEM_CAPACITY;
+    }
+    MenuController_Render();
+    return true;
+}
 
 static bool MenuController_ItemField(MenuItem item, ConfigFieldId *field,
                                      int32_t *value)
@@ -96,14 +142,14 @@ void MenuController_Init(void)
 {
     s_active=false; s_editing=false; s_calibration_request=false;
     s_exit_request=false; s_factory_confirmation=false;
-    s_item=MENU_ITEM_CALIBRATION; s_step=1;
+    s_item=MENU_ITEM_UNIT; s_step=1; s_advanced=false; s_sequence_index=0U;
 }
 
 bool MenuController_Enter(void)
 {
     if (s_active) return false;
     s_active=true; s_editing=false; s_factory_confirmation=false;
-    s_item=MENU_ITEM_CALIBRATION;
+    s_item=MENU_ITEM_UNIT; s_advanced=false; s_sequence_index=0U;
     s_last_activity_ms=BSP_TimeNowMs(); MenuController_Render(); return true;
 }
 
@@ -128,6 +174,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
          (event->type!=KEY_EVENT_REPEAT) &&
          (event->type!=KEY_EVENT_LONG))) return false;
     s_last_activity_ms=event->timestamp_ms;
+    if (MenuController_HandleAdvancedSequence(event)) return true;
     if (s_factory_confirmation)
     {
         if ((event->key==KEY_ID_FUNCTION) &&
@@ -199,14 +246,43 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
     }
     if ((event->key==KEY_ID_STAR)||(event->key==KEY_ID_HASH))
     {
-        if (event->key==KEY_ID_HASH) s_item=(MenuItem)(((uint32_t)s_item+1U)%MENU_ITEM_COUNT);
-        else s_item=(MenuItem)(((uint32_t)s_item+MENU_ITEM_COUNT-1U)%MENU_ITEM_COUNT);
+        if (s_advanced)
+        {
+            if (event->key==KEY_ID_HASH) s_item=(MenuItem)(((uint32_t)s_item+1U)%MENU_ITEM_COUNT);
+            else s_item=(MenuItem)(((uint32_t)s_item+MENU_ITEM_COUNT-1U)%MENU_ITEM_COUNT);
+        }
+        else
+        {
+            static const MenuItem ordinary[]={MENU_ITEM_UNIT,MENU_ITEM_PROFILE,
+                MENU_ITEM_BRIGHTNESS,MENU_ITEM_TARE_RETENTION,MENU_ITEM_SAVE,
+                MENU_ITEM_EXIT};
+            uint8_t i;
+            for(i=0U;i<(uint8_t)(sizeof(ordinary)/sizeof(ordinary[0]));++i)
+                if(ordinary[i]==s_item)break;
+            i=(event->key==KEY_ID_HASH)?
+                (uint8_t)((i+1U)%(sizeof(ordinary)/sizeof(ordinary[0]))):
+                (uint8_t)((i+(sizeof(ordinary)/sizeof(ordinary[0]))-1U)%
+                          (sizeof(ordinary)/sizeof(ordinary[0])));
+            s_item=ordinary[i];
+        }
     }
     else if (event->key==KEY_ID_TARE)
     { s_active=false; s_exit_request=true; }
     else if (event->key==KEY_ID_FUNCTION)
     {
-        if (s_item==MENU_ITEM_CALIBRATION) { s_active=false; s_calibration_request=true; }
+        if (s_item==MENU_ITEM_UNIT)
+        {
+            MassUnit next=(MassUnit)(((uint32_t)MetrologyManager_GetDisplayUnit()+1U)%MASS_UNIT_COUNT);
+            (void)MenuController_Command(COMMAND_SET_DISPLAY_UNIT,next,0);
+        }
+        else if (s_item==MENU_ITEM_PROFILE)
+        {
+            const SystemContext *context=SystemContext_Get();
+            if(context!=NULL)(void)MenuController_Command(COMMAND_SWITCH_WEIGHING_PROFILE,
+                (context->config.metrology.active_profile==WEIGHING_PROFILE_HIGH_PRECISION)?
+                WEIGHING_PROFILE_HIGH_SPEED:WEIGHING_PROFILE_HIGH_PRECISION,0);
+        }
+        else if (s_item==MENU_ITEM_CALIBRATION) { s_active=false; s_calibration_request=true; }
         else if (s_item==MENU_ITEM_EXIT) { s_active=false; s_exit_request=true; }
         else if (s_item==MENU_ITEM_SAVE)
         {
@@ -243,8 +319,9 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
 }
 
 void MenuController_Cancel(void)
-{ if(s_editing) (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,0,0); if(s_factory_confirmation) (void)MenuController_Command(COMMAND_FACTORY_RESET_CANCEL,0,0); s_active=false; s_editing=false; s_factory_confirmation=false; }
+{ if(s_editing) (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,0,0); if(s_factory_confirmation) (void)MenuController_Command(COMMAND_FACTORY_RESET_CANCEL,0,0); s_active=false; s_editing=false; s_factory_confirmation=false; s_advanced=false; s_sequence_index=0U; }
 bool MenuController_IsActive(void) { return s_active; }
 bool MenuController_TakeCalibrationRequest(void) { bool value=s_calibration_request; s_calibration_request=false; return value; }
 bool MenuController_TakeExitRequest(void) { bool value=s_exit_request; s_exit_request=false; return value; }
 MenuItem MenuController_GetItem(void) { return s_item; }
+bool MenuController_IsAdvanced(void) { return s_advanced; }

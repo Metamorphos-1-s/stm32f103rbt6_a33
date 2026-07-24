@@ -19,13 +19,16 @@ typedef enum
 
 typedef struct
 {
-    StabilityConfig config;
-    WeightValue samples[STABILITY_MAX_WINDOW];
+    uint8_t window_size;
+    MassValueUg enter_threshold_ug;
+    MassValueUg exit_threshold_ug;
+    uint32_t stable_hold_ms;
+    MassValueUg samples[STABILITY_MAX_WINDOW];
     uint8_t head;
     uint8_t count;
-    WeightValue minimum;
-    WeightValue maximum;
-    uint32_t spread;
+    MassValueUg minimum;
+    MassValueUg maximum;
+    MassValueUg spread;
     StabilityState state;
     uint32_t candidate_start_ms;
     bool initialized;
@@ -33,11 +36,20 @@ typedef struct
 
 bool StabilityDetector_Init(StabilityDetector *detector,
                             const StabilityConfig *config);
+bool StabilityDetector_InitMass(StabilityDetector *detector,
+                                uint8_t window_size,
+                                MassValueUg enter_threshold_ug,
+                                MassValueUg exit_threshold_ug,
+                                uint32_t stable_hold_ms);
 void StabilityDetector_Reset(StabilityDetector *detector);
 StabilityState StabilityDetector_Process(StabilityDetector *detector,
                                          WeightValue value,
                                          uint32_t timestamp_ms);
+StabilityState StabilityDetector_ProcessMass(StabilityDetector *detector,
+                                             MassValueUg value,
+                                             uint32_t timestamp_ms);
 StabilityState StabilityDetector_GetState(const StabilityDetector *detector);
 uint32_t StabilityDetector_GetSpread(const StabilityDetector *detector);
+MassValueUg StabilityDetector_GetSpreadMass(const StabilityDetector *detector);
 
 #endif /* STABILITY_DETECTOR_H */

@@ -1,6 +1,8 @@
 #ifndef WEIGHT_TYPES_H
 #define WEIGHT_TYPES_H
 
+#include "mass_types.h"
+
 #include <stdint.h>
 
 typedef int32_t WeightValue;
@@ -46,6 +48,12 @@ typedef struct
     uint32_t sample_sequence;
     uint32_t filter_sample_count;
     uint32_t stability_spread;
-} WeightSnapshot;
+    MassValueUg gross_mass_ug;
+    MassValueUg tare_mass_ug;
+    MassValueUg net_mass_ug;
+    MassValueUg stability_spread_ug;
+} MassSnapshot;
+
+typedef MassSnapshot WeightSnapshot;
 
 #endif /* WEIGHT_TYPES_H */

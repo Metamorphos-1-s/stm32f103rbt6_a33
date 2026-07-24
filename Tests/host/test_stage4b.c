@@ -104,7 +104,7 @@ static void TestCodec(void)
     CHECK(PersistentCodec_Decode(CONFIG_STORE_SCHEMA_V1, bytes,
           CONFIG_STORE_V1_PAYLOAD_SIZE - 1U, &output, &decoded) ==
           PERSISTENT_CODEC_TRUNCATED);
-    CHECK(PersistentCodec_Decode(2U, bytes, CONFIG_STORE_V1_PAYLOAD_SIZE,
+    CHECK(PersistentCodec_Decode(3U, bytes, CONFIG_STORE_V1_PAYLOAD_SIZE,
           &output, &decoded) == PERSISTENT_CODEC_UNSUPPORTED_SCHEMA);
 
     bytes[9] = 0xFFU;
@@ -329,7 +329,7 @@ static void TestFlashErrorPreservation(void)
 
     ConfigStore_Init(FakeFlash_GetBackend());
     lock_at = FakeFlash_GetProgramCount() +
-              (CONFIG_STORE_V1_BODY_SIZE / 2U) + 2U;
+              (CONFIG_STORE_V2_BODY_SIZE / 2U) + 2U;
     FakeFlash_FailLockAtProgramCount(lock_at);
     CHECK(ConfigStore_RequestSave(&config, &runtime, 3U));
     RunStore();

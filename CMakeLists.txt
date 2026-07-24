@@ -54,6 +54,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     App/persistence_manager.c
     App/self_test_controller.c
     App/system_context.c
+    App/weighing_profile_manager.c
     BSP/bsp_adc.c
     BSP/bsp_board.c
     BSP/bsp_flash.c
@@ -71,7 +72,10 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Domain/calibration/raw_calibration_stability.c
     Domain/filter/weight_filter.c
     Domain/measurement/metrology_config_validator.c
+    Domain/measurement/mass_math.c
+    Domain/measurement/metrology_standard_validator.c
     Domain/measurement/raw_measurement.c
+    Domain/measurement/unit_converter.c
     Domain/measurement/weight_engine.c
     Domain/measurement/weight_math.c
     Domain/stability/stability_detector.c
@@ -83,6 +87,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Drivers/tm1628/tm1628_board_map.c
     Drivers/w02/w02_pwrkey.c
     Protocol/command_service/command_service.c
+    Protocol/modbus/modbus_command_mailbox.c
+    Protocol/modbus/modbus_register_model.c
     Services/config_edit/config_edit.c
     Services/config_store/config_store.c
     Services/config_store/persistent_codec.c
@@ -112,6 +118,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Domain/stability
     Domain/zero_tare
     Protocol/command_service
+    Protocol/modbus
     Drivers/battery_adc
     Drivers/cs1237
     Drivers/output_gpio
