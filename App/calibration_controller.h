@@ -29,7 +29,13 @@ typedef struct
     CalibrationState state;
     int32_t captured_raw_zero;
     int32_t captured_raw_span;
-    WeightValue span_weight;
+    MassValueUg span_mass_ug;
+    int64_t span_display_count;
+    MassValueUg capacity_ug_at_begin;
+    MassUnit input_unit;
+    uint8_t input_decimal_places;
+    uint8_t input_division_digit;
+    uint16_t edit_step_multiplier;
     uint32_t zero_sample_sequence;
     uint32_t span_sample_sequence;
     CalibrationResult result;

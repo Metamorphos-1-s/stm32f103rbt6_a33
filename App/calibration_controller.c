@@ -5,20 +5,38 @@
 #include "display_codes.h"
 #include "display_controller.h"
 #include "metrology_manager.h"
+#include "mass_math.h"
 #include "project_config.h"
 #include "raw_calibration_stability.h"
 #include "system_context.h"
+#include "unit_converter.h"
 
+#include <limits.h>
 #include <string.h>
 
 static CalibrationSession s_session;
 static RawCalibrationStability s_raw_stability;
 static uint32_t s_last_sample_sequence;
+static bool s_unit_hint_active;
 
 static CommandResult CalibrationController_Command(CommandId id, int32_t value)
 {
-    CommandRequest request = {id, COMMAND_SOURCE_LOCAL_KEY, value, 0, 0U};
+    CommandRequest request = {0};
     CommandResponse response;
+    request.id = id;
+    request.source = COMMAND_SOURCE_LOCAL_KEY;
+    request.value0 = value;
+    return CommandService_Execute(&request, &response);
+}
+
+static CommandResult CalibrationController_CommandMass(CommandId id,
+                                                        MassValueUg value)
+{
+    CommandRequest request = {0};
+    CommandResponse response;
+    request.id = id;
+    request.source = COMMAND_SOURCE_LOCAL_KEY;
+    request.value64 = value;
     return CommandService_Execute(&request, &response);
 }
 
@@ -39,36 +57,77 @@ static void CalibrationController_SetState(CalibrationState state,
 
 static void CalibrationController_FormatSpan(void)
 {
-    char text[6] = {' ', ' ', ' ', ' ', ' ', '0'};
-    uint32_t value = (uint32_t)s_session.span_weight;
-    uint8_t index = 5U;
-    do
-    {
-        text[index] = (char)('0' + (value % 10U));
-        value /= 10U;
-        if (index == 0U) break;
-        --index;
-    } while (value != 0U);
-    (void)DisplayController_SetTextPage(DISPLAY_PAGE_CALIBRATION, text);
+    if ((s_session.span_display_count > INT32_MAX) ||
+        (s_session.span_display_count < INT32_MIN) ||
+        !DisplayController_SetNumericPage(DISPLAY_PAGE_CALIBRATION,
+            (int32_t)s_session.span_display_count,
+            s_session.input_decimal_places))
+        CalibrationController_ShowCode(DISPLAY_CODE_UNIT_ERROR);
+}
+
+static void CalibrationController_ShowUnitHint(void)
+{
+    static const char hints[MASS_UNIT_COUNT][6] = {
+        {' ', ' ', ' ', ' ', 'k', 'g'},
+        {' ', ' ', ' ', ' ', ' ', 'g'},
+        {' ', ' ', ' ', ' ', 'l', 'b'}};
+    (void)DisplayController_SetTextPage(DISPLAY_PAGE_CALIBRATION,
+                                       hints[s_session.input_unit]);
+    s_session.state_enter_ms = BSP_TimeNowMs();
+    s_unit_hint_active = true;
 }
 
 bool CalibrationController_Begin(void)
 {
     const SystemContext *context = SystemContext_Get();
+    const UnitDisplayConfig *display;
+    DisplayWeightValue initial;
+    MassValueUg initial_mass;
+    MassValueUg quantized_mass;
 
     if (s_session.active || (context == NULL) ||
         (SystemContext_GetState() != APP_STATE_MENU) ||
         (CalibrationController_Command(COMMAND_CALIBRATION_BEGIN, 0) !=
-         COMMAND_RESULT_OK) ||
-        !RawCalibrationStability_Init(&s_raw_stability,
-            CAL_RAW_WINDOW_SIZE, CAL_RAW_ENTER_THRESHOLD_COUNTS,
-            CAL_RAW_STABLE_HOLD_MS))
+         COMMAND_RESULT_OK))
     {
         return false;
     }
+    if (!RawCalibrationStability_Init(&s_raw_stability,
+            CAL_RAW_WINDOW_SIZE, CAL_RAW_ENTER_THRESHOLD_COUNTS,
+            CAL_RAW_STABLE_HOLD_MS))
+    {
+        (void)CalibrationController_Command(COMMAND_CALIBRATION_CANCEL, 0);
+        return false;
+    }
     (void)memset(&s_session, 0, sizeof(s_session));
+    display = &context->config.metrology.unit_display[
+        context->config.metrology.active_unit];
+    initial_mass = (context->config.calibration.calibration_valid &&
+        (context->config.calibration.span_mass_ug > 0) &&
+        (context->config.calibration.span_mass_ug <=
+         context->config.metrology.capacity_ug)) ?
+        context->config.calibration.span_mass_ug :
+        context->config.metrology.capacity_ug;
+    if (!UnitConverter_MassToDisplay(initial_mass,
+            context->config.metrology.active_unit, display, &initial) ||
+        !initial.valid || initial.overflow || (initial.display_count <= 0) ||
+        !UnitConverter_CountToMass(initial.display_count,
+            context->config.metrology.active_unit, display->decimal_places,
+            &quantized_mass) || (quantized_mass <= 0) ||
+        (quantized_mass > context->config.metrology.capacity_ug))
+    {
+        (void)CalibrationController_Command(COMMAND_CALIBRATION_CANCEL, 0);
+        CalibrationController_ShowCode(DISPLAY_CODE_UNIT_ERROR);
+        return false;
+    }
     s_session.active = true;
-    s_session.span_weight = (WeightValue)context->config.metrology.capacity;
+    s_session.span_mass_ug = quantized_mass;
+    s_session.span_display_count = initial.display_count;
+    s_session.capacity_ug_at_begin = context->config.metrology.capacity_ug;
+    s_session.input_unit = context->config.metrology.active_unit;
+    s_session.input_decimal_places = display->decimal_places;
+    s_session.input_division_digit = display->division_digit;
+    s_session.edit_step_multiplier = 1U;
     s_session.result = CALIBRATION_RESULT_INCONSISTENT;
     s_last_sample_sequence = 0U;
     CalibrationController_SetState(CAL_STATE_CONFIRM_EMPTY,
@@ -92,14 +151,15 @@ static void CalibrationController_CaptureStable(bool zero_capture,
                                        DISPLAY_CODE_CAL_ZERO);
         CalibrationController_SetState(CAL_STATE_INPUT_SPAN_WEIGHT,
                                        DISPLAY_CODE_CAL_SPAN);
-        CalibrationController_FormatSpan();
+        CalibrationController_ShowUnitHint();
     }
     else
     {
         s_session.captured_raw_span = average;
         s_session.span_sample_sequence = snapshot->sample_sequence;
-        s_session.result = CalibrationModel_Build(s_session.captured_raw_zero,
-            s_session.captured_raw_span, s_session.span_weight,
+        s_session.result = CalibrationModel_BuildMass(
+            s_session.captured_raw_zero,
+            s_session.captured_raw_span, s_session.span_mass_ug,
             (context != NULL) ?
                 context->config.calibration.calibration_sequence + 1U : 1U,
             &s_session.candidate);
@@ -116,7 +176,18 @@ void CalibrationController_Process10ms(void)
 {
     const WeightSnapshot *snapshot;
 
-    if (!s_session.active ||
+    if (!s_session.active) return;
+    if (s_session.state == CAL_STATE_INPUT_SPAN_WEIGHT)
+    {
+        if (s_unit_hint_active &&
+            ((uint32_t)(BSP_TimeNowMs() - s_session.state_enter_ms) >= 500U))
+        {
+            s_unit_hint_active = false;
+            CalibrationController_FormatSpan();
+        }
+        return;
+    }
+    if (
         ((s_session.state != CAL_STATE_WAIT_ZERO_STABLE) &&
          (s_session.state != CAL_STATE_WAIT_SPAN_STABLE)))
         return;
@@ -137,7 +208,6 @@ void CalibrationController_Process10ms(void)
 bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
 {
     const SystemContext *context = SystemContext_Get();
-    uint32_t division = (context != NULL) ? context->config.metrology.division : 1U;
 
     if (!s_session.active || (event == NULL) ||
         ((event->type != KEY_EVENT_SHORT) &&
@@ -163,16 +233,41 @@ bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
         case CAL_STATE_INPUT_SPAN_WEIGHT:
             if ((event->key == KEY_ID_STAR) || (event->key == KEY_ID_HASH))
             {
-                int64_t next = (int64_t)s_session.span_weight +
-                    ((event->key == KEY_ID_HASH) ? division : -(int64_t)division);
-                if ((next > 0) && (context != NULL) &&
-                    ((uint64_t)next <= context->config.metrology.capacity))
-                    s_session.span_weight = (WeightValue)next;
+                MassValueUg next_mass;
+                DisplayWeightValue roundtrip;
+                int64_t step = (int64_t)s_session.input_division_digit *
+                               s_session.edit_step_multiplier;
+                int64_t signed_step = (event->key == KEY_ID_HASH) ? step : -step;
+                int64_t next;
+                if (MassMath_Add(s_session.span_display_count, signed_step,
+                                 &next) && (next > 0) &&
+                    UnitConverter_CountToMass(next, s_session.input_unit,
+                        s_session.input_decimal_places, &next_mass) &&
+                    (context != NULL) &&
+                    (next_mass <= context->config.metrology.capacity_ug) &&
+                    UnitConverter_MassToDisplay(next_mass,
+                        s_session.input_unit,
+                        &context->config.metrology.unit_display[
+                            s_session.input_unit], &roundtrip) &&
+                    roundtrip.valid && !roundtrip.overflow &&
+                    (roundtrip.display_count == next))
+                {
+                    s_session.span_display_count = next;
+                    s_session.span_mass_ug = next_mass;
+                }
+                s_unit_hint_active = false;
                 CalibrationController_FormatSpan();
+            }
+            else if ((event->key == KEY_ID_ZERO) &&
+                     (event->type == KEY_EVENT_SHORT))
+            {
+                s_session.edit_step_multiplier =
+                    (s_session.edit_step_multiplier >= 1000U) ? 1U :
+                    (uint16_t)(s_session.edit_step_multiplier * 10U);
             }
             else if ((event->key == KEY_ID_FUNCTION) &&
                      (event->type == KEY_EVENT_SHORT) &&
-                     (s_session.span_weight > 0))
+                     (s_session.span_mass_ug > 0))
                 CalibrationController_SetState(CAL_STATE_PROMPT_LOAD_WEIGHT,
                                                DISPLAY_CODE_LOAD);
             break;
@@ -191,15 +286,23 @@ bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
                 (event->type == KEY_EVENT_SHORT))
             {
                 CommandResult result;
+                if ((context == NULL) ||
+                    (context->config.metrology.capacity_ug !=
+                     s_session.capacity_ug_at_begin))
+                {
+                    CalibrationController_SetState(CAL_STATE_ERROR,
+                        DISPLAY_CODE_BUSY);
+                    break;
+                }
                 CalibrationController_SetState(CAL_STATE_COMMIT_RAM,
                                                DISPLAY_CODE_RAM_SAVE);
                 result = CalibrationController_Command(
                     COMMAND_CALIBRATION_CAPTURE_ZERO,
                     s_session.captured_raw_zero);
                 if (result == COMMAND_RESULT_OK)
-                    result = CalibrationController_Command(
-                        COMMAND_CALIBRATION_SET_SPAN_WEIGHT,
-                        s_session.span_weight);
+                    result = CalibrationController_CommandMass(
+                        COMMAND_CALIBRATION_SET_SPAN_MASS,
+                        s_session.span_mass_ug);
                 if (result == COMMAND_RESULT_OK)
                     result = CalibrationController_Command(
                         COMMAND_CALIBRATION_CAPTURE_SPAN,

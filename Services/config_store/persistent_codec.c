@@ -3,6 +3,7 @@
 #include "calibration_model.h"
 #include "default_config.h"
 #include "metrology_config_validator.h"
+#include "metrology_legacy_projection.h"
 #include "persistent_schema.h"
 #include "unit_converter.h"
 
@@ -109,22 +110,11 @@ static bool GetReserved(CodecReader *reader, uint8_t count)
     return !reader->failed;
 }
 
-bool PersistentCodec_ValidateConfig(const DeviceConfig *config)
+static bool PersistentCodec_ValidateCommon(const DeviceConfig *config)
 {
     int64_t alarm_span;
 
     if ((config == NULL) ||
-        (MetrologyConfig_Validate(&config->metrology, &config->stability) !=
-         METROLOGY_CONFIG_OK) ||
-        ((uint32_t)config->metrology.sample_mode >= SAMPLE_MODE_COUNT) ||
-        ((uint32_t)config->metrology.cs1237_gain >= DEVICE_CS1237_GAIN_COUNT) ||
-        ((uint32_t)config->metrology.cs1237_data_rate >=
-         DEVICE_CS1237_DATA_RATE_COUNT) ||
-        (config->metrology.auto_zero_tracking_range >
-         config->metrology.capacity) ||
-        (config->calibration.calibration_valid &&
-         (CalibrationModel_Validate(&config->calibration) !=
-          CALIBRATION_RESULT_OK)) ||
         (config->communication.baud_rate == 0U) ||
         ((uint32_t)config->communication.parity >= COMM_PARITY_COUNT) ||
         ((uint32_t)config->communication.stop_bits >= COMM_STOP_BITS_COUNT) ||
@@ -170,6 +160,16 @@ bool PersistentCodec_ValidateConfig(const DeviceConfig *config)
     return true;
 }
 
+bool PersistentCodec_ValidateConfig(const DeviceConfig *config)
+{
+    return PersistentCodec_ValidateCommon(config) &&
+        (MetrologyConfig_ValidateCanonical(&config->metrology) ==
+         METROLOGY_CONFIG_OK) &&
+        (!config->calibration.calibration_valid ||
+         (CalibrationModel_Validate(&config->calibration) ==
+          CALIBRATION_RESULT_OK));
+}
+
 PersistentCodecResult PersistentCodec_EncodeV1(
     const DeviceConfig *config, const RuntimeState *runtime,
     uint8_t *buffer, uint16_t capacity, uint16_t *encoded_length)
@@ -188,6 +188,9 @@ PersistentCodecResult PersistentCodec_EncodeV1(
         return PERSISTENT_CODEC_BUFFER_TOO_SMALL;
     }
     if (!PersistentCodec_ValidateConfig(config) ||
+        (MetrologyLegacyV1_Validate(&config->metrology,
+                                    &config->stability) !=
+         METROLOGY_CONFIG_OK) ||
         ((uint32_t)runtime->weight_view >= WEIGHT_VIEW_COUNT))
     {
         return PERSISTENT_CODEC_VALIDATION_FAILED;
@@ -289,12 +292,14 @@ PersistentCodecResult PersistentCodec_EncodeV2(
     if (capacity < PERSISTENT_V2_PAYLOAD_SIZE)
         return PERSISTENT_CODEC_BUFFER_TOO_SMALL;
     compatibility = *config;
-    if (compatibility.calibration.calibration_valid &&
-        (compatibility.calibration.span_mass_ug > INT32_MAX))
-    {
-        compatibility.calibration.span_weight = INT32_MAX;
-        compatibility.calibration.scale_numerator = INT32_MAX;
-    }
+    if (!MetrologyLegacyProjection_Update(&compatibility.metrology) ||
+        !MetrologyLegacyStabilityProjection_Update(&compatibility.metrology,
+                                                    &compatibility.stability) ||
+        !CalibrationLegacyProjection_Update(&compatibility.calibration,
+            compatibility.metrology.active_unit,
+            &compatibility.metrology.unit_display[
+                compatibility.metrology.active_unit]))
+        return PERSISTENT_CODEC_VALIDATION_FAILED;
     result = PersistentCodec_EncodeV1(&compatibility, runtime, buffer, capacity,
                                       &v1_length);
     if (result != PERSISTENT_CODEC_OK) return result;
@@ -350,9 +355,9 @@ PersistentCodecResult PersistentCodec_EncodeV2(
     return PERSISTENT_CODEC_OK;
 }
 
-PersistentCodecResult PersistentCodec_Decode(
-    uint16_t schema_version, const uint8_t *buffer, uint16_t length,
-    DeviceConfig *config, RuntimeState *runtime)
+static PersistentCodecResult DecodeV1Payload(
+    const uint8_t *buffer, uint16_t length,
+    DeviceConfig *config, RuntimeState *runtime, bool migrate_legacy)
 {
     CodecReader r = {buffer, length, 0U, false};
     uint8_t value;
@@ -360,10 +365,6 @@ PersistentCodecResult PersistentCodec_Decode(
 
     if ((buffer == NULL) || (config == NULL) || (runtime == NULL))
         return PERSISTENT_CODEC_NULL;
-    if (schema_version == CONFIG_STORE_SCHEMA_V2)
-        return PersistentCodec_DecodeV2(buffer, length, config, runtime);
-    if (schema_version != CONFIG_STORE_SCHEMA_V1)
-        return PERSISTENT_CODEC_UNSUPPORTED_SCHEMA;
     if (length < CONFIG_STORE_V1_PAYLOAD_SIZE)
         return PERSISTENT_CODEC_TRUNCATED;
     if (length != CONFIG_STORE_V1_PAYLOAD_SIZE)
@@ -445,8 +446,14 @@ PersistentCodecResult PersistentCodec_Decode(
 
     if (r.failed) return PERSISTENT_CODEC_TRUNCATED;
     if (!valid || (r.position != length)) return PERSISTENT_CODEC_INVALID_VALUE;
-    if (!PersistentCodec_ValidateConfig(config) ||
+    if (!PersistentCodec_ValidateCommon(config) ||
         ((uint32_t)runtime->weight_view >= WEIGHT_VIEW_COUNT))
+        return PERSISTENT_CODEC_VALIDATION_FAILED;
+
+    if (!migrate_legacy) return PERSISTENT_CODEC_OK;
+    if (MetrologyLegacyV1_Validate(&config->metrology,
+                                   &config->stability) !=
+        METROLOGY_CONFIG_OK)
         return PERSISTENT_CODEC_VALIDATION_FAILED;
 
     if (!config->system.tare_power_loss_retention || !runtime->tare_active ||
@@ -494,7 +501,8 @@ PersistentCodecResult PersistentCodec_Decode(
         &runtime->current_tare_ug);
     runtime->migration_pending_save = true;
     runtime->config_dirty = true;
-    return PERSISTENT_CODEC_OK;
+    return PersistentCodec_ValidateConfig(config) ? PERSISTENT_CODEC_OK :
+        PERSISTENT_CODEC_VALIDATION_FAILED;
 }
 
 PersistentCodecResult PersistentCodec_DecodeV2(
@@ -510,8 +518,8 @@ PersistentCodecResult PersistentCodec_DecodeV2(
         return (length < PERSISTENT_V2_PAYLOAD_SIZE) ?
             PERSISTENT_CODEC_TRUNCATED : PERSISTENT_CODEC_INVALID_VALUE;
     encoded_tare_active = buffer[PERSISTENT_V1_PAYLOAD_SIZE - 1U] != 0U;
-    result = PersistentCodec_Decode(CONFIG_STORE_SCHEMA_V1, buffer,
-        PERSISTENT_V1_PAYLOAD_SIZE, config, runtime);
+    result = DecodeV1Payload(buffer, PERSISTENT_V1_PAYLOAD_SIZE,
+                             config, runtime, false);
     if (result != PERSISTENT_CODEC_OK) return result;
     r.data = buffer; r.length = length; r.position = PERSISTENT_V1_PAYLOAD_SIZE;
     r.failed = false;
@@ -576,6 +584,17 @@ PersistentCodecResult PersistentCodec_DecodeV2(
     if (!valid || (r.position != length)) return PERSISTENT_CODEC_INVALID_VALUE;
     return PersistentCodec_ValidateConfig(config) ? PERSISTENT_CODEC_OK :
         PERSISTENT_CODEC_VALIDATION_FAILED;
+}
+
+PersistentCodecResult PersistentCodec_Decode(
+    uint16_t schema_version, const uint8_t *buffer, uint16_t length,
+    DeviceConfig *config, RuntimeState *runtime)
+{
+    if (schema_version == CONFIG_STORE_SCHEMA_V2)
+        return PersistentCodec_DecodeV2(buffer, length, config, runtime);
+    if (schema_version != CONFIG_STORE_SCHEMA_V1)
+        return PERSISTENT_CODEC_UNSUPPORTED_SCHEMA;
+    return DecodeV1Payload(buffer, length, config, runtime, true);
 }
 
 PersistentCodecResult PersistentCodec_MigrateV1ToV2(

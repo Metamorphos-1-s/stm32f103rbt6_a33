@@ -3,7 +3,7 @@
 #include "mass_math.h"
 #include "metrology_config_validator.h"
 #include "metrology_standard_validator.h"
-#include "weight_math.h"
+#include "unit_converter.h"
 
 #include <limits.h>
 #include <stddef.h>
@@ -19,18 +19,25 @@ static WeightValue CompatValue(MassValueUg value)
 static void UpdateCompatibility(MassSnapshot *snapshot,
                                 const MetrologyConfig *config)
 {
-    snapshot->gross_unrounded = CompatValue(snapshot->gross_mass_ug);
-    snapshot->net_unrounded = CompatValue(snapshot->net_mass_ug);
-    snapshot->tare_weight = CompatValue(snapshot->tare_mass_ug);
+    DisplayWeightValue gross = {0};
+    DisplayWeightValue net = {0};
+    DisplayWeightValue tare = {0};
+    const UnitDisplayConfig *display =
+        &config->unit_display[config->active_unit];
+    (void)UnitConverter_MassToDisplay(snapshot->gross_mass_ug,
+        config->active_unit, display, &gross);
+    (void)UnitConverter_MassToDisplay(snapshot->net_mass_ug,
+        config->active_unit, display, &net);
+    (void)UnitConverter_MassToDisplay(snapshot->tare_mass_ug,
+        config->active_unit, display, &tare);
+    snapshot->gross_unrounded = gross.valid ? gross.display_count :
+        CompatValue(snapshot->gross_mass_ug);
+    snapshot->net_unrounded = net.valid ? net.display_count :
+        CompatValue(snapshot->net_mass_ug);
+    snapshot->tare_weight = tare.valid ? tare.display_count :
+        CompatValue(snapshot->tare_mass_ug);
     snapshot->gross_weight = snapshot->gross_unrounded;
     snapshot->net_weight = snapshot->net_unrounded;
-    if (config->division != 0U)
-    {
-        (void)WeightMath_Quantize(snapshot->gross_unrounded, config->division,
-                                  &snapshot->gross_weight);
-        (void)WeightMath_Quantize(snapshot->net_unrounded, config->division,
-                                  &snapshot->net_weight);
-    }
     snapshot->stability_spread = (snapshot->stability_spread_ug > UINT32_MAX) ?
         UINT32_MAX : (uint32_t)snapshot->stability_spread_ug;
 }

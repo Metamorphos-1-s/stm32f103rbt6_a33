@@ -22,5 +22,9 @@ typedef enum
 
 MetrologyConfigResult MetrologyConfig_Validate(
     const MetrologyConfig *metrology, const StabilityConfig *stability);
+MetrologyConfigResult MetrologyConfig_ValidateCanonical(
+    const MetrologyConfig *metrology);
+MetrologyConfigResult MetrologyLegacyV1_Validate(
+    const MetrologyConfig *metrology, const StabilityConfig *stability);
 
 #endif /* METROLOGY_CONFIG_VALIDATOR_H */

@@ -76,6 +76,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Domain/calibration/raw_calibration_stability.c
     Domain/filter/weight_filter.c
     Domain/measurement/metrology_config_validator.c
+    Domain/measurement/metrology_legacy_projection.c
     Domain/measurement/mass_math.c
     Domain/measurement/metrology_standard_validator.c
     Domain/measurement/raw_measurement.c

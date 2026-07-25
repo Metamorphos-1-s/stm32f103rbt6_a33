@@ -3,6 +3,7 @@
 #include "battery_adc.h"
 #include "bsp_time.h"
 #include "display_model.h"
+#include "display_formatter.h"
 #include "metrology_manager.h"
 #include "system_context.h"
 #include "tm1628.h"
@@ -223,6 +224,23 @@ bool DisplayController_SetTextPage(DisplayPage page, const char text[6])
     s_message_active = false;
     s_page = page;
     return true;
+}
+
+bool DisplayController_SetNumericPage(DisplayPage page, int32_t display_count,
+                                      uint8_t decimal_places)
+{
+    uint16_t segments[6];
+    if (((uint32_t)page > (uint32_t)DISPLAY_PAGE_FAULT) ||
+        !DisplayFormatter_FormatWeight(display_count, decimal_places, true,
+                                       segments))
+    {
+        return false;
+    }
+    s_text_override = false;
+    s_message_active = false;
+    s_page = page;
+    return DisplayModel_SetPage(page) &&
+           DisplayModel_SetRawSegments(segments);
 }
 
 bool DisplayController_SetBrightness(uint8_t brightness)

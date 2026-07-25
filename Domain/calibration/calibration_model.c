@@ -25,11 +25,6 @@ CalibrationResult CalibrationModel_BuildMass(int32_t raw_zero,
     output->raw_zero = raw_zero;
     output->raw_span = raw_span;
     output->span_mass_ug = span_mass_ug;
-    if (span_mass_ug <= INT32_MAX)
-    {
-        output->span_weight = (uint32_t)span_mass_ug;
-        output->scale_numerator = (int32_t)span_mass_ug;
-    }
     output->scale_denominator = (int32_t)raw_delta;
     output->calibration_sequence = calibration_sequence;
     output->calibration_valid = true;
@@ -40,8 +35,14 @@ CalibrationResult CalibrationModel_Build(int32_t raw_zero, int32_t raw_span,
     WeightValue span_weight, uint32_t calibration_sequence,
     CalibrationConfig *output)
 {
-    return CalibrationModel_BuildMass(raw_zero, raw_span, span_weight,
-                                      calibration_sequence, output);
+    CalibrationResult result = CalibrationModel_BuildMass(
+        raw_zero, raw_span, span_weight, calibration_sequence, output);
+    if (result == CALIBRATION_RESULT_OK)
+    {
+        output->span_weight = (uint32_t)span_weight;
+        output->scale_numerator = span_weight;
+    }
+    return result;
 }
 
 CalibrationResult CalibrationModel_Validate(
@@ -52,8 +53,7 @@ CalibrationResult CalibrationModel_Validate(
     MassValueUg span_mass;
     if (calibration == NULL) return CALIBRATION_RESULT_NULL;
     if (!calibration->calibration_valid) return CALIBRATION_RESULT_INCONSISTENT;
-    span_mass = (calibration->span_mass_ug > 0) ?
-        calibration->span_mass_ug : (MassValueUg)calibration->span_weight;
+    span_mass = calibration->span_mass_ug;
     if (span_mass <= 0) return CALIBRATION_RESULT_INVALID_WEIGHT;
     raw_delta = (int64_t)calibration->raw_span - calibration->raw_zero;
     if (raw_delta == 0) return CALIBRATION_RESULT_INVALID_SPAN;
@@ -83,8 +83,7 @@ CalibrationResult CalibrationModel_ConvertMass(
     effective_zero = (int64_t)calibration->raw_zero + zero_offset_raw;
     measurement_delta = (int64_t)filtered_raw - effective_zero;
     raw_delta = (int64_t)calibration->raw_span - calibration->raw_zero;
-    span_mass = (calibration->span_mass_ug > 0) ?
-        calibration->span_mass_ug : (MassValueUg)calibration->span_weight;
+    span_mass = calibration->span_mass_ug;
     return MassMath_MulDivRound(measurement_delta, span_mass, raw_delta,
                                 mass_ug) ? CALIBRATION_RESULT_OK :
                                            CALIBRATION_RESULT_OVERFLOW;

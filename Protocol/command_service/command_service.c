@@ -17,7 +17,6 @@ typedef struct
 {
     int32_t raw_zero;
     int32_t raw_span;
-    WeightValue span_weight;
     MassValueUg span_mass_ug;
     CalibrationConfig candidate;
     bool active;
@@ -30,6 +29,14 @@ static CommandCalibrationState s_calibration;
 static bool s_factory_reset_requested;
 static DeviceConfig s_staged_config;
 static bool s_staged_config_valid;
+
+static bool CommandService_CommunicationBusy(void)
+{
+    CommunicationManagerState state = CommunicationManager_GetState();
+    return (state != COMM_STATE_DISABLED) &&
+           (state != COMM_STATE_RUNNING) &&
+           (state != COMM_STATE_RESPONSE_ACTIVE);
+}
 
 static CommandResult CommandService_MapWeightAction(WeightActionResult result)
 {
@@ -161,14 +168,16 @@ CommandResult CommandService_Execute(const CommandRequest *request,
         return COMMAND_RESULT_INVALID_ARGUMENT;
     }
     (void)memset(response, 0, sizeof(*response));
-    if (PersistenceManager_IsBusy() &&
+    if ((PersistenceManager_IsBusy() || WeighingProfileManager_IsBusy() ||
+         CommandService_CommunicationBusy()) &&
         ((request->id == COMMAND_ZERO) ||
          (request->id == COMMAND_RESET_ZERO) ||
          (request->id == COMMAND_TARE) ||
          (request->id == COMMAND_CLEAR_TARE) ||
          (request->id == COMMAND_BEGIN_CONFIG_EDIT) ||
          (request->id == COMMAND_CALIBRATION_BEGIN) ||
-         (request->id == COMMAND_REQUEST_CONFIG_SAVE)))
+         (request->id == COMMAND_REQUEST_CONFIG_SAVE) ||
+         (request->id == COMMAND_SET_DISPLAY_UNIT)))
     {
         response->result = COMMAND_RESULT_BUSY;
         return COMMAND_RESULT_BUSY;
@@ -178,7 +187,17 @@ CommandResult CommandService_Execute(const CommandRequest *request,
          (request->id == COMMAND_RESET_ZERO) ||
          (request->id == COMMAND_TARE) ||
          (request->id == COMMAND_CLEAR_TARE) ||
-         (request->id == COMMAND_BEGIN_CONFIG_EDIT)))
+         (request->id == COMMAND_BEGIN_CONFIG_EDIT) ||
+         (request->id == COMMAND_SET_DISPLAY_UNIT) ||
+         (request->id == COMMAND_SWITCH_WEIGHING_PROFILE)))
+    {
+        response->result = COMMAND_RESULT_BUSY;
+        return COMMAND_RESULT_BUSY;
+    }
+    if ((ConfigEdit_GetState() != CONFIG_EDIT_IDLE) &&
+        ((request->id == COMMAND_SET_DISPLAY_UNIT) ||
+         (request->id == COMMAND_SWITCH_WEIGHING_PROFILE) ||
+         (request->id == COMMAND_REQUEST_CONFIG_SAVE)))
     {
         response->result = COMMAND_RESULT_BUSY;
         return COMMAND_RESULT_BUSY;
@@ -222,9 +241,42 @@ CommandResult CommandService_Execute(const CommandRequest *request,
                      COMMAND_RESULT_OK : COMMAND_RESULT_BUSY;
             break;
         case COMMAND_SET_CONFIG_FIELD:
-            result = ConfigEdit_SetField((ConfigFieldId)request->value0,
-                                         request->value1) ?
+            result = ConfigEdit_SetIntegerField((ConfigFieldId)request->value0,
+                                                request->value1) ?
                      COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
+            break;
+        case COMMAND_SET_CONFIG_MASS_FIELD:
+            result = ConfigEdit_SetMassField((ConfigMassFieldId)request->value0,
+                                             request->value64) ?
+                     COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
+            break;
+        case COMMAND_SET_UNIT_DISPLAY_CONFIG:
+        {
+            const DeviceConfig *working = ConfigEdit_GetWorkingCopy();
+            UnitDisplayConfig display;
+            if ((working == NULL) || (request->value0 < 0) ||
+                ((uint32_t)request->value0 >= MASS_UNIT_COUNT) ||
+                (request->value1 < 0) || (request->value1 > 5) ||
+                ((request->flags != 1U) && (request->flags != 2U) &&
+                 (request->flags != 5U)))
+            {
+                result = COMMAND_RESULT_INVALID_ARGUMENT;
+                break;
+            }
+            display = working->metrology.unit_display[request->value0];
+            display.decimal_places = (uint8_t)request->value1;
+            display.division_digit = (uint8_t)request->flags;
+            result = ConfigEdit_SetUnitDisplay((MassUnit)request->value0,
+                                               &display) ?
+                COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
+            break;
+        }
+        case COMMAND_SET_PROFILE_FIELD:
+            result = ConfigEdit_SetProfileField(
+                (WeighingProfileId)request->value0,
+                (ConfigProfileFieldId)request->value1,
+                request->value64) ? COMMAND_RESULT_OK :
+                                    COMMAND_RESULT_INVALID_ARGUMENT;
             break;
         case COMMAND_COMMIT_CONFIG_EDIT:
             result = CommandService_CommitConfig();
@@ -262,19 +314,7 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             }
             break;
         case COMMAND_CALIBRATION_SET_SPAN_WEIGHT:
-            context = SystemContext_Get();
-            if (!s_calibration.active || (context == NULL) ||
-                (request->value0 <= 0) ||
-                ((uint32_t)request->value0 >
-                 context->config.metrology.capacity))
-                result = COMMAND_RESULT_INVALID_ARGUMENT;
-            else
-            {
-                s_calibration.span_weight = request->value0;
-                s_calibration.span_mass_ug = request->value0;
-                s_calibration.have_weight = true;
-                result = COMMAND_RESULT_OK;
-            }
+            result = COMMAND_RESULT_NOT_IMPLEMENTED;
             break;
         case COMMAND_CALIBRATION_SET_SPAN_MASS:
             context = SystemContext_Get();

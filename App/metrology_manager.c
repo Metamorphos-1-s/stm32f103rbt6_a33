@@ -3,6 +3,7 @@
 #include "event_queue.h"
 #include "fault_manager.h"
 #include "metrology_config_validator.h"
+#include "metrology_legacy_projection.h"
 #include "system_context.h"
 #include "weight_engine.h"
 
@@ -15,30 +16,12 @@ static uint32_t s_rejected_sample_count;
 static uint32_t s_last_published_sequence;
 static bool s_last_published_stable;
 
-static void MetrologyManager_NormalizeLegacy(DeviceConfig *config)
-{
-    WeighingProfileConfig *profile;
-    if ((config == NULL) || !config->calibration.calibration_valid ||
-        (config->calibration.span_mass_ug >=
-         config->metrology.verification_interval_e_ug)) return;
-    config->metrology.zero_range_ug = config->metrology.zero_range;
-    profile = &config->metrology.profiles[config->metrology.active_profile];
-    profile->filter_mode = config->metrology.filter_mode;
-    profile->filter_strength = config->metrology.filter_strength;
-    profile->stability_window = (uint8_t)config->stability.window_size;
-    profile->stability_enter_threshold_ug = config->stability.enter_threshold;
-    profile->stability_exit_threshold_ug = config->stability.exit_threshold;
-    profile->stability_hold_ms = config->stability.stable_hold_ms;
-}
-
 static bool MetrologyManager_CalibrationChanged(
     const CalibrationConfig *left, const CalibrationConfig *right)
 {
     return (left->raw_zero != right->raw_zero) ||
            (left->raw_span != right->raw_span) ||
-           (left->span_weight != right->span_weight) ||
            (left->span_mass_ug != right->span_mass_ug) ||
-           (left->scale_numerator != right->scale_numerator) ||
            (left->scale_denominator != right->scale_denominator) ||
            (left->calibration_sequence != right->calibration_sequence) ||
            (left->calibration_valid != right->calibration_valid);
@@ -59,7 +42,6 @@ static void MetrologyManager_SyncTare(void)
 bool MetrologyManager_Init(const DeviceConfig *config,
                            const RuntimeState *runtime)
 {
-    DeviceConfig normalized;
     bool restore_tare;
     MassValueUg restored_tare;
 
@@ -73,10 +55,7 @@ bool MetrologyManager_Init(const DeviceConfig *config,
     {
         return false;
     }
-    normalized = *config;
-    MetrologyManager_NormalizeLegacy(&normalized);
-    config = &normalized;
-    if (MetrologyConfig_Validate(&config->metrology, &config->stability) !=
+    if (MetrologyConfig_ValidateCanonical(&config->metrology) !=
         METROLOGY_CONFIG_OK)
     {
         FaultManager_Set(FAULT_METROLOGY_CONFIG_INVALID);
@@ -92,8 +71,6 @@ bool MetrologyManager_Init(const DeviceConfig *config,
     restore_tare = config->system.tare_power_loss_retention &&
                    runtime->tare_active;
     restored_tare = restore_tare ? runtime->current_tare_ug : 0;
-    if (restore_tare && (restored_tare == 0))
-        restored_tare = runtime->current_tare;
     s_initialized = WeightEngine_InitMass(&s_engine, &config->metrology,
         &config->calibration, &config->stability, restored_tare,
         restore_tare);
@@ -101,15 +78,7 @@ bool MetrologyManager_Init(const DeviceConfig *config,
     {
         FaultManager_Set(FAULT_METROLOGY_CONFIG_INVALID);
     }
-    if (s_initialized)
-    {
-        if (config->calibration.calibration_valid &&
-            (config->calibration.span_mass_ug <
-             config->metrology.verification_interval_e_ug))
-            s_engine.metrology.overload_threshold_ug =
-                config->metrology.overload_threshold;
-        MetrologyManager_SyncTare();
-    }
+    if (s_initialized) MetrologyManager_SyncTare();
     return s_initialized;
 }
 
@@ -187,20 +156,19 @@ bool MetrologyManager_SetDisplayUnit(MassUnit unit)
 {
     const SystemContext *context = SystemContext_Get();
     DeviceConfig candidate;
-    const UnitDisplayConfig *display;
     if ((context == NULL) || ((uint32_t)unit >= MASS_UNIT_COUNT) ||
         ((context->config.metrology.enabled_unit_mask &
           (uint8_t)(1U << unit)) == 0U)) return false;
     candidate = context->config;
-    display = &candidate.metrology.unit_display[unit];
     candidate.metrology.active_unit = unit;
-    candidate.metrology.unit = unit;
-    candidate.metrology.decimal_places = display->decimal_places;
-    candidate.metrology.division = display->division_digit;
-    s_engine.metrology.active_unit = unit;
-    s_engine.metrology.unit = unit;
-    s_engine.metrology.decimal_places = display->decimal_places;
-    s_engine.metrology.division = display->division_digit;
+    if (MetrologyConfig_ValidateCanonical(&candidate.metrology) !=
+        METROLOGY_CONFIG_OK ||
+        !MetrologyLegacyProjection_Update(&candidate.metrology) ||
+        !MetrologyLegacyStabilityProjection_Update(&candidate.metrology,
+                                                    &candidate.stability) ||
+        !CalibrationLegacyProjection_Update(&candidate.calibration, unit,
+            &candidate.metrology.unit_display[unit])) return false;
+    if (!MetrologyManager_Reconfigure(&candidate)) return false;
     return SystemContext_ApplyConfig(&candidate, true);
 }
 
@@ -304,7 +272,7 @@ bool MetrologyManager_Reconfigure(const DeviceConfig *config)
     int32_t zero_offset;
 
     if (!s_initialized || (config == NULL) ||
-        (MetrologyConfig_Validate(&config->metrology, &config->stability) !=
+        (MetrologyConfig_ValidateCanonical(&config->metrology) !=
          METROLOGY_CONFIG_OK) ||
         (config->calibration.calibration_valid &&
          (CalibrationModel_Validate(&config->calibration) !=
@@ -348,7 +316,7 @@ bool MetrologyManager_RestartAfterStorage(const DeviceConfig *config)
     int32_t zero_offset;
 
     if (!s_initialized || (config == NULL) ||
-        (MetrologyConfig_Validate(&config->metrology, &config->stability) !=
+        (MetrologyConfig_ValidateCanonical(&config->metrology) !=
          METROLOGY_CONFIG_OK) ||
         (config->calibration.calibration_valid &&
          (CalibrationModel_Validate(&config->calibration) !=

@@ -11,6 +11,8 @@ void DisplayController_Process20ms(void);
 void DisplayController_SetPage(DisplayPage page);
 void DisplayController_ShowMessage(const char text[6], uint32_t duration_ms);
 bool DisplayController_SetTextPage(DisplayPage page, const char text[6]);
+bool DisplayController_SetNumericPage(DisplayPage page, int32_t display_count,
+                                      uint8_t decimal_places);
 bool DisplayController_SetBrightness(uint8_t brightness);
 bool DisplayController_SetTestPattern(const uint16_t segments[6],
     uint8_t top_led_mask, uint8_t bottom_led_mask);

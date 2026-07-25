@@ -87,14 +87,6 @@ void WeighingProfileManager_Process(void)
             if (context == NULL) { s_state = PROFILE_SWITCH_ROLLBACK; break; }
             candidate = context->config;
             candidate.metrology.active_profile = s_target;
-            candidate.metrology.cs1237_data_rate =
-                candidate.metrology.profiles[s_target].sample_rate;
-            candidate.metrology.cs1237_gain =
-                candidate.metrology.profiles[s_target].gain;
-            candidate.metrology.filter_mode =
-                candidate.metrology.profiles[s_target].filter_mode;
-            candidate.metrology.filter_strength =
-                candidate.metrology.profiles[s_target].filter_strength;
             if (ConfigApplication_ApplyFactoryDefaults(&candidate) == CONFIG_APPLY_OK)
             {
                 s_last_result = COMMAND_RESULT_OK;

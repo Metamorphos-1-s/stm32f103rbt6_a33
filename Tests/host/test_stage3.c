@@ -34,16 +34,17 @@ static void Stage3_MakeConfig(DeviceConfig *config, bool calibrated)
     CalibrationConfig calibration;
 
     DefaultConfig_Load(config);
-    config->metrology.zero_range = 1000U;
-    config->metrology.overload_threshold = 12000U;
-    config->stability.window_size = 2U;
-    config->stability.enter_threshold = 2U;
-    config->stability.exit_threshold = 4U;
-    config->stability.stable_hold_ms = 10U;
+    config->metrology.zero_range_ug = INT64_C(1000000000);
+    config->metrology.overload_threshold_ug = INT64_C(12000000000);
+    config->metrology.profiles[0].stability_window = 2U;
+    config->metrology.profiles[0].stability_enter_threshold_ug = 2000000;
+    config->metrology.profiles[0].stability_exit_threshold_ug = 4000000;
+    config->metrology.profiles[0].stability_hold_ms = 10U;
     if (calibrated)
     {
-        CHECK3(CalibrationModel_Build(100000, 1100000, 10000, 1U,
-                                      &calibration) == CALIBRATION_RESULT_OK);
+        CHECK3(CalibrationModel_BuildMass(100000, 1100000,
+            INT64_C(10000000000), 1U, &calibration) ==
+            CALIBRATION_RESULT_OK);
         config->calibration = calibration;
     }
 }
@@ -241,18 +242,18 @@ static void TestMetrologyConfig(void)
     Stage3_MakeConfig(&config, false);
     CHECK3(MetrologyConfig_Validate(&config.metrology, &config.stability) ==
            METROLOGY_CONFIG_OK);
-    config.metrology.capacity = 0U;
+    config.metrology.capacity_ug = 0;
     CHECK3(MetrologyConfig_Validate(&config.metrology, &config.stability) ==
            METROLOGY_CONFIG_INVALID_CAPACITY);
     Stage3_MakeConfig(&config, false);
-    config.metrology.division = 0U;
+    config.metrology.unit_display[MASS_UNIT_KG].division_digit = 0U;
     CHECK3(MetrologyConfig_Validate(&config.metrology, &config.stability) ==
-           METROLOGY_CONFIG_INVALID_DIVISION);
+           METROLOGY_CONFIG_INVALID_UNIT);
     Stage3_MakeConfig(&config, false);
-    config.metrology.filter_mode = FILTER_MODE_AVERAGE;
-    config.metrology.filter_strength = 1U;
+    config.metrology.profiles[0].filter_mode = FILTER_MODE_AVERAGE;
+    config.metrology.profiles[0].filter_strength = 1U;
     CHECK3(MetrologyConfig_Validate(&config.metrology, &config.stability) ==
-           METROLOGY_CONFIG_INVALID_FILTER);
+           METROLOGY_CONFIG_INVALID_PROFILE);
 }
 
 static void TestManagerInitializationFaults(void)
@@ -262,7 +263,7 @@ static void TestManagerInitializationFaults(void)
     Stage3_MakeConfig(&config, false);
     CHECK3(SystemContext_Init(&config, 0U));
     FaultManager_Init();
-    config.metrology.division = 0U;
+    config.metrology.unit_display[MASS_UNIT_KG].division_digit = 0U;
     CHECK3(!MetrologyManager_Init(&config, &SystemContext_Get()->runtime));
     CHECK3(!MetrologyManager_IsInitialized());
     CHECK3(FaultManager_IsActive(FAULT_METROLOGY_CONFIG_INVALID));
@@ -284,8 +285,8 @@ static void TestWeightEngine(void)
     CalibrationConfig calibration;
 
     Stage3_MakeConfig(&config, false);
-    CHECK3(WeightEngine_Init(&engine, &config.metrology, &config.calibration,
-                             &config.stability, 0, false));
+    CHECK3(WeightEngine_InitMass(&engine, &config.metrology,
+        &config.calibration, &config.stability, 0, false));
     CHECK3(Stage3_Process(&engine, 123456, 1U));
     snapshot = WeightEngine_GetSnapshot(&engine);
     CHECK3(snapshot->raw_value == 123456);
@@ -299,12 +300,12 @@ static void TestWeightEngine(void)
            WEIGHT_ACTION_CALIBRATION_INVALID);
 
     Stage3_MakeConfig(&config, true);
-    config.metrology.division = 5U;
-    CHECK3(WeightEngine_Init(&engine, &config.metrology, &config.calibration,
-                             &config.stability, 0, false));
+    config.metrology.unit_display[MASS_UNIT_KG].division_digit = 5U;
+    CHECK3(WeightEngine_InitMass(&engine, &config.metrology,
+        &config.calibration, &config.stability, 0, false));
     CHECK3(Stage3_Process(&engine, 101300, 0U));
     snapshot = WeightEngine_GetSnapshot(&engine);
-    CHECK3(snapshot->gross_unrounded == 13);
+    CHECK3(snapshot->gross_unrounded == 15);
     CHECK3(snapshot->gross_weight == 15);
     CHECK3(snapshot->sample_sequence == 1U);
 
@@ -321,8 +322,8 @@ static void TestWeightEngine(void)
     CHECK3(WeightEngine_GetSnapshot(&engine)->gross_unrounded == 50);
 
     Stage3_MakeConfig(&config, true);
-    CHECK3(WeightEngine_Init(&engine, &config.metrology, &config.calibration,
-                             &config.stability, 0, false));
+    CHECK3(WeightEngine_InitMass(&engine, &config.metrology,
+        &config.calibration, &config.stability, 0, false));
     CHECK3(Stage3_Process(&engine, 600000, 0U));
     CHECK3(Stage3_Process(&engine, 600000, 10U));
     CHECK3(Stage3_Process(&engine, 600000, 20U));
@@ -344,8 +345,8 @@ static void TestWeightEngine(void)
     CHECK3((WeightEngine_GetSnapshot(&engine)->status_flags &
             WEIGHT_STATUS_OVERLOAD) != 0U);
 
-    CHECK3(CalibrationModel_Build(100000, 1100000, 10000, 2U,
-                                  &calibration) == CALIBRATION_RESULT_OK);
+    CHECK3(CalibrationModel_BuildMass(100000, 1100000,
+        INT64_C(10000000000), 2U, &calibration) == CALIBRATION_RESULT_OK);
     CHECK3(WeightEngine_ApplyCalibration(&engine, &calibration));
     CHECK3(StabilityDetector_GetState(&engine.stability) ==
            STABILITY_STATE_UNAVAILABLE);
@@ -436,8 +437,8 @@ static void TestSyntheticScaleFlow(void)
     uint8_t index;
 
     Stage3_MakeConfig(&config, true);
-    CHECK3(WeightEngine_Init(&engine, &config.metrology, &config.calibration,
-                             &config.stability, 0, false));
+    CHECK3(WeightEngine_InitMass(&engine, &config.metrology,
+        &config.calibration, &config.stability, 0, false));
     CHECK3(SyntheticScaleSource_Init(&source, 100000, 100,
                                      0xFFFFFFF0U, 10U));
     SyntheticScaleSource_SetConstant(&source, 0, 1);

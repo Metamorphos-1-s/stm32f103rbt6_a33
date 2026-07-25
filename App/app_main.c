@@ -481,6 +481,14 @@ static void App_ShowCommandResult(CommandResult result, bool tare_action)
   {
     code = DISPLAY_CODE_OVERLOAD;
   }
+  else if (result == COMMAND_RESULT_OUT_OF_ZERO_RANGE)
+  {
+    code = DISPLAY_CODE_ZERO_RANGE;
+  }
+  else if (result == COMMAND_RESULT_BUSY)
+  {
+    code = DISPLAY_CODE_BUSY;
+  }
   else
   {
     code = tare_action ? DISPLAY_CODE_TARE_ERROR : DISPLAY_CODE_ZERO_ERROR;

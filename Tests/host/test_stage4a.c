@@ -46,16 +46,17 @@ static KeyEvent Stage4A_Key(KeyId key, KeyEventType type, uint32_t now)
 static void Stage4A_MakeConfig(DeviceConfig *config, bool calibrated)
 {
     DefaultConfig_Load(config);
-    config->metrology.zero_range = 1000U;
-    config->metrology.overload_threshold = 12000U;
-    config->stability.window_size = 2U;
-    config->stability.enter_threshold = 2U;
-    config->stability.exit_threshold = 4U;
-    config->stability.stable_hold_ms = 10U;
+    config->metrology.zero_range_ug = INT64_C(1000000000);
+    config->metrology.overload_threshold_ug = INT64_C(12000000000);
+    config->metrology.profiles[0].stability_window = 2U;
+    config->metrology.profiles[0].stability_enter_threshold_ug = 2000000;
+    config->metrology.profiles[0].stability_exit_threshold_ug = 4000000;
+    config->metrology.profiles[0].stability_hold_ms = 10U;
     if (calibrated)
     {
-        CHECK4(CalibrationModel_Build(100000, 1100000, 10000, 1U,
-            &config->calibration) == CALIBRATION_RESULT_OK);
+        CHECK4(CalibrationModel_BuildMass(100000, 1100000,
+            INT64_C(10000000000), 1U, &config->calibration) ==
+            CALIBRATION_RESULT_OK);
     }
 }
 
@@ -195,12 +196,18 @@ static void Stage4A_FeedStable(int32_t raw)
     CHECK4(MetrologyManager_AcceptRawSample(&sample));
 }
 
-static CommandResult Stage4A_Command(CommandId id, CommandSource source,
-                                     int32_t value0, int32_t value1,
-                                     CommandResponse *response)
+static CommandResult Stage4A_CommandEx(CommandId id, CommandSource source,
+    int32_t value0, int32_t value1, uint32_t flags, int64_t value64,
+    CommandResponse *response)
 {
-    CommandRequest request = {id, source, value0, value1, 0U};
+    CommandRequest request = {id, source, value0, value1, flags, value64};
     return CommandService_Execute(&request, response);
+}
+
+static CommandResult Stage4A_Command(CommandId id, CommandSource source,
+    int32_t value0, int32_t value1, CommandResponse *response)
+{
+    return Stage4A_CommandEx(id, source, value0, value1, 0U, 0, response);
 }
 
 static void TestCommandAndConfig(void)
@@ -235,41 +242,54 @@ static void TestCommandAndConfig(void)
     CHECK4(ConfigEdit_Init());
     target = config;
     CHECK4(ConfigEdit_Begin(&config));
-    CHECK4(ConfigEdit_SetField(CONFIG_FIELD_DIVISION, 5));
-    CHECK4(ConfigEdit_GetWorkingCopy()->metrology.division == 5U);
+    {
+        UnitDisplayConfig display =
+            config.metrology.unit_display[MASS_UNIT_KG];
+        display.division_digit = 5U;
+        CHECK4(ConfigEdit_SetUnitDisplay(MASS_UNIT_KG, &display));
+    }
+    CHECK4(ConfigEdit_GetWorkingCopy()->metrology
+        .unit_display[MASS_UNIT_KG].division_digit == 5U);
     CHECK4(ConfigEdit_Validate());
     CHECK4(ConfigEdit_CommitToRam(&target));
-    CHECK4(target.metrology.division == 5U && config.metrology.division == 1U);
+    CHECK4(target.metrology.unit_display[MASS_UNIT_KG].division_digit == 5U &&
+        config.metrology.unit_display[MASS_UNIT_KG].division_digit == 1U);
     CHECK4(ConfigEdit_Begin(&config));
-    CHECK4(ConfigEdit_SetField(CONFIG_FIELD_DIVISION, 0));
-    CHECK4(!ConfigEdit_Validate());
-    CHECK4(ConfigEdit_SetField(CONFIG_FIELD_DIVISION, 1));
+    {
+        UnitDisplayConfig display =
+            config.metrology.unit_display[MASS_UNIT_KG];
+        display.division_digit = 0U;
+        CHECK4(!ConfigEdit_SetUnitDisplay(MASS_UNIT_KG, &display));
+    }
+    CHECK4(ConfigEdit_Validate());
     CHECK4(!ConfigEdit_SetField(CONFIG_FIELD_DISPLAY_BRIGHTNESS, 256));
     CHECK4(!ConfigEdit_SetField(CONFIG_FIELD_SAMPLE_RATE, 256));
     ConfigEdit_Cancel();
-    CHECK4(config.metrology.division == 1U);
+    CHECK4(config.metrology.unit_display[MASS_UNIT_KG].division_digit == 1U);
     CHECK4(!ConfigEdit_SetField(CONFIG_FIELD_DIVISION, 2));
 
     CommandService_Init();
     CHECK4(Stage4A_Command(COMMAND_BEGIN_CONFIG_EDIT,
         COMMAND_SOURCE_LOCAL_KEY, 0, 0, &response) == COMMAND_RESULT_OK);
-    CHECK4(Stage4A_Command(COMMAND_SET_CONFIG_FIELD,
-        COMMAND_SOURCE_LOCAL_KEY, CONFIG_FIELD_DIVISION, 5, &response) ==
+    CHECK4(Stage4A_CommandEx(COMMAND_SET_UNIT_DISPLAY_CONFIG,
+        COMMAND_SOURCE_LOCAL_KEY, MASS_UNIT_KG, 3, 5U, 0, &response) ==
         COMMAND_RESULT_OK);
     CHECK4(Stage4A_Command(COMMAND_COMMIT_CONFIG_EDIT,
         COMMAND_SOURCE_LOCAL_KEY, 0, 0, &response) == COMMAND_RESULT_OK);
-    CHECK4(SystemContext_Get()->config.metrology.division == 5U);
+    CHECK4(SystemContext_Get()->config.metrology
+        .unit_display[MASS_UNIT_KG].division_digit == 5U);
     CHECK4(SystemContext_Get()->runtime.config_dirty);
 
     CHECK4(Stage4A_Command(COMMAND_BEGIN_CONFIG_EDIT,
         COMMAND_SOURCE_LOCAL_KEY, 0, 0, &response) == COMMAND_RESULT_OK);
-    CHECK4(Stage4A_Command(COMMAND_SET_CONFIG_FIELD,
-        COMMAND_SOURCE_LOCAL_KEY, CONFIG_FIELD_SAMPLE_RATE,
+    CHECK4(Stage4A_CommandEx(COMMAND_SET_PROFILE_FIELD,
+        COMMAND_SOURCE_LOCAL_KEY, WEIGHING_PROFILE_HIGH_PRECISION,
+        CONFIG_PROFILE_FIELD_SAMPLE_RATE, 0U,
         DEVICE_CS1237_DATA_RATE_40_HZ, &response) == COMMAND_RESULT_OK);
     CHECK4(Stage4A_Command(COMMAND_COMMIT_CONFIG_EDIT,
         COMMAND_SOURCE_LOCAL_KEY, 0, 0, &response) ==
         COMMAND_RESULT_NOT_IMPLEMENTED);
-    CHECK4(SystemContext_Get()->config.metrology.cs1237_data_rate ==
+    CHECK4(SystemContext_Get()->config.metrology.profiles[0].sample_rate ==
            DEVICE_CS1237_DATA_RATE_10_HZ);
     (void)Stage4A_Command(COMMAND_CANCEL_CONFIG_EDIT,
         COMMAND_SOURCE_LOCAL_KEY, 0, 0, &response);
@@ -305,6 +325,30 @@ static void TestDisplayControllerAndMenu(void)
     MenuController_Init();
     CHECK4(SystemContext_SetState(APP_STATE_MENU, 100U));
     CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 101U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_GetItem() == MENU_ITEM_PROFILE);
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 102U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_GetItem() == MENU_ITEM_UNIT);
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 103U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    TestMock_SetTimeMs(1104U);
+    MenuController_Process10ms();
+    CHECK4(MenuController_GetItem() == MENU_ITEM_EXIT);
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 1105U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_GetItem() == MENU_ITEM_UNIT);
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 1106U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 1107U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_GetItem() == MENU_ITEM_SAVE);
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 1108U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 1109U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_GetItem() == MENU_ITEM_UNIT);
     event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 110U);
     CHECK4(MenuController_HandleKeyEvent(&event));
     event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 120U);
@@ -321,7 +365,8 @@ static void TestDisplayControllerAndMenu(void)
     CHECK4(MenuController_HandleKeyEvent(&event));
     event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, 170U);
     CHECK4(MenuController_HandleKeyEvent(&event));
-    CHECK4(SystemContext_Get()->config.metrology.capacity == 10000U);
+    CHECK4(SystemContext_Get()->config.metrology.capacity_ug ==
+           INT64_C(10000000000));
     TestMock_SetTimeMs(30171U);
     MenuController_Process10ms();
     CHECK4(!MenuController_IsActive());
@@ -455,10 +500,10 @@ static void TestCalibrationCancelAndGuards(void)
         0, 0, &response) == COMMAND_RESULT_BUSY);
     CHECK4(Stage4A_Command(COMMAND_CALIBRATION_SET_SPAN_WEIGHT,
         COMMAND_SOURCE_DIAGNOSTIC, 0, 0, &response) ==
-        COMMAND_RESULT_INVALID_ARGUMENT);
+        COMMAND_RESULT_NOT_IMPLEMENTED);
     CHECK4(Stage4A_Command(COMMAND_CALIBRATION_SET_SPAN_WEIGHT,
         COMMAND_SOURCE_DIAGNOSTIC, 10001, 0, &response) ==
-        COMMAND_RESULT_INVALID_ARGUMENT);
+        COMMAND_RESULT_NOT_IMPLEMENTED);
     (void)Stage4A_Command(COMMAND_CALIBRATION_CANCEL,
         COMMAND_SOURCE_DIAGNOSTIC, 0, 0, &response);
 

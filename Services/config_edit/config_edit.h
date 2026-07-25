@@ -34,9 +34,36 @@ typedef enum
     CONFIG_FIELD_COUNT
 } ConfigFieldId;
 
+typedef enum
+{
+    CONFIG_MASS_FIELD_CAPACITY = 0,
+    CONFIG_MASS_FIELD_ZERO_RANGE,
+    CONFIG_MASS_FIELD_OVERLOAD_THRESHOLD,
+    CONFIG_MASS_FIELD_COUNT
+} ConfigMassFieldId;
+
+typedef enum
+{
+    CONFIG_PROFILE_FIELD_SAMPLE_RATE = 0,
+    CONFIG_PROFILE_FIELD_GAIN,
+    CONFIG_PROFILE_FIELD_FILTER_MODE,
+    CONFIG_PROFILE_FIELD_FILTER_STRENGTH,
+    CONFIG_PROFILE_FIELD_STABILITY_WINDOW,
+    CONFIG_PROFILE_FIELD_STABILITY_ENTER,
+    CONFIG_PROFILE_FIELD_STABILITY_EXIT,
+    CONFIG_PROFILE_FIELD_STABILITY_HOLD_MS,
+    CONFIG_PROFILE_FIELD_COUNT
+} ConfigProfileFieldId;
+
 bool ConfigEdit_Init(void);
 bool ConfigEdit_Begin(const DeviceConfig *current);
 bool ConfigEdit_SetField(ConfigFieldId field, int32_t value);
+bool ConfigEdit_SetIntegerField(ConfigFieldId field, int32_t value);
+bool ConfigEdit_SetMassField(ConfigMassFieldId field, MassValueUg value_ug);
+bool ConfigEdit_SetUnitDisplay(MassUnit unit,
+                               const UnitDisplayConfig *display);
+bool ConfigEdit_SetProfileField(WeighingProfileId profile,
+    ConfigProfileFieldId field, int64_t value);
 bool ConfigEdit_Validate(void);
 bool ConfigEdit_CommitToRam(DeviceConfig *target);
 void ConfigEdit_Cancel(void);

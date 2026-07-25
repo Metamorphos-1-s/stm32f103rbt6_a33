@@ -61,3 +61,19 @@ See `Docs/MODBUS_REGISTER_MAP_V1.md` for block addresses. This is a register-mod
 NOT TESTED ON HARDWARE.
 
 Hardware work remains for actual profile noise/response, all CS1237 rates and settling, stability values, zero range, sensor direction, unit readability, repeat speed, menu sequence usability, and real V1 flash migration. Stage 5B should add RTU timing/framing, CRC16, bounded UART buffering, address/broadcast policy, RS485 TX direction and explicit communication apply while calling this register model unchanged.
+
+## Stage 5A-UIR local UI adaptation
+
+The local panel now uses `MassValueUg` and `MassSnapshot` end to end. Calibration
+mass, capacity, zero range and overload are edited in the active unit as display
+counts and converted through `UnitConverter`; per-unit decimals/division remain
+independent. Filter and stability edit the active profile. Sample rate and gain
+are explicitly read-only until their edit transaction can join the asynchronous
+CS1237 apply state machine; complete profile switching remains supported.
+
+Canonical validation no longer depends on V1 fields. A checked one-way
+projection supplies legacy fields only at apply/codec boundaries, preserving the
+344-byte V2 payload and V1 migration. Ordinary STAR/HASH navigation and the
+advanced STAR-HASH-STAR-HASH sequence now coexist through buffered replay. See
+`STAGE5A_UI_METROLOGY_ADAPTATION_FIX.md` for implementation, tests and resource
+results.

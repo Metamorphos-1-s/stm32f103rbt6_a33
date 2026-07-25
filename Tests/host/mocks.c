@@ -5,6 +5,7 @@
 #include "bsp_time.h"
 #include "event_queue.h"
 #include "command_types.h"
+#include "communication_manager.h"
 
 #include <string.h>
 
@@ -16,6 +17,11 @@ static uint32_t s_rejected_event_pushes;
 static EventType s_rejected_event_type;
 static bool s_reject_event_type_once;
 static bool s_outputs[OUTPUT_COUNT];
+
+CommunicationManagerState CommunicationManager_GetState(void)
+{
+    return COMM_STATE_RUNNING;
+}
 
 CommandResult CommunicationManager_RequestApply(void)
 {

@@ -2,6 +2,8 @@
 #include "default_config.h"
 #include "key_service.h"
 #include "mass_math.h"
+#include "metrology_config_validator.h"
+#include "metrology_legacy_projection.h"
 #include "metrology_standard_validator.h"
 #include "persistent_codec.h"
 #include "persistent_schema.h"
@@ -28,6 +30,38 @@ static void TestMassAndUnits(void)
     CHECK(UnitConverter_MassToDisplay(INT64_C(1000000000),MASS_UNIT_G,&g,&display)&&display.display_count==1000);
     CHECK(UnitConverter_MassToDisplay(INT64_C(453592370),MASS_UNIT_LB,&lb,&display)&&display.display_count==1000);
     CHECK(UnitConverter_MassToDisplay(-INT64_C(453592370),MASS_UNIT_LB,&lb,&display)&&display.display_count==-1000);
+    CHECK(UnitConverter_CountToMass(10000,MASS_UNIT_KG,3U,&value)&&value==INT64_C(10000000000));
+    CHECK(UnitConverter_CountToMass(5000,MASS_UNIT_G,0U,&value)&&value==INT64_C(5000000000));
+    CHECK(UnitConverter_CountToMass(1000,MASS_UNIT_LB,3U,&value)&&value==INT64_C(453592370));
+    kg.division_digit=5U;
+    CHECK(UnitConverter_MassToDisplay(INT64_C(1003000000),MASS_UNIT_KG,&kg,&display)&&display.display_count==1005);
+}
+
+static void TestCanonicalAndLegacyBoundary(void)
+{
+    DeviceConfig config;
+    RuntimeState runtime={0};
+    uint8_t bytes[PERSISTENT_V2_PAYLOAD_SIZE];
+    uint16_t length=0U;
+    DefaultConfig_Load(&config);
+    config.metrology.capacity=0U;
+    config.metrology.division=0U;
+    config.metrology.decimal_places=0U;
+    config.metrology.filter_mode=FILTER_MODE_COUNT;
+    config.metrology.filter_strength=0xFFU;
+    config.metrology.zero_range=0U;
+    config.metrology.overload_threshold=0U;
+    config.stability.enter_threshold=UINT32_MAX;
+    config.stability.exit_threshold=0U;
+    CHECK(MetrologyConfig_ValidateCanonical(&config.metrology)==METROLOGY_CONFIG_OK);
+    CHECK(PersistentCodec_ValidateConfig(&config));
+    runtime.weight_view=WEIGHT_VIEW_NET;
+    CHECK(PersistentCodec_EncodeV2(&config,&runtime,bytes,sizeof(bytes),&length)==PERSISTENT_CODEC_OK);
+    CHECK(length==PERSISTENT_V2_PAYLOAD_SIZE);
+    CHECK(MetrologyLegacyV1_Validate(&config.metrology,&config.stability)!=METROLOGY_CONFIG_OK);
+    CHECK(MetrologyLegacyProjection_Update(&config.metrology));
+    CHECK(MetrologyLegacyStabilityProjection_Update(&config.metrology,&config.stability));
+    CHECK(MetrologyLegacyV1_Validate(&config.metrology,&config.stability)==METROLOGY_CONFIG_OK);
 }
 
 static void TestCodec(void)
@@ -121,7 +155,8 @@ static void TestModbusModel(void)
 
 int main(void)
 {
-    TestMassAndUnits(); TestCodec(); TestReferenceRules(); TestKeyConflict(); TestModbusModel();
+    TestMassAndUnits(); TestCanonicalAndLegacyBoundary(); TestCodec();
+    TestReferenceRules(); TestKeyConflict(); TestModbusModel();
     if(failures==0U) printf("Stage 5A host tests passed.\n");
     return failures==0U?0:1;
 }

@@ -12,7 +12,7 @@ static bool FilterValid(FilterMode mode, uint8_t strength)
 {
     switch (mode)
     {
-        case FILTER_MODE_NONE: return true;
+        case FILTER_MODE_NONE: return strength == 0U;
         case FILTER_MODE_AVERAGE:
             return (strength >= 2U) && (strength <= WEIGHT_FILTER_MAX_WINDOW);
         case FILTER_MODE_IIR:
@@ -23,20 +23,11 @@ static bool FilterValid(FilterMode mode, uint8_t strength)
     }
 }
 
-MetrologyConfigResult MetrologyConfig_Validate(
-    const MetrologyConfig *metrology, const StabilityConfig *stability)
+MetrologyConfigResult MetrologyConfig_ValidateCanonical(
+    const MetrologyConfig *metrology)
 {
     uint8_t index;
-    if ((metrology == NULL) || (stability == NULL)) return METROLOGY_CONFIG_NULL;
-    if ((metrology->capacity == 0U) || (metrology->capacity > INT32_MAX))
-        return METROLOGY_CONFIG_INVALID_CAPACITY;
-    if ((metrology->division == 0U) ||
-        (metrology->division > metrology->capacity))
-        return METROLOGY_CONFIG_INVALID_DIVISION;
-    if ((uint32_t)metrology->unit >= MASS_UNIT_COUNT)
-        return METROLOGY_CONFIG_INVALID_UNIT;
-    if (!FilterValid(metrology->filter_mode, metrology->filter_strength))
-        return METROLOGY_CONFIG_INVALID_FILTER;
+    if (metrology == NULL) return METROLOGY_CONFIG_NULL;
     if (metrology->capacity_ug <= 0) return METROLOGY_CONFIG_INVALID_CAPACITY;
     if ((uint32_t)metrology->active_unit >= MASS_UNIT_COUNT ||
         (metrology->enabled_unit_mask == 0U) ||
@@ -85,13 +76,36 @@ MetrologyConfigResult MetrologyConfig_Validate(
             (profile->stability_hold_ms > 10000U))
             return METROLOGY_CONFIG_INVALID_PROFILE;
     }
+    if (MetrologyStandardValidator_Validate(metrology) != METROLOGY_STANDARD_OK)
+        return METROLOGY_CONFIG_INVALID_STANDARD;
+    return METROLOGY_CONFIG_OK;
+}
+
+MetrologyConfigResult MetrologyLegacyV1_Validate(
+    const MetrologyConfig *metrology, const StabilityConfig *stability)
+{
+    if ((metrology == NULL) || (stability == NULL)) return METROLOGY_CONFIG_NULL;
+    if ((metrology->capacity == 0U) || (metrology->capacity > INT32_MAX))
+        return METROLOGY_CONFIG_INVALID_CAPACITY;
+    if ((metrology->division == 0U) ||
+        (metrology->division > metrology->capacity))
+        return METROLOGY_CONFIG_INVALID_DIVISION;
+    if ((uint32_t)metrology->unit >= MASS_UNIT_COUNT)
+        return METROLOGY_CONFIG_INVALID_UNIT;
+    if (!FilterValid(metrology->filter_mode, metrology->filter_strength))
+        return METROLOGY_CONFIG_INVALID_FILTER;
     if ((stability->window_size < 2U) ||
         (stability->window_size > STABILITY_MAX_WINDOW) ||
         (stability->enter_threshold > stability->exit_threshold) ||
         (stability->stable_hold_ms < 10U) ||
         (stability->stable_hold_ms > 10000U))
         return METROLOGY_CONFIG_INVALID_STABILITY;
-    if (MetrologyStandardValidator_Validate(metrology) != METROLOGY_STANDARD_OK)
-        return METROLOGY_CONFIG_INVALID_STANDARD;
     return METROLOGY_CONFIG_OK;
+}
+
+MetrologyConfigResult MetrologyConfig_Validate(
+    const MetrologyConfig *metrology, const StabilityConfig *stability)
+{
+    (void)stability;
+    return MetrologyConfig_ValidateCanonical(metrology);
 }

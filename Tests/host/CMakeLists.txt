@@ -25,6 +25,7 @@ add_executable(stage4a_host_tests
     ../../Domain/calibration/raw_calibration_stability.c
     ../../Domain/filter/weight_filter.c
     ../../Domain/measurement/metrology_config_validator.c
+    ../../Domain/measurement/metrology_legacy_projection.c
     ../../Domain/measurement/mass_math.c
     ../../Domain/measurement/metrology_standard_validator.c
     ../../Domain/measurement/raw_measurement.c
@@ -98,6 +99,7 @@ add_executable(stage4b_storage_tests
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/metrology_config_validator.c
+    ../../Domain/measurement/metrology_legacy_projection.c
     ../../Domain/measurement/mass_math.c
     ../../Domain/measurement/metrology_standard_validator.c
     ../../Domain/measurement/unit_converter.c
@@ -127,6 +129,7 @@ add_executable(stage4br_persistence_tests
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/metrology_config_validator.c
+    ../../Domain/measurement/metrology_legacy_projection.c
     ../../Domain/measurement/mass_math.c
     ../../Domain/measurement/metrology_standard_validator.c
     ../../Domain/measurement/unit_converter.c
@@ -159,6 +162,7 @@ add_executable(stage5a_host_tests
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/mass_math.c
     ../../Domain/measurement/metrology_config_validator.c
+    ../../Domain/measurement/metrology_legacy_projection.c
     ../../Domain/measurement/metrology_standard_validator.c
     ../../Domain/measurement/unit_converter.c
     ../../Domain/measurement/weight_math.c
@@ -190,6 +194,7 @@ add_executable(stage5b_host_tests
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/mass_math.c
     ../../Domain/measurement/metrology_config_validator.c
+    ../../Domain/measurement/metrology_legacy_projection.c
     ../../Domain/measurement/metrology_standard_validator.c
     ../../Domain/measurement/unit_converter.c
     ../../Domain/measurement/weight_math.c
