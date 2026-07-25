@@ -1,0 +1,68 @@
+[
+  {
+    "name": "communication apply",
+    "status": "PASS",
+    "detail": "probe succeeded at new parameters",
+    "data": {
+      "slave": 1,
+      "baud": 9600,
+      "parity": "N",
+      "stopbits": 1
+    }
+  },
+  {
+    "name": "communication restore",
+    "status": "PASS",
+    "detail": "old parameters restored; SAVE not issued",
+    "data": {
+      "old": {
+        "slave": 1,
+        "baud": 115200,
+        "parity": "N",
+        "stopbits": 1
+      },
+      "new_probe": {
+        "display_weight": 0,
+        "decimals": 3,
+        "active_unit": 0,
+        "status_flags": 196608,
+        "register_map_version": 256,
+        "firmware_version": 1290,
+        "net_mass_ug": 0,
+        "sample_sequence": 1582,
+        "active_profile": 0,
+        "storage_state": 0,
+        "power_safe": 1,
+        "config_dirty": 1,
+        "schema_version": 2,
+        "active_slot": 0,
+        "storage_sequence": 0,
+        "word_order": "high",
+        "hardware_revision": "UNAVAILABLE_IN_REGISTER_MAP",
+        "battery_voltage": "UNAVAILABLE_IN_REGISTER_MAP",
+        "response_ms": 120.1224
+      },
+      "restored_probe": {
+        "display_weight": 0,
+        "decimals": 3,
+        "active_unit": 0,
+        "status_flags": 196608,
+        "register_map_version": 256,
+        "firmware_version": 1290,
+        "net_mass_ug": 0,
+        "sample_sequence": 1587,
+        "active_profile": 0,
+        "storage_state": 0,
+        "power_safe": 1,
+        "config_dirty": 1,
+        "schema_version": 2,
+        "active_slot": 0,
+        "storage_sequence": 0,
+        "word_order": "high",
+        "hardware_revision": "UNAVAILABLE_IN_REGISTER_MAP",
+        "battery_voltage": "UNAVAILABLE_IN_REGISTER_MAP",
+        "response_ms": 44.4021
+      }
+    }
+  }
+]

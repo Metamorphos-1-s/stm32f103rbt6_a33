@@ -1,0 +1,10 @@
+{
+  "baud_rate": 115200,
+  "stop_bits": 1,
+  "slave_address": 1,
+  "port": "COM5",
+  "interface": "rs485",
+  "parity": "N",
+  "poll_interval_ms": 50,
+  "timeout_ms": 300
+}

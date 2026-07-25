@@ -1,0 +1,61 @@
+{
+  "dump_base": "0x20000E5F",
+  "uart_dma": {
+    "rx_byte_count": 80,
+    "rx_idle_count": 30,
+    "rx_half_count": 0,
+    "rx_wrap_count": 0,
+    "rx_dma_error_count": 0,
+    "rx_overrun_count": 0,
+    "rx_wrap_race_recovery_count": 0,
+    "uart_parity_error_count": 0,
+    "uart_frame_error_count": 0,
+    "uart_noise_error_count": 0,
+    "uart_overrun_error_count": 0,
+    "tx_request_count": 0,
+    "tx_complete_count": 30,
+    "tx_dma_error_count": 0,
+    "tx_timeout_count": 0,
+    "dma_write_position": 80,
+    "dma_read_position": 80
+  },
+  "framer": {
+    "frame_count": 10,
+    "short_frame_count": 0,
+    "inter_character_error_count": 0,
+    "overflow_count": 0,
+    "transport_error_count": 0,
+    "current_frame_length": 0
+  },
+  "server": {
+    "valid_frame_count": 10,
+    "addressed_frame_count": 10,
+    "ignored_address_count": 0,
+    "broadcast_count": 0,
+    "crc_error_count": 0,
+    "length_error_count": 0,
+    "function03_count": 10,
+    "function06_count": 0,
+    "function16_count": 0,
+    "illegal_function_count": 0,
+    "exception_response_count": 0,
+    "tx_response_count": 10,
+    "tx_error_count": 0,
+    "tx_start_error_count": 0,
+    "tx_timeout_error_count": 0,
+    "protocol_violation_count": 0,
+    "last_request_address": 1,
+    "last_function": 3,
+    "last_exception": 0,
+    "last_request_length": 8,
+    "last_response_length": 25
+  },
+  "states": {
+    "tx": 0,
+    "tx_last_error": 0,
+    "transport_recovery_failures": 0,
+    "transport_receive_error": 0,
+    "framer": 0,
+    "server": 0
+  }
+}

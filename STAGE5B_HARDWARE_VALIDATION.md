@@ -7,7 +7,7 @@
 - Available equipment stated by the task: Windows PC, ST-Link, USB-RS232, USB-RS485, Python 3, STM32CubeProgrammer, manual power switching
 - This delivery adds PC tools, tests, diagnostics, and the firmware fixes described below.
 
-The Python source compiles and the offline CRC/frame/map/slot tests passed. The original Release build exposed repeatable RX and TX failures under stress: stale DMA wrap sampling discarded requests, while dividing DWT cycles before elapsed-time subtraction caused a false RS485 TX timeout near the 16 MHz cycle-counter wrap at about 268 seconds. Both defects were fixed and covered by 1,094 Stage 5B host checks, including the DMA absolute counter's natural 32-bit rollover. The final Release build used 51,944 bytes of FLASH and 10,624 bytes of RAM; ELF SHA-256 is `FDB15806A72C02FC4766B98E7A0F6C6D2DB57905BAB7ED91DDB28655034D0400`. STM32CubeProgrammer 2.19.0 programmed and verified it through normal SWD with software reset because NRST was not connected. The final zero-tolerance 600-second run completed 5,261 logical requests with zero timeout, CRC, exception, or retry. SWD captured 15,787 valid/addressed FC03 requests and exactly 15,787 completed responses, five compensated DMA wrap races, zero framer transport errors, zero TX start/timeout errors, zero UART/DMA errors, idle state machines, and matching DMA read/write positions. Guarded non-persistent FC06/FC16, malformed-frame, RAM configuration apply/restore, invalid-value rejection, and mailbox token-deduplication tests subsequently passed. A post-test software reset restored `CONFIG_DIRTY=0` and current/saved revisions to zero. No SAVE, communication-parameter change, or manual power-cycle test was performed.
+The Python source compiles and the offline CRC/frame/map/slot tests passed. The original Release build exposed repeatable RX and TX failures under stress: stale DMA wrap sampling discarded requests, while dividing DWT cycles before elapsed-time subtraction caused a false RS485 TX timeout near the 16 MHz cycle-counter wrap at about 268 seconds. Both defects were fixed and covered by 1,094 Stage 5B host checks, including the DMA absolute counter's natural 32-bit rollover. The final Release build used 51,944 bytes of FLASH and 10,624 bytes of RAM; ELF SHA-256 is `FDB15806A72C02FC4766B98E7A0F6C6D2DB57905BAB7ED91DDB28655034D0400`. STM32CubeProgrammer 2.19.0 programmed and verified it through normal SWD with software reset because NRST was not connected. The final zero-tolerance 600-second run completed 5,261 logical requests with zero timeout, CRC, exception, or retry. SWD captured 15,787 valid/addressed FC03 requests and exactly 15,787 completed responses, five compensated DMA wrap races, zero framer transport errors, zero TX start/timeout errors, zero UART/DMA errors, idle state machines, and matching DMA read/write positions. Guarded non-persistent FC06/FC16, malformed-frame, RAM configuration apply/restore, invalid-value rejection, mailbox token-deduplication, and temporary `115200 N1 -> 9600 N1 -> 115200 N1` communication switching tests subsequently passed. A post-test software reset restored `CONFIG_DIRTY=0` and current/saved revisions to zero. No SAVE or manual power-cycle test was performed.
 
 ## Setup
 
@@ -31,7 +31,7 @@ Build and flash with `build_and_flash.ps1 -AllowFlash`. This records the Git sta
 | Illegal function/address/value and broadcast | `errors --allow-write` | PASS |
 | Mailbox token deduplication | `commands --name NOP --repeat-token` | PASS |
 | RAM staging/validate/apply/restore | `config-apply --allow-write` | PASS; brightness 3 -> 4 -> 3; invalid 8 rejected |
-| Communication parameter switch/recovery | manual guarded procedure | NOT RUN |
+| Communication parameter switch/recovery | guarded RAM apply, probe, and restore | PASS; address 1, 115200 N1 -> 9600 N1 -> 115200 N1 |
 | SAVE and storage state | `save --allow-write --allow-flash` | NOT RUN |
 | A/B CRC, commit and sequence | dump before/after, then `parse_config_slots.py` | NOT RUN |
 | Manual power-cycle recovery | `save --manual-power-cycle` | NOT RUN |
@@ -96,6 +96,12 @@ Generated probe reports:
 - `Tools/stage5b_hw/reports/20260725_140318_rs485/` through `20260725_140322_rs485/` (post-write configuration checks and 100-read regression passed)
 - `Tools/stage5b_hw/reports/20260725_swd_after_write_suites/` (expected injected protocol errors; zero UART/DMA/transport/TX errors and idle state machines)
 - `Tools/stage5b_hw/reports/20260725_140418_rs485/` and `20260725_140419_rs485/` (post-reset probe passed; dirty flag and revisions restored)
+- `Tools/stage5b_hw/reports/20260725_140643_rs485/` (communication-switch precondition probe at address 1, 115200 N1)
+- `Tools/stage5b_hw/reports/20260725_140652_rs485/` (9600 N1 probe and automatic 115200 N1 restore both passed; SAVE not issued)
+- `Tools/stage5b_hw/reports/20260725_140709_rs485/` through `20260725_140712_rs485/` (external restore checks; communication registers restored)
+- `Tools/stage5b_hw/reports/20260725_swd_after_comm_switch/` (post-switch snapshot; zero UART/DMA/transport/TX errors)
+- `Tools/stage5b_hw/reports/20260725_140738_rs485/` and `20260725_140739_rs485/` (post-reset clean probe and 100-read regression passed)
+- `Tools/stage5b_hw/reports/20260725_swd_after_comm_switch_reset_smoke/` (108/108 final FC03 responses; all error counters zero)
 
 ## Resolved defects from stress diagnostics
 
@@ -106,4 +112,4 @@ Before repeating, identify whether COM5 is the RS232 or RS485 adapter, select th
 
 Stage 5B hardware acceptance: **NOT MET**.
 
-Ready to enter Stage 5C: **NO**. First verify temporary communication-parameter switching and recovery, then perform the separately authorized SAVE/A-B slot/manual-power-cycle tests. Logic-analyzer and adjustable-supply tests remain necessary for final timing and brownout claims even if PC functional tests pass.
+Ready to enter Stage 5C: **NO**. Next perform the separately authorized SAVE/A-B slot/manual-power-cycle tests. Logic-analyzer and adjustable-supply tests remain necessary for final timing and brownout claims even if PC functional tests pass.
