@@ -108,7 +108,13 @@ def execute_command(client, token, command, arg0=0, arg1=0, arg64=0,
     client.write_single(reg.EXECUTE, reg.EXECUTE_VALUE)
     deadline = time.monotonic() + timeout_s
     while True:
-        response, _ = client.read(reg.RESPONSE_TOKEN, 4)
+        try:
+            response, _ = client.read(reg.RESPONSE_TOKEN, 4)
+        except HardwareTestError as exc:
+            if str(exc) != "Modbus response timeout" or time.monotonic() >= deadline:
+                raise
+            time.sleep(0.02)
+            continue
         if response[0] == token:
             return {"token": response[0], "result": response[1],
                     "result_name": reg.COMMAND_RESULTS.get(response[1], "UNKNOWN"),

@@ -83,6 +83,10 @@ def parse_dump(path, modbus_active_slot=None, modbus_sequence=None):
     return result
 
 
+def dump_is_usable(result):
+    return result.get("active_slot") is not None
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("dump")
@@ -95,7 +99,7 @@ def main(argv=None):
     print(output)
     if args.json:
         Path(args.json).write_text(output + "\n", encoding="utf-8")
-    return 0 if all(slot["valid"] for slot in result["slots"]) else 2
+    return 0 if dump_is_usable(result) else 2
 
 
 if __name__ == "__main__":

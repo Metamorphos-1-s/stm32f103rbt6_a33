@@ -1,0 +1,4 @@
+{
+  "sha": "ad6cf8a853dbf72477dd6c4e50b3ae0f5cc54f53",
+  "status": "M Tools/stage5b_hw/hw_common.py\n M Tools/stage5b_hw/parse_config_slots.py\n M Tools/stage5b_hw/tests/test_config_slot_parser.py\n?? Tools/stage5b_hw/__pycache__/\n?? Tools/stage5b_hw/reports/20260725_141345_rs485/\n?? Tools/stage5b_hw/reports/20260725_141346_rs485/\n?? Tools/stage5b_hw/reports/20260725_141400_rs485/\n?? Tools/stage5b_hw/reports/20260725_141415_rs485/\n?? Tools/stage5b_hw/reports/20260725_141417_rs485/\n?? Tools/stage5b_hw/reports/20260725_141418_rs485/\n?? Tools/stage5b_hw/reports/20260725_141613_rs485/\n?? Tools/stage5b_hw/reports/20260725_141756_rs485/\n?? Tools/stage5b_hw/reports/20260725_storage_after_first_save/\n?? Tools/stage5b_hw/reports/20260725_storage_after_no_change/\n?? Tools/stage5b_hw/reports/20260725_storage_before_save/\n?? Tools/stage5b_hw/tests/__pycache__/\n?? Tools/stage5b_hw/tests/test_hw_common.py"
+}

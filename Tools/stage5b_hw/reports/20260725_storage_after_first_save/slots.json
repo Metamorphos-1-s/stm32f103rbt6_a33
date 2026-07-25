@@ -1,0 +1,40 @@
+{
+  "source": "config_region.bin",
+  "slots": [
+    {
+      "slot": "A",
+      "magic": "0x41333343",
+      "record_format_version": 1,
+      "payload_schema_version": 2,
+      "header_size": 32,
+      "payload_length": 344,
+      "sequence": 1,
+      "record_flags": "0x00000000",
+      "stored_crc32": "0xA65D82E8",
+      "calculated_crc32": "0xA65D82E8",
+      "crc_valid": true,
+      "commit_marker": "0x434F4D54",
+      "committed": true,
+      "supported": true,
+      "valid": true
+    },
+    {
+      "slot": "B",
+      "magic": "0xFFFFFFFF",
+      "record_format_version": 65535,
+      "payload_schema_version": 65535,
+      "header_size": 65535,
+      "payload_length": 65535,
+      "sequence": 4294967295,
+      "record_flags": "0xFFFFFFFF",
+      "stored_crc32": "0xFFFFFFFF",
+      "calculated_crc32": null,
+      "crc_valid": false,
+      "commit_marker": "0xFFFFFFFF",
+      "committed": false,
+      "supported": false,
+      "valid": false
+    }
+  ],
+  "active_slot": "A"
+}

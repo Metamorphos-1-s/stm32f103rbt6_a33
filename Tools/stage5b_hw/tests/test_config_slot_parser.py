@@ -29,5 +29,10 @@ class SlotTests(unittest.TestCase):
         self.assertTrue(sequence_newer(0, 0xFFFFFFFE))
         self.assertFalse(sequence_newer(0xFFFFFFFE, 0))
 
+    def test_one_valid_slot_is_usable(self):
+        result = {"active_slot": "A", "slots": [
+            parse_slot(slot(1), "A"), parse_slot(b"\xff" * SLOT_SIZE, "B")]}
+        self.assertTrue(dump_is_usable(result))
+
 
 if __name__ == "__main__": unittest.main()
