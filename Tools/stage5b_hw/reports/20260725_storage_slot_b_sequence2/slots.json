@@ -1,0 +1,46 @@
+{
+  "source": "config_region.bin",
+  "slots": [
+    {
+      "slot": "A",
+      "magic": "0x41333343",
+      "record_format_version": 1,
+      "payload_schema_version": 2,
+      "header_size": 32,
+      "payload_length": 344,
+      "sequence": 1,
+      "record_flags": "0x00000000",
+      "stored_crc32": "0xA65D82E8",
+      "calculated_crc32": "0xA65D82E8",
+      "crc_valid": true,
+      "commit_marker": "0x434F4D54",
+      "committed": true,
+      "supported": true,
+      "valid": true
+    },
+    {
+      "slot": "B",
+      "magic": "0x41333343",
+      "record_format_version": 1,
+      "payload_schema_version": 2,
+      "header_size": 32,
+      "payload_length": 344,
+      "sequence": 2,
+      "record_flags": "0x00000000",
+      "stored_crc32": "0x9D5DF923",
+      "calculated_crc32": "0x9D5DF923",
+      "crc_valid": true,
+      "commit_marker": "0x434F4D54",
+      "committed": true,
+      "supported": true,
+      "valid": true
+    }
+  ],
+  "active_slot": "B",
+  "modbus_comparison": {
+    "active_slot": "B",
+    "sequence": 2,
+    "active_slot_matches": true,
+    "sequence_matches": true
+  }
+}

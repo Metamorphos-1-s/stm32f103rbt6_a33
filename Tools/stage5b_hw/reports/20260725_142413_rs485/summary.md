@@ -1,0 +1,6 @@
+# Stage 5B-H Summary
+
+- **PASS** command CONFIG_APPLY_RAM: OK
+
+Microsecond timing: NOT VERIFIED WITH CURRENT EQUIPMENT
+PVD threshold: REQUIRES ADJUSTABLE POWER SUPPLY

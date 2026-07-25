@@ -7,7 +7,7 @@
 - Available equipment stated by the task: Windows PC, ST-Link, USB-RS232, USB-RS485, Python 3, STM32CubeProgrammer, manual power switching
 - This delivery adds PC tools, tests, diagnostics, and the firmware fixes described below.
 
-The Python source compiles and the offline CRC/frame/map/slot tests passed. The original Release build exposed repeatable RX and TX failures under stress: stale DMA wrap sampling discarded requests, while dividing DWT cycles before elapsed-time subtraction caused a false RS485 TX timeout near the 16 MHz cycle-counter wrap at about 268 seconds. Both defects were fixed and covered by 1,094 Stage 5B host checks, including the DMA absolute counter's natural 32-bit rollover. The final Release build used 51,944 bytes of FLASH and 10,624 bytes of RAM; ELF SHA-256 is `FDB15806A72C02FC4766B98E7A0F6C6D2DB57905BAB7ED91DDB28655034D0400`. STM32CubeProgrammer 2.19.0 programmed and verified it through normal SWD with software reset because NRST was not connected. The final zero-tolerance 600-second run completed 5,261 logical requests with zero timeout, CRC, exception, or retry. SWD captured 15,787 valid/addressed FC03 requests and exactly 15,787 completed responses, five compensated DMA wrap races, zero framer transport errors, zero TX start/timeout errors, zero UART/DMA errors, idle state machines, and matching DMA read/write positions. Guarded non-persistent FC06/FC16, malformed-frame, RAM configuration apply/restore, invalid-value rejection, mailbox token-deduplication, and temporary `115200 N1 -> 9600 N1 -> 115200 N1` communication switching tests subsequently passed. The first persistent SAVE created a valid Schema V2 record in slot A with sequence 1, CRC `0xA65D82E8`, and a valid commit marker. Repeated identical SAVE requests left sequence and the complete 4 KiB configuration-region hash unchanged. A manual power cycle loaded slot A with current/saved revisions 1, `CONFIG_DIRTY=0`, and normal Modbus communication. Slot B remains erased, so changed-payload A/B alternation is not yet covered.
+The Python source compiles and the offline CRC/frame/map/slot tests passed. The original Release build exposed repeatable RX and TX failures under stress: stale DMA wrap sampling discarded requests, while dividing DWT cycles before elapsed-time subtraction caused a false RS485 TX timeout near the 16 MHz cycle-counter wrap at about 268 seconds. Both defects were fixed and covered by 1,094 Stage 5B host checks, including the DMA absolute counter's natural 32-bit rollover. The final Release build used 51,944 bytes of FLASH and 10,624 bytes of RAM; ELF SHA-256 is `FDB15806A72C02FC4766B98E7A0F6C6D2DB57905BAB7ED91DDB28655034D0400`. STM32CubeProgrammer 2.19.0 programmed and verified it through normal SWD with software reset because NRST was not connected. The final zero-tolerance 600-second run completed 5,261 logical requests with zero timeout, CRC, exception, or retry. SWD captured 15,787 valid/addressed FC03 requests and exactly 15,787 completed responses, five compensated DMA wrap races, zero framer transport errors, zero TX start/timeout errors, zero UART/DMA errors, idle state machines, and matching DMA read/write positions. Guarded non-persistent FC06/FC16, malformed-frame, RAM configuration apply/restore, invalid-value rejection, mailbox token-deduplication, and temporary `115200 N1 -> 9600 N1 -> 115200 N1` communication switching tests subsequently passed. The first persistent SAVE created a valid Schema V2 record in slot A with sequence 1, CRC `0xA65D82E8`, and a valid commit marker. Repeated identical SAVE requests left sequence and the complete 4 KiB configuration-region hash unchanged. A controlled brightness change then produced slot B sequence 2 while retaining valid slot A sequence 1; software reset selected B and loaded brightness 4. Restoring brightness 3 produced slot A sequence 3 while retaining valid slot B sequence 2. A final manual power cycle selected A, restored the original brightness, and left current/saved revisions 3, `CONFIG_DIRTY=0`, and normal Modbus communication. Both slots have valid CRC and commit markers, and the pre/post-power-cycle 4 KiB images are identical.
 
 ## Setup
 
@@ -33,8 +33,8 @@ Build and flash with `build_and_flash.ps1 -AllowFlash`. This records the Git sta
 | RAM staging/validate/apply/restore | `config-apply --allow-write` | PASS; brightness 3 -> 4 -> 3; invalid 8 rejected |
 | Communication parameter switch/recovery | guarded RAM apply, probe, and restore | PASS; address 1, 115200 N1 -> 9600 N1 -> 115200 N1 |
 | SAVE and storage state | guarded `save --allow-write --allow-flash` | PASS; first record sequence 1; identical requests remained sequence 1 |
-| A/B CRC, commit and sequence | dump before/after, then `parse_config_slots.py` | PARTIAL; slot A valid and committed, slot B erased; alternation not run |
-| Manual power-cycle recovery | operator power off/on, then probe and dump | PASS; slot A loaded, revisions 1/1, dirty 0 |
+| A/B CRC, commit and sequence | dump before/after, then `parse_config_slots.py` | PASS; A1 -> B2 -> A3, old slot retained and newer slot selected |
+| Manual power-cycle recovery | operator power off/on, then probe and dump | PASS; final A3 loaded, revisions 3/3, dirty 0, brightness 3 |
 | Long polling | final 600 s zero-tolerance run after fixes | PASS: 5261/5261 logical requests; zero timeout/CRC/exception |
 | DMA/UART/server counters | SWD Hot Plug snapshots after stress test | PASS after fixes; final snapshots have zero error counters |
 
@@ -113,6 +113,15 @@ Generated probe reports:
 - `Tools/stage5b_hw/reports/20260725_storage_after_power_cycle/` (post-cycle image exactly matches the committed image)
 - `Tools/stage5b_hw/reports/20260725_141822_rs485/` (post-cycle 100-read regression passed)
 - `Tools/stage5b_hw/reports/20260725_swd_after_save_power_cycle/` (110/110 FC03 responses; all communication error counters zero)
+- `Tools/stage5b_hw/reports/20260725_142244_rs485/` through `20260725_142326_rs485/` (brightness 3 -> 4 apply, B-slot SAVE, and no-change verification)
+- `Tools/stage5b_hw/reports/20260725_storage_slot_b_sequence2/` (A1 and B2 both valid; Modbus and parser select B2)
+- `Tools/stage5b_hw/reports/20260725_142353_rs485/` through `20260725_142356_rs485/` (software-reset load of B2 and brightness 4)
+- `Tools/stage5b_hw/reports/20260725_142409_rs485/` through `20260725_142425_rs485/` (brightness restored to 3 and persisted as A3)
+- `Tools/stage5b_hw/reports/20260725_storage_slot_a_sequence3_restored/` (A3 and B2 valid; Modbus and parser select A3)
+- `Tools/stage5b_hw/reports/20260725_142553_rs485/` through `20260725_142557_rs485/` (manual-power-cycle load of A3, revisions 3/3, dirty 0, brightness 3)
+- `Tools/stage5b_hw/reports/20260725_storage_slot_a_sequence3_after_power_cycle/` (post-cycle A/B image exactly matches pre-cycle image)
+- `Tools/stage5b_hw/reports/20260725_142619_rs485/` (final 100-read regression passed)
+- `Tools/stage5b_hw/reports/20260725_swd_after_ab_rotation_power_cycle/` (111/111 FC03 responses; all communication error counters zero)
 
 ## Resolved defects from stress diagnostics
 
@@ -123,4 +132,4 @@ Before repeating, identify whether COM5 is the RS232 or RS485 adapter, select th
 
 Stage 5B hardware acceptance: **NOT MET**.
 
-Ready to enter Stage 5C: **NO**. Next use a controlled changed payload to verify slot A-to-B alternation while retaining the old valid slot, then restore the original persisted value. Logic-analyzer and adjustable-supply tests remain necessary for final timing and brownout claims even if PC functional tests pass.
+Ready to enter Stage 5C: **NO**. A/B alternation and normal power-cycle recovery now pass, but the RS232 suite remains untested. Logic-analyzer and adjustable-supply tests remain necessary for final timing and brownout claims even if PC functional tests pass.

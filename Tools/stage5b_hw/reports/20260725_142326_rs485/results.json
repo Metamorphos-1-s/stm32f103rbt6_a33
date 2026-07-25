@@ -1,0 +1,36 @@
+[
+  {
+    "name": "SAVE",
+    "status": "PASS",
+    "detail": "ACCEPTED",
+    "data": {
+      "response_ms": 352.0481,
+      "busy_seen": false,
+      "revision_before": 2,
+      "saved_before": 1,
+      "revision_after": 2,
+      "saved_after": 2,
+      "sequence_before": 1
+    }
+  },
+  {
+    "name": "SAVE no-change",
+    "status": "PASS",
+    "detail": "sequence unchanged on identical second request",
+    "data": {
+      "first_sequence": 2,
+      "duplicate_sequence": 2,
+      "result": "ACCEPTED"
+    }
+  },
+  {
+    "name": "Flash erase/program counters",
+    "status": "SKIPPED",
+    "detail": "not Modbus-mapped; inspect Stage4BStorageDiagnosticSnapshot over SWD"
+  },
+  {
+    "name": "A/B physical slots",
+    "status": "SKIPPED",
+    "detail": "run dump-slots before and after SAVE, then parse_config_slots.py"
+  }
+]

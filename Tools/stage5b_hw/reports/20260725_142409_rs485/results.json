@@ -1,0 +1,14 @@
+[
+  {
+    "name": "command CONFIG_BEGIN",
+    "status": "PASS",
+    "detail": "OK",
+    "data": {
+      "token": 2412,
+      "result": 0,
+      "result_name": "OK",
+      "state": 0,
+      "last_command": 9
+    }
+  }
+]

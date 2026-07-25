@@ -1,0 +1,14 @@
+[
+  {
+    "name": "command CONFIG_VALIDATE",
+    "status": "PASS",
+    "detail": "OK",
+    "data": {
+      "token": 5048,
+      "result": 0,
+      "result_name": "OK",
+      "state": 0,
+      "last_command": 10
+    }
+  }
+]

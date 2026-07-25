@@ -1,0 +1,14 @@
+[
+  {
+    "name": "command CONFIG_APPLY_RAM",
+    "status": "PASS",
+    "detail": "OK",
+    "data": {
+      "token": 6577,
+      "result": 0,
+      "result_name": "OK",
+      "state": 0,
+      "last_command": 11
+    }
+  }
+]
