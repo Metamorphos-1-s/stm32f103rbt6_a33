@@ -1,0 +1,22 @@
+[
+  {
+    "name": "RAM configuration apply",
+    "status": "PASS",
+    "detail": "3 -> 4"
+  },
+  {
+    "name": "RAM configuration restore",
+    "status": "PASS",
+    "detail": "original value restored; SAVE not issued"
+  },
+  {
+    "name": "invalid configuration",
+    "status": "PASS",
+    "detail": "brightness 8 rejected by validate/apply; active value unchanged"
+  },
+  {
+    "name": "configuration cancel",
+    "status": "PASS",
+    "detail": "staging reset; SAVE not issued"
+  }
+]

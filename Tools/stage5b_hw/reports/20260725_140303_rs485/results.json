@@ -1,0 +1,26 @@
+[
+  {
+    "name": "command NOP",
+    "status": "PASS",
+    "detail": "OK",
+    "data": {
+      "token": 47584,
+      "result": 0,
+      "result_name": "OK",
+      "state": 0,
+      "last_command": 0
+    }
+  },
+  {
+    "name": "duplicate token",
+    "status": "PASS",
+    "detail": "response stable",
+    "data": {
+      "token": 47584,
+      "result": 0,
+      "result_name": "OK",
+      "state": 0,
+      "last_command": 0
+    }
+  }
+]

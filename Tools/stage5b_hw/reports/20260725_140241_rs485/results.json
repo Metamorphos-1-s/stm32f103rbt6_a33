@@ -1,0 +1,107 @@
+[
+  {
+    "name": "bad CRC",
+    "status": "PASS",
+    "detail": "no response"
+  },
+  {
+    "name": "other address",
+    "status": "PASS",
+    "detail": "no response"
+  },
+  {
+    "name": "broadcast FC03",
+    "status": "PASS",
+    "detail": "no response"
+  },
+  {
+    "name": "broadcast FC06",
+    "status": "PASS",
+    "detail": "no response"
+  },
+  {
+    "name": "broadcast FC16",
+    "status": "PASS",
+    "detail": "no response"
+  },
+  {
+    "name": "illegal function",
+    "status": "PASS",
+    "detail": "exception 01"
+  },
+  {
+    "name": "FC03 quantity zero",
+    "status": "PASS",
+    "detail": "exception 03"
+  },
+  {
+    "name": "FC03 quantity 126",
+    "status": "PASS",
+    "detail": "exception 03"
+  },
+  {
+    "name": "FC03 illegal address",
+    "status": "PASS",
+    "detail": "exception 02"
+  },
+  {
+    "name": "FC06 read-only",
+    "status": "PASS",
+    "detail": "exception 02"
+  },
+  {
+    "name": "FC06 illegal enum",
+    "status": "PASS",
+    "detail": "exception 03"
+  },
+  {
+    "name": "FC16 quantity zero",
+    "status": "PASS",
+    "detail": "exception 03"
+  },
+  {
+    "name": "FC16 quantity 124",
+    "status": "PASS",
+    "detail": "exception 03"
+  },
+  {
+    "name": "FC16 byte count",
+    "status": "PASS",
+    "detail": "exception 03"
+  },
+  {
+    "name": "FC16 truncated",
+    "status": "PASS",
+    "detail": "no response"
+  },
+  {
+    "name": "FC16 trailing byte",
+    "status": "PASS",
+    "detail": "exception 03"
+  },
+  {
+    "name": "three-byte short frame",
+    "status": "PASS",
+    "detail": "no response"
+  },
+  {
+    "name": "noise over 256",
+    "status": "PASS",
+    "detail": "no response"
+  },
+  {
+    "name": "fixed-seed random",
+    "status": "PASS",
+    "detail": "no response"
+  },
+  {
+    "name": "back-to-back frames",
+    "status": "PASS",
+    "detail": "valid FC03 remained responsive afterward"
+  },
+  {
+    "name": "post-error recovery",
+    "status": "PASS",
+    "detail": "valid FC03 succeeded"
+  }
+]

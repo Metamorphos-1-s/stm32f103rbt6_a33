@@ -7,7 +7,7 @@
 - Available equipment stated by the task: Windows PC, ST-Link, USB-RS232, USB-RS485, Python 3, STM32CubeProgrammer, manual power switching
 - This delivery adds PC tools, tests, diagnostics, and the firmware fixes described below.
 
-The Python source compiles and the offline CRC/frame/map/slot tests passed. The original Release build exposed repeatable RX and TX failures under stress: stale DMA wrap sampling discarded requests, while dividing DWT cycles before elapsed-time subtraction caused a false RS485 TX timeout near the 16 MHz cycle-counter wrap at about 268 seconds. Both defects were fixed and covered by 1,094 Stage 5B host checks, including the DMA absolute counter's natural 32-bit rollover. The final Release build used 51,944 bytes of FLASH and 10,624 bytes of RAM; ELF SHA-256 is `FDB15806A72C02FC4766B98E7A0F6C6D2DB57905BAB7ED91DDB28655034D0400`. STM32CubeProgrammer 2.19.0 programmed and verified it through normal SWD with software reset because NRST was not connected. The final zero-tolerance 600-second run completed 5,261 logical requests with zero timeout, CRC, exception, or retry. SWD captured 15,787 valid/addressed FC03 requests and exactly 15,787 completed responses, five compensated DMA wrap races, zero framer transport errors, zero TX start/timeout errors, zero UART/DMA errors, idle state machines, and matching DMA read/write positions. After the rollover boundary adjustment, a further probe and 100-read smoke test passed; its SWD snapshot captured 108/108 completed FC03 responses and all error counters at zero. No Modbus write, SAVE, or manual power-cycle test was performed.
+The Python source compiles and the offline CRC/frame/map/slot tests passed. The original Release build exposed repeatable RX and TX failures under stress: stale DMA wrap sampling discarded requests, while dividing DWT cycles before elapsed-time subtraction caused a false RS485 TX timeout near the 16 MHz cycle-counter wrap at about 268 seconds. Both defects were fixed and covered by 1,094 Stage 5B host checks, including the DMA absolute counter's natural 32-bit rollover. The final Release build used 51,944 bytes of FLASH and 10,624 bytes of RAM; ELF SHA-256 is `FDB15806A72C02FC4766B98E7A0F6C6D2DB57905BAB7ED91DDB28655034D0400`. STM32CubeProgrammer 2.19.0 programmed and verified it through normal SWD with software reset because NRST was not connected. The final zero-tolerance 600-second run completed 5,261 logical requests with zero timeout, CRC, exception, or retry. SWD captured 15,787 valid/addressed FC03 requests and exactly 15,787 completed responses, five compensated DMA wrap races, zero framer transport errors, zero TX start/timeout errors, zero UART/DMA errors, idle state machines, and matching DMA read/write positions. Guarded non-persistent FC06/FC16, malformed-frame, RAM configuration apply/restore, invalid-value rejection, and mailbox token-deduplication tests subsequently passed. A post-test software reset restored `CONFIG_DIRTY=0` and current/saved revisions to zero. No SAVE, communication-parameter change, or manual power-cycle test was performed.
 
 ## Setup
 
@@ -26,11 +26,11 @@ Build and flash with `build_and_flash.ps1 -AllowFlash`. This records the Git sta
 | FC03 probe and identity | `stage5b_hw.py probe` | PASS after operator reset at 115200 N1 |
 | Short read-only stability | 100 FC03 reads, 50 ms interval | PASS; 100/100 responses |
 | RS232, 100 reads and errors | `stage5b_hw.py rs232` | NOT RUN |
-| RS485, 100 reads and errors | `stage5b_hw.py rs485` | NOT RUN |
-| FC06/FC16 guarded writes | `write-single`, `write-multiple`, `config-apply` | NOT RUN |
-| Illegal function/address/value and broadcast | `errors --allow-write` | NOT RUN |
-| Mailbox token deduplication | `commands --repeat-token` | NOT RUN |
-| RAM staging/validate/apply/restore | `config-apply --allow-write` | NOT RUN |
+| RS485, 100 reads and errors | `smoke`, then `errors --allow-write` on COM5 | PASS |
+| FC06/FC16 guarded writes | `config-apply`, mailbox command framing | PASS; non-persistent |
+| Illegal function/address/value and broadcast | `errors --allow-write` | PASS |
+| Mailbox token deduplication | `commands --name NOP --repeat-token` | PASS |
+| RAM staging/validate/apply/restore | `config-apply --allow-write` | PASS; brightness 3 -> 4 -> 3; invalid 8 rejected |
 | Communication parameter switch/recovery | manual guarded procedure | NOT RUN |
 | SAVE and storage state | `save --allow-write --allow-flash` | NOT RUN |
 | A/B CRC, commit and sequence | dump before/after, then `parse_config_slots.py` | NOT RUN |
@@ -89,6 +89,13 @@ Generated probe reports:
 - `Tools/stage5b_hw/reports/20260725_030641_rs485/` (final read-only probe passed)
 - `Tools/stage5b_hw/reports/20260725_030650_rs485/` (final 100-read smoke passed)
 - `Tools/stage5b_hw/reports/20260725_swd_after_counter_wrap_smoke/` (final smoke Hot Plug snapshot; 108/108 responses and zero errors)
+- `Tools/stage5b_hw/reports/20260725_140228_rs485/` through `20260725_140230_rs485/` (pre-write active, communication, and storage baselines)
+- `Tools/stage5b_hw/reports/20260725_140241_rs485/` (guarded malformed-frame and protocol exception suite passed)
+- `Tools/stage5b_hw/reports/20260725_140254_rs485/` (RAM configuration apply/restore and invalid-value rejection passed)
+- `Tools/stage5b_hw/reports/20260725_140303_rs485/` (NOP mailbox duplicate-token response remained stable)
+- `Tools/stage5b_hw/reports/20260725_140318_rs485/` through `20260725_140322_rs485/` (post-write configuration checks and 100-read regression passed)
+- `Tools/stage5b_hw/reports/20260725_swd_after_write_suites/` (expected injected protocol errors; zero UART/DMA/transport/TX errors and idle state machines)
+- `Tools/stage5b_hw/reports/20260725_140418_rs485/` and `20260725_140419_rs485/` (post-reset probe passed; dirty flag and revisions restored)
 
 ## Resolved defects from stress diagnostics
 
@@ -99,4 +106,4 @@ Before repeating, identify whether COM5 is the RS232 or RS485 adapter, select th
 
 Stage 5B hardware acceptance: **NOT MET**.
 
-Ready to enter Stage 5C: **NO**. First complete the board-level table, retain generated report directories and raw logs, inspect the SWD diagnostic snapshots, and resolve any failures. Logic-analyzer and adjustable-supply tests remain necessary for final timing and brownout claims even if PC functional tests pass.
+Ready to enter Stage 5C: **NO**. First verify temporary communication-parameter switching and recovery, then perform the separately authorized SAVE/A-B slot/manual-power-cycle tests. Logic-analyzer and adjustable-supply tests remain necessary for final timing and brownout claims even if PC functional tests pass.
