@@ -17,6 +17,7 @@
 typedef enum
 {
     MENU_EDIT_NONE = 0,
+    MENU_EDIT_UNIT,
     MENU_EDIT_INTEGER,
     MENU_EDIT_MASS,
     MENU_EDIT_UNIT_DISPLAY,
@@ -49,6 +50,9 @@ static uint16_t s_step_multiplier;
 static MassUnit s_edit_unit;
 static WeighingProfileId s_edit_profile;
 static UnitDisplayConfig s_edit_display;
+static MassUnit s_original_unit;
+static MassUnit s_candidate_unit;
+static DisplayCode s_begin_error;
 static uint32_t s_last_activity_ms;
 static bool s_active;
 static bool s_editing;
@@ -106,6 +110,13 @@ static void Render(void)
     {
         (void)DisplayController_SetTextPage(DISPLAY_PAGE_MENU,
                                             s_labels[s_item]);
+        return;
+    }
+    if (s_edit_kind == MENU_EDIT_UNIT)
+    {
+        if (!DisplayCodes_GetMassUnitLabel(s_candidate_unit, text) ||
+            !DisplayController_SetTextPage(DISPLAY_PAGE_EDIT, text))
+            ShowCode(DISPLAY_CODE_UNIT_ERROR);
         return;
     }
     if ((s_edit_kind == MENU_EDIT_MASS) &&
@@ -219,7 +230,9 @@ static bool BeginEdit(MenuItem item)
     const WeighingProfileConfig *profile;
     DisplayWeightValue display_value;
     MassValueUg mass = 0;
+    char unit_label[6];
     if (context == NULL) return false;
+    s_begin_error = DISPLAY_CODE_BUSY;
     metrology = &context->config.metrology;
     s_edit_unit = metrology->active_unit;
     s_edit_profile = metrology->active_profile;
@@ -228,6 +241,18 @@ static bool BeginEdit(MenuItem item)
     s_step_multiplier = 1U;
     switch (item)
     {
+        case MENU_ITEM_UNIT:
+            s_edit_kind = MENU_EDIT_UNIT;
+            s_original_unit = metrology->active_unit;
+            s_candidate_unit = metrology->active_unit;
+            if (!DisplayCodes_GetMassUnitLabel(s_candidate_unit, unit_label) ||
+                !DisplayController_SetTextPage(DISPLAY_PAGE_EDIT, unit_label))
+            {
+                s_begin_error = DISPLAY_CODE_UNIT_ERROR;
+                return false;
+            }
+            s_editing = true;
+            return true;
         case MENU_ITEM_CAPACITY:
             s_edit_kind = MENU_EDIT_MASS;
             s_mass_field = CONFIG_MASS_FIELD_CAPACITY;
@@ -277,7 +302,10 @@ static bool BeginEdit(MenuItem item)
         if (!UnitConverter_MassToDisplay(mass, s_edit_unit, &s_edit_display,
                                          &display_value) ||
             !display_value.valid || display_value.overflow)
+        {
+            s_begin_error = DISPLAY_CODE_UNIT_RANGE;
             return false;
+        }
         s_value = display_value.display_count;
     }
     if (MenuController_Command(COMMAND_BEGIN_CONFIG_EDIT, 0, 0, 0U, 0) !=
@@ -318,6 +346,7 @@ static bool SubmitEditValue(void)
             return MenuController_Command(COMMAND_SET_PROFILE_FIELD,
                 s_edit_profile, CONFIG_PROFILE_FIELD_STABILITY_HOLD_MS, 0U,
                 s_value) == COMMAND_RESULT_OK;
+        case MENU_EDIT_UNIT:
         case MENU_EDIT_NONE:
         default: return false;
     }
@@ -327,6 +356,29 @@ static void AdjustEdit(KeyId key)
 {
     int64_t delta;
     int64_t next;
+    if (s_edit_kind == MENU_EDIT_UNIT)
+    {
+        const SystemContext *context = SystemContext_Get();
+        uint8_t offset;
+        if (context == NULL) return;
+        for (offset = 1U; offset <= MASS_UNIT_COUNT; ++offset)
+        {
+            uint32_t candidate = (key == KEY_ID_HASH) ?
+                ((uint32_t)s_candidate_unit + offset) % MASS_UNIT_COUNT :
+                ((uint32_t)s_candidate_unit + MASS_UNIT_COUNT - offset) %
+                    MASS_UNIT_COUNT;
+            if (((context->config.metrology.enabled_unit_mask &
+                  (uint8_t)(1U << candidate)) != 0U) &&
+                !((context->config.metrology.compliance_mode ==
+                   METROLOGY_COMPLIANCE_CLASS_III_REFERENCE) &&
+                  (candidate == MASS_UNIT_LB)))
+            {
+                s_candidate_unit = (MassUnit)candidate;
+                break;
+            }
+        }
+        return;
+    }
     if (s_edit_kind == MENU_EDIT_UNIT_DISPLAY)
     {
         if (s_item == MENU_ITEM_DIVISION)
@@ -362,23 +414,8 @@ static void AdjustEdit(KeyId key)
     if (MassMath_Add(s_value, delta, &next) &&
         ((s_edit_kind != MENU_EDIT_MASS) ||
          (next >= ((s_mass_field == CONFIG_MASS_FIELD_CAPACITY) ? 1 : 0))) &&
-        (next <= INT32_MAX))
+        (next <= ((s_edit_kind == MENU_EDIT_MASS) ? 999999 : INT32_MAX)))
         s_value = next;
-}
-
-static MassUnit NextUnit(const MetrologyConfig *config)
-{
-    uint8_t offset;
-    for (offset = 1U; offset <= MASS_UNIT_COUNT; ++offset)
-    {
-        MassUnit unit = (MassUnit)(((uint32_t)config->active_unit + offset) %
-                                   MASS_UNIT_COUNT);
-        if (((config->enabled_unit_mask & (uint8_t)(1U << unit)) != 0U) &&
-            !((config->compliance_mode ==
-               METROLOGY_COMPLIANCE_CLASS_III_REFERENCE) &&
-              (unit == MASS_UNIT_LB))) return unit;
-    }
-    return config->active_unit;
 }
 
 void MenuController_Init(void)
@@ -406,7 +443,8 @@ void MenuController_Process10ms(void)
         ReplaySequence();
     if ((uint32_t)(now - s_last_activity_ms) >= MENU_TIMEOUT_MS)
     {
-        if (s_editing) (void)MenuController_Command(
+        if (s_editing && (s_edit_kind != MENU_EDIT_UNIT))
+            (void)MenuController_Command(
             COMMAND_CANCEL_CONFIG_EDIT, 0, 0, 0U, 0);
         if (s_factory_confirmation) (void)MenuController_Command(
             COMMAND_FACTORY_RESET_CANCEL, 0, 0, 0U, 0);
@@ -444,7 +482,8 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
     }
     if ((event->key == KEY_ID_FUNCTION) && (event->type == KEY_EVENT_LONG))
     {
-        if (s_editing) (void)MenuController_Command(
+        if (s_editing && (s_edit_kind != MENU_EDIT_UNIT))
+            (void)MenuController_Command(
             COMMAND_CANCEL_CONFIG_EDIT, 0, 0, 0U, 0);
         s_editing = false; s_active = false; ClearSequence();
         s_exit_request = true; return true;
@@ -454,12 +493,32 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         if ((event->key == KEY_ID_STAR) || (event->key == KEY_ID_HASH))
             AdjustEdit(event->key);
         else if ((event->key == KEY_ID_ZERO) &&
-                 (event->type == KEY_EVENT_SHORT))
+                 (event->type == KEY_EVENT_SHORT) &&
+                 ((s_edit_kind == MENU_EDIT_MASS) ||
+                  (s_edit_kind == MENU_EDIT_STABILITY_HOLD)))
             s_step_multiplier = (s_step_multiplier >= 1000U) ? 1U :
                 (uint16_t)(s_step_multiplier * 10U);
         else if ((event->key == KEY_ID_FUNCTION) &&
                  (event->type == KEY_EVENT_SHORT))
         {
+            if (s_edit_kind == MENU_EDIT_UNIT)
+            {
+                if (s_candidate_unit == s_original_unit)
+                {
+                    s_editing = false;
+                    Render();
+                    return true;
+                }
+                if (MenuController_Command(COMMAND_SET_DISPLAY_UNIT,
+                        s_candidate_unit, 0, 0U, 0) == COMMAND_RESULT_OK)
+                {
+                    s_editing = false;
+                    Render();
+                    ShowCode(DISPLAY_CODE_RAM_SAVE);
+                }
+                else ShowCode(DISPLAY_CODE_UNIT_ERROR);
+                return true;
+            }
             if (SubmitEditValue() &&
                 (MenuController_Command(COMMAND_COMMIT_CONFIG_EDIT,
                     0, 0, 0U, 0) == COMMAND_RESULT_OK))
@@ -473,8 +532,9 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         else if ((event->key == KEY_ID_TARE) &&
                  (event->type == KEY_EVENT_SHORT))
         {
-            (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,
-                                         0, 0, 0U, 0);
+            if (s_edit_kind != MENU_EDIT_UNIT)
+                (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,
+                                             0, 0, 0U, 0);
             s_editing = false;
         }
         Render(); return true;
@@ -492,17 +552,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         context = SystemContext_Get();
         if ((s_item == MENU_ITEM_UNIT) && (context != NULL))
         {
-            MassUnit unit = NextUnit(&context->config.metrology);
-            if (MenuController_Command(COMMAND_SET_DISPLAY_UNIT, unit, 0,
-                                       0U, 0) == COMMAND_RESULT_OK)
-            {
-                static const char hints[MASS_UNIT_COUNT][6] = {
-                    {' ', ' ', ' ', ' ', 'k', 'g'},
-                    {' ', ' ', ' ', ' ', ' ', 'g'},
-                    {' ', ' ', ' ', ' ', 'l', 'b'}};
-                DisplayController_ShowMessage(hints[unit], 500U);
-            }
-            else ShowCode(DISPLAY_CODE_UNIT_ERROR);
+            if (!BeginEdit(s_item)) ShowCode(s_begin_error);
             return true;
         }
         else if ((s_item == MENU_ITEM_PROFILE) && (context != NULL))
@@ -553,7 +603,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         }
         else if (!BeginEdit(s_item))
         {
-            ShowCode(DISPLAY_CODE_BUSY);
+            ShowCode(s_begin_error);
             return true;
         }
     }
@@ -562,8 +612,9 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
 
 void MenuController_Cancel(void)
 {
-    if (s_editing) (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,
-        0, 0, 0U, 0);
+    if (s_editing && (s_edit_kind != MENU_EDIT_UNIT))
+        (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,
+            0, 0, 0U, 0);
     if (s_factory_confirmation) (void)MenuController_Command(
         COMMAND_FACTORY_RESET_CANCEL, 0, 0, 0U, 0);
     s_active = false; s_editing = false; s_factory_confirmation = false;

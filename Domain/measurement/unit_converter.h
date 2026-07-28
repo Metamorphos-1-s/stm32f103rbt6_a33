@@ -6,6 +6,8 @@
 bool UnitConverter_CountToMass(int64_t count, MassUnit unit,
                                uint8_t decimal_places,
                                MassValueUg *mass_ug);
+bool UnitConverter_MassToCountUnbounded(MassValueUg mass_ug, MassUnit unit,
+    uint8_t decimal_places, uint8_t division_digit, int64_t *display_count);
 bool UnitConverter_MassToDisplay(MassValueUg mass_ug, MassUnit unit,
                                  const UnitDisplayConfig *config,
                                  DisplayWeightValue *display);

@@ -38,26 +38,36 @@ bool UnitConverter_CountToMass(int64_t count, MassUnit unit,
            MassMath_MulDivRound(count, factor, scale, mass_ug);
 }
 
-bool UnitConverter_MassToDisplay(MassValueUg mass_ug, MassUnit unit,
-                                 const UnitDisplayConfig *config,
-                                 DisplayWeightValue *display)
+bool UnitConverter_MassToCountUnbounded(MassValueUg mass_ug, MassUnit unit,
+    uint8_t decimal_places, uint8_t division_digit, int64_t *display_count)
 {
     int64_t factor;
     int64_t scale;
     MassValueUg count;
-    MassValueUg quantized;
+    if ((display_count == NULL) ||
+        ((division_digit != 1U) && (division_digit != 2U) &&
+         (division_digit != 5U)) ||
+        !UnitFactor(unit, &factor) ||
+        !ScaleForDecimals(decimal_places, &scale) ||
+        !MassMath_MulDivRound(mass_ug, scale, factor, &count))
+    {
+        return false;
+    }
+    return MassMath_Quantize(count, division_digit, display_count);
+}
+
+bool UnitConverter_MassToDisplay(MassValueUg mass_ug, MassUnit unit,
+                                 const UnitDisplayConfig *config,
+                                 DisplayWeightValue *display)
+{
+    int64_t quantized;
 
     if (display == NULL) return false;
     (void)memset(display, 0, sizeof(*display));
     display->unit = unit;
     if ((config == NULL) || !config->enabled ||
-        ((config->division_digit != 1U) &&
-         (config->division_digit != 2U) &&
-         (config->division_digit != 5U)) ||
-        !UnitFactor(unit, &factor) ||
-        !ScaleForDecimals(config->decimal_places, &scale) ||
-        !MassMath_MulDivRound(mass_ug, scale, factor, &count) ||
-        !MassMath_Quantize(count, config->division_digit, &quantized))
+        !UnitConverter_MassToCountUnbounded(mass_ug, unit,
+            config->decimal_places, config->division_digit, &quantized))
     {
         return false;
     }

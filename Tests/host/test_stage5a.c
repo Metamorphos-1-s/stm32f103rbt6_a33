@@ -64,6 +64,79 @@ static void TestCanonicalAndLegacyBoundary(void)
     CHECK(MetrologyLegacyV1_Validate(&config.metrology,&config.stability)==METROLOGY_CONFIG_OK);
 }
 
+static void TestUnboundedLegacyProjection(void)
+{
+    DeviceConfig config;
+    DeviceConfig decoded;
+    MetrologyConfig projection_only;
+    RuntimeState runtime = {0};
+    RuntimeState decoded_runtime;
+    DisplayWeightValue display_value;
+    int64_t unbounded_count = 0;
+    uint8_t bytes[PERSISTENT_V2_PAYLOAD_SIZE];
+    uint16_t length = 0U;
+
+    DefaultConfig_Load(&config);
+    config.metrology.capacity_ug = INT64_C(1000000000);
+    config.metrology.zero_range_ug = INT64_C(1000000000);
+    config.metrology.overload_threshold_ug = INT64_C(10000000000);
+    config.metrology.auto_zero_tracking_range_ug = INT64_C(1100000000);
+    config.metrology.active_unit = MASS_UNIT_G;
+    config.metrology.unit_display[MASS_UNIT_G].decimal_places = 2U;
+    config.metrology.unit_display[MASS_UNIT_G].division_digit = 1U;
+    CHECK(MetrologyConfig_ValidateCanonical(&config.metrology) ==
+          METROLOGY_CONFIG_OK);
+    CHECK(UnitConverter_MassToDisplay(INT64_C(10000000000), MASS_UNIT_G,
+        &config.metrology.unit_display[MASS_UNIT_G], &display_value));
+    CHECK(display_value.overflow && !display_value.valid);
+    CHECK(UnitConverter_MassToCountUnbounded(INT64_C(10000000000),
+        MASS_UNIT_G, 2U, 1U, &unbounded_count));
+    CHECK(unbounded_count == INT64_C(1000000));
+    CHECK(MetrologyLegacyProjection_Update(&config.metrology));
+    CHECK(config.metrology.capacity == 100000U);
+    CHECK(config.metrology.zero_range == 100000U);
+    CHECK(config.metrology.overload_threshold == 1000000U);
+    CHECK(config.metrology.auto_zero_tracking_range == 110000U);
+
+    projection_only = config.metrology;
+    projection_only.zero_range_ug = INT64_C(10000000000);
+    projection_only.auto_zero_tracking_range_ug = INT64_C(10000000000);
+    CHECK(MetrologyLegacyProjection_Update(&projection_only));
+    CHECK(projection_only.zero_range == 1000000U);
+    CHECK(projection_only.auto_zero_tracking_range == 1000000U);
+
+    projection_only = config.metrology;
+    projection_only.overload_threshold_ug = INT64_C(1100000000);
+    CHECK(MetrologyLegacyProjection_Update(&projection_only));
+    CHECK(projection_only.overload_threshold == 110000U);
+
+    CHECK(CalibrationModel_BuildMass(0, 100000,
+        INT64_C(10000000000), 1U, &config.calibration) ==
+        CALIBRATION_RESULT_OK);
+    CHECK(CalibrationLegacyProjection_Update(&config.calibration,
+        MASS_UNIT_G, &config.metrology.unit_display[MASS_UNIT_G]));
+    CHECK(config.calibration.span_weight == 1000000U);
+    runtime.tare_active = true;
+    runtime.current_tare_ug = INT64_C(10000000000);
+    config.system.tare_power_loss_retention = true;
+    CHECK(RuntimeLegacyProjection_Update(&runtime, MASS_UNIT_G,
+        &config.metrology.unit_display[MASS_UNIT_G]));
+    CHECK(runtime.current_tare == 1000000);
+
+    CHECK(PersistentCodec_EncodeV2(&config, &runtime, bytes, sizeof(bytes),
+        &length) == PERSISTENT_CODEC_OK);
+    CHECK(PersistentCodec_DecodeV2(bytes, length, &decoded,
+        &decoded_runtime) == PERSISTENT_CODEC_OK);
+    CHECK(decoded.metrology.capacity_ug == INT64_C(1000000000));
+    CHECK(decoded.metrology.overload_threshold_ug == INT64_C(10000000000));
+    CHECK(decoded.calibration.span_mass_ug == INT64_C(10000000000));
+    CHECK(decoded_runtime.current_tare_ug == INT64_C(10000000000));
+
+    config.metrology.capacity_ug = INT64_C(10000000000);
+    CHECK(MetrologyConfig_ValidateCanonical(&config.metrology) ==
+          METROLOGY_CONFIG_INVALID_UNIT);
+}
+
 static void TestCodec(void)
 {
     DeviceConfig config,decoded;
@@ -155,7 +228,8 @@ static void TestModbusModel(void)
 
 int main(void)
 {
-    TestMassAndUnits(); TestCanonicalAndLegacyBoundary(); TestCodec();
+    TestMassAndUnits(); TestCanonicalAndLegacyBoundary();
+    TestUnboundedLegacyProjection(); TestCodec();
     TestReferenceRules(); TestKeyConflict(); TestModbusModel();
     if(failures==0U) printf("Stage 5A host tests passed.\n");
     return failures==0U?0:1;

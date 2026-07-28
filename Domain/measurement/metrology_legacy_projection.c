@@ -8,15 +8,32 @@
 static bool ProjectCount(MassValueUg mass_ug, MassUnit unit,
                          const UnitDisplayConfig *display, uint32_t *value)
 {
-    DisplayWeightValue projected;
+    int64_t projected;
     if ((value == NULL) || (mass_ug < 0) ||
-        !UnitConverter_MassToDisplay(mass_ug, unit, display, &projected) ||
-        !projected.valid || projected.overflow ||
-        (projected.display_count < 0))
+        (display == NULL) || !display->enabled ||
+        !UnitConverter_MassToCountUnbounded(mass_ug, unit,
+            display->decimal_places, display->division_digit, &projected) ||
+        (projected < 0) || ((uint64_t)projected > UINT32_MAX))
     {
         return false;
     }
-    *value = (uint32_t)projected.display_count;
+    *value = (uint32_t)projected;
+    return true;
+}
+
+bool RuntimeLegacyProjection_Update(RuntimeState *runtime, MassUnit unit,
+    const UnitDisplayConfig *display)
+{
+    uint32_t tare;
+    if ((runtime == NULL) || (display == NULL)) return false;
+    if (!runtime->tare_active)
+    {
+        runtime->current_tare = 0;
+        return true;
+    }
+    if (!ProjectCount(runtime->current_tare_ug, unit, display, &tare) ||
+        (tare > (uint32_t)INT32_MAX)) return false;
+    runtime->current_tare = (int32_t)tare;
     return true;
 }
 

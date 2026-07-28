@@ -1,0 +1,11 @@
+﻿{
+    "timestamp":  "2026-07-26T13:12:10.0966038+08:00",
+    "git_sha":  "48b0e56a1f0480369894f052ebd728513f62c790",
+    "git_status":  " M App/calibration_controller.c\n M App/metrology_manager.c\n M Docs/METROLOGY_REQUIREMENTS_V1.md\n M Domain/measurement/metrology_legacy_projection.c\n M Domain/measurement/metrology_legacy_projection.h\n M Domain/measurement/unit_converter.c\n M Domain/measurement/unit_converter.h\n M Domain/measurement/weight_engine.c\n M Domain/measurement/weight_engine.h\n M STAGE5A_UI_METROLOGY_ADAPTATION_FIX.md\n M Services/config_store/persistent_codec.c\n M Tests/host/test_stage3.c\n M Tests/host/test_stage4a.c\n M Tests/host/test_stage5a.c\n M UI/display_controller.c\n M UI/display_model/display_codes.c\n M UI/display_model/display_codes.h\n M UI/display_model/display_formatter.c\n M UI/menu_controller/menu_controller.c\n M build/Debug/.ninja_deps\n M build/Debug/.ninja_log\n M build/Debug/CMakeFiles/stm32f103rbt6_a33.dir/App/app_main.c.obj\n M build/Debug/CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_time.c.obj\n M build/Debug/build.ninja\n M build/Debug/compile_commands.json\n M build/Debug/stm32f103rbt6_a33.elf\n M build/Debug/stm32f103rbt6_a33.map\n M build/Release/.ninja_deps\n M build/Release/.ninja_log\n M build/Release/CMakeFiles/stm32f103rbt6_a33.dir/App/app_main.c.obj\n M build/Release/build.ninja\n M build/Release/compile_commands.json\n M build/Release/stm32f103rbt6_a33.elf\n M build/Release/stm32f103rbt6_a33.map\n?? STAGE5A_UIR_HOTFIX.md\n?? Tools/stage5b_hw/__pycache__/",
+    "elf":  "E:\\VScode_STM32_Project\\stm32f103rbt6_a33\\build\\Release\\stm32f103rbt6_a33.elf",
+    "elf_sha256":  "BEB917CC5C615E21EB80D18EBE8579A95112758A48F8F7CF3FD15E5D74A3F1D8",
+    "programmer":  "E:\\ST\\STM32CubeCLT_1.18.0\\STM32CubeProgrammer\\bin\\STM32_Programmer_CLI.exe",
+    "mass_erase":  false,
+    "config_region_preserved":  true,
+    "nrst_connected":  false
+}

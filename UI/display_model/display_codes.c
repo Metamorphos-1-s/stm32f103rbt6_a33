@@ -37,7 +37,14 @@ static const char s_codes[DISPLAY_CODE_COUNT][6] = {
     {'C', 'A', 'L', 'E', 'r', 'r'},
     {'A', 'P', 'P', 'L', 'Y', ' '},
     {'F', 'L', 'S', 'A', 'U', 'E'},
-    {'r', 'E', 'A', 'd', ' ', ' '}
+    {'r', 'E', 'A', 'd', ' ', ' '},
+    {'U', 'n', 'I', 't', 'H', 'I'}
+};
+
+static const char s_mass_unit_labels[MASS_UNIT_COUNT][6] = {
+    {' ', ' ', ' ', ' ', 'k', 'g'},
+    {' ', ' ', ' ', ' ', ' ', 'g'},
+    {' ', ' ', ' ', ' ', 'l', 'b'}
 };
 
 bool DisplayCodes_Get(DisplayCode code, char text[6])
@@ -47,5 +54,12 @@ bool DisplayCodes_Get(DisplayCode code, char text[6])
         return false;
     }
     (void)memcpy(text, s_codes[code], 6U);
+    return true;
+}
+
+bool DisplayCodes_GetMassUnitLabel(MassUnit unit, char text[6])
+{
+    if ((text == NULL) || ((uint32_t)unit >= MASS_UNIT_COUNT)) return false;
+    (void)memcpy(text, s_mass_unit_labels[unit], 6U);
     return true;
 }

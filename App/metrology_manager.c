@@ -156,7 +156,9 @@ bool MetrologyManager_SetDisplayUnit(MassUnit unit)
 {
     const SystemContext *context = SystemContext_Get();
     DeviceConfig candidate;
-    if ((context == NULL) || ((uint32_t)unit >= MASS_UNIT_COUNT) ||
+    MetrologyConfig previous_display_config;
+    if (!s_initialized || (context == NULL) ||
+        ((uint32_t)unit >= MASS_UNIT_COUNT) ||
         ((context->config.metrology.enabled_unit_mask &
           (uint8_t)(1U << unit)) == 0U)) return false;
     candidate = context->config;
@@ -168,8 +170,17 @@ bool MetrologyManager_SetDisplayUnit(MassUnit unit)
                                                     &candidate.stability) ||
         !CalibrationLegacyProjection_Update(&candidate.calibration, unit,
             &candidate.metrology.unit_display[unit])) return false;
-    if (!MetrologyManager_Reconfigure(&candidate)) return false;
-    return SystemContext_ApplyConfig(&candidate, true);
+    previous_display_config = s_engine.metrology;
+    if (!WeightEngine_UpdateDisplayConfig(&s_engine,
+                                          &candidate.metrology)) return false;
+    if (!SystemContext_ApplyConfig(&candidate, true))
+    {
+        if (!WeightEngine_UpdateDisplayConfig(&s_engine,
+                                              &previous_display_config))
+            FaultManager_Set(FAULT_METROLOGY_CONFIG_INVALID);
+        return false;
+    }
+    return true;
 }
 
 MassUnit MetrologyManager_GetDisplayUnit(void)

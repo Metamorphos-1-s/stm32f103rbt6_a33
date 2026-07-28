@@ -130,6 +130,21 @@ Software acceptance is complete and the code is suitable as the Stage 5C
 development baseline. Hardware metrology, panel usability and real-scale
 calibration remain required before a product release.
 
+## Stage 5A-UIR hotfix follow-up
+
+Real panel testing after this adaptation found a missing k/K glyph, temporary
+message state replacing the menu base page, legacy projection incorrectly
+using the six-digit display limit, and full WeightEngine reinitialization during
+a display-unit change. These findings and their regression evidence are covered
+by [STAGE5A_UIR_HOTFIX.md](STAGE5A_UIR_HOTFIX.md).
+
+The follow-up centralizes kg/g/lb labels, makes Unit an explicit
+candidate/confirm/cancel editor, adds an independent message overlay, uses an
+unbounded checked converter for legacy 32-bit fields, and applies display-unit
+changes without resetting the measurement chain. The original hardware section
+above remains historical evidence for this adaptation; the hotfix panel run is
+tracked separately and must not be inferred from host tests.
+
 ## Changed tree
 
 ```text

@@ -356,6 +356,65 @@ static void TestWeightEngine(void)
             WEIGHT_STATUS_FILTER_READY) == 0U);
 }
 
+static void TestDisplayUnitUpdatePreservesEngineState(void)
+{
+    DeviceConfig config;
+    WeightEngine engine;
+    CalibrationConfig calibration_before;
+    WeightFilter filter_before;
+    StabilityDetector stability_before;
+    ZeroTareState zero_tare_before;
+    WeightSnapshot snapshot_before;
+    MetrologyConfig candidate;
+
+    Stage3_MakeConfig(&config, true);
+    CHECK3(WeightEngine_InitMass(&engine, &config.metrology,
+        &config.calibration, &config.stability, 0, false));
+    CHECK3(Stage3_Process(&engine, 105000, 0U));
+    CHECK3(Stage3_Process(&engine, 105000, 10U));
+    CHECK3(Stage3_Process(&engine, 105000, 20U));
+    CHECK3(WeightEngine_Zero(&engine) == WEIGHT_ACTION_OK);
+    CHECK3(Stage3_Process(&engine, 600000, 30U));
+    CHECK3(Stage3_Process(&engine, 600000, 40U));
+    CHECK3(Stage3_Process(&engine, 600000, 50U));
+    CHECK3(WeightEngine_Tare(&engine) == WEIGHT_ACTION_OK);
+
+    calibration_before = engine.calibration;
+    filter_before = engine.filter;
+    stability_before = engine.stability;
+    zero_tare_before = engine.zero_tare;
+    snapshot_before = engine.snapshot;
+    candidate = engine.metrology;
+    candidate.active_unit = MASS_UNIT_G;
+    CHECK3(WeightEngine_UpdateDisplayConfig(&engine, &candidate));
+    CHECK3(memcmp(&calibration_before, &engine.calibration,
+                  sizeof(calibration_before)) == 0);
+    CHECK3(memcmp(&filter_before, &engine.filter, sizeof(filter_before)) == 0);
+    CHECK3(memcmp(&stability_before, &engine.stability,
+                  sizeof(stability_before)) == 0);
+    CHECK3(memcmp(&zero_tare_before, &engine.zero_tare,
+                  sizeof(zero_tare_before)) == 0);
+    CHECK3(engine.has_raw_sample);
+    CHECK3(engine.snapshot.sample_sequence == snapshot_before.sample_sequence);
+    CHECK3(engine.snapshot.status_flags == snapshot_before.status_flags);
+    CHECK3(engine.snapshot.gross_mass_ug == snapshot_before.gross_mass_ug);
+    CHECK3(engine.snapshot.tare_mass_ug == snapshot_before.tare_mass_ug);
+    CHECK3(engine.snapshot.net_mass_ug == snapshot_before.net_mass_ug);
+    CHECK3(engine.metrology.active_unit == MASS_UNIT_G);
+
+    candidate.active_unit = MASS_UNIT_LB;
+    CHECK3(WeightEngine_UpdateDisplayConfig(&engine, &candidate));
+    CHECK3(engine.snapshot.gross_weight != snapshot_before.gross_weight);
+    candidate.active_unit = MASS_UNIT_KG;
+    CHECK3(WeightEngine_UpdateDisplayConfig(&engine, &candidate));
+    CHECK3(engine.snapshot.sample_sequence == snapshot_before.sample_sequence);
+    CHECK3(engine.snapshot.sample_timestamp_ms ==
+           snapshot_before.sample_timestamp_ms);
+    CHECK3(engine.snapshot.gross_mass_ug == snapshot_before.gross_mass_ug);
+    CHECK3(memcmp(&zero_tare_before, &engine.zero_tare,
+                  sizeof(zero_tare_before)) == 0);
+}
+
 static void TestManagerEvents(void)
 {
     DeviceConfig config;
@@ -517,6 +576,7 @@ unsigned int Stage3_RunTests(void)
     TestMetrologyConfig();
     TestManagerInitializationFaults();
     TestWeightEngine();
+    TestDisplayUnitUpdatePreservesEngineState();
     TestManagerEvents();
     TestBridgeIntegration();
     TestSyntheticScaleFlow();

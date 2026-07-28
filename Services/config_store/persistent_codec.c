@@ -283,6 +283,7 @@ PersistentCodecResult PersistentCodec_EncodeV2(
 {
     CodecWriter w;
     DeviceConfig compatibility;
+    RuntimeState runtime_compatibility;
     uint16_t v1_length;
     uint8_t index;
     PersistentCodecResult result;
@@ -292,16 +293,21 @@ PersistentCodecResult PersistentCodec_EncodeV2(
     if (capacity < PERSISTENT_V2_PAYLOAD_SIZE)
         return PERSISTENT_CODEC_BUFFER_TOO_SMALL;
     compatibility = *config;
+    runtime_compatibility = *runtime;
     if (!MetrologyLegacyProjection_Update(&compatibility.metrology) ||
         !MetrologyLegacyStabilityProjection_Update(&compatibility.metrology,
                                                     &compatibility.stability) ||
         !CalibrationLegacyProjection_Update(&compatibility.calibration,
             compatibility.metrology.active_unit,
             &compatibility.metrology.unit_display[
+                compatibility.metrology.active_unit]) ||
+        !RuntimeLegacyProjection_Update(&runtime_compatibility,
+            compatibility.metrology.active_unit,
+            &compatibility.metrology.unit_display[
                 compatibility.metrology.active_unit]))
         return PERSISTENT_CODEC_VALIDATION_FAILED;
-    result = PersistentCodec_EncodeV1(&compatibility, runtime, buffer, capacity,
-                                      &v1_length);
+    result = PersistentCodec_EncodeV1(&compatibility, &runtime_compatibility,
+                                      buffer, capacity, &v1_length);
     if (result != PERSISTENT_CODEC_OK) return result;
     w.data = buffer; w.capacity = capacity; w.position = v1_length; w.failed = false;
 #define PUT_BOOL_V2(value) PutU8(&w, (value) ? 1U : 0U)

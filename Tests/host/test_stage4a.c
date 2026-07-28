@@ -152,6 +152,14 @@ static bool Stage4A_SegmentIs(char character, uint16_t segment)
            (without_point == expected);
 }
 
+static bool Stage4A_ModelShows(const char text[6])
+{
+    uint16_t expected[6];
+    return DisplayFormatter_FormatText6(text, expected) &&
+           (memcmp(expected, DisplayModel_Get()->digit_segments,
+                   sizeof(expected)) == 0);
+}
+
 static void TestDisplayFormattingAndModel(void)
 {
     uint16_t segments[6];
@@ -171,6 +179,11 @@ static void TestDisplayFormattingAndModel(void)
     CHECK4((segments[3] & (uint16_t)(1U << BOARD_SEG_DP)) != 0U);
     CHECK4(DisplayFormatter_FormatWeight(INT32_MIN, 0U, true, segments));
     CHECK4(Stage4A_SegmentIs('L', segments[4]));
+    CHECK4(DisplayFormatter_EncodeCharacter('k', &segments[0]));
+    CHECK4(DisplayFormatter_EncodeCharacter('K', &segments[0]));
+    CHECK4(DisplayFormatter_FormatText6("    kg", segments));
+    CHECK4(DisplayFormatter_FormatText6("     g", segments));
+    CHECK4(DisplayFormatter_FormatText6("    lb", segments));
 
     DisplayModel_Init();
     CHECK4(DisplayModel_SetWeight(0, 3U, true, 0U));
@@ -373,6 +386,120 @@ static void TestDisplayControllerAndMenu(void)
     CHECK4(MenuController_TakeExitRequest());
 }
 
+static void TestDisplayMessageOverlay(void)
+{
+    DeviceConfig config;
+    uint8_t menu_leds;
+
+    Stage4A_InitRuntime(&config, true);
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
+    CHECK4(DisplayController_SetTextPage(DISPLAY_PAGE_MENU, " UnIt "));
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows(" UnIt "));
+    menu_leds = DisplayModel_Get()->bottom_led_mask;
+
+    TestMock_SetTimeMs(10U);
+    DisplayController_ShowMessage("     g", 500U);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("     g"));
+    TestMock_SetTimeMs(20U);
+    DisplayController_ShowMessage("    lb", 500U);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("    lb"));
+    TestMock_SetTimeMs(30U);
+    DisplayController_ShowMessage("    kg", 500U);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("    kg"));
+    CHECK4(DisplayController_GetPage() == DISPLAY_PAGE_MENU);
+    CHECK4(DisplayModel_Get()->bottom_led_mask == menu_leds);
+
+    CHECK4(DisplayController_SetTextPage(DISPLAY_PAGE_EDIT, "  CAP "));
+    TestMock_SetTimeMs(529U);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("    kg"));
+    TestMock_SetTimeMs(530U);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("  CAP "));
+
+    CHECK4(DisplayController_SetNumericPage(DISPLAY_PAGE_EDIT, 12345, 2U));
+    TestMock_SetTimeMs(600U);
+    DisplayController_ShowMessage("     g", 100U);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("     g"));
+    TestMock_SetTimeMs(700U);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_SegmentIs('1', DisplayModel_Get()->digit_segments[1]));
+    CHECK4(Stage4A_SegmentIs('5', DisplayModel_Get()->digit_segments[5]));
+
+    TestMock_SetTimeMs(800U);
+    DisplayController_ShowMessage("    lb", 100U);
+    DisplayController_SetPage(DISPLAY_PAGE_NET);
+    DisplayController_Process20ms();
+    CHECK4(DisplayController_GetPage() == DISPLAY_PAGE_NET);
+    CHECK4(!Stage4A_ModelShows("    lb"));
+
+    CHECK4(DisplayController_SetTextPage(DISPLAY_PAGE_FAULT, "  Err "));
+    TestMock_SetTimeMs(900U);
+    DisplayController_ShowMessage("     g", 100U);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("  Err "));
+    CHECK4(!DisplayController_SetTextPage(DISPLAY_PAGE_MENU, "  @@@ "));
+}
+
+static void TestUnitMenuEdit(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+
+    Stage4A_InitRuntime(&config, true);
+    CommandService_Init();
+    MenuController_Init();
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
+    CHECK4(MenuController_Enter());
+    CHECK4(SystemContext_Get()->config.metrology.active_unit == MASS_UNIT_KG);
+
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 10U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(SystemContext_Get()->config.metrology.active_unit == MASS_UNIT_KG);
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 20U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("     g"));
+    CHECK4(SystemContext_Get()->config.metrology.active_unit == MASS_UNIT_KG);
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, 30U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(SystemContext_Get()->config.metrology.active_unit == MASS_UNIT_KG);
+    CHECK4(!SystemContext_Get()->runtime.config_dirty);
+
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 40U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 50U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("    lb"));
+    CHECK4(SystemContext_Get()->config.metrology.active_unit == MASS_UNIT_KG);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 60U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(SystemContext_Get()->config.metrology.active_unit == MASS_UNIT_LB);
+    CHECK4(SystemContext_Get()->runtime.config_dirty);
+
+    TestMock_SetTimeMs(1501U);
+    DisplayController_Process20ms();
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 1510U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 1520U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("    kg"));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 1530U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("     g"));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 1540U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(SystemContext_Get()->config.metrology.active_unit == MASS_UNIT_G);
+}
+
 static void TestRawCalibrationStability(void)
 {
     RawCalibrationStability detector;
@@ -548,6 +675,8 @@ unsigned int Stage4A_RunTests(void)
     TestDisplayFormattingAndModel();
     TestCommandAndConfig();
     TestDisplayControllerAndMenu();
+    TestDisplayMessageOverlay();
+    TestUnitMenuEdit();
     TestRawCalibrationStability();
     TestSelfTest();
     TestCalibrationControllerDirection(false);

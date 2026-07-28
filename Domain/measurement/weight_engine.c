@@ -16,30 +16,74 @@ static WeightValue CompatValue(MassValueUg value)
     return (WeightValue)value;
 }
 
+static bool ConvertCompatibility(MassValueUg mass,
+    const MetrologyConfig *config, WeightValue *value)
+{
+    int64_t count;
+    const UnitDisplayConfig *display;
+    if ((config == NULL) || (value == NULL) ||
+        ((uint32_t)config->active_unit >= MASS_UNIT_COUNT)) return false;
+    display = &config->unit_display[config->active_unit];
+    if (!display->enabled || !UnitConverter_MassToCountUnbounded(mass,
+        config->active_unit, display->decimal_places,
+        display->division_digit, &count)) return false;
+    *value = CompatValue(count);
+    return true;
+}
+
 static void UpdateCompatibility(MassSnapshot *snapshot,
                                 const MetrologyConfig *config)
 {
-    DisplayWeightValue gross = {0};
-    DisplayWeightValue net = {0};
-    DisplayWeightValue tare = {0};
-    const UnitDisplayConfig *display =
-        &config->unit_display[config->active_unit];
-    (void)UnitConverter_MassToDisplay(snapshot->gross_mass_ug,
-        config->active_unit, display, &gross);
-    (void)UnitConverter_MassToDisplay(snapshot->net_mass_ug,
-        config->active_unit, display, &net);
-    (void)UnitConverter_MassToDisplay(snapshot->tare_mass_ug,
-        config->active_unit, display, &tare);
-    snapshot->gross_unrounded = gross.valid ? gross.display_count :
-        CompatValue(snapshot->gross_mass_ug);
-    snapshot->net_unrounded = net.valid ? net.display_count :
-        CompatValue(snapshot->net_mass_ug);
-    snapshot->tare_weight = tare.valid ? tare.display_count :
-        CompatValue(snapshot->tare_mass_ug);
+    if (!ConvertCompatibility(snapshot->gross_mass_ug, config,
+                              &snapshot->gross_unrounded))
+        snapshot->gross_unrounded = CompatValue(snapshot->gross_mass_ug);
+    if (!ConvertCompatibility(snapshot->net_mass_ug, config,
+                              &snapshot->net_unrounded))
+        snapshot->net_unrounded = CompatValue(snapshot->net_mass_ug);
+    if (!ConvertCompatibility(snapshot->tare_mass_ug, config,
+                              &snapshot->tare_weight))
+        snapshot->tare_weight = CompatValue(snapshot->tare_mass_ug);
     snapshot->gross_weight = snapshot->gross_unrounded;
     snapshot->net_weight = snapshot->net_unrounded;
     snapshot->stability_spread = (snapshot->stability_spread_ug > UINT32_MAX) ?
         UINT32_MAX : (uint32_t)snapshot->stability_spread_ug;
+}
+
+bool WeightEngine_UpdateDisplayConfig(WeightEngine *engine,
+    const MetrologyConfig *metrology)
+{
+    MetrologyConfig display_config;
+    MassSnapshot snapshot;
+    if ((engine == NULL) || !engine->initialized || (metrology == NULL) ||
+        ((uint32_t)metrology->active_unit >= MASS_UNIT_COUNT) ||
+        ((metrology->enabled_unit_mask &
+          (uint8_t)(1U << metrology->active_unit)) == 0U)) return false;
+    display_config = engine->metrology;
+    display_config.active_unit = metrology->active_unit;
+    display_config.enabled_unit_mask = metrology->enabled_unit_mask;
+    (void)memcpy(display_config.unit_display, metrology->unit_display,
+                 sizeof(display_config.unit_display));
+    display_config.unit = metrology->unit;
+    display_config.decimal_places = metrology->decimal_places;
+    display_config.division = metrology->division;
+    snapshot = engine->snapshot;
+    if (!ConvertCompatibility(snapshot.gross_mass_ug, &display_config,
+                              &snapshot.gross_unrounded) ||
+        !ConvertCompatibility(snapshot.net_mass_ug, &display_config,
+                              &snapshot.net_unrounded) ||
+        !ConvertCompatibility(snapshot.tare_mass_ug, &display_config,
+                              &snapshot.tare_weight)) return false;
+    snapshot.gross_weight = snapshot.gross_unrounded;
+    snapshot.net_weight = snapshot.net_unrounded;
+    engine->metrology.active_unit = display_config.active_unit;
+    engine->metrology.enabled_unit_mask = display_config.enabled_unit_mask;
+    (void)memcpy(engine->metrology.unit_display, display_config.unit_display,
+                 sizeof(engine->metrology.unit_display));
+    engine->metrology.unit = display_config.unit;
+    engine->metrology.decimal_places = display_config.decimal_places;
+    engine->metrology.division = display_config.division;
+    engine->snapshot = snapshot;
+    return true;
 }
 
 static void ClearDerived(WeightEngine *engine)

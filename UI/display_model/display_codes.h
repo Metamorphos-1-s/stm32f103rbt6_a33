@@ -1,6 +1,8 @@
 #ifndef DISPLAY_CODES_H
 #define DISPLAY_CODES_H
 
+#include "unit_types.h"
+
 #include <stdbool.h>
 
 typedef enum
@@ -38,6 +40,7 @@ typedef enum
     DISPLAY_CODE_APPLYING,
     DISPLAY_CODE_FLASH_SAVE,
     DISPLAY_CODE_READ_ONLY,
+    DISPLAY_CODE_UNIT_RANGE,
     DISPLAY_CODE_COUNT
 } DisplayCode;
 
@@ -45,5 +48,6 @@ typedef enum
 #define DISPLAY_CODE_NOT_STABLE DISPLAY_CODE_UNSTABLE
 
 bool DisplayCodes_Get(DisplayCode code, char text[6]);
+bool DisplayCodes_GetMassUnitLabel(MassUnit unit, char text[6]);
 
 #endif /* DISPLAY_CODES_H */

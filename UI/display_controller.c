@@ -16,12 +16,14 @@
 #define SEGMENT_BIT(segment) ((uint16_t)(1U << (uint8_t)(segment)))
 
 static DisplayPage s_page;
-static DisplayPage s_restore_page;
 static uint32_t s_message_start_ms;
 static uint32_t s_message_duration_ms;
 static uint32_t s_applied_revision;
 static char s_text[6];
+static char s_message_text[6];
+static uint16_t s_numeric_segments[6];
 static bool s_text_override;
+static bool s_numeric_override;
 static bool s_message_active;
 static bool s_initialized;
 
@@ -67,9 +69,17 @@ static bool DisplayController_BuildModel(void)
     {
         return false;
     }
+    if (s_message_active && (s_page != DISPLAY_PAGE_FAULT))
+    {
+        return DisplayModel_SetText6(s_message_text);
+    }
     if (s_text_override)
     {
         return DisplayModel_SetText6(s_text);
+    }
+    if (s_numeric_override)
+    {
+        return DisplayModel_SetRawSegments(s_numeric_segments);
     }
     switch (s_page)
     {
@@ -147,9 +157,9 @@ bool DisplayController_Init(void)
     s_page = ((context != NULL) &&
               (context->runtime.weight_view == WEIGHT_VIEW_GROSS)) ?
              DISPLAY_PAGE_GROSS : DISPLAY_PAGE_NET;
-    s_restore_page = s_page;
     s_message_active = false;
     s_text_override = false;
+    s_numeric_override = false;
     s_applied_revision = 0U;
     if ((context != NULL) &&
         !DisplayModel_SetBrightness(context->config.display.brightness))
@@ -178,8 +188,6 @@ void DisplayController_Process20ms(void)
          s_message_duration_ms))
     {
         s_message_active = false;
-        s_text_override = false;
-        s_page = s_restore_page;
     }
     if (!DisplayController_BuildModel())
     {
@@ -194,35 +202,38 @@ void DisplayController_SetPage(DisplayPage page)
     {
         s_page = page;
         s_text_override = false;
+        s_numeric_override = false;
         s_message_active = false;
     }
 }
 
 void DisplayController_ShowMessage(const char text[6], uint32_t duration_ms)
 {
+    uint16_t segments[6];
     if ((text == NULL) || (duration_ms == 0U))
     {
         return;
     }
-    s_restore_page = s_page;
-    (void)memcpy(s_text, text, 6U);
-    s_text_override = true;
+    if (!DisplayFormatter_FormatText6(text, segments)) return;
+    (void)memcpy(s_message_text, text, 6U);
     s_message_active = true;
     s_message_start_ms = BSP_TimeNowMs();
     s_message_duration_ms = duration_ms;
-    s_page = DISPLAY_PAGE_MESSAGE;
 }
 
 bool DisplayController_SetTextPage(DisplayPage page, const char text[6])
 {
+    uint16_t segments[6];
     if ((text == NULL) || ((uint32_t)page > (uint32_t)DISPLAY_PAGE_FAULT))
     {
         return false;
     }
+    if (!DisplayFormatter_FormatText6(text, segments)) return false;
     (void)memcpy(s_text, text, 6U);
     s_text_override = true;
-    s_message_active = false;
+    s_numeric_override = false;
     s_page = page;
+    if (page == DISPLAY_PAGE_FAULT) s_message_active = false;
     return true;
 }
 
@@ -237,10 +248,11 @@ bool DisplayController_SetNumericPage(DisplayPage page, int32_t display_count,
         return false;
     }
     s_text_override = false;
-    s_message_active = false;
+    s_numeric_override = true;
+    (void)memcpy(s_numeric_segments, segments, sizeof(s_numeric_segments));
     s_page = page;
-    return DisplayModel_SetPage(page) &&
-           DisplayModel_SetRawSegments(segments);
+    if (page == DISPLAY_PAGE_FAULT) s_message_active = false;
+    return true;
 }
 
 bool DisplayController_SetBrightness(uint8_t brightness)
@@ -254,6 +266,7 @@ bool DisplayController_SetTestPattern(const uint16_t segments[6],
 {
     s_page = DISPLAY_PAGE_BOOT;
     s_text_override = false;
+    s_numeric_override = false;
     s_message_active = false;
     return DisplayModel_SetRawSegments(segments) &&
            DisplayModel_SetIndicators(top_led_mask, bottom_led_mask);

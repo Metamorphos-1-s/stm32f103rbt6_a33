@@ -44,5 +44,7 @@ bool WeightEngine_ApplyCalibration(WeightEngine *engine,
                                    const CalibrationConfig *calibration);
 bool WeightEngine_ReconfigureFilter(WeightEngine *engine, FilterMode mode,
                                     uint8_t strength);
+bool WeightEngine_UpdateDisplayConfig(WeightEngine *engine,
+    const MetrologyConfig *metrology);
 
 #endif /* WEIGHT_ENGINE_H */

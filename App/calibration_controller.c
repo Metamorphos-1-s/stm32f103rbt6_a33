@@ -67,12 +67,13 @@ static void CalibrationController_FormatSpan(void)
 
 static void CalibrationController_ShowUnitHint(void)
 {
-    static const char hints[MASS_UNIT_COUNT][6] = {
-        {' ', ' ', ' ', ' ', 'k', 'g'},
-        {' ', ' ', ' ', ' ', ' ', 'g'},
-        {' ', ' ', ' ', ' ', 'l', 'b'}};
-    (void)DisplayController_SetTextPage(DISPLAY_PAGE_CALIBRATION,
-                                       hints[s_session.input_unit]);
+    char label[6];
+    if (!DisplayCodes_GetMassUnitLabel(s_session.input_unit, label) ||
+        !DisplayController_SetTextPage(DISPLAY_PAGE_CALIBRATION, label))
+    {
+        CalibrationController_ShowCode(DISPLAY_CODE_UNIT_ERROR);
+        return;
+    }
     s_session.state_enter_ms = BSP_TimeNowMs();
     s_unit_hint_active = true;
 }

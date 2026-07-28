@@ -13,6 +13,9 @@
 - Per-unit enable, decimal places and division digit 1/2/5 are validated against six display digits.
 - Rounding is symmetric half-away-from-zero followed by division quantization.
 - Positive maximum is 999999 counts; supported negative minimum is -99999 counts.
+- The six-digit limit constrains values that must be displayed or edited. It
+  does not constrain 32-bit legacy persistence projections, which use the same
+  exact integer conversion and 1/2/5 quantization without a panel-width limit.
 
 ## Modes
 
@@ -43,3 +46,12 @@ NOT TESTED ON HARDWARE. Noise, response, settling, stability thresholds, zero ra
 - A successful local edit or calibration applies to RAM, increments revision
   and marks configuration dirty. It does not write Flash. The separate SAVE
   operation writes the inactive A/B slot and is the only persistence claim.
+- Unit uses a candidate editor: FUNCTION enters, STAR/HASH select the previous/
+  next enabled unit, FUNCTION confirms, and TARE cancels. Selection alone does
+  not change active configuration; Class III reference mode excludes lb.
+- Capacity and overload are independent physical parameters. A lower capacity
+  must not silently lower overload. An edit that cannot be rendered in the
+  active unit reports a unit-range condition without starting a transaction.
+- A display-unit change recomputes only compatibility display counts. It must
+  not reset calibration, raw/filter history, stability, zero, tare, physical
+  masses, sample timestamp, sample sequence, publication state, or faults.
