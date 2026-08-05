@@ -490,7 +490,10 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
     }
     if (s_editing)
     {
-        if ((event->key == KEY_ID_STAR) || (event->key == KEY_ID_HASH))
+        if (((event->key == KEY_ID_STAR) ||
+             (event->key == KEY_ID_HASH)) &&
+            ((event->type == KEY_EVENT_SHORT) ||
+             (event->type == KEY_EVENT_REPEAT)))
             AdjustEdit(event->key);
         else if ((event->key == KEY_ID_ZERO) &&
                  (event->type == KEY_EVENT_SHORT) &&
@@ -539,7 +542,9 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         }
         Render(); return true;
     }
-    if ((event->key == KEY_ID_STAR) || (event->key == KEY_ID_HASH))
+    if (((event->key == KEY_ID_STAR) || (event->key == KEY_ID_HASH)) &&
+        ((event->type == KEY_EVENT_SHORT) ||
+         (event->type == KEY_EVENT_REPEAT)))
         Navigate(event->key);
     else if ((event->key == KEY_ID_TARE) &&
              (event->type == KEY_EVENT_SHORT))

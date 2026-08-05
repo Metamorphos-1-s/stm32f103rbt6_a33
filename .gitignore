@@ -5,3 +5,5 @@ build/
 *.log
 Tests/host/out/
 Tests/host/build/
+__pycache__/
+*.py[cod]

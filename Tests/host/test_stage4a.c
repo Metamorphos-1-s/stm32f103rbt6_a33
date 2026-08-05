@@ -386,6 +386,68 @@ static void TestDisplayControllerAndMenu(void)
     CHECK4(MenuController_TakeExitRequest());
 }
 
+static void TestMenuStarHashLongDoesNotAdjust(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+
+    Stage4A_InitRuntime(&config, true);
+    CommandService_Init();
+    MenuController_Init();
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
+    CHECK4(MenuController_Enter());
+
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 10U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 20U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 30U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 40U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_GetItem() == MENU_ITEM_CAPACITY);
+
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, 50U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_GetItem() == MENU_ITEM_CAPACITY);
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_LONG, 60U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_GetItem() == MENU_ITEM_CAPACITY);
+
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 70U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 80U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_LONG, 90U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_REPEAT, 100U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 110U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(SystemContext_Get()->config.metrology.capacity_ug ==
+           INT64_C(10002000000));
+
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 120U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 130U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, 140U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_REPEAT, 150U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 160U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(SystemContext_Get()->config.metrology.capacity_ug ==
+           INT64_C(10000000000));
+
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, 170U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(!MenuController_IsActive());
+    CHECK4(MenuController_TakeExitRequest());
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 180U);
+    CHECK4(!MenuController_HandleKeyEvent(&event));
+}
+
 static void TestDisplayMessageOverlay(void)
 {
     DeviceConfig config;
@@ -675,6 +737,7 @@ unsigned int Stage4A_RunTests(void)
     TestDisplayFormattingAndModel();
     TestCommandAndConfig();
     TestDisplayControllerAndMenu();
+    TestMenuStarHashLongDoesNotAdjust();
     TestDisplayMessageOverlay();
     TestUnitMenuEdit();
     TestRawCalibrationStability();
