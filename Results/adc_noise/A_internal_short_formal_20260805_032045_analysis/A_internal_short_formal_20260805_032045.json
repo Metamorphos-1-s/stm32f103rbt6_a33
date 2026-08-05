@@ -1,0 +1,85 @@
+{
+  "test_id": "A_internal_short_formal",
+  "mode": "internal_short",
+  "load_g": 0.0,
+  "valid_samples": 6107,
+  "duration_s": 599.984,
+  "average_sample_rate_hz": 10.176938051681377,
+  "mean_count": -1007.7158997871295,
+  "median_count": -1008.0,
+  "minimum_count": -1075,
+  "maximum_count": -955,
+  "peak_to_peak_count": 120,
+  "std_count": 16.497526272052532,
+  "mad_count": 11.0,
+  "percentiles_count": {
+    "1": -1046.0,
+    "5": -1035.0,
+    "25": -1019.0,
+    "75": -996.0,
+    "95": -981.0,
+    "99": -970.0
+  },
+  "rms_zero_mean_count": 16.496175510493625,
+  "drift_count_per_min": -0.016805454610109797,
+  "detrended_std_count": 16.49745496089693,
+  "maximum_adjacent_change_count": 62.0,
+  "lost_samples": 12,
+  "fifo_overruns": 0,
+  "timestamp_anomalies": 1,
+  "counts_per_g": null,
+  "averaging_std_count": {
+    "2": 14.480628232497281,
+    "4": 11.959901152307648,
+    "8": 9.84315664277112,
+    "16": 8.460521711211367,
+    "32": 6.968196602288349
+  },
+  "allan_deviation": [
+    {
+      "tau_s": 0.0982613822469702,
+      "deviation_count": 11.176369444616133
+    },
+    {
+      "tau_s": 0.1965227644939404,
+      "deviation_count": 11.466560916540919
+    },
+    {
+      "tau_s": 0.3930455289878808,
+      "deviation_count": 9.517349347337879
+    },
+    {
+      "tau_s": 0.7860910579757616,
+      "deviation_count": 7.1783881808702255
+    },
+    {
+      "tau_s": 1.5721821159515232,
+      "deviation_count": 6.316592496176528
+    },
+    {
+      "tau_s": 3.1443642319030465,
+      "deviation_count": 4.869862177893631
+    },
+    {
+      "tau_s": 6.288728463806093,
+      "deviation_count": 4.170326474063777
+    },
+    {
+      "tau_s": 12.577456927612186,
+      "deviation_count": 4.462930536719453
+    },
+    {
+      "tau_s": 25.154913855224372,
+      "deviation_count": 5.540609086841804
+    },
+    {
+      "tau_s": 50.309827710448744,
+      "deviation_count": 2.802693739965709
+    },
+    {
+      "tau_s": 100.61965542089749,
+      "deviation_count": 1.650750444819952
+    }
+  ],
+  "notes": "Formal internal-short capture after at least 20 minutes continuous board preheat; display refresh on; normal Modbus polling"
+}

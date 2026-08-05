@@ -1,5 +1,6 @@
 #include "metrology_manager.h"
 
+#include "adc_noise_diagnostics.h"
 #include "event_queue.h"
 #include "fault_manager.h"
 #include "metrology_config_validator.h"
@@ -15,6 +16,14 @@ static bool s_initialized;
 static uint32_t s_rejected_sample_count;
 static uint32_t s_last_published_sequence;
 static bool s_last_published_stable;
+
+static MetrologyConfig MetrologyManager_RuntimeConfig(
+    const MetrologyConfig *config)
+{
+    MetrologyConfig runtime = *config;
+    AdcNoiseDiagnostics_ApplyMetrologyConfig(&runtime);
+    return runtime;
+}
 
 static bool MetrologyManager_CalibrationChanged(
     const CalibrationConfig *left, const CalibrationConfig *right)
@@ -44,6 +53,7 @@ bool MetrologyManager_Init(const DeviceConfig *config,
 {
     bool restore_tare;
     MassValueUg restored_tare;
+    MetrologyConfig runtime_metrology;
 
     s_initialized = false;
     s_rejected_sample_count = 0U;
@@ -71,7 +81,8 @@ bool MetrologyManager_Init(const DeviceConfig *config,
     restore_tare = config->system.tare_power_loss_retention &&
                    runtime->tare_active;
     restored_tare = restore_tare ? runtime->current_tare_ug : 0;
-    s_initialized = WeightEngine_InitMass(&s_engine, &config->metrology,
+    runtime_metrology = MetrologyManager_RuntimeConfig(&config->metrology);
+    s_initialized = WeightEngine_InitMass(&s_engine, &runtime_metrology,
         &config->calibration, &config->stability, restored_tare,
         restore_tare);
     if (!s_initialized)
@@ -277,6 +288,7 @@ bool MetrologyManager_ReconfigureFilter(FilterMode mode, uint8_t strength)
 bool MetrologyManager_Reconfigure(const DeviceConfig *config)
 {
     WeightEngine replacement;
+    MetrologyConfig runtime_metrology;
     RawMeasurementSample sample;
     bool restore_tare;
     bool calibration_changed;
@@ -295,7 +307,8 @@ bool MetrologyManager_Reconfigure(const DeviceConfig *config)
         &config->calibration, &s_engine.calibration);
     restore_tare = !calibration_changed && s_engine.zero_tare.tare_active;
     zero_offset = calibration_changed ? 0 : s_engine.zero_tare.zero_offset_raw;
-    if (!WeightEngine_InitMass(&replacement, &config->metrology,
+    runtime_metrology = MetrologyManager_RuntimeConfig(&config->metrology);
+    if (!WeightEngine_InitMass(&replacement, &runtime_metrology,
             &config->calibration, &config->stability,
             restore_tare ? s_engine.zero_tare.tare_mass_ug : 0, restore_tare))
     {
@@ -322,6 +335,7 @@ bool MetrologyManager_Reconfigure(const DeviceConfig *config)
 bool MetrologyManager_RestartAfterStorage(const DeviceConfig *config)
 {
     WeightEngine replacement;
+    MetrologyConfig runtime_metrology;
     bool calibration_changed;
     bool restore_tare;
     int32_t zero_offset;
@@ -339,7 +353,8 @@ bool MetrologyManager_RestartAfterStorage(const DeviceConfig *config)
         &config->calibration, &s_engine.calibration);
     restore_tare = !calibration_changed && s_engine.zero_tare.tare_active;
     zero_offset = calibration_changed ? 0 : s_engine.zero_tare.zero_offset_raw;
-    if (!WeightEngine_InitMass(&replacement, &config->metrology,
+    runtime_metrology = MetrologyManager_RuntimeConfig(&config->metrology);
+    if (!WeightEngine_InitMass(&replacement, &runtime_metrology,
             &config->calibration, &config->stability,
             restore_tare ? s_engine.zero_tare.tare_mass_ug : 0, restore_tare))
     {

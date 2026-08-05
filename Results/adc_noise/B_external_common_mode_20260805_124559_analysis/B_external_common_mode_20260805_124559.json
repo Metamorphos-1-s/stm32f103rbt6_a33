@@ -1,0 +1,85 @@
+{
+  "test_id": "B_external_common_mode",
+  "mode": "channel_a",
+  "load_g": 0.0,
+  "valid_samples": 6095,
+  "duration_s": 599.968,
+  "average_sample_rate_hz": 10.157208384447172,
+  "mean_count": -1064.0214930270713,
+  "median_count": -1063.0,
+  "minimum_count": -1141,
+  "maximum_count": -990,
+  "peak_to_peak_count": 151,
+  "std_count": 21.66714281693067,
+  "mad_count": 15.0,
+  "percentiles_count": {
+    "1": -1117.0,
+    "5": -1100.0,
+    "25": -1078.0,
+    "75": -1049.0,
+    "95": -1030.0,
+    "99": -1018.0
+  },
+  "rms_zero_mean_count": 21.665365291777597,
+  "drift_count_per_min": 3.5122030633165493,
+  "detrended_std_count": 19.153304996836383,
+  "maximum_adjacent_change_count": 60.0,
+  "lost_samples": 18,
+  "fifo_overruns": 0,
+  "timestamp_anomalies": 3,
+  "counts_per_g": null,
+  "averaging_std_count": {
+    "2": 17.351438832482586,
+    "4": 15.35667228850318,
+    "8": 13.555790282277737,
+    "16": 12.361927103525055,
+    "32": 11.494658075792433
+  },
+  "allan_deviation": [
+    {
+      "tau_s": 0.09845224811289792,
+      "deviation_count": 11.427854154259297
+    },
+    {
+      "tau_s": 0.19690449622579584,
+      "deviation_count": 11.735062894246415
+    },
+    {
+      "tau_s": 0.3938089924515917,
+      "deviation_count": 10.285797944041052
+    },
+    {
+      "tau_s": 0.7876179849031834,
+      "deviation_count": 7.696116334131877
+    },
+    {
+      "tau_s": 1.5752359698063667,
+      "deviation_count": 6.361441934212181
+    },
+    {
+      "tau_s": 3.1504719396127334,
+      "deviation_count": 5.595851273042024
+    },
+    {
+      "tau_s": 6.300943879225467,
+      "deviation_count": 5.194870477304729
+    },
+    {
+      "tau_s": 12.601887758450934,
+      "deviation_count": 5.800672243798712
+    },
+    {
+      "tau_s": 25.203775516901867,
+      "deviation_count": 6.642048651230314
+    },
+    {
+      "tau_s": 50.407551033803735,
+      "deviation_count": 6.056877865745772
+    },
+    {
+      "tau_s": 100.81510206760747,
+      "deviation_count": 5.727010243210984
+    }
+  ],
+  "notes": "External common-mode short: E+-E-=3.3V; equal 10k divider; VCM-E-=1.655V; AINP-E-=1.655V; AINN-E-=1.655V; AINP-AINN=0.01mV; display refresh on; normal Modbus polling"
+}

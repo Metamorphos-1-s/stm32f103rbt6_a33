@@ -1,0 +1,85 @@
+{
+  "test_id": "E_sensor_500g",
+  "mode": "channel_a",
+  "load_g": 500.0,
+  "valid_samples": 6109,
+  "duration_s": 600.012,
+  "average_sample_rate_hz": 10.179796404071919,
+  "mean_count": -485934.0013095433,
+  "median_count": -485934.0,
+  "minimum_count": -486012,
+  "maximum_count": -485865,
+  "peak_to_peak_count": 147,
+  "std_count": 18.185916767770927,
+  "mad_count": 12.0,
+  "percentiles_count": {
+    "1": -485978.0,
+    "5": -485964.0,
+    "25": -485946.0,
+    "75": -485922.0,
+    "95": -485904.0,
+    "99": -485893.0
+  },
+  "rms_zero_mean_count": 18.18442825401621,
+  "drift_count_per_min": -2.0266651537554483,
+  "detrended_std_count": 17.219139238553428,
+  "maximum_adjacent_change_count": 64.0,
+  "lost_samples": 5,
+  "fifo_overruns": 0,
+  "timestamp_anomalies": 1,
+  "counts_per_g": null,
+  "averaging_std_count": {
+    "2": 15.119282994398601,
+    "4": 12.764693377355021,
+    "8": 10.715819544260437,
+    "16": 9.39301326787886,
+    "32": 8.312659875460001
+  },
+  "allan_deviation": [
+    {
+      "tau_s": 0.09823379174852652,
+      "deviation_count": 11.476334975564042
+    },
+    {
+      "tau_s": 0.19646758349705304,
+      "deviation_count": 11.410642299634876
+    },
+    {
+      "tau_s": 0.3929351669941061,
+      "deviation_count": 9.50813698542636
+    },
+    {
+      "tau_s": 0.7858703339882122,
+      "deviation_count": 7.35102689482072
+    },
+    {
+      "tau_s": 1.5717406679764243,
+      "deviation_count": 6.119620284293256
+    },
+    {
+      "tau_s": 3.1434813359528486,
+      "deviation_count": 5.596069303424952
+    },
+    {
+      "tau_s": 6.286962671905697,
+      "deviation_count": 5.1863373477858445
+    },
+    {
+      "tau_s": 12.573925343811394,
+      "deviation_count": 4.779183387694852
+    },
+    {
+      "tau_s": 25.14785068762279,
+      "deviation_count": 4.816488867189331
+    },
+    {
+      "tau_s": 50.29570137524558,
+      "deviation_count": 2.413181336932171
+    },
+    {
+      "tau_s": 100.59140275049116,
+      "deviation_count": 3.223580578810338
+    }
+  ],
+  "notes": "Real sensor with nominal 500 g fixed weight; first 60 s excluded for initial creep; weight class not recorded; sensor model/capacity/sensitivity/bridge resistance/environment temperature not recorded; display refresh on; normal Modbus polling"
+}

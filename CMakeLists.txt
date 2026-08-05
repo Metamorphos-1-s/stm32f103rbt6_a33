@@ -28,6 +28,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 project(${CMAKE_PROJECT_NAME})
 message("Build type: " ${CMAKE_BUILD_TYPE})
 option(A33_ENABLE_BOARD_DIAGNOSTICS "Enable Stage 2B board diagnostics" OFF)
+set(A33_ADC_NOISE_DIAG_MODE "0" CACHE STRING
+    "ADC noise diagnostic mode: 0=product, 1=internal short, 2=channel A, 3=channel A display refresh off")
+set_property(CACHE A33_ADC_NOISE_DIAG_MODE PROPERTY STRINGS 0 1 2 3)
+if(NOT A33_ADC_NOISE_DIAG_MODE MATCHES "^[0-3]$")
+    message(FATAL_ERROR "A33_ADC_NOISE_DIAG_MODE must be 0, 1, 2, or 3")
+endif()
 
 # Enable CMake support for ASM and C languages
 enable_language(C ASM)
@@ -45,6 +51,7 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+    App/adc_noise_diagnostics.c
     App/calibration_controller.c
     App/communication_manager.c
     App/config_application.c
@@ -157,6 +164,10 @@ if(A33_ENABLE_BOARD_DIAGNOSTICS)
 else()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
         ENABLE_STAGE2B_BOARD_DIAGNOSTICS=0)
+endif()
+if(NOT A33_ADC_NOISE_DIAG_MODE STREQUAL "0")
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ADC_NOISE_DIAG_MODE=${A33_ADC_NOISE_DIAG_MODE})
 endif()
 
 # Remove wrong libob.a library dependency when using cpp files

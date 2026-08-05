@@ -1,8 +1,29 @@
 cmake_minimum_required(VERSION 3.22)
 project(stage4b_host_tests C)
 
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
+
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
+
+function(add_adc_diag_policy_test target mode)
+    add_executable(${target}
+        test_adc_noise_diag.c
+        ../../App/adc_noise_diagnostics.c)
+    target_include_directories(${target} PRIVATE
+        ../../App ../../Config ../../Domain/filter ../../Domain/measurement
+        ../../Drivers/cs1237)
+    target_compile_definitions(${target} PRIVATE ADC_DIAG_EXPECTED_MODE=${mode})
+    if(NOT "${mode}" STREQUAL "0")
+        target_compile_definitions(${target} PRIVATE A33_ADC_NOISE_DIAG_MODE=${mode})
+    endif()
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /W4 /WX)
+    else()
+        target_compile_options(${target} PRIVATE -Wall -Wextra -Werror)
+    endif()
+    add_test(NAME ${target} COMMAND ${target})
+endfunction()
 
 add_executable(stage4a_host_tests
     test_stage2a.c
@@ -10,6 +31,7 @@ add_executable(stage4a_host_tests
     test_stage4a.c
     synthetic_scale_source.c
     mocks.c
+    ../../App/adc_noise_diagnostics.c
     ../../App/measurement_bridge.c
     ../../App/calibration_controller.c
     ../../App/config_application.c
@@ -91,6 +113,14 @@ endif()
 
 enable_testing()
 add_test(NAME stage4a_host_logic COMMAND stage4a_host_tests)
+add_adc_diag_policy_test(adc_diag_product_policy 0)
+add_adc_diag_policy_test(adc_diag_internal_short_policy 1)
+add_adc_diag_policy_test(adc_diag_channel_a_policy 2)
+add_adc_diag_policy_test(adc_diag_display_off_policy 3)
+add_test(NAME adc_noise_python_tools
+    COMMAND ${Python3_EXECUTABLE} -m unittest discover
+        -s ${CMAKE_CURRENT_SOURCE_DIR}/../../Tools/adc_noise_diag/tests
+        -p test_*.py)
 
 add_executable(stage4b_storage_tests
     test_stage4b.c
@@ -158,6 +188,7 @@ add_test(NAME stage4br_persistence_logic COMMAND stage4br_persistence_tests)
 add_executable(stage5a_host_tests
     test_stage5a.c
     stage5a_model_adapters.c
+    ../../App/adc_noise_diagnostics.c
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/mass_math.c
@@ -189,6 +220,7 @@ add_executable(stage5b_host_tests
     test_stage5b.c
     stage5a_model_adapters.c
     stage5b_transport_adapters.c
+    ../../App/adc_noise_diagnostics.c
     ../../App/communication_manager.c
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c

@@ -1,5 +1,6 @@
 #include "weighing_profile_manager.h"
 
+#include "adc_noise_diagnostics.h"
 #include "config_application.h"
 #include "cs1237.h"
 #include "fault_manager.h"
@@ -35,6 +36,7 @@ void WeighingProfileManager_Init(void)
 CommandResult WeighingProfileManager_Request(WeighingProfileId profile)
 {
     const SystemContext *context = SystemContext_Get();
+    if (AdcNoiseDiagnostics_IsEnabled()) return COMMAND_RESULT_INVALID_STATE;
     if ((context == NULL) || ((uint32_t)profile >= WEIGHING_PROFILE_COUNT))
         return COMMAND_RESULT_INVALID_ARGUMENT;
     if (WeighingProfileManager_IsBusy()) return COMMAND_RESULT_BUSY;

@@ -17,6 +17,9 @@ static uint32_t s_rejected_event_pushes;
 static EventType s_rejected_event_type;
 static bool s_reject_event_type_once;
 static bool s_outputs[OUTPUT_COUNT];
+static bool s_cs1237_data_script[256];
+static uint16_t s_cs1237_data_count;
+static uint16_t s_cs1237_data_index;
 
 CommunicationManagerState CommunicationManager_GetState(void)
 {
@@ -56,6 +59,8 @@ void TestMock_Reset(void)
     s_rejected_event_pushes = 0U;
     s_rejected_event_type = EVENT_NONE;
     s_reject_event_type_once = false;
+    s_cs1237_data_count = 0U;
+    s_cs1237_data_index = 0U;
     (void)memset(s_event_type_count, 0, sizeof(s_event_type_count));
     (void)memset(s_outputs, 0, sizeof(s_outputs));
 }
@@ -63,6 +68,19 @@ void TestMock_Reset(void)
 void TestMock_SetTimeMs(uint32_t now_ms)
 {
     s_now_ms = now_ms;
+}
+
+void TestMock_SetCs1237DataScript(const bool *bits, uint16_t count)
+{
+    if ((bits == NULL) || (count > 256U))
+    {
+        s_cs1237_data_count = 0U;
+        s_cs1237_data_index = 0U;
+        return;
+    }
+    (void)memcpy(s_cs1237_data_script, bits, count * sizeof(bits[0]));
+    s_cs1237_data_count = count;
+    s_cs1237_data_index = 0U;
 }
 
 bool TestMock_IsW02Asserted(void)
@@ -144,6 +162,10 @@ void BSP_CS1237_WriteData(bool high)
 
 bool BSP_CS1237_ReadData(void)
 {
+    if (s_cs1237_data_index < s_cs1237_data_count)
+    {
+        return s_cs1237_data_script[s_cs1237_data_index++];
+    }
     return true;
 }
 

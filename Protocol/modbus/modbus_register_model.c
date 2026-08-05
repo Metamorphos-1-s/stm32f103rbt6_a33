@@ -1,5 +1,6 @@
 #include "modbus_register_model.h"
 
+#include "adc_noise_diagnostics.h"
 #include "calibration_model.h"
 #include "command_service.h"
 #include "config_store.h"
@@ -238,6 +239,9 @@ static ModbusRegisterResult ReadOne(uint16_t address,
         else if(address==0x2BU)*value=(uint16_t)CS1237_GetState();
         else if(address==0x2CU)*value=CS1237_GetBufferedSampleCount();
         else if(address<=0x2EU)*value=Word32(CS1237_GetBufferOverrunCount(),(uint8_t)(address-0x2DU),order);
+        else if(address==MODBUS_DIAGNOSTIC_CS1237_CONFIG)
+            *value=AdcNoiseDiagnostics_IsEnabled()?
+                CS1237_GetLastConfigRegister():0U;
         else if(address==0x30U)*value=(uint16_t)ConfigStore_GetState();
         else if(address==0x31U)*value=StoragePowerGuard_CanContinueFlashOperation()?1U:0U;
         else if(address==0x32U)*value=context->runtime.config_dirty?1U:0U;
@@ -247,6 +251,8 @@ static ModbusRegisterResult ReadOne(uint16_t address,
         else if(address==0x38U)*value=KeyService_GetLastLogicalMask();
         else if(address<=0x3AU)*value=Word32(FaultManager_GetActiveMask(),(uint8_t)(address-0x39U),order);
         else if(address==0x3BU)*value=config->calibration.calibration_valid?1U:0U;
+        else if(address==MODBUS_DIAGNOSTIC_ADC_NOISE_MODE)
+            *value=(uint16_t)AdcNoiseDiagnostics_GetMode();
         else if(address==0x3DU)*value=(uint16_t)CalibrationModel_GetSensorDirection(&config->calibration);
         else if(address==0x3EU)*value=(uint16_t)KeyService_GetMultiKeyConflictCount();
         else if(address==0x3FU)*value=ModbusCommandMailbox_GetLastResult();

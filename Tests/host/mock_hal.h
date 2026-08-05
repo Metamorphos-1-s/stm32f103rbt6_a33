@@ -9,6 +9,7 @@
 
 void TestMock_Reset(void);
 void TestMock_SetTimeMs(uint32_t now_ms);
+void TestMock_SetCs1237DataScript(const bool *bits, uint16_t count);
 bool TestMock_IsW02Asserted(void);
 uint32_t TestMock_GetEventCount(void);
 uint32_t TestMock_GetEventTypeCount(EventType type);

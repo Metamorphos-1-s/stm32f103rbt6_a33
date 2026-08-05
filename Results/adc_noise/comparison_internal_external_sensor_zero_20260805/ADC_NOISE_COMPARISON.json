@@ -1,0 +1,271 @@
+{
+  "runs": [
+    {
+      "test_id": "A_internal_short_formal",
+      "mode": "internal_short",
+      "load_g": 0.0,
+      "valid_samples": 6107,
+      "duration_s": 599.984,
+      "average_sample_rate_hz": 10.176938051681377,
+      "mean_count": -1007.7158997871295,
+      "median_count": -1008.0,
+      "minimum_count": -1075,
+      "maximum_count": -955,
+      "peak_to_peak_count": 120,
+      "std_count": 16.497526272052532,
+      "mad_count": 11.0,
+      "percentiles_count": {
+        "1": -1046.0,
+        "5": -1035.0,
+        "25": -1019.0,
+        "75": -996.0,
+        "95": -981.0,
+        "99": -970.0
+      },
+      "rms_zero_mean_count": 16.496175510493625,
+      "drift_count_per_min": -0.016805454610109797,
+      "detrended_std_count": 16.49745496089693,
+      "maximum_adjacent_change_count": 62.0,
+      "lost_samples": 12,
+      "fifo_overruns": 0,
+      "timestamp_anomalies": 1,
+      "counts_per_g": null,
+      "averaging_std_count": {
+        "2": 14.480628232497281,
+        "4": 11.959901152307648,
+        "8": 9.84315664277112,
+        "16": 8.460521711211367,
+        "32": 6.968196602288349
+      },
+      "allan_deviation": [
+        {
+          "tau_s": 0.0982613822469702,
+          "deviation_count": 11.176369444616133
+        },
+        {
+          "tau_s": 0.1965227644939404,
+          "deviation_count": 11.466560916540919
+        },
+        {
+          "tau_s": 0.3930455289878808,
+          "deviation_count": 9.517349347337879
+        },
+        {
+          "tau_s": 0.7860910579757616,
+          "deviation_count": 7.1783881808702255
+        },
+        {
+          "tau_s": 1.5721821159515232,
+          "deviation_count": 6.316592496176528
+        },
+        {
+          "tau_s": 3.1443642319030465,
+          "deviation_count": 4.869862177893631
+        },
+        {
+          "tau_s": 6.288728463806093,
+          "deviation_count": 4.170326474063777
+        },
+        {
+          "tau_s": 12.577456927612186,
+          "deviation_count": 4.462930536719453
+        },
+        {
+          "tau_s": 25.154913855224372,
+          "deviation_count": 5.540609086841804
+        },
+        {
+          "tau_s": 50.309827710448744,
+          "deviation_count": 2.802693739965709
+        },
+        {
+          "tau_s": 100.61965542089749,
+          "deviation_count": 1.650750444819952
+        }
+      ],
+      "notes": "Formal internal-short capture after at least 20 minutes continuous board preheat; display refresh on; normal Modbus polling"
+    },
+    {
+      "test_id": "B_external_common_mode",
+      "mode": "channel_a",
+      "load_g": 0.0,
+      "valid_samples": 6095,
+      "duration_s": 599.968,
+      "average_sample_rate_hz": 10.157208384447172,
+      "mean_count": -1064.0214930270713,
+      "median_count": -1063.0,
+      "minimum_count": -1141,
+      "maximum_count": -990,
+      "peak_to_peak_count": 151,
+      "std_count": 21.66714281693067,
+      "mad_count": 15.0,
+      "percentiles_count": {
+        "1": -1117.0,
+        "5": -1100.0,
+        "25": -1078.0,
+        "75": -1049.0,
+        "95": -1030.0,
+        "99": -1018.0
+      },
+      "rms_zero_mean_count": 21.665365291777597,
+      "drift_count_per_min": 3.5122030633165493,
+      "detrended_std_count": 19.153304996836383,
+      "maximum_adjacent_change_count": 60.0,
+      "lost_samples": 18,
+      "fifo_overruns": 0,
+      "timestamp_anomalies": 3,
+      "counts_per_g": null,
+      "averaging_std_count": {
+        "2": 17.351438832482586,
+        "4": 15.35667228850318,
+        "8": 13.555790282277737,
+        "16": 12.361927103525055,
+        "32": 11.494658075792433
+      },
+      "allan_deviation": [
+        {
+          "tau_s": 0.09845224811289792,
+          "deviation_count": 11.427854154259297
+        },
+        {
+          "tau_s": 0.19690449622579584,
+          "deviation_count": 11.735062894246415
+        },
+        {
+          "tau_s": 0.3938089924515917,
+          "deviation_count": 10.285797944041052
+        },
+        {
+          "tau_s": 0.7876179849031834,
+          "deviation_count": 7.696116334131877
+        },
+        {
+          "tau_s": 1.5752359698063667,
+          "deviation_count": 6.361441934212181
+        },
+        {
+          "tau_s": 3.1504719396127334,
+          "deviation_count": 5.595851273042024
+        },
+        {
+          "tau_s": 6.300943879225467,
+          "deviation_count": 5.194870477304729
+        },
+        {
+          "tau_s": 12.601887758450934,
+          "deviation_count": 5.800672243798712
+        },
+        {
+          "tau_s": 25.203775516901867,
+          "deviation_count": 6.642048651230314
+        },
+        {
+          "tau_s": 50.407551033803735,
+          "deviation_count": 6.056877865745772
+        },
+        {
+          "tau_s": 100.81510206760747,
+          "deviation_count": 5.727010243210984
+        }
+      ],
+      "notes": "External common-mode short: E+-E-=3.3V; equal 10k divider; VCM-E-=1.655V; AINP-E-=1.655V; AINN-E-=1.655V; AINP-AINN=0.01mV; display refresh on; normal Modbus polling"
+    },
+    {
+      "test_id": "D_sensor_zero",
+      "mode": "channel_a",
+      "load_g": 0.0,
+      "valid_samples": 6094,
+      "duration_s": 599.997,
+      "average_sample_rate_hz": 10.155050775253876,
+      "mean_count": -43399.08089924516,
+      "median_count": -43386.0,
+      "minimum_count": -43564,
+      "maximum_count": -43291,
+      "peak_to_peak_count": 273,
+      "std_count": 48.895959839959744,
+      "mad_count": 28.0,
+      "percentiles_count": {
+        "1": -43528.0,
+        "5": -43499.0,
+        "25": -43426.0,
+        "75": -43364.0,
+        "95": -43338.0,
+        "99": -43322.0
+      },
+      "rms_zero_mean_count": 48.891947863761,
+      "drift_count_per_min": 14.589789103387469,
+      "detrended_std_count": 24.742150771771286,
+      "maximum_adjacent_change_count": 57.0,
+      "lost_samples": 20,
+      "fifo_overruns": 0,
+      "timestamp_anomalies": 3,
+      "counts_per_g": null,
+      "averaging_std_count": {
+        "2": 23.411908919760947,
+        "4": 21.949452428467023,
+        "8": 20.79304119954069,
+        "16": 19.90685153688781,
+        "32": 19.205945661630615
+      },
+      "allan_deviation": [
+        {
+          "tau_s": 0.09847316592811423,
+          "deviation_count": 11.38071713567839
+        },
+        {
+          "tau_s": 0.19694633185622845,
+          "deviation_count": 11.770215526549245
+        },
+        {
+          "tau_s": 0.3938926637124569,
+          "deviation_count": 10.247034272736938
+        },
+        {
+          "tau_s": 0.7877853274249138,
+          "deviation_count": 8.451194730771894
+        },
+        {
+          "tau_s": 1.5755706548498276,
+          "deviation_count": 7.160162271186792
+        },
+        {
+          "tau_s": 3.1511413096996552,
+          "deviation_count": 6.809188332752688
+        },
+        {
+          "tau_s": 6.3022826193993104,
+          "deviation_count": 7.025928325144462
+        },
+        {
+          "tau_s": 12.604565238798621,
+          "deviation_count": 6.237789644925335
+        },
+        {
+          "tau_s": 25.209130477597242,
+          "deviation_count": 6.839964206225383
+        },
+        {
+          "tau_s": 50.418260955194484,
+          "deviation_count": 8.590722259099964
+        },
+        {
+          "tau_s": 100.83652191038897,
+          "deviation_count": 14.768811874730886
+        }
+      ],
+      "notes": "Real sensor, unloaded; board preheated; sensor model/capacity/sensitivity/bridge resistance/environment temperature not recorded; display refresh on; normal Modbus polling"
+    }
+  ],
+  "variance_layers": {
+    "assumption": "Approximation assumes independent noise sources. Correlated noise, drift, and mains interference cannot be separated by variance subtraction.",
+    "var_adc": 272.1660201868228,
+    "var_pcb_increment": 94.6830721150148,
+    "var_bridge_supply_increment": null,
+    "real_sensor": [
+      {
+        "test_id": "D_sensor_zero",
+        "var_sensor_mechanical_increment": null
+      }
+    ]
+  }
+}

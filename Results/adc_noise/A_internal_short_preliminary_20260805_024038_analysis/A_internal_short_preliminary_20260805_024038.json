@@ -1,0 +1,85 @@
+{
+  "test_id": "A_internal_short_preliminary",
+  "mode": "internal_short",
+  "load_g": 0.0,
+  "valid_samples": 6102,
+  "duration_s": 600.003,
+  "average_sample_rate_hz": 10.168282491920873,
+  "mean_count": -1011.2553261225828,
+  "median_count": -1011.0,
+  "minimum_count": -1069,
+  "maximum_count": -953,
+  "peak_to_peak_count": 116,
+  "std_count": 17.073336047370212,
+  "mad_count": 11.0,
+  "percentiles_count": {
+    "1": -1053.0,
+    "5": -1040.0,
+    "25": -1022.0,
+    "75": -1000.0,
+    "95": -984.0,
+    "99": -972.0
+  },
+  "rms_zero_mean_count": 17.071936994960982,
+  "drift_count_per_min": 0.1332499039963705,
+  "detrended_std_count": 17.06900377986337,
+  "maximum_adjacent_change_count": 58.0,
+  "lost_samples": 12,
+  "fifo_overruns": 0,
+  "timestamp_anomalies": 2,
+  "counts_per_g": null,
+  "averaging_std_count": {
+    "2": 15.149456079425054,
+    "4": 12.876052306570127,
+    "8": 11.012467628518372,
+    "16": 9.589671858783152,
+    "32": 8.30544500169059
+  },
+  "allan_deviation": [
+    {
+      "tau_s": 0.09834502540567121,
+      "deviation_count": 11.094909698945388
+    },
+    {
+      "tau_s": 0.19669005081134242,
+      "deviation_count": 11.171431302694678
+    },
+    {
+      "tau_s": 0.39338010162268483,
+      "deviation_count": 9.523416358876114
+    },
+    {
+      "tau_s": 0.7867602032453697,
+      "deviation_count": 7.661626001395019
+    },
+    {
+      "tau_s": 1.5735204064907393,
+      "deviation_count": 6.7275426093545345
+    },
+    {
+      "tau_s": 3.1470408129814786,
+      "deviation_count": 5.133112555314461
+    },
+    {
+      "tau_s": 6.294081625962957,
+      "deviation_count": 4.701901603346018
+    },
+    {
+      "tau_s": 12.588163251925915,
+      "deviation_count": 5.359999723087315
+    },
+    {
+      "tau_s": 25.17632650385183,
+      "deviation_count": 4.165572368344724
+    },
+    {
+      "tau_s": 50.35265300770366,
+      "deviation_count": 4.427052504853429
+    },
+    {
+      "tau_s": 100.70530601540732,
+      "deviation_count": 2.349809403874646
+    }
+  ],
+  "notes": "Preliminary capture; board preheat less than required 20 minutes; display refresh on"
+}

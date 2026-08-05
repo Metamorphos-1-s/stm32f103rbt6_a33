@@ -224,6 +224,10 @@ static void TestModbusModel(void)
     words[0]=2U; words[1]=5U;
     CHECK(ModbusRegisterModel_WriteMultiple(0x01A1U,2U,words)==MODBUS_REGISTER_ILLEGAL_VALUE);
     CHECK(ModbusRegisterModel_ReadHolding(0x01A1U,1U,words)==MODBUS_REGISTER_OK&&words[0]==1U);
+    CHECK(ModbusRegisterModel_ReadHolding(0x002FU,1U,words)==MODBUS_REGISTER_OK&&words[0]==0U);
+    CHECK(ModbusRegisterModel_ReadHolding(0x003CU,1U,words)==MODBUS_REGISTER_OK&&words[0]==0U);
+    CHECK(ModbusRegisterModel_WriteSingle(0x002FU,1U)==MODBUS_REGISTER_READ_ONLY);
+    CHECK(ModbusRegisterModel_WriteSingle(0x003CU,1U)==MODBUS_REGISTER_READ_ONLY);
 }
 
 int main(void)

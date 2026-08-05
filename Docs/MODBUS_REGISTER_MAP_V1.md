@@ -27,6 +27,21 @@ Addresses are zero-based PDU addresses. PLC notation is 40001 plus the PDU addre
 
 Commands cover zero/reset-zero/tare/clear-tare, view/unit/profile, manual output, config begin/validate/apply/cancel/save, calibration workflow, and factory reset. Asynchronous ACCEPTED is not completion.
 
+## ADC noise diagnostic extension
+
+The reserved diagnostic addresses remain read-only and do not change register
+map version `0100`:
+
+- `002F` is zero in product builds. In an ADC noise diagnostic build it is the
+  last CS1237 configuration register read back and verified by the driver.
+- `003C` identifies the image: 0 product, 1 internal short at 10 Hz/gain 128,
+  2 channel A at 10 Hz/gain 128, or 3 channel A with periodic display refresh
+  stopped. REFOUT remains enabled in all diagnostic modes.
+
+These values identify a compile-time image. They are not writable channel or
+rate controls, and the diagnostic override is never stored in DeviceConfig or
+Flash.
+
 ## Configuration
 
 Active fields include compliance/unit/mask/word order, Max/e, zero policies, each unit's decimals/division, brightness, load-cell metadata, both complete profiles and validation status. Staging has the same layout at `+0040`; `017E` is validation result and `017F` is dirty.

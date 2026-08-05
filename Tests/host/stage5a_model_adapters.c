@@ -36,6 +36,7 @@ void CommandService_ClearStagedConfig(void){}
 CS1237_State CS1237_GetState(void){return CS1237_STATE_RUNNING;}
 uint16_t CS1237_GetBufferedSampleCount(void){return 0U;}
 uint32_t CS1237_GetBufferOverrunCount(void){return 0U;}
+uint8_t CS1237_GetLastConfigRegister(void){return 0x0CU;}
 ConfigStoreState ConfigStore_GetState(void){return CONFIG_STORE_STATE_IDLE;}
 uint8_t ConfigStore_GetActiveSlot(void){return CONFIG_STORE_SLOT_A;}
 uint32_t ConfigStore_GetActiveSequence(void){return 1U;}

@@ -14,14 +14,16 @@
             "name": "Debug",
             "inherits": "default",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
+                "CMAKE_BUILD_TYPE": "Debug",
+                "A33_ADC_NOISE_DIAG_MODE": "0"
             }
         },
         {
             "name": "Release",
             "inherits": "default",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
+                "CMAKE_BUILD_TYPE": "Release",
+                "A33_ADC_NOISE_DIAG_MODE": "0"
             }
         },
         {
@@ -29,7 +31,32 @@
             "inherits": "default",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "A33_ENABLE_BOARD_DIAGNOSTICS": "ON"
+                "A33_ENABLE_BOARD_DIAGNOSTICS": "ON",
+                "A33_ADC_NOISE_DIAG_MODE": "0"
+            }
+        },
+        {
+            "name": "AdcDiagInternalShort",
+            "inherits": "default",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "A33_ADC_NOISE_DIAG_MODE": "1"
+            }
+        },
+        {
+            "name": "AdcDiagChannelA",
+            "inherits": "default",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "A33_ADC_NOISE_DIAG_MODE": "2"
+            }
+        },
+        {
+            "name": "AdcDiagChannelA_DisplayOff",
+            "inherits": "default",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "A33_ADC_NOISE_DIAG_MODE": "3"
             }
         }
     ],
@@ -45,6 +72,18 @@
         {
             "name": "BoardDiagnostics",
             "configurePreset": "BoardDiagnostics"
+        },
+        {
+            "name": "AdcDiagInternalShort",
+            "configurePreset": "AdcDiagInternalShort"
+        },
+        {
+            "name": "AdcDiagChannelA",
+            "configurePreset": "AdcDiagChannelA"
+        },
+        {
+            "name": "AdcDiagChannelA_DisplayOff",
+            "configurePreset": "AdcDiagChannelA_DisplayOff"
         }
     ]
 }

@@ -1,0 +1,85 @@
+{
+  "test_id": "F_sensor_zero_after_500g",
+  "mode": "channel_a",
+  "load_g": 0.0,
+  "valid_samples": 6114,
+  "duration_s": 599.978,
+  "average_sample_rate_hz": 10.188706919253708,
+  "mean_count": -43347.63886162905,
+  "median_count": -43347.0,
+  "minimum_count": -43415,
+  "maximum_count": -43283,
+  "peak_to_peak_count": 132,
+  "std_count": 19.454757384692776,
+  "mad_count": 13.0,
+  "percentiles_count": {
+    "1": -43393.87,
+    "5": -43379.0,
+    "25": -43361.0,
+    "75": -43334.0,
+    "95": -43316.0,
+    "99": -43303.0
+  },
+  "rms_zero_mean_count": 19.453166318864337,
+  "drift_count_per_min": 2.9988258721960306,
+  "detrended_std_count": 17.421814501757396,
+  "maximum_adjacent_change_count": 59.0,
+  "lost_samples": 0,
+  "fifo_overruns": 0,
+  "timestamp_anomalies": 0,
+  "counts_per_g": null,
+  "averaging_std_count": {
+    "2": 15.37068013208125,
+    "4": 12.835169901927653,
+    "8": 10.962926011648268,
+    "16": 9.462219482326443,
+    "32": 8.079083364689735
+  },
+  "allan_deviation": [
+    {
+      "tau_s": 0.09814788156388024,
+      "deviation_count": 11.699564351232983
+    },
+    {
+      "tau_s": 0.19629576312776048,
+      "deviation_count": 11.74065708999243
+    },
+    {
+      "tau_s": 0.39259152625552096,
+      "deviation_count": 9.663484664181972
+    },
+    {
+      "tau_s": 0.7851830525110419,
+      "deviation_count": 8.155153041555366
+    },
+    {
+      "tau_s": 1.5703661050220838,
+      "deviation_count": 6.86894084597369
+    },
+    {
+      "tau_s": 3.1407322100441677,
+      "deviation_count": 5.850424413849352
+    },
+    {
+      "tau_s": 6.281464420088335,
+      "deviation_count": 5.796130681803589
+    },
+    {
+      "tau_s": 12.56292884017667,
+      "deviation_count": 5.011783627535247
+    },
+    {
+      "tau_s": 25.12585768035334,
+      "deviation_count": 3.988552156989812
+    },
+    {
+      "tau_s": 50.25171536070668,
+      "deviation_count": 3.2645204317477
+    },
+    {
+      "tau_s": 100.50343072141337,
+      "deviation_count": 2.5300011890853
+    }
+  ],
+  "notes": "Real sensor unloaded after nominal 500 g test; first 60 s excluded for unloading recovery; setup otherwise unchanged; sensor and environment details not recorded; display refresh on; normal Modbus polling"
+}

@@ -1,5 +1,6 @@
 #include "device_manager.h"
 
+#include "adc_noise_diagnostics.h"
 #include "battery_adc.h"
 #include "bsp_gpio.h"
 #include "bsp_time.h"
@@ -153,7 +154,8 @@ void DeviceManager_Process10ms(void)
 
 void DeviceManager_Process20ms(void)
 {
-    if (!s_initialized || !TM1628_IsDirty())
+    if (!s_initialized || !AdcNoiseDiagnostics_IsDisplayRefreshEnabled() ||
+        !TM1628_IsDirty())
     {
         return;
     }
@@ -351,5 +353,6 @@ static CS1237_Config DeviceManager_MakeCs1237Config(
     cs_config.channel = CS1237_CHANNEL_A;
     cs_config.reference_output_enabled =
         (CS1237_REFERENCE_OUTPUT_ENABLED != 0U);
+    AdcNoiseDiagnostics_ApplyCs1237Config(&cs_config);
     return cs_config;
 }

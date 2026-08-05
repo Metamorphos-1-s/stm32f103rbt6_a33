@@ -1,5 +1,6 @@
 #include "app_main.h"
 
+#include "adc_noise_diagnostics.h"
 #include "bsp_board.h"
 #include "bsp_flash.h"
 #include "bsp_power_monitor.h"
@@ -272,7 +273,10 @@ static void App_20msTask(void *context)
   DeviceManager_Process20ms();
   App_PublishRawMeasurement();
   MetrologyManager_Process20ms();
-  DisplayController_Process20ms();
+  if (AdcNoiseDiagnostics_IsDisplayRefreshEnabled())
+  {
+    DisplayController_Process20ms();
+  }
   Stage3MetrologyDiagnostics_Update();
 }
 

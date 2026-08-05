@@ -102,6 +102,77 @@ static void TestCs1237RingBuffer(void)
     CHECK(TestMock_GetEventCount() == 2U);
 }
 
+static void AppendReadyFrame(bool *bits, uint16_t *count)
+{
+    uint8_t index;
+
+    bits[(*count)++] = false;
+    for (index = 0U; index < 26U; ++index)
+    {
+        bits[(*count)++] = false;
+    }
+}
+
+static void AppendConfigRead(bool *bits, uint16_t *count, uint8_t value)
+{
+    uint8_t index;
+
+    AppendReadyFrame(bits, count);
+    for (index = 0U; index < 8U; ++index)
+    {
+        bits[(*count)++] =
+            (value & (uint8_t)(1U << (7U - index))) != 0U;
+    }
+}
+
+static void TestCs1237ConfigVerificationAndSettling(void)
+{
+    CS1237_Config config = {
+        CS1237_RATE_10_HZ, CS1237_GAIN_128, CS1237_CHANNEL_A, true
+    };
+    bool bits[256] = {false};
+    uint16_t count = 0U;
+    uint8_t index;
+
+    TestMock_Reset();
+    CHECK(CS1237_Init(&config));
+    TestMock_SetTimeMs(CS1237_POWER_UP_WAIT_MS);
+    CS1237_Process();
+    AppendReadyFrame(bits, &count);
+    AppendConfigRead(bits, &count, 0x00U);
+    TestMock_SetCs1237DataScript(bits, count);
+    CS1237_Process();
+    CS1237_Process();
+    CHECK(CS1237_GetState() == CS1237_STATE_ERROR);
+    CHECK(CS1237_GetReadErrorCount() == 1U);
+
+    count = 0U;
+    TestMock_Reset();
+    CHECK(CS1237_Init(&config));
+    TestMock_SetTimeMs(CS1237_POWER_UP_WAIT_MS);
+    CS1237_Process();
+    AppendReadyFrame(bits, &count);
+    AppendConfigRead(bits, &count, 0x0CU);
+    for (index = 0U; index < CS1237_SETTLING_SAMPLES_10HZ + 1U; ++index)
+    {
+        AppendReadyFrame(bits, &count);
+    }
+    TestMock_SetCs1237DataScript(bits, count);
+    CS1237_Process();
+    CS1237_Process();
+    CHECK(CS1237_GetState() == CS1237_STATE_SETTLING);
+    for (index = 0U; index < CS1237_SETTLING_SAMPLES_10HZ; ++index)
+    {
+        CS1237_Process();
+        CHECK(CS1237_GetBufferedSampleCount() == 0U);
+        CHECK(CS1237_GetSampleCount() == 0U);
+    }
+    CHECK(CS1237_GetState() == CS1237_STATE_RUNNING);
+    CS1237_Process();
+    CHECK(CS1237_GetBufferedSampleCount() == 1U);
+    CHECK(CS1237_GetSampleCount() == 1U);
+}
+
 static void TestTm1628Mapping(void)
 {
     uint8_t ram[TM1628_RAM_SIZE];
@@ -359,6 +430,7 @@ int main(void)
     TestCs1237SignExtension();
     TestCs1237ConfigCodec();
     TestCs1237RingBuffer();
+    TestCs1237ConfigVerificationAndSettling();
     TestTm1628Mapping();
     TestBatteryConversion();
     TestW02PulseGuard();

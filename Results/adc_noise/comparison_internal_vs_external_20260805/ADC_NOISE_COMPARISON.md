@@ -1,0 +1,16 @@
+# ADC Noise Comparison
+
+Status: SOFTWARE ANALYSIS OF PROVIDED RUNS
+
+| test_id | mode | load_g | valid_samples | duration_s | mean_count | std_count | detrended_std_count | peak_to_peak_count | mad_count | drift_count_per_min | equivalent_std_g | equivalent_peak_to_peak_g | lost_samples | fifo_overruns |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| A_internal_short_formal | internal_short | 0 | 6107 | 599.984 | -1007.7159 | 16.4975263 | 16.497455 | 120 | 11 | -0.0168054546 | N/A | N/A | 12 | 0 |
+| B_external_common_mode | channel_a | 0 | 6095 | 599.968 | -1064.02149 | 21.6671428 | 19.153305 | 151 | 15 | 3.51220306 | N/A | N/A | 18 | 0 |
+
+## Approximate variance layers
+
+- `var_adc`: 272.16602
+- `var_pcb_increment`: 94.6830721
+- `var_bridge_supply_increment`: N/A
+
+The decomposition assumes approximately independent noise sources. Correlated noise, drift, temperature effects, and mains interference cannot be isolated by simple variance subtraction. A single short run does not prove any component has reached its performance limit.
