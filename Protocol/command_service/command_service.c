@@ -50,8 +50,9 @@ static CommandResult CommandService_MapWeightAction(WeightActionResult result)
         case WEIGHT_ACTION_NO_SAMPLE:
             return COMMAND_RESULT_NOT_STABLE;
         case WEIGHT_ACTION_OUT_OF_ZERO_RANGE:
-        case WEIGHT_ACTION_TARE_ACTIVE:
             return COMMAND_RESULT_OUT_OF_ZERO_RANGE;
+        case WEIGHT_ACTION_TARE_ACTIVE: return COMMAND_RESULT_TARE_ACTIVE;
+        case WEIGHT_ACTION_ZERO_DISABLED: return COMMAND_RESULT_ZERO_DISABLED;
         case WEIGHT_ACTION_OVERLOAD: return COMMAND_RESULT_OVERLOAD;
         case WEIGHT_ACTION_INVALID_ARGUMENT:
             return COMMAND_RESULT_INVALID_ARGUMENT;

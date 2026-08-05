@@ -37,15 +37,19 @@ Calibration and zero/tare logic never consume conditioned display mass. Calibrat
 
 The anchor is the median of the latest nine stable samples. At least nine samples and the active profile's `stability_hold_ms` are required. A zero hold value falls back to 1000 ms. Unsigned subtraction provides correct `uint32_t` timestamp-wrap behavior.
 
-The release threshold is:
+The release threshold is now strictly display-division based:
 
-`max(display_division_ug * 8, stability_exit_threshold_ug * 2)`
+`display_division_ug * 8`
 
 Multiplication saturates, invalid division falls back to 0.01 g, the result is never zero, and a valid capacity caps it at 1% of capacity. Three consecutive valid samples beyond the threshold release a lock; one isolated spike does not. Loss of WeightEngine stability, overload, calibration, or a disallowed application state releases immediately.
 
+The former formula also included twice the stability-exit threshold. A saved 4 g development threshold therefore produced an 8 g display-release threshold, which explains why a sustained 1 g load could change authoritative mass without releasing the panel lock.
+
+Successful ZERO and successful TARE in net view create an explicit display-only zero anchor. WeightEngine recomputes its snapshot synchronously, so no pending operation state is required. The first subsequent valid sample captures a separate authoritative release reference once; this prevents normal post-operation settling from being measured against the visual zero itself. The reference then freezes. The initial grace remains 1000 ms, while continuous instability has a separate bounded 3000 ms timeout so an 8-sample stability window can rebuild before the anchor is abandoned. Three consecutive samples beyond the normal threshold relative to the frozen reference still release immediately. The authoritative gross, net, and tare values continue to update normally.
+
 ## Forced tracking events
 
-The display state is reset after zero, restore-zero, tare, clear-tare, net/gross view change, unit change, profile/config/filter/CS1237 reconfiguration, calibration begin/apply/cancel, storage restart or factory-default application, explicit reset, overload, and FAULT entry. A reset immediately exposes current authoritative mass and clears the old anchor and counters.
+Successful ZERO and successful TARE in net view request the operator zero anchor described above. Entering and leaving the menu without applying a change preserves an existing lock. Restore-zero, clear-tare, TARE in gross view, net/gross view change, unit change, profile/config/filter/CS1237 reconfiguration, calibration begin/apply/cancel, storage restart or factory-default application, explicit reset, overload, and FAULT entry force tracking. Forced tracking immediately exposes current authoritative mass and clears the old anchor and counters.
 
 The existing STABLE lamp continues to mean WeightEngine stability. It does not mean display lock. `stable=true, locked=false` is valid during the candidate interval. Lock state is available through Modbus.
 
@@ -70,9 +74,9 @@ All multi-register values follow the configured high-word-first/low-word-first s
 
 ## Verification
 
-Host tests cover the three-state lifecycle, nine-sample median, insufficient samples/time, unstable fallback, lock hold, isolated spike rejection, three-sample deviation release, immediate reset conditions, negative and boundary masses, timestamp wrap, threshold saturation, 0.02 g disturbance, 0.1 g step release, application/display integration, menu LONG handling, Modbus compatibility, word order, and read-only enforcement.
+Host tests cover the three-state lifecycle, nine-sample median, insufficient samples/time, unstable fallback, lock hold, a 0.2 g isolated-spike rejection, +/-0.03 g noise, sustained 1 g and 500 g release, immediate reset conditions, negative and boundary masses, timestamp wrap, threshold saturation, operator-anchor grace, application/display integration, menu LONG handling, Modbus compatibility, word order, and read-only enforcement.
 
-All formal ARM presets build without errors: Debug, Release, and BoardDiagnostics. Compared with the baseline built using the same toolchain, Debug adds 3,120 B Flash and 136 B RAM, Release adds 1,424 B Flash and 128 B RAM, and BoardDiagnostics adds 3,120 B Flash and 136 B RAM. Linker region results are Debug 104,560 B Flash / 10,808 B RAM, Release 56,632 B / 10,816 B, and BoardDiagnostics 102,344 B / 10,800 B. The linker still ends application Flash at `0x0801F000`; Release loaded data ends at `0x0800DD40`, and configuration slots remain `0x0801F000-0x0801F7FF` and `0x0801F800-0x0801FFFF`.
+All formal ARM presets build without errors: Debug, Release, and BoardDiagnostics. Compared with HF1 baseline `eed02b7` built using the same toolchain, Debug adds 956 B Flash and 24 B RAM, Release adds 540 B Flash and 16 B RAM, and BoardDiagnostics adds 964 B Flash and 24 B RAM. Linker region results are Debug 105,516 B Flash / 10,832 B RAM, Release 57,172 B / 10,832 B, and BoardDiagnostics 103,308 B / 10,824 B. The linker still ends application Flash at `0x0801F000`; configuration slots remain `0x0801F000-0x0801F7FF` and `0x0801F800-0x0801FFFF`.
 
 Board validation remains pending for this hotfix. Recommended tests use the normally calibrated 3 kg sensor, the 500 g weight, 10 Hz, `MEDIAN3_IIR` strength 3, simultaneous panel observation, and polling of authoritative and display telemetry.
 

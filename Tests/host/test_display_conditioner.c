@@ -18,9 +18,8 @@ static DisplayConditionInput Input(MassValueUg mass, uint32_t now, bool stable)
     input.authoritative_mass_ug = mass;
     input.now_ms = now;
     input.display_division_ug = INT64_C(10000);
-    input.stability_threshold_ug = INT64_C(30000);
     input.hold_ms = 500U;
-    input.capacity_ug = INT64_C(6000000000);
+    input.capacity_ug = INT64_C(3000000000);
     input.stable = stable;
     input.allow_lock = true;
     return input;
@@ -148,13 +147,54 @@ static void TestWrapNegativeAndBounds(void)
     }
     snapshot = DisplayConditioner_GetSnapshot(&conditioner);
     CHECK(snapshot->locked && snapshot->anchor_mass_ug == -996);
-    CHECK(DisplayConditioner_ComputeReleaseThreshold(INT64_MAX, INT64_MAX,
+    CHECK(DisplayConditioner_ComputeReleaseThreshold(INT64_MAX,
           INT64_MAX) > 0);
     input = Input(INT64_MIN, 1000U, true);
     CHECK(DisplayConditioner_Update(&conditioner, &input));
     input.now_ms = 1100U; CHECK(DisplayConditioner_Update(&conditioner, &input));
     input.now_ms = 1200U; CHECK(DisplayConditioner_Update(&conditioner, &input));
     CHECK(snapshot->state == DISPLAY_CONDITION_TRACKING);
+}
+
+static void TestReleaseThresholdAndOperatorAnchor(void)
+{
+    DisplayConditioner conditioner;
+    DisplayConditionInput input;
+    const DisplayConditionSnapshot *snapshot;
+
+    CHECK(DisplayConditioner_ComputeReleaseThreshold(INT64_C(10000),
+        INT64_C(3000000000))==INT64_C(80000));
+    CHECK(DisplayConditioner_ComputeReleaseThreshold(0,
+        INT64_C(3000000000))==INT64_C(80000));
+
+    DisplayConditioner_Init(&conditioner, INT64_C(500000000), 0U);
+    CHECK(DisplayConditioner_RequestOperatorZeroAnchor(&conditioner, 0, 100U));
+    snapshot=DisplayConditioner_GetSnapshot(&conditioner);
+    CHECK(snapshot->locked&&snapshot->operator_zero_anchor);
+    CHECK(snapshot->display_mass_ug==0&&snapshot->anchor_mass_ug==0);
+
+    input=Input(INT64_C(200000),200U,false);
+    CHECK(DisplayConditioner_Update(&conditioner,&input));
+    CHECK(snapshot->locked&&snapshot->display_mass_ug==0);
+    input.authoritative_mass_ug=INT64_C(1200000);
+    input.now_ms=300U; CHECK(DisplayConditioner_Update(&conditioner,&input));
+    input.now_ms=400U; CHECK(DisplayConditioner_Update(&conditioner,&input));
+    CHECK(snapshot->locked);
+    input.now_ms=500U; CHECK(DisplayConditioner_Update(&conditioner,&input));
+    CHECK(!snapshot->locked&&snapshot->last_release_reason==
+        DISPLAY_RELEASE_DEVIATION);
+
+    CHECK(DisplayConditioner_RequestOperatorZeroAnchor(&conditioner,0,1000U));
+    input=Input(INT64_C(20000),1100U,false);
+    CHECK(DisplayConditioner_Update(&conditioner,&input));
+    CHECK(snapshot->locked);
+    input.now_ms=3999U;
+    CHECK(DisplayConditioner_Update(&conditioner,&input));
+    CHECK(snapshot->locked);
+    input.now_ms=4000U;
+    CHECK(DisplayConditioner_Update(&conditioner,&input));
+    CHECK(!snapshot->locked&&snapshot->last_release_reason==
+        DISPLAY_RELEASE_UNSTABLE);
 }
 
 static void TestNoiseAndStep(void)
@@ -169,16 +209,31 @@ static void TestNoiseAndStep(void)
     snapshot = DisplayConditioner_GetSnapshot(&conditioner);
     for (index = 0U; index < 20U; ++index)
     {
-        input = Input((index & 1U) ? INT64_C(20000) : INT64_C(-20000),
+        input = Input((index & 1U) ? INT64_C(30000) : INT64_C(-30000),
                       1000U + (uint32_t)index * 100U, true);
         CHECK(DisplayConditioner_Update(&conditioner, &input));
         CHECK(snapshot->locked);
     }
-    input = Input(INT64_C(100000), 4000U, true);
+    input = Input(INT64_C(200000), 3000U, true);
+    CHECK(DisplayConditioner_Update(&conditioner, &input));
+    CHECK(snapshot->locked);
+    input = Input(0, 3100U, true);
+    CHECK(DisplayConditioner_Update(&conditioner, &input));
+    CHECK(snapshot->locked);
+
+    input = Input(INT64_C(1000000), 4000U, true);
     CHECK(DisplayConditioner_Update(&conditioner, &input));
     input.now_ms = 4100U; CHECK(DisplayConditioner_Update(&conditioner, &input));
     input.now_ms = 4200U; CHECK(DisplayConditioner_Update(&conditioner, &input));
     CHECK(snapshot->state == DISPLAY_CONDITION_TRACKING);
+
+    Lock(&conditioner, 0, 5000U);
+    input = Input(INT64_C(-500000000), 6000U, true);
+    CHECK(DisplayConditioner_Update(&conditioner, &input));
+    input.now_ms = 6100U; CHECK(DisplayConditioner_Update(&conditioner, &input));
+    input.now_ms = 6200U; CHECK(DisplayConditioner_Update(&conditioner, &input));
+    CHECK(snapshot->state == DISPLAY_CONDITION_TRACKING);
+    CHECK(snapshot->display_mass_ug == INT64_C(-500000000));
 }
 
 int main(void)
@@ -188,6 +243,7 @@ int main(void)
     TestImmediateResets();
     TestWrapNegativeAndBounds();
     TestNoiseAndStep();
+    TestReleaseThresholdAndOperatorAnchor();
     if (s_failures != 0U)
     {
         (void)printf("Display conditioner tests: %u failure(s)\n", s_failures);

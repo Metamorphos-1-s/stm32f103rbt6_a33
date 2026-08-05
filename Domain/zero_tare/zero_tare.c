@@ -38,7 +38,8 @@ WeightActionResult ZeroTare_ApplyZeroMass(ZeroTareState *state,
     if (!calibration_valid) return WEIGHT_ACTION_CALIBRATION_INVALID;
     if (state->tare_active) return WEIGHT_ACTION_TARE_ACTIVE;
     if (!stable) return WEIGHT_ACTION_NOT_STABLE;
-    if ((zero_range_ug < 0) || !MassMath_Abs(current_gross_ug, &magnitude) ||
+    if (zero_range_ug <= 0) return WEIGHT_ACTION_ZERO_DISABLED;
+    if (!MassMath_Abs(current_gross_ug, &magnitude) ||
         (magnitude > (uint64_t)zero_range_ug))
         return WEIGHT_ACTION_OUT_OF_ZERO_RANGE;
     offset = (int64_t)filtered_raw - calibration_raw_zero;

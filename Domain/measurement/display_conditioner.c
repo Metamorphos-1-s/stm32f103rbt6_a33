@@ -66,16 +66,12 @@ static MassValueUg MedianAnchor(const DisplayConditioner *conditioner)
 }
 
 MassValueUg DisplayConditioner_ComputeReleaseThreshold(
-    MassValueUg display_division_ug, MassValueUg stability_threshold_ug,
-    MassValueUg capacity_ug)
+    MassValueUg display_division_ug, MassValueUg capacity_ug)
 {
     MassValueUg division = display_division_ug > 0 ? display_division_ug :
         INT64_C(10000);
     MassValueUg division_threshold = PositiveMultiplySaturated(division, 8U);
-    MassValueUg stability_threshold = PositiveMultiplySaturated(
-        stability_threshold_ug, 2U);
-    MassValueUg threshold = (division_threshold > stability_threshold) ?
-        division_threshold : stability_threshold;
+    MassValueUg threshold = division_threshold;
 
     if (capacity_ug > 0)
     {
@@ -118,9 +114,33 @@ void DisplayConditioner_ForceTracking(DisplayConditioner *conditioner,
     conditioner->snapshot.display_mass_ug = current_mass_ug;
     conditioner->snapshot.anchor_mass_ug = 0;
     conditioner->snapshot.locked = false;
+    conditioner->snapshot.operator_zero_anchor = false;
+    conditioner->operator_reference_pending = false;
     conditioner->snapshot.last_release_reason = reason;
     conditioner->last_update_ms = now_ms;
     ClearCandidate(conditioner);
+}
+
+bool DisplayConditioner_RequestOperatorZeroAnchor(
+    DisplayConditioner *conditioner, MassValueUg authoritative_mass_ug,
+    uint32_t now_ms)
+{
+    if ((conditioner == NULL) || !conditioner->initialized)
+    {
+        return false;
+    }
+    ClearCandidate(conditioner);
+    conditioner->snapshot.state = DISPLAY_CONDITION_LOCKED;
+    conditioner->snapshot.display_mass_ug = 0;
+    conditioner->snapshot.anchor_mass_ug = 0;
+    conditioner->snapshot.locked = true;
+    conditioner->snapshot.operator_zero_anchor = true;
+    conditioner->snapshot.last_release_reason = DISPLAY_RELEASE_NONE;
+    conditioner->operator_anchor_start_ms = now_ms;
+    conditioner->operator_release_reference_ug = authoritative_mass_ug;
+    conditioner->operator_reference_pending = true;
+    conditioner->last_update_ms = now_ms;
+    return true;
 }
 
 bool DisplayConditioner_Update(DisplayConditioner *conditioner,
@@ -136,7 +156,7 @@ bool DisplayConditioner_Update(DisplayConditioner *conditioner,
     conditioner->last_update_ms = input->now_ms;
     conditioner->snapshot.release_threshold_ug =
         DisplayConditioner_ComputeReleaseThreshold(input->display_division_ug,
-            input->stability_threshold_ug, input->capacity_ug);
+            input->capacity_ug);
 
     if (input->force_reset)
     {
@@ -198,7 +218,21 @@ bool DisplayConditioner_Update(DisplayConditioner *conditioner,
 
     conditioner->snapshot.display_mass_ug =
         conditioner->snapshot.anchor_mass_ug;
-    if (!input->stable)
+    if (conditioner->snapshot.operator_zero_anchor &&
+        conditioner->operator_reference_pending &&
+        ((uint32_t)(input->now_ms - conditioner->operator_anchor_start_ms) <
+         DISPLAY_CONDITIONER_OPERATOR_GRACE_MS))
+    {
+        conditioner->operator_release_reference_ug =
+            input->authoritative_mass_ug;
+        conditioner->operator_reference_pending = false;
+        conditioner->release_sample_count = 0U;
+        return true;
+    }
+    if (!input->stable &&
+        (!conditioner->snapshot.operator_zero_anchor ||
+         ((uint32_t)(input->now_ms - conditioner->operator_anchor_start_ms) >=
+          DISPLAY_CONDITIONER_OPERATOR_UNSTABLE_TIMEOUT_MS)))
     {
         DisplayConditioner_ForceTracking(conditioner,
             input->authoritative_mass_ug, input->now_ms,
@@ -206,6 +240,8 @@ bool DisplayConditioner_Update(DisplayConditioner *conditioner,
         return true;
     }
     if (MassDistance(input->authoritative_mass_ug,
+            conditioner->snapshot.operator_zero_anchor ?
+            conditioner->operator_release_reference_ug :
             conditioner->snapshot.anchor_mass_ug) >
         (uint64_t)conditioner->snapshot.release_threshold_ug)
     {

@@ -312,6 +312,13 @@ static void TestModbusModel(void)
     Stage5A_ModelContext()->config.communication.word_order=MODBUS_WORD_ORDER_LOW_WORD_FIRST;
     CHECK(ModbusRegisterModel_ReadHolding(0x0010U,4U,words)==MODBUS_REGISTER_OK);
     CHECK(words[0]==0x7788U&&words[1]==0x5566U&&words[2]==0x3344U&&words[3]==0x1122U);
+    Stage5A_ModelDisplayCondition()->operator_zero_anchor=true;
+    Stage5A_ModelDisplayCondition()->display_mass_ug=0;
+    CHECK(ModbusRegisterModel_ReadHolding(0x0000U,2U,words)==MODBUS_REGISTER_OK);
+    CHECK(words[0]==0U&&words[1]==0U);
+    CHECK(ModbusRegisterModel_ReadHolding(0x0010U,4U,words)==MODBUS_REGISTER_OK);
+    CHECK(words[0]==0x7788U&&words[1]==0x5566U&&words[2]==0x3344U&&words[3]==0x1122U);
+    Stage5A_ModelDisplayCondition()->display_mass_ug=INT64_C(1000000000);
     CHECK(ModbusRegisterModel_ReadHolding(MODBUS_DISPLAY_CONDITION_STATE,2U,words)==MODBUS_REGISTER_OK);
     CHECK(words[0]==DISPLAY_CONDITION_LOCKED&&words[1]==1U);
     CHECK(ModbusRegisterModel_ReadHolding(MODBUS_DISPLAY_CONDITION_ANCHOR_FIRST,4U,words)==MODBUS_REGISTER_OK);

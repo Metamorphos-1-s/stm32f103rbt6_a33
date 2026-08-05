@@ -54,13 +54,13 @@ static bool MetrologyManager_UpdateDisplayConditioner(void)
     input.authoritative_mass_ug = MetrologyManager_DisplaySourceMass(
         snapshot, context);
     input.now_ms = snapshot->sample_timestamp_ms;
-    input.stability_threshold_ug = profile->stability_exit_threshold_ug;
     input.hold_ms = profile->stability_hold_ms;
     input.capacity_ug = context->config.metrology.capacity_ug;
     input.stable = (snapshot->status_flags & WEIGHT_STATUS_STABLE) != 0U;
     input.overload = (snapshot->status_flags & WEIGHT_STATUS_OVERLOAD) != 0U;
     input.calibrating = state == APP_STATE_CALIBRATION;
-    input.allow_lock = (state == APP_STATE_RUN) &&
+    input.allow_lock = ((state == APP_STATE_RUN) ||
+        (state == APP_STATE_MENU)) &&
         ((snapshot->status_flags & WEIGHT_STATUS_WEIGHT_VALID) != 0U);
     return DisplayConditioner_Update(&s_display_conditioner, &input);
 }
@@ -234,6 +234,19 @@ void MetrologyManager_ForceDisplayTracking(DisplayConditionReleaseReason reason)
         snapshot->sample_timestamp_ms, reason);
 }
 
+static void MetrologyManager_RequestOperatorZeroAnchor(void)
+{
+    const WeightSnapshot *snapshot = WeightEngine_GetSnapshot(&s_engine);
+
+    if (s_initialized && (snapshot != NULL))
+    {
+        (void)DisplayConditioner_RequestOperatorZeroAnchor(
+            &s_display_conditioner,
+            MetrologyManager_DisplaySourceMass(snapshot, SystemContext_Get()),
+            snapshot->sample_timestamp_ms);
+    }
+}
+
 bool MetrologyManager_SetDisplayUnit(MassUnit unit)
 {
     const SystemContext *context = SystemContext_Get();
@@ -284,7 +297,7 @@ WeightActionResult MetrologyManager_Zero(void)
     }
     else if (result == WEIGHT_ACTION_OK)
     {
-        MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+        MetrologyManager_RequestOperatorZeroAnchor();
     }
     return result;
 }
@@ -313,7 +326,15 @@ WeightActionResult MetrologyManager_Tare(void)
     if (result == WEIGHT_ACTION_OK)
     {
         MetrologyManager_SyncTare();
-        MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+        if ((SystemContext_Get() != NULL) &&
+            (SystemContext_Get()->runtime.weight_view == WEIGHT_VIEW_NET))
+        {
+            MetrologyManager_RequestOperatorZeroAnchor();
+        }
+        else
+        {
+            MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+        }
     }
     else if (result == WEIGHT_ACTION_INTERNAL_ERROR)
     {

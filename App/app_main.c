@@ -487,6 +487,14 @@ static void App_ShowCommandResult(CommandResult result, bool tare_action)
   {
     code = DISPLAY_CODE_ZERO_RANGE;
   }
+  else if (result == COMMAND_RESULT_TARE_ACTIVE)
+  {
+    code = DISPLAY_CODE_TARE_ACTIVE;
+  }
+  else if (result == COMMAND_RESULT_ZERO_DISABLED)
+  {
+    code = DISPLAY_CODE_ZERO_DISABLED;
+  }
   else if (result == COMMAND_RESULT_BUSY)
   {
     code = DISPLAY_CODE_BUSY;

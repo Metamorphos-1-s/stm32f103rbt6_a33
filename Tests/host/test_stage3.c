@@ -222,6 +222,8 @@ static void TestZeroTare(void)
                               true) == WEIGHT_ACTION_NOT_STABLE);
     CHECK3(ZeroTare_ApplyZero(&state, 200000, 100000, 11, 10U, true,
                               true) == WEIGHT_ACTION_OUT_OF_ZERO_RANGE);
+    CHECK3(ZeroTare_ApplyZeroMass(&state, 100000, 100000, 0, 0, true,
+                                  true) == WEIGHT_ACTION_ZERO_DISABLED);
     CHECK3(ZeroTare_ApplyZero(&state, 100100, 100000, 1, 10U, true,
                               true) == WEIGHT_ACTION_OK);
     CHECK3(state.zero_offset_raw == 100);

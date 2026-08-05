@@ -38,7 +38,9 @@ static const char s_codes[DISPLAY_CODE_COUNT][6] = {
     {'A', 'P', 'P', 'L', 'Y', ' '},
     {'F', 'L', 'S', 'A', 'U', 'E'},
     {'r', 'E', 'A', 'd', ' ', ' '},
-    {'U', 'n', 'I', 't', 'H', 'I'}
+    {'U', 'n', 'I', 't', 'H', 'I'},
+    {' ', 't', 'A', 'r', 'E', ' '},
+    {'Z', 'r', 'O', 'F', 'F', ' '}
 };
 
 static const char s_mass_unit_labels[MASS_UNIT_COUNT][6] = {
