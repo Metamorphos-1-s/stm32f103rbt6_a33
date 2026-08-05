@@ -11,7 +11,7 @@ This stage reduces visible last-digit movement without changing metrology data. 
 
 ## Measurement background
 
-The prior 6 kg load-cell investigation measured about 885.07 counts/g sensitivity, about 16.50 counts RMS with the ADC input shorted, and about 17.3 counts RMS with the stable sensor after detrending. That is about 0.0196 g RMS. Typical 0.06 g movement is therefore consistent with roughly three standard deviations of measured noise. The initial empty-load anomaly was dominated by slow drift. Those findings motivate display conditioning; the diagnostic firmware and its capture artifacts are not part of this product branch.
+The prior investigation used a 3 kg rated load cell, not a 6 kg sensor. It measured about 885.07 counts/g temporary response, about 16.50 counts RMS with the ADC input shorted, and about 17.3 counts RMS with the stable sensor after detrending. That is about 0.0196 g RMS. The estimated 3 kg full-scale response is about 2,655,210 counts; this is an estimate from the empty/500 g observations, not a formal calibration result. Typical 0.06 g movement is consistent with roughly three standard deviations of measured noise. The initial empty-load anomaly was dominated by slow drift.
 
 ## Data semantics
 
@@ -51,7 +51,9 @@ The existing STABLE lamp continues to mean WeightEngine stability. It does not m
 
 ## Filter configuration
 
-All existing modes remain supported: `NONE`, `MOVING_AVERAGE`, `IIR`, and `MEDIAN3_IIR`, including the existing persisted `filter_strength` fields. New-device and factory-default high-precision configuration is 10 Hz, `MEDIAN3_IIR`, strength 3. Saved user configuration is not overwritten. The high-speed profile remains 40 Hz with no filter by default.
+All existing modes remain supported: `NONE`, `MOVING_AVERAGE`, `IIR`, and `MEDIAN3_IIR`, including the existing persisted `filter_strength` fields. New-device and factory-default high-precision configuration is 10 Hz, `MEDIAN3_IIR`, strength 3, stability enter 0.05 g, exit 0.10 g, and hold 1000 ms. The development default represents a 3 kg rated sensor and a 3 kg configured scale, with 60 g General-mode zero range. Sensor rated capacity and user-configured CAP remain distinct fields.
+
+Saved configuration is preserved except for one restricted compatibility case: an exact match for the former high-precision development tuple (10 Hz, gain 128, `MEDIAN3_IIR`, strength 3, window 8, enter 2 g, exit 4 g, hold 500 ms) is normalized in RAM to the new stability values. If that exact tuple also has zero range 0 in General mode, zero range becomes 60 g. CAP, OL, unit/display settings, calibration, and communications are not changed. The existing dirty/migration-pending mechanism requires an explicit SAVE before this becomes persistent.
 
 Profile mode and strength remain configurable through active/staging Modbus registers (`0122/0123` and `0130/0131`). An `FStr` panel menu item was deliberately deferred to avoid expanding the current menu in this stage. If added later, it should expose moving-average window length or IIR shift strength and use the existing filter validator.
 
@@ -72,7 +74,7 @@ Host tests cover the three-state lifecycle, nine-sample median, insufficient sam
 
 All formal ARM presets build without errors: Debug, Release, and BoardDiagnostics. Compared with the baseline built using the same toolchain, Debug adds 3,120 B Flash and 136 B RAM, Release adds 1,424 B Flash and 128 B RAM, and BoardDiagnostics adds 3,120 B Flash and 136 B RAM. Linker region results are Debug 104,560 B Flash / 10,808 B RAM, Release 56,632 B / 10,816 B, and BoardDiagnostics 102,344 B / 10,800 B. The linker still ends application Flash at `0x0801F000`; Release loaded data ends at `0x0800DD40`, and configuration slots remain `0x0801F000-0x0801F7FF` and `0x0801F800-0x0801FFFF`.
 
-Board validation remains pending. Recommended board tests use a normally calibrated 6 kg sensor, the 500 g weight, 10 Hz, `MEDIAN3_IIR` strength 3, simultaneous panel observation, and polling of authoritative and display telemetry.
+Board validation remains pending for this hotfix. Recommended tests use the normally calibrated 3 kg sensor, the 500 g weight, 10 Hz, `MEDIAN3_IIR` strength 3, simultaneous panel observation, and polling of authoritative and display telemetry.
 
 ## Follow-up
 

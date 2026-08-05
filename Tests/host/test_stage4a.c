@@ -46,6 +46,10 @@ static KeyEvent Stage4A_Key(KeyId key, KeyEventType type, uint32_t now)
 static void Stage4A_MakeConfig(DeviceConfig *config, bool calibrated)
 {
     DefaultConfig_Load(config);
+    config->metrology.capacity_ug = INT64_C(10000000000);
+    config->metrology.load_cell.rated_capacity_known = false;
+    config->metrology.active_unit = MASS_UNIT_KG;
+    config->metrology.unit_display[MASS_UNIT_G].decimal_places = 0U;
     config->metrology.zero_range_ug = INT64_C(1000000000);
     config->metrology.overload_threshold_ug = INT64_C(12000000000);
     config->metrology.profiles[0].filter_mode = FILTER_MODE_NONE;

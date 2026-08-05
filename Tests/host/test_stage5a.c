@@ -164,8 +164,13 @@ static void TestCodec(void)
     CHECK(result==PERSISTENT_CODEC_OK&&length==PERSISTENT_V1_PAYLOAD_SIZE);
     CHECK(PersistentCodec_MigrateV1ToV2(bytes,length,&decoded,&decoded_runtime)==PERSISTENT_CODEC_OK);
     CHECK(decoded_runtime.migration_pending_save&&decoded_runtime.config_dirty);
-    CHECK(decoded.metrology.capacity_ug==INT64_C(10000000000));
+    CHECK(decoded.metrology.capacity_ug==INT64_C(3000000000));
 
+    config.metrology.capacity_ug=INT64_C(10000000000);
+    config.metrology.overload_threshold_ug=INT64_C(10000000000);
+    config.metrology.load_cell.rated_capacity_known=false;
+    config.metrology.active_unit=MASS_UNIT_KG;
+    config.metrology.unit_display[MASS_UNIT_G].decimal_places=0U;
     CHECK(CalibrationModel_BuildMass(0,100000,INT64_C(10000000000),1U,
         &config.calibration)==CALIBRATION_RESULT_OK);
     config.system.tare_power_loss_retention=true;
@@ -181,6 +186,10 @@ static void TestReferenceRules(void)
 {
     DeviceConfig config;
     DefaultConfig_Load(&config);
+    config.metrology.capacity_ug=INT64_C(10000000000);
+    config.metrology.overload_threshold_ug=INT64_C(10000000000);
+    config.metrology.load_cell.rated_capacity_known=false;
+    config.metrology.active_unit=MASS_UNIT_KG;
     config.metrology.compliance_mode=METROLOGY_COMPLIANCE_CLASS_III_REFERENCE;
     CHECK(MetrologyStandardValidator_Validate(&config.metrology)==METROLOGY_STANDARD_OK);
     CHECK(MetrologyStandardValidator_GetMinimumLoad(&config.metrology)==INT64_C(20000000));
@@ -199,6 +208,71 @@ static void TestProductDefaults(void)
     CHECK(config.metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION].filter_strength == 3U);
     CHECK(config.metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION].sample_rate ==
         DEVICE_CS1237_DATA_RATE_10_HZ);
+    CHECK(config.metrology.capacity_ug==INT64_C(3000000000));
+    CHECK(config.metrology.overload_threshold_ug==INT64_C(3000000000));
+    CHECK(config.metrology.zero_range_ug==INT64_C(60000000));
+    CHECK(config.metrology.load_cell.rated_capacity_known);
+    CHECK(config.metrology.load_cell.rated_capacity_ug==INT64_C(3000000000));
+    CHECK(config.metrology.active_unit==MASS_UNIT_G);
+    CHECK(config.metrology.unit_display[MASS_UNIT_G].decimal_places==2U);
+    CHECK(config.metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION]
+        .stability_enter_threshold_ug==INT64_C(50000));
+    CHECK(config.metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION]
+        .stability_exit_threshold_ug==INT64_C(100000));
+    CHECK(config.metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION]
+        .stability_hold_ms==1000U);
+}
+
+static void TestLegacyDevelopmentNormalization(void)
+{
+    DeviceConfig config;
+    DeviceConfig unchanged;
+    CalibrationConfig calibration;
+    CommunicationConfig communication;
+    RuntimeState runtime={0};
+    uint32_t flags;
+
+    DefaultConfig_Load(&config);
+    config.metrology.capacity_ug=INT64_C(2500000000);
+    config.metrology.overload_threshold_ug=INT64_C(2600000000);
+    config.metrology.zero_range_ug=0;
+    config.metrology.profiles[0].stability_enter_threshold_ug=INT64_C(2000000);
+    config.metrology.profiles[0].stability_exit_threshold_ug=INT64_C(4000000);
+    config.metrology.profiles[0].stability_hold_ms=500U;
+    config.calibration.raw_zero=123;
+    config.calibration.raw_span=456;
+    config.calibration.span_mass_ug=INT64_C(500000000);
+    calibration=config.calibration;
+    communication=config.communication;
+    unchanged=config;
+    flags=DefaultConfig_NormalizeLegacyDevelopment(&config);
+    CHECK(flags==(DEFAULT_CONFIG_NORMALIZED_STABILITY|
+        DEFAULT_CONFIG_NORMALIZED_ZERO_RANGE));
+    CHECK(config.metrology.capacity_ug==INT64_C(2500000000));
+    CHECK(config.metrology.overload_threshold_ug==INT64_C(2600000000));
+    CHECK(config.metrology.zero_range_ug==INT64_C(60000000));
+    CHECK(config.metrology.profiles[0].stability_enter_threshold_ug==INT64_C(50000));
+    CHECK(config.metrology.profiles[0].stability_exit_threshold_ug==INT64_C(100000));
+    CHECK(config.metrology.profiles[0].stability_hold_ms==1000U);
+    CHECK(memcmp(&config.calibration,&calibration,sizeof(calibration))==0);
+    CHECK(memcmp(&config.communication,&communication,sizeof(communication))==0);
+
+    config=unchanged;
+    config.metrology.profiles[0].filter_strength=3U;
+    CHECK(DefaultConfig_NormalizeStartup(&config,&runtime)==
+        (DEFAULT_CONFIG_NORMALIZED_STABILITY|
+         DEFAULT_CONFIG_NORMALIZED_ZERO_RANGE));
+    CHECK(runtime.migration_pending_save&&runtime.config_dirty);
+    CHECK(DefaultConfig_GetLastNormalizationFlags()==
+        (DEFAULT_CONFIG_NORMALIZED_STABILITY|
+         DEFAULT_CONFIG_NORMALIZED_ZERO_RANGE));
+
+    config=unchanged;
+    config.metrology.profiles[0].filter_strength=2U;
+    unchanged=config;
+    CHECK(DefaultConfig_NormalizeLegacyDevelopment(&config)==
+        DEFAULT_CONFIG_NORMALIZED_NONE);
+    CHECK(memcmp(&config,&unchanged,sizeof(config))==0);
 }
 
 static void TestKeyConflict(void)
@@ -230,7 +304,7 @@ static void TestModbusModel(void)
     Stage5A_ModelDisplayCondition()->last_release_reason=DISPLAY_RELEASE_DEVIATION;
     ModbusRegisterModel_Init();
     CHECK(ModbusRegisterModel_ReadHolding(0x0000U,2U,words)==MODBUS_REGISTER_OK);
-    CHECK(words[0]==0U&&words[1]==1000U);
+    CHECK(words[0]==1U&&words[1]==0x86A0U);
     CHECK(ModbusRegisterModel_ReadHolding(0x000EU,1U,words)==MODBUS_REGISTER_OK);
     CHECK(words[0]==MODBUS_REGISTER_MAP_VERSION);
     CHECK(ModbusRegisterModel_ReadHolding(0x0010U,4U,words)==MODBUS_REGISTER_OK);
@@ -263,7 +337,8 @@ int main(void)
 {
     TestMassAndUnits(); TestCanonicalAndLegacyBoundary();
     TestUnboundedLegacyProjection(); TestCodec();
-    TestReferenceRules(); TestProductDefaults(); TestKeyConflict(); TestModbusModel();
+    TestReferenceRules(); TestProductDefaults();
+    TestLegacyDevelopmentNormalization(); TestKeyConflict(); TestModbusModel();
     if(failures==0U) printf("Stage 5A host tests passed.\n");
     return failures==0U?0:1;
 }

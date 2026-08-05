@@ -3,6 +3,15 @@
 #include <string.h>
 
 #include "project_config.h"
+#include "metrology_legacy_projection.h"
+
+#define TARGET_SENSOR_CAPACITY_UG INT64_C(3000000000)
+#define GENERAL_ZERO_RANGE_UG INT64_C(60000000)
+#define HIGH_PRECISION_ENTER_UG INT64_C(50000)
+#define HIGH_PRECISION_EXIT_UG INT64_C(100000)
+#define HIGH_PRECISION_HOLD_MS 1000U
+
+static uint32_t s_last_normalization_flags;
 
 void DefaultConfig_Load(DeviceConfig *config)
 {
@@ -14,20 +23,20 @@ void DefaultConfig_Load(DeviceConfig *config)
     (void)memset(config, 0, sizeof(*config));
 
     /* DEVELOPMENT DEFAULT - NOT FINAL PRODUCT VALUE. */
-    config->metrology.capacity_ug = INT64_C(10000000000);
+    config->metrology.capacity_ug = TARGET_SENSOR_CAPACITY_UG;
     config->metrology.verification_interval_e_ug = INT64_C(1000000);
-    config->metrology.zero_range_ug = INT64_C(0);
-    config->metrology.overload_threshold_ug = INT64_C(10000000000);
+    config->metrology.zero_range_ug = GENERAL_ZERO_RANGE_UG;
+    config->metrology.overload_threshold_ug = TARGET_SENSOR_CAPACITY_UG;
     config->metrology.auto_zero_tracking_range_ug = INT64_C(0);
     config->metrology.initial_zero_range_permille = 0U;
     config->metrology.semi_auto_zero_range_permille = 0U;
     config->metrology.compliance_mode = METROLOGY_COMPLIANCE_GENERAL;
-    config->metrology.active_unit = MASS_UNIT_KG;
+    config->metrology.active_unit = MASS_UNIT_G;
     config->metrology.enabled_unit_mask = 0x07U;
     config->metrology.unit_display[MASS_UNIT_KG] =
         (UnitDisplayConfig){true, 3U, 1U};
     config->metrology.unit_display[MASS_UNIT_G] =
-        (UnitDisplayConfig){true, 0U, 1U};
+        (UnitDisplayConfig){true, 2U, 1U};
     config->metrology.unit_display[MASS_UNIT_LB] =
         (UnitDisplayConfig){true, 3U, 1U};
     config->metrology.active_profile = WEIGHING_PROFILE_HIGH_PRECISION;
@@ -35,29 +44,34 @@ void DefaultConfig_Load(DeviceConfig *config)
     config->metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION] =
         (WeighingProfileConfig){DEVICE_CS1237_DATA_RATE_10_HZ,
         DEVICE_CS1237_GAIN_128, FILTER_MODE_MEDIAN3_IIR, 3U, 8U,
-        INT64_C(2000000), INT64_C(4000000), 500U};
+        HIGH_PRECISION_ENTER_UG, HIGH_PRECISION_EXIT_UG,
+        HIGH_PRECISION_HOLD_MS};
     config->metrology.profiles[WEIGHING_PROFILE_HIGH_SPEED] =
         (WeighingProfileConfig){DEVICE_CS1237_DATA_RATE_40_HZ,
         DEVICE_CS1237_GAIN_128, FILTER_MODE_NONE, 0U, 8U,
         INT64_C(2000000), INT64_C(4000000), 500U};
-    config->metrology.capacity = 10000U;
+    config->metrology.load_cell.rated_capacity_known = true;
+    config->metrology.load_cell.rated_capacity_ug = TARGET_SENSOR_CAPACITY_UG;
+    config->metrology.capacity = 300000U;
     config->metrology.division = 1U;
-    config->metrology.decimal_places = 3U;
-    config->metrology.unit = WEIGHT_UNIT_KG;
+    config->metrology.decimal_places = 2U;
+    config->metrology.unit = WEIGHT_UNIT_G;
     config->metrology.sample_mode = SAMPLE_MODE_NORMAL;
     config->metrology.cs1237_gain = DEVICE_CS1237_GAIN_128;
     config->metrology.cs1237_data_rate = DEVICE_CS1237_DATA_RATE_10_HZ;
-    config->metrology.filter_mode = FILTER_MODE_NONE;
-    config->metrology.overload_threshold = 10000U;
+    config->metrology.filter_mode = FILTER_MODE_MEDIAN3_IIR;
+    config->metrology.filter_strength = 3U;
+    config->metrology.zero_range = 6000U;
+    config->metrology.overload_threshold = 300000U;
 
     config->calibration.scale_denominator = 1;
     config->calibration.calibration_valid = false;
 
     /* DEVELOPMENT DEFAULT - NOT FINAL PRODUCT VALUE. */
     config->stability.window_size = 8U;
-    config->stability.enter_threshold = 2U;
-    config->stability.exit_threshold = 4U;
-    config->stability.stable_hold_ms = 500U;
+    config->stability.enter_threshold = 5U;
+    config->stability.exit_threshold = 10U;
+    config->stability.stable_hold_ms = HIGH_PRECISION_HOLD_MS;
 
     config->communication.baud_rate = 115200U;
     config->communication.parity = COMM_PARITY_NONE;
@@ -87,4 +101,73 @@ void DefaultConfig_Load(DeviceConfig *config)
 
     config->system.tare_power_loss_retention = false;
     config->system.watchdog_enable = (PROJECT_ENABLE_IWDG != 0U);
+}
+
+uint32_t DefaultConfig_NormalizeLegacyDevelopment(DeviceConfig *config)
+{
+    DeviceConfig candidate;
+    WeighingProfileConfig *profile;
+    uint32_t flags = DEFAULT_CONFIG_NORMALIZED_NONE;
+
+    if ((config == NULL) ||
+        (config->metrology.compliance_mode != METROLOGY_COMPLIANCE_GENERAL))
+    {
+        return flags;
+    }
+    candidate = *config;
+    profile = &candidate.metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION];
+    if ((profile->sample_rate != DEVICE_CS1237_DATA_RATE_10_HZ) ||
+        (profile->gain != DEVICE_CS1237_GAIN_128) ||
+        (profile->filter_mode != FILTER_MODE_MEDIAN3_IIR) ||
+        (profile->filter_strength != 3U) ||
+        (profile->stability_window != 8U) ||
+        (profile->stability_enter_threshold_ug != INT64_C(2000000)) ||
+        (profile->stability_exit_threshold_ug != INT64_C(4000000)) ||
+        (profile->stability_hold_ms != 500U))
+    {
+        return flags;
+    }
+
+    profile->stability_enter_threshold_ug = HIGH_PRECISION_ENTER_UG;
+    profile->stability_exit_threshold_ug = HIGH_PRECISION_EXIT_UG;
+    profile->stability_hold_ms = HIGH_PRECISION_HOLD_MS;
+    flags |= DEFAULT_CONFIG_NORMALIZED_STABILITY;
+    if (candidate.metrology.zero_range_ug == 0)
+    {
+        candidate.metrology.zero_range_ug = GENERAL_ZERO_RANGE_UG;
+        flags |= DEFAULT_CONFIG_NORMALIZED_ZERO_RANGE;
+    }
+    if (!MetrologyLegacyProjection_Update(&candidate.metrology) ||
+        !MetrologyLegacyStabilityProjection_Update(&candidate.metrology,
+                                                    &candidate.stability))
+    {
+        return DEFAULT_CONFIG_NORMALIZED_NONE;
+    }
+    *config = candidate;
+    return flags;
+}
+
+uint32_t DefaultConfig_NormalizeStartup(DeviceConfig *config,
+    RuntimeState *runtime)
+{
+    uint32_t flags;
+
+    if (runtime == NULL)
+    {
+        s_last_normalization_flags = DEFAULT_CONFIG_NORMALIZED_NONE;
+        return s_last_normalization_flags;
+    }
+    flags = DefaultConfig_NormalizeLegacyDevelopment(config);
+    if (flags != DEFAULT_CONFIG_NORMALIZED_NONE)
+    {
+        runtime->migration_pending_save = true;
+        runtime->config_dirty = true;
+    }
+    s_last_normalization_flags = flags;
+    return flags;
+}
+
+uint32_t DefaultConfig_GetLastNormalizationFlags(void)
+{
+    return s_last_normalization_flags;
 }
