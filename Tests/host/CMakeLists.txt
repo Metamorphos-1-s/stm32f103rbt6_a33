@@ -25,6 +25,7 @@ add_executable(stage4a_host_tests
     ../../Domain/calibration/raw_calibration_stability.c
     ../../Domain/filter/weight_filter.c
     ../../Domain/measurement/metrology_config_validator.c
+    ../../Domain/measurement/display_conditioner.c
     ../../Domain/measurement/metrology_legacy_projection.c
     ../../Domain/measurement/mass_math.c
     ../../Domain/measurement/metrology_standard_validator.c
@@ -91,6 +92,19 @@ endif()
 
 enable_testing()
 add_test(NAME stage4a_host_logic COMMAND stage4a_host_tests)
+
+add_executable(display_conditioner_tests
+    test_display_conditioner.c
+    ../../Domain/measurement/display_conditioner.c)
+target_include_directories(display_conditioner_tests PRIVATE
+    ../../Domain/measurement)
+if(MSVC)
+    target_compile_options(display_conditioner_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(display_conditioner_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME display_conditioner_logic COMMAND display_conditioner_tests)
 
 add_executable(stage4b_storage_tests
     test_stage4b.c

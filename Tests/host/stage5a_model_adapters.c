@@ -12,12 +12,14 @@
 
 static SystemContext s_context;
 static MassSnapshot s_snapshot;
+static DisplayConditionSnapshot s_display_condition;
 static unsigned s_command_count;
 
 void Stage5A_ModelAdaptersInit(void)
 {
     (void)memset(&s_context,0,sizeof(s_context));
     (void)memset(&s_snapshot,0,sizeof(s_snapshot));
+    (void)memset(&s_display_condition,0,sizeof(s_display_condition));
     DefaultConfig_Load(&s_context.config);
     s_context.runtime.weight_view=WEIGHT_VIEW_NET;
     s_context.initialized=true;
@@ -26,9 +28,12 @@ void Stage5A_ModelAdaptersInit(void)
 }
 SystemContext *Stage5A_ModelContext(void){return &s_context;}
 MassSnapshot *Stage5A_ModelSnapshot(void){return &s_snapshot;}
+DisplayConditionSnapshot *Stage5A_ModelDisplayCondition(void){return &s_display_condition;}
 unsigned Stage5A_ModelCommandCount(void){return s_command_count;}
 const SystemContext *SystemContext_Get(void){return &s_context;}
 const MassSnapshot *MetrologyManager_GetMassSnapshot(void){return &s_snapshot;}
+const DisplayConditionSnapshot *MetrologyManager_GetDisplayConditionSnapshot(void)
+{return &s_display_condition;}
 CommandResult CommandService_Execute(const CommandRequest *request,CommandResponse *response)
 {++s_command_count;(void)request;(void)memset(response,0,sizeof(*response));response->result=COMMAND_RESULT_OK;return COMMAND_RESULT_OK;}
 bool CommandService_SetStagedConfig(const DeviceConfig *candidate){return candidate!=NULL;}

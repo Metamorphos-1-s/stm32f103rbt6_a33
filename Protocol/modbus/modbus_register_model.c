@@ -185,16 +185,23 @@ static ModbusRegisterResult ReadActive(uint16_t address,
 }
 
 static ModbusRegisterResult ReadOne(uint16_t address,
-    const SystemContext *context, const MassSnapshot *snapshot, uint16_t *value)
+    const SystemContext *context, const MassSnapshot *snapshot,
+    const DisplayConditionSnapshot *condition, uint16_t *value)
 {
     const DeviceConfig *config=&context->config;
     ModbusWordOrder order=config->communication.word_order;
     DisplayWeightValue net={0},gross={0},tare={0};
     const UnitDisplayConfig *display=&config->metrology.unit_display[config->metrology.active_unit];
     uint32_t flags=(snapshot!=NULL)?snapshot->status_flags:0U;
+    MassValueUg panel_mass=(condition!=NULL)?condition->display_mass_ug:
+        ((context->runtime.weight_view==WEIGHT_VIEW_GROSS)?
+        ((snapshot!=NULL)?snapshot->gross_mass_ug:0):
+        ((snapshot!=NULL)?snapshot->net_mass_ug:0));
+    DisplayWeightValue panel={0};
     (void)UnitConverter_MassToDisplay((snapshot!=NULL)?snapshot->net_mass_ug:0,config->metrology.active_unit,display,&net);
     (void)UnitConverter_MassToDisplay((snapshot!=NULL)?snapshot->gross_mass_ug:0,config->metrology.active_unit,display,&gross);
     (void)UnitConverter_MassToDisplay((snapshot!=NULL)?snapshot->tare_mass_ug:0,config->metrology.active_unit,display,&tare);
+    (void)UnitConverter_MassToDisplay(panel_mass,config->metrology.active_unit,display,&panel);
     *value=0U;
     if ((address>=MODBUS_MAILBOX_FIRST)&&(address<=MODBUS_MAILBOX_LAST))
         return ModbusCommandMailbox_Read(address,value);
@@ -204,7 +211,7 @@ static ModbusRegisterResult ReadOne(uint16_t address,
     { *value=(address==0x017EU)?s_staging_validation:((address==0x017FU)?(s_staging_dirty?1U:0U):s_staging[address-0x0140U]); return MODBUS_REGISTER_OK; }
     if (address<=0x001FU)
     {
-        int32_t page=(context->runtime.weight_view==WEIGHT_VIEW_GROSS)?gross.display_count:net.display_count;
+        int32_t page=panel.display_count;
         if(address<=1U)*value=Word32((uint32_t)page,(uint8_t)address,order);
         else if(address==2U)*value=display->decimal_places;
         else if(address==3U)*value=(uint16_t)config->metrology.active_unit;
@@ -283,6 +290,32 @@ static ModbusRegisterResult ReadOne(uint16_t address,
         else if(address==0x01C4U)*value=(uint16_t)ConfigStore_GetState();
         return MODBUS_REGISTER_OK;
     }
+    if ((address>=MODBUS_DISPLAY_CONDITION_FIRST)&&
+        (address<=MODBUS_DISPLAY_CONDITION_LAST))
+    {
+        DisplayConditionSnapshot empty={0};
+        const DisplayConditionSnapshot *display_condition=
+            (condition!=NULL)?condition:&empty;
+        if(address==MODBUS_DISPLAY_CONDITION_STATE)
+            *value=(uint16_t)display_condition->state;
+        else if(address==MODBUS_DISPLAY_CONDITION_LOCKED)
+            *value=display_condition->locked?1U:0U;
+        else if(address>=MODBUS_DISPLAY_CONDITION_MASS_FIRST&&address<=0x01E5U)
+            *value=Word64((uint64_t)display_condition->display_mass_ug,
+                (uint8_t)(address-MODBUS_DISPLAY_CONDITION_MASS_FIRST),order);
+        else if(address>=MODBUS_DISPLAY_CONDITION_ANCHOR_FIRST&&address<=0x01E9U)
+            *value=Word64((uint64_t)display_condition->anchor_mass_ug,
+                (uint8_t)(address-MODBUS_DISPLAY_CONDITION_ANCHOR_FIRST),order);
+        else if(address>=MODBUS_DISPLAY_CONDITION_THRESHOLD_FIRST&&address<=0x01EDU)
+            *value=Word64((uint64_t)display_condition->release_threshold_ug,
+                (uint8_t)(address-MODBUS_DISPLAY_CONDITION_THRESHOLD_FIRST),order);
+        else if(address>=MODBUS_DISPLAY_CONDITION_ELAPSED_FIRST&&address<=0x01EFU)
+            *value=Word32(display_condition->candidate_elapsed_ms,
+                (uint8_t)(address-MODBUS_DISPLAY_CONDITION_ELAPSED_FIRST),order);
+        else
+            *value=(uint16_t)display_condition->last_release_reason;
+        return MODBUS_REGISTER_OK;
+    }
     return MODBUS_REGISTER_ILLEGAL_ADDRESS;
 }
 
@@ -318,11 +351,15 @@ ModbusRegisterResult ModbusRegisterModel_ReadHolding(uint16_t start_address,
 {
     const SystemContext *live=SystemContext_Get(); SystemContext copy;
     const MassSnapshot *live_snapshot=MetrologyManager_GetMassSnapshot(); MassSnapshot snapshot;
+    const DisplayConditionSnapshot *live_condition=
+        MetrologyManager_GetDisplayConditionSnapshot();
+    DisplayConditionSnapshot condition;
     uint16_t i; ModbusRegisterResult result;
     if((count==0U)||(destination==NULL)||(live==NULL)||
        ((uint32_t)start_address+count>0x10000UL)) return MODBUS_REGISTER_ILLEGAL_VALUE;
     copy=*live; if(live_snapshot!=NULL)snapshot=*live_snapshot; else (void)memset(&snapshot,0,sizeof(snapshot));
-    for(i=0U;i<count;++i){result=ReadOne((uint16_t)(start_address+i),&copy,&snapshot,&destination[i]);if(result!=MODBUS_REGISTER_OK)return result;}
+    if(live_condition!=NULL)condition=*live_condition; else (void)memset(&condition,0,sizeof(condition));
+    for(i=0U;i<count;++i){result=ReadOne((uint16_t)(start_address+i),&copy,&snapshot,&condition,&destination[i]);if(result!=MODBUS_REGISTER_OK)return result;}
     return MODBUS_REGISTER_OK;
 }
 
@@ -350,7 +387,8 @@ static ModbusRegisterResult ValidateWriteAddress(uint16_t address,uint16_t value
     if(((address>=0x0000U)&&(address<=0x003FU))||
        ((address>=0x004CU)&&(address<=0x005FU))||
        ((address>=0x0100U)&&(address<=0x013FU))||
-       ((address>=0x017EU)&&(address<=0x01DFU)))return MODBUS_REGISTER_READ_ONLY;
+       ((address>=0x017EU)&&(address<=MODBUS_DISPLAY_CONDITION_LAST)))
+        return MODBUS_REGISTER_READ_ONLY;
     return MODBUS_REGISTER_ILLEGAL_ADDRESS;
 }
 

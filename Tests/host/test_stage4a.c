@@ -48,6 +48,8 @@ static void Stage4A_MakeConfig(DeviceConfig *config, bool calibrated)
     DefaultConfig_Load(config);
     config->metrology.zero_range_ug = INT64_C(1000000000);
     config->metrology.overload_threshold_ug = INT64_C(12000000000);
+    config->metrology.profiles[0].filter_mode = FILTER_MODE_NONE;
+    config->metrology.profiles[0].filter_strength = 0U;
     config->metrology.profiles[0].stability_window = 2U;
     config->metrology.profiles[0].stability_enter_threshold_ug = 2000000;
     config->metrology.profiles[0].stability_exit_threshold_ug = 4000000;
@@ -384,6 +386,104 @@ static void TestDisplayControllerAndMenu(void)
     MenuController_Process10ms();
     CHECK4(!MenuController_IsActive());
     CHECK4(MenuController_TakeExitRequest());
+}
+
+static void Stage4A_LockDisplay(int32_t raw, uint32_t start_ms)
+{
+    RawMeasurementSample sample = {raw, start_ms, true};
+    uint8_t index;
+
+    for (index = 0U; index < 12U; ++index)
+    {
+        sample.timestamp_ms = start_ms + (uint32_t)index * 10U;
+        CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    }
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_LOCKED);
+}
+
+static void TestConditionedDisplayIntegration(void)
+{
+    DeviceConfig config;
+    RawMeasurementSample sample = {100000, 0U, true};
+    const DisplayConditionSnapshot *condition;
+    MassValueUg authoritative_before;
+    uint16_t locked_segments[6];
+
+    Stage4A_InitRuntime(&config, true);
+    CHECK4(SystemContext_SetState(APP_STATE_RUN, 0U));
+    CHECK4(MetrologyManager_SetDisplayUnit(MASS_UNIT_G));
+    Stage4A_LockDisplay(100000, 0U);
+    condition = MetrologyManager_GetDisplayConditionSnapshot();
+    CHECK4(condition != NULL && condition->state == DISPLAY_CONDITION_LOCKED);
+    CHECK4(condition != NULL && condition->locked);
+    authoritative_before = MetrologyManager_GetMassSnapshot()->net_mass_ug;
+
+    DisplayController_SetPage(DISPLAY_PAGE_NET);
+    DisplayController_Process20ms();
+    (void)memcpy(locked_segments, DisplayModel_Get()->digit_segments,
+        sizeof(locked_segments));
+
+    sample.raw_value = 100002;
+    sample.timestamp_ms = 120U;
+    CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    CHECK4(MetrologyManager_GetMassSnapshot()->net_mass_ug !=
+        authoritative_before);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->display_mass_ug ==
+        condition->anchor_mass_ug);
+    DisplayController_Process20ms();
+    CHECK4(memcmp(locked_segments, DisplayModel_Get()->digit_segments,
+        sizeof(locked_segments)) == 0);
+
+    CHECK4(MetrologyManager_SetDisplayUnit(MASS_UNIT_KG));
+    condition = MetrologyManager_GetDisplayConditionSnapshot();
+    CHECK4(condition != NULL && condition->state == DISPLAY_CONDITION_TRACKING);
+    CHECK4(condition != NULL && !condition->locked);
+    CHECK4(condition != NULL && condition->last_release_reason ==
+        DISPLAY_RELEASE_FORCED);
+
+    Stage4A_LockDisplay(100002, 200U);
+    CHECK4(MetrologyManager_Zero() == WEIGHT_ACTION_OK);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_TRACKING);
+    Stage4A_LockDisplay(100002, 400U);
+    CHECK4(MetrologyManager_ResetZero() == WEIGHT_ACTION_OK);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_TRACKING);
+
+    Stage4A_LockDisplay(600000, 600U);
+    CHECK4(MetrologyManager_Tare() == WEIGHT_ACTION_OK);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_TRACKING);
+    Stage4A_LockDisplay(600000, 800U);
+    CHECK4(MetrologyManager_ClearTare() == WEIGHT_ACTION_OK);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_TRACKING);
+
+    Stage4A_LockDisplay(600000, 1000U);
+    CHECK4(Stage4A_Command(COMMAND_SET_WEIGHT_VIEW,
+        COMMAND_SOURCE_LOCAL_KEY, WEIGHT_VIEW_GROSS, 0, &(CommandResponse){0}) ==
+        COMMAND_RESULT_OK);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_TRACKING);
+    Stage4A_LockDisplay(600000, 1200U);
+    CHECK4(MetrologyManager_ReconfigureFilter(FILTER_MODE_NONE, 0U));
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_TRACKING);
+    Stage4A_LockDisplay(600000, 1400U);
+    CHECK4(MetrologyManager_Reconfigure(&SystemContext_Get()->config));
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_TRACKING);
+
+    Stage4A_LockDisplay(600000, 1600U);
+    CHECK4(Stage4A_Command(COMMAND_CALIBRATION_BEGIN,
+        COMMAND_SOURCE_LOCAL_KEY, 0, 0, &(CommandResponse){0}) ==
+        COMMAND_RESULT_OK);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_TRACKING);
+    CHECK4(Stage4A_Command(COMMAND_CALIBRATION_CANCEL,
+        COMMAND_SOURCE_LOCAL_KEY, 0, 0, &(CommandResponse){0}) ==
+        COMMAND_RESULT_OK);
 }
 
 static void TestMenuStarHashLongDoesNotAdjust(void)
@@ -737,6 +837,7 @@ unsigned int Stage4A_RunTests(void)
     TestDisplayFormattingAndModel();
     TestCommandAndConfig();
     TestDisplayControllerAndMenu();
+    TestConditionedDisplayIntegration();
     TestMenuStarHashLongDoesNotAdjust();
     TestDisplayMessageOverlay();
     TestUnitMenuEdit();

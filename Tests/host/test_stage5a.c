@@ -9,6 +9,7 @@
 #include "persistent_schema.h"
 #include "unit_converter.h"
 #include "modbus_register_model.h"
+#include "modbus_register_map.h"
 #include "stage5a_model_adapters.h"
 
 #include <limits.h>
@@ -188,6 +189,18 @@ static void TestReferenceRules(void)
     CHECK(MetrologyStandardValidator_Validate(&config.metrology)==METROLOGY_STANDARD_INVALID_UNIT);
 }
 
+static void TestProductDefaults(void)
+{
+    DeviceConfig config;
+
+    DefaultConfig_Load(&config);
+    CHECK(config.metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION].filter_mode ==
+        FILTER_MODE_MEDIAN3_IIR);
+    CHECK(config.metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION].filter_strength == 3U);
+    CHECK(config.metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION].sample_rate ==
+        DEVICE_CS1237_DATA_RATE_10_HZ);
+}
+
 static void TestKeyConflict(void)
 {
     KeyMap map={{0U,1U,2U,3U,4U}};
@@ -208,12 +221,32 @@ static void TestModbusModel(void)
     uint16_t request[]={1U,1U,0U,0U,0U,0U,0U,0U,0U,0U,0U,0xA55AU};
     Stage5A_ModelAdaptersInit();
     Stage5A_ModelSnapshot()->net_mass_ug=INT64_C(0x1122334455667788);
+    Stage5A_ModelDisplayCondition()->state=DISPLAY_CONDITION_LOCKED;
+    Stage5A_ModelDisplayCondition()->locked=true;
+    Stage5A_ModelDisplayCondition()->display_mass_ug=INT64_C(1000000000);
+    Stage5A_ModelDisplayCondition()->anchor_mass_ug=INT64_C(0x0102030405060708);
+    Stage5A_ModelDisplayCondition()->release_threshold_ug=INT64_C(8000000);
+    Stage5A_ModelDisplayCondition()->candidate_elapsed_ms=0x12345678U;
+    Stage5A_ModelDisplayCondition()->last_release_reason=DISPLAY_RELEASE_DEVIATION;
     ModbusRegisterModel_Init();
+    CHECK(ModbusRegisterModel_ReadHolding(0x0000U,2U,words)==MODBUS_REGISTER_OK);
+    CHECK(words[0]==0U&&words[1]==1000U);
+    CHECK(ModbusRegisterModel_ReadHolding(0x000EU,1U,words)==MODBUS_REGISTER_OK);
+    CHECK(words[0]==MODBUS_REGISTER_MAP_VERSION);
     CHECK(ModbusRegisterModel_ReadHolding(0x0010U,4U,words)==MODBUS_REGISTER_OK);
     CHECK(words[0]==0x1122U&&words[1]==0x3344U&&words[2]==0x5566U&&words[3]==0x7788U);
     Stage5A_ModelContext()->config.communication.word_order=MODBUS_WORD_ORDER_LOW_WORD_FIRST;
     CHECK(ModbusRegisterModel_ReadHolding(0x0010U,4U,words)==MODBUS_REGISTER_OK);
     CHECK(words[0]==0x7788U&&words[1]==0x5566U&&words[2]==0x3344U&&words[3]==0x1122U);
+    CHECK(ModbusRegisterModel_ReadHolding(MODBUS_DISPLAY_CONDITION_STATE,2U,words)==MODBUS_REGISTER_OK);
+    CHECK(words[0]==DISPLAY_CONDITION_LOCKED&&words[1]==1U);
+    CHECK(ModbusRegisterModel_ReadHolding(MODBUS_DISPLAY_CONDITION_ANCHOR_FIRST,4U,words)==MODBUS_REGISTER_OK);
+    CHECK(words[0]==0x0708U&&words[1]==0x0506U&&words[2]==0x0304U&&words[3]==0x0102U);
+    CHECK(ModbusRegisterModel_ReadHolding(MODBUS_DISPLAY_CONDITION_ELAPSED_FIRST,2U,words)==MODBUS_REGISTER_OK);
+    CHECK(words[0]==0x5678U&&words[1]==0x1234U);
+    CHECK(ModbusRegisterModel_ReadHolding(MODBUS_DISPLAY_CONDITION_RELEASE_REASON,1U,words)==MODBUS_REGISTER_OK);
+    CHECK(words[0]==DISPLAY_RELEASE_DEVIATION);
+    CHECK(ModbusRegisterModel_WriteSingle(MODBUS_DISPLAY_CONDITION_STATE,0U)==MODBUS_REGISTER_READ_ONLY);
     CHECK(ModbusRegisterModel_WriteMultiple(0x0040U,12U,request)==MODBUS_REGISTER_OK);
     CHECK(Stage5A_ModelCommandCount()==1U);
     CHECK(ModbusRegisterModel_WriteSingle(0x004BU,0xA55AU)==MODBUS_REGISTER_OK);
@@ -230,7 +263,7 @@ int main(void)
 {
     TestMassAndUnits(); TestCanonicalAndLegacyBoundary();
     TestUnboundedLegacyProjection(); TestCodec();
-    TestReferenceRules(); TestKeyConflict(); TestModbusModel();
+    TestReferenceRules(); TestProductDefaults(); TestKeyConflict(); TestModbusModel();
     if(failures==0U) printf("Stage 5A host tests passed.\n");
     return failures==0U?0:1;
 }

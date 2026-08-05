@@ -2,6 +2,7 @@
 #define METROLOGY_MANAGER_H
 
 #include "device_config.h"
+#include "display_conditioner.h"
 #include "raw_measurement.h"
 #include "runtime_state.h"
 #include "weight_types.h"
@@ -15,6 +16,8 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample);
 void MetrologyManager_Process20ms(void);
 const WeightSnapshot *MetrologyManager_GetSnapshot(void);
 const MassSnapshot *MetrologyManager_GetMassSnapshot(void);
+const DisplayConditionSnapshot *MetrologyManager_GetDisplayConditionSnapshot(void);
+void MetrologyManager_ForceDisplayTracking(DisplayConditionReleaseReason reason);
 bool MetrologyManager_SetDisplayUnit(MassUnit unit);
 MassUnit MetrologyManager_GetDisplayUnit(void);
 WeightActionResult MetrologyManager_Zero(void);

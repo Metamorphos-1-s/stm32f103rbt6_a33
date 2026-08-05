@@ -36,6 +36,8 @@ static void Stage3_MakeConfig(DeviceConfig *config, bool calibrated)
     DefaultConfig_Load(config);
     config->metrology.zero_range_ug = INT64_C(1000000000);
     config->metrology.overload_threshold_ug = INT64_C(12000000000);
+    config->metrology.profiles[0].filter_mode = FILTER_MODE_NONE;
+    config->metrology.profiles[0].filter_strength = 0U;
     config->metrology.profiles[0].stability_window = 2U;
     config->metrology.profiles[0].stability_enter_threshold_ug = 2000000;
     config->metrology.profiles[0].stability_exit_threshold_ug = 4000000;

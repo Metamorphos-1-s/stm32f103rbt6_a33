@@ -443,6 +443,7 @@ static void App_RunStateMachine(void)
 
   if ((next_state == APP_STATE_FAULT) && !s_fault_entry_applied)
   {
+    MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_NOT_ALLOWED);
     Stage2B_DiagnosticsEnterFault();
     SelfTestController_Cancel();
     MenuController_Cancel();

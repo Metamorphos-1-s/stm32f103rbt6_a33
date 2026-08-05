@@ -1,10 +1,12 @@
 #include "metrology_manager.h"
 
 #include "event_queue.h"
+#include "display_conditioner.h"
 #include "fault_manager.h"
 #include "metrology_config_validator.h"
 #include "metrology_legacy_projection.h"
 #include "system_context.h"
+#include "unit_converter.h"
 #include "weight_engine.h"
 
 #include <stddef.h>
@@ -15,6 +17,53 @@ static bool s_initialized;
 static uint32_t s_rejected_sample_count;
 static uint32_t s_last_published_sequence;
 static bool s_last_published_stable;
+static DisplayConditioner s_display_conditioner;
+
+static MassValueUg MetrologyManager_DisplaySourceMass(
+    const WeightSnapshot *snapshot, const SystemContext *context)
+{
+    if ((snapshot == NULL) || (context == NULL))
+    {
+        return 0;
+    }
+    return (context->runtime.weight_view == WEIGHT_VIEW_GROSS) ?
+        snapshot->gross_mass_ug : snapshot->net_mass_ug;
+}
+
+static bool MetrologyManager_UpdateDisplayConditioner(void)
+{
+    const WeightSnapshot *snapshot = WeightEngine_GetSnapshot(&s_engine);
+    const SystemContext *context = SystemContext_Get();
+    const WeighingProfileConfig *profile;
+    const UnitDisplayConfig *display;
+    DisplayConditionInput input = {0};
+    AppState state;
+
+    if ((snapshot == NULL) || (context == NULL))
+    {
+        return false;
+    }
+    profile = &context->config.metrology.profiles[
+        context->config.metrology.active_profile];
+    display = &context->config.metrology.unit_display[
+        context->config.metrology.active_unit];
+    (void)UnitConverter_CountToMass(display->division_digit,
+        context->config.metrology.active_unit, display->decimal_places,
+        &input.display_division_ug);
+    state = SystemContext_GetState();
+    input.authoritative_mass_ug = MetrologyManager_DisplaySourceMass(
+        snapshot, context);
+    input.now_ms = snapshot->sample_timestamp_ms;
+    input.stability_threshold_ug = profile->stability_exit_threshold_ug;
+    input.hold_ms = profile->stability_hold_ms;
+    input.capacity_ug = context->config.metrology.capacity_ug;
+    input.stable = (snapshot->status_flags & WEIGHT_STATUS_STABLE) != 0U;
+    input.overload = (snapshot->status_flags & WEIGHT_STATUS_OVERLOAD) != 0U;
+    input.calibrating = state == APP_STATE_CALIBRATION;
+    input.allow_lock = (state == APP_STATE_RUN) &&
+        ((snapshot->status_flags & WEIGHT_STATUS_WEIGHT_VALID) != 0U);
+    return DisplayConditioner_Update(&s_display_conditioner, &input);
+}
 
 static bool MetrologyManager_CalibrationChanged(
     const CalibrationConfig *left, const CalibrationConfig *right)
@@ -50,6 +99,7 @@ bool MetrologyManager_Init(const DeviceConfig *config,
     s_last_published_sequence = 0U;
     s_last_published_stable = false;
     (void)memset(&s_engine, 0, sizeof(s_engine));
+    (void)memset(&s_display_conditioner, 0, sizeof(s_display_conditioner));
 
     if ((config == NULL) || (runtime == NULL))
     {
@@ -78,7 +128,14 @@ bool MetrologyManager_Init(const DeviceConfig *config,
     {
         FaultManager_Set(FAULT_METROLOGY_CONFIG_INVALID);
     }
-    if (s_initialized) MetrologyManager_SyncTare();
+    if (s_initialized)
+    {
+        const WeightSnapshot *snapshot = WeightEngine_GetSnapshot(&s_engine);
+        DisplayConditioner_Init(&s_display_conditioner,
+            MetrologyManager_DisplaySourceMass(snapshot, SystemContext_Get()),
+            (snapshot != NULL) ? snapshot->sample_timestamp_ms : 0U);
+        MetrologyManager_SyncTare();
+    }
     return s_initialized;
 }
 
@@ -92,6 +149,11 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
     if (!WeightEngine_ProcessRawSample(&s_engine, sample))
     {
         ++s_rejected_sample_count;
+        FaultManager_Set(FAULT_WEIGHT_MATH_OVERFLOW);
+        return false;
+    }
+    if (!MetrologyManager_UpdateDisplayConditioner())
+    {
         FaultManager_Set(FAULT_WEIGHT_MATH_OVERFLOW);
         return false;
     }
@@ -152,6 +214,26 @@ const MassSnapshot *MetrologyManager_GetMassSnapshot(void)
     return MetrologyManager_GetSnapshot();
 }
 
+const DisplayConditionSnapshot *MetrologyManager_GetDisplayConditionSnapshot(void)
+{
+    return s_initialized ?
+        DisplayConditioner_GetSnapshot(&s_display_conditioner) : NULL;
+}
+
+void MetrologyManager_ForceDisplayTracking(DisplayConditionReleaseReason reason)
+{
+    const WeightSnapshot *snapshot = WeightEngine_GetSnapshot(&s_engine);
+    const SystemContext *context = SystemContext_Get();
+
+    if (!s_initialized || (snapshot == NULL) || (context == NULL))
+    {
+        return;
+    }
+    DisplayConditioner_ForceTracking(&s_display_conditioner,
+        MetrologyManager_DisplaySourceMass(snapshot, context),
+        snapshot->sample_timestamp_ms, reason);
+}
+
 bool MetrologyManager_SetDisplayUnit(MassUnit unit)
 {
     const SystemContext *context = SystemContext_Get();
@@ -180,6 +262,7 @@ bool MetrologyManager_SetDisplayUnit(MassUnit unit)
             FaultManager_Set(FAULT_METROLOGY_CONFIG_INVALID);
         return false;
     }
+    MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
     return true;
 }
 
@@ -199,6 +282,10 @@ WeightActionResult MetrologyManager_Zero(void)
     {
         FaultManager_Set(FAULT_WEIGHT_MATH_OVERFLOW);
     }
+    else if (result == WEIGHT_ACTION_OK)
+    {
+        MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+    }
     return result;
 }
 
@@ -211,6 +298,10 @@ WeightActionResult MetrologyManager_ResetZero(void)
     {
         FaultManager_Set(FAULT_WEIGHT_MATH_OVERFLOW);
     }
+    else if (result == WEIGHT_ACTION_OK)
+    {
+        MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+    }
     return result;
 }
 
@@ -222,6 +313,7 @@ WeightActionResult MetrologyManager_Tare(void)
     if (result == WEIGHT_ACTION_OK)
     {
         MetrologyManager_SyncTare();
+        MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
     }
     else if (result == WEIGHT_ACTION_INTERNAL_ERROR)
     {
@@ -238,6 +330,7 @@ WeightActionResult MetrologyManager_ClearTare(void)
     if (result == WEIGHT_ACTION_OK)
     {
         MetrologyManager_SyncTare();
+        MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
     }
     else if (result == WEIGHT_ACTION_INTERNAL_ERROR)
     {
@@ -260,6 +353,7 @@ bool MetrologyManager_ApplyCalibration(
         return false;
     }
     (void)SystemContext_SetConfigDirty(true);
+    MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_CALIBRATION);
     return true;
 }
 
@@ -271,6 +365,7 @@ bool MetrologyManager_ReconfigureFilter(FilterMode mode, uint8_t strength)
         return false;
     }
     (void)SystemContext_SetConfigDirty(true);
+    MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
     return true;
 }
 
@@ -316,6 +411,7 @@ bool MetrologyManager_Reconfigure(const DeviceConfig *config)
     s_last_published_sequence = 0U;
     s_last_published_stable = false;
     MetrologyManager_SyncTare();
+    MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
     return true;
 }
 
@@ -350,6 +446,7 @@ bool MetrologyManager_RestartAfterStorage(const DeviceConfig *config)
     s_last_published_sequence = 0U;
     s_last_published_stable = false;
     MetrologyManager_SyncTare();
+    MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
     return true;
 }
 

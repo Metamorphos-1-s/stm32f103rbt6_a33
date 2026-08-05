@@ -34,7 +34,7 @@ void DefaultConfig_Load(DeviceConfig *config)
     /* DEVELOPMENT DEFAULT - NOT VERIFIED ON SCALE HARDWARE. */
     config->metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION] =
         (WeighingProfileConfig){DEVICE_CS1237_DATA_RATE_10_HZ,
-        DEVICE_CS1237_GAIN_128, FILTER_MODE_NONE, 0U, 8U,
+        DEVICE_CS1237_GAIN_128, FILTER_MODE_MEDIAN3_IIR, 3U, 8U,
         INT64_C(2000000), INT64_C(4000000), 500U};
     config->metrology.profiles[WEIGHING_PROFILE_HIGH_SPEED] =
         (WeighingProfileConfig){DEVICE_CS1237_DATA_RATE_40_HZ,

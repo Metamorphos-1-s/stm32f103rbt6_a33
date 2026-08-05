@@ -55,6 +55,8 @@ static bool DisplayController_BuildModel(void)
 {
     const SystemContext *context = SystemContext_Get();
     const WeightSnapshot *snapshot = MetrologyManager_GetSnapshot();
+    const DisplayConditionSnapshot *conditioned =
+        MetrologyManager_GetDisplayConditionSnapshot();
     const BatteryAdcState *battery = BatteryAdc_GetState();
     uint8_t top;
     uint8_t bottom;
@@ -84,10 +86,16 @@ static bool DisplayController_BuildModel(void)
     switch (s_page)
     {
         case DISPLAY_PAGE_NET:
-            mass = (snapshot != NULL) ? snapshot->net_mass_ug : 0;
+            mass = ((context != NULL) &&
+                    (context->runtime.weight_view == WEIGHT_VIEW_NET) &&
+                    (conditioned != NULL)) ? conditioned->display_mass_ug :
+                   ((snapshot != NULL) ? snapshot->net_mass_ug : 0);
             break;
         case DISPLAY_PAGE_GROSS:
-            mass = (snapshot != NULL) ? snapshot->gross_mass_ug : 0;
+            mass = ((context != NULL) &&
+                    (context->runtime.weight_view == WEIGHT_VIEW_GROSS) &&
+                    (conditioned != NULL)) ? conditioned->display_mass_ug :
+                   ((snapshot != NULL) ? snapshot->gross_mass_ug : 0);
             break;
         case DISPLAY_PAGE_TARE:
             mass = (snapshot != NULL) ? snapshot->tare_mass_ug : 0;

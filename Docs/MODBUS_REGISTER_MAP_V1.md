@@ -12,14 +12,36 @@ Addresses are zero-based PDU addresses. PLC notation is 40001 plus the PDU addre
 | `0180-019F` | calibration staging and active calibration | mixed |
 | `01A0-01BF` | communication configuration model | mixed |
 | `01C0-01DF` | persistence state and statistics | RO |
+| `01E0-01F0` | conditioned panel-display telemetry | RO |
 
 ## Realtime block
 
-- `0000-0001` current page display int32; `0002` decimals; `0003` unit.
+- `0000-0001` conditioned current-panel display int32; `0002` decimals; `0003` unit.
 - `0004-0005` status; `0006-000B` net/gross/tare display int32.
-- `000C` division; `000D` page; `000E=0100` map version; `000F` firmware value.
+- `000C` division; `000D` page; `000E=0101` map version; `000F` firmware value.
 - `0010-001B` net/gross/tare signed int64 ug.
 - `001C-001F` raw and filtered raw signed int32.
+
+`0000-0001` matches the final NET/GROSS panel value and may hold a stable
+anchor. `0006-000B` and `0010-001B` remain authoritative and continue changing
+while the panel value is locked.
+
+## Display conditioning block
+
+| PDU range | Value | Type |
+|---|---|---|
+| `01E0` | condition state: 0 tracking, 1 candidate, 2 locked | uint16 |
+| `01E1` | display locked | bool |
+| `01E2-01E5` | conditioned display mass | signed int64 ug |
+| `01E6-01E9` | stable anchor mass | signed int64 ug |
+| `01EA-01ED` | current release threshold | signed int64 ug |
+| `01EE-01EF` | candidate elapsed time | uint32 ms |
+| `01F0` | last release reason | uint16 |
+
+Release reasons are 0 none, 1 unstable, 2 deviation, 3 overload,
+4 calibration, 5 not allowed, and 6 forced. The entire block is read-only and
+uses the configured multi-register word order. Map `0101` only adds this block
+and changes the existing current-panel register semantics; no address moved.
 
 ## Mailbox
 

@@ -301,6 +301,8 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             {
                 (void)memset(&s_calibration, 0, sizeof(s_calibration));
                 s_calibration.active = true;
+                MetrologyManager_ForceDisplayTracking(
+                    DISPLAY_RELEASE_CALIBRATION);
                 result = COMMAND_RESULT_OK;
             }
             break;
@@ -343,11 +345,14 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             break;
         case COMMAND_CALIBRATION_CANCEL:
             (void)memset(&s_calibration, 0, sizeof(s_calibration));
+            MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
             result = COMMAND_RESULT_OK;
             break;
         case COMMAND_SET_WEIGHT_VIEW:
             result = SystemContext_SetWeightView((WeightViewMode)request->value0) ?
                      COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
+            if (result == COMMAND_RESULT_OK)
+                MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
             break;
         case COMMAND_REQUEST_MANUAL_OUTPUT:
             result = COMMAND_RESULT_ACCEPTED;
