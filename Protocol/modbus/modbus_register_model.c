@@ -329,32 +329,44 @@ static ModbusRegisterResult ReadOne(uint16_t address,
             *value = runtime_drift->enabled ? 1U : 0U;
         else if (address == MODBUS_RUNTIME_DRIFT_LIMITED)
             *value = runtime_drift->limited ? 1U : 0U;
-        else if (address >= MODBUS_RUNTIME_DRIFT_OFFSET_FIRST && address <= 0x0207U)
+        else if (address == MODBUS_RUNTIME_DRIFT_RESERVED)
+            *value = 0U;
+        else if ((address >= MODBUS_RUNTIME_DRIFT_OFFSET_FIRST) &&
+                 (address <= MODBUS_RUNTIME_DRIFT_OFFSET_LAST))
             *value = Word64((uint64_t)runtime_drift->offset_ug,
                 (uint8_t)(address - MODBUS_RUNTIME_DRIFT_OFFSET_FIRST), order);
-        else if (address >= MODBUS_RUNTIME_DRIFT_UNCOMPENSATED_FIRST && address <= 0x020BU)
+        else if ((address >= MODBUS_RUNTIME_DRIFT_UNCOMPENSATED_FIRST) &&
+                 (address <= MODBUS_RUNTIME_DRIFT_UNCOMPENSATED_LAST))
             *value = Word64((uint64_t)((snapshot != NULL) ?
                 snapshot->uncompensated_gross_mass_ug : 0),
                 (uint8_t)(address - MODBUS_RUNTIME_DRIFT_UNCOMPENSATED_FIRST), order);
-        else if (address >= MODBUS_RUNTIME_DRIFT_COMPENSATED_FIRST && address <= 0x020FU)
+        else if ((address >= MODBUS_RUNTIME_DRIFT_COMPENSATED_FIRST) &&
+                 (address <= MODBUS_RUNTIME_DRIFT_COMPENSATED_LAST))
             *value = Word64((uint64_t)((snapshot != NULL) ?
                 snapshot->gross_mass_ug : 0),
                 (uint8_t)(address - MODBUS_RUNTIME_DRIFT_COMPENSATED_FIRST), order);
-        else if (address >= MODBUS_RUNTIME_DRIFT_REFERENCE_FIRST && address <= 0x0213U)
+        else if ((address >= MODBUS_RUNTIME_DRIFT_REFERENCE_FIRST) &&
+                 (address <= MODBUS_RUNTIME_DRIFT_REFERENCE_LAST))
             *value = Word64((uint64_t)runtime_drift->plateau_reference_ug,
                 (uint8_t)(address - MODBUS_RUNTIME_DRIFT_REFERENCE_FIRST), order);
-        else if (address >= MODBUS_RUNTIME_DRIFT_ERROR_FIRST && address <= 0x0217U)
+        else if ((address >= MODBUS_RUNTIME_DRIFT_ERROR_FIRST) &&
+                 (address <= MODBUS_RUNTIME_DRIFT_ERROR_LAST))
             *value = Word64((uint64_t)runtime_drift->latest_plateau_error_ug,
                 (uint8_t)(address - MODBUS_RUNTIME_DRIFT_ERROR_FIRST), order);
-        else if (address <= 0x0219U)
+        else if ((address >= MODBUS_RUNTIME_DRIFT_ARMING_ELAPSED_FIRST) &&
+                 (address <= MODBUS_RUNTIME_DRIFT_ARMING_ELAPSED_LAST))
             *value = Word32(runtime_drift->arming_elapsed_ms,
                 (uint8_t)(address - MODBUS_RUNTIME_DRIFT_ARMING_ELAPSED_FIRST), order);
-        else if (address <= 0x021BU)
+        else if ((address >= MODBUS_RUNTIME_DRIFT_WINDOW_ELAPSED_FIRST) &&
+                 (address <= MODBUS_RUNTIME_DRIFT_WINDOW_ELAPSED_LAST))
             *value = Word32(runtime_drift->window_elapsed_ms,
                 (uint8_t)(address - MODBUS_RUNTIME_DRIFT_WINDOW_ELAPSED_FIRST), order);
-        else
+        else if ((address >= MODBUS_RUNTIME_DRIFT_SAMPLE_COUNT_FIRST) &&
+                 (address <= MODBUS_RUNTIME_DRIFT_SAMPLE_COUNT_LAST))
             *value = Word32(runtime_drift->stable_sample_count,
                 (uint8_t)(address - MODBUS_RUNTIME_DRIFT_SAMPLE_COUNT_FIRST), order);
+        else
+            return MODBUS_REGISTER_ILLEGAL_ADDRESS;
         return MODBUS_REGISTER_OK;
     }
     return MODBUS_REGISTER_ILLEGAL_ADDRESS;
