@@ -53,6 +53,7 @@ static UnitDisplayConfig s_edit_display;
 static MassUnit s_original_unit;
 static MassUnit s_candidate_unit;
 static DisplayCode s_begin_error;
+static bool s_begin_warning;
 static uint32_t s_last_activity_ms;
 static bool s_active;
 static bool s_editing;
@@ -233,6 +234,7 @@ static bool BeginEdit(MenuItem item)
     char unit_label[6];
     if (context == NULL) return false;
     s_begin_error = DISPLAY_CODE_BUSY;
+    s_begin_warning = false;
     metrology = &context->config.metrology;
     s_edit_unit = metrology->active_unit;
     s_edit_profile = metrology->active_profile;
@@ -303,8 +305,15 @@ static bool BeginEdit(MenuItem item)
                                          &display_value) ||
             !display_value.valid || display_value.overflow)
         {
-            s_begin_error = DISPLAY_CODE_UNIT_RANGE;
-            return false;
+            if ((item != MENU_ITEM_OVERLOAD) ||
+                !UnitConverter_MassToDisplay(metrology->capacity_ug,
+                    s_edit_unit, &s_edit_display, &display_value) ||
+                !display_value.valid || display_value.overflow)
+            {
+                s_begin_error = DISPLAY_CODE_UNIT_RANGE;
+                return false;
+            }
+            s_begin_warning = true;
         }
         s_value = display_value.display_count;
     }
@@ -312,6 +321,7 @@ static bool BeginEdit(MenuItem item)
         COMMAND_RESULT_OK) return false;
     s_editing = true;
     Render();
+    if (s_begin_warning) ShowCode(DISPLAY_CODE_UNIT_RANGE);
     return true;
 }
 

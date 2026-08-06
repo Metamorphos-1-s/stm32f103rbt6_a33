@@ -115,15 +115,13 @@ void DisplayConditioner_ForceTracking(DisplayConditioner *conditioner,
     conditioner->snapshot.anchor_mass_ug = 0;
     conditioner->snapshot.locked = false;
     conditioner->snapshot.operator_zero_anchor = false;
-    conditioner->operator_reference_pending = false;
     conditioner->snapshot.last_release_reason = reason;
     conditioner->last_update_ms = now_ms;
     ClearCandidate(conditioner);
 }
 
 bool DisplayConditioner_RequestOperatorZeroAnchor(
-    DisplayConditioner *conditioner, MassValueUg authoritative_mass_ug,
-    uint32_t now_ms)
+    DisplayConditioner *conditioner, uint32_t now_ms)
 {
     if ((conditioner == NULL) || !conditioner->initialized)
     {
@@ -137,8 +135,6 @@ bool DisplayConditioner_RequestOperatorZeroAnchor(
     conditioner->snapshot.operator_zero_anchor = true;
     conditioner->snapshot.last_release_reason = DISPLAY_RELEASE_NONE;
     conditioner->operator_anchor_start_ms = now_ms;
-    conditioner->operator_release_reference_ug = authoritative_mass_ug;
-    conditioner->operator_reference_pending = true;
     conditioner->last_update_ms = now_ms;
     return true;
 }
@@ -218,17 +214,6 @@ bool DisplayConditioner_Update(DisplayConditioner *conditioner,
 
     conditioner->snapshot.display_mass_ug =
         conditioner->snapshot.anchor_mass_ug;
-    if (conditioner->snapshot.operator_zero_anchor &&
-        conditioner->operator_reference_pending &&
-        ((uint32_t)(input->now_ms - conditioner->operator_anchor_start_ms) <
-         DISPLAY_CONDITIONER_OPERATOR_GRACE_MS))
-    {
-        conditioner->operator_release_reference_ug =
-            input->authoritative_mass_ug;
-        conditioner->operator_reference_pending = false;
-        conditioner->release_sample_count = 0U;
-        return true;
-    }
     if (!input->stable &&
         (!conditioner->snapshot.operator_zero_anchor ||
          ((uint32_t)(input->now_ms - conditioner->operator_anchor_start_ms) >=
@@ -241,7 +226,7 @@ bool DisplayConditioner_Update(DisplayConditioner *conditioner,
     }
     if (MassDistance(input->authoritative_mass_ug,
             conditioner->snapshot.operator_zero_anchor ?
-            conditioner->operator_release_reference_ug :
+            INT64_C(0) :
             conditioner->snapshot.anchor_mass_ug) >
         (uint64_t)conditioner->snapshot.release_threshold_ug)
     {

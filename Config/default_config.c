@@ -5,7 +5,8 @@
 #include "project_config.h"
 #include "metrology_legacy_projection.h"
 
-#define TARGET_SENSOR_CAPACITY_UG INT64_C(3000000000)
+#define TARGET_SENSOR_CAPACITY_UG ((MassValueUg)A33_SENSOR_RATED_CAPACITY_UG)
+#define LEGACY_DEVELOPMENT_OVERLOAD_UG INT64_C(10000000000)
 #define GENERAL_ZERO_RANGE_UG INT64_C(60000000)
 #define HIGH_PRECISION_ENTER_UG INT64_C(50000)
 #define HIGH_PRECISION_EXIT_UG INT64_C(100000)
@@ -107,6 +108,8 @@ uint32_t DefaultConfig_NormalizeLegacyDevelopment(DeviceConfig *config)
 {
     DeviceConfig candidate;
     WeighingProfileConfig *profile;
+    bool legacy_profile;
+    bool hf1_profile;
     uint32_t flags = DEFAULT_CONFIG_NORMALIZED_NONE;
 
     if ((config == NULL) ||
@@ -116,27 +119,45 @@ uint32_t DefaultConfig_NormalizeLegacyDevelopment(DeviceConfig *config)
     }
     candidate = *config;
     profile = &candidate.metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION];
-    if ((profile->sample_rate != DEVICE_CS1237_DATA_RATE_10_HZ) ||
-        (profile->gain != DEVICE_CS1237_GAIN_128) ||
-        (profile->filter_mode != FILTER_MODE_MEDIAN3_IIR) ||
-        (profile->filter_strength != 3U) ||
-        (profile->stability_window != 8U) ||
-        (profile->stability_enter_threshold_ug != INT64_C(2000000)) ||
-        (profile->stability_exit_threshold_ug != INT64_C(4000000)) ||
-        (profile->stability_hold_ms != 500U))
+    legacy_profile =
+        (profile->sample_rate == DEVICE_CS1237_DATA_RATE_10_HZ) &&
+        (profile->gain == DEVICE_CS1237_GAIN_128) &&
+        (profile->filter_mode == FILTER_MODE_MEDIAN3_IIR) &&
+        (profile->filter_strength == 3U) &&
+        (profile->stability_window == 8U) &&
+        (profile->stability_enter_threshold_ug == INT64_C(2000000)) &&
+        (profile->stability_exit_threshold_ug == INT64_C(4000000)) &&
+        (profile->stability_hold_ms == 500U);
+    hf1_profile =
+        (profile->sample_rate == DEVICE_CS1237_DATA_RATE_10_HZ) &&
+        (profile->gain == DEVICE_CS1237_GAIN_128) &&
+        (profile->filter_mode == FILTER_MODE_MEDIAN3_IIR) &&
+        (profile->filter_strength == 3U) &&
+        (profile->stability_window == 8U) &&
+        (profile->stability_enter_threshold_ug == HIGH_PRECISION_ENTER_UG) &&
+        (profile->stability_exit_threshold_ug == HIGH_PRECISION_EXIT_UG) &&
+        (profile->stability_hold_ms == HIGH_PRECISION_HOLD_MS);
+    if ((legacy_profile || hf1_profile) &&
+        (candidate.metrology.capacity_ug == TARGET_SENSOR_CAPACITY_UG) &&
+        (candidate.metrology.overload_threshold_ug ==
+         LEGACY_DEVELOPMENT_OVERLOAD_UG))
     {
-        return flags;
+        candidate.metrology.overload_threshold_ug = TARGET_SENSOR_CAPACITY_UG;
+        flags |= DEFAULT_CONFIG_NORMALIZED_OVERLOAD;
     }
-
-    profile->stability_enter_threshold_ug = HIGH_PRECISION_ENTER_UG;
-    profile->stability_exit_threshold_ug = HIGH_PRECISION_EXIT_UG;
-    profile->stability_hold_ms = HIGH_PRECISION_HOLD_MS;
-    flags |= DEFAULT_CONFIG_NORMALIZED_STABILITY;
-    if (candidate.metrology.zero_range_ug == 0)
+    if (legacy_profile)
     {
-        candidate.metrology.zero_range_ug = GENERAL_ZERO_RANGE_UG;
-        flags |= DEFAULT_CONFIG_NORMALIZED_ZERO_RANGE;
+        profile->stability_enter_threshold_ug = HIGH_PRECISION_ENTER_UG;
+        profile->stability_exit_threshold_ug = HIGH_PRECISION_EXIT_UG;
+        profile->stability_hold_ms = HIGH_PRECISION_HOLD_MS;
+        flags |= DEFAULT_CONFIG_NORMALIZED_STABILITY;
+        if (candidate.metrology.zero_range_ug == 0)
+        {
+            candidate.metrology.zero_range_ug = GENERAL_ZERO_RANGE_UG;
+            flags |= DEFAULT_CONFIG_NORMALIZED_ZERO_RANGE;
+        }
     }
+    if (flags == DEFAULT_CONFIG_NORMALIZED_NONE) return flags;
     if (!MetrologyLegacyProjection_Update(&candidate.metrology) ||
         !MetrologyLegacyStabilityProjection_Update(&candidate.metrology,
                                                     &candidate.stability))

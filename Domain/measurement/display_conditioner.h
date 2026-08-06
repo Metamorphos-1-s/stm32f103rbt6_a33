@@ -9,7 +9,6 @@
 #define DISPLAY_CONDITIONER_WINDOW_SIZE 9U
 #define DISPLAY_CONDITIONER_RELEASE_SAMPLES 3U
 #define DISPLAY_CONDITIONER_DEFAULT_HOLD_MS 1000U
-#define DISPLAY_CONDITIONER_OPERATOR_GRACE_MS 1000U
 #define DISPLAY_CONDITIONER_OPERATOR_UNSTABLE_TIMEOUT_MS 3000U
 
 typedef enum
@@ -62,12 +61,10 @@ typedef struct
     MassValueUg sample_buffer[DISPLAY_CONDITIONER_WINDOW_SIZE];
     uint32_t candidate_start_ms;
     uint32_t operator_anchor_start_ms;
-    MassValueUg operator_release_reference_ug;
     uint32_t last_update_ms;
     uint8_t sample_count;
     uint8_t sample_index;
     uint8_t release_sample_count;
-    bool operator_reference_pending;
     bool initialized;
 } DisplayConditioner;
 
@@ -77,8 +74,7 @@ void DisplayConditioner_ForceTracking(DisplayConditioner *conditioner,
     MassValueUg current_mass_ug, uint32_t now_ms,
     DisplayConditionReleaseReason reason);
 bool DisplayConditioner_RequestOperatorZeroAnchor(
-    DisplayConditioner *conditioner, MassValueUg authoritative_mass_ug,
-    uint32_t now_ms);
+    DisplayConditioner *conditioner, uint32_t now_ms);
 bool DisplayConditioner_Update(DisplayConditioner *conditioner,
     const DisplayConditionInput *input);
 const DisplayConditionSnapshot *DisplayConditioner_GetSnapshot(

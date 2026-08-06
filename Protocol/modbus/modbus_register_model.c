@@ -186,7 +186,8 @@ static ModbusRegisterResult ReadActive(uint16_t address,
 
 static ModbusRegisterResult ReadOne(uint16_t address,
     const SystemContext *context, const MassSnapshot *snapshot,
-    const DisplayConditionSnapshot *condition, uint16_t *value)
+    const DisplayConditionSnapshot *condition,
+    const RuntimeDriftSnapshot *drift, uint16_t *value)
 {
     const DeviceConfig *config=&context->config;
     ModbusWordOrder order=config->communication.word_order;
@@ -316,6 +317,46 @@ static ModbusRegisterResult ReadOne(uint16_t address,
             *value=(uint16_t)display_condition->last_release_reason;
         return MODBUS_REGISTER_OK;
     }
+    if ((address >= MODBUS_RUNTIME_DRIFT_FIRST) &&
+        (address <= MODBUS_RUNTIME_DRIFT_LAST))
+    {
+        RuntimeDriftSnapshot empty = {0};
+        const RuntimeDriftSnapshot *runtime_drift =
+            (drift != NULL) ? drift : &empty;
+        if (address == MODBUS_RUNTIME_DRIFT_STATE)
+            *value = (uint16_t)runtime_drift->state;
+        else if (address == MODBUS_RUNTIME_DRIFT_ENABLED)
+            *value = runtime_drift->enabled ? 1U : 0U;
+        else if (address == MODBUS_RUNTIME_DRIFT_LIMITED)
+            *value = runtime_drift->limited ? 1U : 0U;
+        else if (address >= MODBUS_RUNTIME_DRIFT_OFFSET_FIRST && address <= 0x0207U)
+            *value = Word64((uint64_t)runtime_drift->offset_ug,
+                (uint8_t)(address - MODBUS_RUNTIME_DRIFT_OFFSET_FIRST), order);
+        else if (address >= MODBUS_RUNTIME_DRIFT_UNCOMPENSATED_FIRST && address <= 0x020BU)
+            *value = Word64((uint64_t)((snapshot != NULL) ?
+                snapshot->uncompensated_gross_mass_ug : 0),
+                (uint8_t)(address - MODBUS_RUNTIME_DRIFT_UNCOMPENSATED_FIRST), order);
+        else if (address >= MODBUS_RUNTIME_DRIFT_COMPENSATED_FIRST && address <= 0x020FU)
+            *value = Word64((uint64_t)((snapshot != NULL) ?
+                snapshot->gross_mass_ug : 0),
+                (uint8_t)(address - MODBUS_RUNTIME_DRIFT_COMPENSATED_FIRST), order);
+        else if (address >= MODBUS_RUNTIME_DRIFT_REFERENCE_FIRST && address <= 0x0213U)
+            *value = Word64((uint64_t)runtime_drift->plateau_reference_ug,
+                (uint8_t)(address - MODBUS_RUNTIME_DRIFT_REFERENCE_FIRST), order);
+        else if (address >= MODBUS_RUNTIME_DRIFT_ERROR_FIRST && address <= 0x0217U)
+            *value = Word64((uint64_t)runtime_drift->latest_plateau_error_ug,
+                (uint8_t)(address - MODBUS_RUNTIME_DRIFT_ERROR_FIRST), order);
+        else if (address <= 0x0219U)
+            *value = Word32(runtime_drift->arming_elapsed_ms,
+                (uint8_t)(address - MODBUS_RUNTIME_DRIFT_ARMING_ELAPSED_FIRST), order);
+        else if (address <= 0x021BU)
+            *value = Word32(runtime_drift->window_elapsed_ms,
+                (uint8_t)(address - MODBUS_RUNTIME_DRIFT_WINDOW_ELAPSED_FIRST), order);
+        else
+            *value = Word32(runtime_drift->stable_sample_count,
+                (uint8_t)(address - MODBUS_RUNTIME_DRIFT_SAMPLE_COUNT_FIRST), order);
+        return MODBUS_REGISTER_OK;
+    }
     return MODBUS_REGISTER_ILLEGAL_ADDRESS;
 }
 
@@ -353,13 +394,15 @@ ModbusRegisterResult ModbusRegisterModel_ReadHolding(uint16_t start_address,
     const MassSnapshot *live_snapshot=MetrologyManager_GetMassSnapshot(); MassSnapshot snapshot;
     const DisplayConditionSnapshot *live_condition=
         MetrologyManager_GetDisplayConditionSnapshot();
+    const RuntimeDriftSnapshot *live_drift=
+        MetrologyManager_GetRuntimeDriftSnapshot();
     DisplayConditionSnapshot condition;
     uint16_t i; ModbusRegisterResult result;
     if((count==0U)||(destination==NULL)||(live==NULL)||
        ((uint32_t)start_address+count>0x10000UL)) return MODBUS_REGISTER_ILLEGAL_VALUE;
     copy=*live; if(live_snapshot!=NULL)snapshot=*live_snapshot; else (void)memset(&snapshot,0,sizeof(snapshot));
     if(live_condition!=NULL)condition=*live_condition; else (void)memset(&condition,0,sizeof(condition));
-    for(i=0U;i<count;++i){result=ReadOne((uint16_t)(start_address+i),&copy,&snapshot,&condition,&destination[i]);if(result!=MODBUS_REGISTER_OK)return result;}
+    for(i=0U;i<count;++i){result=ReadOne((uint16_t)(start_address+i),&copy,&snapshot,&condition,live_drift,&destination[i]);if(result!=MODBUS_REGISTER_OK)return result;}
     return MODBUS_REGISTER_OK;
 }
 
@@ -387,7 +430,7 @@ static ModbusRegisterResult ValidateWriteAddress(uint16_t address,uint16_t value
     if(((address>=0x0000U)&&(address<=0x003FU))||
        ((address>=0x004CU)&&(address<=0x005FU))||
        ((address>=0x0100U)&&(address<=0x013FU))||
-       ((address>=0x017EU)&&(address<=MODBUS_DISPLAY_CONDITION_LAST)))
+       ((address>=0x017EU)&&(address<=MODBUS_RUNTIME_DRIFT_LAST)))
         return MODBUS_REGISTER_READ_ONLY;
     return MODBUS_REGISTER_ILLEGAL_ADDRESS;
 }

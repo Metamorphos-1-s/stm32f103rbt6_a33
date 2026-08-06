@@ -169,7 +169,7 @@ bool ConfigEdit_Validate(void)
     {
         return false;
     }
-    valid = (MetrologyConfig_ValidateCanonical(&s_working.metrology) ==
+    valid = (MetrologyConfig_ValidateProductHardware(&s_working.metrology) ==
              METROLOGY_CONFIG_OK) &&
             (s_working.display.brightness <= 7U) &&
             (!s_working.calibration.calibration_valid ||

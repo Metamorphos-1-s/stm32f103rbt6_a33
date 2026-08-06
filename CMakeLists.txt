@@ -81,6 +81,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Domain/measurement/mass_math.c
     Domain/measurement/metrology_standard_validator.c
     Domain/measurement/raw_measurement.c
+    Domain/measurement/runtime_drift_compensator.c
     Domain/measurement/unit_converter.c
     Domain/measurement/weight_engine.c
     Domain/measurement/weight_math.c

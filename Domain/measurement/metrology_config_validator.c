@@ -4,6 +4,7 @@
 #include "stability_detector.h"
 #include "unit_converter.h"
 #include "weight_filter.h"
+#include "project_config.h"
 
 #include <stddef.h>
 #include <limits.h>
@@ -78,6 +79,18 @@ MetrologyConfigResult MetrologyConfig_ValidateCanonical(
     }
     if (MetrologyStandardValidator_Validate(metrology) != METROLOGY_STANDARD_OK)
         return METROLOGY_CONFIG_INVALID_STANDARD;
+    return METROLOGY_CONFIG_OK;
+}
+
+MetrologyConfigResult MetrologyConfig_ValidateProductHardware(
+    const MetrologyConfig *metrology)
+{
+    MetrologyConfigResult result = MetrologyConfig_ValidateCanonical(metrology);
+    if (result != METROLOGY_CONFIG_OK) return result;
+    if ((metrology->overload_threshold_ug <= 0) ||
+        (metrology->overload_threshold_ug >
+         (MassValueUg)A33_SENSOR_RATED_CAPACITY_UG))
+        return METROLOGY_CONFIG_INVALID_OVERLOAD;
     return METROLOGY_CONFIG_OK;
 }
 

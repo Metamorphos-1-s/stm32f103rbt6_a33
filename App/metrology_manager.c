@@ -18,6 +18,7 @@ static uint32_t s_rejected_sample_count;
 static uint32_t s_last_published_sequence;
 static bool s_last_published_stable;
 static DisplayConditioner s_display_conditioner;
+static bool s_runtime_drift_fault_latched;
 
 static MassValueUg MetrologyManager_DisplaySourceMass(
     const WeightSnapshot *snapshot, const SystemContext *context)
@@ -98,6 +99,7 @@ bool MetrologyManager_Init(const DeviceConfig *config,
     s_rejected_sample_count = 0U;
     s_last_published_sequence = 0U;
     s_last_published_stable = false;
+    s_runtime_drift_fault_latched = false;
     (void)memset(&s_engine, 0, sizeof(s_engine));
     (void)memset(&s_display_conditioner, 0, sizeof(s_display_conditioner));
 
@@ -141,11 +143,26 @@ bool MetrologyManager_Init(const DeviceConfig *config,
 
 bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
 {
+    AppState state;
     if (!s_initialized || (sample == NULL) || !sample->valid)
     {
         ++s_rejected_sample_count;
         return false;
     }
+    state = SystemContext_GetState();
+    if (state == APP_STATE_FAULT)
+    {
+        if (!s_runtime_drift_fault_latched)
+            WeightEngine_ResetRuntimeDrift(&s_engine);
+        s_runtime_drift_fault_latched = true;
+    }
+    else
+    {
+        s_runtime_drift_fault_latched = false;
+    }
+    WeightEngine_SetRuntimeDriftLearningAllowed(&s_engine,
+        ((state == APP_STATE_RUN) || (state == APP_STATE_MENU)) &&
+        (FaultManager_GetActiveMask() == 0U));
     if (!WeightEngine_ProcessRawSample(&s_engine, sample))
     {
         ++s_rejected_sample_count;
@@ -242,7 +259,6 @@ static void MetrologyManager_RequestOperatorZeroAnchor(void)
     {
         (void)DisplayConditioner_RequestOperatorZeroAnchor(
             &s_display_conditioner,
-            MetrologyManager_DisplaySourceMass(snapshot, SystemContext_Get()),
             snapshot->sample_timestamp_ms);
     }
 }
@@ -484,4 +500,23 @@ int32_t MetrologyManager_GetZeroOffsetRaw(void)
 bool MetrologyManager_IsInitialized(void)
 {
     return s_initialized;
+}
+
+bool MetrologyManager_SetRuntimeDriftEnabled(bool enabled)
+{
+    AppState state = SystemContext_GetState();
+    return s_initialized && ((state == APP_STATE_RUN) ||
+        (state == APP_STATE_MENU)) &&
+        WeightEngine_SetRuntimeDriftEnabled(&s_engine, enabled);
+}
+
+void MetrologyManager_ResetRuntimeDrift(void)
+{
+    if (s_initialized) WeightEngine_ResetRuntimeDrift(&s_engine);
+}
+
+const RuntimeDriftSnapshot *MetrologyManager_GetRuntimeDriftSnapshot(void)
+{
+    return s_initialized ? WeightEngine_GetRuntimeDriftSnapshot(&s_engine) :
+        NULL;
 }

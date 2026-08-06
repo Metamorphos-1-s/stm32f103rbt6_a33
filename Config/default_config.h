@@ -10,7 +10,8 @@ typedef enum
 {
     DEFAULT_CONFIG_NORMALIZED_NONE = 0U,
     DEFAULT_CONFIG_NORMALIZED_STABILITY = 1U << 0,
-    DEFAULT_CONFIG_NORMALIZED_ZERO_RANGE = 1U << 1
+    DEFAULT_CONFIG_NORMALIZED_ZERO_RANGE = 1U << 1,
+    DEFAULT_CONFIG_NORMALIZED_OVERLOAD = 1U << 2
 } DefaultConfigNormalizationFlag;
 
 void DefaultConfig_Load(DeviceConfig *config);

@@ -9,6 +9,10 @@
 #define FW_ARCH_VERSION_MINOR         0U
 #define DEVICE_CONFIG_SCHEMA_VERSION  2U
 
+/* A33 hardware profile: fitted load cell rated capacity. */
+#define A33_SENSOR_RATED_CAPACITY_UG 3000000000LL
+#define A33_RUNTIME_DRIFT_DEFAULT_ENABLED 0U
+
 #define SYSTEM_TICK_HZ                1000U
 #define SCHEDULER_MAX_TASKS           8U
 #define EVENT_QUEUE_CAPACITY          16U

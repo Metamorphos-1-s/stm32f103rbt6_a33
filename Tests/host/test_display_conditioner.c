@@ -168,23 +168,21 @@ static void TestReleaseThresholdAndOperatorAnchor(void)
         INT64_C(3000000000))==INT64_C(80000));
 
     DisplayConditioner_Init(&conditioner, INT64_C(500000000), 0U);
-    CHECK(DisplayConditioner_RequestOperatorZeroAnchor(&conditioner, 0, 100U));
+    CHECK(DisplayConditioner_RequestOperatorZeroAnchor(&conditioner, 100U));
     snapshot=DisplayConditioner_GetSnapshot(&conditioner);
     CHECK(snapshot->locked&&snapshot->operator_zero_anchor);
     CHECK(snapshot->display_mass_ug==0&&snapshot->anchor_mass_ug==0);
 
-    input=Input(INT64_C(200000),200U,false);
+    input=Input(INT64_C(1000000),200U,false);
     CHECK(DisplayConditioner_Update(&conditioner,&input));
-    CHECK(snapshot->locked&&snapshot->display_mass_ug==0);
-    input.authoritative_mass_ug=INT64_C(1200000);
-    input.now_ms=300U; CHECK(DisplayConditioner_Update(&conditioner,&input));
-    input.now_ms=400U; CHECK(DisplayConditioner_Update(&conditioner,&input));
     CHECK(snapshot->locked);
-    input.now_ms=500U; CHECK(DisplayConditioner_Update(&conditioner,&input));
+    input.now_ms=300U; CHECK(DisplayConditioner_Update(&conditioner,&input));
+    CHECK(snapshot->locked);
+    input.now_ms=400U; CHECK(DisplayConditioner_Update(&conditioner,&input));
     CHECK(!snapshot->locked&&snapshot->last_release_reason==
         DISPLAY_RELEASE_DEVIATION);
 
-    CHECK(DisplayConditioner_RequestOperatorZeroAnchor(&conditioner,0,1000U));
+    CHECK(DisplayConditioner_RequestOperatorZeroAnchor(&conditioner,1000U));
     input=Input(INT64_C(20000),1100U,false);
     CHECK(DisplayConditioner_Update(&conditioner,&input));
     CHECK(snapshot->locked);

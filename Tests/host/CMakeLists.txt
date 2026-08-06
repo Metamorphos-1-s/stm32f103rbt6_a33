@@ -30,6 +30,7 @@ add_executable(stage4a_host_tests
     ../../Domain/measurement/mass_math.c
     ../../Domain/measurement/metrology_standard_validator.c
     ../../Domain/measurement/raw_measurement.c
+    ../../Domain/measurement/runtime_drift_compensator.c
     ../../Domain/measurement/unit_converter.c
     ../../Domain/measurement/weight_engine.c
     ../../Domain/measurement/weight_math.c
@@ -106,6 +107,18 @@ else()
 endif()
 add_test(NAME display_conditioner_logic COMMAND display_conditioner_tests)
 
+add_executable(runtime_drift_tests
+    test_runtime_drift_compensator.c
+    ../../Domain/measurement/mass_math.c
+    ../../Domain/measurement/runtime_drift_compensator.c)
+target_include_directories(runtime_drift_tests PRIVATE ../../Domain/measurement)
+if(MSVC)
+    target_compile_options(runtime_drift_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(runtime_drift_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME runtime_drift_logic COMMAND runtime_drift_tests)
+
 add_executable(stage4b_storage_tests
     test_stage4b.c
     fake_flash_backend.c
@@ -175,6 +188,7 @@ add_executable(stage5a_host_tests
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/mass_math.c
+    ../../Domain/measurement/runtime_drift_compensator.c
     ../../Domain/measurement/metrology_config_validator.c
     ../../Domain/measurement/metrology_legacy_projection.c
     ../../Domain/measurement/metrology_standard_validator.c
@@ -207,6 +221,7 @@ add_executable(stage5b_host_tests
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/mass_math.c
+    ../../Domain/measurement/runtime_drift_compensator.c
     ../../Domain/measurement/metrology_config_validator.c
     ../../Domain/measurement/metrology_legacy_projection.c
     ../../Domain/measurement/metrology_standard_validator.c

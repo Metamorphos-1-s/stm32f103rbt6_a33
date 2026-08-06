@@ -221,6 +221,14 @@ static void TestProductDefaults(void)
         .stability_exit_threshold_ug==INT64_C(100000));
     CHECK(config.metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION]
         .stability_hold_ms==1000U);
+    CHECK(MetrologyConfig_ValidateProductHardware(&config.metrology)==
+        METROLOGY_CONFIG_OK);
+    config.metrology.overload_threshold_ug=INT64_C(3000000001);
+    CHECK(MetrologyConfig_ValidateProductHardware(&config.metrology)==
+        METROLOGY_CONFIG_INVALID_OVERLOAD);
+    config.metrology.overload_threshold_ug=INT64_C(2999999999);
+    CHECK(MetrologyConfig_ValidateProductHardware(&config.metrology)==
+        METROLOGY_CONFIG_INVALID_OVERLOAD);
 }
 
 static void TestLegacyDevelopmentNormalization(void)
@@ -257,7 +265,34 @@ static void TestLegacyDevelopmentNormalization(void)
     CHECK(memcmp(&config.calibration,&calibration,sizeof(calibration))==0);
     CHECK(memcmp(&config.communication,&communication,sizeof(communication))==0);
 
-    config=unchanged;
+    DefaultConfig_Load(&config);
+    config.metrology.overload_threshold_ug=INT64_C(10000000000);
+    calibration=config.calibration;
+    communication=config.communication;
+    flags=DefaultConfig_NormalizeLegacyDevelopment(&config);
+    CHECK(flags==DEFAULT_CONFIG_NORMALIZED_OVERLOAD);
+    CHECK(config.metrology.capacity_ug==INT64_C(3000000000));
+    CHECK(config.metrology.overload_threshold_ug==INT64_C(3000000000));
+    CHECK(memcmp(&config.calibration,&calibration,sizeof(calibration))==0);
+    CHECK(memcmp(&config.communication,&communication,sizeof(communication))==0);
+    CHECK(DefaultConfig_NormalizeLegacyDevelopment(&config)==
+        DEFAULT_CONFIG_NORMALIZED_NONE);
+
+    DefaultConfig_Load(&config);
+    config.metrology.overload_threshold_ug=INT64_C(10000000000);
+    config.metrology.profiles[0].filter_strength=2U;
+    unchanged=config;
+    CHECK(DefaultConfig_NormalizeLegacyDevelopment(&config)==
+        DEFAULT_CONFIG_NORMALIZED_NONE);
+    CHECK(memcmp(&config,&unchanged,sizeof(config))==0);
+
+    DefaultConfig_Load(&config);
+    config.metrology.capacity_ug=INT64_C(2500000000);
+    config.metrology.overload_threshold_ug=INT64_C(2600000000);
+    config.metrology.zero_range_ug=0;
+    config.metrology.profiles[0].stability_enter_threshold_ug=INT64_C(2000000);
+    config.metrology.profiles[0].stability_exit_threshold_ug=INT64_C(4000000);
+    config.metrology.profiles[0].stability_hold_ms=500U;
     config.metrology.profiles[0].filter_strength=3U;
     CHECK(DefaultConfig_NormalizeStartup(&config,&runtime)==
         (DEFAULT_CONFIG_NORMALIZED_STABILITY|
@@ -302,11 +337,24 @@ static void TestModbusModel(void)
     Stage5A_ModelDisplayCondition()->release_threshold_ug=INT64_C(8000000);
     Stage5A_ModelDisplayCondition()->candidate_elapsed_ms=0x12345678U;
     Stage5A_ModelDisplayCondition()->last_release_reason=DISPLAY_RELEASE_DEVIATION;
+    Stage5A_ModelSnapshot()->uncompensated_gross_mass_ug=INT64_C(0x1020304050607080);
+    Stage5A_ModelRuntimeDrift()->state=RUNTIME_DRIFT_TRACKING;
+    Stage5A_ModelRuntimeDrift()->enabled=true;
+    Stage5A_ModelRuntimeDrift()->offset_ug=INT64_C(0x0102030405060708);
     ModbusRegisterModel_Init();
     CHECK(ModbusRegisterModel_ReadHolding(0x0000U,2U,words)==MODBUS_REGISTER_OK);
     CHECK(words[0]==1U&&words[1]==0x86A0U);
     CHECK(ModbusRegisterModel_ReadHolding(0x000EU,1U,words)==MODBUS_REGISTER_OK);
     CHECK(words[0]==MODBUS_REGISTER_MAP_VERSION);
+    CHECK(ModbusRegisterModel_ReadHolding(MODBUS_RUNTIME_DRIFT_STATE,2U,
+        words)==MODBUS_REGISTER_OK);
+    CHECK(words[0]==RUNTIME_DRIFT_TRACKING&&words[1]==1U);
+    CHECK(ModbusRegisterModel_ReadHolding(MODBUS_RUNTIME_DRIFT_OFFSET_FIRST,
+        4U,words)==MODBUS_REGISTER_OK);
+    CHECK(words[0]==0x0102U&&words[1]==0x0304U&&
+        words[2]==0x0506U&&words[3]==0x0708U);
+    CHECK(ModbusRegisterModel_WriteSingle(MODBUS_RUNTIME_DRIFT_OFFSET_FIRST,
+        0U)==MODBUS_REGISTER_READ_ONLY);
     CHECK(ModbusRegisterModel_ReadHolding(0x0010U,4U,words)==MODBUS_REGISTER_OK);
     CHECK(words[0]==0x1122U&&words[1]==0x3344U&&words[2]==0x5566U&&words[3]==0x7788U);
     Stage5A_ModelContext()->config.communication.word_order=MODBUS_WORD_ORDER_LOW_WORD_FIRST;

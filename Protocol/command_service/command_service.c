@@ -398,6 +398,11 @@ CommandResult CommandService_Execute(const CommandRequest *request,
         case COMMAND_COMMUNICATION_APPLY:
             result = CommunicationManager_RequestApply();
             break;
+        case COMMAND_SET_RUNTIME_DRIFT_ENABLED:
+            result = ((request->value0 == 0) || (request->value0 == 1)) &&
+                MetrologyManager_SetRuntimeDriftEnabled(request->value0 != 0) ?
+                COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
+            break;
         case COMMAND_COUNT:
         default:
             result = COMMAND_RESULT_INVALID_ARGUMENT;
