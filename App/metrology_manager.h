@@ -7,6 +7,7 @@
 #include "runtime_state.h"
 #include "runtime_drift_compensator.h"
 #include "weight_types.h"
+#include "fault_manager.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -34,7 +35,9 @@ uint32_t MetrologyManager_GetRejectedSampleCount(void);
 int32_t MetrologyManager_GetZeroOffsetRaw(void);
 bool MetrologyManager_IsInitialized(void);
 bool MetrologyManager_SetRuntimeDriftEnabled(bool enabled);
-void MetrologyManager_ResetRuntimeDrift(void);
+void MetrologyManager_ResetRuntimeDrift(RuntimeDriftResetReason reason);
+void MetrologyManager_HandleFaultState(void);
+bool MetrologyManager_FaultInvalidatesRuntimeDrift(FaultCode fault);
 const RuntimeDriftSnapshot *MetrologyManager_GetRuntimeDriftSnapshot(void);
 
 #endif /* METROLOGY_MANAGER_H */

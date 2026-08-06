@@ -238,6 +238,18 @@ static void Stage4A_FeedStable(int32_t raw)
     CHECK4(MetrologyManager_AcceptRawSample(&sample));
 }
 
+static void Stage4A_FeedRuntimeDrift(int32_t raw, uint32_t first_ms,
+    uint32_t last_ms)
+{
+    RawMeasurementSample sample = {raw, first_ms, true};
+    uint32_t now;
+    for (now = first_ms; now <= last_ms; now += 100U)
+    {
+        sample.timestamp_ms = now;
+        CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    }
+}
+
 static CommandResult Stage4A_CommandEx(CommandId id, CommandSource source,
     int32_t value0, int32_t value1, uint32_t flags, int64_t value64,
     CommandResponse *response)
@@ -594,6 +606,92 @@ static void TestConditionedDisplayIntegration(void)
     CHECK4(Stage4A_Command(COMMAND_CALIBRATION_CANCEL,
         COMMAND_SOURCE_LOCAL_KEY, 0, 0, &(CommandResponse){0}) ==
         COMMAND_RESULT_OK);
+}
+
+static void TestRuntimeDriftTareAndFaultSemantics(void)
+{
+    DeviceConfig config;
+    const RuntimeDriftSnapshot *drift;
+    MassValueUg offset;
+    RawMeasurementSample sample = {600007, 720700U, true};
+    CommandResponse response;
+
+    Stage4A_InitRuntime(&config, true);
+    CHECK4(MetrologyManager_FaultInvalidatesRuntimeDrift(FAULT_ADC_ERROR));
+    CHECK4(MetrologyManager_FaultInvalidatesRuntimeDrift(
+        FAULT_CALIBRATION_INVALID));
+    CHECK4(MetrologyManager_FaultInvalidatesRuntimeDrift(
+        FAULT_CS1237_DATA_ERROR));
+    CHECK4(!MetrologyManager_FaultInvalidatesRuntimeDrift(
+        FAULT_TM1628_COMM_ERROR));
+    CHECK4(!MetrologyManager_FaultInvalidatesRuntimeDrift(
+        FAULT_CS1237_BUFFER_OVERRUN));
+    CHECK4(!MetrologyManager_FaultInvalidatesRuntimeDrift(
+        FAULT_MODBUS_TRANSPORT_FATAL));
+    CHECK4(SystemContext_SetState(APP_STATE_RUN, 0U));
+    CHECK4(Stage4A_Command(COMMAND_SET_RUNTIME_DRIFT_ENABLED,
+        COMMAND_SOURCE_LOCAL_KEY, 2, 0, &response) ==
+        COMMAND_RESULT_INVALID_ARGUMENT);
+    CHECK4(Stage4A_Command(COMMAND_SET_RUNTIME_DRIFT_ENABLED,
+        COMMAND_SOURCE_LOCAL_KEY, 1, 0, &response) == COMMAND_RESULT_OK);
+    Stage4A_FeedRuntimeDrift(600000, 0U, 300000U);
+    Stage4A_FeedRuntimeDrift(600007, 300100U, 360300U);
+    drift = MetrologyManager_GetRuntimeDriftSnapshot();
+    CHECK4(drift != NULL && drift->state == RUNTIME_DRIFT_TRACKING);
+    CHECK4(drift != NULL && drift->offset_ug == INT64_C(500));
+
+    sample.valid = false;
+    sample.timestamp_ms = 360350U;
+    CHECK4(!MetrologyManager_AcceptRawSample(&sample));
+    CHECK4(drift->state == RUNTIME_DRIFT_FROZEN);
+    CHECK4(drift->offset_ug == INT64_C(500));
+    CHECK4(drift->last_freeze_reason ==
+        RUNTIME_DRIFT_FREEZE_TRANSIENT_SAMPLE);
+    sample.valid = true;
+
+    CHECK4(MetrologyManager_Tare() == WEIGHT_ACTION_OK);
+    CHECK4(drift->state == RUNTIME_DRIFT_FROZEN);
+    CHECK4(drift->offset_ug == INT64_C(500));
+    CHECK4(drift->last_freeze_reason == RUNTIME_DRIFT_FREEZE_TARE_REARM);
+    Stage4A_FeedRuntimeDrift(600007, 360400U, 660600U);
+    CHECK4((MetrologyManager_GetSnapshot()->status_flags &
+        WEIGHT_STATUS_TARE_ACTIVE) != 0U);
+    CHECK4(drift->state == RUNTIME_DRIFT_TRACKING);
+    CHECK4(drift->offset_ug == INT64_C(500));
+    Stage4A_FeedRuntimeDrift(600014, 660700U, 720700U);
+    CHECK4(drift->offset_ug == INT64_C(1000));
+
+    CHECK4(MetrologyManager_ClearTare() == WEIGHT_ACTION_OK);
+    CHECK4(drift->state == RUNTIME_DRIFT_FROZEN);
+    CHECK4(drift->offset_ug == INT64_C(1000));
+    CHECK4(drift->last_freeze_reason ==
+        RUNTIME_DRIFT_FREEZE_CLEAR_TARE_REARM);
+
+    offset = drift->offset_ug;
+    FaultManager_Set(FAULT_UART2_DMA_INIT);
+    sample.timestamp_ms = 720750U;
+    CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    CHECK4(drift->offset_ug == offset);
+    FaultManager_Clear(FAULT_UART2_DMA_INIT);
+    FaultManager_Set(FAULT_TM1628_COMM_ERROR);
+    CHECK4(SystemContext_SetState(APP_STATE_FAULT, 720800U));
+    MetrologyManager_HandleFaultState();
+    CHECK4(drift->offset_ug == offset);
+    CHECK4(drift->state == RUNTIME_DRIFT_FROZEN);
+    CHECK4(drift->last_freeze_reason ==
+        RUNTIME_DRIFT_FREEZE_TRANSIENT_FAULT);
+    FaultManager_Clear(FAULT_TM1628_COMM_ERROR);
+    CHECK4(SystemContext_SetState(APP_STATE_RUN, 720900U));
+    sample.timestamp_ms = 720900U;
+    CHECK4(MetrologyManager_AcceptRawSample(&sample));
+
+    FaultManager_Set(FAULT_CS1237_DATA_ERROR);
+    CHECK4(SystemContext_SetState(APP_STATE_FAULT, 721000U));
+    MetrologyManager_HandleFaultState();
+    CHECK4(drift->offset_ug == 0);
+    CHECK4(drift->last_reset_reason ==
+        RUNTIME_DRIFT_RESET_REFERENCE_INVALID);
+    FaultManager_Clear(FAULT_CS1237_DATA_ERROR);
 }
 
 static void TestMenuStarHashLongDoesNotAdjust(void)
@@ -994,6 +1092,7 @@ unsigned int Stage4A_RunTests(void)
     TestZeroCommandFeedback();
     TestDisplayControllerAndMenu();
     TestConditionedDisplayIntegration();
+    TestRuntimeDriftTareAndFaultSemantics();
     TestMenuStarHashLongDoesNotAdjust();
     TestOverloadMenuRecovery();
     TestDisplayMessageOverlay();

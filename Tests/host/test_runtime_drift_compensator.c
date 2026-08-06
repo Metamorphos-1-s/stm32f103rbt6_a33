@@ -104,12 +104,63 @@ static void TestLimitResetAndWrap(void)
         Feed(&compensator, INT64_C(20500), 1000U + index * 100U, true, true);
     CHECK(snapshot->state == RUNTIME_DRIFT_LIMITED);
     CHECK(snapshot->limited && snapshot->offset_ug == INT64_C(1000));
-    RuntimeDriftCompensator_Reset(&compensator, 2000U);
+    RuntimeDriftCompensator_Reset(&compensator, 2000U,
+        RUNTIME_DRIFT_RESET_MANUAL_ZERO);
     CHECK(snapshot->state == RUNTIME_DRIFT_ARMING);
     CHECK(snapshot->offset_ug == 0 && !snapshot->limited);
 
     Feed(&compensator, INT64_MAX, 2100U, true, true);
-    Feed(&compensator, INT64_MAX, 2200U, true, true);
+    {
+        RuntimeDriftInput overflow = {INT64_MAX, 2200U, true, true};
+        CHECK(!RuntimeDriftCompensator_Process(&compensator, &overflow));
+    }
+}
+
+static MassValueUg ArmingAverage(MassValueUg first, MassValueUg second,
+    MassValueUg third)
+{
+    RuntimeDriftCompensator compensator;
+    RuntimeDriftConfig config = TestConfig();
+    const RuntimeDriftSnapshot *snapshot;
+    config.arming_ms = 200U;
+    CHECK(RuntimeDriftCompensator_Init(&compensator, &config, true, 0U));
+    Feed(&compensator, first, 0U, true, true);
+    Feed(&compensator, second, 100U, true, true);
+    Feed(&compensator, third, 200U, true, true);
+    snapshot = RuntimeDriftCompensator_GetSnapshot(&compensator);
+    CHECK(snapshot->state == RUNTIME_DRIFT_TRACKING);
+    return snapshot->plateau_reference_ug;
+}
+
+static void TestExactIntegerWindowAverage(void)
+{
+    CHECK(ArmingAverage(1, 2, 3) == 2);
+    CHECK(ArmingAverage(-1, -2, -3) == -2);
+    CHECK(ArmingAverage(-2, 1, 2) == 0);
+    CHECK(ArmingAverage(1, 2, 2) == 1);
+}
+
+static void TestRearmPreservesOffset(void)
+{
+    RuntimeDriftCompensator compensator;
+    RuntimeDriftConfig config = TestConfig();
+    const RuntimeDriftSnapshot *snapshot;
+    uint32_t index;
+    CHECK(RuntimeDriftCompensator_Init(&compensator, &config, true, 0U));
+    Arm(&compensator, INT64_C(500000000), 0U);
+    snapshot = RuntimeDriftCompensator_GetSnapshot(&compensator);
+    for (index = 0U; index <= 6U; ++index)
+        Feed(&compensator, INT64_C(500020000), 600U + index * 100U,
+            true, true);
+    CHECK(snapshot->offset_ug == INT64_C(500));
+    RuntimeDriftCompensator_Rearm(&compensator, 1400U,
+        RUNTIME_DRIFT_FREEZE_TARE_REARM);
+    CHECK(snapshot->state == RUNTIME_DRIFT_FROZEN);
+    CHECK(snapshot->offset_ug == INT64_C(500));
+    CHECK(snapshot->plateau_reference_ug == 0);
+    CHECK(snapshot->last_freeze_reason == RUNTIME_DRIFT_FREEZE_TARE_REARM);
+    Arm(&compensator, INT64_C(500020000), 1500U);
+    CHECK(snapshot->offset_ug == INT64_C(500));
 }
 
 static void TestTwelveHourSyntheticDriftAndUnload(void)
@@ -166,6 +217,8 @@ int main(void)
     TestEnableArmingAndRate();
     TestLoadGuardAndFreeze();
     TestLimitResetAndWrap();
+    TestExactIntegerWindowAverage();
+    TestRearmPreservesOffset();
     TestTwelveHourSyntheticDriftAndUnload();
     if (s_failures != 0) return 1;
     puts("runtime drift tests passed");

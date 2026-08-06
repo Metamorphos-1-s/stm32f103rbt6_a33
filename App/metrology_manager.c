@@ -20,6 +20,38 @@ static bool s_last_published_stable;
 static DisplayConditioner s_display_conditioner;
 static bool s_runtime_drift_fault_latched;
 
+bool MetrologyManager_FaultInvalidatesRuntimeDrift(FaultCode fault)
+{
+    switch (fault)
+    {
+        case FAULT_ADC_ERROR:
+        case FAULT_CS1237_NOT_READY:
+        case FAULT_CS1237_DATA_ERROR:
+        case FAULT_CALIBRATION_INVALID:
+        case FAULT_CS1237_CONFIG_ERROR:
+        case FAULT_METROLOGY_CONFIG_INVALID:
+        case FAULT_CALIBRATION_DATA_CORRUPT:
+        case FAULT_WEIGHT_MATH_OVERFLOW:
+        case FAULT_CONFIG_APPLY_INCONSISTENT:
+            return true;
+        default:
+            return false;
+    }
+}
+
+static bool MetrologyManager_ActiveFaultInvalidatesReference(void)
+{
+    return FaultManager_IsActive(FAULT_ADC_ERROR) ||
+        FaultManager_IsActive(FAULT_CS1237_NOT_READY) ||
+        FaultManager_IsActive(FAULT_CS1237_DATA_ERROR) ||
+        FaultManager_IsActive(FAULT_CALIBRATION_INVALID) ||
+        FaultManager_IsActive(FAULT_CS1237_CONFIG_ERROR) ||
+        FaultManager_IsActive(FAULT_METROLOGY_CONFIG_INVALID) ||
+        FaultManager_IsActive(FAULT_CALIBRATION_DATA_CORRUPT) ||
+        FaultManager_IsActive(FAULT_WEIGHT_MATH_OVERFLOW) ||
+        FaultManager_IsActive(FAULT_CONFIG_APPLY_INCONSISTENT);
+}
+
 static MassValueUg MetrologyManager_DisplaySourceMass(
     const WeightSnapshot *snapshot, const SystemContext *context)
 {
@@ -146,15 +178,16 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
     AppState state;
     if (!s_initialized || (sample == NULL) || !sample->valid)
     {
+        if (s_initialized && (sample != NULL))
+            WeightEngine_FreezeRuntimeDrift(&s_engine, sample->timestamp_ms,
+                RUNTIME_DRIFT_FREEZE_TRANSIENT_SAMPLE);
         ++s_rejected_sample_count;
         return false;
     }
     state = SystemContext_GetState();
     if (state == APP_STATE_FAULT)
     {
-        if (!s_runtime_drift_fault_latched)
-            WeightEngine_ResetRuntimeDrift(&s_engine);
-        s_runtime_drift_fault_latched = true;
+        MetrologyManager_HandleFaultState();
     }
     else
     {
@@ -510,9 +543,24 @@ bool MetrologyManager_SetRuntimeDriftEnabled(bool enabled)
         WeightEngine_SetRuntimeDriftEnabled(&s_engine, enabled);
 }
 
-void MetrologyManager_ResetRuntimeDrift(void)
+void MetrologyManager_ResetRuntimeDrift(RuntimeDriftResetReason reason)
 {
-    if (s_initialized) WeightEngine_ResetRuntimeDrift(&s_engine);
+    if (s_initialized) WeightEngine_ResetRuntimeDrift(&s_engine, reason);
+}
+
+void MetrologyManager_HandleFaultState(void)
+{
+    const WeightSnapshot *snapshot;
+    if (!s_initialized || s_runtime_drift_fault_latched) return;
+    snapshot = WeightEngine_GetSnapshot(&s_engine);
+    if (MetrologyManager_ActiveFaultInvalidatesReference())
+        WeightEngine_ResetRuntimeDrift(&s_engine,
+            RUNTIME_DRIFT_RESET_REFERENCE_INVALID);
+    else
+        WeightEngine_FreezeRuntimeDrift(&s_engine,
+            (snapshot != NULL) ? snapshot->sample_timestamp_ms : 0U,
+            RUNTIME_DRIFT_FREEZE_TRANSIENT_FAULT);
+    s_runtime_drift_fault_latched = true;
 }
 
 const RuntimeDriftSnapshot *MetrologyManager_GetRuntimeDriftSnapshot(void)

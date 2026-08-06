@@ -89,6 +89,24 @@ static void TestServer(void)
     CHECK(respond && response_length==9U && response[1]==3U && response[2]==4U);
     CHECK(ModbusCrc16_Calculate(response,response_length)==0U);
 
+    request[0]=1U; request[1]=3U; request[2]=2U; request[3]=3U;
+    request[4]=0U; request[5]=1U; request_length=AddCrc(request,6U);
+    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+        sizeof(response),&response_length,&respond));
+    CHECK(respond&&response_length==7U&&response[2]==2U&&
+        response[3]==0U&&response[4]==0U);
+    request[2]=2U; request[3]=0U; request[4]=0U; request[5]=30U;
+    request_length=AddCrc(request,6U);
+    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+        sizeof(response),&response_length,&respond));
+    CHECK(respond&&response_length==65U&&response[2]==60U&&
+        response[9]==0U&&response[10]==0U);
+    request[2]=2U; request[3]=0x1EU; request[4]=0U; request[5]=1U;
+    request_length=AddCrc(request,6U);
+    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+        sizeof(response),&response_length,&respond));
+    CHECK(respond&&ExceptionCode(response,response_length)==2U);
+
     request[0]=1U; request[1]=6U; request[2]=1U; request[3]=0U;
     request[4]=0U; request[5]=1U; request_length=AddCrc(request,6U);
     CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,

@@ -20,8 +20,8 @@ static void StartPhase(RuntimeDriftCompensator *compensator,
 {
     compensator->snapshot.state = state;
     compensator->phase_start_ms = now_ms;
-    compensator->average_ug = 0;
-    compensator->average_count = 0U;
+    compensator->window_sum_ug = 0;
+    compensator->window_count = 0U;
     compensator->snapshot.stable_sample_count = 0U;
     compensator->snapshot.arming_elapsed_ms = 0U;
     compensator->snapshot.window_elapsed_ms = 0U;
@@ -29,19 +29,26 @@ static void StartPhase(RuntimeDriftCompensator *compensator,
     compensator->have_guard_reference = false;
 }
 
-static bool AddAverage(RuntimeDriftCompensator *compensator,
+static bool AddSample(RuntimeDriftCompensator *compensator,
     MassValueUg sample)
 {
-    MassValueUg delta;
     MassValueUg next;
-    uint32_t count = compensator->average_count + 1U;
-    if ((count == 0U) ||
-        !MassMath_Subtract(sample, compensator->average_ug, &delta) ||
-        !MassMath_Add(compensator->average_ug,
-            delta / (MassValueUg)count, &next)) return false;
-    compensator->average_ug = next;
-    compensator->average_count = count;
+    uint32_t count = compensator->window_count + 1U;
+    if ((count == 0U) || !MassMath_Add(compensator->window_sum_ug,
+                                       sample, &next)) return false;
+    compensator->window_sum_ug = next;
+    compensator->window_count = count;
     compensator->snapshot.stable_sample_count = count;
+    return true;
+}
+
+static bool WindowAverage(const RuntimeDriftCompensator *compensator,
+    MassValueUg *average)
+{
+    if ((compensator == NULL) || (average == NULL) ||
+        (compensator->window_count == 0U)) return false;
+    *average = compensator->window_sum_ug /
+        (MassValueUg)compensator->window_count;
     return true;
 }
 
@@ -67,6 +74,7 @@ bool RuntimeDriftCompensator_Init(RuntimeDriftCompensator *compensator,
     compensator->config = *config;
     compensator->initialized = true;
     compensator->snapshot.enabled = enabled;
+    compensator->snapshot.last_reset_reason = RUNTIME_DRIFT_RESET_POWER_ON;
     StartPhase(compensator, enabled ? RUNTIME_DRIFT_ARMING :
         RUNTIME_DRIFT_DISABLED, now_ms);
     return true;
@@ -81,17 +89,41 @@ bool RuntimeDriftCompensator_SetEnabled(RuntimeDriftCompensator *compensator,
     compensator->snapshot.plateau_reference_ug = 0;
     compensator->snapshot.latest_plateau_error_ug = 0;
     compensator->snapshot.limited = false;
+    compensator->snapshot.last_reset_reason =
+        RUNTIME_DRIFT_RESET_EXPLICIT_CONTROL;
+    compensator->snapshot.last_freeze_reason = RUNTIME_DRIFT_FREEZE_NONE;
     StartPhase(compensator, enabled ? RUNTIME_DRIFT_ARMING :
         RUNTIME_DRIFT_DISABLED, now_ms);
     return true;
 }
 
 void RuntimeDriftCompensator_Reset(RuntimeDriftCompensator *compensator,
-    uint32_t now_ms)
+    uint32_t now_ms, RuntimeDriftResetReason reason)
 {
     if ((compensator == NULL) || !compensator->initialized) return;
     (void)RuntimeDriftCompensator_SetEnabled(compensator,
         compensator->snapshot.enabled, now_ms);
+    compensator->snapshot.last_reset_reason = reason;
+}
+
+void RuntimeDriftCompensator_Freeze(RuntimeDriftCompensator *compensator,
+    uint32_t now_ms, RuntimeDriftFreezeReason reason)
+{
+    if ((compensator == NULL) || !compensator->initialized ||
+        !compensator->snapshot.enabled ||
+        (compensator->snapshot.state == RUNTIME_DRIFT_LIMITED)) return;
+    StartPhase(compensator, RUNTIME_DRIFT_FROZEN, now_ms);
+    compensator->snapshot.last_freeze_reason = reason;
+}
+
+void RuntimeDriftCompensator_Rearm(RuntimeDriftCompensator *compensator,
+    uint32_t now_ms, RuntimeDriftFreezeReason reason)
+{
+    if ((compensator == NULL) || !compensator->initialized ||
+        !compensator->snapshot.enabled) return;
+    compensator->snapshot.plateau_reference_ug = 0;
+    compensator->snapshot.latest_plateau_error_ug = 0;
+    RuntimeDriftCompensator_Freeze(compensator, now_ms, reason);
 }
 
 static bool ApplyOffset(RuntimeDriftCompensator *compensator)
@@ -129,6 +161,7 @@ bool RuntimeDriftCompensator_Process(RuntimeDriftCompensator *compensator,
     const RuntimeDriftInput *input)
 {
     MassValueUg compensated;
+    MassValueUg average;
     uint32_t elapsed;
     if ((compensator == NULL) || (input == NULL) ||
         !compensator->initialized ||
@@ -139,7 +172,9 @@ bool RuntimeDriftCompensator_Process(RuntimeDriftCompensator *compensator,
     if (!input->learning_allowed || !input->stable)
     {
         if (compensator->snapshot.state != RUNTIME_DRIFT_LIMITED)
-            StartPhase(compensator, RUNTIME_DRIFT_FROZEN, input->now_ms);
+            RuntimeDriftCompensator_Freeze(compensator, input->now_ms,
+                input->stable ? RUNTIME_DRIFT_FREEZE_OPERATION_NOT_ALLOWED :
+                RUNTIME_DRIFT_FREEZE_UNSTABLE);
         return true;
     }
     if (compensator->snapshot.state == RUNTIME_DRIFT_LIMITED) return true;
@@ -152,7 +187,8 @@ bool RuntimeDriftCompensator_Process(RuntimeDriftCompensator *compensator,
     {
         if (++compensator->load_change_count >=
             compensator->config.load_change_samples)
-            StartPhase(compensator, RUNTIME_DRIFT_FROZEN, input->now_ms);
+            RuntimeDriftCompensator_Freeze(compensator, input->now_ms,
+                RUNTIME_DRIFT_FREEZE_LOAD_CHANGE);
         return true;
     }
     if (!compensator->have_guard_reference)
@@ -162,15 +198,15 @@ bool RuntimeDriftCompensator_Process(RuntimeDriftCompensator *compensator,
     }
     compensator->load_change_count = 0U;
 
-    if (!AddAverage(compensator, compensated)) return false;
+    if (!AddSample(compensator, compensated)) return false;
     elapsed = input->now_ms - compensator->phase_start_ms;
     if (compensator->snapshot.state == RUNTIME_DRIFT_ARMING)
     {
         compensator->snapshot.arming_elapsed_ms = elapsed;
         if (elapsed >= compensator->config.arming_ms)
         {
-            compensator->snapshot.plateau_reference_ug =
-                compensator->average_ug;
+            if (!WindowAverage(compensator, &average)) return false;
+            compensator->snapshot.plateau_reference_ug = average;
             StartPhase(compensator, RUNTIME_DRIFT_TRACKING, input->now_ms);
             compensator->guard_reference_ug = compensated;
             compensator->have_guard_reference = true;
@@ -179,10 +215,11 @@ bool RuntimeDriftCompensator_Process(RuntimeDriftCompensator *compensator,
     }
     compensator->snapshot.window_elapsed_ms = elapsed;
     if ((elapsed >= compensator->config.window_ms) &&
-        (compensator->average_count >=
+        (compensator->window_count >=
          compensator->config.minimum_window_samples))
     {
-        if (!MassMath_Subtract(compensator->average_ug,
+        if (!WindowAverage(compensator, &average) ||
+            !MassMath_Subtract(average,
             compensator->snapshot.plateau_reference_ug,
             &compensator->snapshot.latest_plateau_error_ug) ||
             !ApplyOffset(compensator)) return false;

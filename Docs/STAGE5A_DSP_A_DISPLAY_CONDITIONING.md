@@ -63,7 +63,8 @@ Profile mode and strength remain configurable through active/staging Modbus regi
 
 ## Modbus semantics
 
-Map version is `0101`. No existing address moved.
+The current map version is `0102`. No existing address moved; HF2 added the
+separate runtime-drift telemetry block at `0200-021D`.
 
 - `0000-0001`: final current-panel display count, after conditioning and unit/division conversion.
 - `0006-000B`: authoritative net/gross/tare converted display counts, unchanged.

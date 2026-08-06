@@ -24,8 +24,10 @@ This hotfix contains three bounded changes:
   per-window step limit, +/-500,000 ug cumulative limit, and a 100,000 ug load
   change guard requiring three consecutive samples. Load changes freeze the
   learner and preserve the current offset. ZERO, calibration, profile/filter
-  reconfiguration, severe fault recovery, and power-up clear the volatile
-  state; TARE/CLEAR TARE and display-only changes preserve it.
+  reconfiguration, reference-invalidating faults, and power-up clear the
+  volatile state. TARE/CLEAR TARE preserve the offset, discard the old window,
+  and re-arm on uncompensated gross even while tare remains active. Transient
+  sample, UI/display and communication faults freeze and preserve the offset.
 
 The operational mass path is:
 
@@ -48,4 +50,8 @@ The compensation is explicitly **PROVISIONAL RUNTIME DRIFT COMPENSATION / ENGINE
   10,000 ug, maximum hourly offset change 20,000 ug; unload entered FROZEN and
   retained the offset.
 
-Hardware status: software implemented; not tested on hardware in HF2.
+HF2-R1 replaces the per-sample truncated online average with a checked int64
+sum/count window average and defines explicit reset/freeze reasons. See
+`STAGE5A_DSP_A_HF2_R1_REVIEW_FIXES.md`.
+
+Hardware status: software implemented; not tested on hardware in HF2-R1.

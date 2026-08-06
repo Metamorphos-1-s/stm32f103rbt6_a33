@@ -155,7 +155,6 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
     drift_input.now_ms = engine->snapshot.sample_timestamp_ms;
     drift_input.stable = stability_state == STABILITY_STATE_STABLE;
     drift_input.learning_allowed = engine->runtime_drift_learning_allowed &&
-        !engine->zero_tare.tare_active &&
         ((engine->snapshot.status_flags & WEIGHT_STATUS_OVERLOAD) == 0U);
     if (!RuntimeDriftCompensator_Process(&engine->runtime_drift,
                                         &drift_input)) return false;
@@ -290,7 +289,8 @@ WeightActionResult WeightEngine_Zero(WeightEngine *engine)
     if (result == WEIGHT_ACTION_OK)
     {
         RuntimeDriftCompensator_Reset(&engine->runtime_drift,
-            engine->snapshot.sample_timestamp_ms);
+            engine->snapshot.sample_timestamp_ms,
+            RUNTIME_DRIFT_RESET_MANUAL_ZERO);
         StabilityDetector_Reset(&engine->stability);
         if (!UpdateDerived(engine, false)) return WEIGHT_ACTION_INTERNAL_ERROR;
     }
@@ -303,7 +303,8 @@ WeightActionResult WeightEngine_ResetZero(WeightEngine *engine)
     if ((engine == NULL) || !engine->initialized) return WEIGHT_ACTION_INVALID_ARGUMENT;
     result = ZeroTare_ResetZero(&engine->zero_tare);
     RuntimeDriftCompensator_Reset(&engine->runtime_drift,
-        engine->snapshot.sample_timestamp_ms);
+        engine->snapshot.sample_timestamp_ms,
+        RUNTIME_DRIFT_RESET_ZERO_RESTORE);
     StabilityDetector_Reset(&engine->stability);
     if (engine->has_raw_sample && !UpdateDerived(engine, false))
         return WEIGHT_ACTION_INTERNAL_ERROR;
@@ -325,6 +326,9 @@ WeightActionResult WeightEngine_Tare(WeightEngine *engine)
     {
         StabilityDetector_Reset(&engine->stability);
         if (!UpdateDerived(engine, false)) return WEIGHT_ACTION_INTERNAL_ERROR;
+        RuntimeDriftCompensator_Rearm(&engine->runtime_drift,
+            engine->snapshot.sample_timestamp_ms,
+            RUNTIME_DRIFT_FREEZE_TARE_REARM);
     }
     return result;
 }
@@ -337,6 +341,9 @@ WeightActionResult WeightEngine_ClearTare(WeightEngine *engine)
     StabilityDetector_Reset(&engine->stability);
     if (engine->has_raw_sample && !UpdateDerived(engine, false))
         return WEIGHT_ACTION_INTERNAL_ERROR;
+    RuntimeDriftCompensator_Rearm(&engine->runtime_drift,
+        engine->snapshot.sample_timestamp_ms,
+        RUNTIME_DRIFT_FREEZE_CLEAR_TARE_REARM);
     return result;
 }
 
@@ -348,7 +355,8 @@ bool WeightEngine_ApplyCalibration(WeightEngine *engine,
         return false;
     engine->calibration = *calibration;
     RuntimeDriftCompensator_Reset(&engine->runtime_drift,
-        engine->snapshot.sample_timestamp_ms);
+        engine->snapshot.sample_timestamp_ms,
+        RUNTIME_DRIFT_RESET_CALIBRATION_APPLY);
     StabilityDetector_Reset(&engine->stability);
     return !engine->has_raw_sample || UpdateDerived(engine, false);
 }
@@ -361,7 +369,8 @@ bool WeightEngine_ReconfigureFilter(WeightEngine *engine, FilterMode mode,
         !WeightFilter_Init(&replacement, mode, strength)) return false;
     engine->filter = replacement;
     RuntimeDriftCompensator_Reset(&engine->runtime_drift,
-        engine->snapshot.sample_timestamp_ms);
+        engine->snapshot.sample_timestamp_ms,
+        RUNTIME_DRIFT_RESET_PROFILE_CHANGE);
     engine->metrology.profiles[engine->metrology.active_profile].filter_mode = mode;
     engine->metrology.profiles[engine->metrology.active_profile].filter_strength = strength;
     StabilityDetector_Reset(&engine->stability);
@@ -387,11 +396,19 @@ void WeightEngine_SetRuntimeDriftLearningAllowed(WeightEngine *engine,
         engine->runtime_drift_learning_allowed = allowed;
 }
 
-void WeightEngine_ResetRuntimeDrift(WeightEngine *engine)
+void WeightEngine_ResetRuntimeDrift(WeightEngine *engine,
+    RuntimeDriftResetReason reason)
 {
     if ((engine != NULL) && engine->initialized)
         RuntimeDriftCompensator_Reset(&engine->runtime_drift,
-            engine->snapshot.sample_timestamp_ms);
+            engine->snapshot.sample_timestamp_ms, reason);
+}
+
+void WeightEngine_FreezeRuntimeDrift(WeightEngine *engine, uint32_t now_ms,
+    RuntimeDriftFreezeReason reason)
+{
+    if ((engine != NULL) && engine->initialized)
+        RuntimeDriftCompensator_Freeze(&engine->runtime_drift, now_ms, reason);
 }
 
 const RuntimeDriftSnapshot *WeightEngine_GetRuntimeDriftSnapshot(

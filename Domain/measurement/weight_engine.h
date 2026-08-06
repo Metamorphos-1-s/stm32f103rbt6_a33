@@ -52,7 +52,10 @@ bool WeightEngine_UpdateDisplayConfig(WeightEngine *engine,
 bool WeightEngine_SetRuntimeDriftEnabled(WeightEngine *engine, bool enabled);
 void WeightEngine_SetRuntimeDriftLearningAllowed(WeightEngine *engine,
     bool allowed);
-void WeightEngine_ResetRuntimeDrift(WeightEngine *engine);
+void WeightEngine_ResetRuntimeDrift(WeightEngine *engine,
+    RuntimeDriftResetReason reason);
+void WeightEngine_FreezeRuntimeDrift(WeightEngine *engine, uint32_t now_ms,
+    RuntimeDriftFreezeReason reason);
 const RuntimeDriftSnapshot *WeightEngine_GetRuntimeDriftSnapshot(
     const WeightEngine *engine);
 
