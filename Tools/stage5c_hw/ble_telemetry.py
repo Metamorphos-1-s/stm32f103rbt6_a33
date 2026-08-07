@@ -138,7 +138,7 @@ class TelemetryParser:
                     self.sequence_gaps += gap
         if self._last_timestamp is not None:
             delta = (timestamp - self._last_timestamp) & 0xFFFFFFFF
-            if delta == 0 or delta >= 0x80000000:
+            if delta >= 0x80000000:
                 self.timestamp_anomalies += 1
         self._last_sequence = sequence
         self._last_timestamp = timestamp
