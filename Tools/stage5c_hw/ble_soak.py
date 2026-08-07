@@ -4,6 +4,7 @@
 import argparse
 import asyncio
 import json
+import sys
 import time
 from pathlib import Path
 
@@ -139,6 +140,10 @@ async def run(args):
 
 
 def main():
+    if len(sys.argv) > 1 and sys.argv[1] == "telemetry":
+        del sys.argv[1]
+        from ble_telemetry import main as telemetry_main
+        return telemetry_main()
     args = parse_args()
     try:
         return asyncio.run(run(args))

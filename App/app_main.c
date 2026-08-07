@@ -30,6 +30,7 @@
 #include "system_context.h"
 #include "weighing_profile_manager.h"
 #include "ble_connection_manager.h"
+#include "ble_telemetry_service.h"
 #include "stage5c_ble_diagnostics.h"
 
 #include <stddef.h>
@@ -112,6 +113,7 @@ bool App_Init(void)
   CommandService_Init();
   ModbusRegisterModel_Init();
   (void)CommunicationManager_Init(&config.communication);
+  BleTelemetryService_Init(now_ms);
   MenuController_Init();
   SelfTestController_Init();
   if (!KeyService_Init(&g_key_map_development_default))
@@ -278,6 +280,7 @@ static void App_20msTask(void *context)
   App_PublishRawMeasurement();
   MetrologyManager_Process20ms();
   DisplayController_Process20ms();
+  BleTelemetryService_Process(BSP_TimeNowMs());
   Stage3MetrologyDiagnostics_Update();
 }
 

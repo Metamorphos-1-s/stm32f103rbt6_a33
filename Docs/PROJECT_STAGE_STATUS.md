@@ -1,5 +1,25 @@
 # Project stage status
 
+## Stage 5C-A Closeout
+
+Stage 5C-A BLE transport hardware and BLE/RS485 concurrency validation is
+merged to `main` at `2eac9f0bf9b137f031bf91c1791d434436ca6020` and frozen by
+annotated tag `stage5c-a-hw-tested`.
+
+## Stage 5C-B
+
+Branch: `stage5c-ble-b`.
+
+Read-only realtime telemetry software is implemented: version 1 FAST_WEIGHT
+and SLOW_STATUS frames, explicit little-endian serialization, shared CRC16,
+stream parser, and non-blocking latest-data-wins scheduling. Host C tests are
+10/10 and Python parser tests are 5/5. Debug, Release, and BoardDiagnostics
+images build without new warnings; Release remains below `0x0801F000`.
+
+Hardware telemetry testing has not yet been run on this branch. Do not mark
+Stage 5C-B complete or enter Stage 5C-C until empty/500 g/+1 g/TARE/SAVE,
+600-second BLE soak, BLE+weighing, and BLE+RS485 checks are recorded.
+
 ## Stage 5A
 
 Stage 5A HF2-R1 hardware regression is merged to `main` at
@@ -21,14 +41,16 @@ CubeMX project, so no USART3 claim or `.ioc` change was made. W02 module model,
 AT protocol, BLE service/characteristic UUIDs, and true phone-link reporting
 remain unknown and explicitly unimplemented.
 
-Current status: software implementation in progress/host verified; hardware
-W02 UART and BLE link validation pending.
+Historical branch note: the transport implementation was host verified before
+the H2 hardware closeout. The current closeout results are recorded in
+`Docs/STAGE5C_A_BLE_TRANSPORT.md` and frozen on `main`.
 
 H2 update: phone writes through FFE2 have been received by USART1 and the
 transport ring (`ABC123`, six bytes, no overflow). A BoardDiagnostics-only
-one-shot `Hello W02` TX trigger has been added for FFE1 Notify validation.
-Reverse-direction, bidirectional, link-observation, and RS485 concurrency
-hardware tests remain pending.
+one-shot `Hello W02` TX trigger was used for FFE1 Notify validation.
+Reverse-direction, bidirectional, link-observation and BLE/RS485 concurrency
+results are now recorded in the Stage 5C-A closeout document; the known RS485
+transient is a physical-layer limitation.
 
 H2 build snapshot: Debug 112,692 B / 12,312 B, Release 61,184 B / 12,320 B,
 and BoardDiagnostics 110,812 B / 12,312 B (Flash / RAM). Release load ends at

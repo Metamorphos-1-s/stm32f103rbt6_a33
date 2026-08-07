@@ -99,6 +99,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Drivers/w02/w02_pwrkey.c
     Drivers/w02/w02_uart.c
     Protocol/command_service/command_service.c
+    Protocol/crc16/crc16.c
+    Protocol/ble/ble_frame_codec.c
     Protocol/modbus/modbus_command_mailbox.c
     Protocol/modbus/modbus_register_model.c
     Protocol/modbus/modbus_crc16.c
@@ -115,6 +117,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Services/storage_power_guard/storage_power_guard.c
     Services/ble_transport/ble_transport.c
     Services/ble_connection_manager/ble_connection_manager.c
+    Services/ble_telemetry_service/ble_telemetry_scheduler.c
+    Services/ble_telemetry_service/ble_telemetry_service.c
     UI/display_controller.c
     UI/display_model/display_codes.c
     UI/display_model/display_formatter.c
@@ -136,6 +140,8 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Domain/stability
     Domain/zero_tare
     Protocol/command_service
+    Protocol/crc16
+    Protocol/ble
     Protocol/modbus
     Drivers/battery_adc
     Drivers/cs1237
@@ -145,6 +151,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Drivers/w02
     Services/ble_transport
     Services/ble_connection_manager
+    Services/ble_telemetry_service
     Services/config_store
     Services/crc32
     Services/config_edit
