@@ -45,8 +45,8 @@ class TelemetryParser:
         self.sequence_gaps = 0
         self.duplicates = 0
         self.timestamp_anomalies = 0
-        self._last_sequence = {}
-        self._last_timestamp = {}
+        self._last_sequence = None
+        self._last_timestamp = None
 
     def feed(self, data):
         self.buffer.extend(data)
@@ -126,23 +126,22 @@ class TelemetryParser:
         return frame
 
     def _check_order(self, frame):
-        kind = frame["message_type"]
         sequence = frame["frame_sequence"]
         timestamp = frame["device_timestamp_ms"]
-        if kind in self._last_sequence:
-            previous = self._last_sequence[kind]
+        if self._last_sequence is not None:
+            previous = self._last_sequence
             if sequence == previous:
                 self.duplicates += 1
             else:
                 gap = (sequence - previous - 1) & 0xFFFF
                 if gap < 0x8000:
                     self.sequence_gaps += gap
-        if kind in self._last_timestamp:
-            delta = (timestamp - self._last_timestamp[kind]) & 0xFFFFFFFF
+        if self._last_timestamp is not None:
+            delta = (timestamp - self._last_timestamp) & 0xFFFFFFFF
             if delta == 0 or delta >= 0x80000000:
                 self.timestamp_anomalies += 1
-        self._last_sequence[kind] = sequence
-        self._last_timestamp[kind] = timestamp
+        self._last_sequence = sequence
+        self._last_timestamp = timestamp
 
 
 def parse_args():
@@ -162,6 +161,7 @@ async def run(args):
     parser = TelemetryParser()
     started = time.monotonic()
     disconnected = 0
+    intentional_disconnect = False
     device = None
     if args.address:
         device = await BleakScanner.find_device_by_address(args.address, timeout=15.0)
@@ -173,7 +173,8 @@ async def run(args):
 
     def on_disconnect(_client):
         nonlocal disconnected
-        disconnected += 1
+        if not intentional_disconnect:
+            disconnected += 1
 
     def on_notify(_characteristic, data):
         frames = parser.feed(bytes(data))
@@ -190,6 +191,7 @@ async def run(args):
         try:
             await asyncio.sleep(args.duration_s)
         finally:
+            intentional_disconnect = True
             if client.is_connected:
                 await client.stop_notify(FFE1_UUID)
     fast = [frame for frame in parser.frames if frame["message_type"] == FAST_TYPE]
@@ -210,7 +212,8 @@ async def run(args):
     (output_dir / "telemetry_summary.json").write_text(
         json.dumps(summary, indent=2) + "\n", encoding="ascii")
     print("TELEMETRY_SUMMARY " + json.dumps(summary, separators=(",", ":")), flush=True)
-    return 0 if summary["crc_errors"] == 0 and not parser.buffer else 1
+    return 0 if (summary["crc_errors"] == 0 and summary["sequence_gaps"] == 0 and
+                 summary["disconnects"] == 0 and not parser.buffer) else 1
 
 
 def main():
