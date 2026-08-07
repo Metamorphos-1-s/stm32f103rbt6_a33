@@ -15,7 +15,9 @@ def _enum(value, names):
 
 def parse_status(identity, realtime, diagnostic, active, display, drift):
     order = identity["word_order"]
-    status_flags = frame.decode_u32_words(realtime[4:6], order)
+    # Firmware publishes status as low 16 bits at 0x0004 and high at 0x0005.
+    # This legacy field is intentionally independent of configured word order.
+    status_flags = realtime[4] | (realtime[5] << 16)
     unit = realtime[3]
     unit_base = 0x10 + unit * 2
     result = {

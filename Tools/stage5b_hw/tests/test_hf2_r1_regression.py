@@ -31,6 +31,7 @@ class ReadOnlyClient:
         if address == reg.REALTIME_FIRST and quantity == 0x20:
             values[14] = reg.REGISTER_MAP_VERSION
             values[15] = reg.FIRMWARE_VERSION
+            values[4] = reg.STATUS_STABLE
         elif address == reg.STORAGE_FIRST:
             values[0] = reg.SCHEMA_VERSION
         elif address == reg.ACTIVE_WORD_ORDER:

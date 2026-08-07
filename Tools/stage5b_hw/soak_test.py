@@ -34,7 +34,7 @@ def run(client, report, duration_s, interval_ms, max_timeouts=0,
                         "response_time_complete_ms": exchange.complete_ms,
                         "function": 3, "exception": "", "crc_valid": True,
                         "sample_sequence": sequence,
-                        "status_flags": (values[4] << 16) | values[5],
+                        "status_flags": values[4] | (values[5] << 16),
                         "storage_state": storage[0], "communication_state": "not mapped"})
             latencies.append(exchange.complete_ms)
         except Exception as exc:

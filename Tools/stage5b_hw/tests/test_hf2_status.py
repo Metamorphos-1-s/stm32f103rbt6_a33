@@ -18,7 +18,8 @@ class Hf2StatusTests(unittest.TestCase):
         active = [0] * 0x40
         display = [0] * 0x11
         drift = [0] * 0x1E
-        realtime[4:6] = words(reg.STATUS_STABLE | reg.STATUS_TARE_ACTIVE, 2, order)
+        flags = reg.STATUS_STABLE | reg.STATUS_TARE_ACTIVE
+        realtime[4:6] = [flags & 0xFFFF, flags >> 16]
         realtime[0x10:0x14] = words(-123456, 4, order)
         realtime[0x14:0x18] = words(500000000, 4, order)
         realtime[0x1C:0x1E] = words(-100, 2, order)
@@ -38,6 +39,7 @@ class Hf2StatusTests(unittest.TestCase):
         self.assertEqual(result["runtime_drift"]["state"]["name"], "TRACKING")
         self.assertEqual(result["runtime_drift"]["sample_count"], 301)
         self.assertEqual(result["weighing"]["net"]["ug"], -123456)
+        self.assertTrue(result["weighing"]["stable"])
 
     def test_low_word_first_positive_and_negative(self):
         result = parse_status(*self.make_blocks("low"))
