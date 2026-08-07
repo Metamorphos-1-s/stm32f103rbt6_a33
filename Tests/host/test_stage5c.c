@@ -14,6 +14,7 @@ uint16_t Stage5C_FakeTxLength(void);
 uint8_t Stage5C_FakeTxByte(uint16_t index);
 void Stage5C_FakeSetReady(bool ready);
 void Stage5C_FakeUartError(void);
+void Stage5C_FakeSetTime(uint32_t now_ms);
 
 #define CHECK(condition) do { if (!(condition)) { \
     printf("FAIL:%d\n", __LINE__); return 1; } } while (0)
@@ -174,11 +175,62 @@ static int TestHardwareDiagnostic(void)
     return 0;
 }
 
+static int TestSoakTrigger(void)
+{
+    static const uint8_t abc123[6] = {
+        0x41U, 0x42U, 0x43U, 0x31U, 0x32U, 0x33U
+    };
+    Stage5CBleTxDiagnosticSnapshot snapshot;
+    uint16_t index;
+
+    Stage5C_FakeReset();
+    BleTransport_Init(0U);
+    Stage5C_BleDiagnosticsInit();
+    Stage5C_FakeSetTime(0xFFFFFF00UL);
+    CHECK(Stage5C_BleDiagnosticsStartSoak());
+    CHECK(!Stage5C_BleDiagnosticsStartSoak());
+    snapshot = *Stage5C_BleDiagnosticsGetSnapshot();
+    CHECK(snapshot.soak_request_count == 1U);
+    CHECK(snapshot.soak_accepted_count == 1U && snapshot.soak_busy_count == 0U);
+    BleTransport_Run(0xFFFFFF01UL);
+    Stage5C_FakeCompleteTx();
+    BleTransport_Run(0xFFFFFF02UL);
+
+    Stage5C_FakeSetTime(0x000002E7UL);
+    Stage5C_BleDiagnosticsProcess();
+    snapshot = *Stage5C_BleDiagnosticsGetSnapshot();
+    CHECK(snapshot.soak_active && snapshot.soak_request_count == 1U);
+
+    for (index = 0U; index < sizeof(abc123); ++index)
+        BleTransport_RxPushFromIsr(abc123[index]);
+    Stage5C_FakeSetTime(0x000002E8UL);
+    Stage5C_BleDiagnosticsProcess();
+    snapshot = *Stage5C_BleDiagnosticsGetSnapshot();
+    CHECK(snapshot.soak_request_count == 2U);
+    CHECK(snapshot.soak_accepted_count == 2U && snapshot.soak_busy_count == 0U);
+    CHECK(snapshot.soak_rx_bytes == 6U && snapshot.soak_rx_frame_count == 1U);
+    CHECK(snapshot.soak_rx_mismatch_count == 0U && snapshot.soak_rx_partial_bytes == 0U);
+
+    Stage5C_FakeSetTime(0x000006D0UL);
+    Stage5C_BleDiagnosticsProcess();
+    snapshot = *Stage5C_BleDiagnosticsGetSnapshot();
+    CHECK(snapshot.soak_request_count == 3U);
+    CHECK(snapshot.soak_accepted_count == 2U && snapshot.soak_busy_count == 1U);
+
+    Stage5C_FakeSetTime(0x000926C0UL);
+    Stage5C_BleDiagnosticsProcess();
+    snapshot = *Stage5C_BleDiagnosticsGetSnapshot();
+    CHECK(!snapshot.soak_active);
+    Stage5C_BleDiagnosticsStopSoak();
+    return 0;
+}
+
 int main(void)
 {
     if (TestTransport() != 0) return 1;
     if (TestConnectionManager() != 0) return 1;
     if (TestHardwareDiagnostic() != 0) return 1;
+    if (TestSoakTrigger() != 0) return 1;
     printf("stage5c host tests passed\n");
     return 0;
 }

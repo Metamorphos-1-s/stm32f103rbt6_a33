@@ -3,7 +3,7 @@
 ## Baseline and hardware facts
 
 - Stage 5A closeout main baseline: `167f4f43290dcfceccd7e510965b5e0b9445ef9`.
-- Working branch: `stage5c-ble-a`.
+- Working branch: `stage5c-ble-a-h2`.
 - The repository contains no W02 vendor part number or module datasheet.
 - CubeMX `.ioc` enables USART1 on PA9/PA10 and labels it `MCU_BLE_TX` /
   `MCU_BLE_RX`. It is configured 9600, 8-N-1, asynchronous, no flow control.
@@ -52,16 +52,18 @@ and UUID discovery remain deferred; no protocol or UUID was invented.
 
 ## Verification
 
-- Host tests: 8/8 passed, including Stage 5C-A initialization, RX ordering,
+- Host tests: 9/9 passed, including Stage 5C-A initialization, RX ordering,
   ring wrap/overflow, bounded TX, TX busy/complete/reject recovery, reset,
-  state events, link-unknown behavior, and concurrency-safe nonblocking paths.
+  state events, link-unknown behavior, the 600-second diagnostic scheduler,
+  and USART2 DMA restart recovery.
 - ARM builds pass for Debug, Release, and BoardDiagnostics. Debug uses
-  112,412 B Flash / 12,256 B RAM; Release uses 61,000 B Flash / 12,264 B RAM;
-  BoardDiagnostics uses 110,172 B Flash / 12,256 B RAM. Release load remains
-  load image ends at `0x0800EE47`, below `0x0801F000`; Schema V2 remains 344 B with config slots A
+  112,996 B Flash / 12,392 B RAM; Release uses 61,424 B Flash / 12,400 B RAM;
+  BoardDiagnostics uses 111,876 B Flash / 12,400 B RAM. The Release load
+  remains below `0x0801F000`; Schema V2 remains 344 B with config slots A
   `0x0801F000-0x0801F7FF` and B `0x0801F800-0x0801FFFF`.
-- Hardware W02 UART, BLE connect/disconnect, and RS485+BLE concurrency have
-  not yet been tested on a board.
+- W02 UART, PC/phone BLE, and the RS485+BLE concurrency path have now been
+  tested on hardware. Link state remains UNKNOWN because the W02 did not emit
+  a reliable UART connect/disconnect indication.
 
 ## Deferred scope
 
@@ -107,12 +109,62 @@ captured, `BLE_LINK_UNKNOWN` is retained by design.
 Current H2 status:
 
 - Phone -> FFE2 -> W02 -> STM32: PASS.
-- STM32 -> W02 -> FFE1 Notify -> phone: pending.
-- Ten-round bidirectional transport: pending.
-- Connect/disconnect UART observation: pending.
-- RS485 + BLE 600-second concurrency regression: pending.
+- STM32 -> W02 -> FFE1 Notify -> phone/PC: PASS.
+- Ten-round bidirectional transport: PASS.
+- Connect/disconnect UART observation: no reliable indication observed;
+  `BLE_LINK_UNKNOWN` is retained.
+- RS485 + BLE 600-second concurrency regression: completed; BLE transport
+  PASS, USART2 recovery PASS, RS485 link quality has transient errors described
+  below.
 
-H2 build snapshot: Debug 112,692 B Flash / 12,312 B RAM; Release 61,184 B
-Flash / 12,320 B RAM; BoardDiagnostics 110,812 B Flash / 12,312 B RAM.
-The Release load image ends at `0x0800EEFF`, below config slot A at
-`0x0801F000`. Schema V2 remains 344 B and the A/B slot addresses are unchanged.
+H2 build snapshot: Debug 112,996 B Flash / 12,392 B RAM; Release 61,424 B
+Flash / 12,400 B RAM; BoardDiagnostics 111,876 B Flash / 12,400 B RAM.
+The Release image remains below config slot A at `0x0801F000`. Schema V2
+remains 344 B and the A/B slot addresses are unchanged.
+
+## PC concurrent hardware test
+
+Formal run: `Results/hardware/stage5c_concurrent_fixed_20260807_235107`.
+The PC used W02 address `C8:46:82:00:83:24`, FFE1 Notify, and FFE2 write
+without response. In parallel, COM5 polled slave 1 at 115200, 8-N-1 using
+read-only FC03 requests for 600 seconds.
+
+BLE completed without loss: 600/600 `ABC123` writes succeeded and 600/600
+`Hello W02` notifications were parsed (5400 bytes), with zero mismatched or
+partial bytes, zero write errors, and zero disconnects. The MCU snapshot also
+reported 600 accepted TX requests, 600 validated RX frames, zero busy results,
+zero mismatches, and zero USART1 errors.
+
+The RS485 runner completed 1425 probe cycles: 1391 complete successes and 34
+timeouts, with zero PC-side CRC errors or Modbus exceptions. The MCU remained
+in `COMM_STATE_RUNNING`; the framer returned to `WAITING`, the server returned
+to `IDLE`, and the active fault mask was zero. Cumulative MCU counters for the
+run were 7042 valid/addressed FC03 frames and 7042 responses, with zero TX
+errors. The UART recorded 19 frame errors, one noise error, and one hardware
+overrun; the framer recorded 18 recovered transport errors and four CRC
+errors. These are transient RS485 signal-quality errors, so this run is not a
+zero-error RS485 qualification despite completing the full duration.
+
+An earlier 600-second run exposed a recovery defect: after a UART error
+restarted circular RX DMA, the transport retained the old wrap-count baseline.
+That made every later process pass report a receive error and left the framer
+discarding indefinitely. `Uart2DmaTransport_Process()` now rebases the DMA
+position and event snapshot after restart. The formal rerun ended with zero
+software DMA overruns and one wrap-race compensation instead of millions of
+repeated transport errors. A host regression reproduces the restart sequence
+and verifies that subsequent bytes are received normally.
+
+The persisted configuration region was read before and after flashing the
+diagnostic image. Both SHA-256 values were
+`4190EF58D7B31D76832E21857FF4D7856E7B9F66A7E5BF57A9CC063F2C8C0871`.
+
+A second automated 600-second rerun is recorded in
+`Results/hardware/stage5c_concurrent_rerun_20260808_010427`. BLE again
+completed 600/600 writes and 600/600 notifications with zero transport
+errors. RS485 completed 1431 cycles, with 1401 complete successes, 30
+timeouts, zero PC-side CRC errors, and zero exceptions. The MCU ended in
+`COMM_STATE_RUNNING` with framer `WAITING`, server `IDLE`, zero software DMA
+overruns, one wrap-race compensation, and an active fault mask of zero. The
+repeatability of the timeout/error rate points to transient RS485 signal
+quality as the remaining hardware issue, rather than a persistent software
+transport lockup.

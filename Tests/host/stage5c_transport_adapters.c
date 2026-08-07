@@ -9,6 +9,7 @@ static bool s_reject_tx;
 static uint16_t s_last_tx_length;
 static uint8_t s_last_tx[256];
 static W02UartEvents s_events;
+static uint32_t s_now_ms;
 
 void W02PwrKey_Init(void) {}
 bool W02PwrKey_RequestPulse(uint32_t low_time_ms)
@@ -33,7 +34,11 @@ void Stage5C_FakeReset(void)
     s_last_tx_length = 0U;
     (void)memset(s_last_tx, 0, sizeof(s_last_tx));
     (void)memset(&s_events, 0, sizeof(s_events));
+    s_now_ms = 0U;
 }
+
+void Stage5C_FakeSetTime(uint32_t now_ms) { s_now_ms = now_ms; }
+uint32_t BSP_TimeNowMs(void) { return s_now_ms; }
 
 void Stage5C_FakeCompleteTx(void)
 {

@@ -260,7 +260,7 @@ add_executable(stage5c_host_tests
     ../../Diagnostics/stage5c_ble_diagnostics.c
 )
 target_include_directories(stage5c_host_tests PRIVATE
-    . ../../Config ../../Services/ble_transport
+    . ../../BSP ../../Config ../../Services/ble_transport
     ../../Services/ble_connection_manager ../../Services/event_queue
     ../../Drivers/w02 ../../Diagnostics)
 if(MSVC)
@@ -269,3 +269,18 @@ else()
     target_compile_options(stage5c_host_tests PRIVATE -Wall -Wextra -Werror)
 endif()
 add_test(NAME stage5c_host_logic COMMAND stage5c_host_tests)
+
+add_executable(uart2_dma_recovery_tests
+    test_uart2_dma_transport.c
+    uart2_dma_transport_adapters.c
+    ../../Drivers/serial/uart2_dma_transport.c
+    ../../Drivers/serial/uart2_dma_position.c
+)
+target_include_directories(uart2_dma_recovery_tests PRIVATE
+    . ../../BSP ../../Config ../../Drivers/serial ../../Domain/measurement)
+if(MSVC)
+    target_compile_options(uart2_dma_recovery_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(uart2_dma_recovery_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME uart2_dma_recovery_logic COMMAND uart2_dma_recovery_tests)

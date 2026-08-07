@@ -27,11 +27,22 @@ typedef struct
     uint16_t tx_pending_before;
     uint16_t tx_pending_after;
     bool completion_seen;
+    bool soak_active;
+    uint32_t soak_start_ms;
+    uint32_t soak_request_count;
+    uint32_t soak_accepted_count;
+    uint32_t soak_busy_count;
+    uint32_t soak_rx_bytes;
+    uint32_t soak_rx_frame_count;
+    uint32_t soak_rx_mismatch_count;
+    uint16_t soak_rx_partial_bytes;
 } Stage5CBleTxDiagnosticSnapshot;
 
 void Stage5C_BleDiagnosticsInit(void);
 void Stage5C_BleDiagnosticsProcess(void);
 Stage5CBleTxResult Stage5C_BleDiagnosticsRequestHello(void);
+bool Stage5C_BleDiagnosticsStartSoak(void);
+void Stage5C_BleDiagnosticsStopSoak(void);
 const Stage5CBleTxDiagnosticSnapshot *Stage5C_BleDiagnosticsGetSnapshot(void);
 
 #endif /* STAGE5C_BLE_DIAGNOSTICS_H */
