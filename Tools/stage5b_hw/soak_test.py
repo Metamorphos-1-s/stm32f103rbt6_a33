@@ -4,6 +4,7 @@ import csv
 import statistics
 import time
 
+import modbus_frame as frame
 import register_map as reg
 
 
@@ -16,6 +17,10 @@ def run(client, report, duration_s, interval_ms, max_timeouts=0,
     timeout_details = []
     request_number = 0
     first_sequence = last_sequence = None
+    try:
+        word_order = "low" if client.read(reg.ACTIVE_WORD_ORDER, 1)[0][0] else "high"
+    except Exception:
+        word_order = "high"
     while time.monotonic() - start < duration_s:
         request_number += 1
         row = {"timestamp": time.time(), "request_number": request_number}
@@ -26,15 +31,34 @@ def run(client, report, duration_s, interval_ms, max_timeouts=0,
             diag, _ = client.read(reg.SAMPLE_SEQUENCE, 2)
             stage = "storage_state"
             storage, _ = client.read(reg.STORAGE_STATE, 1)
-            sequence = (diag[0] << 16) | diag[1]
+            sequence = frame.decode_u32_words(diag, word_order)
+            stage = "display_conditioner"
+            display = client.read(reg.DISPLAY_CONDITION_FIRST, 17)[0]
+            stage = "runtime_drift"
+            drift = client.read(reg.RUNTIME_DRIFT_FIRST, 30)[0]
             first_sequence = sequence if first_sequence is None else first_sequence
             last_sequence = sequence
+            flags = values[4] | (values[5] << 16)
             row.update({"tx_hex": exchange.tx.hex(), "rx_hex": exchange.rx.hex(),
                         "response_time_first_byte_ms": exchange.first_byte_ms,
                         "response_time_complete_ms": exchange.complete_ms,
                         "function": 3, "exception": "", "crc_valid": True,
                         "sample_sequence": sequence,
-                        "status_flags": values[4] | (values[5] << 16),
+                        "status_flags": flags,
+                        "stable": bool(flags & reg.STATUS_STABLE),
+                        "overload": bool(flags & reg.STATUS_OVERLOAD),
+                        "raw_count": frame.decode_i32_words(values[0x1C:0x1E], word_order),
+                        "filtered_raw": frame.decode_i32_words(values[0x1E:0x20], word_order),
+                        "display_mass_ug": frame.decode_i64_words(display[2:6], word_order),
+                        "display_locked": bool(display[1]),
+                        "display_release_reason": reg.DISPLAY_RELEASE_REASONS.get(display[16], "UNKNOWN"),
+                        "runtime_state": reg.RUNTIME_DRIFT_STATES.get(drift[0], "UNKNOWN"),
+                        "runtime_enabled": bool(drift[1]),
+                        "runtime_limited": bool(drift[2]),
+                        "runtime_offset_ug": frame.decode_i64_words(drift[4:8], word_order),
+                        "runtime_uncompensated_gross_ug": frame.decode_i64_words(drift[8:12], word_order),
+                        "runtime_compensated_gross_ug": frame.decode_i64_words(drift[12:16], word_order),
+                        "runtime_sample_count": frame.decode_u32_words(drift[28:30], word_order),
                         "storage_state": storage[0], "communication_state": "not mapped"})
             latencies.append(exchange.complete_ms)
         except Exception as exc:
@@ -49,6 +73,8 @@ def run(client, report, duration_s, interval_ms, max_timeouts=0,
                     "realtime": (reg.REALTIME_FIRST, 0x20),
                     "sample_sequence": (reg.SAMPLE_SEQUENCE, 2),
                     "storage_state": (reg.STORAGE_STATE, 1),
+                    "display_conditioner": (reg.DISPLAY_CONDITION_FIRST, 17),
+                    "runtime_drift": (reg.RUNTIME_DRIFT_FIRST, 30),
                 }[stage]
                 for retry in range(timeout_retries):
                     detail["retry_attempts"] = retry + 1
