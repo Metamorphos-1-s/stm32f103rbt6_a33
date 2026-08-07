@@ -45,6 +45,7 @@ def parser():
     p = sub.add_parser("flash"); add_common(p, False); p.add_argument("--elf"); p.add_argument("--programmer")
     p = sub.add_parser("dump-slots"); add_common(p, False); p.add_argument("--output-directory", required=True); p.add_argument("--programmer")
     p = sub.add_parser("probe"); add_common(p)
+    p = sub.add_parser("hf2-status"); add_common(p)
     p = sub.add_parser("read"); add_common(p); p.add_argument("address", type=lambda x: int(x, 0)); p.add_argument("quantity", type=int)
     p = sub.add_parser("write-single"); add_common(p); p.add_argument("address", type=lambda x: int(x, 0)); p.add_argument("value", type=lambda x: int(x, 0))
     p = sub.add_parser("write-multiple"); add_common(p); p.add_argument("address", type=lambda x: int(x, 0)); p.add_argument("values", nargs="+", type=lambda x: int(x, 0))
@@ -54,7 +55,7 @@ def parser():
             p.add_argument("--include-errors", action="store_true",
                            help="include guarded malformed FC06/FC16 tests")
     p = sub.add_parser("errors"); add_common(p)
-    p = sub.add_parser("commands"); add_common(p); p.add_argument("--name", default="NOP", choices=sorted(reg.COMMANDS)); p.add_argument("--repeat-token", action="store_true")
+    p = sub.add_parser("commands"); add_common(p); p.add_argument("--name", default="NOP", choices=sorted(reg.COMMANDS)); p.add_argument("--repeat-token", action="store_true"); p.add_argument("--arg0", type=lambda x: int(x, 0), default=0); p.add_argument("--arg1", type=lambda x: int(x, 0), default=0)
     p = sub.add_parser("config-apply"); add_common(p)
     p.add_argument("--communication", action="store_true")
     p.add_argument("--new-baud", type=int, choices=sorted(reg.BAUD_ENUM))
@@ -123,7 +124,8 @@ def open_client(args, report):
     if not args.port:
         raise HardwareTestError("no serial port selected; use --port or a JSON port alias")
     interactive_frames = args.command in ("probe", "read", "write-single",
-        "write-multiple", "errors", "commands", "config-apply", "save")
+        "write-multiple", "errors", "commands", "config-apply", "save",
+        "hf2-status")
     transport = SerialTransport(args.port, args.baud_rate, args.parity,
         args.stop_bits, args.timeout_ms, report.raw,
         args.verbose or interactive_frames)
@@ -241,6 +243,11 @@ def run_serial(args, report):
     try:
         if args.command == "probe":
             value = probe_device(client); print(json.dumps(value, indent=2)); report.add("probe", "PASS", "read-only identity", value); return True
+        if args.command == "hf2-status":
+            from hf2_status import read_status
+            value = read_status(client); print(json.dumps(value, indent=2))
+            report.add("HF2-R1 status", "PASS", "read-only telemetry", value)
+            return True
         if args.command == "read":
             values, _ = client.read(args.address, args.quantity); print("PDU 0x%04X / PLC %d: %s" % (args.address, reg.plc_address(args.address), values)); return True
         if args.command == "write-single":
@@ -273,7 +280,8 @@ def run_serial(args, report):
             if "CALIBRATION" in args.name: authorize(args, "calibration", "allow_calibration", "calibration command", "CALIBRATION")
             if args.name == "REQUEST_SAVE": authorize(args, "save", "allow_flash", "persistent SAVE", "SAVE_FLASH")
             if args.name == "COMMUNICATION_APPLY": authorize(args, "communication_change", "allow_comm_change", "communication apply", "COMM_CHANGE")
-            return test_commands.run(client, report, args.name, args.repeat_token)
+            return test_commands.run(client, report, args.name,
+                                     args.repeat_token, args.arg0, args.arg1)
         if args.command == "config-apply":
             authorize(args, "config_apply", "allow_write", "temporary RAM brightness change and restore", "CONFIG_APPLY")
             if args.communication:

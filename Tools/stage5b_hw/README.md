@@ -11,7 +11,7 @@ python -m pip install -r Tools\stage5b_hw\requirements.txt
 python Tools\stage5b_hw\stage5b_hw.py list-ports
 ```
 
-Copy `example_config.json` to a local test configuration and set explicit COM ports. The tool never guesses between multiple adapters. Command-line values override JSON values. `COM10` and higher are supported by pyserial.
+Copy `example_config.json` to a local test configuration and set explicit COM ports. Command-line values override JSON values. `COM10` and higher are supported by pyserial.
 
 ## Wiring and safety
 
@@ -30,17 +30,24 @@ All FC06/FC16 operations are denied by default. The `rs232` and `rs485` suites r
 ```powershell
 python Tools\stage5b_hw\stage5b_hw.py probe --port COM5 --interface rs232 --baud 9600 --parity N --stopbits 1 --slave 1
 python Tools\stage5b_hw\stage5b_hw.py read 0x0000 32 --port COM5
+python Tools\stage5b_hw\stage5b_hw.py hf2-status --port COM5 --interface rs485
 python Tools\stage5b_hw\stage5b_hw.py smoke --config my_board.json --count 100
 python Tools\stage5b_hw\stage5b_hw.py rs485 --port COM6 --count 100
 python Tools\stage5b_hw\stage5b_hw.py rs485 --port COM6 --count 100 --include-errors --allow-write
 python Tools\stage5b_hw\stage5b_hw.py soak --port COM6 --interface rs485 --duration-s 3600 --interval-ms 50 --output-csv soak.csv
 python Tools\stage5b_hw\stage5b_hw.py commands --port COM5 --name NOP --allow-write
+python Tools\stage5b_hw\stage5b_hw.py commands --port COM5 --name RUNTIME_DRIFT_CONTROL --arg0 1 --allow-write --allow-actions
 python Tools\stage5b_hw\stage5b_hw.py config-apply --port COM5 --allow-write
 python Tools\stage5b_hw\stage5b_hw.py config-apply --port COM5 --communication --new-baud 19200 --new-slave 2 --allow-write --allow-comm-change
 python Tools\stage5b_hw\stage5b_hw.py save --port COM5 --allow-write --allow-flash --manual-power-cycle
 ```
 
 PDU addresses are zero based. The tool prints the corresponding PLC-style address as `40001 + PDU address`. Every exchange prints raw TX/RX hexadecimal bytes and test runs write reports under `reports/YYYYMMDD_HHMMSS_<interface>/`.
+
+`hf2-status` requires map `0x0102` and reads the complete DisplayConditioner and
+Runtime Drift blocks. It reports signed masses in both ug and g and treats a
+nonzero reserved register `0x0203` as an error. Runtime drift command 25 is
+volatile, is not saved to Flash, and accepts only `--arg0 0` or `--arg0 1`.
 
 `full` runs identity, smoke and soak tests. It adds malformed write-frame and temporary RAM configuration tests only when `--allow-write` is present. It never silently runs SAVE, factory reset, calibration, communication changes, or deliberate power loss.
 
