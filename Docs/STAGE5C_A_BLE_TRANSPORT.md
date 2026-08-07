@@ -58,7 +58,7 @@ and UUID discovery remain deferred; no protocol or UUID was invented.
 - ARM builds pass for Debug, Release, and BoardDiagnostics. Debug uses
   112,412 B Flash / 12,256 B RAM; Release uses 61,000 B Flash / 12,264 B RAM;
   BoardDiagnostics uses 110,172 B Flash / 12,256 B RAM. Release load remains
-  below `0x0801F000`; Schema V2 remains 344 B with config slots A
+  load image ends at `0x0800EE47`, below `0x0801F000`; Schema V2 remains 344 B with config slots A
   `0x0801F000-0x0801F7FF` and B `0x0801F800-0x0801FFFF`.
 - Hardware W02 UART, BLE connect/disconnect, and RS485+BLE concurrency have
   not yet been tested on a board.

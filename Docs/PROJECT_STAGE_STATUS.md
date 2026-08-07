@@ -29,5 +29,5 @@ Post-change ARM resource snapshot:
 - Debug: Flash 112,412 B, RAM 12,256 B.
 - Release: Flash 61,000 B, RAM 12,264 B.
 - BoardDiagnostics: Flash 110,172 B, RAM 12,256 B.
-- Release load end is below `0x0801F000`; Schema V2 is 344 B and the existing
+- Release load end is `0x0800EE47`, below `0x0801F000`; Schema V2 is 344 B and the existing
   config slots remain A `0x0801F000-0x0801F7FF`, B `0x0801F800-0x0801FFFF`.
