@@ -9,11 +9,23 @@ static const uint8_t s_hello_w02[9] = {
     0x48U, 0x65U, 0x6CU, 0x6CU, 0x6FU, 0x20U, 0x57U, 0x30U, 0x32U
 };
 static Stage5CBleTxDiagnosticSnapshot s_snapshot;
+static volatile bool s_debug_entry_guard;
+
+#if defined(__GNUC__)
+#define STAGE5C_DEBUG_ENTRY __attribute__((used, retain, noinline))
+#else
+#define STAGE5C_DEBUG_ENTRY
+#endif
 
 void Stage5C_BleDiagnosticsInit(void)
 {
     (void)memset(&s_snapshot, 0, sizeof(s_snapshot));
     s_snapshot.last_result = STAGE5C_BLE_TX_NOT_READY;
+    if (s_debug_entry_guard)
+    {
+        (void)Stage5C_BleDiagnosticsRequestHello();
+        (void)Stage5C_BleDiagnosticsGetSnapshot();
+    }
 }
 
 void Stage5C_BleDiagnosticsProcess(void)
@@ -32,6 +44,7 @@ void Stage5C_BleDiagnosticsProcess(void)
     }
 }
 
+STAGE5C_DEBUG_ENTRY
 Stage5CBleTxResult Stage5C_BleDiagnosticsRequestHello(void)
 {
 #if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS != 0U)
@@ -77,6 +90,7 @@ Stage5CBleTxResult Stage5C_BleDiagnosticsRequestHello(void)
 #endif
 }
 
+STAGE5C_DEBUG_ENTRY
 const Stage5CBleTxDiagnosticSnapshot *Stage5C_BleDiagnosticsGetSnapshot(void)
 {
     return &s_snapshot;

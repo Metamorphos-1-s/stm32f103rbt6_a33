@@ -30,9 +30,9 @@ one-shot `Hello W02` TX trigger has been added for FFE1 Notify validation.
 Reverse-direction, bidirectional, link-observation, and RS485 concurrency
 hardware tests remain pending.
 
-H2 build snapshot: Debug 112,612 B / 12,312 B, Release 61,144 B / 12,320 B,
-and BoardDiagnostics 110,372 B / 12,304 B (Flash / RAM). Release load ends at
-`0x0800EED7`; Schema V2 and config slot addresses are unchanged.
+H2 build snapshot: Debug 112,692 B / 12,312 B, Release 61,184 B / 12,320 B,
+and BoardDiagnostics 110,812 B / 12,312 B (Flash / RAM). Release load ends at
+`0x0800EEFF`; Schema V2 and config slot addresses are unchanged.
 
 Post-change ARM resource snapshot:
 

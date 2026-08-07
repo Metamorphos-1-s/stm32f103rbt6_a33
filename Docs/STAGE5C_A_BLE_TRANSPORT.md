@@ -112,7 +112,7 @@ Current H2 status:
 - Connect/disconnect UART observation: pending.
 - RS485 + BLE 600-second concurrency regression: pending.
 
-H2 build snapshot: Debug 112,612 B Flash / 12,312 B RAM; Release 61,144 B
-Flash / 12,320 B RAM; BoardDiagnostics 110,372 B Flash / 12,304 B RAM.
-The Release load image ends at `0x0800EED7`, below config slot A at
+H2 build snapshot: Debug 112,692 B Flash / 12,312 B RAM; Release 61,184 B
+Flash / 12,320 B RAM; BoardDiagnostics 110,812 B Flash / 12,312 B RAM.
+The Release load image ends at `0x0800EEFF`, below config slot A at
 `0x0801F000`. Schema V2 remains 344 B and the A/B slot addresses are unchanged.
