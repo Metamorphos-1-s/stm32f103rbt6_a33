@@ -1,8 +1,10 @@
 import unittest
+from unittest import mock
 
 import register_map as reg
 from stage5b_hw import parser
 from test_commands import validate_arguments
+import test_commands
 
 
 class CommandArgumentTests(unittest.TestCase):
@@ -21,6 +23,15 @@ class CommandArgumentTests(unittest.TestCase):
             validate_arguments("NOP", -1, 0)
         with self.assertRaises(ValueError):
             validate_arguments("NOP", 0, 0x100000000)
+
+    def test_runtime_arguments_reach_mailbox_helper(self):
+        response = {"result": 0, "result_name": "OK"}
+        report = mock.Mock()
+        with mock.patch("test_commands.execute_command", return_value=response) as execute:
+            self.assertTrue(test_commands.run(object(), report,
+                                              "RUNTIME_DRIFT_CONTROL", False, 1, 7))
+        self.assertEqual(execute.call_args.args[2], 25)
+        self.assertEqual(execute.call_args.args[3:5], (1, 7))
 
 
 if __name__ == "__main__":
