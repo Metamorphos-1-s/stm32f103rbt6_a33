@@ -29,6 +29,8 @@
 #include "storage_power_guard.h"
 #include "system_context.h"
 #include "weighing_profile_manager.h"
+#include "ble_connection_manager.h"
+#include "stage5c_ble_diagnostics.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -173,6 +175,8 @@ void App_Run(void)
       MeasurementBridge_GetLastBacklog(),
       MeasurementBridge_GetObservedOverrunCount());
   CommunicationManager_Process();
+  BleConnectionManager_Run(BSP_TimeNowMs());
+  Stage5C_BleDiagnosticsProcess();
   Stage2B_DiagnosticsUpdateCs1237Stats(
       MeasurementBridge_GetLastBacklog(),
       MeasurementBridge_GetObservedOverrunCount());

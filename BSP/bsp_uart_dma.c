@@ -2,6 +2,7 @@
 
 #include "bsp_gpio.h"
 #include "usart.h"
+#include "w02_uart.h"
 
 #include <stddef.h>
 
@@ -157,15 +158,22 @@ void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *handle)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *handle)
 {
     if (handle == &huart2) ++s_events.rx_complete_count;
+    else if (handle == &huart1) W02Uart_OnRxComplete();
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *handle)
 {
     if (handle == &huart2) ++s_events.tx_dma_complete_count;
+    else if (handle == &huart1) W02Uart_OnTxComplete();
 }
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *handle)
 {
+    if (handle == &huart1)
+    {
+        W02Uart_OnError();
+        return;
+    }
     if (handle != &huart2) return;
     if ((handle->ErrorCode & HAL_UART_ERROR_DMA) != 0U)
     {

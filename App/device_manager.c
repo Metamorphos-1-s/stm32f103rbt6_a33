@@ -11,6 +11,10 @@
 #include "system_context.h"
 #include "tm1628.h"
 #include "w02_pwrkey.h"
+#include "w02_uart.h"
+#include "ble_transport.h"
+#include "ble_connection_manager.h"
+#include "stage5c_ble_diagnostics.h"
 
 #include <limits.h>
 #include <stddef.h>
@@ -58,6 +62,14 @@ bool DeviceManager_Init(const DeviceConfig *config)
 
     OutputGpio_Init();
     W02PwrKey_Init();
+    if (!W02Uart_Init(config->bluetooth.uart_baud_rate))
+    {
+        return false;
+    }
+    BleTransport_Init(BSP_TimeNowMs());
+    BleConnectionManager_Init(BSP_TimeNowMs());
+    Stage5C_BleDiagnosticsInit();
+    (void)W02PwrKey_RequestPulse(W02_PWRKEY_DEFAULT_PULSE_MS);
     if (!TM1628_Init(config->display.brightness) ||
         !BatteryAdc_Init(&config->battery))
     {

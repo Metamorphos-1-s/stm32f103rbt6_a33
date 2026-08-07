@@ -9,8 +9,10 @@
 static uint8_t s_rx_dma_buffer[UART2_RX_DMA_BUFFER_SIZE];
 static Uart2DmaTransportStatistics s_statistics;
 static BspUart2DmaEvents s_observed_events;
+static BspUart2DmaEvents s_event_baseline;
 static uint32_t s_producer_absolute;
 static uint32_t s_consumer_absolute;
+static uint32_t s_position_wrap_baseline;
 static uint32_t s_idle_pending;
 static uint32_t s_idle_timestamp_cycles;
 static uint16_t s_idle_position;
@@ -23,8 +25,10 @@ bool Uart2DmaTransport_Init(const BspUart2Config *config)
 {
     (void)memset(&s_statistics, 0, sizeof(s_statistics));
     (void)memset(&s_observed_events, 0, sizeof(s_observed_events));
+    (void)memset(&s_event_baseline, 0, sizeof(s_event_baseline));
     s_producer_absolute = 0U;
     s_consumer_absolute = 0U;
+    s_position_wrap_baseline = 0U;
     s_idle_pending = 0U;
     s_receive_error = false;
     s_suspended = false;
@@ -36,6 +40,9 @@ bool Uart2DmaTransport_Init(const BspUart2Config *config)
         s_initialized = false;
         return false;
     }
+    BSP_Uart2DmaGetEvents(&s_observed_events);
+    s_event_baseline = s_observed_events;
+    s_position_wrap_baseline = s_observed_events.rx_complete_count;
     s_initialized = true;
     return true;
 }
@@ -43,14 +50,17 @@ bool Uart2DmaTransport_Init(const BspUart2Config *config)
 void Uart2DmaTransport_Process(void)
 {
     BspUart2DmaEvents events;
+    BspUart2DmaEvents observed_events_after;
     uint16_t position;
     uint32_t producer;
     bool wrap_race_compensated;
     if (!s_initialized || s_suspended) return;
     BSP_Uart2DmaGetEvents(&events);
+    observed_events_after = events;
     position = BSP_Uart2DmaGetRxPosition(UART2_RX_DMA_BUFFER_SIZE);
     if (!Uart2DmaPosition_Resolve(s_producer_absolute,
-        events.rx_complete_count, position, UART2_RX_DMA_BUFFER_SIZE,
+        events.rx_complete_count - s_position_wrap_baseline,
+        position, UART2_RX_DMA_BUFFER_SIZE,
         &producer, &wrap_race_compensated))
     {
         s_receive_error = true;
@@ -84,28 +94,44 @@ void Uart2DmaTransport_Process(void)
         if (BSP_Uart2DmaStartRx(s_rx_dma_buffer,
             UART2_RX_DMA_BUFFER_SIZE) == BSP_UART_DMA_OK)
         {
+            BspUart2DmaEvents restart_events;
             s_recovery_failures = 0U;
-            s_consumer_absolute = s_producer_absolute;
+            BSP_Uart2DmaGetEvents(&restart_events);
+            observed_events_after = restart_events;
+            s_position_wrap_baseline = restart_events.rx_complete_count;
+            position = BSP_Uart2DmaGetRxPosition(UART2_RX_DMA_BUFFER_SIZE);
+            s_producer_absolute = position;
+            s_consumer_absolute = position;
+            s_idle_pending = 0U;
+            s_idle_position = position;
         }
         else if (s_recovery_failures < UINT8_MAX)
         {
             ++s_recovery_failures;
         }
     }
-    s_statistics.rx_idle_count = events.idle_count;
-    s_statistics.rx_half_count = events.rx_half_count;
-    s_statistics.rx_wrap_count = events.rx_complete_count;
-    s_statistics.rx_dma_error_count = events.rx_dma_error_count;
-    s_statistics.uart_parity_error_count = events.parity_error_count;
-    s_statistics.uart_frame_error_count = events.frame_error_count;
-    s_statistics.uart_noise_error_count = events.noise_error_count;
-    s_statistics.uart_overrun_error_count = events.overrun_error_count;
-    s_statistics.tx_complete_count = events.tx_dma_complete_count;
-    s_statistics.tx_dma_error_count = events.tx_dma_error_count;
+    s_statistics.rx_idle_count = events.idle_count - s_event_baseline.idle_count;
+    s_statistics.rx_half_count = events.rx_half_count - s_event_baseline.rx_half_count;
+    s_statistics.rx_wrap_count = events.rx_complete_count -
+        s_event_baseline.rx_complete_count;
+    s_statistics.rx_dma_error_count = events.rx_dma_error_count -
+        s_event_baseline.rx_dma_error_count;
+    s_statistics.uart_parity_error_count = events.parity_error_count -
+        s_event_baseline.parity_error_count;
+    s_statistics.uart_frame_error_count = events.frame_error_count -
+        s_event_baseline.frame_error_count;
+    s_statistics.uart_noise_error_count = events.noise_error_count -
+        s_event_baseline.noise_error_count;
+    s_statistics.uart_overrun_error_count = events.overrun_error_count -
+        s_event_baseline.overrun_error_count;
+    s_statistics.tx_complete_count = events.tx_dma_complete_count -
+        s_event_baseline.tx_dma_complete_count;
+    s_statistics.tx_dma_error_count = events.tx_dma_error_count -
+        s_event_baseline.tx_dma_error_count;
     s_statistics.dma_write_position = position;
     s_statistics.dma_read_position =
         (uint16_t)(s_consumer_absolute & (UART2_RX_DMA_BUFFER_SIZE - 1U));
-    s_observed_events = events;
+    s_observed_events = observed_events_after;
 }
 
 bool Uart2DmaTransport_TryReadByte(uint8_t *byte)
