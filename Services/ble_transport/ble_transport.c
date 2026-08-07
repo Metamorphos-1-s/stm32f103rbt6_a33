@@ -65,6 +65,8 @@ bool BleTransport_Write(const uint8_t *data, uint16_t length)
         s_tx_buffer[s_tx_head] = data[index];
         s_tx_head = (uint16_t)((s_tx_head + 1U) % BLE_TRANSPORT_TX_BUFFER_SIZE);
     }
+    s_diagnostics.tx_pending = RingCount(s_tx_head, s_tx_tail,
+        BLE_TRANSPORT_TX_BUFFER_SIZE);
     return true;
 }
 

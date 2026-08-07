@@ -43,6 +43,16 @@ void Stage5C_FakeCompleteTx(void)
 
 void Stage5C_FakeRejectTx(bool reject) { s_reject_tx = reject; }
 uint16_t Stage5C_FakeTxLength(void) { return s_last_tx_length; }
+uint8_t Stage5C_FakeTxByte(uint16_t index)
+{
+    return (index < s_last_tx_length) ? s_last_tx[index] : 0U;
+}
+void Stage5C_FakeSetReady(bool ready) { s_ready = ready; }
+void Stage5C_FakeUartError(void)
+{
+    s_busy = false;
+    ++s_events.uart_error_count;
+}
 
 bool W02Uart_Init(uint32_t baud_rate)
 {

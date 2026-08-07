@@ -6,6 +6,8 @@
 #include <stddef.h>
 #include <string.h>
 
+#define BLE_UART_ACTIVITY_WINDOW_MS 1000U
+
 static BleConnectionDiagnostics s_diagnostics;
 static BleModuleState s_previous_module_state;
 
@@ -46,7 +48,13 @@ void BleConnectionManager_Run(uint32_t now_ms)
         next_state = BLE_MODULE_STARTING;
     else
         next_state = BleTransport_IsReady() ? BLE_MODULE_READY : BLE_MODULE_FAULT;
-    if ((transport.rx_bytes != 0U) || (transport.tx_bytes != 0U))
+    if ((next_state == BLE_MODULE_READY) &&
+        (((transport.rx_bytes != 0U) &&
+         ((uint32_t)(now_ms - transport.last_rx_ms) <=
+          BLE_UART_ACTIVITY_WINDOW_MS)) ||
+        ((transport.tx_bytes != 0U) &&
+         ((uint32_t)(now_ms - transport.last_tx_ms) <=
+          BLE_UART_ACTIVITY_WINDOW_MS))))
         next_state = BLE_MODULE_UART_ACTIVE;
     if (next_state != s_previous_module_state)
     {

@@ -1,6 +1,7 @@
 #include "ble_connection_manager.h"
 #include "ble_transport.h"
 #include "event_queue.h"
+#include "stage5c_ble_diagnostics.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -10,6 +11,9 @@ void Stage5C_FakeReset(void);
 void Stage5C_FakeCompleteTx(void);
 void Stage5C_FakeRejectTx(bool reject);
 uint16_t Stage5C_FakeTxLength(void);
+uint8_t Stage5C_FakeTxByte(uint16_t index);
+void Stage5C_FakeSetReady(bool ready);
+void Stage5C_FakeUartError(void);
 
 #define CHECK(condition) do { if (!(condition)) { \
     printf("FAIL:%d\n", __LINE__); return 1; } } while (0)
@@ -94,6 +98,79 @@ static int TestConnectionManager(void)
     CHECK(EventQueue_Pop(&event) && event.type == EVENT_BLE_STATE_CHANGED);
     CHECK(!BleConnectionManager_IsConnected());
     CHECK(d.parse_error == 0U && d.crc_error == 0U);
+
+    BleConnectionManager_Run(1103U);
+    BleConnectionManager_GetDiagnostics(&d);
+    CHECK(d.module_state == BLE_MODULE_READY);
+    CHECK(d.link_state == BLE_LINK_UNKNOWN);
+    CHECK(!BleConnectionManager_IsConnected());
+
+    Stage5C_FakeReset();
+    EventQueue_Init();
+    BleTransport_Init(0xFFFFFFF0UL);
+    BleConnectionManager_Init(0xFFFFFFF0UL);
+    BleTransport_RxPushFromIsr(byte);
+    BleConnectionManager_Run(0xFFFFFFF5UL);
+    CHECK(BleConnectionManager_IsReady());
+    BleConnectionManager_Run(0x000003DEUL);
+    BleConnectionManager_GetDiagnostics(&d);
+    CHECK(d.module_state == BLE_MODULE_READY);
+    CHECK(d.link_state == BLE_LINK_UNKNOWN);
+    return 0;
+}
+
+static int TestHardwareDiagnostic(void)
+{
+    static const uint8_t expected[9] = {
+        0x48U, 0x65U, 0x6CU, 0x6CU, 0x6FU, 0x20U, 0x57U, 0x30U, 0x32U
+    };
+    Stage5CBleTxDiagnosticSnapshot snapshot;
+    BleTransportDiagnostics transport;
+    uint8_t fill[250];
+    uint16_t index;
+
+    Stage5C_FakeReset();
+    BleTransport_Init(0U);
+    Stage5C_BleDiagnosticsInit();
+    CHECK(Stage5C_BleDiagnosticsRequestHello() == STAGE5C_BLE_TX_ACCEPTED);
+    snapshot = *Stage5C_BleDiagnosticsGetSnapshot();
+    CHECK(snapshot.request_count == 1U && snapshot.accepted_count == 1U);
+    CHECK(snapshot.tx_pending_after == 9U && !snapshot.completion_seen);
+    CHECK(Stage5C_BleDiagnosticsRequestHello() == STAGE5C_BLE_TX_BUSY);
+    BleTransport_Run(1U);
+    CHECK(Stage5C_FakeTxLength() == sizeof(expected));
+    for (index = 0U; index < sizeof(expected); ++index)
+        CHECK(Stage5C_FakeTxByte(index) == expected[index]);
+    Stage5C_FakeCompleteTx();
+    BleTransport_Run(2U);
+    Stage5C_BleDiagnosticsProcess();
+    snapshot = *Stage5C_BleDiagnosticsGetSnapshot();
+    CHECK(snapshot.completion_seen && snapshot.tx_pending_after == 0U);
+    CHECK(snapshot.tx_bytes_after == 9U && snapshot.tx_complete_after == 1U);
+
+    Stage5C_FakeReset();
+    BleTransport_Init(10U);
+    Stage5C_BleDiagnosticsInit();
+    (void)memset(fill, 0x55, sizeof(fill));
+    CHECK(BleTransport_Write(fill, sizeof(fill)));
+    CHECK(Stage5C_BleDiagnosticsRequestHello() == STAGE5C_BLE_TX_QUEUE_FULL);
+
+    Stage5C_FakeReset();
+    Stage5C_FakeSetReady(false);
+    BleTransport_Init(20U);
+    Stage5C_BleDiagnosticsInit();
+    CHECK(Stage5C_BleDiagnosticsRequestHello() == STAGE5C_BLE_TX_NOT_READY);
+
+    Stage5C_FakeReset();
+    BleTransport_Init(30U);
+    Stage5C_BleDiagnosticsInit();
+    CHECK(Stage5C_BleDiagnosticsRequestHello() == STAGE5C_BLE_TX_ACCEPTED);
+    BleTransport_Run(31U);
+    Stage5C_FakeUartError();
+    BleTransport_Run(32U);
+    BleTransport_GetDiagnostics(&transport);
+    CHECK(transport.uart_error == 1U && !transport.tx_busy);
+    CHECK(Stage5C_BleDiagnosticsRequestHello() == STAGE5C_BLE_TX_ACCEPTED);
     return 0;
 }
 
@@ -101,6 +178,7 @@ int main(void)
 {
     if (TestTransport() != 0) return 1;
     if (TestConnectionManager() != 0) return 1;
+    if (TestHardwareDiagnostic() != 0) return 1;
     printf("stage5c host tests passed\n");
     return 0;
 }

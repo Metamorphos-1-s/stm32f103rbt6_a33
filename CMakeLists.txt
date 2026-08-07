@@ -72,6 +72,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Diagnostics/stage3_metrology_diagnostics.c
     Diagnostics/stage4b_storage_diagnostics.c
     Diagnostics/stage5b_modbus_diagnostics.c
+    Diagnostics/stage5c_ble_diagnostics.c
     Domain/calibration/calibration_model.c
     Domain/calibration/raw_calibration_stability.c
     Domain/filter/weight_filter.c

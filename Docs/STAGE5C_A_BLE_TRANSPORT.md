@@ -70,3 +70,49 @@ authoritative `MassValueUg` values, explicit compensated/operational/display
 fields, stability/display-lock state, unit/format, runtime-drift state, and
 explicit persistent-dirty reporting. Stage 5C-C/D remain configuration,
 SAVE, and calibration work and are not part of this branch's transport layer.
+
+## Hardware bring-up H2
+
+Observed BLE device: `W02_008324`, LE-only.
+
+- Primary service `0xFFE0` is present.
+- `FFE1` supports READ, WRITE, WRITE WITHOUT RESPONSE, NOTIFY, and CCCD
+  `0x2902`.
+- `FFE2` supports WRITE and WRITE WITHOUT RESPONSE.
+- Primary service `0xFF12` was observed but its purpose is unknown and it is
+  not used by this stage.
+
+The phone-to-MCU path is hardware verified: writing bytes
+`41 42 43 31 32 33` (`ABC123`) to `FFE2` reached USART1 PA10 and
+`BleTransport_RxPushFromIsr()` in order. All six bytes were received,
+`rx_bytes` increased by six, and `rx_overflow` remained zero.
+
+The H2 firmware adds a BoardDiagnostics-only, one-shot test function:
+
+`Stage5C_BleDiagnosticsRequestHello()`
+
+Call it from a halted/debug-connected GDB session after enabling FFE1 Notify.
+It queues exactly `48 65 6C 6C 6F 20 57 30 32` (`Hello W02`) through
+`BleTransport_Write()`. It returns ACCEPTED, BUSY, QUEUE_FULL, NOT_READY, or
+ERROR and never bypasses the transport ring. Observe
+`Stage5C_BleDiagnosticsGetSnapshot()` for the before/after byte counts,
+pending depth, UART errors, and TX-complete confirmation. Release firmware
+does not transmit this payload automatically.
+
+`BLE_MODULE_UART_ACTIVE` now means RX or TX activity occurred within the last
+1000 ms and returns to READY after the window. It remains independent of the
+BLE link state. Until repeatable connect/disconnect UART notifications are
+captured, `BLE_LINK_UNKNOWN` is retained by design.
+
+Current H2 status:
+
+- Phone -> FFE2 -> W02 -> STM32: PASS.
+- STM32 -> W02 -> FFE1 Notify -> phone: pending.
+- Ten-round bidirectional transport: pending.
+- Connect/disconnect UART observation: pending.
+- RS485 + BLE 600-second concurrency regression: pending.
+
+H2 build snapshot: Debug 112,612 B Flash / 12,312 B RAM; Release 61,144 B
+Flash / 12,320 B RAM; BoardDiagnostics 110,372 B Flash / 12,304 B RAM.
+The Release load image ends at `0x0800EED7`, below config slot A at
+`0x0801F000`. Schema V2 remains 344 B and the A/B slot addresses are unchanged.

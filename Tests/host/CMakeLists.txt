@@ -257,11 +257,12 @@ add_executable(stage5c_host_tests
     ../../Services/ble_transport/ble_transport.c
     ../../Services/ble_connection_manager/ble_connection_manager.c
     ../../Services/event_queue/event_queue.c
+    ../../Diagnostics/stage5c_ble_diagnostics.c
 )
 target_include_directories(stage5c_host_tests PRIVATE
     . ../../Config ../../Services/ble_transport
     ../../Services/ble_connection_manager ../../Services/event_queue
-    ../../Drivers/w02)
+    ../../Drivers/w02 ../../Diagnostics)
 if(MSVC)
     target_compile_options(stage5c_host_tests PRIVATE /W4 /WX)
 else()

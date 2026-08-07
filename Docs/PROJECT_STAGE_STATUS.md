@@ -24,6 +24,16 @@ remain unknown and explicitly unimplemented.
 Current status: software implementation in progress/host verified; hardware
 W02 UART and BLE link validation pending.
 
+H2 update: phone writes through FFE2 have been received by USART1 and the
+transport ring (`ABC123`, six bytes, no overflow). A BoardDiagnostics-only
+one-shot `Hello W02` TX trigger has been added for FFE1 Notify validation.
+Reverse-direction, bidirectional, link-observation, and RS485 concurrency
+hardware tests remain pending.
+
+H2 build snapshot: Debug 112,612 B / 12,312 B, Release 61,144 B / 12,320 B,
+and BoardDiagnostics 110,372 B / 12,304 B (Flash / RAM). Release load ends at
+`0x0800EED7`; Schema V2 and config slot addresses are unchanged.
+
 Post-change ARM resource snapshot:
 
 - Debug: Flash 112,412 B, RAM 12,256 B.
