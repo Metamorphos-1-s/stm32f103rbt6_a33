@@ -31,7 +31,8 @@ typedef enum
     WEIGHT_ACTION_TARE_ACTIVE,
     WEIGHT_ACTION_OVERLOAD,
     WEIGHT_ACTION_INVALID_ARGUMENT,
-    WEIGHT_ACTION_INTERNAL_ERROR
+    WEIGHT_ACTION_INTERNAL_ERROR,
+    WEIGHT_ACTION_ZERO_DISABLED
 } WeightActionResult;
 
 typedef struct
@@ -49,6 +50,7 @@ typedef struct
     uint32_t filter_sample_count;
     uint32_t stability_spread;
     MassValueUg gross_mass_ug;
+    MassValueUg uncompensated_gross_mass_ug;
     MassValueUg tare_mass_ug;
     MassValueUg net_mass_ug;
     MassValueUg stability_spread_ug;

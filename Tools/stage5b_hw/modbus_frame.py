@@ -110,6 +110,13 @@ def decode_i32_words(words, word_order="high"):
     return value - (1 << 32) if value & (1 << 31) else value
 
 
+def decode_u32_words(words, word_order="high"):
+    ordered = _ordered_words(words, word_order)
+    if len(ordered) != 2:
+        raise FrameError("u32 requires two registers")
+    return (ordered[0] << 16) | ordered[1]
+
+
 def decode_i64_words(words, word_order="high"):
     ordered = _ordered_words(words, word_order)
     if len(ordered) != 4:

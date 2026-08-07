@@ -34,8 +34,14 @@ static void Stage3_MakeConfig(DeviceConfig *config, bool calibrated)
     CalibrationConfig calibration;
 
     DefaultConfig_Load(config);
+    config->metrology.capacity_ug = INT64_C(10000000000);
+    config->metrology.load_cell.rated_capacity_known = false;
+    config->metrology.active_unit = MASS_UNIT_KG;
+    config->metrology.unit_display[MASS_UNIT_G].decimal_places = 0U;
     config->metrology.zero_range_ug = INT64_C(1000000000);
     config->metrology.overload_threshold_ug = INT64_C(12000000000);
+    config->metrology.profiles[0].filter_mode = FILTER_MODE_NONE;
+    config->metrology.profiles[0].filter_strength = 0U;
     config->metrology.profiles[0].stability_window = 2U;
     config->metrology.profiles[0].stability_enter_threshold_ug = 2000000;
     config->metrology.profiles[0].stability_exit_threshold_ug = 4000000;
@@ -216,6 +222,8 @@ static void TestZeroTare(void)
                               true) == WEIGHT_ACTION_NOT_STABLE);
     CHECK3(ZeroTare_ApplyZero(&state, 200000, 100000, 11, 10U, true,
                               true) == WEIGHT_ACTION_OUT_OF_ZERO_RANGE);
+    CHECK3(ZeroTare_ApplyZeroMass(&state, 100000, 100000, 0, 0, true,
+                                  true) == WEIGHT_ACTION_ZERO_DISABLED);
     CHECK3(ZeroTare_ApplyZero(&state, 100100, 100000, 1, 10U, true,
                               true) == WEIGHT_ACTION_OK);
     CHECK3(state.zero_offset_raw == 100);

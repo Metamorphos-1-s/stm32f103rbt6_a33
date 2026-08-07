@@ -97,6 +97,7 @@ bool App_Init(void)
     }
   }
   load_info = PersistenceManager_GetLoadInfo();
+  (void)DefaultConfig_NormalizeStartup(&config, &runtime);
 
   now_ms = BSP_TimeNowMs();
   if (!SystemContext_InitRestored(&config, &runtime,
@@ -443,6 +444,8 @@ static void App_RunStateMachine(void)
 
   if ((next_state == APP_STATE_FAULT) && !s_fault_entry_applied)
   {
+    MetrologyManager_HandleFaultState();
+    MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_NOT_ALLOWED);
     Stage2B_DiagnosticsEnterFault();
     SelfTestController_Cancel();
     MenuController_Cancel();
@@ -484,6 +487,14 @@ static void App_ShowCommandResult(CommandResult result, bool tare_action)
   else if (result == COMMAND_RESULT_OUT_OF_ZERO_RANGE)
   {
     code = DISPLAY_CODE_ZERO_RANGE;
+  }
+  else if (result == COMMAND_RESULT_TARE_ACTIVE)
+  {
+    code = DISPLAY_CODE_TARE_ACTIVE;
+  }
+  else if (result == COMMAND_RESULT_ZERO_DISABLED)
+  {
+    code = DISPLAY_CODE_ZERO_DISABLED;
   }
   else if (result == COMMAND_RESULT_BUSY)
   {

@@ -13,7 +13,7 @@ from hw_common import (HardwareTestError, ModbusClient, load_config,
                        probe_device, require_authorization)
 from register_map_check import check as check_register_map
 from report_writer import ReportWriter, environment_info, git_identity, sha256_file
-from serial_transport import SerialTransport, list_serial_ports
+from serial_transport import SerialTransport, list_serial_ports, select_serial_port
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -45,6 +45,7 @@ def parser():
     p = sub.add_parser("flash"); add_common(p, False); p.add_argument("--elf"); p.add_argument("--programmer")
     p = sub.add_parser("dump-slots"); add_common(p, False); p.add_argument("--output-directory", required=True); p.add_argument("--programmer")
     p = sub.add_parser("probe"); add_common(p)
+    p = sub.add_parser("hf2-status"); add_common(p)
     p = sub.add_parser("read"); add_common(p); p.add_argument("address", type=lambda x: int(x, 0)); p.add_argument("quantity", type=int)
     p = sub.add_parser("write-single"); add_common(p); p.add_argument("address", type=lambda x: int(x, 0)); p.add_argument("value", type=lambda x: int(x, 0))
     p = sub.add_parser("write-multiple"); add_common(p); p.add_argument("address", type=lambda x: int(x, 0)); p.add_argument("values", nargs="+", type=lambda x: int(x, 0))
@@ -54,7 +55,7 @@ def parser():
             p.add_argument("--include-errors", action="store_true",
                            help="include guarded malformed FC06/FC16 tests")
     p = sub.add_parser("errors"); add_common(p)
-    p = sub.add_parser("commands"); add_common(p); p.add_argument("--name", default="NOP", choices=sorted(reg.COMMANDS)); p.add_argument("--repeat-token", action="store_true")
+    p = sub.add_parser("commands"); add_common(p); p.add_argument("--name", default="NOP", choices=sorted(reg.COMMANDS)); p.add_argument("--repeat-token", action="store_true"); p.add_argument("--arg0", type=lambda x: int(x, 0), default=0); p.add_argument("--arg1", type=lambda x: int(x, 0), default=0)
     p = sub.add_parser("config-apply"); add_common(p)
     p.add_argument("--communication", action="store_true")
     p.add_argument("--new-baud", type=int, choices=sorted(reg.BAUD_ENUM))
@@ -63,6 +64,7 @@ def parser():
     p.add_argument("--new-slave", type=int)
     p = sub.add_parser("save"); add_common(p); p.add_argument("--manual-power-cycle", action="store_true")
     p = sub.add_parser("soak"); add_common(p); p.add_argument("--duration-s", type=float, required=True); p.add_argument("--interval-ms", type=int); p.add_argument("--max-timeouts", type=int, default=0); p.add_argument("--max-crc-errors", type=int, default=0); p.add_argument("--timeout-retries", type=int, default=0); p.add_argument("--output-csv")
+    p = sub.add_parser("hf2-r1-regression"); add_common(p); p.add_argument("--output", default="Results/hardware"); p.add_argument("--skip-drift", action="store_true"); p.add_argument("--skip-flash", action="store_true"); p.add_argument("--non-interactive-readonly", action="store_true"); p.add_argument("--smoke-count", type=int, default=20)
     p = sub.add_parser("full"); add_common(p); p.add_argument("--count", type=int, default=100); p.add_argument("--duration-s", type=float, default=60)
     p = sub.add_parser("compare-interfaces"); add_common(p, False); p.add_argument("--rs232-port"); p.add_argument("--rs485-port")
     return result
@@ -97,7 +99,14 @@ def merge_config(args):
 
 def make_report(args, config):
     enabled = args.command not in ("list-ports", "flash", "dump-slots") or args.json_report is not None
-    report = ReportWriter(HERE / "reports", config.get("interface", "unknown"), enabled)
+    if args.command == "hf2-r1-regression":
+        from hf2_r1_regression import HF2RegressionReport
+        output = Path(args.output)
+        if not output.is_absolute():
+            output = ROOT / output
+        report = HF2RegressionReport(output, config.get("interface", "rs485"), enabled)
+    else:
+        report = ReportWriter(HERE / "reports", config.get("interface", "unknown"), enabled)
     if enabled:
         sanitized = {k: (Path(str(v)).name if any(word in k.lower() for word in ("elf", "path", "programmer")) else v)
                      for k, v in config.items() if "password" not in k.lower()}
@@ -123,7 +132,8 @@ def open_client(args, report):
     if not args.port:
         raise HardwareTestError("no serial port selected; use --port or a JSON port alias")
     interactive_frames = args.command in ("probe", "read", "write-single",
-        "write-multiple", "errors", "commands", "config-apply", "save")
+        "write-multiple", "errors", "commands", "config-apply", "save",
+        "hf2-status")
     transport = SerialTransport(args.port, args.baud_rate, args.parity,
         args.stop_bits, args.timeout_ms, report.raw,
         args.verbose or interactive_frames)
@@ -241,6 +251,11 @@ def run_serial(args, report):
     try:
         if args.command == "probe":
             value = probe_device(client); print(json.dumps(value, indent=2)); report.add("probe", "PASS", "read-only identity", value); return True
+        if args.command == "hf2-status":
+            from hf2_status import read_status
+            value = read_status(client); print(json.dumps(value, indent=2))
+            report.add("HF2-R1 status", "PASS", "read-only telemetry", value)
+            return True
         if args.command == "read":
             values, _ = client.read(args.address, args.quantity); print("PDU 0x%04X / PLC %d: %s" % (args.address, reg.plc_address(args.address), values)); return True
         if args.command == "write-single":
@@ -273,7 +288,8 @@ def run_serial(args, report):
             if "CALIBRATION" in args.name: authorize(args, "calibration", "allow_calibration", "calibration command", "CALIBRATION")
             if args.name == "REQUEST_SAVE": authorize(args, "save", "allow_flash", "persistent SAVE", "SAVE_FLASH")
             if args.name == "COMMUNICATION_APPLY": authorize(args, "communication_change", "allow_comm_change", "communication apply", "COMM_CHANGE")
-            return test_commands.run(client, report, args.name, args.repeat_token)
+            return test_commands.run(client, report, args.name,
+                                     args.repeat_token, args.arg0, args.arg1)
         if args.command == "config-apply":
             authorize(args, "config_apply", "allow_write", "temporary RAM brightness change and restore", "CONFIG_APPLY")
             if args.communication:
@@ -292,6 +308,17 @@ def run_serial(args, report):
             return soak_test.run(client, report, args.duration_s, args.poll_interval_ms,
                                  args.max_timeouts, args.max_crc_errors, args.output_csv,
                                  args.timeout_retries)
+        if args.command == "hf2-r1-regression":
+            from hf2_r1_regression import run as run_hf2_r1
+            if not args.non_interactive_readonly:
+                authorize(args, "mailbox_write", "allow_write",
+                          "HF2-R1 operator action commands", "MAILBOX_WRITE")
+                authorize(args, "actions", "allow_actions",
+                          "HF2-R1 TARE/ZERO/runtime drift actions", "RUN_ACTION")
+                if not args.skip_flash:
+                    authorize(args, "save", "allow_flash",
+                              "optional persistent SAVE step", "SAVE_FLASH")
+            return run_hf2_r1(client, report, args)
         if args.command == "full":
             if not test_smoke.run(client, report, args.count, interval): return False
             if args.allow_write:
@@ -352,6 +379,12 @@ def main(argv=None):
             keys = ("register_map_version", "firmware_version", "schema_version")
             ok = all(values[0][key] == values[1][key] for key in keys)
             print(json.dumps({"match": ok, "rs232": values[0], "rs485": values[1]}, indent=2)); return 0 if ok else 2
+        if hasattr(args, "port"):
+            if args.command == "hf2-r1-regression" and not args.port:
+                args.port = "auto"
+            if args.port:
+                args.port = select_serial_port(args.port)
+                config["port"] = args.port
         check_register_map()
         report = make_report(args, config)
         ok = run_serial(args, report)

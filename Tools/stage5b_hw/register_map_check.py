@@ -23,8 +23,15 @@ def check(repo_root=None):
         encoding="utf-8")
     mailbox = (root / "Protocol/modbus/modbus_command_mailbox.c").read_text(
         encoding="utf-8")
+    command_service = (root / "Protocol/command_service/command_service.c").read_text(
+        encoding="utf-8")
     schema = (root / "Services/config_store/persistent_schema.h").read_text(
         encoding="utf-8")
+    command_types = (root / "Protocol/command_service/command_types.h").read_text(
+        encoding="utf-8")
+    drift_types = (root / "Domain/measurement/runtime_drift_compensator.h").read_text(
+        encoding="utf-8")
+    docs = (root / "Docs/MODBUS_REGISTER_MAP_V1.md").read_text(encoding="utf-8")
     for name, value in {
         "MODBUS_REGISTER_MAP_VERSION": reg.REGISTER_MAP_VERSION,
         "MODBUS_REALTIME_FIRST": reg.REALTIME_FIRST,
@@ -34,7 +41,33 @@ def check(repo_root=None):
         "MODBUS_CALIBRATION_FIRST": reg.CALIBRATION_FIRST,
         "MODBUS_COMMUNICATION_FIRST": reg.COMMUNICATION_FIRST,
         "MODBUS_STORAGE_FIRST": reg.STORAGE_FIRST,
+        "MODBUS_DISPLAY_CONDITION_FIRST": reg.DISPLAY_CONDITION_FIRST,
+        "MODBUS_DISPLAY_CONDITION_LAST": reg.DISPLAY_CONDITION_LAST,
+        "MODBUS_RUNTIME_DRIFT_FIRST": reg.RUNTIME_DRIFT_FIRST,
+        "MODBUS_RUNTIME_DRIFT_LAST": reg.RUNTIME_DRIFT_LAST,
+        "MODBUS_RUNTIME_DRIFT_RESERVED": reg.RUNTIME_DRIFT_RESERVED,
         "MODBUS_EXECUTE_VALUE": reg.EXECUTE_VALUE,
+    }.items():
+        _require(r"#define\s+%s\s+0x%04XU" % (name, value), header, name)
+    for name, value in {
+        "MODBUS_DISPLAY_CONDITION_STATE": reg.DISPLAY_CONDITION_STATE,
+        "MODBUS_DISPLAY_CONDITION_LOCKED": reg.DISPLAY_CONDITION_LOCKED,
+        "MODBUS_DISPLAY_CONDITION_MASS_FIRST": reg.DISPLAY_CONDITION_MASS,
+        "MODBUS_DISPLAY_CONDITION_ANCHOR_FIRST": reg.DISPLAY_CONDITION_ANCHOR,
+        "MODBUS_DISPLAY_CONDITION_THRESHOLD_FIRST": reg.DISPLAY_CONDITION_THRESHOLD,
+        "MODBUS_DISPLAY_CONDITION_ELAPSED_FIRST": reg.DISPLAY_CONDITION_ELAPSED,
+        "MODBUS_DISPLAY_CONDITION_RELEASE_REASON": reg.DISPLAY_CONDITION_RELEASE_REASON,
+        "MODBUS_RUNTIME_DRIFT_STATE": reg.RUNTIME_DRIFT_STATE,
+        "MODBUS_RUNTIME_DRIFT_ENABLED": reg.RUNTIME_DRIFT_ENABLED,
+        "MODBUS_RUNTIME_DRIFT_LIMITED": reg.RUNTIME_DRIFT_LIMITED,
+        "MODBUS_RUNTIME_DRIFT_OFFSET_FIRST": reg.RUNTIME_DRIFT_OFFSET,
+        "MODBUS_RUNTIME_DRIFT_UNCOMPENSATED_FIRST": reg.RUNTIME_DRIFT_UNCOMPENSATED_GROSS,
+        "MODBUS_RUNTIME_DRIFT_COMPENSATED_FIRST": reg.RUNTIME_DRIFT_COMPENSATED_GROSS,
+        "MODBUS_RUNTIME_DRIFT_REFERENCE_FIRST": reg.RUNTIME_DRIFT_REFERENCE,
+        "MODBUS_RUNTIME_DRIFT_ERROR_FIRST": reg.RUNTIME_DRIFT_ERROR,
+        "MODBUS_RUNTIME_DRIFT_ARMING_ELAPSED_FIRST": reg.RUNTIME_DRIFT_ARMING_ELAPSED,
+        "MODBUS_RUNTIME_DRIFT_WINDOW_ELAPSED_FIRST": reg.RUNTIME_DRIFT_WINDOW_ELAPSED,
+        "MODBUS_RUNTIME_DRIFT_SAMPLE_COUNT_FIRST": reg.RUNTIME_DRIFT_SAMPLE_COUNT,
     }.items():
         _require(r"#define\s+%s\s+0x%04XU" % (name, value), header, name)
     for address in (reg.REQUEST_TOKEN, reg.COMMAND_ID, reg.EXECUTE,
@@ -47,8 +80,36 @@ def check(repo_root=None):
     _require(r"address==0x%04XU" % reg.STORAGE_SCHEMA, model, "schema register")
     _require(r"#define\s+CONFIG_STORE_SCHEMA_V2\s+%dU" % reg.SCHEMA_VERSION,
              schema, "Schema V2")
-    _require(r"COMMAND_FACTORY_RESET_CANCEL,\s*COMMAND_COMMUNICATION_APPLY",
-             mailbox, "command ID 24")
+    _require(r"COMMAND_FACTORY_RESET_CANCEL,\s*COMMAND_COMMUNICATION_APPLY,\s*"
+             r"COMMAND_SET_RUNTIME_DRIFT_ENABLED", mailbox,
+             "external command ID 25")
+    _require(r"case\s+COMMAND_SET_RUNTIME_DRIFT_ENABLED", command_service,
+             "runtime drift command handling")
+    for value, name in reg.RUNTIME_DRIFT_STATES.items():
+        _require(r"RUNTIME_DRIFT_%s(?:\s*=\s*%d)?[,\s]" % (name, value),
+                 drift_types, "runtime drift state %s" % name)
+    _require(r"`0203`\s*\|\s*reserved, read-as-zero", docs,
+             "documented reserved register")
+    _require(r"`000E=0102`", docs, "documented map version")
+    _require(r"Command ID 25", docs, "documented command 25")
+    fields = [
+        (reg.RUNTIME_DRIFT_STATE, reg.RUNTIME_DRIFT_STATE),
+        (reg.RUNTIME_DRIFT_ENABLED, reg.RUNTIME_DRIFT_ENABLED),
+        (reg.RUNTIME_DRIFT_LIMITED, reg.RUNTIME_DRIFT_LIMITED),
+        (reg.RUNTIME_DRIFT_RESERVED, reg.RUNTIME_DRIFT_RESERVED),
+        (reg.RUNTIME_DRIFT_OFFSET, reg.RUNTIME_DRIFT_OFFSET + 3),
+        (reg.RUNTIME_DRIFT_UNCOMPENSATED_GROSS, reg.RUNTIME_DRIFT_UNCOMPENSATED_GROSS + 3),
+        (reg.RUNTIME_DRIFT_COMPENSATED_GROSS, reg.RUNTIME_DRIFT_COMPENSATED_GROSS + 3),
+        (reg.RUNTIME_DRIFT_REFERENCE, reg.RUNTIME_DRIFT_REFERENCE + 3),
+        (reg.RUNTIME_DRIFT_ERROR, reg.RUNTIME_DRIFT_ERROR + 3),
+        (reg.RUNTIME_DRIFT_ARMING_ELAPSED, reg.RUNTIME_DRIFT_ARMING_ELAPSED + 1),
+        (reg.RUNTIME_DRIFT_WINDOW_ELAPSED, reg.RUNTIME_DRIFT_WINDOW_ELAPSED + 1),
+        (reg.RUNTIME_DRIFT_SAMPLE_COUNT, reg.RUNTIME_DRIFT_SAMPLE_COUNT + 1),
+    ]
+    addresses = [address for first, last in fields for address in range(first, last + 1)]
+    if len(addresses) != len(set(addresses)) or min(addresses) != reg.RUNTIME_DRIFT_FIRST or \
+            max(addresses) != reg.RUNTIME_DRIFT_LAST:
+        raise RegisterMapMismatch("runtime drift fields overlap or leave the declared range")
     return True
 
 

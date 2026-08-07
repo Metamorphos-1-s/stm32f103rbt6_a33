@@ -50,8 +50,9 @@ static CommandResult CommandService_MapWeightAction(WeightActionResult result)
         case WEIGHT_ACTION_NO_SAMPLE:
             return COMMAND_RESULT_NOT_STABLE;
         case WEIGHT_ACTION_OUT_OF_ZERO_RANGE:
-        case WEIGHT_ACTION_TARE_ACTIVE:
             return COMMAND_RESULT_OUT_OF_ZERO_RANGE;
+        case WEIGHT_ACTION_TARE_ACTIVE: return COMMAND_RESULT_TARE_ACTIVE;
+        case WEIGHT_ACTION_ZERO_DISABLED: return COMMAND_RESULT_ZERO_DISABLED;
         case WEIGHT_ACTION_OVERLOAD: return COMMAND_RESULT_OVERLOAD;
         case WEIGHT_ACTION_INVALID_ARGUMENT:
             return COMMAND_RESULT_INVALID_ARGUMENT;
@@ -301,6 +302,8 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             {
                 (void)memset(&s_calibration, 0, sizeof(s_calibration));
                 s_calibration.active = true;
+                MetrologyManager_ForceDisplayTracking(
+                    DISPLAY_RELEASE_CALIBRATION);
                 result = COMMAND_RESULT_OK;
             }
             break;
@@ -343,11 +346,14 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             break;
         case COMMAND_CALIBRATION_CANCEL:
             (void)memset(&s_calibration, 0, sizeof(s_calibration));
+            MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
             result = COMMAND_RESULT_OK;
             break;
         case COMMAND_SET_WEIGHT_VIEW:
             result = SystemContext_SetWeightView((WeightViewMode)request->value0) ?
                      COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
+            if (result == COMMAND_RESULT_OK)
+                MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
             break;
         case COMMAND_REQUEST_MANUAL_OUTPUT:
             result = COMMAND_RESULT_ACCEPTED;
@@ -391,6 +397,11 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             break;
         case COMMAND_COMMUNICATION_APPLY:
             result = CommunicationManager_RequestApply();
+            break;
+        case COMMAND_SET_RUNTIME_DRIFT_ENABLED:
+            result = ((request->value0 == 0) || (request->value0 == 1)) &&
+                MetrologyManager_SetRuntimeDriftEnabled(request->value0 != 0) ?
+                COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
             break;
         case COMMAND_COUNT:
         default:

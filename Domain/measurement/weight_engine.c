@@ -4,6 +4,7 @@
 #include "metrology_config_validator.h"
 #include "metrology_standard_validator.h"
 #include "unit_converter.h"
+#include "project_config.h"
 
 #include <limits.h>
 #include <stddef.h>
@@ -89,6 +90,7 @@ bool WeightEngine_UpdateDisplayConfig(WeightEngine *engine,
 static void ClearDerived(WeightEngine *engine)
 {
     engine->snapshot.gross_mass_ug = 0;
+    engine->snapshot.uncompensated_gross_mass_ug = 0;
     engine->snapshot.net_mass_ug = 0;
     engine->snapshot.tare_mass_ug = engine->zero_tare.tare_mass_ug;
     engine->snapshot.stability_spread_ug = 0;
@@ -101,10 +103,13 @@ static void ClearDerived(WeightEngine *engine)
 
 static bool UpdateDerived(WeightEngine *engine, bool process_stability)
 {
+    MassValueUg uncompensated_gross;
     MassValueUg gross;
     MassValueUg net;
     uint64_t magnitude;
     MassValueUg overload;
+    RuntimeDriftInput drift_input;
+    const RuntimeDriftSnapshot *drift_snapshot;
     StabilityState stability_state = StabilityDetector_GetState(&engine->stability);
 
     engine->snapshot.status_flags &=
@@ -124,9 +129,12 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
     }
     if (CalibrationModel_ConvertMass(&engine->calibration,
         engine->snapshot.filtered_raw, engine->zero_tare.zero_offset_raw,
-        &gross) != CALIBRATION_RESULT_OK ||
+        &uncompensated_gross) != CALIBRATION_RESULT_OK ||
+        !MassMath_Subtract(uncompensated_gross,
+            engine->runtime_drift.snapshot.offset_ug, &gross) ||
         !MassMath_Subtract(gross, engine->zero_tare.tare_mass_ug, &net))
         return false;
+    engine->snapshot.uncompensated_gross_mass_ug = uncompensated_gross;
     engine->snapshot.gross_mass_ug = gross;
     engine->snapshot.net_mass_ug = net;
     engine->snapshot.status_flags |= WEIGHT_STATUS_WEIGHT_VALID;
@@ -139,11 +147,29 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
         StabilityDetector_GetSpreadMass(&engine->stability);
     if (stability_state == STABILITY_STATE_STABLE)
         engine->snapshot.status_flags |= WEIGHT_STATUS_STABLE;
+    overload = MetrologyStandardValidator_GetDisplayOverload(&engine->metrology);
+    if (!MassMath_Abs(gross, &magnitude)) return false;
+    if ((overload > 0) && (magnitude > (uint64_t)overload))
+        engine->snapshot.status_flags |= WEIGHT_STATUS_OVERLOAD;
+    drift_input.uncompensated_mass_ug = uncompensated_gross;
+    drift_input.now_ms = engine->snapshot.sample_timestamp_ms;
+    drift_input.stable = stability_state == STABILITY_STATE_STABLE;
+    drift_input.learning_allowed = engine->runtime_drift_learning_allowed &&
+        ((engine->snapshot.status_flags & WEIGHT_STATUS_OVERLOAD) == 0U);
+    if (!RuntimeDriftCompensator_Process(&engine->runtime_drift,
+                                        &drift_input)) return false;
+    drift_snapshot = RuntimeDriftCompensator_GetSnapshot(&engine->runtime_drift);
+    if ((drift_snapshot == NULL) ||
+        !MassMath_Subtract(uncompensated_gross,
+            drift_snapshot->offset_ug, &gross) ||
+        !MassMath_Subtract(gross, engine->zero_tare.tare_mass_ug, &net))
+        return false;
+    engine->snapshot.gross_mass_ug = gross;
+    engine->snapshot.net_mass_ug = net;
     if (!MassMath_Abs(net, &magnitude)) return false;
     if (magnitude <= (uint64_t)engine->metrology.zero_range_ug)
         engine->snapshot.status_flags |= WEIGHT_STATUS_ZERO;
     if (!MassMath_Abs(gross, &magnitude)) return false;
-    overload = MetrologyStandardValidator_GetDisplayOverload(&engine->metrology);
     if ((overload > 0) && (magnitude > (uint64_t)overload))
         engine->snapshot.status_flags |= WEIGHT_STATUS_OVERLOAD;
     UpdateCompatibility(&engine->snapshot, &engine->metrology);
@@ -174,6 +200,14 @@ bool WeightEngine_InitMass(WeightEngine *engine,
             profile->stability_exit_threshold_ug, profile->stability_hold_ms))
         return false;
     ZeroTare_InitMass(&engine->zero_tare, restored_tare_ug, restore_tare);
+    {
+        RuntimeDriftConfig drift_config =
+            RuntimeDriftCompensator_DefaultConfig();
+        if (!RuntimeDriftCompensator_Init(&engine->runtime_drift,
+            &drift_config, A33_RUNTIME_DRIFT_DEFAULT_ENABLED != 0U, 0U))
+            return false;
+    }
+    engine->runtime_drift_learning_allowed = true;
     engine->snapshot.tare_mass_ug = engine->zero_tare.tare_mass_ug;
     UpdateCompatibility(&engine->snapshot, metrology);
     if (engine->zero_tare.tare_active)
@@ -254,6 +288,9 @@ WeightActionResult WeightEngine_Zero(WeightEngine *engine)
         engine->calibration.calibration_valid);
     if (result == WEIGHT_ACTION_OK)
     {
+        RuntimeDriftCompensator_Reset(&engine->runtime_drift,
+            engine->snapshot.sample_timestamp_ms,
+            RUNTIME_DRIFT_RESET_MANUAL_ZERO);
         StabilityDetector_Reset(&engine->stability);
         if (!UpdateDerived(engine, false)) return WEIGHT_ACTION_INTERNAL_ERROR;
     }
@@ -265,6 +302,9 @@ WeightActionResult WeightEngine_ResetZero(WeightEngine *engine)
     WeightActionResult result;
     if ((engine == NULL) || !engine->initialized) return WEIGHT_ACTION_INVALID_ARGUMENT;
     result = ZeroTare_ResetZero(&engine->zero_tare);
+    RuntimeDriftCompensator_Reset(&engine->runtime_drift,
+        engine->snapshot.sample_timestamp_ms,
+        RUNTIME_DRIFT_RESET_ZERO_RESTORE);
     StabilityDetector_Reset(&engine->stability);
     if (engine->has_raw_sample && !UpdateDerived(engine, false))
         return WEIGHT_ACTION_INTERNAL_ERROR;
@@ -286,6 +326,9 @@ WeightActionResult WeightEngine_Tare(WeightEngine *engine)
     {
         StabilityDetector_Reset(&engine->stability);
         if (!UpdateDerived(engine, false)) return WEIGHT_ACTION_INTERNAL_ERROR;
+        RuntimeDriftCompensator_Rearm(&engine->runtime_drift,
+            engine->snapshot.sample_timestamp_ms,
+            RUNTIME_DRIFT_FREEZE_TARE_REARM);
     }
     return result;
 }
@@ -298,6 +341,9 @@ WeightActionResult WeightEngine_ClearTare(WeightEngine *engine)
     StabilityDetector_Reset(&engine->stability);
     if (engine->has_raw_sample && !UpdateDerived(engine, false))
         return WEIGHT_ACTION_INTERNAL_ERROR;
+    RuntimeDriftCompensator_Rearm(&engine->runtime_drift,
+        engine->snapshot.sample_timestamp_ms,
+        RUNTIME_DRIFT_FREEZE_CLEAR_TARE_REARM);
     return result;
 }
 
@@ -308,6 +354,9 @@ bool WeightEngine_ApplyCalibration(WeightEngine *engine,
         (CalibrationModel_Validate(calibration) != CALIBRATION_RESULT_OK))
         return false;
     engine->calibration = *calibration;
+    RuntimeDriftCompensator_Reset(&engine->runtime_drift,
+        engine->snapshot.sample_timestamp_ms,
+        RUNTIME_DRIFT_RESET_CALIBRATION_APPLY);
     StabilityDetector_Reset(&engine->stability);
     return !engine->has_raw_sample || UpdateDerived(engine, false);
 }
@@ -319,6 +368,9 @@ bool WeightEngine_ReconfigureFilter(WeightEngine *engine, FilterMode mode,
     if ((engine == NULL) || !engine->initialized ||
         !WeightFilter_Init(&replacement, mode, strength)) return false;
     engine->filter = replacement;
+    RuntimeDriftCompensator_Reset(&engine->runtime_drift,
+        engine->snapshot.sample_timestamp_ms,
+        RUNTIME_DRIFT_RESET_PROFILE_CHANGE);
     engine->metrology.profiles[engine->metrology.active_profile].filter_mode = mode;
     engine->metrology.profiles[engine->metrology.active_profile].filter_strength = strength;
     StabilityDetector_Reset(&engine->stability);
@@ -327,4 +379,41 @@ bool WeightEngine_ReconfigureFilter(WeightEngine *engine, FilterMode mode,
     engine->snapshot.status_flags &= ~WEIGHT_STATUS_FILTER_READY;
     ClearDerived(engine);
     return true;
+}
+
+bool WeightEngine_SetRuntimeDriftEnabled(WeightEngine *engine, bool enabled)
+{
+    return (engine != NULL) && engine->initialized &&
+        RuntimeDriftCompensator_SetEnabled(&engine->runtime_drift, enabled,
+            engine->snapshot.sample_timestamp_ms) &&
+        (!engine->has_raw_sample || UpdateDerived(engine, false));
+}
+
+void WeightEngine_SetRuntimeDriftLearningAllowed(WeightEngine *engine,
+    bool allowed)
+{
+    if ((engine != NULL) && engine->initialized)
+        engine->runtime_drift_learning_allowed = allowed;
+}
+
+void WeightEngine_ResetRuntimeDrift(WeightEngine *engine,
+    RuntimeDriftResetReason reason)
+{
+    if ((engine != NULL) && engine->initialized)
+        RuntimeDriftCompensator_Reset(&engine->runtime_drift,
+            engine->snapshot.sample_timestamp_ms, reason);
+}
+
+void WeightEngine_FreezeRuntimeDrift(WeightEngine *engine, uint32_t now_ms,
+    RuntimeDriftFreezeReason reason)
+{
+    if ((engine != NULL) && engine->initialized)
+        RuntimeDriftCompensator_Freeze(&engine->runtime_drift, now_ms, reason);
+}
+
+const RuntimeDriftSnapshot *WeightEngine_GetRuntimeDriftSnapshot(
+    const WeightEngine *engine)
+{
+    return ((engine != NULL) && engine->initialized) ?
+        RuntimeDriftCompensator_GetSnapshot(&engine->runtime_drift) : NULL;
 }

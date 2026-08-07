@@ -32,9 +32,35 @@ def list_serial_ports():
         result.append({
             "device": port.device, "description": port.description,
             "hwid": port.hwid, "vid": port.vid, "pid": port.pid,
+            "manufacturer": port.manufacturer,
             "serial_number": port.serial_number, "location": port.location,
         })
     return result
+
+
+def select_serial_port(requested, ports=None, input_fn=input):
+    if requested and requested.lower() != "auto":
+        return requested
+    candidates = list(list_serial_ports() if ports is None else ports)
+    usb = [item for item in candidates if item.get("vid") is not None or
+           "USB" in (item.get("hwid") or "").upper()]
+    if not usb:
+        raise SerialUnavailable(
+            "NO SERIAL PORT FOUND: connect the USB-RS485 adapter and check "
+            "Device Manager, its driver, and the USB cable")
+    if len(usb) == 1:
+        return usb[0]["device"]
+    print("Multiple USB serial ports found:")
+    for index, item in enumerate(usb, 1):
+        print("%d: %s - %s" % (index, item["device"], item.get("description", "")))
+    choice = input_fn("Select USB-RS485 port number: ").strip()
+    try:
+        selected = int(choice)
+    except ValueError as exc:
+        raise SerialUnavailable("invalid serial port selection") from exc
+    if not 1 <= selected <= len(usb):
+        raise SerialUnavailable("serial port selection out of range")
+    return usb[selected - 1]["device"]
 
 
 def character_times(baud, parity="N", stop_bits=1):

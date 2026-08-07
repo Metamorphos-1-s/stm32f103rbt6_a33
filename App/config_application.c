@@ -16,7 +16,7 @@ ConfigApplyResult ConfigApplication_Validate(const DeviceConfig *candidate,
     const SystemContext *context = SystemContext_Get();
 
     if ((candidate == NULL) || (context == NULL) ||
-        (MetrologyConfig_ValidateCanonical(&candidate->metrology) !=
+        (MetrologyConfig_ValidateProductHardware(&candidate->metrology) !=
          METROLOGY_CONFIG_OK) ||
         (candidate->display.brightness > 7U) ||
         (candidate->calibration.calibration_valid &&

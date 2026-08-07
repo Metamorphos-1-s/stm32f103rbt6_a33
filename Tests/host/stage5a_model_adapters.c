@@ -12,25 +12,38 @@
 
 static SystemContext s_context;
 static MassSnapshot s_snapshot;
+static DisplayConditionSnapshot s_display_condition;
+static RuntimeDriftSnapshot s_runtime_drift;
 static unsigned s_command_count;
+static CommandRequest s_last_command;
 
 void Stage5A_ModelAdaptersInit(void)
 {
     (void)memset(&s_context,0,sizeof(s_context));
     (void)memset(&s_snapshot,0,sizeof(s_snapshot));
+    (void)memset(&s_display_condition,0,sizeof(s_display_condition));
+    (void)memset(&s_runtime_drift,0,sizeof(s_runtime_drift));
     DefaultConfig_Load(&s_context.config);
     s_context.runtime.weight_view=WEIGHT_VIEW_NET;
     s_context.initialized=true;
     s_snapshot.status_flags=WEIGHT_STATUS_WEIGHT_VALID;
     s_command_count=0U;
+    (void)memset(&s_last_command,0,sizeof(s_last_command));
 }
 SystemContext *Stage5A_ModelContext(void){return &s_context;}
 MassSnapshot *Stage5A_ModelSnapshot(void){return &s_snapshot;}
+DisplayConditionSnapshot *Stage5A_ModelDisplayCondition(void){return &s_display_condition;}
+RuntimeDriftSnapshot *Stage5A_ModelRuntimeDrift(void){return &s_runtime_drift;}
 unsigned Stage5A_ModelCommandCount(void){return s_command_count;}
+const CommandRequest *Stage5A_ModelLastCommand(void){return &s_last_command;}
 const SystemContext *SystemContext_Get(void){return &s_context;}
 const MassSnapshot *MetrologyManager_GetMassSnapshot(void){return &s_snapshot;}
+const DisplayConditionSnapshot *MetrologyManager_GetDisplayConditionSnapshot(void)
+{return &s_display_condition;}
+const RuntimeDriftSnapshot *MetrologyManager_GetRuntimeDriftSnapshot(void)
+{return &s_runtime_drift;}
 CommandResult CommandService_Execute(const CommandRequest *request,CommandResponse *response)
-{++s_command_count;(void)request;(void)memset(response,0,sizeof(*response));response->result=COMMAND_RESULT_OK;return COMMAND_RESULT_OK;}
+{++s_command_count;s_last_command=*request;(void)memset(response,0,sizeof(*response));response->result=COMMAND_RESULT_OK;return COMMAND_RESULT_OK;}
 bool CommandService_SetStagedConfig(const DeviceConfig *candidate){return candidate!=NULL;}
 void CommandService_ClearStagedConfig(void){}
 CS1237_State CS1237_GetState(void){return CS1237_STATE_RUNNING;}

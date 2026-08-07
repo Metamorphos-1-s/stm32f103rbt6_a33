@@ -132,7 +132,7 @@ def probe_device(client):
     result = {
         "display_weight": frame.decode_i32_words(realtime[0:2], word_order),
         "decimals": realtime[2], "active_unit": realtime[3],
-        "status_flags": (realtime[4] << 16) | realtime[5],
+        "status_flags": realtime[4] | (realtime[5] << 16),
         "register_map_version": realtime[14], "firmware_version": realtime[15],
         "net_mass_ug": frame.decode_i64_words(realtime[16:20], word_order),
         "sample_sequence": (diag[0] << 16) | diag[1],

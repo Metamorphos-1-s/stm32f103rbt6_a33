@@ -2,6 +2,7 @@
 #include "calibration_controller.h"
 #include "calibration_model.h"
 #include "command_service.h"
+#include "config_application.h"
 #include "config_edit.h"
 #include "default_config.h"
 #include "display_codes.h"
@@ -46,8 +47,15 @@ static KeyEvent Stage4A_Key(KeyId key, KeyEventType type, uint32_t now)
 static void Stage4A_MakeConfig(DeviceConfig *config, bool calibrated)
 {
     DefaultConfig_Load(config);
-    config->metrology.zero_range_ug = INT64_C(1000000000);
-    config->metrology.overload_threshold_ug = INT64_C(12000000000);
+    config->metrology.capacity_ug = INT64_C(3000000000);
+    config->metrology.load_cell.rated_capacity_known = true;
+    config->metrology.load_cell.rated_capacity_ug = INT64_C(3000000000);
+    config->metrology.active_unit = MASS_UNIT_KG;
+    config->metrology.unit_display[MASS_UNIT_G].decimal_places = 0U;
+    config->metrology.zero_range_ug = INT64_C(60000000);
+    config->metrology.overload_threshold_ug = INT64_C(3000000000);
+    config->metrology.profiles[0].filter_mode = FILTER_MODE_NONE;
+    config->metrology.profiles[0].filter_strength = 0U;
     config->metrology.profiles[0].stability_window = 2U;
     config->metrology.profiles[0].stability_enter_threshold_ug = 2000000;
     config->metrology.profiles[0].stability_exit_threshold_ug = 4000000;
@@ -55,7 +63,7 @@ static void Stage4A_MakeConfig(DeviceConfig *config, bool calibrated)
     if (calibrated)
     {
         CHECK4(CalibrationModel_BuildMass(100000, 1100000,
-            INT64_C(10000000000), 1U, &config->calibration) ==
+            INT64_C(3000000000), 1U, &config->calibration) ==
             CALIBRATION_RESULT_OK);
     }
 }
@@ -94,6 +102,8 @@ static void TestKeyMapAndService(void)
     CHECK4(KeyMap_Validate(&g_key_map_development_default));
     CHECK4(KeyMap_RawMaskToLogicalMask(&g_key_map_development_default,
         0x15U, &logical) && logical == 0x15U);
+    CHECK4(KeyMap_RawMaskToLogicalMask(&g_key_map_development_default,
+        0x04U, &logical) && logical == (uint8_t)(1U << KEY_ID_ZERO));
     invalid.raw_bit_for_key[KEY_ID_HASH] = 0U;
     CHECK4(!KeyMap_Validate(&invalid));
     invalid = g_key_map_development_default;
@@ -112,6 +122,25 @@ static void TestKeyMapAndService(void)
     KeyService_Process10ms(0U, 130U);
     CHECK4(KeyService_TryPopEvent(&event) && event.type == KEY_EVENT_RELEASED);
     CHECK4(KeyService_TryPopEvent(&event) && event.type == KEY_EVENT_SHORT);
+
+    CHECK4(KeyService_Init(&g_key_map_development_default));
+    KeyService_Process10ms(0x04U, 0U);
+    KeyService_Process10ms(0x04U, 30U);
+    CHECK4(Stage4A_PopType(KEY_EVENT_PRESSED, KEY_ID_ZERO));
+    KeyService_Process10ms(0U, 40U);
+    KeyService_Process10ms(0U, 70U);
+    CHECK4(Stage4A_PopType(KEY_EVENT_RELEASED, KEY_ID_ZERO));
+    CHECK4(Stage4A_PopType(KEY_EVENT_SHORT, KEY_ID_ZERO));
+
+    CHECK4(KeyService_Init(&g_key_map_development_default));
+    KeyService_Process10ms(0x04U, 0U);
+    KeyService_Process10ms(0x04U, 30U);
+    KeyService_Process10ms(0x04U, 1530U);
+    CHECK4(Stage4A_PopType(KEY_EVENT_PRESSED, KEY_ID_ZERO));
+    CHECK4(Stage4A_PopType(KEY_EVENT_LONG, KEY_ID_ZERO));
+    KeyService_Process10ms(0U, 1540U);
+    KeyService_Process10ms(0U, 1570U);
+    CHECK4(!Stage4A_PopType(KEY_EVENT_SHORT, KEY_ID_ZERO));
 
     CHECK4(KeyService_Init(&g_key_map_development_default));
     KeyService_Process10ms(1U, 0U);
@@ -209,6 +238,18 @@ static void Stage4A_FeedStable(int32_t raw)
     CHECK4(MetrologyManager_AcceptRawSample(&sample));
 }
 
+static void Stage4A_FeedRuntimeDrift(int32_t raw, uint32_t first_ms,
+    uint32_t last_ms)
+{
+    RawMeasurementSample sample = {raw, first_ms, true};
+    uint32_t now;
+    for (now = first_ms; now <= last_ms; now += 100U)
+    {
+        sample.timestamp_ms = now;
+        CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    }
+}
+
 static CommandResult Stage4A_CommandEx(CommandId id, CommandSource source,
     int32_t value0, int32_t value1, uint32_t flags, int64_t value64,
     CommandResponse *response)
@@ -250,7 +291,7 @@ static void TestCommandAndConfig(void)
     CHECK4(MetrologyManager_GetSnapshot()->net_weight == 0);
     CHECK4(Stage4A_Command(COMMAND_CLEAR_TARE, COMMAND_SOURCE_BLE, 0, 0,
         &response) == COMMAND_RESULT_OK);
-    CHECK4(MetrologyManager_GetSnapshot()->net_weight == 5000);
+    CHECK4(MetrologyManager_GetSnapshot()->net_weight == 1500);
 
     CHECK4(ConfigEdit_Init());
     target = config;
@@ -306,6 +347,46 @@ static void TestCommandAndConfig(void)
            DEVICE_CS1237_DATA_RATE_10_HZ);
     (void)Stage4A_Command(COMMAND_CANCEL_CONFIG_EDIT,
         COMMAND_SOURCE_LOCAL_KEY, 0, 0, &response);
+}
+
+static void TestZeroCommandFeedback(void)
+{
+    DeviceConfig config;
+    DeviceConfig candidate;
+    CommandResponse response;
+    RawMeasurementSample sample={100000,0U,true};
+    char text[6];
+
+    Stage4A_InitRuntime(&config,true);
+    CHECK4(SystemContext_SetState(APP_STATE_RUN,0U));
+    CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    CHECK4(Stage4A_Command(COMMAND_ZERO,COMMAND_SOURCE_LOCAL_KEY,0,0,
+        &response)==COMMAND_RESULT_NOT_STABLE);
+    CHECK4(!MetrologyManager_GetDisplayConditionSnapshot()->operator_zero_anchor);
+
+    Stage4A_FeedStable(600000);
+    CHECK4(Stage4A_Command(COMMAND_ZERO,COMMAND_SOURCE_LOCAL_KEY,0,0,
+        &response)==COMMAND_RESULT_OUT_OF_ZERO_RANGE);
+    CHECK4(!MetrologyManager_GetDisplayConditionSnapshot()->operator_zero_anchor);
+    CHECK4(Stage4A_Command(COMMAND_TARE,COMMAND_SOURCE_LOCAL_KEY,0,0,
+        &response)==COMMAND_RESULT_OK);
+    CHECK4(Stage4A_Command(COMMAND_ZERO,COMMAND_SOURCE_LOCAL_KEY,0,0,
+        &response)==COMMAND_RESULT_TARE_ACTIVE);
+    CHECK4(Stage4A_Command(COMMAND_CLEAR_TARE,COMMAND_SOURCE_LOCAL_KEY,0,0,
+        &response)==COMMAND_RESULT_OK);
+
+    candidate=SystemContext_Get()->config;
+    candidate.metrology.zero_range_ug=0;
+    CHECK4(ConfigApplication_Apply(&candidate)==CONFIG_APPLY_OK);
+    Stage4A_FeedStable(100000);
+    CHECK4(Stage4A_Command(COMMAND_ZERO,COMMAND_SOURCE_LOCAL_KEY,0,0,
+        &response)==COMMAND_RESULT_ZERO_DISABLED);
+    CHECK4(!MetrologyManager_GetDisplayConditionSnapshot()->operator_zero_anchor);
+
+    CHECK4(DisplayCodes_Get(DISPLAY_CODE_TARE_ACTIVE,text));
+    CHECK4(memcmp(text," tArE ",6U)==0);
+    CHECK4(DisplayCodes_Get(DISPLAY_CODE_ZERO_DISABLED,text));
+    CHECK4(memcmp(text,"ZrOFF ",6U)==0);
 }
 
 static void TestDisplayControllerAndMenu(void)
@@ -379,11 +460,345 @@ static void TestDisplayControllerAndMenu(void)
     event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, 170U);
     CHECK4(MenuController_HandleKeyEvent(&event));
     CHECK4(SystemContext_Get()->config.metrology.capacity_ug ==
-           INT64_C(10000000000));
+           INT64_C(3000000000));
     TestMock_SetTimeMs(30171U);
     MenuController_Process10ms();
     CHECK4(!MenuController_IsActive());
     CHECK4(MenuController_TakeExitRequest());
+}
+
+static void Stage4A_LockDisplay(int32_t raw, uint32_t start_ms)
+{
+    RawMeasurementSample sample = {raw, start_ms, true};
+    uint8_t index;
+
+    for (index = 0U; index < 12U; ++index)
+    {
+        sample.timestamp_ms = start_ms + (uint32_t)index * 10U;
+        CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    }
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_LOCKED);
+}
+
+static void TestConditionedDisplayIntegration(void)
+{
+    DeviceConfig config;
+    DeviceConfig board_config;
+    RawMeasurementSample sample = {100000, 0U, true};
+    const DisplayConditionSnapshot *condition;
+    MassValueUg authoritative_before;
+    uint16_t locked_segments[6];
+
+    Stage4A_InitRuntime(&config, true);
+    CHECK4(SystemContext_SetState(APP_STATE_RUN, 0U));
+    board_config=SystemContext_Get()->config;
+    board_config.metrology.capacity_ug=INT64_C(3000000000);
+    board_config.metrology.overload_threshold_ug=INT64_C(3000000000);
+    board_config.metrology.zero_range_ug=INT64_C(60000000);
+    board_config.metrology.active_unit=MASS_UNIT_G;
+    board_config.metrology.unit_display[MASS_UNIT_G].decimal_places=2U;
+    board_config.metrology.load_cell.rated_capacity_known=true;
+    board_config.metrology.load_cell.rated_capacity_ug=INT64_C(3000000000);
+    CHECK4(CalibrationModel_BuildMass(100000,1100000,
+        INT64_C(3000000000),2U,&board_config.calibration)==
+        CALIBRATION_RESULT_OK);
+    CHECK4(ConfigApplication_Apply(&board_config)==CONFIG_APPLY_OK);
+    Stage4A_LockDisplay(100000, 0U);
+    condition = MetrologyManager_GetDisplayConditionSnapshot();
+    CHECK4(condition != NULL && condition->state == DISPLAY_CONDITION_LOCKED);
+    CHECK4(condition != NULL && condition->locked);
+
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, 105U));
+    sample.raw_value = 100001;
+    sample.timestamp_ms = 110U;
+    CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->locked);
+    CHECK4(SystemContext_SetState(APP_STATE_RUN, 115U));
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->locked);
+    authoritative_before = MetrologyManager_GetMassSnapshot()->net_mass_ug;
+
+    DisplayController_SetPage(DISPLAY_PAGE_NET);
+    DisplayController_Process20ms();
+    (void)memcpy(locked_segments, DisplayModel_Get()->digit_segments,
+        sizeof(locked_segments));
+
+    sample.raw_value = 100002;
+    sample.timestamp_ms = 120U;
+    CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    CHECK4(MetrologyManager_GetMassSnapshot()->net_mass_ug !=
+        authoritative_before);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->display_mass_ug ==
+        condition->anchor_mass_ug);
+    DisplayController_Process20ms();
+    CHECK4(memcmp(locked_segments, DisplayModel_Get()->digit_segments,
+        sizeof(locked_segments)) == 0);
+
+    CHECK4(MetrologyManager_SetDisplayUnit(MASS_UNIT_KG));
+    condition = MetrologyManager_GetDisplayConditionSnapshot();
+    CHECK4(condition != NULL && condition->state == DISPLAY_CONDITION_TRACKING);
+    CHECK4(condition != NULL && !condition->locked);
+    CHECK4(condition != NULL && condition->last_release_reason ==
+        DISPLAY_RELEASE_FORCED);
+
+    CHECK4(MetrologyManager_SetDisplayUnit(MASS_UNIT_G));
+    Stage4A_LockDisplay(100002, 200U);
+    CHECK4(MetrologyManager_Zero() == WEIGHT_ACTION_OK);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_LOCKED);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->operator_zero_anchor);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->display_mass_ug==0);
+    sample.raw_value=100336; sample.timestamp_ms=400U;
+    CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->locked);
+    sample.timestamp_ms=410U; CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->locked);
+    sample.timestamp_ms=420U; CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state==
+        DISPLAY_CONDITION_TRACKING);
+    Stage4A_LockDisplay(100002, 500U);
+    CHECK4(MetrologyManager_ResetZero() == WEIGHT_ACTION_OK);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_TRACKING);
+
+    CHECK4(MetrologyManager_SetDisplayUnit(MASS_UNIT_G));
+    Stage4A_LockDisplay(600000, 620U);
+    CHECK4(MetrologyManager_Tare() == WEIGHT_ACTION_OK);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_LOCKED);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->operator_zero_anchor);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->display_mass_ug==0);
+    sample.raw_value=600002; sample.timestamp_ms=740U;
+    CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    CHECK4(MetrologyManager_GetMassSnapshot()->net_mass_ug!=0);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->locked);
+    sample.raw_value=600336; sample.timestamp_ms=750U;
+    CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    sample.timestamp_ms=760U; CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    sample.timestamp_ms=770U; CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state==
+        DISPLAY_CONDITION_TRACKING);
+    CHECK4(MetrologyManager_ClearTare() == WEIGHT_ACTION_OK);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_TRACKING);
+
+    Stage4A_LockDisplay(600000, 1000U);
+    CHECK4(Stage4A_Command(COMMAND_SET_WEIGHT_VIEW,
+        COMMAND_SOURCE_LOCAL_KEY, WEIGHT_VIEW_GROSS, 0, &(CommandResponse){0}) ==
+        COMMAND_RESULT_OK);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_TRACKING);
+    Stage4A_LockDisplay(600000, 1200U);
+    CHECK4(MetrologyManager_ReconfigureFilter(FILTER_MODE_NONE, 0U));
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_TRACKING);
+    Stage4A_LockDisplay(600000, 1400U);
+    CHECK4(MetrologyManager_Reconfigure(&SystemContext_Get()->config));
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_TRACKING);
+
+    Stage4A_LockDisplay(600000, 1600U);
+    CHECK4(Stage4A_Command(COMMAND_CALIBRATION_BEGIN,
+        COMMAND_SOURCE_LOCAL_KEY, 0, 0, &(CommandResponse){0}) ==
+        COMMAND_RESULT_OK);
+    CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
+        DISPLAY_CONDITION_TRACKING);
+    CHECK4(Stage4A_Command(COMMAND_CALIBRATION_CANCEL,
+        COMMAND_SOURCE_LOCAL_KEY, 0, 0, &(CommandResponse){0}) ==
+        COMMAND_RESULT_OK);
+}
+
+static void TestRuntimeDriftTareAndFaultSemantics(void)
+{
+    DeviceConfig config;
+    const RuntimeDriftSnapshot *drift;
+    MassValueUg offset;
+    RawMeasurementSample sample = {600007, 720700U, true};
+    CommandResponse response;
+
+    Stage4A_InitRuntime(&config, true);
+    CHECK4(MetrologyManager_FaultInvalidatesRuntimeDrift(FAULT_ADC_ERROR));
+    CHECK4(MetrologyManager_FaultInvalidatesRuntimeDrift(
+        FAULT_CALIBRATION_INVALID));
+    CHECK4(MetrologyManager_FaultInvalidatesRuntimeDrift(
+        FAULT_CS1237_DATA_ERROR));
+    CHECK4(!MetrologyManager_FaultInvalidatesRuntimeDrift(
+        FAULT_TM1628_COMM_ERROR));
+    CHECK4(!MetrologyManager_FaultInvalidatesRuntimeDrift(
+        FAULT_CS1237_BUFFER_OVERRUN));
+    CHECK4(!MetrologyManager_FaultInvalidatesRuntimeDrift(
+        FAULT_MODBUS_TRANSPORT_FATAL));
+    CHECK4(SystemContext_SetState(APP_STATE_RUN, 0U));
+    CHECK4(Stage4A_Command(COMMAND_SET_RUNTIME_DRIFT_ENABLED,
+        COMMAND_SOURCE_LOCAL_KEY, 2, 0, &response) ==
+        COMMAND_RESULT_INVALID_ARGUMENT);
+    CHECK4(Stage4A_Command(COMMAND_SET_RUNTIME_DRIFT_ENABLED,
+        COMMAND_SOURCE_LOCAL_KEY, 1, 0, &response) == COMMAND_RESULT_OK);
+    Stage4A_FeedRuntimeDrift(600000, 0U, 300000U);
+    Stage4A_FeedRuntimeDrift(600007, 300100U, 360300U);
+    drift = MetrologyManager_GetRuntimeDriftSnapshot();
+    CHECK4(drift != NULL && drift->state == RUNTIME_DRIFT_TRACKING);
+    CHECK4(drift != NULL && drift->offset_ug == INT64_C(500));
+
+    sample.valid = false;
+    sample.timestamp_ms = 360350U;
+    CHECK4(!MetrologyManager_AcceptRawSample(&sample));
+    CHECK4(drift->state == RUNTIME_DRIFT_FROZEN);
+    CHECK4(drift->offset_ug == INT64_C(500));
+    CHECK4(drift->last_freeze_reason ==
+        RUNTIME_DRIFT_FREEZE_TRANSIENT_SAMPLE);
+    sample.valid = true;
+
+    CHECK4(MetrologyManager_Tare() == WEIGHT_ACTION_OK);
+    CHECK4(drift->state == RUNTIME_DRIFT_FROZEN);
+    CHECK4(drift->offset_ug == INT64_C(500));
+    CHECK4(drift->last_freeze_reason == RUNTIME_DRIFT_FREEZE_TARE_REARM);
+    Stage4A_FeedRuntimeDrift(600007, 360400U, 660600U);
+    CHECK4((MetrologyManager_GetSnapshot()->status_flags &
+        WEIGHT_STATUS_TARE_ACTIVE) != 0U);
+    CHECK4(drift->state == RUNTIME_DRIFT_TRACKING);
+    CHECK4(drift->offset_ug == INT64_C(500));
+    Stage4A_FeedRuntimeDrift(600014, 660700U, 720700U);
+    CHECK4(drift->offset_ug == INT64_C(1000));
+
+    CHECK4(MetrologyManager_ClearTare() == WEIGHT_ACTION_OK);
+    CHECK4(drift->state == RUNTIME_DRIFT_FROZEN);
+    CHECK4(drift->offset_ug == INT64_C(1000));
+    CHECK4(drift->last_freeze_reason ==
+        RUNTIME_DRIFT_FREEZE_CLEAR_TARE_REARM);
+
+    offset = drift->offset_ug;
+    FaultManager_Set(FAULT_UART2_DMA_INIT);
+    sample.timestamp_ms = 720750U;
+    CHECK4(MetrologyManager_AcceptRawSample(&sample));
+    CHECK4(drift->offset_ug == offset);
+    FaultManager_Clear(FAULT_UART2_DMA_INIT);
+    FaultManager_Set(FAULT_TM1628_COMM_ERROR);
+    CHECK4(SystemContext_SetState(APP_STATE_FAULT, 720800U));
+    MetrologyManager_HandleFaultState();
+    CHECK4(drift->offset_ug == offset);
+    CHECK4(drift->state == RUNTIME_DRIFT_FROZEN);
+    CHECK4(drift->last_freeze_reason ==
+        RUNTIME_DRIFT_FREEZE_TRANSIENT_FAULT);
+    FaultManager_Clear(FAULT_TM1628_COMM_ERROR);
+    CHECK4(SystemContext_SetState(APP_STATE_RUN, 720900U));
+    sample.timestamp_ms = 720900U;
+    CHECK4(MetrologyManager_AcceptRawSample(&sample));
+
+    FaultManager_Set(FAULT_CS1237_DATA_ERROR);
+    CHECK4(SystemContext_SetState(APP_STATE_FAULT, 721000U));
+    MetrologyManager_HandleFaultState();
+    CHECK4(drift->offset_ug == 0);
+    CHECK4(drift->last_reset_reason ==
+        RUNTIME_DRIFT_RESET_REFERENCE_INVALID);
+    FaultManager_Clear(FAULT_CS1237_DATA_ERROR);
+}
+
+static void TestMenuStarHashLongDoesNotAdjust(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+
+    Stage4A_InitRuntime(&config, false);
+    CommandService_Init();
+    MenuController_Init();
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
+    CHECK4(MenuController_Enter());
+
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 10U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 20U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 30U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 40U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_GetItem() == MENU_ITEM_CAPACITY);
+
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, 50U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_GetItem() == MENU_ITEM_CAPACITY);
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_LONG, 60U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_GetItem() == MENU_ITEM_CAPACITY);
+
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 70U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 80U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, 90U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_REPEAT, 100U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 110U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(SystemContext_Get()->config.metrology.capacity_ug ==
+           INT64_C(2998000000));
+
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 120U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 130U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_LONG, 140U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_REPEAT, 150U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 160U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(SystemContext_Get()->config.metrology.capacity_ug ==
+           INT64_C(3000000000));
+
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, 170U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(!MenuController_IsActive());
+    CHECK4(MenuController_TakeExitRequest());
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 180U);
+    CHECK4(!MenuController_HandleKeyEvent(&event));
+}
+
+static void TestOverloadMenuRecovery(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+    uint8_t index;
+
+    Stage4A_InitRuntime(&config, false);
+    config = SystemContext_Get()->config;
+    config.metrology.active_unit = MASS_UNIT_G;
+    config.metrology.unit_display[MASS_UNIT_G].decimal_places = 2U;
+    config.metrology.overload_threshold_ug = INT64_C(10000000000);
+    CHECK4(SystemContext_ApplyConfig(&config, true));
+    CommandService_Init();
+    MenuController_Init();
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 10U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 20U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 30U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 40U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    for (index = 0U; index < 6U; ++index)
+    {
+        event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT,
+            50U + (uint32_t)index * 10U);
+        CHECK4(MenuController_HandleKeyEvent(&event));
+    }
+    CHECK4(MenuController_GetItem() == MENU_ITEM_OVERLOAD);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 120U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, 130U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(SystemContext_Get()->config.metrology.overload_threshold_ug ==
+        INT64_C(10000000000));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 140U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 150U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(SystemContext_Get()->config.metrology.overload_threshold_ug ==
+        INT64_C(3000000000));
 }
 
 static void TestDisplayMessageOverlay(void)
@@ -674,7 +1089,12 @@ unsigned int Stage4A_RunTests(void)
     TestKeyMapAndService();
     TestDisplayFormattingAndModel();
     TestCommandAndConfig();
+    TestZeroCommandFeedback();
     TestDisplayControllerAndMenu();
+    TestConditionedDisplayIntegration();
+    TestRuntimeDriftTareAndFaultSemantics();
+    TestMenuStarHashLongDoesNotAdjust();
+    TestOverloadMenuRecovery();
     TestDisplayMessageOverlay();
     TestUnitMenuEdit();
     TestRawCalibrationStability();
