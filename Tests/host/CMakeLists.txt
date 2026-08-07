@@ -250,3 +250,21 @@ else()
     target_compile_options(stage5b_host_tests PRIVATE -Wall -Wextra -Werror)
 endif()
 add_test(NAME stage5b_host_logic COMMAND stage5b_host_tests)
+
+add_executable(stage5c_host_tests
+    test_stage5c.c
+    stage5c_transport_adapters.c
+    ../../Services/ble_transport/ble_transport.c
+    ../../Services/ble_connection_manager/ble_connection_manager.c
+    ../../Services/event_queue/event_queue.c
+)
+target_include_directories(stage5c_host_tests PRIVATE
+    . ../../Config ../../Services/ble_transport
+    ../../Services/ble_connection_manager ../../Services/event_queue
+    ../../Drivers/w02)
+if(MSVC)
+    target_compile_options(stage5c_host_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5c_host_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5c_host_logic COMMAND stage5c_host_tests)
