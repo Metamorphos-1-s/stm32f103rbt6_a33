@@ -249,6 +249,7 @@ static void App_10msTask(void *context)
   }
   SelfTestController_Process10ms();
   MenuController_Process10ms();
+  CommandService_Process(BSP_TimeNowMs());
   CalibrationController_Process10ms();
 
   if (MenuController_TakeCalibrationRequest())

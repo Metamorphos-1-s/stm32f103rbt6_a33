@@ -36,6 +36,7 @@ typedef struct
     uint8_t input_decimal_places;
     uint8_t input_division_digit;
     uint16_t edit_step_multiplier;
+    uint16_t session_id;
     uint32_t zero_sample_sequence;
     uint32_t span_sample_sequence;
     CalibrationResult result;
