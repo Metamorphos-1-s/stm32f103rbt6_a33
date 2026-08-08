@@ -2,9 +2,11 @@
 """Host-only tests for the Stage 5C-C Python frame codec/parser."""
 
 import unittest
+import struct
 
 from stage5c_ble import (FrameParser, OPERATIONS, RESPONSE, crc16,
-                         decode_response, encode_request)
+                         decode_operation_data, decode_response,
+                         encode_request)
 
 
 class BleCommandToolTests(unittest.TestCase):
@@ -41,6 +43,20 @@ class BleCommandToolTests(unittest.TestCase):
         frames = parser.feed(bytes(bad) + good)
         self.assertEqual(parser.crc_errors, 1)
         self.assertEqual(len(frames), 1)
+
+    def test_calibration_state_decode(self):
+        flags = 0x77
+        data = struct.pack("<BBHBBBBqqiiiIBBH", 6, 3, 9, 1, 2, 1,
+                           flags, 500000000, 3000000000, 100000,
+                           600000, 500000, 123, 8, 0, 0)
+        decoded = decode_operation_data(OPERATIONS["cal-status"], data)
+        self.assertEqual(decoded["state_name"], "RESULT_READY")
+        self.assertEqual(decoded["owner_name"], "BLE")
+        self.assertEqual(decoded["session_id"], 9)
+        self.assertEqual(decoded["calibration_mass_ug"], 500000000)
+        self.assertTrue(decoded["stable"])
+        self.assertTrue(decoded["candidate_valid"])
+        self.assertTrue(decoded["persistent_dirty"])
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ import asyncio
 import json
 import struct
 import time
+from decimal import Decimal, InvalidOperation
 
 
 FFE1_UUID = "0000ffe1-0000-1000-8000-00805f9b34fb"
@@ -35,6 +36,13 @@ OPERATIONS = {
     "apply-config": 0x25,
     "discard-config": 0x26,
     "save": 0x27,
+    "cal-status": 0x30,
+    "cal-begin": 0x31,
+    "cal-set-mass": 0x32,
+    "cal-zero": 0x33,
+    "cal-load": 0x34,
+    "cal-apply": 0x35,
+    "cal-cancel": 0x36,
 }
 
 RESULTS = {
@@ -46,7 +54,18 @@ RESULTS = {
     15: "TRANSACTION_CONFLICT",
 }
 
-WRITE_COMMANDS = set(OPERATIONS) - {"device-info", "get-config"}
+WRITE_COMMANDS = set(OPERATIONS) - {"device-info", "get-config", "cal-status"}
+CALIBRATION_COMMANDS = {
+    "cal-begin", "cal-set-mass", "cal-zero", "cal-load", "cal-apply",
+    "cal-cancel", "calibrate",
+}
+
+CALIBRATION_STATES = {
+    0: "IDLE", 1: "WAIT_ZERO_STABLE", 2: "ZERO_READY",
+    3: "ZERO_CAPTURED", 4: "WAIT_LOAD_STABLE", 5: "LOAD_READY",
+    6: "RESULT_READY", 7: "APPLIED", 8: "FAILED",
+}
+CALIBRATION_OWNERS = {0: "NONE", 1: "LOCAL_UI", 2: "MODBUS", 3: "BLE"}
 
 
 def crc16(data):
@@ -143,6 +162,38 @@ def decode_operation_data(operation, data):
                  "stability_exit_ug", "stability_hold_ms", "persistent_dirty",
                  "config_edit_state")
         return dict(zip(names, values))
+    if (operation in range(OPERATIONS["cal-status"],
+                          OPERATIONS["cal-cancel"] + 1) and
+            len(data) == 44):
+        values = struct.unpack("<BBHBBBBqqiiiIBBH", data)
+        (state, owner, session_id, unit, dp, division, flags,
+         mass_ug, capacity_ug, zero_raw, load_raw, span_raw,
+         sample_sequence, sample_count, last_result, _) = values
+        return {
+            "state": state,
+            "state_name": CALIBRATION_STATES.get(state, "UNKNOWN"),
+            "owner": owner,
+            "owner_name": CALIBRATION_OWNERS.get(owner, "UNKNOWN"),
+            "session_id": session_id,
+            "locked_unit": unit,
+            "decimal_places": dp,
+            "division": division,
+            "active": bool(flags & (1 << 0)),
+            "stable": bool(flags & (1 << 1)),
+            "zero_captured": bool(flags & (1 << 2)),
+            "load_captured": bool(flags & (1 << 3)),
+            "candidate_valid": bool(flags & (1 << 4)),
+            "result_valid": bool(flags & (1 << 5)),
+            "persistent_dirty": bool(flags & (1 << 6)),
+            "calibration_mass_ug": mass_ug,
+            "capacity_ug": capacity_ug,
+            "zero_raw": zero_raw,
+            "load_raw": load_raw,
+            "span_raw": span_raw,
+            "sample_sequence": sample_sequence,
+            "sample_count": sample_count,
+            "last_result": last_result,
+        }
     return {"hex": data.hex()}
 
 
@@ -163,6 +214,10 @@ def command_data(args):
                  "stability-window": 4, "stability-enter": 5,
                  "stability-exit": 6, "stability-hold-ms": 7}[args.field]
         return struct.pack("<BBq", profile, field, args.value)
+    if args.command == "cal-set-mass":
+        return struct.pack("<Hq", args.session_id, args.value_ug)
+    if args.command in ("cal-zero", "cal-load", "cal-apply", "cal-cancel"):
+        return struct.pack("<H", args.session_id)
     return b""
 
 
@@ -174,10 +229,13 @@ def parse_args():
     parser.add_argument("--retries", type=int, default=2)
     parser.add_argument("--transaction-id", type=lambda value: int(value, 0))
     parser.add_argument("--allow-write", action="store_true")
+    parser.add_argument("--allow-calibration", action="store_true")
     parser.add_argument("--allow-flash", action="store_true")
     subparsers = parser.add_subparsers(dest="command", required=True)
     def add_interlocks(command_parser):
         command_parser.add_argument("--allow-write", action="store_true",
+                                    default=argparse.SUPPRESS)
+        command_parser.add_argument("--allow-calibration", action="store_true",
                                     default=argparse.SUPPRESS)
         command_parser.add_argument("--allow-flash", action="store_true",
                                     default=argparse.SUPPRESS)
@@ -208,6 +266,21 @@ def parse_args():
         "stability-window", "stability-enter", "stability-exit",
         "stability-hold-ms"), required=True)
     profile.add_argument("--value", type=int, required=True)
+    for name in ("cal-status", "cal-begin"):
+        add_interlocks(subparsers.add_parser(name))
+    cal_mass = subparsers.add_parser("cal-set-mass")
+    add_interlocks(cal_mass)
+    cal_mass.add_argument("--session-id", type=lambda value: int(value, 0),
+                          required=True)
+    cal_mass.add_argument("--value-ug", type=int, required=True)
+    for name in ("cal-zero", "cal-load", "cal-apply", "cal-cancel"):
+        action = subparsers.add_parser(name)
+        add_interlocks(action)
+        action.add_argument("--session-id", type=lambda value: int(value, 0),
+                            required=True)
+    wizard = subparsers.add_parser("calibrate")
+    add_interlocks(wizard)
+    wizard.add_argument("--mass-g")
     return parser.parse_args()
 
 
@@ -216,18 +289,16 @@ async def run(args):
 
     if args.command in WRITE_COMMANDS and not args.allow_write:
         raise RuntimeError("state-changing command requires --allow-write")
+    if args.command in CALIBRATION_COMMANDS and not args.allow_calibration:
+        raise RuntimeError("calibration command requires --allow-calibration")
     if args.command == "save" and not args.allow_flash:
         raise RuntimeError("SAVE requires --allow-flash")
-    operation = OPERATIONS[args.command]
-    transaction_id = args.transaction_id
-    if transaction_id is None:
-        transaction_id = int(time.monotonic_ns() // 1_000_000) & 0xFFFF
-        transaction_id = transaction_id or 1
-    data = command_data(args)
-    request = encode_request(transaction_id, operation, data,
-                             transaction_id, int(time.monotonic() * 1000) & 0xFFFFFFFF)
     parser = FrameParser()
     responses = asyncio.Queue()
+    next_transaction = args.transaction_id
+    if next_transaction is None:
+        next_transaction = int(time.monotonic_ns() // 1_000_000) & 0xFFFF
+    next_transaction = next_transaction or 1
 
     def on_notify(_characteristic, notification):
         for message_type, payload, _raw in parser.feed(bytes(notification)):
@@ -248,7 +319,14 @@ async def run(args):
         raise RuntimeError("W02 was not found")
     async with BleakClient(device, timeout=20.0) as client:
         await client.start_notify(FFE1_UUID, on_notify)
-        try:
+
+        async def send(operation, data=b""):
+            nonlocal next_transaction
+            transaction_id = next_transaction
+            next_transaction = (next_transaction + 1) & 0xFFFF
+            next_transaction = next_transaction or 1
+            request = encode_request(transaction_id, operation, data,
+                transaction_id, int(time.monotonic() * 1000) & 0xFFFFFFFF)
             for attempt in range(args.retries + 1):
                 await client.write_gatt_char(FFE2_UUID, request, response=False)
                 deadline = time.monotonic() + args.timeout_s
@@ -262,15 +340,110 @@ async def run(args):
                         break
                     if (response["transaction_id"] == transaction_id and
                             response["operation"] == operation):
-                        decoded = decode_operation_data(operation, response.pop("data"))
-                        response["response_data"] = decoded
+                        response["response_data"] = decode_operation_data(
+                            operation, response.pop("data"))
                         response["attempt"] = attempt + 1
-                        print(json.dumps(response, indent=2), flush=True)
-                        return 0 if response["result"] == 0 else 1
+                        return response
+            raise RuntimeError("matching command response timed out")
+
+        async def require_ok(operation, data=b""):
+            response = await send(operation, data)
+            print(json.dumps(response, indent=2), flush=True)
+            if response["result"] != 0:
+                raise RuntimeError(response["result_name"])
+            return response
+
+        async def wait_for_state(expected, timeout_s=120.0):
+            deadline = time.monotonic() + timeout_s
+            while time.monotonic() < deadline:
+                response = await send(OPERATIONS["cal-status"])
+                state = response["response_data"].get("state_name")
+                if response["result"] != 0:
+                    raise RuntimeError(response["result_name"])
+                if state == expected:
+                    print(json.dumps(response, indent=2), flush=True)
+                    return response["response_data"]
+                await asyncio.sleep(0.5)
+            raise RuntimeError("calibration state wait timed out")
+
+        try:
+            if args.command != "calibrate":
+                response = await send(OPERATIONS[args.command], command_data(args))
+                print(json.dumps(response, indent=2), flush=True)
+                return 0 if response["result"] == 0 else 1
+
+            state_response = await require_ok(OPERATIONS["cal-status"])
+            state = state_response["response_data"]
+            if state["active"]:
+                if state["owner_name"] != "BLE":
+                    raise RuntimeError("calibration session is owned by " +
+                                       state["owner_name"])
+                session_id = state["session_id"]
+            else:
+                begin = await require_ok(OPERATIONS["cal-begin"])
+                state = begin["response_data"]
+                session_id = state["session_id"]
+            workflow_state = state["state_name"]
+            if workflow_state != "RESULT_READY":
+                if args.mass_g is not None:
+                    mass_text = args.mass_g
+                elif state.get("calibration_mass_ug", 0) > 0:
+                    mass_text = str(Decimal(state["calibration_mass_ug"]) /
+                                    Decimal(1000000))
+                else:
+                    mass_text = input("Known calibration mass in g: ").strip()
+                try:
+                    mass_ug_decimal = Decimal(mass_text) * Decimal(1000000)
+                except InvalidOperation as error:
+                    raise RuntimeError("invalid calibration mass") from error
+                if mass_ug_decimal != mass_ug_decimal.to_integral_value():
+                    raise RuntimeError(
+                        "mass cannot be represented as whole micrograms")
+                mass_ug = int(mass_ug_decimal)
+                if mass_ug != state.get("calibration_mass_ug", 0):
+                    mass_response = await require_ok(
+                        OPERATIONS["cal-set-mass"],
+                        struct.pack("<Hq", session_id, mass_ug))
+                    workflow_state = mass_response["response_data"]["state_name"]
+                if workflow_state in ("WAIT_ZERO_STABLE", "ZERO_READY"):
+                    input("Clear the scale, then press Enter to wait for zero stability: ")
+                    await wait_for_state("ZERO_READY")
+                    zero_response = await require_ok(OPERATIONS["cal-zero"],
+                        struct.pack("<H", session_id))
+                    workflow_state = zero_response["response_data"]["state_name"]
+                if workflow_state == "ZERO_CAPTURED":
+                    mass_response = await require_ok(
+                        OPERATIONS["cal-set-mass"],
+                        struct.pack("<Hq", session_id, mass_ug))
+                    workflow_state = mass_response["response_data"]["state_name"]
+                if workflow_state not in ("WAIT_LOAD_STABLE", "LOAD_READY"):
+                    raise RuntimeError("cannot resume calibration from " +
+                                       workflow_state)
+                input("Place the known mass, then press Enter to wait for load stability: ")
+                await wait_for_state("LOAD_READY")
+                result = await require_ok(OPERATIONS["cal-load"],
+                                          struct.pack("<H", session_id))
+                if result["response_data"].get("state_name") != "RESULT_READY":
+                    raise RuntimeError("calibration candidate is not ready")
+            decision = input("Type APPLY to apply the candidate to RAM, or CANCEL: ").strip()
+            if decision != "APPLY":
+                if decision == "CANCEL":
+                    await require_ok(OPERATIONS["cal-cancel"],
+                                     struct.pack("<H", session_id))
+                return 1
+            applied = await require_ok(OPERATIONS["cal-apply"],
+                                       struct.pack("<H", session_id))
+            if not applied["response_data"].get("persistent_dirty"):
+                raise RuntimeError("APPLY did not mark configuration dirty")
+            if args.allow_flash:
+                if input("Type SAVE to write the calibration to Flash: ").strip() == "SAVE":
+                    await require_ok(OPERATIONS["save"])
+            else:
+                print("Calibration is active in RAM only; use SAVE with --allow-flash after verification.")
+            return 0
         finally:
             if client.is_connected:
                 await client.stop_notify(FFE1_UUID)
-    raise RuntimeError("matching command response timed out")
 
 
 def main():
