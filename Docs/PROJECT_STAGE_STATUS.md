@@ -60,6 +60,34 @@ INTEROPERABILITY TESTED; COMPLETE. The frozen Modbus map still has no direct OL
 active-config register, so OL cross-checking uses the BLE read plus the shared
 validator. Calibration remains reserved for Stage 5C-D.
 
+## Stage 5C-D
+
+Branch: `stage5c-ble-d`, based on the Stage 5C-C main merge
+`04d498527e9aaa7434f20f72ef9dfd4fea3a3dd7` and tag
+`stage5c-c-hw-tested`.
+
+The BLE two-point calibration workflow is software complete. A single
+transport-neutral CommandService session now owns local UI, Modbus, or BLE
+calibration, locks the conversion-critical configuration, requires the existing
+8-sample/50-count/500-ms stable window, and uses the existing
+CalibrationModel, ConfigApplication and PersistenceManager paths. BLE V1 adds
+GET STATE `0x30`, BEGIN `0x31`, SET MASS `0x32`, CAPTURE ZERO `0x33`, CAPTURE
+LOAD `0x34`, APPLY `0x35`, and CANCEL `0x36`; mutating requests carry a 16-bit
+session ID and retain the existing transaction replay protection. APPLY and
+SAVE both require explicit operator confirmation in the PC workflow.
+
+Final clean software gates pass: CTest 12/12, Stage 5B Python 28/28, and Stage
+5C Python 9/9. Debug is 125,532 B Flash / 14,464 B RAM; Release is 68,248 B /
+14,472 B; BoardDiagnostics is 124,044 B / 14,472 B. Release ends at
+`0x08010A98`, below `0x0801F000`. Schema V2 remains 344 B, slots A/B and Modbus
+map `0x0102` are unchanged, and `.ioc` is untouched.
+
+Stage 5C-D status: **SOFTWARE COMPLETE - NOT TESTED ON HARDWARE**. No Stage
+5C-D firmware has been programmed yet. Board calibration, owner
+interoperability, retry/idempotency, CANCEL rollback, explicit APPLY/SAVE,
+power-cycle behavior and the 600 s BLE/RS485 concurrency regression remain
+required before Stage 5C-D can be declared complete.
+
 ## Stage 5A
 
 Stage 5A HF2-R1 hardware regression is merged to `main` at
