@@ -27,6 +27,8 @@ def check(repo_root=None):
         encoding="utf-8")
     schema = (root / "Services/config_store/persistent_schema.h").read_text(
         encoding="utf-8")
+    project_config = (root / "Config/project_config.h").read_text(
+        encoding="utf-8")
     command_types = (root / "Protocol/command_service/command_types.h").read_text(
         encoding="utf-8")
     drift_types = (root / "Domain/measurement/runtime_drift_compensator.h").read_text(
@@ -75,7 +77,9 @@ def check(repo_root=None):
         _require(r"case\s+0x%04XU" % address, mailbox, "mailbox 0x%04X" % address)
     _require(r"address\s*==\s*(?:14U|0x0*EU).*MODBUS_REGISTER_MAP_VERSION",
              model, "map ID")
-    _require(r"address\s*==\s*(?:15U|0x0*FU).*0x%04XU" % reg.FIRMWARE_VERSION,
+    _require(r"#define\s+FW_RELEASE_VERSION\s+0x%04XU" % reg.FIRMWARE_VERSION,
+             project_config, "firmware version constant")
+    _require(r"address\s*==\s*(?:15U|0x0*FU).*FW_RELEASE_VERSION",
              model, "firmware ID")
     _require(r"address==0x%04XU" % reg.STORAGE_SCHEMA, model, "schema register")
     _require(r"#define\s+CONFIG_STORE_SCHEMA_V2\s+%dU" % reg.SCHEMA_VERSION,
