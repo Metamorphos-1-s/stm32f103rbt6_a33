@@ -994,6 +994,16 @@ static void TestTransportNeutralCalibrationSession(void)
 
     Stage4A_InitRuntime(&config, true);
     original = SystemContext_Get()->config.calibration;
+    CHECK4(CommandService_GetCalibrationSnapshot(&snapshot));
+    CHECK4(!snapshot.active && snapshot.active_calibration_valid &&
+           (snapshot.locked_unit == config.metrology.active_unit) &&
+           (snapshot.locked_decimal_places ==
+            config.metrology.unit_display[config.metrology.active_unit].
+                decimal_places) &&
+           (snapshot.locked_division_digit ==
+            config.metrology.unit_display[config.metrology.active_unit].
+                division_digit) &&
+           (snapshot.locked_capacity_ug == config.metrology.capacity_ug));
     CHECK4(Stage4A_Command(COMMAND_CALIBRATION_BEGIN, COMMAND_SOURCE_BLE,
         0, 0, &response) == COMMAND_RESULT_OK);
     session_id = (uint16_t)response.value0;

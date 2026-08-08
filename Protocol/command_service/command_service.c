@@ -800,12 +800,26 @@ bool CommandService_GetCalibrationSnapshot(
     snapshot->state = s_calibration.state;
     snapshot->owner = s_calibration.owner;
     snapshot->session_id = s_calibration.session_id;
-    snapshot->locked_unit = s_calibration.unit_locked;
-    snapshot->locked_decimal_places =
-        s_calibration.display_locked.decimal_places;
-    snapshot->locked_division_digit =
-        s_calibration.display_locked.division_digit;
-    snapshot->locked_capacity_ug = s_calibration.capacity_ug_locked;
+    if (s_calibration.active || (context == NULL) ||
+        ((uint32_t)context->config.metrology.active_unit >= MASS_UNIT_COUNT))
+    {
+        snapshot->locked_unit = s_calibration.unit_locked;
+        snapshot->locked_decimal_places =
+            s_calibration.display_locked.decimal_places;
+        snapshot->locked_division_digit =
+            s_calibration.display_locked.division_digit;
+        snapshot->locked_capacity_ug = s_calibration.capacity_ug_locked;
+    }
+    else
+    {
+        const UnitDisplayConfig *display =
+            &context->config.metrology.unit_display[
+                context->config.metrology.active_unit];
+        snapshot->locked_unit = context->config.metrology.active_unit;
+        snapshot->locked_decimal_places = display->decimal_places;
+        snapshot->locked_division_digit = display->division_digit;
+        snapshot->locked_capacity_ug = context->config.metrology.capacity_ug;
+    }
     snapshot->calibration_mass_ug = s_calibration.span_mass_ug;
     snapshot->zero_raw = s_calibration.raw_zero;
     snapshot->load_raw = s_calibration.raw_span;
@@ -825,6 +839,8 @@ bool CommandService_GetCalibrationSnapshot(
         (s_calibration.state == CAL_WORKFLOW_APPLIED);
     snapshot->persistent_dirty = (context != NULL) &&
         context->runtime.config_dirty;
+    snapshot->active_calibration_valid = (context != NULL) &&
+        context->config.calibration.calibration_valid;
     snapshot->last_result = s_calibration.last_result;
     return true;
 }

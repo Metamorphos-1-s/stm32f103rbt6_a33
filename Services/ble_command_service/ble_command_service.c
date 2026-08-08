@@ -169,6 +169,7 @@ static uint16_t BuildCalibrationState(uint8_t *data)
     if (snapshot.candidate_valid) flags |= 1U << 4;
     if (snapshot.result_valid) flags |= 1U << 5;
     if (snapshot.persistent_dirty) flags |= 1U << 6;
+    if (snapshot.active_calibration_valid) flags |= 1U << 7;
     BleFrameCodec_PutU8(data, &offset, (uint8_t)snapshot.state);
     BleFrameCodec_PutU8(data, &offset, (uint8_t)snapshot.owner);
     BleFrameCodec_PutU16(data, &offset, snapshot.session_id);

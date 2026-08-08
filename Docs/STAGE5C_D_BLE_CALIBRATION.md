@@ -87,7 +87,9 @@ REQUEST `0x80` and RESPONSE `0x81` are unchanged. Operations are GET STATE
 `0x30`, BEGIN `0x31`, SET MASS `0x32`, CAPTURE ZERO `0x33`, CAPTURE LOAD `0x34`,
 APPLY `0x35`, and CANCEL `0x36`. Mutations after BEGIN carry the session ID so a
 delayed request from an earlier session cannot affect a new one. Every response
-contains the MCU's 44-byte state snapshot; the PC never guesses state.
+contains the MCU's 44-byte state snapshot; the PC never guesses state. While
+IDLE, the locked unit/display/capacity fields report the current active
+configuration and flags bit 7 reports whether the active calibration is valid.
 
 The existing four-entry transaction cache remains unchanged. Same transaction
 ID/operation/flags/payload replays the byte-identical response. A conflicting
@@ -119,11 +121,11 @@ regression passes 9/9, including BLE state decoding and frame recovery.
 
 Clean ARM builds pass with no new warnings:
 
-- Debug: 125,532 B Flash / 14,464 B RAM, delta +3,808 B / +200 B.
-- Release: 68,248 B Flash / 14,472 B RAM, delta +1,952 B / +192 B.
-- BoardDiagnostics: 124,044 B Flash / 14,472 B RAM, delta +3,800 B / +200 B.
+- Debug: 125,676 B Flash / 14,464 B RAM, delta +3,952 B / +200 B.
+- Release: 68,320 B Flash / 14,472 B RAM, delta +2,024 B / +192 B.
+- BoardDiagnostics: 124,188 B Flash / 14,472 B RAM, delta +3,944 B / +200 B.
 
-The Release load image ends at exclusive address `0x08010A98`, below the first
+The Release load image ends at exclusive address `0x08010AE0`, below the first
 config slot at `0x0801F000`. The transport-neutral calibration object is 256 B,
 up from the 64 B Stage 5C-C command calibration state, so its direct RAM cost is
 192 B. Owner and workflow state are contained in that object. The four-entry

@@ -77,9 +77,9 @@ session ID and retain the existing transaction replay protection. APPLY and
 SAVE both require explicit operator confirmation in the PC workflow.
 
 Final clean software gates pass: CTest 12/12, Stage 5B Python 28/28, and Stage
-5C Python 9/9. Debug is 125,532 B Flash / 14,464 B RAM; Release is 68,248 B /
-14,472 B; BoardDiagnostics is 124,044 B / 14,472 B. Release ends at
-`0x08010A98`, below `0x0801F000`. Schema V2 remains 344 B, slots A/B and Modbus
+5C Python 9/9. Debug is 125,676 B Flash / 14,464 B RAM; Release is 68,320 B /
+14,472 B; BoardDiagnostics is 124,188 B / 14,472 B. Release ends at
+`0x08010AE0`, below `0x0801F000`. Schema V2 remains 344 B, slots A/B and Modbus
 map `0x0102` are unchanged, and `.ioc` is untouched.
 
 Stage 5C-D status: **SOFTWARE COMPLETE - NOT TESTED ON HARDWARE**. No Stage

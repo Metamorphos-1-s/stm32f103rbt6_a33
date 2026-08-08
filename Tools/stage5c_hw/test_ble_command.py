@@ -45,7 +45,7 @@ class BleCommandToolTests(unittest.TestCase):
         self.assertEqual(len(frames), 1)
 
     def test_calibration_state_decode(self):
-        flags = 0x77
+        flags = 0xF7
         data = struct.pack("<BBHBBBBqqiiiIBBH", 6, 3, 9, 1, 2, 1,
                            flags, 500000000, 3000000000, 100000,
                            600000, 500000, 123, 8, 0, 0)
@@ -57,6 +57,7 @@ class BleCommandToolTests(unittest.TestCase):
         self.assertTrue(decoded["stable"])
         self.assertTrue(decoded["candidate_valid"])
         self.assertTrue(decoded["persistent_dirty"])
+        self.assertTrue(decoded["active_calibration_valid"])
 
 
 if __name__ == "__main__":

@@ -108,6 +108,7 @@ static void Reset(void)
     (void)memset(&s_last_command_request, 0, sizeof(s_last_command_request));
     s_calibration_snapshot.state = CAL_WORKFLOW_IDLE;
     s_calibration_snapshot.owner = CAL_OWNER_NONE;
+    s_calibration_snapshot.active_calibration_valid = true;
     s_rx_length = 0U;
     s_rx_offset = 0U;
     s_last_response_length = 0U;
@@ -216,6 +217,7 @@ static void TestCalibrationStateAndDispatcher(void)
     assert(ResponseResult() == BLE_COMMAND_RESULT_OK);
     assert(s_last_response[20] == CAL_WORKFLOW_IDLE);
     assert(s_last_response[21] == CAL_OWNER_NONE);
+    assert((s_last_response[27] & 0x80U) != 0U);
 
     FeedRequest(51U, BLE_OPERATION_BEGIN_CALIBRATION, NULL, 0U);
     BleCommandService_Process(51U);

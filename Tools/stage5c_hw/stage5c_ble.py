@@ -185,6 +185,7 @@ def decode_operation_data(operation, data):
             "candidate_valid": bool(flags & (1 << 4)),
             "result_valid": bool(flags & (1 << 5)),
             "persistent_dirty": bool(flags & (1 << 6)),
+            "active_calibration_valid": bool(flags & (1 << 7)),
             "calibration_mass_ug": mass_ug,
             "capacity_ug": capacity_ug,
             "zero_raw": zero_raw,

@@ -47,6 +47,7 @@ typedef struct
     bool candidate_valid;
     bool result_valid;
     bool persistent_dirty;
+    bool active_calibration_valid;
     CommandResult last_result;
 } CalibrationSessionSnapshot;
 

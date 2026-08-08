@@ -177,12 +177,12 @@ error responses when a valid operation could be decoded:
 | 0 | 1 | u8 | state |
 | 1 | 1 | u8 | owner |
 | 2 | 2 | u16 | session_id |
-| 4 | 1 | u8 | locked_unit |
-| 5 | 1 | u8 | locked_decimal_places |
-| 6 | 1 | u8 | locked_division_digit |
-| 7 | 1 | u8 | flags: active, stable, zero, load, candidate, result, dirty |
+| 4 | 1 | u8 | locked_unit; current active unit while IDLE |
+| 5 | 1 | u8 | locked_decimal_places; current value while IDLE |
+| 6 | 1 | u8 | locked_division_digit; current value while IDLE |
+| 7 | 1 | u8 | flags: active, stable, zero, load, candidate, result, dirty, active calibration valid |
 | 8 | 8 | i64 | calibration_mass_ug |
-| 16 | 8 | i64 | locked_capacity_ug |
+| 16 | 8 | i64 | locked_capacity_ug; current capacity while IDLE |
 | 24 | 4 | i32 | zero_raw |
 | 28 | 4 | i32 | load_raw |
 | 32 | 4 | i32 | span_raw (`load-zero`) |
