@@ -7,6 +7,9 @@
 
 #define FW_ARCH_VERSION_MAJOR         1U
 #define FW_ARCH_VERSION_MINOR         0U
+#define FW_RELEASE_VERSION            0x050AU
+#define FW_RELEASE_VERSION_MAJOR      ((FW_RELEASE_VERSION >> 8U) & 0xFFU)
+#define FW_RELEASE_VERSION_MINOR      (FW_RELEASE_VERSION & 0xFFU)
 #define DEVICE_CONFIG_SCHEMA_VERSION  2U
 
 /* A33 hardware profile: fitted load cell rated capacity. */

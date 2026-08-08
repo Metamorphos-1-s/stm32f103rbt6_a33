@@ -15,8 +15,8 @@ payload byte. The CRC itself is little-endian.
 |---:|---:|---|---|---|
 | 0 | 2 | u8[2] | sync | `A5 5A` |
 | 2 | 1 | u8 | version | `0x01` |
-| 3 | 1 | u8 | message_type | `0x01` FAST, `0x02` SLOW |
-| 4 | 2 | u16 | payload_length | Fixed 42 or 59 |
+| 3 | 1 | u8 | message_type | `0x01` FAST, `0x02` SLOW, `0x80` REQUEST, `0x81` RESPONSE |
+| 4 | 2 | u16 | payload_length | Message-specific; request payload <=128 bytes |
 | 6 | 2 | u16 | frame_sequence | Increments per frame, wraps |
 | 8 | 4 | u32 | timestamp_ms | Device monotonic milliseconds, wraps |
 | 12 | N | bytes | payload | Message-specific fields |
@@ -67,6 +67,78 @@ The scheduled application bandwidth is `56*5 + 73*1 = 353 byte/s`, or 36.8%
 of the 960 byte/s 8N1 budget. The largest frame is 73 bytes, below the 255-byte
 effective TX ring capacity. A full queue drops the entire newest frame; no
 blocking, partial writes, or stale-frame retries are used.
+
+## COMMAND_REQUEST (0x80) and COMMAND_RESPONSE (0x81)
+
+Command traffic uses the same V1 frame envelope and CRC. It is a byte stream on
+FFE2 and is parsed independently of FFE1 notification boundaries. All command
+integers are little-endian.
+
+Request payload (`6 + data_length` bytes):
+
+| Offset | Size | Type | Name |
+|---:|---:|---|---|
+| 0 | 2 | u16 | transaction_id |
+| 2 | 1 | u8 | operation |
+| 3 | 1 | u8 | flags (reserved, currently zero) |
+| 4 | 2 | u16 | data_length |
+| 6 | N | bytes | operation data |
+
+Response payload (`8 + data_length` bytes):
+
+| Offset | Size | Type | Name |
+|---:|---:|---|---|
+| 0 | 2 | u16 | transaction_id (copied from request) |
+| 2 | 1 | u8 | operation (copied from request) |
+| 3 | 1 | u8 | result |
+| 4 | 2 | u16 | detail_code (underlying `CommandResult`, or persistence error) |
+| 6 | 2 | u16 | data_length |
+| 8 | N | bytes | response data |
+
+Supported operations are `GET_DEVICE_INFO (0x01)`, `GET_ACTIVE_CONFIG (0x02)`,
+`TARE (0x10)`, `CLEAR_TARE (0x11)`, `ZERO (0x12)`, `RESET_ZERO (0x13)`,
+`SET_WEIGHT_VIEW (0x14)`, `SET_DISPLAY_UNIT (0x15)`, `BEGIN_CONFIG_EDIT
+(0x20)`, `SET_CONFIG_MASS (0x21)`, `SET_UNIT_DISPLAY (0x22)`,
+`SET_PROFILE_FIELD (0x23)`, `VALIDATE_CONFIG (0x24)`, `APPLY_CONFIG (0x25)`,
+`DISCARD_CONFIG (0x26)`, and `SAVE_CONFIG (0x27)`. Sample rate and gain remain
+read-only. Calibration, factory reset, communication apply, OTA, AT, FF12 and
+Runtime Drift control are unsupported.
+
+`GET_DEVICE_INFO` response data is 12 bytes:
+
+| Offset | Size | Type | Name |
+|---:|---:|---|---|
+| 0 | 1 | u8 | protocol_version (`1`) |
+| 1 | 1 | u8 | firmware_version high byte (`5`) |
+| 2 | 1 | u8 | firmware_version low byte (`10`) |
+| 3 | 1 | u8 | reserved (`0`) |
+| 4 | 2 | u16 | schema_version (`2`) |
+| 6 | 2 | u16 | register_map_version (`0x0102`) |
+| 8 | 4 | u32 | capability bits |
+
+The firmware bytes combine as `(high << 8) | low`, currently `0x050A`.
+
+Result values are `OK=0`, `INVALID_COMMAND=1`, `INVALID_ARGUMENT=2`,
+`INVALID_STATE=3`, `NOT_STABLE=4`, `OUT_OF_RANGE=5`, `TARE_ACTIVE=6`,
+`ZERO_DISABLED=7`, `CALIBRATION_INVALID=8`, `OVERLOAD=9`, `BUSY=10`,
+`PERSISTENCE_FAILED=11`, `POWER_UNSAFE=12`, `UNSUPPORTED=13`,
+`INTERNAL_ERROR=14`, and `TRANSACTION_CONFLICT=15`. CRC failures and malformed
+frames have no business response because the transaction cannot be trusted.
+
+The parser accepts split sync/header/payload/CRC, merged frames, garbage and CRC
+failure recovery. Application work is bounded to 64 input bytes and two
+complete requests per `App_Run()`.
+
+The MCU keeps a four-entry fixed transaction cache. An exact retry replays the
+original response without re-executing the command. Reusing an ID with a
+different operation or payload returns `TRANSACTION_CONFLICT`. Responses use a
+four-entry priority queue in front of telemetry and never block weighing.
+
+Configuration writes use the existing `CommandService`, `ConfigEdit` and
+`ConfigApplication` path. Only one volatile config-edit owner is allowed; BLE
+and Modbus return `BUSY` when the other transport owns staging. `APPLY_CONFIG`
+changes active RAM and sets `persistent_dirty`. `SAVE_CONFIG` responds only
+after the existing persistence completion/no-change/failure event.
 
 ## Semantics
 

@@ -11,6 +11,7 @@
 #include "modbus_command_mailbox.h"
 #include "modbus_register_map.h"
 #include "persistent_schema.h"
+#include "project_config.h"
 #include "storage_power_guard.h"
 #include "system_context.h"
 #include "unit_converter.h"
@@ -224,7 +225,7 @@ static ModbusRegisterResult ReadOne(uint16_t address,
         else if(address==12U)*value=(uint16_t)display->division_digit;
         else if(address==13U)*value=(uint16_t)context->runtime.weight_view;
         else if(address==14U)*value=MODBUS_REGISTER_MAP_VERSION;
-        else if(address==15U)*value=0x050AU;
+        else if(address==15U)*value=FW_RELEASE_VERSION;
         else if(address>=0x10U&&address<=0x13U)*value=Word64((uint64_t)((snapshot!=NULL)?snapshot->net_mass_ug:0),(uint8_t)(address-0x10U),order);
         else if(address>=0x14U&&address<=0x17U)*value=Word64((uint64_t)((snapshot!=NULL)?snapshot->gross_mass_ug:0),(uint8_t)(address-0x14U),order);
         else if(address>=0x18U&&address<=0x1BU)*value=Word64((uint64_t)((snapshot!=NULL)?snapshot->tare_mass_ug:0),(uint8_t)(address-0x18U),order);

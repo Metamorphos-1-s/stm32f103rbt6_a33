@@ -288,6 +288,45 @@ else()
 endif()
 add_test(NAME stage5c_ble_telemetry_logic COMMAND stage5c_ble_telemetry_tests)
 
+add_executable(stage5c_ble_command_protocol_tests
+    test_ble_command_protocol.c
+    ../../Protocol/crc16/crc16.c
+    ../../Protocol/ble/ble_frame_codec.c
+    ../../Protocol/ble/ble_command_protocol.c
+)
+target_include_directories(stage5c_ble_command_protocol_tests PRIVATE
+    . ../../Protocol/crc16 ../../Protocol/ble)
+if(MSVC)
+    target_compile_options(stage5c_ble_command_protocol_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5c_ble_command_protocol_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5c_ble_command_protocol_logic
+    COMMAND stage5c_ble_command_protocol_tests)
+
+add_executable(stage5c_ble_command_service_tests
+    test_ble_command_service.c
+    ../../Services/ble_command_service/ble_command_service.c
+    ../../Protocol/ble/ble_command_protocol.c
+    ../../Protocol/ble/ble_frame_codec.c
+    ../../Protocol/crc16/crc16.c
+)
+target_include_directories(stage5c_ble_command_service_tests PRIVATE
+    . ../../App ../../Config ../../Domain/measurement
+    ../../Protocol/ble ../../Protocol/command_service ../../Protocol/modbus
+    ../../Protocol/crc16
+    ../../Services/ble_command_service ../../Services/ble_transport
+    ../../Services/config_edit ../../Services/event_queue)
+if(MSVC)
+    target_compile_options(stage5c_ble_command_service_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5c_ble_command_service_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5c_ble_command_service_logic
+    COMMAND stage5c_ble_command_service_tests)
+
 add_executable(uart2_dma_recovery_tests
     test_uart2_dma_transport.c
     uart2_dma_transport_adapters.c
