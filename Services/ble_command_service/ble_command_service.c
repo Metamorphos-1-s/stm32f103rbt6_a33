@@ -110,8 +110,8 @@ static uint16_t BuildDeviceInfo(uint8_t *data)
 {
     uint16_t offset = 0U;
     BleFrameCodec_PutU8(data, &offset, BLE_PROTOCOL_VERSION);
-    BleFrameCodec_PutU8(data, &offset, FW_ARCH_VERSION_MAJOR);
-    BleFrameCodec_PutU8(data, &offset, FW_ARCH_VERSION_MINOR);
+    BleFrameCodec_PutU8(data, &offset, FW_RELEASE_VERSION_MAJOR);
+    BleFrameCodec_PutU8(data, &offset, FW_RELEASE_VERSION_MINOR);
     BleFrameCodec_PutU8(data, &offset, 0U);
     BleFrameCodec_PutU16(data, &offset, DEVICE_CONFIG_SCHEMA_VERSION);
     BleFrameCodec_PutU16(data, &offset, MODBUS_REGISTER_MAP_VERSION);

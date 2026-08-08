@@ -129,8 +129,10 @@ def decode_operation_data(operation, data):
     if operation == OPERATIONS["device-info"] and len(data) == 12:
         protocol, fw_major, fw_minor, _, schema, register_map, caps = struct.unpack(
             "<BBBBHHI", data)
-        return {"protocol_version": protocol, "firmware_major": fw_major,
-                "firmware_minor": fw_minor, "schema_version": schema,
+        return {"protocol_version": protocol,
+                "firmware_version": (fw_major << 8) | fw_minor,
+                "firmware_major": fw_major, "firmware_minor": fw_minor,
+                "schema_version": schema,
                 "register_map_version": register_map, "capabilities": caps}
     if operation == OPERATIONS["get-config"] and len(data) == 55:
         values = struct.unpack("<BBBBqqqBBBBBqqIBB", data)

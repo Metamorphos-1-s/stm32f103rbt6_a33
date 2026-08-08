@@ -3,6 +3,7 @@
 #include "ble_transport.h"
 #include "command_service.h"
 #include "config_edit.h"
+#include "project_config.h"
 #include "system_context.h"
 
 #include <assert.h>
@@ -129,6 +130,19 @@ static void TestDuplicateAndConflict(void)
            diagnostics.transaction_conflicts == 2U);
 }
 
+static void TestDeviceInfoVersion(void)
+{
+    Reset();
+    FeedRequest(11U, BLE_OPERATION_GET_DEVICE_INFO, NULL, 0U);
+    BleCommandService_Process(10U);
+    assert(s_response_count == 1U);
+    assert(s_last_response_length == 34U);
+    assert(ResponseResult() == BLE_COMMAND_RESULT_OK);
+    assert(s_last_response[20] == BLE_PROTOCOL_VERSION);
+    assert(s_last_response[21] == FW_RELEASE_VERSION_MAJOR);
+    assert(s_last_response[22] == FW_RELEASE_VERSION_MINOR);
+}
+
 static void TestSaveCompletion(void)
 {
     AppEvent event = {EVENT_CONFIG_SAVE_COMPLETED, 30U, 0U, 0U, NULL};
@@ -165,6 +179,7 @@ static void TestQueueRetry(void)
 
 int main(void)
 {
+    TestDeviceInfoVersion();
     TestDuplicateAndConflict();
     TestSaveCompletion();
     TestQueueRetry();
