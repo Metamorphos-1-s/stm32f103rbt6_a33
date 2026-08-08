@@ -94,6 +94,8 @@ static BleCommandResult MapResult(CommandResult result)
         case COMMAND_RESULT_STORAGE_UNAVAILABLE: return BLE_COMMAND_RESULT_PERSISTENCE_FAILED;
         case COMMAND_RESULT_TARE_ACTIVE: return BLE_COMMAND_RESULT_TARE_ACTIVE;
         case COMMAND_RESULT_ZERO_DISABLED: return BLE_COMMAND_RESULT_ZERO_DISABLED;
+        case COMMAND_RESULT_CALIBRATION_INVALID:
+            return BLE_COMMAND_RESULT_CALIBRATION_INVALID;
         case COMMAND_RESULT_ACCEPTED: return BLE_COMMAND_RESULT_OK;
         case COMMAND_RESULT_INTERNAL_ERROR:
         default: return BLE_COMMAND_RESULT_INTERNAL_ERROR;
@@ -103,7 +105,7 @@ static BleCommandResult MapResult(CommandResult result)
 static uint32_t Capabilities(void)
 {
     return (1UL << 0) | (1UL << 1) | (1UL << 2) | (1UL << 3) |
-        (1UL << 4) | (1UL << 5) | (1UL << 6);
+        (1UL << 4) | (1UL << 5) | (1UL << 6) | (1UL << 7);
 }
 
 static uint16_t BuildDeviceInfo(uint8_t *data)
@@ -151,6 +153,47 @@ static uint16_t BuildActiveConfig(uint8_t *data)
     return offset;
 }
 
+static uint16_t BuildCalibrationState(uint8_t *data)
+{
+    CalibrationSessionSnapshot snapshot;
+    uint16_t offset = 0U;
+    uint8_t flags = 0U;
+
+    if ((data == NULL) ||
+        !CommandService_GetCalibrationSnapshot(&snapshot))
+        return 0U;
+    if (snapshot.active) flags |= 1U << 0;
+    if (snapshot.stable) flags |= 1U << 1;
+    if (snapshot.zero_captured) flags |= 1U << 2;
+    if (snapshot.load_captured) flags |= 1U << 3;
+    if (snapshot.candidate_valid) flags |= 1U << 4;
+    if (snapshot.result_valid) flags |= 1U << 5;
+    if (snapshot.persistent_dirty) flags |= 1U << 6;
+    BleFrameCodec_PutU8(data, &offset, (uint8_t)snapshot.state);
+    BleFrameCodec_PutU8(data, &offset, (uint8_t)snapshot.owner);
+    BleFrameCodec_PutU16(data, &offset, snapshot.session_id);
+    BleFrameCodec_PutU8(data, &offset, (uint8_t)snapshot.locked_unit);
+    BleFrameCodec_PutU8(data, &offset, snapshot.locked_decimal_places);
+    BleFrameCodec_PutU8(data, &offset, snapshot.locked_division_digit);
+    BleFrameCodec_PutU8(data, &offset, flags);
+    BleFrameCodec_PutI64(data, &offset, snapshot.calibration_mass_ug);
+    BleFrameCodec_PutI64(data, &offset, snapshot.locked_capacity_ug);
+    BleFrameCodec_PutI32(data, &offset, snapshot.zero_raw);
+    BleFrameCodec_PutI32(data, &offset, snapshot.load_raw);
+    BleFrameCodec_PutI32(data, &offset, snapshot.span_raw);
+    BleFrameCodec_PutU32(data, &offset, snapshot.sample_sequence);
+    BleFrameCodec_PutU8(data, &offset, snapshot.sample_count);
+    BleFrameCodec_PutU8(data, &offset, (uint8_t)snapshot.last_result);
+    BleFrameCodec_PutU16(data, &offset, 0U);
+    return offset;
+}
+
+static bool IsCalibrationOperation(uint8_t operation)
+{
+    return (operation >= BLE_OPERATION_GET_CALIBRATION_STATE) &&
+           (operation <= BLE_OPERATION_CANCEL_CALIBRATION);
+}
+
 static bool IsKnownOperation(uint8_t operation)
 {
     switch (operation)
@@ -171,6 +214,13 @@ static bool IsKnownOperation(uint8_t operation)
         case BLE_OPERATION_APPLY_CONFIG:
         case BLE_OPERATION_DISCARD_CONFIG:
         case BLE_OPERATION_SAVE_CONFIG:
+        case BLE_OPERATION_GET_CALIBRATION_STATE:
+        case BLE_OPERATION_BEGIN_CALIBRATION:
+        case BLE_OPERATION_SET_CALIBRATION_MASS:
+        case BLE_OPERATION_CAPTURE_CALIBRATION_ZERO:
+        case BLE_OPERATION_CAPTURE_CALIBRATION_LOAD:
+        case BLE_OPERATION_APPLY_CALIBRATION:
+        case BLE_OPERATION_CANCEL_CALIBRATION:
             return true;
         default:
             return false;
@@ -246,6 +296,35 @@ static bool ExecuteCommand(const BleCommandRequest *request,
         case BLE_OPERATION_SAVE_CONFIG:
             if (request->data_length != 0U) return false;
             command.id = COMMAND_REQUEST_CONFIG_SAVE; break;
+        case BLE_OPERATION_BEGIN_CALIBRATION:
+            if (request->data_length != 0U) return false;
+            command.id = COMMAND_CALIBRATION_BEGIN; break;
+        case BLE_OPERATION_SET_CALIBRATION_MASS:
+            if (request->data_length != 10U) return false;
+            command.id = COMMAND_CALIBRATION_SET_SPAN_MASS;
+            command.flags = BleCommandProtocol_GetU16(request->data);
+            command.value64 = BleCommandProtocol_GetI64(&request->data[2]);
+            break;
+        case BLE_OPERATION_CAPTURE_CALIBRATION_ZERO:
+            if (request->data_length != 2U) return false;
+            command.id = COMMAND_CALIBRATION_CAPTURE_ZERO;
+            command.flags = BleCommandProtocol_GetU16(request->data);
+            break;
+        case BLE_OPERATION_CAPTURE_CALIBRATION_LOAD:
+            if (request->data_length != 2U) return false;
+            command.id = COMMAND_CALIBRATION_CAPTURE_SPAN;
+            command.flags = BleCommandProtocol_GetU16(request->data);
+            break;
+        case BLE_OPERATION_APPLY_CALIBRATION:
+            if (request->data_length != 2U) return false;
+            command.id = COMMAND_CALIBRATION_COMMIT;
+            command.flags = BleCommandProtocol_GetU16(request->data);
+            break;
+        case BLE_OPERATION_CANCEL_CALIBRATION:
+            if (request->data_length != 2U) return false;
+            command.id = COMMAND_CALIBRATION_CANCEL;
+            command.flags = BleCommandProtocol_GetU16(request->data);
+            break;
         default: return false;
     }
     (void)CommandService_Execute(&command, response);
@@ -341,6 +420,15 @@ static void HandleRequest(const BleCommandRequest *request, void *context)
         BuildAndQueue(entry, request, result, 0U, data, data_length);
         return;
     }
+    if ((request->operation == BLE_OPERATION_GET_CALIBRATION_STATE) &&
+        (request->data_length == 0U))
+    {
+        data_length = BuildCalibrationState(data);
+        result = (data_length != 0U) ? BLE_COMMAND_RESULT_OK :
+                                      BLE_COMMAND_RESULT_INVALID_STATE;
+        BuildAndQueue(entry, request, result, 0U, data, data_length);
+        return;
+    }
     (void)memset(&command_response, 0, sizeof(command_response));
     if (!IsKnownOperation(request->operation))
     {
@@ -366,8 +454,10 @@ static void HandleRequest(const BleCommandRequest *request, void *context)
         ++s_diagnostics.pending_save_requests;
         return;
     }
+    if (IsCalibrationOperation(request->operation))
+        data_length = BuildCalibrationState(data);
     BuildAndQueue(entry, request, result, (uint16_t)command_response.result,
-                  NULL, 0U);
+                  (data_length != 0U) ? data : NULL, data_length);
 }
 
 void BleCommandService_Init(void)

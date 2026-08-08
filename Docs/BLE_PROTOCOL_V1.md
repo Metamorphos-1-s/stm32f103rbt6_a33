@@ -1,9 +1,8 @@
 # BLE Telemetry Protocol V1
 
-Stage 5C-B is a read-only stream from STM32 to W02 USART1 at 9600 8N1, then
-FFE0/FFE1 Notify. FFE2 is not used for product commands. FFE1 Notify boundaries
-are not frame boundaries; clients must feed all notification bytes to a stream
-parser.
+The V1 stream runs from STM32 to W02 USART1 at 9600 8N1 and then FFE0/FFE1
+Notify. FFE2 carries framed command requests. FFE1 Notify and FFE2 write
+boundaries are not frame boundaries; clients must use stream parsers.
 
 ## Common frame
 
@@ -100,9 +99,10 @@ Supported operations are `GET_DEVICE_INFO (0x01)`, `GET_ACTIVE_CONFIG (0x02)`,
 `SET_WEIGHT_VIEW (0x14)`, `SET_DISPLAY_UNIT (0x15)`, `BEGIN_CONFIG_EDIT
 (0x20)`, `SET_CONFIG_MASS (0x21)`, `SET_UNIT_DISPLAY (0x22)`,
 `SET_PROFILE_FIELD (0x23)`, `VALIDATE_CONFIG (0x24)`, `APPLY_CONFIG (0x25)`,
-`DISCARD_CONFIG (0x26)`, and `SAVE_CONFIG (0x27)`. Sample rate and gain remain
-read-only. Calibration, factory reset, communication apply, OTA, AT, FF12 and
-Runtime Drift control are unsupported.
+`DISCARD_CONFIG (0x26)`, `SAVE_CONFIG (0x27)`, and the calibration operations
+`0x30..0x36` defined below. Sample rate and gain remain read-only. Factory
+reset, communication apply, OTA, AT, FF12 and Runtime Drift control are
+unsupported.
 
 `GET_DEVICE_INFO` response data is 12 bytes:
 
@@ -139,6 +139,72 @@ Configuration writes use the existing `CommandService`, `ConfigEdit` and
 and Modbus return `BUSY` when the other transport owns staging. `APPLY_CONFIG`
 changes active RAM and sets `persistent_dirty`. `SAVE_CONFIG` responds only
 after the existing persistence completion/no-change/failure event.
+
+## Calibration workflow
+
+Calibration uses the existing two-point `CalibrationModel`, MetrologyManager
+apply path and ordinary `SAVE_CONFIG`; the BLE layer never calculates a scale
+or writes Flash. All mutating calibration requests after BEGIN carry the
+little-endian `session_id` returned by the MCU. A stale or mismatched session
+ID returns `INVALID_STATE`.
+
+| Operation | ID | Request data | Allowed state | Success transition | Side effect | Persistent effect |
+|---|---:|---|---|---|---|---|
+| GET_CALIBRATION_STATE | `0x30` | none | any | none | read-only snapshot | none |
+| BEGIN_CALIBRATION | `0x31` | none | IDLE/APPLIED, no owner/config edit | WAIT_ZERO_STABLE | locks unit/display/capacity/rate/gain, owner=BLE | none |
+| SET_CALIBRATION_MASS | `0x32` | `u16 session_id, i64 mass_ug` | active BLE session before RESULT_READY | zero captured: WAIT_LOAD_STABLE; otherwise unchanged | stages checked `MassValueUg` | none |
+| CAPTURE_CALIBRATION_ZERO | `0x33` | `u16 session_id` | ZERO_READY | ZERO_CAPTURED or WAIT_LOAD_STABLE | stores the current stable 8-sample filtered-raw average | none |
+| CAPTURE_CALIBRATION_LOAD | `0x34` | `u16 session_id` | LOAD_READY, zero and mass present | RESULT_READY | stores the stable average and invokes `CalibrationModel_BuildMass` | none |
+| APPLY_CALIBRATION | `0x35` | `u16 session_id` | RESULT_READY | APPLIED, owner released | atomically applies candidate to RAM | sets `persistent_dirty=1` |
+| CANCEL_CALIBRATION | `0x36` | `u16 session_id` | active session owned by caller | IDLE, owner released | discards session/candidate; active calibration unchanged | none |
+
+There is no separate VALIDATE or DISCARD operation: load capture already runs
+the authoritative model validation, and the existing business model has one
+safe CANCEL action. APPLY never implies SAVE. `SAVE_CONFIG (0x27)` remains the
+only Flash operation and clears dirty only after persistence completion.
+
+Calibration states are `0 IDLE`, `1 WAIT_ZERO_STABLE`, `2 ZERO_READY`,
+`3 ZERO_CAPTURED`, `4 WAIT_LOAD_STABLE`, `5 LOAD_READY`, `6 RESULT_READY`,
+`7 APPLIED`, and `8 FAILED`. Owners are `0 NONE`, `1 LOCAL_UI`, `2 MODBUS`, and
+`3 BLE`. An active session rejects a second owner with `BUSY`; read-only
+telemetry, GET_DEVICE_INFO, GET_ACTIVE_CONFIG and Modbus FC03 continue.
+
+Every calibration response contains the 44-byte state snapshot below, including
+error responses when a valid operation could be decoded:
+
+| Offset | Size | Type | Name |
+|---:|---:|---|---|
+| 0 | 1 | u8 | state |
+| 1 | 1 | u8 | owner |
+| 2 | 2 | u16 | session_id |
+| 4 | 1 | u8 | locked_unit |
+| 5 | 1 | u8 | locked_decimal_places |
+| 6 | 1 | u8 | locked_division_digit |
+| 7 | 1 | u8 | flags: active, stable, zero, load, candidate, result, dirty |
+| 8 | 8 | i64 | calibration_mass_ug |
+| 16 | 8 | i64 | locked_capacity_ug |
+| 24 | 4 | i32 | zero_raw |
+| 28 | 4 | i32 | load_raw |
+| 32 | 4 | i32 | span_raw (`load-zero`) |
+| 36 | 4 | u32 | captured sample_sequence |
+| 40 | 1 | u8 | raw stability sample_count |
+| 41 | 1 | u8 | last underlying CommandResult |
+| 42 | 2 | u16 | reserved, zero |
+
+The raw window is 8 filtered samples, spread at most 50 counts, held for 500 ms.
+If it is not ready, capture returns `NOT_STABLE`; no sample is taken. Mass must
+be positive, not exceed locked capacity, and round-trip exactly through the
+locked unit/decimal/division representation. The session expires after 120 s
+without a valid mutating calibration command. GET state and telemetry do not
+refresh this timer.
+
+All operations use the existing four-entry transaction cache. Exact retry of
+BEGIN, SET MASS, either CAPTURE, APPLY, CANCEL or SAVE replays the original
+response and does not repeat sampling, apply or Flash programming. The largest
+calibration request is 24 bytes on UART (`14 + 10`); a state response is 66
+bytes (`14 + 8 + 44`). Protocol maxima remain 142-byte request and 110-byte
+response frames. A response burst remains below the existing 255-byte priority
+TX capacity and does not reduce FAST 5 Hz or SLOW 1 Hz scheduling.
 
 ## Semantics
 
