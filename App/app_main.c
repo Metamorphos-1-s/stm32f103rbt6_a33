@@ -31,6 +31,7 @@
 #include "weighing_profile_manager.h"
 #include "ble_connection_manager.h"
 #include "ble_telemetry_service.h"
+#include "ble_command_service.h"
 #include "stage5c_ble_diagnostics.h"
 
 #include <stddef.h>
@@ -111,6 +112,7 @@ bool App_Init(void)
   }
   (void)MetrologyManager_Init(&config, &SystemContext_Get()->runtime);
   CommandService_Init();
+  BleCommandService_Init();
   ModbusRegisterModel_Init();
   (void)CommunicationManager_Init(&config.communication);
   BleTelemetryService_Init(now_ms);
@@ -178,6 +180,10 @@ void App_Run(void)
       MeasurementBridge_GetObservedOverrunCount());
   CommunicationManager_Process();
   BleConnectionManager_Run(BSP_TimeNowMs());
+  if (SystemContext_GetState() != APP_STATE_DIAGNOSTIC)
+  {
+    BleCommandService_Process(BSP_TimeNowMs());
+  }
   Stage5C_BleDiagnosticsProcess();
   Stage2B_DiagnosticsUpdateCs1237Stats(
       MeasurementBridge_GetLastBacklog(),
@@ -296,6 +302,8 @@ static void App_HandleEvent(const AppEvent *event)
   {
     return;
   }
+
+  BleCommandService_HandleEvent(event);
 
   switch (event->type)
   {

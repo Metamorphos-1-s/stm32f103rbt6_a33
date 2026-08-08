@@ -1,7 +1,7 @@
 # Stage 5C-B Read-only Realtime Weight Telemetry
 
 Software implementation is complete on branch `stage5c-ble-b`, at final
-closeout commit `a454555bbf7ed0a20be5213360fafd022f97d72f`, based on
+closeout commit `a5751eb536af2c16a2b5381da4e2332653e94de0`, based on
 Stage 5C-A closeout main merge `2eac9f0bf9b137f031bf91c1791d434436ca6020`.
 The Stage 5C-A annotated tag is `stage5c-a-hw-tested`.
 

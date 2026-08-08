@@ -8,6 +8,8 @@
 #define BLE_TRANSPORT_TX_BUFFER_SIZE 256U
 #define BLE_TRANSPORT_TX_CHUNK_SIZE  128U
 #define BLE_TRANSPORT_MAX_READ_PER_RUN 128U
+#define BLE_TRANSPORT_PRIORITY_QUEUE_DEPTH 4U
+#define BLE_TRANSPORT_PRIORITY_FRAME_MAX 110U
 
 typedef struct
 {
@@ -22,6 +24,8 @@ typedef struct
     uint32_t last_tx_ms;
     uint16_t rx_pending;
     uint16_t tx_pending;
+    uint8_t priority_pending;
+    uint32_t priority_queue_full;
     bool tx_busy;
 } BleTransportDiagnostics;
 
@@ -30,6 +34,7 @@ void BleTransport_Run(uint32_t now_ms);
 bool BleTransport_IsReady(void);
 bool BleTransport_Read(uint8_t *data, uint16_t capacity, uint16_t *length);
 bool BleTransport_Write(const uint8_t *data, uint16_t length);
+bool BleTransport_WritePriority(const uint8_t *data, uint16_t length);
 void BleTransport_Reset(uint32_t now_ms);
 void BleTransport_GetDiagnostics(BleTransportDiagnostics *diagnostics);
 

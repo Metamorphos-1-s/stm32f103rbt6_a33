@@ -29,6 +29,10 @@ static CommandCalibrationState s_calibration;
 static bool s_factory_reset_requested;
 static DeviceConfig s_staged_config;
 static bool s_staged_config_valid;
+static bool s_config_owner_valid;
+static CommandSource s_config_owner;
+
+static void CommandService_ClearConfigOwner(void);
 
 static bool CommandService_CommunicationBusy(void)
 {
@@ -67,6 +71,21 @@ void CommandService_Init(void)
     (void)memset(&s_calibration, 0, sizeof(s_calibration));
     s_factory_reset_requested = false;
     s_staged_config_valid = false;
+    s_config_owner_valid = false;
+    s_config_owner = COMMAND_SOURCE_LOCAL_KEY;
+}
+
+static CommandResult CommandService_RequireConfigOwner(CommandSource source)
+{
+    if (!s_config_owner_valid) return COMMAND_RESULT_INVALID_STATE;
+    return (s_config_owner == source) ? COMMAND_RESULT_OK :
+                                       COMMAND_RESULT_BUSY;
+}
+
+static void CommandService_ClearConfigOwner(void)
+{
+    s_config_owner_valid = false;
+    s_config_owner = COMMAND_SOURCE_LOCAL_KEY;
 }
 
 static CommandResult CommandService_GetWeight(CommandResponse *response)
@@ -93,6 +112,7 @@ static CommandResult CommandService_CommitConfig(void)
         {
             s_staged_config_valid = false;
             ConfigEdit_Cancel();
+            CommandService_ClearConfigOwner();
             return COMMAND_RESULT_OK;
         }
         return (staged_result == CONFIG_APPLY_INVALID) ?
@@ -101,7 +121,11 @@ static CommandResult CommandService_CommitConfig(void)
     const DeviceConfig *working = ConfigEdit_GetWorkingCopy();
     ConfigApplyResult result;
 
-    if ((working == NULL) || !ConfigEdit_Validate())
+    if ((working == NULL) ||
+        ((ConfigEdit_GetState() == CONFIG_EDIT_ACTIVE) &&
+         !ConfigEdit_Validate()) ||
+        ((ConfigEdit_GetState() != CONFIG_EDIT_ACTIVE) &&
+         (ConfigEdit_GetState() != CONFIG_EDIT_VALIDATED)))
     {
         return COMMAND_RESULT_INVALID_ARGUMENT;
     }
@@ -110,6 +134,7 @@ static CommandResult CommandService_CommitConfig(void)
     if (result == CONFIG_APPLY_OK)
     {
         ConfigEdit_Cancel();
+        CommandService_ClearConfigOwner();
         return COMMAND_RESULT_OK;
     }
     if (result == CONFIG_APPLY_UNSUPPORTED_RUNTIME_CHANGE)
@@ -238,23 +263,42 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             break;
         case COMMAND_BEGIN_CONFIG_EDIT:
             context = SystemContext_Get();
-            result = ((context != NULL) && ConfigEdit_Begin(&context->config)) ?
-                     COMMAND_RESULT_OK : COMMAND_RESULT_BUSY;
+            if (s_config_owner_valid || s_staged_config_valid ||
+                (ConfigEdit_GetState() != CONFIG_EDIT_IDLE))
+            {
+                result = COMMAND_RESULT_BUSY;
+            }
+            else if ((context != NULL) && ConfigEdit_Begin(&context->config))
+            {
+                s_config_owner = request->source;
+                s_config_owner_valid = true;
+                result = COMMAND_RESULT_OK;
+            }
+            else
+            {
+                result = COMMAND_RESULT_BUSY;
+            }
             break;
         case COMMAND_SET_CONFIG_FIELD:
-            result = ConfigEdit_SetIntegerField((ConfigFieldId)request->value0,
-                                                request->value1) ?
-                     COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
+            result = CommandService_RequireConfigOwner(request->source);
+            if (result == COMMAND_RESULT_OK)
+                result = ConfigEdit_SetIntegerField(
+                    (ConfigFieldId)request->value0, request->value1) ?
+                    COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
             break;
         case COMMAND_SET_CONFIG_MASS_FIELD:
-            result = ConfigEdit_SetMassField((ConfigMassFieldId)request->value0,
-                                             request->value64) ?
-                     COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
+            result = CommandService_RequireConfigOwner(request->source);
+            if (result == COMMAND_RESULT_OK)
+                result = ConfigEdit_SetMassField(
+                    (ConfigMassFieldId)request->value0, request->value64) ?
+                    COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
             break;
         case COMMAND_SET_UNIT_DISPLAY_CONFIG:
         {
             const DeviceConfig *working = ConfigEdit_GetWorkingCopy();
             UnitDisplayConfig display;
+            result = CommandService_RequireConfigOwner(request->source);
+            if (result != COMMAND_RESULT_OK) break;
             if ((working == NULL) || (request->value0 < 0) ||
                 ((uint32_t)request->value0 >= MASS_UNIT_COUNT) ||
                 (request->value1 < 0) || (request->value1 > 5) ||
@@ -273,19 +317,27 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             break;
         }
         case COMMAND_SET_PROFILE_FIELD:
-            result = ConfigEdit_SetProfileField(
-                (WeighingProfileId)request->value0,
-                (ConfigProfileFieldId)request->value1,
-                request->value64) ? COMMAND_RESULT_OK :
-                                    COMMAND_RESULT_INVALID_ARGUMENT;
+            result = CommandService_RequireConfigOwner(request->source);
+            if (result == COMMAND_RESULT_OK)
+                result = ConfigEdit_SetProfileField(
+                    (WeighingProfileId)request->value0,
+                    (ConfigProfileFieldId)request->value1,
+                    request->value64) ? COMMAND_RESULT_OK :
+                                        COMMAND_RESULT_INVALID_ARGUMENT;
             break;
         case COMMAND_COMMIT_CONFIG_EDIT:
-            result = CommandService_CommitConfig();
+            result = CommandService_RequireConfigOwner(request->source);
+            if (result == COMMAND_RESULT_OK)
+                result = CommandService_CommitConfig();
             break;
         case COMMAND_CANCEL_CONFIG_EDIT:
-            ConfigEdit_Cancel();
-            s_staged_config_valid = false;
-            result = COMMAND_RESULT_OK;
+            result = CommandService_RequireConfigOwner(request->source);
+            if (result == COMMAND_RESULT_OK)
+            {
+                ConfigEdit_Cancel();
+                s_staged_config_valid = false;
+                CommandService_ClearConfigOwner();
+            }
             break;
         case COMMAND_REQUEST_CONFIG_SAVE:
             result = (request->source == COMMAND_SOURCE_MODBUS) ?
@@ -389,11 +441,17 @@ CommandResult CommandService_Execute(const CommandRequest *request,
                 (WeighingProfileId)request->value0);
             break;
         case COMMAND_CONFIG_VALIDATE:
-            context = SystemContext_Get();
-            result = ((context != NULL) && (ConfigApplication_Validate(
-                s_staged_config_valid ? &s_staged_config : &context->config,
-                true) == CONFIG_APPLY_OK)) ?
-                COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
+            result = CommandService_RequireConfigOwner(request->source);
+            if (result == COMMAND_RESULT_OK)
+            {
+                if (s_staged_config_valid)
+                    result = (ConfigApplication_Validate(&s_staged_config,
+                        true) == CONFIG_APPLY_OK) ? COMMAND_RESULT_OK :
+                                                   COMMAND_RESULT_INVALID_ARGUMENT;
+                else
+                    result = ConfigEdit_Validate() ? COMMAND_RESULT_OK :
+                                                    COMMAND_RESULT_INVALID_ARGUMENT;
+            }
             break;
         case COMMAND_COMMUNICATION_APPLY:
             result = CommunicationManager_RequestApply();
@@ -420,10 +478,22 @@ const CalibrationConfig *CommandService_GetCalibrationCandidate(void)
 
 bool CommandService_SetStagedConfig(const DeviceConfig *candidate)
 {
-    if (candidate == NULL) return false;
+    if ((candidate == NULL) ||
+        (s_config_owner_valid && (s_config_owner != COMMAND_SOURCE_MODBUS)))
+        return false;
     s_staged_config = *candidate;
     s_staged_config_valid = true;
+    s_config_owner = COMMAND_SOURCE_MODBUS;
+    s_config_owner_valid = true;
     return true;
 }
 
-void CommandService_ClearStagedConfig(void) { s_staged_config_valid = false; }
+void CommandService_ClearStagedConfig(void)
+{
+    if (!s_config_owner_valid || (s_config_owner == COMMAND_SOURCE_MODBUS))
+    {
+        s_staged_config_valid = false;
+        if (ConfigEdit_GetState() == CONFIG_EDIT_IDLE)
+            CommandService_ClearConfigOwner();
+    }
+}

@@ -13,7 +13,7 @@ Branch: `stage5c-ble-b`.
 Read-only realtime telemetry software is implemented: version 1 FAST_WEIGHT
 and SLOW_STATUS frames, explicit little-endian serialization, shared CRC16,
 stream parser, and non-blocking latest-data-wins scheduling. Final closeout
-HEAD is `a454555bbf7ed0a20be5213360fafd022f97d72f`. The final Release image is
+HEAD is `a5751eb536af2c16a2b5381da4e2332653e94de0`. The final Release image is
 63,056 B Flash / 12,600 B RAM and remains below `0x0801F000`; firmware is
 `0x050A`, register map is `0x0102`, and Schema V2 is 344 B.
 
@@ -32,6 +32,13 @@ TELEMETRY SOAK TESTED; CONCURRENCY REGRESSION TESTED; COMPLETE.
 The next stage is Stage 5C-C BLE Configuration & Safe Commands. Calibration,
 factory reset, OTA, AT, FF12, and Runtime Drift control remain excluded until
 Stage 5C-D.
+
+Stage 5C-C is implemented on branch `stage5c-ble-c` from main merge
+`dc7c17bba828d0cdda6635545b482fd4914519ee`. It adds V1 `0x80`/`0x81`
+request/response frames, bounded parser processing, transaction duplicate
+protection, response priority, shared CommandService routing, and a shared
+BLE/Modbus config-edit owner. Host verification is complete; hardware
+validation is pending.
 
 ## Stage 5A
 

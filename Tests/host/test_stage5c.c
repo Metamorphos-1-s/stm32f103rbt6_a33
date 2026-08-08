@@ -74,6 +74,36 @@ static int TestTransport(void)
     return 0;
 }
 
+static int TestPriorityQueue(void)
+{
+    BleTransportDiagnostics d;
+    uint8_t normal[10];
+    uint8_t priority[5] = {1U, 2U, 3U, 4U, 5U};
+    uint8_t index;
+    Stage5C_FakeReset();
+    BleTransport_Init(0U);
+    (void)memset(normal, 0x55, sizeof(normal));
+    CHECK(BleTransport_Write(normal, sizeof(normal)));
+    CHECK(BleTransport_WritePriority(priority, sizeof(priority)));
+    BleTransport_Run(1U);
+    CHECK(Stage5C_FakeTxLength() == sizeof(priority));
+    for (index = 0U; index < sizeof(priority); ++index)
+        CHECK(Stage5C_FakeTxByte(index) == priority[index]);
+    Stage5C_FakeCompleteTx();
+    BleTransport_Run(2U);
+    CHECK(Stage5C_FakeTxLength() == sizeof(normal));
+
+    Stage5C_FakeReset();
+    BleTransport_Init(10U);
+    for (index = 0U; index < BLE_TRANSPORT_PRIORITY_QUEUE_DEPTH; ++index)
+        CHECK(BleTransport_WritePriority(priority, sizeof(priority)));
+    CHECK(!BleTransport_WritePriority(priority, sizeof(priority)));
+    BleTransport_GetDiagnostics(&d);
+    CHECK(d.priority_pending == BLE_TRANSPORT_PRIORITY_QUEUE_DEPTH);
+    CHECK(d.priority_queue_full == 1U);
+    return 0;
+}
+
 static int TestConnectionManager(void)
 {
     BleConnectionDiagnostics d;
@@ -228,6 +258,7 @@ static int TestSoakTrigger(void)
 int main(void)
 {
     if (TestTransport() != 0) return 1;
+    if (TestPriorityQueue() != 0) return 1;
     if (TestConnectionManager() != 0) return 1;
     if (TestHardwareDiagnostic() != 0) return 1;
     if (TestSoakTrigger() != 0) return 1;
