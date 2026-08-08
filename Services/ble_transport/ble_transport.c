@@ -8,6 +8,7 @@
 static uint8_t s_rx_buffer[BLE_TRANSPORT_RX_BUFFER_SIZE];
 static uint8_t s_tx_buffer[BLE_TRANSPORT_TX_BUFFER_SIZE];
 static uint8_t s_tx_staging[BLE_TRANSPORT_TX_CHUNK_SIZE];
+static uint16_t s_tx_frame_lengths[BLE_TRANSPORT_NORMAL_FRAME_QUEUE_DEPTH];
 typedef struct
 {
     uint8_t data[BLE_TRANSPORT_PRIORITY_FRAME_MAX];
@@ -18,6 +19,10 @@ static volatile uint16_t s_rx_head;
 static volatile uint16_t s_rx_tail;
 static uint16_t s_tx_head;
 static uint16_t s_tx_tail;
+static uint16_t s_tx_frame_remaining;
+static uint8_t s_tx_frame_head;
+static uint8_t s_tx_frame_tail;
+static uint8_t s_tx_frame_count;
 static uint8_t s_priority_head;
 static uint8_t s_priority_tail;
 static uint8_t s_priority_count;
@@ -41,6 +46,10 @@ void BleTransport_Init(uint32_t now_ms)
     s_rx_tail = 0U;
     s_tx_head = 0U;
     s_tx_tail = 0U;
+    s_tx_frame_remaining = 0U;
+    s_tx_frame_head = 0U;
+    s_tx_frame_tail = 0U;
+    s_tx_frame_count = 0U;
     s_priority_head = 0U;
     s_priority_tail = 0U;
     s_priority_count = 0U;
@@ -68,7 +77,9 @@ bool BleTransport_Write(const uint8_t *data, uint16_t length)
 {
     uint16_t index;
     uint16_t free_space;
-    if (!s_initialized || (data == NULL) || (length == 0U)) return false;
+    if (!s_initialized || (data == NULL) || (length == 0U) ||
+        (s_tx_frame_count >= BLE_TRANSPORT_NORMAL_FRAME_QUEUE_DEPTH))
+        return false;
     free_space = (uint16_t)(BLE_TRANSPORT_TX_BUFFER_SIZE - 1U -
         RingCount(s_tx_head, s_tx_tail, BLE_TRANSPORT_TX_BUFFER_SIZE));
     if (length > free_space) return false;
@@ -77,6 +88,10 @@ bool BleTransport_Write(const uint8_t *data, uint16_t length)
         s_tx_buffer[s_tx_head] = data[index];
         s_tx_head = (uint16_t)((s_tx_head + 1U) % BLE_TRANSPORT_TX_BUFFER_SIZE);
     }
+    s_tx_frame_lengths[s_tx_frame_head] = length;
+    s_tx_frame_head = (uint8_t)((s_tx_frame_head + 1U) %
+        BLE_TRANSPORT_NORMAL_FRAME_QUEUE_DEPTH);
+    ++s_tx_frame_count;
     s_diagnostics.tx_pending = RingCount(s_tx_head, s_tx_tail,
         BLE_TRANSPORT_TX_BUFFER_SIZE);
     return true;
@@ -139,7 +154,8 @@ void BleTransport_Run(uint32_t now_ms)
         s_observed_rx_bytes = s_diagnostics.rx_bytes;
         s_diagnostics.last_rx_ms = now_ms;
     }
-    if (!W02Uart_IsTxBusy() && (s_priority_count != 0U))
+    if (!W02Uart_IsTxBusy() && (s_tx_frame_remaining == 0U) &&
+        (s_priority_count != 0U))
     {
         priority = &s_priority_queue[s_priority_tail];
         if (W02Uart_StartTx(priority->data, priority->length))
@@ -151,11 +167,14 @@ void BleTransport_Run(uint32_t now_ms)
             --s_priority_count;
         }
     }
-    else if (!W02Uart_IsTxBusy() && (s_tx_head != s_tx_tail))
+    else if (!W02Uart_IsTxBusy() && (s_tx_frame_count != 0U))
     {
+        if (s_tx_frame_remaining == 0U)
+            s_tx_frame_remaining = s_tx_frame_lengths[s_tx_frame_tail];
         pending = RingCount(s_tx_head, s_tx_tail, BLE_TRANSPORT_TX_BUFFER_SIZE);
-        count = (pending > BLE_TRANSPORT_TX_CHUNK_SIZE) ?
-            BLE_TRANSPORT_TX_CHUNK_SIZE : pending;
+        count = (s_tx_frame_remaining > BLE_TRANSPORT_TX_CHUNK_SIZE) ?
+            BLE_TRANSPORT_TX_CHUNK_SIZE : s_tx_frame_remaining;
+        if (count > pending) count = pending;
         for (index = 0U; index < count; ++index)
         {
             s_tx_staging[index] = s_tx_buffer[s_tx_tail];
@@ -165,6 +184,13 @@ void BleTransport_Run(uint32_t now_ms)
         {
             s_diagnostics.tx_bytes += count;
             s_diagnostics.last_tx_ms = now_ms;
+            s_tx_frame_remaining = (uint16_t)(s_tx_frame_remaining - count);
+            if (s_tx_frame_remaining == 0U)
+            {
+                s_tx_frame_tail = (uint8_t)((s_tx_frame_tail + 1U) %
+                    BLE_TRANSPORT_NORMAL_FRAME_QUEUE_DEPTH);
+                --s_tx_frame_count;
+            }
         }
         else
         {

@@ -104,6 +104,39 @@ static int TestPriorityQueue(void)
     return 0;
 }
 
+static int TestPriorityPreservesNormalFrameBoundaries(void)
+{
+    uint8_t first[73];
+    uint8_t second[73];
+    uint8_t priority[5] = {1U, 2U, 3U, 4U, 5U};
+    uint16_t index;
+    Stage5C_FakeReset();
+    BleTransport_Init(0U);
+    (void)memset(first, 0x11, sizeof(first));
+    (void)memset(second, 0x22, sizeof(second));
+    CHECK(BleTransport_Write(first, sizeof(first)));
+    CHECK(BleTransport_Write(second, sizeof(second)));
+
+    BleTransport_Run(1U);
+    CHECK(Stage5C_FakeTxLength() == sizeof(first));
+    for (index = 0U; index < sizeof(first); ++index)
+        CHECK(Stage5C_FakeTxByte(index) == first[index]);
+
+    CHECK(BleTransport_WritePriority(priority, sizeof(priority)));
+    Stage5C_FakeCompleteTx();
+    BleTransport_Run(2U);
+    CHECK(Stage5C_FakeTxLength() == sizeof(priority));
+    for (index = 0U; index < sizeof(priority); ++index)
+        CHECK(Stage5C_FakeTxByte(index) == priority[index]);
+
+    Stage5C_FakeCompleteTx();
+    BleTransport_Run(3U);
+    CHECK(Stage5C_FakeTxLength() == sizeof(second));
+    for (index = 0U; index < sizeof(second); ++index)
+        CHECK(Stage5C_FakeTxByte(index) == second[index]);
+    return 0;
+}
+
 static int TestConnectionManager(void)
 {
     BleConnectionDiagnostics d;
@@ -259,6 +292,7 @@ int main(void)
 {
     if (TestTransport() != 0) return 1;
     if (TestPriorityQueue() != 0) return 1;
+    if (TestPriorityPreservesNormalFrameBoundaries() != 0) return 1;
     if (TestConnectionManager() != 0) return 1;
     if (TestHardwareDiagnostic() != 0) return 1;
     if (TestSoakTrigger() != 0) return 1;
