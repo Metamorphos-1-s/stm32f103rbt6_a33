@@ -74,4 +74,69 @@ recovery, response queue priority/boundedness, duplicate command protection,
 transaction conflict, SAVE completion and queue-full retry. Firmware Debug,
 Release and BoardDiagnostics builds are required before hardware validation.
 
-Current status: `STAGE 5C-C SOFTWARE COMPLETE; NOT TESTED ON HARDWARE`.
+## Hardware validation
+
+Release firmware from branch HEAD `3a06bbf8d51fe75dbb89e95b6162b2f1f03d90a6`
+was flashed and verified with ST-Link. The device reported protocol V1, firmware
+`0x050A`, register map `0x0102`, Schema V2, and all expected capability bits.
+`GET_ACTIVE_CONFIG` agreed with the frozen Modbus view for every field exposed
+by both transports: unit, decimal places, division, capacity, zero range,
+profile, filter, stability, sample rate, and gain.
+
+The final clean builds used 121724 B Flash / 14264 B RAM for Debug, 66296 B /
+14280 B for Release, and 120244 B / 14272 B for BoardDiagnostics. The Release
+load ends at `0x080102F8`, below the config-slot boundary `0x0801F000`. Host
+CTest passed 12/12 and the Stage 5C Python protocol/parser suite passed 8/8.
+
+The following command paths passed on the physical instrument:
+
+- TARE at approximately 500 g, exact duplicate replay, CLEAR TARE, and the
+  tare-active ZERO rejection path.
+- Empty-platform ZERO, exact duplicate replay, and RESET ZERO. ZERO/RESET ZERO
+  remained RAM-only and did not advance the persistent revision.
+- Decimal-place staging, read-before-apply isolation, validation, APPLY, and
+  restoration to the original value. Invalid OL values above CAP and below CAP
+  were rejected without changing active configuration.
+- SAVE completion after the Flash event, exact duplicate SAVE without a second
+  slot write, `persistent_dirty` transition to zero, and power-cycle restore
+  from slot A sequence 9.
+- Shared config ownership in both directions. Modbus returned `BUSY` while BLE
+  owned staging; BLE returned `BUSY` while Modbus owned staging. The owning
+  transport could discard/cancel and the state returned to IDLE unchanged.
+- Cross-transport state in both directions. BLE TARE/config changes were visible
+  through Modbus. Modbus ZERO produced 25 consecutive BLE FAST frames at exactly
+  zero; Modbus RESET ZERO restored approximately 0.325 g in another 25 FAST
+  frames. Both captures had zero CRC error, gap, resync, or disconnect.
+
+The final 600 s command/telemetry/RS485 concurrency rerun passed strictly:
+
+- BLE: 3613 telemetry frames (FAST 3011, SLOW 602), 24/24 command responses,
+  12 device-info and 12 config reads, and zero timeout, retry, result error,
+  transaction mismatch, CRC error, sequence gap, duplicate, timestamp anomaly,
+  parser resync, partial byte, or disconnect.
+- RS485: 1419/1419 FC03 requests, zero timeout, CRC error, exception, or retry
+  failure; the measurement sequence advanced by 6115.
+- MCU counters advanced from 732/732 to 4596/4596 generated/sent frames. Queue
+  full drops, transport-not-ready drops, FAST/SLOW drops, encode errors, UART
+  errors, TX errors, RX overflow, and priority-queue-full remained zero.
+
+An earlier 600 s run received 3611 valid telemetry frames and all 24 command
+responses without CRC error or disconnect, but missed frame sequence 2190 and
+resynchronized across 55 bytes. That byte count is one 56-byte FAST frame minus
+its first sync byte. It did not reproduce in the strict rerun, and the MCU
+generated/sent/drop counters remained clean, so it is retained as an isolated
+W02/Windows receive-path transient rather than hidden or treated as command
+frame interleaving.
+
+## Known limitations
+
+The frozen Modbus map `0x0102` does not expose OL as a direct active-config
+register. Consequently OL cannot be compared by two simultaneous read APIs;
+it was verified through BLE active-config reads plus the shared CAP/OL
+cross-field validator. The W02 UART remains 9600 8N1 without hardware flow
+control, and the MCU still cannot observe the phone/PC BLE connection state.
+Calibration, factory reset, OTA, AT, FF12, and Runtime Drift control remain out
+of scope.
+
+Current status: `STAGE 5C-C SOFTWARE COMPLETE; BLE COMMAND HARDWARE TESTED;
+TRANSPORT INTEROPERABILITY TESTED; COMPLETE`.

@@ -37,8 +37,28 @@ Stage 5C-C is implemented on branch `stage5c-ble-c` from main merge
 `dc7c17bba828d0cdda6635545b482fd4914519ee`. It adds V1 `0x80`/`0x81`
 request/response frames, bounded parser processing, transaction duplicate
 protection, response priority, shared CommandService routing, and a shared
-BLE/Modbus config-edit owner. Host verification is complete; hardware
-validation is pending.
+BLE/Modbus config-edit owner.
+
+Stage 5C-C hardware validation is complete at branch HEAD
+`3a06bbf8d51fe75dbb89e95b6162b2f1f03d90a6`. Device/config reads,
+TARE/CLEAR TARE, ZERO/RESET ZERO, staging/validation/APPLY/discard, invalid
+CAP/OL rejection, SAVE completion, duplicate protection, and power-cycle
+restore passed. BLE and Modbus rejected competing config owners in both
+directions, and runtime/config state changes were observed across transports.
+
+The final 600 s concurrent run received 3613 BLE frames (FAST 3011, SLOW 602)
+and 24/24 command responses with no CRC error, sequence gap, duplicate,
+timestamp anomaly, parser resync, partial byte, retry, timeout, transaction
+mismatch, or disconnect. RS485 completed 1419/1419 FC03 requests with no
+timeout, CRC error, exception, or retry failure. MCU telemetry counters showed
+4596/4596 cumulative generated/sent frames and zero queue, readiness, encode,
+FAST, or SLOW drop. An earlier isolated missing-sync-byte event is documented
+in `STAGE5C_C_BLE_COMMANDS.md`; it did not reproduce in the strict rerun.
+
+Stage 5C-C status: SOFTWARE COMPLETE; BLE COMMAND HARDWARE TESTED; TRANSPORT
+INTEROPERABILITY TESTED; COMPLETE. The frozen Modbus map still has no direct OL
+active-config register, so OL cross-checking uses the BLE read plus the shared
+validator. Calibration remains reserved for Stage 5C-D.
 
 ## Stage 5A
 
