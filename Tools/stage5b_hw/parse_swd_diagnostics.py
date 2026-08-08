@@ -5,15 +5,17 @@ import json
 import struct
 from pathlib import Path
 
-TX_LAST_ERROR = 0x20000E5F
-TX_STATE = 0x20000E74
-TRANSPORT_RECOVERY_FAILURES = 0x20000E75
-TRANSPORT_RECEIVE_ERROR = 0x20000E78
-UART_STATS = 0x20000EB8
-FRAMER_STATS = 0x200015C0
-FRAMER_STATE = 0x200016DC
-SERVER_STATS = 0x200019FC
-SERVER_STATE = 0x20001A44
+# Addresses for the current Release link map. Keep these synchronized with
+# build/Release/stm32f103rbt6_a33.map when the firmware layout changes.
+TX_LAST_ERROR = 0x20000FF3
+TX_STATE = 0x20001008
+TRANSPORT_RECOVERY_FAILURES = 0x20001009
+TRANSPORT_RECEIVE_ERROR = 0x2000100C
+UART_STATS = 0x2000107C
+FRAMER_STATS = 0x20001888
+FRAMER_STATE = 0x200019BC
+SERVER_STATS = 0x20001CDC
+SERVER_STATE = 0x20001D24
 
 
 def _slice(data, base, address, size):
@@ -33,10 +35,13 @@ def parse(data, base_address):
         "uart_noise_error_count", "uart_overrun_error_count",
         "tx_request_count", "tx_complete_count", "tx_dma_error_count",
         "tx_timeout_count", "dma_write_position", "dma_read_position"]
-    framer_values = struct.unpack("<5IH2x", _slice(data, base_address, FRAMER_STATS, 24))
+    framer_values = struct.unpack("<11IH2x", _slice(data, base_address, FRAMER_STATS, 48))
     framer_names = ["frame_count", "short_frame_count",
         "inter_character_error_count", "overflow_count",
-        "transport_error_count", "current_frame_length"]
+        "transport_error_count", "idle_event_count", "timer_event_count",
+        "timer_race_count", "timer_t1_5_elapsed_count",
+        "timer_t3_5_elapsed_count", "timer_start_failure_count",
+        "current_frame_length"]
     server_values = struct.unpack("<16I3Bx2H", _slice(data, base_address, SERVER_STATS, 72))
     server_names = ["valid_frame_count", "addressed_frame_count",
         "ignored_address_count", "broadcast_count", "crc_error_count",

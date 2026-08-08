@@ -228,6 +228,7 @@ add_executable(stage5b_host_tests
     ../../Domain/measurement/unit_converter.c
     ../../Domain/measurement/weight_math.c
     ../../Protocol/modbus/modbus_crc16.c
+    ../../Protocol/crc16/crc16.c
     ../../Protocol/modbus/modbus_command_mailbox.c
     ../../Protocol/modbus/modbus_register_model.c
     ../../Protocol/modbus/modbus_rtu_server.c
@@ -242,6 +243,7 @@ target_include_directories(stage5b_host_tests PRIVATE
     . ../../App ../../BSP ../../Config ../../Domain/calibration ../../Domain/filter
     ../../Domain/measurement ../../Domain/stability ../../Drivers/cs1237
     ../../Drivers/serial ../../Protocol/command_service ../../Protocol/modbus
+    ../../Protocol/crc16
     ../../Services/config_store ../../Services/fault_manager
     ../../Services/storage_power_guard ../../UI/key_service)
 if(MSVC)
@@ -269,6 +271,22 @@ else()
     target_compile_options(stage5c_host_tests PRIVATE -Wall -Wextra -Werror)
 endif()
 add_test(NAME stage5c_host_logic COMMAND stage5c_host_tests)
+
+add_executable(stage5c_ble_telemetry_tests
+    test_ble_telemetry.c
+    ../../Protocol/crc16/crc16.c
+    ../../Protocol/ble/ble_frame_codec.c
+    ../../Services/ble_telemetry_service/ble_telemetry_scheduler.c
+)
+target_include_directories(stage5c_ble_telemetry_tests PRIVATE
+    . ../../Protocol/crc16 ../../Protocol/ble
+    ../../Services/ble_telemetry_service)
+if(MSVC)
+    target_compile_options(stage5c_ble_telemetry_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5c_ble_telemetry_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5c_ble_telemetry_logic COMMAND stage5c_ble_telemetry_tests)
 
 add_executable(uart2_dma_recovery_tests
     test_uart2_dma_transport.c

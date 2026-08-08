@@ -24,6 +24,12 @@ typedef struct
     uint32_t inter_character_error_count;
     uint32_t overflow_count;
     uint32_t transport_error_count;
+    uint32_t idle_event_count;
+    uint32_t timer_event_count;
+    uint32_t timer_race_count;
+    uint32_t timer_t1_5_elapsed_count;
+    uint32_t timer_t3_5_elapsed_count;
+    uint32_t timer_start_failure_count;
     uint16_t current_frame_length;
 } ModbusRtuFramerStatistics;
 

@@ -15,12 +15,18 @@ static uint16_t s_length;
 static uint16_t s_silence_dma_position;
 static ModbusRtuFramerStatistics s_statistics;
 
+static void StartTimer(uint32_t delay_us)
+{
+    if (!BSP_RtuTimerStartUs(delay_us))
+        ++s_statistics.timer_start_failure_count;
+}
+
 static void DiscardUntilSilence(void)
 {
     s_length = 0U;
     s_statistics.current_frame_length = 0U;
     s_state = MODBUS_FRAMER_DISCARD_UNTIL_SILENCE;
-    (void)BSP_RtuTimerStartUs(s_timing.t3_5_us);
+    StartTimer(s_timing.t3_5_us);
 }
 
 static uint32_t RemainingAfterIdle(uint32_t interval_us)
@@ -56,7 +62,7 @@ void ModbusRtuFramer_OnByte(uint8_t byte)
     }
     if (s_state == MODBUS_FRAMER_DISCARD_UNTIL_SILENCE)
     {
-        (void)BSP_RtuTimerStartUs(s_timing.t3_5_us);
+        StartTimer(s_timing.t3_5_us);
         return;
     }
     if (s_state == MODBUS_FRAMER_WAIT_T1_5) BSP_RtuTimerStop();
@@ -98,23 +104,26 @@ void ModbusRtuFramer_OnIdleEvent(uint16_t dma_position,
                                 uint32_t timestamp_cycles)
 {
     (void)timestamp_cycles;
+    ++s_statistics.idle_event_count;
     s_silence_dma_position = dma_position;
     if (s_state == MODBUS_FRAMER_RECEIVING)
     {
         s_state = MODBUS_FRAMER_WAIT_T1_5;
-        (void)BSP_RtuTimerStartUs(RemainingAfterIdle(s_timing.t1_5_us));
+        StartTimer(RemainingAfterIdle(s_timing.t1_5_us));
     }
     else if (s_state == MODBUS_FRAMER_DISCARD_UNTIL_SILENCE)
     {
-        (void)BSP_RtuTimerStartUs(RemainingAfterIdle(s_timing.t3_5_us));
+        StartTimer(RemainingAfterIdle(s_timing.t3_5_us));
     }
 }
 
 void ModbusRtuFramer_OnTimerEvent(void)
 {
     uint16_t current = Uart2DmaTransport_GetStatistics()->dma_write_position;
+    ++s_statistics.timer_event_count;
     if (current != s_silence_dma_position)
     {
+        ++s_statistics.timer_race_count;
         if (s_state == MODBUS_FRAMER_WAIT_T3_5)
         {
             ++s_statistics.inter_character_error_count;
@@ -126,17 +135,19 @@ void ModbusRtuFramer_OnTimerEvent(void)
         }
         else if (s_state == MODBUS_FRAMER_DISCARD_UNTIL_SILENCE)
         {
-            (void)BSP_RtuTimerStartUs(s_timing.t3_5_us);
+            StartTimer(s_timing.t3_5_us);
         }
         return;
     }
     if (s_state == MODBUS_FRAMER_WAIT_T1_5)
     {
+        ++s_statistics.timer_t1_5_elapsed_count;
         s_state = MODBUS_FRAMER_WAIT_T3_5;
-        (void)BSP_RtuTimerStartUs(s_timing.t3_5_us - s_timing.t1_5_us);
+        StartTimer(s_timing.t3_5_us - s_timing.t1_5_us);
     }
     else if (s_state == MODBUS_FRAMER_WAIT_T3_5)
     {
+        ++s_statistics.timer_t3_5_elapsed_count;
         if (s_length < 4U)
         {
             ++s_statistics.short_frame_count;
