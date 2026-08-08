@@ -12,13 +12,26 @@ Branch: `stage5c-ble-b`.
 
 Read-only realtime telemetry software is implemented: version 1 FAST_WEIGHT
 and SLOW_STATUS frames, explicit little-endian serialization, shared CRC16,
-stream parser, and non-blocking latest-data-wins scheduling. Host C tests are
-10/10 and Python parser tests are 5/5. Debug, Release, and BoardDiagnostics
-images build without new warnings; Release remains below `0x0801F000`.
+stream parser, and non-blocking latest-data-wins scheduling. Final closeout
+HEAD is `a454555bbf7ed0a20be5213360fafd022f97d72f`. The final Release image is
+63,056 B Flash / 12,600 B RAM and remains below `0x0801F000`; firmware is
+`0x050A`, register map is `0x0102`, and Schema V2 is 344 B.
 
-Hardware telemetry testing has not yet been run on this branch. Do not mark
-Stage 5C-B complete or enter Stage 5C-C until empty/500 g/+1 g/TARE/SAVE,
-600-second BLE soak, BLE+weighing, and BLE+RS485 checks are recorded.
+Stage 5C-B hardware closeout is complete. The 600 s BLE + RS485 concurrency
+run produced 3602 BLE frames (FAST 3001, SLOW 601) with no CRC error, sequence
+gap, duplicate, disconnect, parser resynchronization, or partial frame. RS485
+completed 2711/2711 read-only FC03 requests with no timeout, CRC error, or
+Modbus exception. SWD recorded 15632 complete Modbus frames and matching IDLE,
+T1.5, and T3.5 counts; Framer races and timer-start failures were 0. Two DMA
+wrap-race recoveries caused no loss or timeout. The earlier RS485 timeout was
+not reproduced and remains classified as a physical/link transient observation.
+
+Stage 5C-B status: SOFTWARE COMPLETE; BLE TELEMETRY HARDWARE TESTED; BLE
+TELEMETRY SOAK TESTED; CONCURRENCY REGRESSION TESTED; COMPLETE.
+
+The next stage is Stage 5C-C BLE Configuration & Safe Commands. Calibration,
+factory reset, OTA, AT, FF12, and Runtime Drift control remain excluded until
+Stage 5C-D.
 
 ## Stage 5A
 
