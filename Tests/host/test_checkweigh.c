@@ -296,6 +296,71 @@ static void TestCalibrationAndEnableResetSequences(void)
     CHECK(result.state == CHECKWEIGH_OK && result.qualified_ok_transition);
 }
 
+static void TestFaultAndOverloadRecovery(void)
+{
+    AlarmConfig config = Config(100, 200, 10);
+    LimitChecker checker;
+    CheckweighResult result;
+
+    LimitChecker_Init(&checker);
+    (void)ProcessCase(&checker, &config, 150, 0, true, false, false, false);
+    result = ProcessCase(&checker, &config, 150, 0, true, true, false, false);
+    CHECK(result.state == CHECKWEIGH_OVERLOAD && result.state_changed);
+    result = ProcessCase(&checker, &config, 201, 0, false, false, false, false);
+    CHECK(result.state == CHECKWEIGH_DISABLED && result.state_changed &&
+          !result.qualified && !result.qualified_ok_transition);
+    result = ProcessCase(&checker, &config, 201, 0, true, false, false, false);
+    CHECK(result.state == CHECKWEIGH_HIGH && result.qualified);
+
+    LimitChecker_Reset(&checker);
+    (void)ProcessCase(&checker, &config, 99, 0, true, false, false, false);
+    result = ProcessCase(&checker, &config, 99, 0, true, false, true, false);
+    CHECK(result.state == CHECKWEIGH_FAULT);
+    result = ProcessCase(&checker, &config, 150, 0, false, false, false, false);
+    CHECK(result.state == CHECKWEIGH_DISABLED && !result.qualified);
+    result = ProcessCase(&checker, &config, 150, 0, true, false, false, false);
+    CHECK(result.state == CHECKWEIGH_OK && result.qualified_ok_transition);
+
+    LimitChecker_Reset(&checker);
+    (void)ProcessCase(&checker, &config, 201, 0, true, false, false, false);
+    (void)ProcessCase(&checker, &config, 201, 0, true, false, true, false);
+    result = ProcessCase(&checker, &config, 150, 0, false, false, false, false);
+    CHECK(result.state == CHECKWEIGH_DISABLED);
+
+    LimitChecker_Reset(&checker);
+    (void)ProcessCase(&checker, &config, 150, 0, true, false, false, false);
+    (void)ProcessCase(&checker, &config, 150, 0, true, true, false, false);
+    result = ProcessCase(&checker, &config, 150, 0, true, true, false, false);
+    CHECK(result.state == CHECKWEIGH_OVERLOAD && !result.state_changed);
+
+    LimitChecker_Reset(&checker);
+    (void)ProcessCase(&checker, &config, 150, 0, true, true, false, true);
+    result = ProcessCase(&checker, &config, 150, 0, false, false, false, true);
+    CHECK(result.state == CHECKWEIGH_DISABLED);
+    result = ProcessCase(&checker, &config, 150, 0, false, false, false, false);
+    CHECK(result.state == CHECKWEIGH_DISABLED);
+    result = ProcessCase(&checker, &config, 150, 0, true, false, false, false);
+    CHECK(result.state == CHECKWEIGH_OK && result.qualified_ok_transition);
+
+    LimitChecker_Reset(&checker);
+    config.limit_function_enable = false;
+    (void)ProcessCase(&checker, &config, 99, 0, true, false, true, false);
+    result = ProcessCase(&checker, &config, 99, 0, false, false, false, false);
+    CHECK(result.state == CHECKWEIGH_DISABLED);
+    config.limit_function_enable = true;
+    result = ProcessCase(&checker, &config, 99, 0, false, false, false, false);
+    CHECK(result.state == CHECKWEIGH_DISABLED);
+    result = ProcessCase(&checker, &config, 99, 0, true, false, false, false);
+    CHECK(result.state == CHECKWEIGH_LOW && result.qualified);
+
+    LimitChecker_Reset(&checker);
+    (void)ProcessCase(&checker, &config, 150, 0, true, true, false, false);
+    result = ProcessCase(&checker, &config, 150, 0, false, false, false, false);
+    CHECK(result.state == CHECKWEIGH_DISABLED);
+    result = ProcessCase(&checker, &config, 150, 0, true, false, false, false);
+    CHECK(result.state == CHECKWEIGH_OK && result.qualified_ok_transition);
+}
+
 static void TestFaultClassification(void)
 {
     FaultManager_Init();
@@ -318,6 +383,7 @@ int main(void)
     TestStableAndQualifiedTransitions();
     TestPrioritySuppressionAndReset();
     TestCalibrationAndEnableResetSequences();
+    TestFaultAndOverloadRecovery();
     TestFaultClassification();
 
     (void)printf("AlarmConfig validation cases: %u\n", s_validation_cases);

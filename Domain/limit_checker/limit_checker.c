@@ -96,10 +96,12 @@ bool LimitChecker_Process(LimitChecker *checker,
 
     if (weight_invalid || !AlarmConfig_Validate(config))
     {
+        LimitChecker_ClearQualification(checker);
         next_state = CHECKWEIGH_FAULT;
     }
     else if ((snapshot->status_flags & WEIGHT_STATUS_OVERLOAD) != 0U)
     {
+        LimitChecker_ClearQualification(checker);
         next_state = CHECKWEIGH_OVERLOAD;
     }
     else if (calibration_active || !config->limit_function_enable)
