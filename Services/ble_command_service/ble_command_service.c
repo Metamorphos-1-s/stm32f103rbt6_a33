@@ -264,6 +264,9 @@ static bool ExecuteCommand(const BleCommandRequest *request,
         case BLE_OPERATION_SET_CONFIG_MASS:
             if (request->data_length != 9U) return false;
             field = request->data[0];
+#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
+            if (field > CONFIG_MASS_FIELD_OVERLOAD_THRESHOLD) return false;
+#endif
             command.id = COMMAND_SET_CONFIG_MASS_FIELD;
             command.value0 = field;
             command.value64 = BleCommandProtocol_GetI64(&request->data[1]);

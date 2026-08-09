@@ -31,3 +31,18 @@ bool AlarmConfig_Validate(const AlarmConfig *config)
                             config->upper_limit_ug);
     return (uint64_t)config->hysteresis_ug <= (span / 2U);
 }
+
+bool AlarmConfig_ClassificationChanged(const AlarmConfig *previous,
+                                       const AlarmConfig *current)
+{
+    if ((previous == NULL) || (current == NULL))
+    {
+        return true;
+    }
+    return (previous->limit_function_enable !=
+            current->limit_function_enable) ||
+           (previous->lower_limit_ug != current->lower_limit_ug) ||
+           (previous->upper_limit_ug != current->upper_limit_ug) ||
+           (previous->hysteresis_ug != current->hysteresis_ug) ||
+           (previous->weight_source != current->weight_source);
+}

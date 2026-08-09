@@ -23,6 +23,11 @@ typedef enum
     MENU_EDIT_UNIT_DISPLAY,
     MENU_EDIT_FILTER,
     MENU_EDIT_STABILITY_HOLD
+#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
+    ,
+    MENU_EDIT_BOOL,
+    MENU_EDIT_ALARM_SOURCE
+#endif
 } MenuEditKind;
 
 static const char s_labels[MENU_ITEM_COUNT][6] = {
@@ -33,6 +38,12 @@ static const char s_labels[MENU_ITEM_COUNT][6] = {
     {'Z','r','n','G',' ',' '}, {'O','L',' ',' ',' ',' '},
     {'b','r','I','G','H','t'}, {'S','P','d',' ',' ',' '},
     {'G','A','I','n',' ',' '}, {'t','r','r','E','t',' '},
+#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
+    {'L','-','E','n',' ',' '}, {'L','o',' ',' ',' ',' '},
+    {'H','i',' ',' ',' ',' '}, {'H','y','S',' ',' ',' '},
+    {'S','r','c',' ',' ',' '}, {'b','I','n',' ',' ',' '},
+    {'b','E','H',' ',' ',' '}, {'b','O','K',' ',' ',' '},
+#endif
     {'S','A','U','E',' ',' '}, {'r','E','S','E','t',' '},
     {'E','H','I','t',' ',' '}
 };
@@ -120,6 +131,20 @@ static void Render(void)
             ShowCode(DISPLAY_CODE_UNIT_ERROR);
         return;
     }
+#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
+    if (s_edit_kind == MENU_EDIT_BOOL)
+    {
+        (void)DisplayController_SetTextPage(DISPLAY_PAGE_EDIT,
+            (s_value != 0) ? "    On" : "   OFF");
+        return;
+    }
+    if (s_edit_kind == MENU_EDIT_ALARM_SOURCE)
+    {
+        (void)DisplayController_SetTextPage(DISPLAY_PAGE_EDIT,
+            (s_value == ALARM_WEIGHT_GROSS) ? " GroSS" : "   nEt");
+        return;
+    }
+#endif
     if ((s_edit_kind == MENU_EDIT_MASS) &&
         (s_value <= INT32_MAX) && (s_value >= INT32_MIN))
     {
@@ -297,6 +322,48 @@ static bool BeginEdit(MenuItem item)
             s_integer_field = CONFIG_FIELD_TARE_RETENTION;
             s_value = context->config.system.tare_power_loss_retention ? 1 : 0;
             break;
+#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
+        case MENU_ITEM_LIMIT_ENABLE:
+            s_edit_kind = MENU_EDIT_BOOL;
+            s_integer_field = CONFIG_FIELD_LIMIT_ENABLE;
+            s_value = context->config.alarm.limit_function_enable ? 1 : 0;
+            break;
+        case MENU_ITEM_ALARM_LOWER_LIMIT:
+            s_edit_kind = MENU_EDIT_MASS;
+            s_mass_field = CONFIG_MASS_FIELD_ALARM_LOWER_LIMIT;
+            mass = context->config.alarm.lower_limit_ug;
+            break;
+        case MENU_ITEM_ALARM_UPPER_LIMIT:
+            s_edit_kind = MENU_EDIT_MASS;
+            s_mass_field = CONFIG_MASS_FIELD_ALARM_UPPER_LIMIT;
+            mass = context->config.alarm.upper_limit_ug;
+            break;
+        case MENU_ITEM_ALARM_HYSTERESIS:
+            s_edit_kind = MENU_EDIT_MASS;
+            s_mass_field = CONFIG_MASS_FIELD_ALARM_HYSTERESIS;
+            mass = context->config.alarm.hysteresis_ug;
+            break;
+        case MENU_ITEM_ALARM_SOURCE:
+            s_edit_kind = MENU_EDIT_ALARM_SOURCE;
+            s_integer_field = CONFIG_FIELD_ALARM_WEIGHT_SOURCE;
+            s_value = context->config.alarm.weight_source;
+            break;
+        case MENU_ITEM_INTERNAL_BUZZER:
+            s_edit_kind = MENU_EDIT_BOOL;
+            s_integer_field = CONFIG_FIELD_INTERNAL_BUZZER_ENABLE;
+            s_value = context->config.alarm.internal_buzzer_enable ? 1 : 0;
+            break;
+        case MENU_ITEM_EXTERNAL_BUZZER:
+            s_edit_kind = MENU_EDIT_BOOL;
+            s_integer_field = CONFIG_FIELD_EXTERNAL_BUZZER_ENABLE;
+            s_value = context->config.alarm.external_buzzer_enable ? 1 : 0;
+            break;
+        case MENU_ITEM_QUALIFIED_BEEP:
+            s_edit_kind = MENU_EDIT_BOOL;
+            s_integer_field = CONFIG_FIELD_QUALIFIED_BEEP_ENABLE;
+            s_value = context->config.alarm.qualified_beep_enable ? 1 : 0;
+            break;
+#endif
         default: return false;
     }
     if (s_edit_kind == MENU_EDIT_MASS)
@@ -332,6 +399,10 @@ static bool SubmitEditValue(void)
     switch (s_edit_kind)
     {
         case MENU_EDIT_INTEGER:
+#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
+        case MENU_EDIT_BOOL:
+        case MENU_EDIT_ALARM_SOURCE:
+#endif
             return MenuController_Command(COMMAND_SET_CONFIG_FIELD,
                 s_integer_field, (int32_t)s_value, 0U, 0) == COMMAND_RESULT_OK;
         case MENU_EDIT_MASS:
@@ -366,6 +437,19 @@ static void AdjustEdit(KeyId key)
 {
     int64_t delta;
     int64_t next;
+#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
+    if (s_edit_kind == MENU_EDIT_BOOL)
+    {
+        s_value = (s_value == 0) ? 1 : 0;
+        return;
+    }
+    if (s_edit_kind == MENU_EDIT_ALARM_SOURCE)
+    {
+        s_value = (s_value == ALARM_WEIGHT_NET) ?
+            ALARM_WEIGHT_GROSS : ALARM_WEIGHT_NET;
+        return;
+    }
+#endif
     if (s_edit_kind == MENU_EDIT_UNIT)
     {
         const SystemContext *context = SystemContext_Get();
@@ -423,7 +507,14 @@ static void AdjustEdit(KeyId key)
     if (key == KEY_ID_STAR) delta = -delta;
     if (MassMath_Add(s_value, delta, &next) &&
         ((s_edit_kind != MENU_EDIT_MASS) ||
+#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
+         (next >= ((s_mass_field == CONFIG_MASS_FIELD_CAPACITY) ? 1 :
+                  ((s_mass_field == CONFIG_MASS_FIELD_ALARM_LOWER_LIMIT) ||
+                   (s_mass_field == CONFIG_MASS_FIELD_ALARM_UPPER_LIMIT)) ?
+                      -99999 : 0))) &&
+#else
          (next >= ((s_mass_field == CONFIG_MASS_FIELD_CAPACITY) ? 1 : 0))) &&
+#endif
         (next <= ((s_edit_kind == MENU_EDIT_MASS) ? 999999 : INT32_MAX)))
         s_value = next;
 }

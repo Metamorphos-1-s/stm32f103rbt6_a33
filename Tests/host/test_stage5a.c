@@ -138,6 +138,47 @@ static void TestUnboundedLegacyProjection(void)
           METROLOGY_CONFIG_INVALID_UNIT);
 }
 
+static void TestAlarmLegacyProjection(void)
+{
+    DeviceConfig config;
+    DeviceConfig decoded;
+    RuntimeState runtime = {0};
+    RuntimeState decoded_runtime;
+    uint8_t bytes[PERSISTENT_V2_PAYLOAD_SIZE];
+    uint16_t length = 0U;
+
+    DefaultConfig_Load(&config);
+    config.alarm.limit_function_enable = true;
+    config.alarm.lower_limit_ug = INT64_C(499000000);
+    config.alarm.upper_limit_ug = INT64_C(501000000);
+    config.alarm.hysteresis_ug = INT64_C(200000);
+    config.alarm.lower_limit = 0;
+    config.alarm.upper_limit = 0;
+    config.alarm.hysteresis = 0U;
+    runtime.weight_view = WEIGHT_VIEW_NET;
+
+    CHECK(PersistentCodec_EncodeV2(&config, &runtime, bytes, sizeof(bytes),
+        &length) == PERSISTENT_CODEC_OK);
+    CHECK(length == PERSISTENT_V2_PAYLOAD_SIZE);
+    CHECK(PersistentCodec_DecodeV2(bytes, length, &decoded,
+        &decoded_runtime) == PERSISTENT_CODEC_OK);
+    CHECK(decoded.alarm.lower_limit == 49900);
+    CHECK(decoded.alarm.upper_limit == 50100);
+    CHECK(decoded.alarm.hysteresis == 20U);
+    CHECK(decoded.alarm.lower_limit_ug == INT64_C(499000000));
+    CHECK(decoded.alarm.upper_limit_ug == INT64_C(501000000));
+    CHECK(decoded.alarm.hysteresis_ug == INT64_C(200000));
+
+    config.alarm.lower_limit_ug = INT64_C(-1000000);
+    config.alarm.upper_limit_ug = INT64_C(1000000);
+    config.alarm.hysteresis_ug = INT64_C(200000);
+    CHECK(AlarmLegacyProjection_Update(&config.alarm, MASS_UNIT_G,
+        &config.metrology.unit_display[MASS_UNIT_G]));
+    CHECK(config.alarm.lower_limit == -100);
+    CHECK(config.alarm.upper_limit == 100);
+    CHECK(config.alarm.hysteresis == 20U);
+}
+
 static void TestCodec(void)
 {
     DeviceConfig config,decoded;
@@ -427,7 +468,7 @@ static void TestModbusModel(void)
 int main(void)
 {
     TestMassAndUnits(); TestCanonicalAndLegacyBoundary();
-    TestUnboundedLegacyProjection(); TestCodec();
+    TestUnboundedLegacyProjection(); TestAlarmLegacyProjection(); TestCodec();
     TestReferenceRules(); TestProductDefaults();
     TestLegacyDevelopmentNormalization(); TestKeyConflict(); TestModbusModel();
     if(failures==0U) printf("Stage 5A host tests passed.\n");

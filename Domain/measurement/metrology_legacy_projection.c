@@ -21,6 +21,34 @@ static bool ProjectCount(MassValueUg mass_ug, MassUnit unit,
     return true;
 }
 
+static bool ProjectSignedCount(MassValueUg mass_ug, MassUnit unit,
+                               const UnitDisplayConfig *display,
+                               int32_t *value)
+{
+    int64_t projected;
+    if ((value == NULL) || (display == NULL) || !display->enabled ||
+        !UnitConverter_MassToCountUnbounded(mass_ug, unit,
+            display->decimal_places, display->division_digit, &projected) ||
+        (projected < INT32_MIN) || (projected > INT32_MAX))
+    {
+        return false;
+    }
+    *value = (int32_t)projected;
+    return true;
+}
+
+bool AlarmLegacyProjection_Update(AlarmConfig *config, MassUnit unit,
+                                  const UnitDisplayConfig *display)
+{
+    return (config != NULL) &&
+        ProjectSignedCount(config->lower_limit_ug, unit, display,
+                           &config->lower_limit) &&
+        ProjectSignedCount(config->upper_limit_ug, unit, display,
+                           &config->upper_limit) &&
+        ProjectCount(config->hysteresis_ug, unit, display,
+                     &config->hysteresis);
+}
+
 bool RuntimeLegacyProjection_Update(RuntimeState *runtime, MassUnit unit,
     const UnitDisplayConfig *display)
 {

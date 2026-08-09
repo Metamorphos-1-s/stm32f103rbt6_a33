@@ -35,6 +35,7 @@
 #include "stage5c_ble_diagnostics.h"
 #if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
 #include "alarm_output_manager.h"
+#include "alarm_config_validation.h"
 #include "limit_checker.h"
 #endif
 
@@ -70,6 +71,7 @@ static AppState s_alarm_last_app_state;
 static bool s_alarm_last_weight_invalid;
 static bool s_alarm_runtime_active;
 static bool s_alarm_has_input;
+static AlarmConfig s_alarm_last_config;
 #endif
 
 bool App_Init(void)
@@ -345,10 +347,12 @@ static void App_UpdateAlarmOutputs(uint32_t now_ms)
 {
   const SystemContext *context = SystemContext_Get();
   const WeightSnapshot *snapshot;
+  WeightSnapshot reset_snapshot;
   CheckweighResult result;
   AppState state;
   uint32_t config_revision;
   bool weight_invalid;
+  bool classification_changed;
 
   if (context == NULL)
   {
@@ -385,6 +389,18 @@ static void App_UpdateAlarmOutputs(uint32_t now_ms)
     return;
   }
 
+  classification_changed = s_alarm_has_input &&
+      (config_revision != s_alarm_last_config_revision) &&
+      AlarmConfig_ClassificationChanged(&s_alarm_last_config,
+                                        &context->config.alarm);
+  if (classification_changed)
+  {
+    reset_snapshot = *snapshot;
+    reset_snapshot.status_flags &= ~WEIGHT_STATUS_STABLE;
+    LimitChecker_Reset(&s_limit_checker);
+    snapshot = &reset_snapshot;
+  }
+
   if (LimitChecker_Process(&s_limit_checker, snapshot,
                            &context->config.alarm, weight_invalid,
                            state == APP_STATE_CALIBRATION, &result))
@@ -395,6 +411,7 @@ static void App_UpdateAlarmOutputs(uint32_t now_ms)
     s_alarm_last_config_revision = config_revision;
     s_alarm_last_app_state = state;
     s_alarm_last_weight_invalid = weight_invalid;
+    s_alarm_last_config = context->config.alarm;
     s_alarm_has_input = true;
   }
 }

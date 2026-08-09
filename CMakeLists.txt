@@ -180,10 +180,12 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add project symbols (macros)
 if(A33_ENABLE_BOARD_DIAGNOSTICS)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
-        ENABLE_STAGE2B_BOARD_DIAGNOSTICS=1)
+        ENABLE_STAGE2B_BOARD_DIAGNOSTICS=1
+        ENABLE_STAGE5E_A3_LOCAL_MENU=0)
 else()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
-        ENABLE_STAGE2B_BOARD_DIAGNOSTICS=0)
+        ENABLE_STAGE2B_BOARD_DIAGNOSTICS=0
+        ENABLE_STAGE5E_A3_LOCAL_MENU=1)
 endif()
 
 # Remove wrong libob.a library dependency when using cpp files

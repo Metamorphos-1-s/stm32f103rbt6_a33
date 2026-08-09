@@ -122,6 +122,70 @@ static void TestAlarmConfigValidation(void)
     CHECK(!AlarmConfig_Validate(NULL));
 }
 
+static void TestClassificationChangeDetection(void)
+{
+    AlarmConfig previous = Config(100, 200, 10);
+    AlarmConfig current = previous;
+
+    CHECK(!AlarmConfig_ClassificationChanged(&previous, &current));
+    current.internal_buzzer_enable = !current.internal_buzzer_enable;
+    CHECK(!AlarmConfig_ClassificationChanged(&previous, &current));
+    current = previous;
+    current.external_buzzer_enable = !current.external_buzzer_enable;
+    CHECK(!AlarmConfig_ClassificationChanged(&previous, &current));
+    current = previous;
+    current.qualified_beep_enable = !current.qualified_beep_enable;
+    CHECK(!AlarmConfig_ClassificationChanged(&previous, &current));
+
+    current = previous;
+    current.limit_function_enable = !current.limit_function_enable;
+    CHECK(AlarmConfig_ClassificationChanged(&previous, &current));
+    current = previous;
+    ++current.lower_limit_ug;
+    CHECK(AlarmConfig_ClassificationChanged(&previous, &current));
+    current = previous;
+    ++current.upper_limit_ug;
+    CHECK(AlarmConfig_ClassificationChanged(&previous, &current));
+    current = previous;
+    ++current.hysteresis_ug;
+    CHECK(AlarmConfig_ClassificationChanged(&previous, &current));
+    current = previous;
+    current.weight_source = ALARM_WEIGHT_GROSS;
+    CHECK(AlarmConfig_ClassificationChanged(&previous, &current));
+    CHECK(AlarmConfig_ClassificationChanged(NULL, &current));
+    CHECK(AlarmConfig_ClassificationChanged(&previous, NULL));
+}
+
+static void TestConfigChangeResetPolicy(void)
+{
+    AlarmConfig previous = Config(100, 200, 10);
+    AlarmConfig current = previous;
+    LimitChecker checker;
+    CheckweighResult result;
+
+    LimitChecker_Init(&checker);
+    result = ProcessCase(&checker, &previous, 150, 0, true, false,
+                         false, false);
+    CHECK(result.state == CHECKWEIGH_OK);
+    current.lower_limit_ug = 0;
+    current.upper_limit_ug = 100;
+    CHECK(AlarmConfig_ClassificationChanged(&previous, &current));
+    LimitChecker_Reset(&checker);
+    result = ProcessCase(&checker, &current, 150, 0, false, false,
+                         false, false);
+    CHECK(result.state == CHECKWEIGH_DISABLED);
+    result = ProcessCase(&checker, &current, 150, 0, true, false,
+                         false, false);
+    CHECK(result.state == CHECKWEIGH_HIGH);
+
+    previous = current;
+    current.internal_buzzer_enable = !current.internal_buzzer_enable;
+    CHECK(!AlarmConfig_ClassificationChanged(&previous, &current));
+    result = ProcessCase(&checker, &current, 50, 0, false, false,
+                         false, false);
+    CHECK(result.state == CHECKWEIGH_HIGH);
+}
+
 static void TestBasicClassificationAndSources(void)
 {
     AlarmConfig config = Config(100, 200, 10);
@@ -378,6 +442,8 @@ static void TestFaultClassification(void)
 int main(void)
 {
     TestAlarmConfigValidation();
+    TestClassificationChangeDetection();
+    TestConfigChangeResetPolicy();
     TestBasicClassificationAndSources();
     TestHysteresis();
     TestStableAndQualifiedTransitions();

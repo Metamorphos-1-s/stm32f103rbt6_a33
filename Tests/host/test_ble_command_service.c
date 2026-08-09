@@ -246,6 +246,25 @@ static void TestCalibrationStateAndDispatcher(void)
     assert(s_execute_count == before);
 }
 
+static void TestAlarmMassFieldsRemainUnavailable(void)
+{
+    uint8_t data[9] = {CONFIG_MASS_FIELD_OVERLOAD_THRESHOLD,
+                       0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U};
+
+    Reset();
+    FeedRequest(60U, BLE_OPERATION_SET_CONFIG_MASS, data, sizeof(data));
+    BleCommandService_Process(60U);
+    assert(s_execute_count == 1U);
+    assert(s_last_command_request.id == COMMAND_SET_CONFIG_MASS_FIELD);
+
+    Reset();
+    data[0] = CONFIG_MASS_FIELD_ALARM_LOWER_LIMIT;
+    FeedRequest(61U, BLE_OPERATION_SET_CONFIG_MASS, data, sizeof(data));
+    BleCommandService_Process(61U);
+    assert(s_execute_count == 0U);
+    assert(ResponseResult() == BLE_COMMAND_RESULT_INVALID_ARGUMENT);
+}
+
 int main(void)
 {
     TestDeviceInfoVersion();
@@ -253,6 +272,7 @@ int main(void)
     TestSaveCompletion();
     TestQueueRetry();
     TestCalibrationStateAndDispatcher();
+    TestAlarmMassFieldsRemainUnavailable();
     puts("BLE command service tests passed");
     return 0;
 }

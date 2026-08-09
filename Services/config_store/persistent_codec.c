@@ -6,6 +6,7 @@
 #include "metrology_config_validator.h"
 #include "metrology_legacy_projection.h"
 #include "persistent_schema.h"
+#include "project_config.h"
 #include "unit_converter.h"
 
 #include <limits.h>
@@ -129,7 +130,6 @@ static bool PersistentCodec_ValidateCommon(const DeviceConfig *config)
          (config->communication.output_period_ms == 0U)) ||
         (config->bluetooth.uart_baud_rate == 0U) ||
         (config->bluetooth.protocol_version == 0U) ||
-        !AlarmConfig_Validate(&config->alarm) ||
         (config->alarm.lower_limit > config->alarm.upper_limit) ||
         (config->display.brightness > 7U) ||
         (config->display.default_weight_view >= (uint8_t)WEIGHT_VIEW_COUNT) ||
@@ -160,6 +160,7 @@ static bool PersistentCodec_ValidateCommon(const DeviceConfig *config)
 bool PersistentCodec_ValidateConfig(const DeviceConfig *config)
 {
     return PersistentCodec_ValidateCommon(config) &&
+        AlarmConfig_Validate(&config->alarm) &&
         (MetrologyConfig_ValidateCanonical(&config->metrology) ==
          METROLOGY_CONFIG_OK) &&
         (!config->calibration.calibration_valid ||
@@ -294,6 +295,12 @@ PersistentCodecResult PersistentCodec_EncodeV2(
     if (!MetrologyLegacyProjection_Update(&compatibility.metrology) ||
         !MetrologyLegacyStabilityProjection_Update(&compatibility.metrology,
                                                     &compatibility.stability) ||
+#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
+        !AlarmLegacyProjection_Update(&compatibility.alarm,
+            compatibility.metrology.active_unit,
+            &compatibility.metrology.unit_display[
+                compatibility.metrology.active_unit]) ||
+#endif
         !CalibrationLegacyProjection_Update(&compatibility.calibration,
             compatibility.metrology.active_unit,
             &compatibility.metrology.unit_display[
