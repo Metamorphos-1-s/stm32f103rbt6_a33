@@ -254,12 +254,18 @@ static void App_10msTask(void *context)
 
   if (MenuController_TakeCalibrationRequest())
   {
-    if (PersistenceManager_IsBusy())
+    CalibrationSessionSnapshot calibration;
+    bool calibration_busy =
+        CommandService_GetCalibrationSnapshot(&calibration) &&
+        calibration.active;
+
+    if (PersistenceManager_IsBusy() || calibration_busy)
     {
-      (void)MenuController_Enter();
+      App_ShowCommandResult(COMMAND_RESULT_BUSY, false);
     }
     else if (CalibrationController_Begin())
     {
+      MenuController_Cancel();
       (void)SystemContext_SetState(APP_STATE_CALIBRATION, BSP_TimeNowMs());
     }
     else

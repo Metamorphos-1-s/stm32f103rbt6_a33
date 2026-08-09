@@ -465,6 +465,29 @@ static void TestDisplayControllerAndMenu(void)
     MenuController_Process10ms();
     CHECK4(!MenuController_IsActive());
     CHECK4(MenuController_TakeExitRequest());
+
+    MenuController_Init();
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 30200U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 30201U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 30202U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 30203U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_IsAdvanced());
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 30204U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_GetItem() == MENU_ITEM_CALIBRATION);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 30205U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_TakeCalibrationRequest());
+    CHECK4(MenuController_IsActive());
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, 30206U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(!MenuController_IsActive());
+    CHECK4(MenuController_TakeExitRequest());
 }
 
 static void Stage4A_LockDisplay(int32_t raw, uint32_t start_ms)
