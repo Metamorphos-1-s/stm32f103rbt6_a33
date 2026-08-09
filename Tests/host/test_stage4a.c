@@ -465,6 +465,29 @@ static void TestDisplayControllerAndMenu(void)
     MenuController_Process10ms();
     CHECK4(!MenuController_IsActive());
     CHECK4(MenuController_TakeExitRequest());
+
+    MenuController_Init();
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 30200U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 30201U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 30202U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 30203U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_IsAdvanced());
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 30204U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_GetItem() == MENU_ITEM_CALIBRATION);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 30205U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_TakeCalibrationRequest());
+    CHECK4(MenuController_IsActive());
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, 30206U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(!MenuController_IsActive());
+    CHECK4(MenuController_TakeExitRequest());
 }
 
 static void Stage4A_LockDisplay(int32_t raw, uint32_t start_ms)
@@ -978,8 +1001,156 @@ static void Stage4A_FeedCalibrationRaw(int32_t raw, uint32_t start_ms)
         sample.timestamp_ms = start_ms + (uint32_t)index * 100U;
         CHECK4(MetrologyManager_AcceptRawSample(&sample));
         TestMock_SetTimeMs(sample.timestamp_ms);
+        CommandService_Process(sample.timestamp_ms);
         CalibrationController_Process10ms();
     }
+}
+
+static void TestTransportNeutralCalibrationSession(void)
+{
+    DeviceConfig config;
+    CalibrationConfig original;
+    CalibrationSessionSnapshot snapshot;
+    CommandResponse response;
+    uint16_t session_id;
+    uint32_t wrap_start = 0xFFFFFF00UL;
+
+    Stage4A_InitRuntime(&config, true);
+    original = SystemContext_Get()->config.calibration;
+    CHECK4(CommandService_GetCalibrationSnapshot(&snapshot));
+    CHECK4(!snapshot.active && snapshot.active_calibration_valid &&
+           (snapshot.locked_unit == config.metrology.active_unit) &&
+           (snapshot.locked_decimal_places ==
+            config.metrology.unit_display[config.metrology.active_unit].
+                decimal_places) &&
+           (snapshot.locked_division_digit ==
+            config.metrology.unit_display[config.metrology.active_unit].
+                division_digit) &&
+           (snapshot.locked_capacity_ug == config.metrology.capacity_ug));
+    CHECK4(Stage4A_Command(COMMAND_CALIBRATION_BEGIN, COMMAND_SOURCE_BLE,
+        0, 0, &response) == COMMAND_RESULT_OK);
+    session_id = (uint16_t)response.value0;
+    CHECK4(session_id != 0U);
+    CHECK4(CommandService_GetCalibrationSnapshot(&snapshot));
+    CHECK4(snapshot.active && (snapshot.owner == CAL_OWNER_BLE) &&
+           (snapshot.state == CAL_WORKFLOW_WAIT_ZERO_STABLE));
+    CHECK4(!snapshot.persistent_dirty);
+    CHECK4(Stage4A_Command(COMMAND_CALIBRATION_BEGIN,
+        COMMAND_SOURCE_LOCAL_KEY, 0, 0, &response) == COMMAND_RESULT_BUSY);
+    CHECK4(Stage4A_Command(COMMAND_BEGIN_CONFIG_EDIT,
+        COMMAND_SOURCE_MODBUS, 0, 0, &response) == COMMAND_RESULT_BUSY);
+    CHECK4(Stage4A_Command(COMMAND_SET_DISPLAY_UNIT,
+        COMMAND_SOURCE_LOCAL_KEY, MASS_UNIT_G, 0, &response) ==
+        COMMAND_RESULT_BUSY);
+    CHECK4(Stage4A_CommandEx(COMMAND_SET_CONFIG_MASS_FIELD,
+        COMMAND_SOURCE_BLE, CONFIG_MASS_FIELD_CAPACITY, 0, 0U,
+        INT64_C(3000000000), &response) == COMMAND_RESULT_BUSY);
+    CHECK4(Stage4A_CommandEx(COMMAND_SET_UNIT_DISPLAY_CONFIG,
+        COMMAND_SOURCE_BLE, MASS_UNIT_KG, 2, 1U, 0, &response) ==
+        COMMAND_RESULT_BUSY);
+    CHECK4(Stage4A_CommandEx(COMMAND_SET_PROFILE_FIELD,
+        COMMAND_SOURCE_BLE, WEIGHING_PROFILE_HIGH_PRECISION,
+        CONFIG_PROFILE_FIELD_FILTER_MODE, 0U, FILTER_MODE_IIR,
+        &response) == COMMAND_RESULT_BUSY);
+    CHECK4(Stage4A_CommandEx(COMMAND_SET_PROFILE_FIELD,
+        COMMAND_SOURCE_BLE, WEIGHING_PROFILE_HIGH_PRECISION,
+        CONFIG_PROFILE_FIELD_STABILITY_HOLD_MS, 0U, 1000,
+        &response) == COMMAND_RESULT_BUSY);
+    CHECK4(Stage4A_Command(COMMAND_GET_CONFIG, COMMAND_SOURCE_MODBUS,
+        0, 0, &response) == COMMAND_RESULT_OK);
+    CHECK4(Stage4A_CommandEx(COMMAND_CALIBRATION_CAPTURE_ZERO,
+        COMMAND_SOURCE_BLE, 0, 0, session_id, 0, &response) ==
+        COMMAND_RESULT_NOT_STABLE);
+
+    Stage4A_FeedCalibrationRaw(100000, 100U);
+    CHECK4(CommandService_GetCalibrationSnapshot(&snapshot));
+    CHECK4(snapshot.state == CAL_WORKFLOW_ZERO_READY && snapshot.stable);
+    CHECK4(Stage4A_CommandEx(COMMAND_CALIBRATION_CAPTURE_ZERO,
+        COMMAND_SOURCE_BLE, 0, 0, (uint16_t)(session_id + 1U), 0,
+        &response) == COMMAND_RESULT_INVALID_STATE);
+    CHECK4(Stage4A_CommandEx(COMMAND_CALIBRATION_CAPTURE_ZERO,
+        COMMAND_SOURCE_MODBUS, 0, 0, 0U, 0, &response) ==
+        COMMAND_RESULT_BUSY);
+    CHECK4(Stage4A_CommandEx(COMMAND_CALIBRATION_CAPTURE_ZERO,
+        COMMAND_SOURCE_BLE, 0, 0, session_id, 0, &response) ==
+        COMMAND_RESULT_OK);
+    CHECK4(Stage4A_CommandEx(COMMAND_CALIBRATION_CAPTURE_SPAN,
+        COMMAND_SOURCE_BLE, 0, 0, session_id, 0, &response) ==
+        COMMAND_RESULT_INVALID_STATE);
+    CHECK4(Stage4A_CommandEx(COMMAND_CALIBRATION_SET_SPAN_MASS,
+        COMMAND_SOURCE_BLE, 0, 0, session_id, 0, &response) ==
+        COMMAND_RESULT_INVALID_ARGUMENT);
+    CHECK4(Stage4A_CommandEx(COMMAND_CALIBRATION_SET_SPAN_MASS,
+        COMMAND_SOURCE_BLE, 0, 0, session_id, -1, &response) ==
+        COMMAND_RESULT_INVALID_ARGUMENT);
+    CHECK4(Stage4A_CommandEx(COMMAND_CALIBRATION_SET_SPAN_MASS,
+        COMMAND_SOURCE_BLE, 0, 0, session_id,
+        config.metrology.capacity_ug + 1, &response) ==
+        COMMAND_RESULT_INVALID_ARGUMENT);
+    CHECK4(Stage4A_CommandEx(COMMAND_CALIBRATION_SET_SPAN_MASS,
+        COMMAND_SOURCE_BLE, 0, 0, session_id, INT64_C(500000000),
+        &response) == COMMAND_RESULT_OK);
+    CHECK4(Stage4A_CommandEx(COMMAND_CALIBRATION_CAPTURE_SPAN,
+        COMMAND_SOURCE_BLE, 0, 0, session_id, 0, &response) ==
+        COMMAND_RESULT_NOT_STABLE);
+    Stage4A_FeedCalibrationRaw(600000, 2000U);
+    CHECK4(CommandService_GetCalibrationSnapshot(&snapshot));
+    CHECK4(snapshot.state == CAL_WORKFLOW_LOAD_READY && snapshot.stable);
+    CHECK4(Stage4A_CommandEx(COMMAND_CALIBRATION_CAPTURE_SPAN,
+        COMMAND_SOURCE_BLE, 0, 0, session_id, 0, &response) ==
+        COMMAND_RESULT_OK);
+    CHECK4(CommandService_GetCalibrationSnapshot(&snapshot));
+    CHECK4(snapshot.state == CAL_WORKFLOW_RESULT_READY &&
+           snapshot.candidate_valid && snapshot.result_valid);
+    CHECK4(Stage4A_CommandEx(COMMAND_CALIBRATION_COMMIT,
+        COMMAND_SOURCE_MODBUS, 0, 0, 0U, 0, &response) ==
+        COMMAND_RESULT_BUSY);
+    CHECK4(Stage4A_CommandEx(COMMAND_CALIBRATION_COMMIT,
+        COMMAND_SOURCE_BLE, 0, 0, session_id, 0, &response) ==
+        COMMAND_RESULT_OK);
+    CHECK4(CommandService_GetCalibrationSnapshot(&snapshot));
+    CHECK4(!snapshot.active && (snapshot.owner == CAL_OWNER_NONE) &&
+           (snapshot.state == CAL_WORKFLOW_APPLIED) &&
+           snapshot.persistent_dirty);
+    CHECK4(SystemContext_Get()->config.calibration.raw_span == 600000);
+    CHECK4(original.raw_span !=
+           SystemContext_Get()->config.calibration.raw_span);
+
+    Stage4A_InitRuntime(&config, true);
+    original = SystemContext_Get()->config.calibration;
+    CHECK4(Stage4A_Command(COMMAND_CALIBRATION_BEGIN, COMMAND_SOURCE_BLE,
+        0, 0, &response) == COMMAND_RESULT_OK);
+    session_id = (uint16_t)response.value0;
+    Stage4A_FeedCalibrationRaw(100000, 100U);
+    CHECK4(Stage4A_CommandEx(COMMAND_CALIBRATION_CAPTURE_ZERO,
+        COMMAND_SOURCE_BLE, 0, 0, session_id, 0, &response) ==
+        COMMAND_RESULT_OK);
+    CHECK4(Stage4A_CommandEx(COMMAND_CALIBRATION_CANCEL,
+        COMMAND_SOURCE_BLE, 0, 0, session_id, 0, &response) ==
+        COMMAND_RESULT_OK);
+    CHECK4(CommandService_GetCalibrationSnapshot(&snapshot));
+    CHECK4(!snapshot.active && (snapshot.owner == CAL_OWNER_NONE) &&
+           (snapshot.state == CAL_WORKFLOW_IDLE));
+    CHECK4(memcmp(&original, &SystemContext_Get()->config.calibration,
+                  sizeof(original)) == 0);
+    CHECK4(!SystemContext_Get()->runtime.config_dirty);
+
+    Stage4A_InitRuntime(&config, true);
+    original = SystemContext_Get()->config.calibration;
+    CommandService_Process(wrap_start);
+    CHECK4(Stage4A_Command(COMMAND_CALIBRATION_BEGIN, COMMAND_SOURCE_BLE,
+        0, 0, &response) == COMMAND_RESULT_OK);
+    CommandService_Process(wrap_start +
+        CALIBRATION_SESSION_TIMEOUT_MS - 1U);
+    CHECK4(CommandService_GetCalibrationSnapshot(&snapshot));
+    CHECK4(snapshot.active && (snapshot.owner == CAL_OWNER_BLE));
+    CommandService_Process(wrap_start + CALIBRATION_SESSION_TIMEOUT_MS);
+    CHECK4(CommandService_GetCalibrationSnapshot(&snapshot));
+    CHECK4(!snapshot.active && (snapshot.owner == CAL_OWNER_NONE) &&
+           (snapshot.state == CAL_WORKFLOW_IDLE));
+    CHECK4(memcmp(&original, &SystemContext_Get()->config.calibration,
+                  sizeof(original)) == 0);
+    CHECK4(!SystemContext_Get()->runtime.config_dirty);
 }
 
 static void TestCalibrationControllerDirection(bool reverse)
@@ -1099,6 +1270,7 @@ unsigned int Stage4A_RunTests(void)
     TestUnitMenuEdit();
     TestRawCalibrationStability();
     TestSelfTest();
+    TestTransportNeutralCalibrationSession();
     TestCalibrationControllerDirection(false);
     TestCalibrationControllerDirection(true);
     TestCalibrationCancelAndGuards();

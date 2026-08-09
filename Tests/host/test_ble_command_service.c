@@ -23,6 +23,8 @@ static CommandResult s_command_result;
 static bool s_priority_accept;
 static SystemContext s_context;
 static ConfigEditState s_edit_state;
+static CalibrationSessionSnapshot s_calibration_snapshot;
+static CommandRequest s_last_command_request;
 
 bool BleTransport_Read(uint8_t *data, uint16_t capacity, uint16_t *length)
 {
@@ -54,11 +56,29 @@ CommandResult CommandService_Execute(const CommandRequest *request,
                                      CommandResponse *response)
 {
     ++s_execute_count;
+    s_last_command_request = *request;
     (void)memset(response, 0, sizeof(*response));
     response->result = s_command_result;
+    if ((request->id == COMMAND_CALIBRATION_BEGIN) &&
+        (s_command_result == COMMAND_RESULT_OK))
+    {
+        s_calibration_snapshot.active = true;
+        s_calibration_snapshot.state = CAL_WORKFLOW_WAIT_ZERO_STABLE;
+        s_calibration_snapshot.owner = CAL_OWNER_BLE;
+        s_calibration_snapshot.session_id = 7U;
+        response->value0 = 7;
+    }
     if (request->id == COMMAND_REQUEST_CONFIG_SAVE)
         response->result = s_command_result;
     return response->result;
+}
+
+bool CommandService_GetCalibrationSnapshot(
+    CalibrationSessionSnapshot *snapshot)
+{
+    if (snapshot == NULL) return false;
+    *snapshot = s_calibration_snapshot;
+    return true;
 }
 
 static void FeedRequest(uint16_t transaction_id, uint8_t operation,
@@ -83,6 +103,12 @@ static void Reset(void)
     (void)memset(s_rx, 0, sizeof(s_rx));
     (void)memset(s_last_response, 0, sizeof(s_last_response));
     (void)memset(&s_context, 0, sizeof(s_context));
+    (void)memset(&s_calibration_snapshot, 0,
+                 sizeof(s_calibration_snapshot));
+    (void)memset(&s_last_command_request, 0, sizeof(s_last_command_request));
+    s_calibration_snapshot.state = CAL_WORKFLOW_IDLE;
+    s_calibration_snapshot.owner = CAL_OWNER_NONE;
+    s_calibration_snapshot.active_calibration_valid = true;
     s_rx_length = 0U;
     s_rx_offset = 0U;
     s_last_response_length = 0U;
@@ -177,12 +203,56 @@ static void TestQueueRetry(void)
     assert(s_execute_count == 1U && s_response_count == 1U);
 }
 
+static void TestCalibrationStateAndDispatcher(void)
+{
+    uint8_t session[2] = {7U, 0U};
+    uint8_t mass[10] = {7U, 0U, 0x00U, 0x65U, 0xCDU,
+                        0x1DU, 0U, 0U, 0U, 0U};
+    uint32_t before;
+
+    Reset();
+    FeedRequest(50U, BLE_OPERATION_GET_CALIBRATION_STATE, NULL, 0U);
+    BleCommandService_Process(50U);
+    assert(s_execute_count == 0U && s_last_response_length == 66U);
+    assert(ResponseResult() == BLE_COMMAND_RESULT_OK);
+    assert(s_last_response[20] == CAL_WORKFLOW_IDLE);
+    assert(s_last_response[21] == CAL_OWNER_NONE);
+    assert((s_last_response[27] & 0x80U) != 0U);
+
+    FeedRequest(51U, BLE_OPERATION_BEGIN_CALIBRATION, NULL, 0U);
+    BleCommandService_Process(51U);
+    assert(s_execute_count == 1U);
+    assert(s_last_command_request.id == COMMAND_CALIBRATION_BEGIN);
+    assert(s_last_response[20] == CAL_WORKFLOW_WAIT_ZERO_STABLE);
+    assert(s_last_response[21] == CAL_OWNER_BLE);
+    assert(s_last_response[22] == 7U && s_last_response[23] == 0U);
+
+    FeedRequest(52U, BLE_OPERATION_SET_CALIBRATION_MASS, mass,
+                (uint16_t)sizeof(mass));
+    BleCommandService_Process(52U);
+    assert(s_last_command_request.id == COMMAND_CALIBRATION_SET_SPAN_MASS);
+    assert(s_last_command_request.flags == 7U);
+    assert(s_last_command_request.value64 == INT64_C(500000000));
+
+    FeedRequest(53U, BLE_OPERATION_CAPTURE_CALIBRATION_ZERO, session,
+                (uint16_t)sizeof(session));
+    BleCommandService_Process(53U);
+    assert(s_last_command_request.id == COMMAND_CALIBRATION_CAPTURE_ZERO);
+    assert(s_last_command_request.flags == 7U);
+    before = s_execute_count;
+    FeedRequest(53U, BLE_OPERATION_CAPTURE_CALIBRATION_ZERO, session,
+                (uint16_t)sizeof(session));
+    BleCommandService_Process(54U);
+    assert(s_execute_count == before);
+}
+
 int main(void)
 {
     TestDeviceInfoVersion();
     TestDuplicateAndConflict();
     TestSaveCompletion();
     TestQueueRetry();
+    TestCalibrationStateAndDispatcher();
     puts("BLE command service tests passed");
     return 0;
 }

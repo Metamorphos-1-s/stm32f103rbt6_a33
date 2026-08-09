@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Read-only BLE telemetry and command concurrency soak test."""
+"""BLE telemetry and non-persistent command concurrency soak test."""
 
 import argparse
 import asyncio
 import csv
 import json
+import struct
 import time
 from pathlib import Path
 
@@ -24,6 +25,9 @@ def parse_args():
     parser.add_argument("--command-interval-s", type=float, default=25.0)
     parser.add_argument("--response-timeout-s", type=float, default=3.0)
     parser.add_argument("--retries", type=int, default=2)
+    parser.add_argument(
+        "--include-calibration-sessions", action="store_true",
+        help="periodically run BEGIN followed immediately by CANCEL; never captures, applies, or saves")
     parser.add_argument("--output-dir", required=True)
     return parser.parse_args()
 
@@ -56,6 +60,10 @@ async def run(args):
         "command_responses": 0,
         "device_info_responses": 0,
         "get_config_responses": 0,
+        "cal_status_responses": 0,
+        "cal_begin_responses": 0,
+        "cal_cancel_responses": 0,
+        "calibration_sessions_completed": 0,
         "command_timeouts": 0,
         "command_retries": 0,
         "command_result_errors": 0,
@@ -83,9 +91,17 @@ async def run(args):
             else:
                 stats["unknown_frames"] += 1
 
-    async def execute_read(client, transaction_id, operation):
+    operation_names = {
+        OPERATIONS["device-info"]: "device-info",
+        OPERATIONS["get-config"]: "get-config",
+        OPERATIONS["cal-status"]: "cal-status",
+        OPERATIONS["cal-begin"]: "cal-begin",
+        OPERATIONS["cal-cancel"]: "cal-cancel",
+    }
+
+    async def execute_command(client, transaction_id, operation, data=b""):
         request = encode_request(
-            transaction_id, operation, b"", transaction_id,
+            transaction_id, operation, data, transaction_id,
             int(time.monotonic() * 1000) & 0xFFFFFFFF)
         stats["command_requests"] += 1
         for attempt in range(args.retries + 1):
@@ -106,11 +122,18 @@ async def run(args):
                 stats["command_responses"] += 1
                 if response["result"] != 0:
                     stats["command_result_errors"] += 1
-                name = "device-info" if operation == OPERATIONS["device-info"] else "get-config"
+                name = operation_names[operation]
                 if operation == OPERATIONS["device-info"]:
                     stats["device_info_responses"] += 1
-                else:
+                elif operation == OPERATIONS["get-config"]:
                     stats["get_config_responses"] += 1
+                elif operation == OPERATIONS["cal-status"]:
+                    stats["cal_status_responses"] += 1
+                elif operation == OPERATIONS["cal-begin"]:
+                    stats["cal_begin_responses"] += 1
+                elif operation == OPERATIONS["cal-cancel"]:
+                    stats["cal_cancel_responses"] += 1
+                response_data = decode_operation_data(operation, response["data"])
                 entry = {
                     "elapsed_s": round(time.monotonic() - started, 6),
                     "transaction_id": transaction_id,
@@ -118,11 +141,12 @@ async def run(args):
                     "attempt": attempt + 1,
                     "result": response["result"],
                     "detail_code": response["detail_code"],
-                    "response_data": decode_operation_data(operation, response["data"]),
+                    "response_data": response_data,
                 }
                 log_command(entry)
                 print("COMMAND " + json.dumps(entry, separators=(",", ":")), flush=True)
-                return response["result"] == 0
+                response["response_data"] = response_data
+                return response
         stats["command_timeouts"] += 1
         log_command({
             "elapsed_s": round(time.monotonic() - started, 6),
@@ -130,7 +154,7 @@ async def run(args):
             "operation": operation,
             "timeout": True,
         })
-        return False
+        return None
 
     device = await BleakScanner.find_device_by_address(args.address, timeout=15.0)
     if device is None:
@@ -146,11 +170,29 @@ async def run(args):
         transaction_id = 0x6000
         command_index = 0
         while time.monotonic() < deadline:
-            operation = (OPERATIONS["device-info"] if command_index % 2 == 0
-                         else OPERATIONS["get-config"])
-            await execute_read(client, transaction_id, operation)
+            run_calibration_session = (
+                args.include_calibration_sessions and
+                (command_index % 6 == 3))
+            if run_calibration_session:
+                begin = await execute_command(
+                    client, transaction_id, OPERATIONS["cal-begin"])
+                transaction_id = (transaction_id + 1) & 0xFFFF
+                if begin is not None and begin["result"] == 0:
+                    session_id = begin["response_data"]["session_id"]
+                    cancel = await execute_command(
+                        client, transaction_id, OPERATIONS["cal-cancel"],
+                        struct.pack("<H", session_id))
+                    transaction_id = (transaction_id + 1) & 0xFFFF
+                    if cancel is not None and cancel["result"] == 0:
+                        stats["calibration_sessions_completed"] += 1
+            else:
+                read_operations = (
+                    OPERATIONS["device-info"], OPERATIONS["get-config"],
+                    OPERATIONS["cal-status"])
+                operation = read_operations[command_index % len(read_operations)]
+                await execute_command(client, transaction_id, operation)
+                transaction_id = (transaction_id + 1) & 0xFFFF
             command_index += 1
-            transaction_id = (transaction_id + 1) & 0xFFFF
             delay = min(args.command_interval_s, deadline - time.monotonic())
             if delay > 0:
                 await asyncio.sleep(delay)
@@ -190,6 +232,8 @@ async def run(args):
         stats["stream_crc_errors"] == 0 and
         stats["unknown_frames"] == 0 and
         stats["partial_bytes"] == 0 and
+        (not args.include_calibration_sessions or
+         stats["calibration_sessions_completed"] > 0) and
         len(fast) >= int(args.duration_s * 4.5) and
         len(slow) >= int(args.duration_s * 0.8)
     )

@@ -26,6 +26,7 @@ static CommandResult CalibrationController_Command(CommandId id, int32_t value)
     request.id = id;
     request.source = COMMAND_SOURCE_LOCAL_KEY;
     request.value0 = value;
+    request.flags = s_session.session_id;
     return CommandService_Execute(&request, &response);
 }
 
@@ -37,7 +38,22 @@ static CommandResult CalibrationController_CommandMass(CommandId id,
     request.id = id;
     request.source = COMMAND_SOURCE_LOCAL_KEY;
     request.value64 = value;
+    request.flags = s_session.session_id;
     return CommandService_Execute(&request, &response);
+}
+
+static CommandResult CalibrationController_BeginSession(uint16_t *session_id)
+{
+    CommandRequest request = {0};
+    CommandResponse response;
+    CommandResult result;
+
+    request.id = COMMAND_CALIBRATION_BEGIN;
+    request.source = COMMAND_SOURCE_LOCAL_KEY;
+    result = CommandService_Execute(&request, &response);
+    if ((result == COMMAND_RESULT_OK) && (session_id != NULL))
+        *session_id = (uint16_t)response.value0;
+    return result;
 }
 
 static void CalibrationController_ShowCode(DisplayCode code)
@@ -85,10 +101,11 @@ bool CalibrationController_Begin(void)
     DisplayWeightValue initial;
     MassValueUg initial_mass;
     MassValueUg quantized_mass;
+    uint16_t session_id;
 
     if (s_session.active || (context == NULL) ||
         (SystemContext_GetState() != APP_STATE_MENU) ||
-        (CalibrationController_Command(COMMAND_CALIBRATION_BEGIN, 0) !=
+        (CalibrationController_BeginSession(&session_id) !=
          COMMAND_RESULT_OK))
     {
         return false;
@@ -97,10 +114,16 @@ bool CalibrationController_Begin(void)
             CAL_RAW_WINDOW_SIZE, CAL_RAW_ENTER_THRESHOLD_COUNTS,
             CAL_RAW_STABLE_HOLD_MS))
     {
-        (void)CalibrationController_Command(COMMAND_CALIBRATION_CANCEL, 0);
+        CommandRequest cancel = {0};
+        CommandResponse response;
+        cancel.id = COMMAND_CALIBRATION_CANCEL;
+        cancel.source = COMMAND_SOURCE_LOCAL_KEY;
+        cancel.flags = session_id;
+        (void)CommandService_Execute(&cancel, &response);
         return false;
     }
     (void)memset(&s_session, 0, sizeof(s_session));
+    s_session.session_id = session_id;
     display = &context->config.metrology.unit_display[
         context->config.metrology.active_unit];
     initial_mass = (context->config.calibration.calibration_valid &&
@@ -139,15 +162,28 @@ bool CalibrationController_Begin(void)
 static void CalibrationController_CaptureStable(bool zero_capture,
                                                 const WeightSnapshot *snapshot)
 {
+    CalibrationSessionSnapshot calibration;
+    const CalibrationConfig *candidate;
+    CommandResult result;
     int32_t average;
-    const SystemContext *context = SystemContext_Get();
 
-    if (!RawCalibrationStability_GetAverage(&s_raw_stability, &average))
+    if (!RawCalibrationStability_GetAverage(&s_raw_stability,
+            &average))
         return;
+    (void)average;
     if (zero_capture)
     {
-        s_session.captured_raw_zero = average;
-        s_session.zero_sample_sequence = snapshot->sample_sequence;
+        result = CalibrationController_Command(
+            COMMAND_CALIBRATION_CAPTURE_ZERO, 0);
+        if ((result != COMMAND_RESULT_OK) ||
+            !CommandService_GetCalibrationSnapshot(&calibration))
+        {
+            CalibrationController_SetState(CAL_STATE_ERROR,
+                                           DISPLAY_CODE_ERROR);
+            return;
+        }
+        s_session.captured_raw_zero = calibration.zero_raw;
+        s_session.zero_sample_sequence = calibration.sample_sequence;
         CalibrationController_SetState(CAL_STATE_CAPTURE_ZERO,
                                        DISPLAY_CODE_CAL_ZERO);
         CalibrationController_SetState(CAL_STATE_INPUT_SPAN_WEIGHT,
@@ -156,21 +192,27 @@ static void CalibrationController_CaptureStable(bool zero_capture,
     }
     else
     {
-        s_session.captured_raw_span = average;
-        s_session.span_sample_sequence = snapshot->sample_sequence;
-        s_session.result = CalibrationModel_BuildMass(
-            s_session.captured_raw_zero,
-            s_session.captured_raw_span, s_session.span_mass_ug,
-            (context != NULL) ?
-                context->config.calibration.calibration_sequence + 1U : 1U,
-            &s_session.candidate);
-        if (s_session.result == CALIBRATION_RESULT_OK)
+        result = CalibrationController_Command(
+            COMMAND_CALIBRATION_CAPTURE_SPAN, 0);
+        candidate = CommandService_GetCalibrationCandidate();
+        if ((result == COMMAND_RESULT_OK) && (candidate != NULL) &&
+            CommandService_GetCalibrationSnapshot(&calibration))
+        {
+            s_session.captured_raw_span = calibration.load_raw;
+            s_session.span_sample_sequence = calibration.sample_sequence;
+            s_session.candidate = *candidate;
+            s_session.result = CALIBRATION_RESULT_OK;
             CalibrationController_SetState(CAL_STATE_PREVIEW,
                                            DISPLAY_CODE_DONE);
+        }
         else
+        {
+            s_session.result = CALIBRATION_RESULT_INCONSISTENT;
             CalibrationController_SetState(CAL_STATE_ERROR,
                                            DISPLAY_CODE_ERROR);
+        }
     }
+    (void)snapshot;
 }
 
 void CalibrationController_Process10ms(void)
@@ -269,8 +311,16 @@ bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
             else if ((event->key == KEY_ID_FUNCTION) &&
                      (event->type == KEY_EVENT_SHORT) &&
                      (s_session.span_mass_ug > 0))
-                CalibrationController_SetState(CAL_STATE_PROMPT_LOAD_WEIGHT,
-                                               DISPLAY_CODE_LOAD);
+            {
+                if (CalibrationController_CommandMass(
+                        COMMAND_CALIBRATION_SET_SPAN_MASS,
+                        s_session.span_mass_ug) == COMMAND_RESULT_OK)
+                    CalibrationController_SetState(
+                        CAL_STATE_PROMPT_LOAD_WEIGHT, DISPLAY_CODE_LOAD);
+                else
+                    CalibrationController_SetState(CAL_STATE_ERROR,
+                                                   DISPLAY_CODE_ERROR);
+            }
             break;
         case CAL_STATE_PROMPT_LOAD_WEIGHT:
             if ((event->key == KEY_ID_FUNCTION) &&
@@ -298,19 +348,7 @@ bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
                 CalibrationController_SetState(CAL_STATE_COMMIT_RAM,
                                                DISPLAY_CODE_RAM_SAVE);
                 result = CalibrationController_Command(
-                    COMMAND_CALIBRATION_CAPTURE_ZERO,
-                    s_session.captured_raw_zero);
-                if (result == COMMAND_RESULT_OK)
-                    result = CalibrationController_CommandMass(
-                        COMMAND_CALIBRATION_SET_SPAN_MASS,
-                        s_session.span_mass_ug);
-                if (result == COMMAND_RESULT_OK)
-                    result = CalibrationController_Command(
-                        COMMAND_CALIBRATION_CAPTURE_SPAN,
-                        s_session.captured_raw_span);
-                if (result == COMMAND_RESULT_OK)
-                    result = CalibrationController_Command(
-                        COMMAND_CALIBRATION_COMMIT, 0);
+                    COMMAND_CALIBRATION_COMMIT, 0);
                 if (result == COMMAND_RESULT_OK)
                 {
                     s_session.active = false;

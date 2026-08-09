@@ -7,15 +7,15 @@ from pathlib import Path
 
 # Addresses for the current Release link map. Keep these synchronized with
 # build/Release/stm32f103rbt6_a33.map when the firmware layout changes.
-TX_LAST_ERROR = 0x20000FF3
-TX_STATE = 0x20001008
-TRANSPORT_RECOVERY_FAILURES = 0x20001009
-TRANSPORT_RECEIVE_ERROR = 0x2000100C
-UART_STATS = 0x2000107C
-FRAMER_STATS = 0x20001888
-FRAMER_STATE = 0x200019BC
-SERVER_STATS = 0x20001CDC
-SERVER_STATE = 0x20001D24
+TX_LAST_ERROR = 0x2000103B
+TX_STATE = 0x20001050
+TRANSPORT_RECOVERY_FAILURES = 0x20001051
+TRANSPORT_RECEIVE_ERROR = 0x20001054
+UART_STATS = 0x20001124
+FRAMER_STATS = 0x20001A00
+FRAMER_STATE = 0x20001B34
+SERVER_STATS = 0x20001E54
+SERVER_STATE = 0x20001E9C
 
 
 def _slice(data, base, address, size):
@@ -27,10 +27,11 @@ def _slice(data, base, address, size):
 
 
 def parse(data, base_address):
-    uart_values = struct.unpack("<15I2H", _slice(data, base_address, UART_STATS, 64))
+    uart_values = struct.unpack("<16I2H", _slice(data, base_address, UART_STATS, 68))
     uart_names = ["rx_byte_count", "rx_idle_count", "rx_half_count",
         "rx_wrap_count", "rx_dma_error_count", "rx_overrun_count",
         "rx_wrap_race_recovery_count",
+        "rx_idle_queue_overflow_count",
         "uart_parity_error_count", "uart_frame_error_count",
         "uart_noise_error_count", "uart_overrun_error_count",
         "tx_request_count", "tx_complete_count", "tx_dma_error_count",

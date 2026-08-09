@@ -584,7 +584,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         }
         else if (s_item == MENU_ITEM_CALIBRATION)
         {
-            s_active = false; s_calibration_request = true;
+            s_calibration_request = true;
         }
         else if (s_item == MENU_ITEM_EXIT)
         {

@@ -179,6 +179,12 @@ static void TestFramerAndRs485(void)
     CHECK(length==4U && memcmp(output,frame,4U)==0);
 
     for(index=0U; index<4U; ++index) ModbusRtuFramer_OnByte(frame[index]);
+    Stage5B_SetNowUs(10000U);
+    ModbusRtuFramer_OnIdleEvent(0U, 0U);
+    CHECK(ModbusRtuFramer_TryGetFrame(output,sizeof(output),&length));
+    CHECK(length==4U && memcmp(output,frame,4U)==0);
+
+    for(index=0U; index<4U; ++index) ModbusRtuFramer_OnByte(frame[index]);
     ModbusRtuFramer_OnIdleEvent(0U,0U);
     ModbusRtuFramer_OnTimerEvent();
     ModbusRtuFramer_OnByte(0x55U);
