@@ -132,6 +132,11 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     UI/menu_controller/menu_controller.c
 )
 
+if(NOT A33_ENABLE_BOARD_DIAGNOSTICS)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        Services/alarm_output_manager/alarm_output_manager.c)
+endif()
+
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     App
@@ -158,6 +163,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Services/ble_connection_manager
     Services/ble_telemetry_service
     Services/ble_command_service
+    Services/alarm_output_manager
     Services/config_store
     Services/crc32
     Services/config_edit

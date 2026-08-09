@@ -33,6 +33,10 @@
 #include "ble_telemetry_service.h"
 #include "ble_command_service.h"
 #include "stage5c_ble_diagnostics.h"
+#if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
+#include "alarm_output_manager.h"
+#include "limit_checker.h"
+#endif
 
 #include <stddef.h>
 #include <stdint.h>
@@ -50,10 +54,23 @@ static void App_PublishRawMeasurement(void);
 static void App_ProcessKeyEvent(const KeyEvent *event);
 static CommandResult App_ExecuteLocalCommand(CommandId id, int32_t value0);
 static void App_ShowCommandResult(CommandResult result, bool tare_action);
+#if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
+static void App_UpdateAlarmOutputs(uint32_t now_ms);
+#endif
 
 static bool s_device_manager_init_attempted;
 static bool s_fault_entry_applied;
 static uint32_t s_last_published_raw_count;
+#if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
+static AlarmOutputManager s_alarm_output_manager;
+static LimitChecker s_limit_checker;
+static uint32_t s_alarm_last_sample_sequence;
+static uint32_t s_alarm_last_config_revision;
+static AppState s_alarm_last_app_state;
+static bool s_alarm_last_weight_invalid;
+static bool s_alarm_runtime_active;
+static bool s_alarm_has_input;
+#endif
 
 bool App_Init(void)
 {
@@ -85,6 +102,16 @@ bool App_Init(void)
   s_device_manager_init_attempted = false;
   s_fault_entry_applied = false;
   s_last_published_raw_count = 0U;
+#if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
+  LimitChecker_Init(&s_limit_checker);
+  AlarmOutputManager_Init(&s_alarm_output_manager);
+  s_alarm_last_sample_sequence = 0U;
+  s_alarm_last_config_revision = 0U;
+  s_alarm_last_app_state = APP_STATE_BOOT;
+  s_alarm_last_weight_invalid = false;
+  s_alarm_runtime_active = false;
+  s_alarm_has_input = false;
+#endif
 
   load_result = PersistenceManager_LoadStartup(&config, &runtime);
   storage_has_record = (load_result == CONFIG_LOAD_OK) ||
@@ -225,9 +252,22 @@ bool App_ExitDiagnostics(void)
 
 static void App_1msTask(void *context)
 {
+  const SystemContext *system_context;
+
   (void)context;
   BSP_BoardProcess();
   DeviceManager_Process1ms();
+#if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
+  system_context = SystemContext_Get();
+  if (s_alarm_runtime_active && (system_context != NULL))
+  {
+    AlarmOutputManager_Run(&s_alarm_output_manager,
+                           &system_context->config.alarm,
+                           BSP_TimeNowMs());
+  }
+#else
+  (void)system_context;
+#endif
 }
 
 static void App_10msTask(void *context)
@@ -292,10 +332,73 @@ static void App_20msTask(void *context)
   DeviceManager_Process20ms();
   App_PublishRawMeasurement();
   MetrologyManager_Process20ms();
+#if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
+  App_UpdateAlarmOutputs(BSP_TimeNowMs());
+#endif
   DisplayController_Process20ms();
   BleTelemetryService_Process(BSP_TimeNowMs());
   Stage3MetrologyDiagnostics_Update();
 }
+
+#if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
+static void App_UpdateAlarmOutputs(uint32_t now_ms)
+{
+  const SystemContext *context = SystemContext_Get();
+  const WeightSnapshot *snapshot;
+  CheckweighResult result;
+  AppState state;
+  uint32_t config_revision;
+  bool weight_invalid;
+
+  if (context == NULL)
+  {
+    return;
+  }
+
+  state = SystemContext_GetState();
+  if (!s_alarm_runtime_active)
+  {
+    if (state != APP_STATE_RUN)
+    {
+      return;
+    }
+    LimitChecker_Reset(&s_limit_checker);
+    AlarmOutputManager_Init(&s_alarm_output_manager);
+    s_alarm_runtime_active = true;
+    s_alarm_has_input = false;
+  }
+
+  snapshot = MetrologyManager_GetSnapshot();
+  if (snapshot == NULL)
+  {
+    return;
+  }
+
+  config_revision = SystemContext_GetConfigRevision();
+  weight_invalid = FaultManager_HasWeightInvalidFault();
+  if (s_alarm_has_input &&
+      (snapshot->sample_sequence == s_alarm_last_sample_sequence) &&
+      (config_revision == s_alarm_last_config_revision) &&
+      (state == s_alarm_last_app_state) &&
+      (weight_invalid == s_alarm_last_weight_invalid))
+  {
+    return;
+  }
+
+  if (LimitChecker_Process(&s_limit_checker, snapshot,
+                           &context->config.alarm, weight_invalid,
+                           state == APP_STATE_CALIBRATION, &result))
+  {
+    (void)AlarmOutputManager_Update(&s_alarm_output_manager, &result,
+                                    &context->config.alarm, now_ms);
+    s_alarm_last_sample_sequence = snapshot->sample_sequence;
+    s_alarm_last_config_revision = config_revision;
+    s_alarm_last_app_state = state;
+    s_alarm_last_weight_invalid = weight_invalid;
+    s_alarm_has_input = true;
+  }
+}
+#endif
 
 static void App_500msTask(void *context)
 {

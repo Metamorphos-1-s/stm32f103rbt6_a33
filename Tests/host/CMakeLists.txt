@@ -361,3 +361,18 @@ else()
     target_compile_options(checkweigh_tests PRIVATE -Wall -Wextra -Werror)
 endif()
 add_test(NAME checkweigh_logic COMMAND checkweigh_tests)
+
+add_executable(alarm_output_manager_tests
+    test_alarm_output_manager.c
+    ../../Services/alarm_output_manager/alarm_output_manager.c
+)
+target_include_directories(alarm_output_manager_tests PRIVATE
+    ../../Config ../../Domain/limit_checker ../../Domain/measurement
+    ../../Drivers/output_gpio ../../Services/alarm_output_manager)
+if(MSVC)
+    target_compile_options(alarm_output_manager_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(alarm_output_manager_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME alarm_output_manager_logic COMMAND alarm_output_manager_tests)
