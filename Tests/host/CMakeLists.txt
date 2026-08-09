@@ -17,6 +17,7 @@ add_executable(stage4a_host_tests
     ../../App/self_test_controller.c
     ../../App/system_context.c
     ../../App/weighing_profile_manager.c
+    ../../Config/alarm_config_validation.c
     ../../Config/default_config.c
     ../../Diagnostics/stage2b_board_diagnostics.c
     ../../Diagnostics/stage2b_display_font.c
@@ -123,6 +124,7 @@ add_executable(stage4b_storage_tests
     test_stage4b.c
     fake_flash_backend.c
     ../../App/system_context.c
+    ../../Config/alarm_config_validation.c
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/metrology_config_validator.c
@@ -153,6 +155,7 @@ add_executable(stage4br_persistence_tests
     fake_flash_backend.c
     ../../App/persistence_manager.c
     ../../App/system_context.c
+    ../../Config/alarm_config_validation.c
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/metrology_config_validator.c
@@ -185,6 +188,7 @@ add_test(NAME stage4br_persistence_logic COMMAND stage4br_persistence_tests)
 add_executable(stage5a_host_tests
     test_stage5a.c
     stage5a_model_adapters.c
+    ../../Config/alarm_config_validation.c
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/mass_math.c
@@ -341,3 +345,19 @@ else()
     target_compile_options(uart2_dma_recovery_tests PRIVATE -Wall -Wextra -Werror)
 endif()
 add_test(NAME uart2_dma_recovery_logic COMMAND uart2_dma_recovery_tests)
+
+add_executable(checkweigh_tests
+    test_checkweigh.c
+    ../../Config/alarm_config_validation.c
+    ../../Domain/limit_checker/limit_checker.c
+    ../../Services/fault_manager/fault_manager.c
+)
+target_include_directories(checkweigh_tests PRIVATE
+    ../../Config ../../Domain/limit_checker ../../Domain/measurement
+    ../../Services/fault_manager)
+if(MSVC)
+    target_compile_options(checkweigh_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(checkweigh_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME checkweigh_logic COMMAND checkweigh_tests)

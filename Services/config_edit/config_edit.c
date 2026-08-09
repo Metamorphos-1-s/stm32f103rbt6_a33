@@ -1,5 +1,6 @@
 #include "config_edit.h"
 
+#include "alarm_config_validation.h"
 #include "calibration_model.h"
 #include "metrology_config_validator.h"
 
@@ -171,6 +172,7 @@ bool ConfigEdit_Validate(void)
     }
     valid = (MetrologyConfig_ValidateProductHardware(&s_working.metrology) ==
              METROLOGY_CONFIG_OK) &&
+            AlarmConfig_Validate(&s_working.alarm) &&
             (s_working.display.brightness <= 7U) &&
             (!s_working.calibration.calibration_valid ||
              (CalibrationModel_Validate(&s_working.calibration) ==

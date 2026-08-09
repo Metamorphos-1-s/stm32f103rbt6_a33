@@ -1,5 +1,6 @@
 #include "config_application.h"
 
+#include "alarm_config_validation.h"
 #include "calibration_model.h"
 #include "display_controller.h"
 #include "fault_manager.h"
@@ -18,6 +19,7 @@ ConfigApplyResult ConfigApplication_Validate(const DeviceConfig *candidate,
     if ((candidate == NULL) || (context == NULL) ||
         (MetrologyConfig_ValidateProductHardware(&candidate->metrology) !=
          METROLOGY_CONFIG_OK) ||
+        !AlarmConfig_Validate(&candidate->alarm) ||
         (candidate->display.brightness > 7U) ||
         (candidate->calibration.calibration_valid &&
          (CalibrationModel_Validate(&candidate->calibration) !=

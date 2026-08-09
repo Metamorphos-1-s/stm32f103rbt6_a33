@@ -1,5 +1,6 @@
 #include "persistent_codec.h"
 
+#include "alarm_config_validation.h"
 #include "calibration_model.h"
 #include "default_config.h"
 #include "metrology_config_validator.h"
@@ -128,9 +129,8 @@ static bool PersistentCodec_ValidateCommon(const DeviceConfig *config)
          (config->communication.output_period_ms == 0U)) ||
         (config->bluetooth.uart_baud_rate == 0U) ||
         (config->bluetooth.protocol_version == 0U) ||
-        ((uint32_t)config->alarm.weight_source >= ALARM_WEIGHT_SOURCE_COUNT) ||
+        !AlarmConfig_Validate(&config->alarm) ||
         (config->alarm.lower_limit > config->alarm.upper_limit) ||
-        (config->alarm.lower_limit_ug > config->alarm.upper_limit_ug) ||
         (config->display.brightness > 7U) ||
         (config->display.default_weight_view >= (uint8_t)WEIGHT_VIEW_COUNT) ||
         (config->battery.divider_top_ohm == 0U) ||
@@ -142,10 +142,7 @@ static bool PersistentCodec_ValidateCommon(const DeviceConfig *config)
                  (int64_t)config->alarm.lower_limit;
     if (config->alarm.limit_function_enable &&
         ((alarm_span <= 0) ||
-         ((uint64_t)config->alarm.hysteresis > (uint64_t)alarm_span) ||
-         (config->alarm.hysteresis_ug < 0) ||
-         (config->alarm.hysteresis_ug >
-          (config->alarm.upper_limit_ug-config->alarm.lower_limit_ug))))
+         ((uint64_t)config->alarm.hysteresis > (uint64_t)alarm_span)))
     {
         return false;
     }

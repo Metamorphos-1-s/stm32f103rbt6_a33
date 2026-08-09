@@ -65,6 +65,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     BSP/bsp_time.c
     BSP/bsp_uart.c
     BSP/bsp_uart_dma.c
+    Config/alarm_config_validation.c
     Config/default_config.c
     Diagnostics/stage2a_driver_diagnostics.c
     Diagnostics/stage2b_board_diagnostics.c
@@ -76,6 +77,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Domain/calibration/calibration_model.c
     Domain/calibration/raw_calibration_stability.c
     Domain/filter/weight_filter.c
+    Domain/limit_checker/limit_checker.c
     Domain/measurement/metrology_config_validator.c
     Domain/measurement/display_conditioner.c
     Domain/measurement/metrology_legacy_projection.c
@@ -138,6 +140,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Diagnostics
     Domain/calibration
     Domain/filter
+    Domain/limit_checker
     Domain/measurement
     Domain/stability
     Domain/zero_tare
