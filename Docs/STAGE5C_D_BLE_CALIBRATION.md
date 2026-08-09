@@ -1,6 +1,6 @@
 # Stage 5C-D BLE Calibration Workflow
 
-Status: **SOFTWARE COMPLETE - NOT TESTED ON HARDWARE**
+Status: **COMPLETE - SOFTWARE AND HARDWARE VALIDATED**
 
 Stage 5C-C closed on `main` commit
 `04d498527e9aaa7434f20f72ef9dfd4fea3a3dd7`, tagged
@@ -119,13 +119,13 @@ local UI calibration directions and cancellation. The clean host gate passes
 12/12 CTest targets. Stage 5B Python regression passes 28/28 and Stage 5C Python
 regression passes 9/9, including BLE state decoding and frame recovery.
 
-Clean ARM builds pass with no new warnings:
+Final clean ARM builds pass with no new warnings:
 
-- Debug: 125,676 B Flash / 14,464 B RAM, delta +3,952 B / +200 B.
-- Release: 68,320 B Flash / 14,472 B RAM, delta +2,024 B / +192 B.
-- BoardDiagnostics: 124,188 B Flash / 14,472 B RAM, delta +3,944 B / +200 B.
+- Debug: 126,748 B Flash / 14,640 B RAM.
+- Release: 68,928 B Flash / 14,648 B RAM.
+- BoardDiagnostics: 125,268 B Flash / 14,640 B RAM.
 
-The Release load image ends at exclusive address `0x08010AE0`, below the first
+The Release load image ends at exclusive address `0x08010D40`, below the first
 config slot at `0x0801F000`. The transport-neutral calibration object is 256 B,
 up from the 64 B Stage 5C-C command calibration state, so its direct RAM cost is
 192 B. Owner and workflow state are contained in that object. The four-entry
@@ -140,17 +140,74 @@ The `.ioc`, USART1 9600, USART2 framing and Flash layout are unchanged. The
 changed MCU code contains no dynamic allocation, `HAL_Delay`, floating-point
 calibration arithmetic or FreeRTOS dependency.
 
-## Hardware validation pending
+## Hardware validation
 
-No Stage 5C-D code has yet been programmed in this software-complete state.
-Required board work is: preserve/hash both config slots, program Release without
-mass erase, record the current calibration baseline, test GET/BEGIN/owner/SET/
-ZERO/LOAD/retry/error/CANCEL rollback, then request explicit human confirmation
-before APPLY and again before SAVE. Power-cycle persistence, unsaved behavior,
-local/Modbus interoperability, timeout and a 600 s BLE/RS485/telemetry run must
-also pass before declaring Stage 5C-D COMPLETE.
+Validation used the physical STM32F103RBT6 instrument, W02
+`C8:46:82:00:83:24`, COM7 RS485 at address 1 and 115200 8N1, and a 500 g
+reference mass. Runtime Drift remained disabled throughout.
+
+Before APPLY, both 2 KiB config slots were dumped and hashed. Slot B sequence
+10 was active, dirty was zero, and the valid negative-direction calibration was
+zero raw `-43523`, load raw `-486173`, span `-442650`, 500,000,000 ug, about
+`-1129.5606 ug/count`. The old calibration read about 0.06--0.09 g empty and
+500.06 g with the reference mass. Slot A SHA-256 was
+`B98273993DC01502DDE6BA54A0B2D30B73F236E7D6E91A2878E610CC77DFC9A3`; slot B
+was `AE8CBF676DC379CCD4B0C4F66E557C49CCD13740E0B084EBEA3574F55F04F75C`.
+
+GET STATE, BEGIN, valid and invalid mass, owner exclusion, invalid order,
+stable ZERO/LOAD, exact duplicate ZERO/LOAD, CANCEL rollback, and the 120 s
+timeout all passed. BLE, local UI and Modbus ownership were tested in both
+directions where applicable; ordinary Modbus FC03 continued while BLE owned a
+session. Hardware interaction exposed one local UI issue: an asynchronous BUSY
+result left the CAL menu inactive. Commit `6e3792f` keeps the menu responsive
+until ownership succeeds, and the repaired local enter/exit path passed on the
+board. Commit `8d2b458` corrected host-only UART DMA boundary test setup and
+expectations; it did not change product transport code.
+
+The formal candidate captured zero raw `-43532`, 500 g load raw `-486139`, and
+span `-442607`. Exact duplicate APPLY replayed the cached response. APPLY made
+the candidate active in RAM and set dirty to one without changing slot B or
+Flash sequence 10. The RAM result read 500.03 g. Ordinary SAVE and its exact
+duplicate both returned OK; only one Flash transition occurred, to slot A
+sequence 11, and dirty cleared. After a power cycle, state was IDLE/NONE,
+calibration remained valid, slot A sequence 11 loaded with dirty zero, and the
+reference mass read 500.07 g. Post-cycle empty read 0.01 g and the approximately
+1 g check read 1.04 g (authoritative mass about 1.030 g), both stable and
+locked. This is workflow validation, not legal-metrology certification.
+
+The destructive APPLY-without-SAVE power-cycle case was deliberately not
+repeated on hardware after the new calibration was saved. It is **NOT HARDWARE
+TESTED**; existing Host tests cover the required reboot semantics. A
+BEGIN/capture-only session was independently discarded by an actual power
+cycle without changing Flash.
+
+The final post-calibration 600 s run passed. BLE received 3612 frames (3010
+FAST, 602 SLOW), completed 28/28 command responses and four BEGIN/CANCEL
+sessions, with zero disconnect, timeout, retry, result error, transaction
+mismatch, CRC error, sequence gap, duplicate, resync or partial byte. RS485
+completed 1049/1049 read-only polling cycles; every cycle contained all five
+expected FC03 reads, with zero exception, mean realtime-block latency 57.10 ms
+and P99 58.99 ms. The requested custom RS485 CSV directory was absent at final
+export, so the tool returned a reporting-path error after the full run; the
+default report retained all 5246 TX/RX frame pairs and was used to reconstruct
+the cycle and latency statistics. This was not a communication failure.
+
+The final SWD snapshot recorded 5259 valid/addressed FC03 requests and 5259 TX
+responses. IDLE queue overflow, DMA/UART errors, short frames,
+inter-character errors, RTU overflow/transport errors, CRC/length errors, TX
+errors and protocol violations were all zero; TX, framer and server states were
+idle. Final calibration state was IDLE/NONE, slot A sequence 11, dirty zero.
+The frozen communication architecture from `cabd6eb` therefore needs no
+further USART2 or Modbus-framer changes.
+
+Final gates: MSVC 19.43.34808 Host CTest 12/12, Stage 5B Python 28/28, Stage 5C
+Python 9/9, and all three clean ARM builds passed. Schema V2 remains 344 bytes,
+the A/B slot layout, `.ioc`, Modbus map `0x0102`, BLE V1 and UART settings are
+unchanged.
 
 Known limitations: the MCU has no reliable BLE disconnect event, so owner
 recovery is timeout-based; calibration remains two-point; the raw-span minimum
-is the existing 1000-count rule rather than a load-cell sensitivity model; and
-completion is engineering workflow validation, not legal-metrology approval.
+is the existing 1000-count rule rather than a load-cell sensitivity model;
+long-term zero drift, multi-point linearity and temperature behavior belong to
+Stage 6; and completion is engineering workflow validation, not
+legal-metrology approval.

@@ -76,17 +76,37 @@ LOAD `0x34`, APPLY `0x35`, and CANCEL `0x36`; mutating requests carry a 16-bit
 session ID and retain the existing transaction replay protection. APPLY and
 SAVE both require explicit operator confirmation in the PC workflow.
 
-Final clean software gates pass: CTest 12/12, Stage 5B Python 28/28, and Stage
-5C Python 9/9. Debug is 125,676 B Flash / 14,464 B RAM; Release is 68,320 B /
-14,472 B; BoardDiagnostics is 124,188 B / 14,472 B. Release ends at
-`0x08010AE0`, below `0x0801F000`. Schema V2 remains 344 B, slots A/B and Modbus
-map `0x0102` are unchanged, and `.ioc` is untouched.
+Stage 5C-D hardware validation is complete. The original slot B sequence 10
+calibration and both slot hashes were preserved before testing. GET STATE,
+BEGIN, BLE/local/Modbus ownership, valid/invalid mass, invalid order, stable
+ZERO/LOAD, exact duplicate capture/APPLY/SAVE, CANCEL rollback, 120 s timeout,
+explicit APPLY, dirty semantics, SAVE and power-cycle restore all passed. The
+saved calibration uses zero raw `-43532`, 500 g load raw `-486139`, and span
+`-442607`; SAVE switched once to slot A sequence 11. After reboot, empty read
+0.01 g, the 500 g reference read 500.07 g, and an approximately 1 g check read
+1.04 g. Runtime Drift remained disabled. APPLY-without-SAVE power-cycle is
+explicitly NOT HARDWARE TESTED; Host coverage verifies that reboot behavior.
 
-Stage 5C-D status: **SOFTWARE COMPLETE - NOT TESTED ON HARDWARE**. No Stage
-5C-D firmware has been programmed yet. Board calibration, owner
-interoperability, retry/idempotency, CANCEL rollback, explicit APPLY/SAVE,
-power-cycle behavior and the 600 s BLE/RS485 concurrency regression remain
-required before Stage 5C-D can be declared complete.
+The final post-calibration 600 s concurrency run passed: BLE received 3612
+frames (3010 FAST, 602 SLOW), returned 28/28 commands including four successful
+BEGIN/CANCEL sessions, and had zero disconnect, timeout, retry, CRC error,
+sequence gap, duplicate, resync or partial byte. RS485 completed 1049/1049
+read-only polling cycles with zero exception, mean 57.10 ms and P99 58.99 ms.
+The final SWD snapshot showed 5259/5259 valid FC03 responses and zero IDLE queue
+overflow, DMA/UART, RTU, CRC, TX or protocol errors; all transport states were
+idle. Final calibration state was IDLE/NONE, slot A sequence 11, dirty zero.
+
+Final clean gates pass: MSVC 19.43.34808 CTest 12/12, Stage 5B Python 28/28,
+Stage 5C Python 9/9, Debug 126,748 B Flash / 14,640 B RAM, Release 68,928 B /
+14,648 B, and BoardDiagnostics 125,268 B / 14,640 B. Release ends at
+`0x08010D40`, below `0x0801F000`. Schema V2 remains 344 B; slots A/B, `.ioc`,
+Modbus map `0x0102`, BLE V1 and UART settings are unchanged.
+
+Stage 5C-D status: **SOFTWARE COMPLETE; CALIBRATION HARDWARE TESTED;
+PERSISTENCE TESTED; OWNERSHIP TESTED; CONCURRENCY REGRESSION TESTED;
+COMPLETE**. The next recommended phase is Stage 6 system qualification and
+metrology validation: long-term zero/500 g drift, multiple load points,
+repeatability, return-to-zero, eccentric loading and temperature behavior.
 
 ## Stage 5A
 
