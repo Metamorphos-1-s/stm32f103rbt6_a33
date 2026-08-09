@@ -25,6 +25,12 @@ bool BSP_TimeUsToCycles(uint32_t interval_us, uint32_t *interval_cycles)
     *interval_cycles = interval_us;
     return true;
 }
+bool BSP_TimeUsToCycles(uint32_t interval_us, uint32_t *interval_cycles)
+{
+    if (interval_cycles == NULL) return false;
+    *interval_cycles = interval_us;
+    return true;
+}
 
 void Stage5B_TransportReset(void)
 {

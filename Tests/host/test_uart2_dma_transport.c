@@ -8,6 +8,7 @@ void Uart2DmaFakeSetPosition(uint16_t position);
 void Uart2DmaFakeSetRxCompleteCount(uint32_t count);
 void Uart2DmaFakeSetFrameErrorCount(uint32_t count);
 void Uart2DmaFakeFill(uint16_t index, uint8_t value);
+void Uart2DmaFakePushIdle(uint16_t position, uint32_t timestamp_cycles);
 uint32_t Uart2DmaFakeStartRxCount(void);
 
 #define CHECK(condition) do { if (!(condition)) { \
@@ -33,6 +34,41 @@ int main(void)
     statistics = Uart2DmaTransport_GetStatistics();
     CHECK(statistics->uart_frame_error_count == 1U);
     CHECK(statistics->rx_overrun_count == 0U);
+
+    Uart2DmaFakeReset();
+    CHECK(Uart2DmaTransport_Init(&config));
+    for (index = 0U; index < 16U; ++index)
+        Uart2DmaFakeFill(index, (uint8_t)(0xB0U + index));
+    Uart2DmaFakePushIdle(8U, 100U);
+    Uart2DmaFakePushIdle(16U, 200U);
+    Uart2DmaFakeSetPosition(16U);
+    Uart2DmaTransport_Process();
+    for (index = 0U; index < 8U; ++index)
+    {
+        CHECK(Uart2DmaTransport_TryReadByte(&byte));
+        CHECK(byte == (uint8_t)(0xB0U + index));
+    }
+    CHECK(!Uart2DmaTransport_TryReadByte(&byte));
+    {
+        uint16_t idle_position;
+        uint32_t idle_timestamp;
+        CHECK(Uart2DmaTransport_TakeIdleEvent(
+            &idle_position, &idle_timestamp));
+        CHECK(idle_position == 8U && idle_timestamp == 100U);
+    }
+    for (index = 8U; index < 16U; ++index)
+    {
+        CHECK(Uart2DmaTransport_TryReadByte(&byte));
+        CHECK(byte == (uint8_t)(0xB0U + index));
+    }
+    CHECK(!Uart2DmaTransport_TryReadByte(&byte));
+    {
+        uint16_t idle_position;
+        uint32_t idle_timestamp;
+        CHECK(Uart2DmaTransport_TakeIdleEvent(
+            &idle_position, &idle_timestamp));
+        CHECK(idle_position == 16U && idle_timestamp == 200U);
+    }
 
     Uart2DmaTransport_Process();
     CHECK(!Uart2DmaTransport_TakeReceiveError());

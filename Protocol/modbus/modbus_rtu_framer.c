@@ -1,6 +1,7 @@
 #include "modbus_rtu_framer.h"
 
 #include "bsp_rtu_timer.h"
+#include "bsp_time.h"
 #include "uart2_dma_transport.h"
 
 #include <stddef.h>
@@ -14,6 +15,29 @@ static uint8_t s_frame[MODBUS_RTU_ADU_MAX_SIZE];
 static uint16_t s_length;
 static uint16_t s_silence_dma_position;
 static ModbusRtuFramerStatistics s_statistics;
+
+static bool IdleIntervalElapsed(uint32_t timestamp_cycles,
+                                uint32_t interval_us)
+{
+    uint32_t interval_cycles;
+    return BSP_TimeUsToCycles(interval_us, &interval_cycles) &&
+        BSP_TimeCyclesElapsed(BSP_TimeNowCycles(), timestamp_cycles,
+                              interval_cycles);
+}
+
+static void CompleteReceivedFrame(void)
+{
+    if (s_length < 4U)
+    {
+        ++s_statistics.short_frame_count;
+        ModbusRtuFramer_Reset();
+    }
+    else
+    {
+        s_state = MODBUS_FRAMER_FRAME_READY;
+        ++s_statistics.frame_count;
+    }
+}
 
 static void StartTimer(uint32_t delay_us)
 {
@@ -108,11 +132,23 @@ void ModbusRtuFramer_OnIdleEvent(uint16_t dma_position,
     s_silence_dma_position = dma_position;
     if (s_state == MODBUS_FRAMER_RECEIVING)
     {
+        if (IdleIntervalElapsed(timestamp_cycles,
+                RemainingAfterIdle(s_timing.t3_5_us)))
+        {
+            CompleteReceivedFrame();
+            return;
+        }
         s_state = MODBUS_FRAMER_WAIT_T1_5;
         StartTimer(RemainingAfterIdle(s_timing.t1_5_us));
     }
     else if (s_state == MODBUS_FRAMER_DISCARD_UNTIL_SILENCE)
     {
+        if (IdleIntervalElapsed(timestamp_cycles,
+                RemainingAfterIdle(s_timing.t3_5_us)))
+        {
+            ModbusRtuFramer_Reset();
+            return;
+        }
         StartTimer(RemainingAfterIdle(s_timing.t3_5_us));
     }
 }
@@ -148,16 +184,7 @@ void ModbusRtuFramer_OnTimerEvent(void)
     else if (s_state == MODBUS_FRAMER_WAIT_T3_5)
     {
         ++s_statistics.timer_t3_5_elapsed_count;
-        if (s_length < 4U)
-        {
-            ++s_statistics.short_frame_count;
-            ModbusRtuFramer_Reset();
-        }
-        else
-        {
-            s_state = MODBUS_FRAMER_FRAME_READY;
-            ++s_statistics.frame_count;
-        }
+        CompleteReceivedFrame();
     }
     else if (s_state == MODBUS_FRAMER_DISCARD_UNTIL_SILENCE)
     {

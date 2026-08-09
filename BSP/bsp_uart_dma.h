@@ -6,6 +6,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define BSP_UART2_IDLE_EVENT_QUEUE_DEPTH 8U
+
 typedef enum
 {
     BSP_UART_DMA_OK = 0,
@@ -35,7 +37,14 @@ typedef struct
     uint32_t noise_error_count;
     uint32_t overrun_error_count;
     uint32_t tc_count;
+    uint32_t idle_queue_overflow_count;
 } BspUart2DmaEvents;
+
+typedef struct
+{
+    uint32_t timestamp_cycles;
+    uint16_t dma_position;
+} BspUart2IdleEvent;
 
 bool BSP_Uart2DmaInit(const BspUart2Config *config);
 BspUartDmaResult BSP_Uart2DmaStartRx(uint8_t *buffer, uint16_t length);
@@ -49,6 +58,8 @@ void BSP_Uart2EnableIdleInterrupt(void);
 void BSP_Uart2DisableIdleInterrupt(void);
 void BSP_Rs485SetTransmit(bool transmit);
 void BSP_Uart2DmaGetEvents(BspUart2DmaEvents *events);
+bool BSP_Uart2DmaTakeIdleEvent(BspUart2IdleEvent *event);
+void BSP_Uart2DmaClearIdleEvents(void);
 
 void BSP_Uart2IrqHandler(void);
 void BSP_Uart2RxDmaIrqHandler(void);
