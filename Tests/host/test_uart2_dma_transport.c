@@ -72,11 +72,12 @@ int main(void)
 
     Uart2DmaTransport_Process();
     CHECK(!Uart2DmaTransport_TakeReceiveError());
-    CHECK(Uart2DmaFakeStartRxCount() == 2U);
+    CHECK(Uart2DmaFakeStartRxCount() == 1U);
 
     for (index = 0U; index < 8U; ++index)
-        Uart2DmaFakeFill(index, (uint8_t)(0xA0U + index));
-    Uart2DmaFakeSetPosition(8U);
+        Uart2DmaFakeFill((uint16_t)(16U + index),
+                        (uint8_t)(0xA0U + index));
+    Uart2DmaFakeSetPosition(24U);
     Uart2DmaTransport_Process();
     CHECK(!Uart2DmaTransport_TakeReceiveError());
     for (index = 0U; index < 8U; ++index)
@@ -86,7 +87,7 @@ int main(void)
     }
     CHECK(!Uart2DmaTransport_TryReadByte(&byte));
     statistics = Uart2DmaTransport_GetStatistics();
-    CHECK(statistics->rx_byte_count == 8U);
+    CHECK(statistics->rx_byte_count == 24U);
     CHECK(statistics->rx_overrun_count == 0U);
     printf("uart2 dma recovery host tests passed\n");
     return 0;
