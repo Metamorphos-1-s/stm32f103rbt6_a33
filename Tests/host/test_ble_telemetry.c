@@ -1,4 +1,5 @@
 #include "ble_frame_codec.h"
+#include "ble_checkweigh_codec.h"
 #include "ble_telemetry_scheduler.h"
 #include "crc16.h"
 
@@ -23,13 +24,15 @@ static bool Build(uint8_t type, uint16_t sequence, uint32_t timestamp,
     TestIo *io = (TestIo *)context;
     uint8_t payload[BLE_SLOW_PAYLOAD_SIZE];
     uint8_t index;
-    (void)type;
     (void)sequence;
     (void)timestamp;
     ++io->builds;
     for (index = 0U; index < sizeof(payload); ++index) payload[index] = index;
-    return BleFrameCodec_Encode(BLE_MESSAGE_FAST_WEIGHT, sequence, timestamp,
-                                payload, BLE_FAST_PAYLOAD_SIZE, buffer,
+    return BleFrameCodec_Encode(type, sequence, timestamp,
+                                payload,
+                                (type==BLE_MESSAGE_FAST_WEIGHT)?BLE_FAST_PAYLOAD_SIZE:
+                                ((type==BLE_MESSAGE_SLOW_STATUS)?BLE_SLOW_PAYLOAD_SIZE:
+                                 BLE_CHECKWEIGH_PAYLOAD_SIZE), buffer,
                                 capacity, length);
 }
 
@@ -71,6 +74,10 @@ static void TestCodec(void)
            guard[11] == 0x80U && guard[12] == 0xCDU);
     assert(!BleFrameCodec_Encode(BLE_MESSAGE_FAST_WEIGHT, 0U, 0U, payload,
         sizeof(payload), frame, BLE_FAST_FRAME_SIZE - 1U, &length));
+    assert(BleFrameCodec_Encode(BLE_MESSAGE_CHECKWEIGH_STATUS,1U,2U,payload,
+        BLE_CHECKWEIGH_PAYLOAD_SIZE,frame,sizeof(frame),&length));
+    assert(length==BLE_CHECKWEIGH_FRAME_SIZE&&frame[3]==0x03U&&
+           frame[4]==BLE_CHECKWEIGH_PAYLOAD_SIZE);
 }
 
 static void TestScheduler(void)
@@ -91,7 +98,8 @@ static void TestScheduler(void)
     fflush(stdout);
     assert(counters.fast_frames_generated == 5U);
     assert(counters.slow_frames_generated == 1U);
-    assert(counters.frames_sent == 6U);
+    assert(counters.checkweigh_frames_generated==1U);
+    assert(counters.frames_sent == 7U);
     io.allow_write = false;
     BleTelemetryScheduler_Process(&scheduler, 0x000003E8U, true, Build, Write, &io);
     BleTelemetryScheduler_GetCounters(&scheduler, &counters);
@@ -102,10 +110,42 @@ static void TestScheduler(void)
     assert(counters.frames_dropped_transport_not_ready >= 1U);
 }
 
+static void TestCheckweighPayload(void)
+{
+    static const CheckweighState states[]={CHECKWEIGH_DISABLED,CHECKWEIGH_LOW,
+        CHECKWEIGH_OK,CHECKWEIGH_HIGH,CHECKWEIGH_OVERLOAD,CHECKWEIGH_FAULT};
+    BleCheckweighStatusFields fields={0};
+    uint8_t payload[BLE_CHECKWEIGH_PAYLOAD_SIZE];
+    uint16_t length=0U;
+    uint8_t index;
+    for(index=0U;index<6U;++index)
+    {
+        fields.state=states[index];
+        assert(BleCheckweighCodec_Encode(&fields,payload,sizeof(payload),&length));
+        assert(length==8U&&payload[0]==index);
+    }
+    fields.state=CHECKWEIGH_HIGH;
+    fields.limit_enabled=true;fields.stable=false;fields.alarm_active=true;
+    fields.green_active=false;fields.yellow_active=false;fields.red_active=true;
+    fields.internal_buzzer_active=false;fields.external_buzzer_active=true;
+    fields.weight_source=ALARM_WEIGHT_GROSS;
+    fields.config_revision=0x78563412U;
+    assert(BleCheckweighCodec_Encode(&fields,payload,sizeof(payload),&length));
+    assert(payload[0]==3U&&payload[1]==0xA5U&&payload[2]==1U&&payload[3]==0U);
+    assert(payload[4]==0x12U&&payload[5]==0x34U&&payload[6]==0x56U&&
+           payload[7]==0x78U);
+    fields.internal_buzzer_active=true;fields.external_buzzer_active=false;
+    assert(BleCheckweighCodec_Encode(&fields,payload,sizeof(payload),&length));
+    assert(payload[1]==0x65U);
+    fields.weight_source=ALARM_WEIGHT_SOURCE_COUNT;
+    assert(!BleCheckweighCodec_Encode(&fields,payload,sizeof(payload),&length));
+}
+
 int main(void)
 {
     TestCodec();
     TestScheduler();
+    TestCheckweighPayload();
     puts("BLE telemetry codec/scheduler tests passed");
     return 0;
 }

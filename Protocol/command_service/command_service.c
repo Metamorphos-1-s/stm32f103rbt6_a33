@@ -857,6 +857,22 @@ bool CommandService_SetStagedConfig(const DeviceConfig *candidate)
     return true;
 }
 
+CommandResult CommandService_ReserveConfigOwner(CommandSource source)
+{
+    if ((uint32_t)source > (uint32_t)COMMAND_SOURCE_DIAGNOSTIC)
+        return COMMAND_RESULT_INVALID_ARGUMENT;
+    if (s_calibration.active)
+        return COMMAND_RESULT_BUSY;
+    if (s_config_owner_valid)
+        return (s_config_owner == source) ? COMMAND_RESULT_OK :
+                                            COMMAND_RESULT_BUSY;
+    if (ConfigEdit_GetState() != CONFIG_EDIT_IDLE)
+        return COMMAND_RESULT_BUSY;
+    s_config_owner = source;
+    s_config_owner_valid = true;
+    return COMMAND_RESULT_OK;
+}
+
 void CommandService_ClearStagedConfig(void)
 {
     if (!s_config_owner_valid || (s_config_owner == COMMAND_SOURCE_MODBUS))

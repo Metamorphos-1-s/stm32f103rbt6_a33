@@ -103,6 +103,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Protocol/command_service/command_service.c
     Protocol/crc16/crc16.c
     Protocol/ble/ble_frame_codec.c
+    Protocol/ble/ble_checkweigh_codec.c
     Protocol/ble/ble_command_protocol.c
     Protocol/modbus/modbus_command_mailbox.c
     Protocol/modbus/modbus_register_model.c
@@ -182,6 +183,13 @@ if(A33_ENABLE_BOARD_DIAGNOSTICS)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
         ENABLE_STAGE2B_BOARD_DIAGNOSTICS=1
         ENABLE_STAGE5E_A3_LOCAL_MENU=0)
+    # Keep board diagnostics at -O0 while size-optimizing transport code that
+    # the diagnostic image still links but does not need to single-step.
+    set_source_files_properties(
+        Protocol/modbus/modbus_register_model.c
+        Services/ble_command_service/ble_command_service.c
+        Services/ble_telemetry_service/ble_telemetry_service.c
+        PROPERTIES COMPILE_OPTIONS "-Os")
 else()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
         ENABLE_STAGE2B_BOARD_DIAGNOSTICS=0

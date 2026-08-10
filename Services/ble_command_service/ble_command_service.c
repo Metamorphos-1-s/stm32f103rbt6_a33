@@ -105,7 +105,8 @@ static BleCommandResult MapResult(CommandResult result)
 static uint32_t Capabilities(void)
 {
     return (1UL << 0) | (1UL << 1) | (1UL << 2) | (1UL << 3) |
-        (1UL << 4) | (1UL << 5) | (1UL << 6) | (1UL << 7);
+        (1UL << 4) | (1UL << 5) | (1UL << 6) | (1UL << 7) |
+        (1UL << 8) | (1UL << 9);
 }
 
 static uint16_t BuildDeviceInfo(uint8_t *data)
@@ -150,7 +151,34 @@ static uint16_t BuildActiveConfig(uint8_t *data)
     BleFrameCodec_PutU8(data, &offset, context->runtime.config_dirty ? 1U : 0U);
     BleFrameCodec_PutU8(data, &offset,
         (uint8_t)ConfigEdit_GetState());
+    BleFrameCodec_PutU8(data, &offset,
+        context->config.alarm.limit_function_enable ? 1U : 0U);
+    BleFrameCodec_PutU8(data, &offset,
+        (uint8_t)context->config.alarm.weight_source);
+    BleFrameCodec_PutU8(data, &offset,
+        context->config.alarm.internal_buzzer_enable ? 1U : 0U);
+    BleFrameCodec_PutU8(data, &offset,
+        context->config.alarm.external_buzzer_enable ? 1U : 0U);
+    BleFrameCodec_PutU8(data, &offset,
+        context->config.alarm.qualified_beep_enable ? 1U : 0U);
+    BleFrameCodec_PutI64(data, &offset,
+        context->config.alarm.lower_limit_ug);
+    BleFrameCodec_PutI64(data, &offset,
+        context->config.alarm.upper_limit_ug);
+    BleFrameCodec_PutI64(data, &offset,
+        context->config.alarm.hysteresis_ug);
     return offset;
+}
+
+static bool IsBleMassFieldAllowed(uint8_t field)
+{
+    return field <= CONFIG_MASS_FIELD_ALARM_HYSTERESIS;
+}
+
+static bool IsBleScalarFieldAllowed(uint8_t field)
+{
+    return (field >= CONFIG_FIELD_LIMIT_ENABLE) &&
+           (field <= CONFIG_FIELD_QUALIFIED_BEEP_ENABLE);
 }
 
 static uint16_t BuildCalibrationState(uint8_t *data)
@@ -215,6 +243,7 @@ static bool IsKnownOperation(uint8_t operation)
         case BLE_OPERATION_APPLY_CONFIG:
         case BLE_OPERATION_DISCARD_CONFIG:
         case BLE_OPERATION_SAVE_CONFIG:
+        case BLE_OPERATION_SET_CONFIG_FIELD:
         case BLE_OPERATION_GET_CALIBRATION_STATE:
         case BLE_OPERATION_BEGIN_CALIBRATION:
         case BLE_OPERATION_SET_CALIBRATION_MASS:
@@ -264,12 +293,19 @@ static bool ExecuteCommand(const BleCommandRequest *request,
         case BLE_OPERATION_SET_CONFIG_MASS:
             if (request->data_length != 9U) return false;
             field = request->data[0];
-#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
-            if (field > CONFIG_MASS_FIELD_OVERLOAD_THRESHOLD) return false;
-#endif
+            if (!IsBleMassFieldAllowed(field)) return false;
             command.id = COMMAND_SET_CONFIG_MASS_FIELD;
             command.value0 = field;
             command.value64 = BleCommandProtocol_GetI64(&request->data[1]);
+            break;
+        case BLE_OPERATION_SET_CONFIG_FIELD:
+            if (request->data_length != 5U) return false;
+            field = request->data[0];
+            if (!IsBleScalarFieldAllowed(field)) return false;
+            command.id = COMMAND_SET_CONFIG_FIELD;
+            command.value0 = field;
+            command.value1 = (int32_t)BleCommandProtocol_GetU32(
+                &request->data[1]);
             break;
         case BLE_OPERATION_SET_UNIT_DISPLAY:
             if (request->data_length != 3U) return false;

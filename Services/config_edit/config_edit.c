@@ -61,7 +61,6 @@ bool ConfigEdit_SetIntegerField(ConfigFieldId field, int32_t value)
             }
             s_working.system.tare_power_loss_retention = (value != 0);
             break;
-#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
         case CONFIG_FIELD_LIMIT_ENABLE:
             if ((value < 0) || (value > 1)) return false;
             s_working.alarm.limit_function_enable = (value != 0);
@@ -82,7 +81,6 @@ bool ConfigEdit_SetIntegerField(ConfigFieldId field, int32_t value)
             if ((value < 0) || (value > 1)) return false;
             s_working.alarm.qualified_beep_enable = (value != 0);
             break;
-#endif
         case CONFIG_FIELD_CAPACITY:
         case CONFIG_FIELD_DIVISION:
         case CONFIG_FIELD_DECIMAL_PLACES:
@@ -122,7 +120,6 @@ bool ConfigEdit_SetMassField(ConfigMassFieldId field, MassValueUg value_ug)
             if (value_ug < 0) return false;
             s_working.metrology.overload_threshold_ug = value_ug;
             break;
-#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
         case CONFIG_MASS_FIELD_ALARM_LOWER_LIMIT:
             s_working.alarm.lower_limit_ug = value_ug;
             break;
@@ -133,7 +130,6 @@ bool ConfigEdit_SetMassField(ConfigMassFieldId field, MassValueUg value_ug)
             if (value_ug < 0) return false;
             s_working.alarm.hysteresis_ug = value_ug;
             break;
-#endif
         case CONFIG_MASS_FIELD_COUNT:
         default: return false;
     }

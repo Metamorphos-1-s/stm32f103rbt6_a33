@@ -295,12 +295,10 @@ PersistentCodecResult PersistentCodec_EncodeV2(
     if (!MetrologyLegacyProjection_Update(&compatibility.metrology) ||
         !MetrologyLegacyStabilityProjection_Update(&compatibility.metrology,
                                                     &compatibility.stability) ||
-#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
         !AlarmLegacyProjection_Update(&compatibility.alarm,
             compatibility.metrology.active_unit,
             &compatibility.metrology.unit_display[
                 compatibility.metrology.active_unit]) ||
-#endif
         !CalibrationLegacyProjection_Update(&compatibility.calibration,
             compatibility.metrology.active_unit,
             &compatibility.metrology.unit_display[

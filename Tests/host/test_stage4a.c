@@ -362,6 +362,17 @@ static void TestCommandAndConfig(void)
            DEVICE_CS1237_DATA_RATE_10_HZ);
     (void)Stage4A_Command(COMMAND_CANCEL_CONFIG_EDIT,
         COMMAND_SOURCE_LOCAL_KEY, 0, 0, &response);
+    CHECK4(Stage4A_Command(COMMAND_BEGIN_CONFIG_EDIT,COMMAND_SOURCE_BLE,
+        0,0,&response)==COMMAND_RESULT_OK);
+    CHECK4(CommandService_ReserveConfigOwner(COMMAND_SOURCE_MODBUS)==
+        COMMAND_RESULT_BUSY);
+    CHECK4(Stage4A_Command(COMMAND_CANCEL_CONFIG_EDIT,COMMAND_SOURCE_BLE,
+        0,0,&response)==COMMAND_RESULT_OK);
+    CHECK4(CommandService_ReserveConfigOwner(COMMAND_SOURCE_MODBUS)==
+        COMMAND_RESULT_OK);
+    CHECK4(Stage4A_Command(COMMAND_BEGIN_CONFIG_EDIT,COMMAND_SOURCE_BLE,
+        0,0,&response)==COMMAND_RESULT_BUSY);
+    CommandService_ClearStagedConfig();
 }
 
 static void TestZeroCommandFeedback(void)

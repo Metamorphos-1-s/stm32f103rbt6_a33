@@ -2,6 +2,7 @@
 #include "communication_manager.h"
 #include "modbus_crc16.h"
 #include "modbus_register_model.h"
+#include "modbus_register_map.h"
 #include "modbus_rtu_server.h"
 #include "modbus_rtu_timing.h"
 #include "modbus_rtu_framer.h"
@@ -258,6 +259,69 @@ static void TestDmaPositionResolution(void)
     CHECK(resolved==16U && !compensated);
 }
 
+static uint64_t JoinHighWords(const uint16_t words[4])
+{
+    return ((uint64_t)words[0]<<48U)|((uint64_t)words[1]<<32U)|
+           ((uint64_t)words[2]<<16U)|words[3];
+}
+
+static void SplitHighWords(uint64_t value,uint16_t words[4])
+{
+    words[0]=(uint16_t)(value>>48U);words[1]=(uint16_t)(value>>32U);
+    words[2]=(uint16_t)(value>>16U);words[3]=(uint16_t)value;
+}
+
+static void TestAlarmRegisterMap(void)
+{
+    SystemContext *context;
+    AlarmOutputDiagnostics *alarm;
+    uint16_t words[32];
+    uint16_t encoded[4];
+    Stage5A_ModelAdaptersInit();
+    context=Stage5A_ModelContext();
+    alarm=Stage5A_ModelAlarmDiagnostics();
+    context->config.alarm.limit_function_enable=true;
+    context->config.alarm.weight_source=ALARM_WEIGHT_NET;
+    context->config.alarm.lower_limit_ug=INT64_C(499000000);
+    context->config.alarm.upper_limit_ug=INT64_C(501000000);
+    context->config.alarm.hysteresis_ug=INT64_C(200000);
+    context->config.alarm.internal_buzzer_enable=true;
+    context->config.alarm.external_buzzer_enable=true;
+    context->config.alarm.qualified_beep_enable=true;
+    context->config_revision=0x12345678U;
+    context->runtime.config_dirty=true;
+    Stage5A_ModelSnapshot()->status_flags|=WEIGHT_STATUS_STABLE;
+    alarm->checkweigh_state=CHECKWEIGH_HIGH;
+    alarm->buzzer_mode=ALARM_BUZZER_MODE_ALARM;
+    alarm->red_active=true;
+    alarm->internal_buzzer_active=true;
+    ModbusRegisterModel_Init();
+    CHECK(ModbusRegisterModel_ReadHolding(0x000EU,1U,words)==MODBUS_REGISTER_OK);
+    CHECK(words[0]==0x0103U);
+    CHECK(ModbusRegisterModel_ReadHolding(MODBUS_ALARM_ACTIVE_FIRST,28U,words)==MODBUS_REGISTER_OK);
+    CHECK(words[0]==1U&&words[1]==ALARM_WEIGHT_NET);
+    CHECK((int64_t)JoinHighWords(&words[2])==INT64_C(499000000));
+    CHECK((int64_t)JoinHighWords(&words[6])==INT64_C(501000000));
+    CHECK((int64_t)JoinHighWords(&words[10])==INT64_C(200000));
+    CHECK(words[14]==1U&&words[15]==1U&&words[16]==1U);
+    CHECK(words[17]==3U&&words[18]==1U&&words[19]==1U);
+    CHECK(words[20]==0U&&words[21]==0U&&words[22]==1U);
+    CHECK(words[23]==1U&&words[24]==0U);
+    CHECK(words[25]==0x1234U&&words[26]==0x5678U&&words[27]==1U);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0240U,2U)==MODBUS_REGISTER_ILLEGAL_VALUE);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0241U,2U)==MODBUS_REGISTER_ILLEGAL_VALUE);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0242U,0U)==MODBUS_REGISTER_ILLEGAL_VALUE);
+    SplitHighWords((uint64_t)INT64_MIN,encoded);
+    CHECK(ModbusRegisterModel_WriteMultiple(0x0242U,3U,encoded)==MODBUS_REGISTER_ILLEGAL_VALUE);
+    CHECK(ModbusRegisterModel_WriteMultiple(0x0242U,4U,encoded)==MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_ReadHolding(0x0242U,4U,words)==MODBUS_REGISTER_OK);
+    CHECK((int64_t)JoinHighWords(words)==INT64_MIN);
+    SplitHighWords(UINT64_MAX,encoded);
+    CHECK(ModbusRegisterModel_WriteMultiple(0x024AU,4U,encoded)==MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_ReadHolding(0x024AU,4U,words)==MODBUS_REGISTER_OK);
+    CHECK(JoinHighWords(words)==UINT64_MAX);
+}
+
 static void TestDeterministicBadFrames(void)
 {
     uint32_t state = 0x13579BDFU;
@@ -296,6 +360,7 @@ int main(void)
     TestServer();
     TestFramerAndRs485();
     TestDmaPositionResolution();
+    TestAlarmRegisterMap();
     TestDeterministicBadFrames();
     CHECK(checks >= 128U);
     if(failures==0U) printf("Stage 5B host tests passed (%u checks).\n",checks);

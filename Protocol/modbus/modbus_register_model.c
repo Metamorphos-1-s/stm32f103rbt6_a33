@@ -1,5 +1,6 @@
 #include "modbus_register_model.h"
 
+#include "app_main.h"
 #include "calibration_model.h"
 #include "command_service.h"
 #include "config_store.h"
@@ -21,13 +22,17 @@
 #include <string.h>
 
 #define STAGING_REGISTER_COUNT 64U
+#define ALARM_STAGING_REGISTER_COUNT 17U
 
 static uint16_t s_staging[STAGING_REGISTER_COUNT];
+static uint16_t s_alarm_staging[ALARM_STAGING_REGISTER_COUNT];
 static uint16_t s_staging_validation;
 static bool s_staging_dirty;
 static CommunicationConfig s_pending_communication;
 static ModbusRegisterResult ReadActive(uint16_t address,
     const DeviceConfig *config, uint16_t *value);
+static uint16_t Word32(uint32_t value, uint8_t index, ModbusWordOrder order);
+static uint16_t Word64(uint64_t value, uint8_t index, ModbusWordOrder order);
 
 static uint64_t Join64(const uint16_t *words, ModbusWordOrder order)
 {
@@ -43,8 +48,20 @@ static uint64_t Join64(const uint16_t *words, ModbusWordOrder order)
 static void RefreshStaging(const DeviceConfig *config)
 {
     uint16_t i,value;
+    ModbusWordOrder order=config->communication.word_order;
     for(i=0U;i<STAGING_REGISTER_COUNT;++i)
     { (void)ReadActive((uint16_t)(0x0100U+i),config,&value); s_staging[i]=value; }
+    s_alarm_staging[0]=config->alarm.limit_function_enable?1U:0U;
+    s_alarm_staging[1]=(uint16_t)config->alarm.weight_source;
+    for(i=0U;i<4U;++i)
+    {
+        s_alarm_staging[2U+i]=Word64((uint64_t)config->alarm.lower_limit_ug,(uint8_t)i,order);
+        s_alarm_staging[6U+i]=Word64((uint64_t)config->alarm.upper_limit_ug,(uint8_t)i,order);
+        s_alarm_staging[10U+i]=Word64((uint64_t)config->alarm.hysteresis_ug,(uint8_t)i,order);
+    }
+    s_alarm_staging[14]=config->alarm.internal_buzzer_enable?1U:0U;
+    s_alarm_staging[15]=config->alarm.external_buzzer_enable?1U:0U;
+    s_alarm_staging[16]=config->alarm.qualified_beep_enable?1U:0U;
     s_staging_dirty=false; s_staging_validation=0U;
 }
 
@@ -92,6 +109,14 @@ static bool DecodeStaging(const DeviceConfig *active,DeviceConfig *candidate)
         profile->stability_enter_threshold_ug=(MassValueUg)Join64(&s_staging[base+6U],order);
         profile->stability_exit_threshold_ug=(MassValueUg)Join64(&s_staging[base+10U],order);
     }
+    candidate->alarm.limit_function_enable=s_alarm_staging[0]!=0U;
+    candidate->alarm.weight_source=(AlarmWeightSource)s_alarm_staging[1];
+    candidate->alarm.lower_limit_ug=(MassValueUg)Join64(&s_alarm_staging[2],order);
+    candidate->alarm.upper_limit_ug=(MassValueUg)Join64(&s_alarm_staging[6],order);
+    candidate->alarm.hysteresis_ug=(MassValueUg)Join64(&s_alarm_staging[10],order);
+    candidate->alarm.internal_buzzer_enable=s_alarm_staging[14]!=0U;
+    candidate->alarm.external_buzzer_enable=s_alarm_staging[15]!=0U;
+    candidate->alarm.qualified_beep_enable=s_alarm_staging[16]!=0U;
     if ((uint32_t)candidate->metrology.active_unit>=MASS_UNIT_COUNT)return false;
     candidate->metrology.unit=candidate->metrology.active_unit;
     candidate->metrology.decimal_places=candidate->metrology.unit_display[candidate->metrology.active_unit].decimal_places;
@@ -111,6 +136,20 @@ static uint16_t Word64(uint64_t value, uint8_t index, ModbusWordOrder order)
     uint8_t selected = (order == MODBUS_WORD_ORDER_HIGH_WORD_FIRST) ? index :
         (uint8_t)(3U - index);
     return (uint16_t)(value >> ((3U - selected) * 16U));
+}
+
+static uint16_t CheckweighWireState(CheckweighState state)
+{
+    switch(state)
+    {
+        case CHECKWEIGH_DISABLED:return 0U;
+        case CHECKWEIGH_LOW:return 1U;
+        case CHECKWEIGH_OK:return 2U;
+        case CHECKWEIGH_HIGH:return 3U;
+        case CHECKWEIGH_OVERLOAD:return 4U;
+        case CHECKWEIGH_FAULT:return 5U;
+        default:return 0U;
+    }
 }
 
 static uint16_t BaudEnum(uint32_t baud)
@@ -211,6 +250,42 @@ static ModbusRegisterResult ReadOne(uint16_t address,
         return ReadActive(address,config,value);
     if ((address>=MODBUS_STAGING_CONFIG_FIRST)&&(address<=MODBUS_STAGING_CONFIG_LAST))
     { *value=(address==0x017EU)?s_staging_validation:((address==0x017FU)?(s_staging_dirty?1U:0U):s_staging[address-0x0140U]); return MODBUS_REGISTER_OK; }
+    if ((address>=MODBUS_ALARM_ACTIVE_FIRST)&&(address<=MODBUS_ALARM_ACTIVE_LAST))
+    {
+        AlarmOutputDiagnostics diagnostics={0};
+        bool have_diagnostics=App_GetAlarmOutputDiagnostics(&diagnostics);
+        const AlarmConfig *alarm=&config->alarm;
+        if(address==MODBUS_ALARM_LIMIT_ENABLE)*value=alarm->limit_function_enable?1U:0U;
+        else if(address==MODBUS_ALARM_WEIGHT_SOURCE)*value=(uint16_t)alarm->weight_source;
+        else if(address>=MODBUS_ALARM_LOWER_LIMIT_FIRST&&address<=0x0225U)
+            *value=Word64((uint64_t)alarm->lower_limit_ug,(uint8_t)(address-MODBUS_ALARM_LOWER_LIMIT_FIRST),order);
+        else if(address>=MODBUS_ALARM_UPPER_LIMIT_FIRST&&address<=0x0229U)
+            *value=Word64((uint64_t)alarm->upper_limit_ug,(uint8_t)(address-MODBUS_ALARM_UPPER_LIMIT_FIRST),order);
+        else if(address>=MODBUS_ALARM_HYSTERESIS_FIRST&&address<=0x022DU)
+            *value=Word64((uint64_t)alarm->hysteresis_ug,(uint8_t)(address-MODBUS_ALARM_HYSTERESIS_FIRST),order);
+        else if(address==MODBUS_ALARM_INTERNAL_ENABLE)*value=alarm->internal_buzzer_enable?1U:0U;
+        else if(address==MODBUS_ALARM_EXTERNAL_ENABLE)*value=alarm->external_buzzer_enable?1U:0U;
+        else if(address==MODBUS_ALARM_QUALIFIED_ENABLE)*value=alarm->qualified_beep_enable?1U:0U;
+        else if(address==MODBUS_ALARM_STATE)*value=have_diagnostics?CheckweighWireState(diagnostics.checkweigh_state):0U;
+        else if(address==MODBUS_ALARM_STABLE)*value=((snapshot!=NULL)&&((snapshot->status_flags&WEIGHT_STATUS_STABLE)!=0U))?1U:0U;
+        else if(address==MODBUS_ALARM_ACTIVE)*value=(have_diagnostics&&(diagnostics.buzzer_mode==ALARM_BUZZER_MODE_ALARM))?1U:0U;
+        else if(address==MODBUS_ALARM_GREEN_ACTIVE)*value=(have_diagnostics&&diagnostics.green_active)?1U:0U;
+        else if(address==MODBUS_ALARM_YELLOW_ACTIVE)*value=(have_diagnostics&&diagnostics.yellow_active)?1U:0U;
+        else if(address==MODBUS_ALARM_RED_ACTIVE)*value=(have_diagnostics&&diagnostics.red_active)?1U:0U;
+        else if(address==MODBUS_ALARM_INTERNAL_ACTIVE)*value=(have_diagnostics&&diagnostics.internal_buzzer_active)?1U:0U;
+        else if(address==MODBUS_ALARM_EXTERNAL_ACTIVE)*value=(have_diagnostics&&diagnostics.external_buzzer_active)?1U:0U;
+        else if(address>=MODBUS_ALARM_CONFIG_REVISION_FIRST&&address<=0x023AU)
+            *value=Word32(context->config_revision,(uint8_t)(address-MODBUS_ALARM_CONFIG_REVISION_FIRST),order);
+        else if(address==MODBUS_ALARM_CONFIG_DIRTY)*value=context->runtime.config_dirty?1U:0U;
+        return MODBUS_REGISTER_OK;
+    }
+    if ((address>=MODBUS_ALARM_STAGING_FIRST)&&(address<=MODBUS_ALARM_STAGING_LAST))
+    {
+        if(address<=0x0250U)*value=s_alarm_staging[address-MODBUS_ALARM_STAGING_FIRST];
+        else if(address==MODBUS_ALARM_STAGING_VALIDATION)*value=s_staging_validation;
+        else if(address==MODBUS_ALARM_STAGING_DIRTY)*value=s_staging_dirty?1U:0U;
+        return MODBUS_REGISTER_OK;
+    }
     if (address<=0x001FU)
     {
         int32_t page=panel.display_count;
@@ -435,6 +510,13 @@ static bool CommunicationValueValid(uint16_t address,uint16_t value)
 static ModbusRegisterResult ValidateWriteAddress(uint16_t address,uint16_t value)
 {
     if((address>=0x0140U)&&(address<=0x017DU))return MODBUS_REGISTER_OK;
+    if(address==0x0240U || address==0x024EU || address==0x024FU ||
+       address==0x0250U)
+        return value<=1U?MODBUS_REGISTER_OK:MODBUS_REGISTER_ILLEGAL_VALUE;
+    if(address==0x0241U)
+        return value<ALARM_WEIGHT_SOURCE_COUNT?MODBUS_REGISTER_OK:
+            MODBUS_REGISTER_ILLEGAL_VALUE;
+    if((address>=0x0242U)&&(address<=0x024DU))return MODBUS_REGISTER_OK;
     if((address>=0x0040U)&&(address<=0x004BU))
         return ((address==0x004BU)&&(value!=MODBUS_EXECUTE_VALUE))?MODBUS_REGISTER_ILLEGAL_VALUE:MODBUS_REGISTER_OK;
     if((address>=0x01A1U)&&(address<=0x01A8U))return
@@ -443,19 +525,51 @@ static ModbusRegisterResult ValidateWriteAddress(uint16_t address,uint16_t value
     if(((address>=0x0000U)&&(address<=0x003FU))||
        ((address>=0x004CU)&&(address<=0x005FU))||
        ((address>=0x0100U)&&(address<=0x013FU))||
-       ((address>=0x017EU)&&(address<=MODBUS_RUNTIME_DRIFT_LAST)))
+       ((address>=0x017EU)&&(address<=MODBUS_ALARM_ACTIVE_LAST))||
+       ((address>=MODBUS_ALARM_STAGING_VALIDATION)&&
+        (address<=MODBUS_ALARM_STAGING_LAST)))
         return MODBUS_REGISTER_READ_ONLY;
     return MODBUS_REGISTER_ILLEGAL_ADDRESS;
 }
 
-ModbusRegisterResult ModbusRegisterModel_WriteSingle(uint16_t address,uint16_t value)
+static bool AlarmMassWriteComplete(uint16_t start,uint16_t count)
+{
+    uint16_t end=(uint16_t)(start+count-1U);
+    uint16_t base;
+    for(base=0x0242U;base<=0x024AU;base=(uint16_t)(base+4U))
+    {
+        bool overlaps=(start<=(uint16_t)(base+3U))&&(end>=base);
+        if(overlaps && ((start>base)||(end<(uint16_t)(base+3U))))return false;
+    }
+    return true;
+}
+
+static ModbusRegisterResult WriteOne(uint16_t address,uint16_t value,
+    bool allow_alarm_mass)
 {
     ModbusRegisterResult result=ValidateWriteAddress(address,value);
     const SystemContext *context;
     uint16_t command_id;
     DeviceConfig candidate;
     if(result!=MODBUS_REGISTER_OK)return result;
-    if(address>=0x0140U&&address<=0x017DU){s_staging[address-0x0140U]=value;s_staging_dirty=true;s_staging_validation=0xFFFFU;return MODBUS_REGISTER_OK;}
+    if((address>=0x0242U)&&(address<=0x024DU)&&!allow_alarm_mass)
+        return MODBUS_REGISTER_ILLEGAL_VALUE;
+    if(address>=0x0240U&&address<=0x0250U)
+    {
+        if(CommandService_ReserveConfigOwner(COMMAND_SOURCE_MODBUS)!=
+           COMMAND_RESULT_OK)return MODBUS_REGISTER_BUSY;
+        s_alarm_staging[address-0x0240U]=value;
+        s_staging_dirty=true;
+        s_staging_validation=0xFFFFU;
+        return MODBUS_REGISTER_OK;
+    }
+    if(address>=0x0140U&&address<=0x017DU)
+    {
+        if(CommandService_ReserveConfigOwner(COMMAND_SOURCE_MODBUS)!=
+           COMMAND_RESULT_OK)return MODBUS_REGISTER_BUSY;
+        s_staging[address-0x0140U]=value;s_staging_dirty=true;
+        s_staging_validation=0xFFFFU;return MODBUS_REGISTER_OK;
+    }
     if(address<=0x004BU)
     {
         if(address==0x004BU)
@@ -467,7 +581,7 @@ ModbusRegisterResult ModbusRegisterModel_WriteSingle(uint16_t address,uint16_t v
             else if((command_id==10U)||(command_id==11U))
             {
                 if(!DecodeStaging(&context->config,&candidate)||
-                   !CommandService_SetStagedConfig(&candidate))return MODBUS_REGISTER_ILLEGAL_VALUE;
+                   !CommandService_SetStagedConfig(&candidate))return MODBUS_REGISTER_BUSY;
             }
             else if(command_id==12U)CommandService_ClearStagedConfig();
             result=ModbusCommandMailbox_Write(address,value);
@@ -497,13 +611,19 @@ ModbusRegisterResult ModbusRegisterModel_WriteSingle(uint16_t address,uint16_t v
     return MODBUS_REGISTER_OK;
 }
 
+ModbusRegisterResult ModbusRegisterModel_WriteSingle(uint16_t address,uint16_t value)
+{
+    return WriteOne(address,value,false);
+}
+
 ModbusRegisterResult ModbusRegisterModel_WriteMultiple(uint16_t start_address,
     uint16_t count,const uint16_t *values)
 {
     uint16_t i; ModbusRegisterResult result;
     if((count==0U)||(values==NULL)||((uint32_t)start_address+count>0x10000UL))return MODBUS_REGISTER_ILLEGAL_VALUE;
+    if(!AlarmMassWriteComplete(start_address,count))return MODBUS_REGISTER_ILLEGAL_VALUE;
     for(i=0U;i<count;++i){result=ValidateWriteAddress((uint16_t)(start_address+i),values[i]);if(result!=MODBUS_REGISTER_OK)return result;
         if(((uint16_t)(start_address+i)==0x004BU)&&(i!=(uint16_t)(count-1U)))return MODBUS_REGISTER_ILLEGAL_VALUE;}
-    for(i=0U;i<count;++i){result=ModbusRegisterModel_WriteSingle((uint16_t)(start_address+i),values[i]);if(result!=MODBUS_REGISTER_OK)return result;}
+    for(i=0U;i<count;++i){result=WriteOne((uint16_t)(start_address+i),values[i],true);if(result!=MODBUS_REGISTER_OK)return result;}
     return MODBUS_REGISTER_OK;
 }

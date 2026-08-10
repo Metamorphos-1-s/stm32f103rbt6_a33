@@ -252,6 +252,16 @@ bool App_ExitDiagnostics(void)
 #endif
 }
 
+bool App_GetAlarmOutputDiagnostics(AlarmOutputDiagnostics *diagnostics)
+{
+#if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
+  return AlarmOutputManager_GetDiagnostics(&s_alarm_output_manager, diagnostics);
+#else
+  (void)diagnostics;
+  return false;
+#endif
+}
+
 static void App_1msTask(void *context)
 {
   const SystemContext *system_context;
