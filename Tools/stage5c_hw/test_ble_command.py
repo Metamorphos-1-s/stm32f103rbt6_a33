@@ -3,9 +3,10 @@
 
 import unittest
 import struct
+from types import SimpleNamespace
 
 from stage5c_ble import (FrameParser, OPERATIONS, RESPONSE, crc16,
-                         decode_operation_data, decode_response,
+                         command_data, decode_operation_data, decode_response,
                          encode_request)
 
 
@@ -58,6 +59,35 @@ class BleCommandToolTests(unittest.TestCase):
         self.assertTrue(decoded["candidate_valid"])
         self.assertTrue(decoded["persistent_dirty"])
         self.assertTrue(decoded["active_calibration_valid"])
+
+    def test_get_config_prefix_and_alarm_tail(self):
+        prefix = struct.pack("<BBBBqqqBBBBBqqIBB", 1, 2, 1, 0,
+                             3000000000, 3001000000, 60000000,
+                             2, 4, 16, 0, 3, 100, 200, 500, 1, 0)
+        old = decode_operation_data(OPERATIONS["get-config"], prefix)
+        self.assertEqual(len(prefix), 55)
+        self.assertFalse(old["extended_alarm_config"])
+        tail = struct.pack("<BBBBBqqq", 1, 1, 1, 0, 1,
+                           499000000, 501000000, 200000)
+        extended = decode_operation_data(OPERATIONS["get-config"], prefix + tail)
+        self.assertEqual(len(prefix + tail), 84)
+        self.assertTrue(extended["extended_alarm_config"])
+        self.assertEqual(extended["capacity_ug"], 3000000000)
+        self.assertEqual(extended["weight_source"], 1)
+        self.assertEqual(extended["lower_limit_ug"], 499000000)
+        self.assertEqual(extended["upper_limit_ug"], 501000000)
+        self.assertEqual(extended["hysteresis_ug"], 200000)
+
+    def test_alarm_scalar_field_ids_match_firmware_enum(self):
+        expected = {
+            "limit-enable": 15, "alarm-source": 16,
+            "internal-buzzer": 17, "external-buzzer": 18,
+            "qualified-beep": 19,
+        }
+        for name, field_id in expected.items():
+            encoded = command_data(SimpleNamespace(
+                command="set-field", field=name, value=1))
+            self.assertEqual(encoded, struct.pack("<Bi", field_id, 1))
 
 
 if __name__ == "__main__":

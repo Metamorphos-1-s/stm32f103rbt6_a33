@@ -14,6 +14,7 @@ def run(client, report, duration_s, interval_ms, max_timeouts=0,
     rows, latencies = [], []
     timeouts = crc_errors = exceptions = 0
     retry_recoveries = retry_failures = 0
+    alarm_status_reads = 0
     timeout_details = []
     request_number = 0
     first_sequence = last_sequence = None
@@ -36,6 +37,11 @@ def run(client, report, duration_s, interval_ms, max_timeouts=0,
             display = client.read(reg.DISPLAY_CONDITION_FIRST, 17)[0]
             stage = "runtime_drift"
             drift = client.read(reg.RUNTIME_DRIFT_FIRST, 30)[0]
+            alarm = None
+            if request_number % 20 == 1:
+                stage = "alarm_status"
+                alarm = client.read(reg.ALARM_STATE, 8)[0]
+                alarm_status_reads += 1
             first_sequence = sequence if first_sequence is None else first_sequence
             last_sequence = sequence
             flags = values[4] | (values[5] << 16)
@@ -60,6 +66,15 @@ def run(client, report, duration_s, interval_ms, max_timeouts=0,
                         "runtime_compensated_gross_ug": frame.decode_i64_words(drift[12:16], word_order),
                         "runtime_sample_count": frame.decode_u32_words(drift[28:30], word_order),
                         "storage_state": storage[0], "communication_state": "not mapped"})
+            if alarm is not None:
+                row.update({"checkweigh_state": alarm[0],
+                            "checkweigh_stable": bool(alarm[1]),
+                            "alarm_active": bool(alarm[2]),
+                            "green_active": bool(alarm[3]),
+                            "yellow_active": bool(alarm[4]),
+                            "red_active": bool(alarm[5]),
+                            "internal_buzzer_active": bool(alarm[6]),
+                            "external_buzzer_active": bool(alarm[7])})
             latencies.append(exchange.complete_ms)
         except Exception as exc:
             text = str(exc)
@@ -75,6 +90,7 @@ def run(client, report, duration_s, interval_ms, max_timeouts=0,
                     "storage_state": (reg.STORAGE_STATE, 1),
                     "display_conditioner": (reg.DISPLAY_CONDITION_FIRST, 17),
                     "runtime_drift": (reg.RUNTIME_DRIFT_FIRST, 30),
+                    "alarm_status": (reg.ALARM_STATE, 8),
                 }[stage]
                 for retry in range(timeout_retries):
                     detail["retry_attempts"] = retry + 1
@@ -108,6 +124,7 @@ def run(client, report, duration_s, interval_ms, max_timeouts=0,
             "timeouts": timeouts, "crc_errors": crc_errors, "exceptions": exceptions,
             "retry_recoveries": retry_recoveries,
             "retry_failures": retry_failures,
+            "alarm_status_reads": alarm_status_reads,
             "timeout_details": timeout_details,
             "sample_sequence_growth": None if first_sequence is None else
                 ((last_sequence - first_sequence) & 0xFFFFFFFF)}
