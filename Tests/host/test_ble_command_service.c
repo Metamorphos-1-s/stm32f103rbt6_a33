@@ -246,6 +246,71 @@ static void TestCalibrationStateAndDispatcher(void)
     assert(s_execute_count == before);
 }
 
+static void TestAlarmConfigExposure(void)
+{
+    uint8_t data[9] = {CONFIG_MASS_FIELD_OVERLOAD_THRESHOLD,
+                       0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U};
+
+    Reset();
+    FeedRequest(60U, BLE_OPERATION_SET_CONFIG_MASS, data, sizeof(data));
+    BleCommandService_Process(60U);
+    assert(s_execute_count == 1U);
+    assert(s_last_command_request.id == COMMAND_SET_CONFIG_MASS_FIELD);
+
+    Reset();
+    data[0] = CONFIG_MASS_FIELD_ALARM_LOWER_LIMIT;
+    FeedRequest(61U, BLE_OPERATION_SET_CONFIG_MASS, data, sizeof(data));
+    BleCommandService_Process(61U);
+    assert(s_execute_count == 1U);
+    assert(s_last_command_request.id == COMMAND_SET_CONFIG_MASS_FIELD);
+    assert(s_last_command_request.value0 ==
+           CONFIG_MASS_FIELD_ALARM_LOWER_LIMIT);
+    Reset();
+    data[0] = CONFIG_MASS_FIELD_COUNT;
+    FeedRequest(62U, BLE_OPERATION_SET_CONFIG_MASS, data, sizeof(data));
+    BleCommandService_Process(62U);
+    assert(s_execute_count == 0U &&
+           ResponseResult() == BLE_COMMAND_RESULT_INVALID_ARGUMENT);
+    {
+        uint8_t scalar[5] = {CONFIG_FIELD_ALARM_WEIGHT_SOURCE,1U,0U,0U,0U};
+        Reset();
+        FeedRequest(63U,BLE_OPERATION_SET_CONFIG_FIELD,scalar,sizeof(scalar));
+        BleCommandService_Process(63U);
+        assert(s_execute_count==1U&&
+               s_last_command_request.id==COMMAND_SET_CONFIG_FIELD&&
+               s_last_command_request.value0==CONFIG_FIELD_ALARM_WEIGHT_SOURCE&&
+               s_last_command_request.value1==1);
+        scalar[0]=CONFIG_FIELD_DISPLAY_BRIGHTNESS;
+        FeedRequest(64U,BLE_OPERATION_SET_CONFIG_FIELD,scalar,sizeof(scalar));
+        BleCommandService_Process(64U);
+        assert(s_execute_count==1U&&
+               ResponseResult()==BLE_COMMAND_RESULT_INVALID_ARGUMENT);
+    }
+}
+
+static void TestExtendedActiveConfig(void)
+{
+    Reset();
+    s_context.config.alarm.limit_function_enable=true;
+    s_context.config.alarm.weight_source=ALARM_WEIGHT_GROSS;
+    s_context.config.alarm.internal_buzzer_enable=true;
+    s_context.config.alarm.external_buzzer_enable=false;
+    s_context.config.alarm.qualified_beep_enable=true;
+    s_context.config.alarm.lower_limit_ug=INT64_C(499000000);
+    s_context.config.alarm.upper_limit_ug=INT64_C(501000000);
+    s_context.config.alarm.hysteresis_ug=INT64_C(200000);
+    FeedRequest(65U,BLE_OPERATION_GET_ACTIVE_CONFIG,NULL,0U);
+    BleCommandService_Process(65U);
+    assert(s_execute_count==0U&&ResponseResult()==BLE_COMMAND_RESULT_OK);
+    assert(s_last_response_length==106U);
+    assert(s_last_response[75]==1U&&s_last_response[76]==ALARM_WEIGHT_GROSS&&
+           s_last_response[77]==1U&&s_last_response[78]==0U&&
+           s_last_response[79]==1U);
+    assert(BleCommandProtocol_GetI64(&s_last_response[80])==INT64_C(499000000));
+    assert(BleCommandProtocol_GetI64(&s_last_response[88])==INT64_C(501000000));
+    assert(BleCommandProtocol_GetI64(&s_last_response[96])==INT64_C(200000));
+}
+
 int main(void)
 {
     TestDeviceInfoVersion();
@@ -253,6 +318,8 @@ int main(void)
     TestSaveCompletion();
     TestQueueRetry();
     TestCalibrationStateAndDispatcher();
+    TestAlarmConfigExposure();
+    TestExtendedActiveConfig();
     puts("BLE command service tests passed");
     return 0;
 }

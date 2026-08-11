@@ -1,5 +1,7 @@
 #include "ble_telemetry_service.h"
 
+#include "app_main.h"
+#include "ble_checkweigh_codec.h"
 #include "app_state.h"
 #include "ble_frame_codec.h"
 #include "ble_transport.h"
@@ -42,6 +44,16 @@ typedef struct
     uint8_t filter_strength;
     uint8_t active_profile;
     uint8_t app_state;
+    CheckweighState checkweigh_state;
+    uint8_t weight_source;
+    uint8_t limit_enabled;
+    uint8_t alarm_active;
+    uint8_t green_active;
+    uint8_t yellow_active;
+    uint8_t red_active;
+    uint8_t internal_buzzer_active;
+    uint8_t external_buzzer_active;
+    uint32_t config_revision;
 } BleTelemetrySnapshot;
 
 static BleTelemetryScheduler s_scheduler;
@@ -57,6 +69,8 @@ static bool CaptureSnapshot(uint32_t now_ms)
     const SystemContext *context = SystemContext_Get();
     const UnitDisplayConfig *unit_display;
     const WeighingProfileConfig *profile;
+    AlarmOutputDiagnostics alarm = {0};
+    bool have_alarm;
     if ((weight == NULL) || (display == NULL) || (context == NULL)) return false;
     unit_display = &context->config.metrology.unit_display[
         context->config.metrology.active_unit];
@@ -92,6 +106,21 @@ static bool CaptureSnapshot(uint32_t now_ms)
     s_snapshot.filter_strength = profile->filter_strength;
     s_snapshot.active_profile = (uint8_t)context->config.metrology.active_profile;
     s_snapshot.app_state = (uint8_t)context->state;
+    have_alarm = App_GetAlarmOutputDiagnostics(&alarm);
+    s_snapshot.checkweigh_state = have_alarm ? alarm.checkweigh_state :
+                                              CHECKWEIGH_DISABLED;
+    s_snapshot.weight_source = (uint8_t)context->config.alarm.weight_source;
+    s_snapshot.limit_enabled = context->config.alarm.limit_function_enable ? 1U : 0U;
+    s_snapshot.alarm_active = (have_alarm &&
+        (alarm.buzzer_mode == ALARM_BUZZER_MODE_ALARM)) ? 1U : 0U;
+    s_snapshot.green_active = (have_alarm && alarm.green_active) ? 1U : 0U;
+    s_snapshot.yellow_active = (have_alarm && alarm.yellow_active) ? 1U : 0U;
+    s_snapshot.red_active = (have_alarm && alarm.red_active) ? 1U : 0U;
+    s_snapshot.internal_buzzer_active =
+        (have_alarm && alarm.internal_buzzer_active) ? 1U : 0U;
+    s_snapshot.external_buzzer_active =
+        (have_alarm && alarm.external_buzzer_active) ? 1U : 0U;
+    s_snapshot.config_revision = context->config_revision;
     return true;
 }
 
@@ -134,6 +163,23 @@ static bool BuildFrame(uint8_t type, uint16_t sequence, uint32_t timestamp_ms,
         BleFrameCodec_PutU8(payload, &offset, snapshot->active_profile);
         BleFrameCodec_PutU8(payload, &offset, snapshot->app_state);
         BleFrameCodec_PutU32(payload, &offset, snapshot->fault_mask);
+    }
+    else if (type == BLE_MESSAGE_CHECKWEIGH_STATUS)
+    {
+        BleCheckweighStatusFields fields={0};
+        fields.state=snapshot->checkweigh_state;
+        fields.limit_enabled=snapshot->limit_enabled!=0U;
+        fields.stable=snapshot->stable!=0U;
+        fields.alarm_active=snapshot->alarm_active!=0U;
+        fields.green_active=snapshot->green_active!=0U;
+        fields.yellow_active=snapshot->yellow_active!=0U;
+        fields.red_active=snapshot->red_active!=0U;
+        fields.internal_buzzer_active=snapshot->internal_buzzer_active!=0U;
+        fields.external_buzzer_active=snapshot->external_buzzer_active!=0U;
+        fields.weight_source=(AlarmWeightSource)snapshot->weight_source;
+        fields.config_revision=snapshot->config_revision;
+        if(!BleCheckweighCodec_Encode(&fields,payload,sizeof(payload),&offset))
+            return false;
     }
     else return false;
     return BleFrameCodec_Encode(type, sequence, timestamp_ms, payload, offset,

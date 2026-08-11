@@ -17,8 +17,10 @@ HEADER_SIZE = 12
 CRC_SIZE = 2
 FAST_TYPE = 0x01
 SLOW_TYPE = 0x02
+CHECKWEIGH_TYPE = 0x03
 FAST_PAYLOAD_SIZE = 42
 SLOW_PAYLOAD_SIZE = 59
+CHECKWEIGH_PAYLOAD_SIZE = 8
 
 
 def crc16(data):
@@ -69,7 +71,9 @@ class TelemetryParser:
             version = self.buffer[2]
             message_type = self.buffer[3]
             payload_length = struct.unpack_from("<H", self.buffer, 4)[0]
-            expected = {FAST_TYPE: FAST_PAYLOAD_SIZE, SLOW_TYPE: SLOW_PAYLOAD_SIZE}.get(message_type)
+            expected = {FAST_TYPE: FAST_PAYLOAD_SIZE,
+                        SLOW_TYPE: SLOW_PAYLOAD_SIZE,
+                        CHECKWEIGH_TYPE: CHECKWEIGH_PAYLOAD_SIZE}.get(message_type)
             if version != 1:
                 self.version_errors += 1
                 del self.buffer[0]
@@ -113,7 +117,7 @@ class TelemetryParser:
              frame["stable"], frame["display_locked"], frame["overload"],
              frame["unit"], frame["dp"], frame["division"]) = fields
             frame["display_mass_g"] = frame["display_mass_ug"] / 1000000.0
-        else:
+        elif message_type == SLOW_TYPE:
             fields = struct.unpack_from("<iiqqqB B B qqBBB B I", payload)
             (frame["raw_count"], frame["filtered_raw"],
              frame["uncompensated_gross_ug"], frame["compensated_gross_ug"],
@@ -121,7 +125,24 @@ class TelemetryParser:
              frame["runtime_drift_state"], frame["persistent_dirty"],
              frame["capacity_ug"], frame["overload_threshold_ug"],
              frame["filter_mode"], frame["filter_strength"],
-             frame["active_profile"], frame["app_state"], frame["fault_mask"]) = fields
+              frame["active_profile"], frame["app_state"], frame["fault_mask"]) = fields
+        else:
+            state, flags, source, reserved, revision = struct.unpack_from(
+                "<BBBBI", payload)
+            frame.update({
+                "checkweigh_state": state,
+                "limit_enabled": bool(flags & (1 << 0)),
+                "stable": bool(flags & (1 << 1)),
+                "alarm_active": bool(flags & (1 << 2)),
+                "green_active": bool(flags & (1 << 3)),
+                "yellow_active": bool(flags & (1 << 4)),
+                "red_active": bool(flags & (1 << 5)),
+                "internal_buzzer_active": bool(flags & (1 << 6)),
+                "external_buzzer_active": bool(flags & (1 << 7)),
+                "weight_source": source,
+                "reserved": reserved,
+                "config_revision": revision,
+            })
         frame["host_timestamp"] = time.time()
         return frame
 
@@ -196,7 +217,10 @@ async def run(args):
                 await client.stop_notify(FFE1_UUID)
     fast = [frame for frame in parser.frames if frame["message_type"] == FAST_TYPE]
     slow = [frame for frame in parser.frames if frame["message_type"] == SLOW_TYPE]
-    for name, rows in (("fast.csv", fast), ("slow.csv", slow)):
+    checkweigh = [frame for frame in parser.frames
+                  if frame["message_type"] == CHECKWEIGH_TYPE]
+    for name, rows in (("fast.csv", fast), ("slow.csv", slow),
+                       ("checkweigh.csv", checkweigh)):
         if rows:
             with (output_dir / name).open("w", newline="", encoding="ascii") as stream:
                 writer = csv.DictWriter(stream, fieldnames=rows[0].keys())
@@ -205,6 +229,7 @@ async def run(args):
     summary = {"duration_s": time.monotonic() - started,
                "frames_received": parser.frames_received,
                "fast_frames": len(fast), "slow_frames": len(slow),
+               "checkweigh_frames": len(checkweigh),
                "crc_errors": parser.crc_errors, "sequence_gaps": parser.sequence_gaps,
                "duplicates": parser.duplicates, "parser_resync": parser.parser_resync,
                "timestamp_anomalies": parser.timestamp_anomalies,

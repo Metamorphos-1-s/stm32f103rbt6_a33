@@ -48,5 +48,7 @@ void FaultManager_Set(FaultCode fault);
 void FaultManager_Clear(FaultCode fault);
 bool FaultManager_IsActive(FaultCode code);
 uint32_t FaultManager_GetActiveMask(void);
+bool FaultManager_FaultInvalidatesWeight(FaultCode fault);
+bool FaultManager_HasWeightInvalidFault(void);
 
 #endif /* FAULT_MANAGER_H */

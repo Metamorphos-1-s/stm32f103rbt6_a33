@@ -36,6 +36,7 @@ OPERATIONS = {
     "apply-config": 0x25,
     "discard-config": 0x26,
     "save": 0x27,
+    "set-field": 0x28,
     "cal-status": 0x30,
     "cal-begin": 0x31,
     "cal-set-mass": 0x32,
@@ -153,15 +154,25 @@ def decode_operation_data(operation, data):
                 "firmware_major": fw_major, "firmware_minor": fw_minor,
                 "schema_version": schema,
                 "register_map_version": register_map, "capabilities": caps}
-    if operation == OPERATIONS["get-config"] and len(data) == 55:
-        values = struct.unpack("<BBBBqqqBBBBBqqIBB", data)
+    if operation == OPERATIONS["get-config"] and len(data) >= 55:
+        values = struct.unpack("<BBBBqqqBBBBBqqIBB", data[:55])
         names = ("unit", "decimal_places", "division", "active_profile",
                  "capacity_ug", "overload_threshold_ug", "zero_range_ug",
                  "filter_mode", "filter_strength", "stability_window",
                  "sample_rate", "gain", "stability_enter_ug",
                  "stability_exit_ug", "stability_hold_ms", "persistent_dirty",
                  "config_edit_state")
-        return dict(zip(names, values))
+        decoded = dict(zip(names, values))
+        if len(data) >= 84:
+            alarm = struct.unpack("<BBBBBqqq", data[55:84])
+            alarm_names = ("limit_enabled", "weight_source",
+                           "internal_buzzer_enabled",
+                           "external_buzzer_enabled",
+                           "qualified_beep_enabled", "lower_limit_ug",
+                           "upper_limit_ug", "hysteresis_ug")
+            decoded.update(dict(zip(alarm_names, alarm)))
+        decoded["extended_alarm_config"] = len(data) >= 84
+        return decoded
     if (operation in range(OPERATIONS["cal-status"],
                           OPERATIONS["cal-cancel"] + 1) and
             len(data) == 44):
@@ -204,8 +215,14 @@ def command_data(args):
     if args.command == "set-unit":
         return bytes(({"kg": 0, "g": 1, "lb": 2}[args.unit],))
     if args.command == "set-mass":
-        field = {"capacity": 0, "zero-range": 1, "overload": 2}[args.field]
+        field = {"capacity": 0, "zero-range": 1, "overload": 2,
+                 "alarm-low": 3, "alarm-high": 4, "alarm-hys": 5}[args.field]
         return struct.pack("<Bq", field, args.value_ug)
+    if args.command == "set-field":
+        field = {"limit-enable": 15, "alarm-source": 16,
+                 "internal-buzzer": 17, "external-buzzer": 18,
+                 "qualified-beep": 19}[args.field]
+        return struct.pack("<Bi", field, args.value)
     if args.command == "set-unit-display":
         return struct.pack("<BBB", {"kg": 0, "g": 1, "lb": 2}[args.unit],
                            args.dp, args.division)
@@ -252,9 +269,16 @@ def parse_args():
     unit.add_argument("--unit", choices=("kg", "g", "lb"), required=True)
     mass = subparsers.add_parser("set-mass")
     add_interlocks(mass)
-    mass.add_argument("--field", choices=("capacity", "zero-range", "overload"),
+    mass.add_argument("--field", choices=("capacity", "zero-range", "overload",
+                      "alarm-low", "alarm-high", "alarm-hys"),
                       required=True)
     mass.add_argument("--value-ug", type=int, required=True)
+    scalar = subparsers.add_parser("set-field")
+    add_interlocks(scalar)
+    scalar.add_argument("--field", choices=("limit-enable", "alarm-source",
+                        "internal-buzzer", "external-buzzer",
+                        "qualified-beep"), required=True)
+    scalar.add_argument("--value", type=int, required=True)
     display = subparsers.add_parser("set-unit-display")
     add_interlocks(display)
     display.add_argument("--unit", choices=("kg", "g", "lb"), required=True)
@@ -341,6 +365,7 @@ async def run(args):
                         break
                     if (response["transaction_id"] == transaction_id and
                             response["operation"] == operation):
+                        response["response_data_length"] = len(response["data"])
                         response["response_data"] = decode_operation_data(
                             operation, response.pop("data"))
                         response["attempt"] = attempt + 1

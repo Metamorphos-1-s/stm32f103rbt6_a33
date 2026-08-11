@@ -6,6 +6,7 @@
 
 #define BLE_TELEMETRY_FAST_PERIOD_MS 200U
 #define BLE_TELEMETRY_SLOW_PERIOD_MS 1000U
+#define BLE_TELEMETRY_CHECKWEIGH_PERIOD_MS 1000U
 
 typedef struct
 {
@@ -21,6 +22,9 @@ typedef struct
     uint32_t slow_frames_generated;
     uint32_t slow_frames_sent;
     uint32_t slow_frames_dropped;
+    uint32_t checkweigh_frames_generated;
+    uint32_t checkweigh_frames_sent;
+    uint32_t checkweigh_frames_dropped;
 } BleTelemetryCounters;
 
 typedef bool (*BleTelemetryBuildFrame)(uint8_t type, uint16_t sequence,
@@ -33,6 +37,7 @@ typedef struct
 {
     uint32_t next_fast_ms;
     uint32_t next_slow_ms;
+    uint32_t next_checkweigh_ms;
     uint16_t next_sequence;
     BleTelemetryCounters counters;
 } BleTelemetryScheduler;

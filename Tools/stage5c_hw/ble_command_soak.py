@@ -11,7 +11,9 @@ from pathlib import Path
 
 from bleak import BleakClient, BleakScanner
 
-from ble_telemetry import FAST_TYPE, SLOW_TYPE, TelemetryParser
+from ble_telemetry import (
+    CHECKWEIGH_TYPE, FAST_TYPE, SLOW_TYPE, TelemetryParser,
+)
 from stage5c_ble import (
     FFE1_UUID, FFE2_UUID, OPERATIONS, RESPONSE, FrameParser,
     decode_operation_data, decode_response, encode_request,
@@ -81,7 +83,7 @@ async def run(args):
 
     def on_notify(_characteristic, notification):
         for message_type, payload, raw in stream_parser.feed(bytes(notification)):
-            if message_type in (FAST_TYPE, SLOW_TYPE):
+            if message_type in (FAST_TYPE, SLOW_TYPE, CHECKWEIGH_TYPE):
                 telemetry.feed(raw)
             elif message_type == RESPONSE:
                 try:
@@ -204,13 +206,17 @@ async def run(args):
 
     fast = [frame for frame in telemetry.frames if frame["message_type"] == FAST_TYPE]
     slow = [frame for frame in telemetry.frames if frame["message_type"] == SLOW_TYPE]
+    checkweigh = [frame for frame in telemetry.frames
+                  if frame["message_type"] == CHECKWEIGH_TYPE]
     write_csv(output_dir / "fast.csv", fast)
     write_csv(output_dir / "slow.csv", slow)
+    write_csv(output_dir / "checkweigh.csv", checkweigh)
     stats.update({
         "elapsed_s": round(time.monotonic() - started, 6),
         "frames_received": telemetry.frames_received,
         "fast_frames": len(fast),
         "slow_frames": len(slow),
+        "checkweigh_frames": len(checkweigh),
         "telemetry_crc_errors": telemetry.crc_errors,
         "telemetry_sequence_gaps": telemetry.sequence_gaps,
         "telemetry_duplicates": telemetry.duplicates,
@@ -235,7 +241,8 @@ async def run(args):
         (not args.include_calibration_sessions or
          stats["calibration_sessions_completed"] > 0) and
         len(fast) >= int(args.duration_s * 4.5) and
-        len(slow) >= int(args.duration_s * 0.8)
+        len(slow) >= int(args.duration_s * 0.8) and
+        len(checkweigh) >= int(args.duration_s * 0.8)
     )
     (output_dir / "summary.json").write_text(
         json.dumps(stats, indent=2) + "\n", encoding="ascii")

@@ -14,7 +14,7 @@ payload byte. The CRC itself is little-endian.
 |---:|---:|---|---|---|
 | 0 | 2 | u8[2] | sync | `A5 5A` |
 | 2 | 1 | u8 | version | `0x01` |
-| 3 | 1 | u8 | message_type | `0x01` FAST, `0x02` SLOW, `0x80` REQUEST, `0x81` RESPONSE |
+| 3 | 1 | u8 | message_type | `0x01` FAST, `0x02` SLOW, `0x03` CHECKWEIGH, `0x80` REQUEST, `0x81` RESPONSE |
 | 4 | 2 | u16 | payload_length | Message-specific; request payload <=128 bytes |
 | 6 | 2 | u16 | frame_sequence | Increments per frame, wraps |
 | 8 | 4 | u32 | timestamp_ms | Device monotonic milliseconds, wraps |
@@ -62,10 +62,30 @@ Exact size is 73 bytes (`12 + 59 + 2`), sent every 1000 ms (1 Hz).
 | 54 | 1 | u8 | app_state |
 | 55 | 4 | u32 | fault_mask |
 
-The scheduled application bandwidth is `56*5 + 73*1 = 353 byte/s`, or 36.8%
+The scheduled application bandwidth is `56*5 + 73*1 + 22*1 = 375 byte/s`, or 39.1%
 of the 960 byte/s 8N1 budget. The largest frame is 73 bytes, below the 255-byte
 effective TX ring capacity. A full queue drops the entire newest frame; no
 blocking, partial writes, or stale-frame retries are used.
+
+## CHECKWEIGH_STATUS (0x03)
+
+Exact size is 22 bytes (`12 + 8 + 2`), sent every 1000 ms (1 Hz). It reports
+live state only; thresholds remain available through GET_ACTIVE_CONFIG.
+
+| Payload offset | Size | Type | Name |
+|---:|---:|---|---|
+| 0 | 1 | u8 | state: 0 disabled, 1 low, 2 OK, 3 high, 4 overload, 5 fault |
+| 1 | 1 | u8 | flags |
+| 2 | 1 | u8 | weight_source: 0 NET, 1 GROSS |
+| 3 | 1 | u8 | reserved, zero |
+| 4 | 4 | u32 | config_revision |
+
+Flags are bit0 limit enabled, bit1 current WeightSnapshot stable, bit2 logical
+alarm active, bit3 green, bit4 yellow, bit5 red, bit6 internal buzzer GPIO and
+bit7 external buzzer GPIO. `alarm_active` remains set throughout both 250 ms
+alarm phases; the two buzzer flags report actual GPIO phase and may be clear.
+Lamp and buzzer flags come from AlarmOutputManager diagnostics, not a telemetry
+recalculation. A retained qualified state with `stable=0` is valid.
 
 ## COMMAND_REQUEST (0x80) and COMMAND_RESPONSE (0x81)
 
@@ -99,7 +119,7 @@ Supported operations are `GET_DEVICE_INFO (0x01)`, `GET_ACTIVE_CONFIG (0x02)`,
 `SET_WEIGHT_VIEW (0x14)`, `SET_DISPLAY_UNIT (0x15)`, `BEGIN_CONFIG_EDIT
 (0x20)`, `SET_CONFIG_MASS (0x21)`, `SET_UNIT_DISPLAY (0x22)`,
 `SET_PROFILE_FIELD (0x23)`, `VALIDATE_CONFIG (0x24)`, `APPLY_CONFIG (0x25)`,
-`DISCARD_CONFIG (0x26)`, `SAVE_CONFIG (0x27)`, and the calibration operations
+`DISCARD_CONFIG (0x26)`, `SAVE_CONFIG (0x27)`, `SET_CONFIG_FIELD (0x28)`, and the calibration operations
 `0x30..0x36` defined below. Sample rate and gain remain read-only. Factory
 reset, communication apply, OTA, AT, FF12 and Runtime Drift control are
 unsupported.
@@ -113,7 +133,7 @@ unsupported.
 | 2 | 1 | u8 | firmware_version low byte (`10`) |
 | 3 | 1 | u8 | reserved (`0`) |
 | 4 | 2 | u16 | schema_version (`2`) |
-| 6 | 2 | u16 | register_map_version (`0x0102`) |
+| 6 | 2 | u16 | register_map_version (`0x0103`) |
 | 8 | 4 | u32 | capability bits |
 
 The firmware bytes combine as `(high << 8) | low`, currently `0x050A`.
@@ -139,6 +159,31 @@ Configuration writes use the existing `CommandService`, `ConfigEdit` and
 and Modbus return `BUSY` when the other transport owns staging. `APPLY_CONFIG`
 changes active RAM and sets `persistent_dirty`. `SAVE_CONFIG` responds only
 after the existing persistence completion/no-change/failure event.
+
+`GET_ACTIVE_CONFIG` remains prefix compatible. The original 55-byte prefix and
+all offsets are frozen. An optional 29-byte AlarmConfig tail extends new
+responses to 84 bytes. Parsers must accept at least 55 bytes, parse the old
+prefix first, and parse the tail only when 84 or more bytes are present.
+
+| Tail offset | Absolute offset | Size | Type | Name |
+|---:|---:|---:|---|---|
+| 0 | 55 | 1 | bool | limit_enable |
+| 1 | 56 | 1 | u8 enum | weight_source: 0 NET, 1 GROSS |
+| 2 | 57 | 1 | bool | internal_buzzer_enable |
+| 3 | 58 | 1 | bool | external_buzzer_enable |
+| 4 | 59 | 1 | bool | qualified_beep_enable |
+| 5 | 60 | 8 | i64 ug | lower_limit_ug |
+| 13 | 68 | 8 | i64 ug | upper_limit_ug |
+| 21 | 76 | 8 | i64 ug | hysteresis_ug |
+
+`SET_CONFIG_MASS (0x21)` keeps its `field u8 + value i64` layout and exposes
+mass field IDs 3 lower, 4 upper and 5 hysteresis. `SET_CONFIG_FIELD (0x28)` uses
+`field u8 + value i32`; exposed scalar IDs are 15 limit enable, 16 source,
+17 internal buzzer, 18 external buzzer and 19 qualified beep. These allowlists
+do not expose other internal ConfigField values. All requests operate on the
+same ConfigEdit staging copy and use the existing validate/apply/replay/conflict
+semantics. Classification fields reset old qualification after successful
+Apply; the three buzzer fields take effect without resetting classification.
 
 ## Calibration workflow
 

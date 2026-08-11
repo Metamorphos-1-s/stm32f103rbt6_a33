@@ -1,5 +1,7 @@
 #include "config_edit.h"
 
+#include "alarm_config_validation.h"
+#include "project_config.h"
 #include "calibration_model.h"
 #include "metrology_config_validator.h"
 
@@ -59,6 +61,26 @@ bool ConfigEdit_SetIntegerField(ConfigFieldId field, int32_t value)
             }
             s_working.system.tare_power_loss_retention = (value != 0);
             break;
+        case CONFIG_FIELD_LIMIT_ENABLE:
+            if ((value < 0) || (value > 1)) return false;
+            s_working.alarm.limit_function_enable = (value != 0);
+            break;
+        case CONFIG_FIELD_ALARM_WEIGHT_SOURCE:
+            if ((uint32_t)value >= ALARM_WEIGHT_SOURCE_COUNT) return false;
+            s_working.alarm.weight_source = (AlarmWeightSource)value;
+            break;
+        case CONFIG_FIELD_INTERNAL_BUZZER_ENABLE:
+            if ((value < 0) || (value > 1)) return false;
+            s_working.alarm.internal_buzzer_enable = (value != 0);
+            break;
+        case CONFIG_FIELD_EXTERNAL_BUZZER_ENABLE:
+            if ((value < 0) || (value > 1)) return false;
+            s_working.alarm.external_buzzer_enable = (value != 0);
+            break;
+        case CONFIG_FIELD_QUALIFIED_BEEP_ENABLE:
+            if ((value < 0) || (value > 1)) return false;
+            s_working.alarm.qualified_beep_enable = (value != 0);
+            break;
         case CONFIG_FIELD_CAPACITY:
         case CONFIG_FIELD_DIVISION:
         case CONFIG_FIELD_DECIMAL_PLACES:
@@ -97,6 +119,16 @@ bool ConfigEdit_SetMassField(ConfigMassFieldId field, MassValueUg value_ug)
         case CONFIG_MASS_FIELD_OVERLOAD_THRESHOLD:
             if (value_ug < 0) return false;
             s_working.metrology.overload_threshold_ug = value_ug;
+            break;
+        case CONFIG_MASS_FIELD_ALARM_LOWER_LIMIT:
+            s_working.alarm.lower_limit_ug = value_ug;
+            break;
+        case CONFIG_MASS_FIELD_ALARM_UPPER_LIMIT:
+            s_working.alarm.upper_limit_ug = value_ug;
+            break;
+        case CONFIG_MASS_FIELD_ALARM_HYSTERESIS:
+            if (value_ug < 0) return false;
+            s_working.alarm.hysteresis_ug = value_ug;
             break;
         case CONFIG_MASS_FIELD_COUNT:
         default: return false;
@@ -171,6 +203,7 @@ bool ConfigEdit_Validate(void)
     }
     valid = (MetrologyConfig_ValidateProductHardware(&s_working.metrology) ==
              METROLOGY_CONFIG_OK) &&
+            AlarmConfig_Validate(&s_working.alarm) &&
             (s_working.display.brightness <= 7U) &&
             (!s_working.calibration.calibration_valid ||
              (CalibrationModel_Validate(&s_working.calibration) ==

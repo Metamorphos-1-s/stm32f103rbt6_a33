@@ -1,8 +1,8 @@
 import struct
 import unittest
 
-from ble_telemetry import (FAST_TYPE, HEADER_SIZE, SLOW_TYPE, TelemetryParser,
-                           crc16)
+from ble_telemetry import (CHECKWEIGH_TYPE, FAST_TYPE, HEADER_SIZE, SLOW_TYPE,
+                           TelemetryParser, crc16)
 
 
 def frame(message_type, sequence, timestamp, payload):
@@ -21,6 +21,26 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(parser.feed(fast[1:7]), [])
         self.assertEqual(len(parser.feed(fast[7:] + slow)), 2)
         self.assertEqual(parser.frames_received, 2)
+
+    def test_checkweigh_status_and_interleave(self):
+        fast = frame(FAST_TYPE, 10, 100, bytes(42))
+        status = frame(CHECKWEIGH_TYPE, 11, 101,
+                       struct.pack("<BBBBI", 3, 0x65, 1, 0, 0x12345678))
+        slow = frame(SLOW_TYPE, 12, 102, bytes(59))
+        parser = TelemetryParser()
+        parsed = parser.feed(fast + status[:9])
+        parsed += parser.feed(status[9:] + slow)
+        self.assertEqual([item["message_type"] for item in parsed],
+                         [FAST_TYPE, CHECKWEIGH_TYPE, SLOW_TYPE])
+        decoded = parsed[1]
+        self.assertEqual(decoded["checkweigh_state"], 3)
+        self.assertTrue(decoded["limit_enabled"])
+        self.assertTrue(decoded["alarm_active"])
+        self.assertTrue(decoded["red_active"])
+        self.assertTrue(decoded["internal_buzzer_active"])
+        self.assertFalse(decoded["external_buzzer_active"])
+        self.assertEqual(decoded["weight_source"], 1)
+        self.assertEqual(decoded["config_revision"], 0x12345678)
 
     def test_every_byte_and_garbage(self):
         data = frame(FAST_TYPE, 1, 200, bytes(42))

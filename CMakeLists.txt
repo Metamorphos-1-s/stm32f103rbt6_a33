@@ -65,6 +65,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     BSP/bsp_time.c
     BSP/bsp_uart.c
     BSP/bsp_uart_dma.c
+    Config/alarm_config_validation.c
     Config/default_config.c
     Diagnostics/stage2a_driver_diagnostics.c
     Diagnostics/stage2b_board_diagnostics.c
@@ -76,6 +77,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Domain/calibration/calibration_model.c
     Domain/calibration/raw_calibration_stability.c
     Domain/filter/weight_filter.c
+    Domain/limit_checker/limit_checker.c
     Domain/measurement/metrology_config_validator.c
     Domain/measurement/display_conditioner.c
     Domain/measurement/metrology_legacy_projection.c
@@ -101,6 +103,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Protocol/command_service/command_service.c
     Protocol/crc16/crc16.c
     Protocol/ble/ble_frame_codec.c
+    Protocol/ble/ble_checkweigh_codec.c
     Protocol/ble/ble_command_protocol.c
     Protocol/modbus/modbus_command_mailbox.c
     Protocol/modbus/modbus_register_model.c
@@ -130,6 +133,11 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     UI/menu_controller/menu_controller.c
 )
 
+if(NOT A33_ENABLE_BOARD_DIAGNOSTICS)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        Services/alarm_output_manager/alarm_output_manager.c)
+endif()
+
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     App
@@ -138,6 +146,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Diagnostics
     Domain/calibration
     Domain/filter
+    Domain/limit_checker
     Domain/measurement
     Domain/stability
     Domain/zero_tare
@@ -155,6 +164,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Services/ble_connection_manager
     Services/ble_telemetry_service
     Services/ble_command_service
+    Services/alarm_output_manager
     Services/config_store
     Services/crc32
     Services/config_edit
@@ -171,10 +181,19 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add project symbols (macros)
 if(A33_ENABLE_BOARD_DIAGNOSTICS)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
-        ENABLE_STAGE2B_BOARD_DIAGNOSTICS=1)
+        ENABLE_STAGE2B_BOARD_DIAGNOSTICS=1
+        ENABLE_STAGE5E_A3_LOCAL_MENU=0)
+    # Keep board diagnostics at -O0 while size-optimizing transport code that
+    # the diagnostic image still links but does not need to single-step.
+    set_source_files_properties(
+        Protocol/modbus/modbus_register_model.c
+        Services/ble_command_service/ble_command_service.c
+        Services/ble_telemetry_service/ble_telemetry_service.c
+        PROPERTIES COMPILE_OPTIONS "-Os")
 else()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
-        ENABLE_STAGE2B_BOARD_DIAGNOSTICS=0)
+        ENABLE_STAGE2B_BOARD_DIAGNOSTICS=0
+        ENABLE_STAGE5E_A3_LOCAL_MENU=1)
 endif()
 
 # Remove wrong libob.a library dependency when using cpp files

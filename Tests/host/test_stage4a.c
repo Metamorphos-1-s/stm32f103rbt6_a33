@@ -30,12 +30,18 @@
 #include <string.h>
 
 static unsigned int s_stage4a_failures;
+static unsigned int s_alarm_menu_checks;
 
 #define CHECK4(condition) do { \
     if (!(condition)) { \
         ++s_stage4a_failures; \
         (void)printf("FAIL %s:%d: %s\n", __FILE__, __LINE__, #condition); \
     } \
+} while (0)
+
+#define CHECK_A3(condition) do { \
+    ++s_alarm_menu_checks; \
+    CHECK4(condition); \
 } while (0)
 
 static KeyEvent Stage4A_Key(KeyId key, KeyEventType type, uint32_t now)
@@ -185,6 +191,15 @@ static bool Stage4A_ModelShows(const char text[6])
 {
     uint16_t expected[6];
     return DisplayFormatter_FormatText6(text, expected) &&
+           (memcmp(expected, DisplayModel_Get()->digit_segments,
+                   sizeof(expected)) == 0);
+}
+
+static bool Stage4A_ModelShowsWeight(int32_t value, uint8_t decimal_places)
+{
+    uint16_t expected[6];
+    return DisplayFormatter_FormatWeight(value, decimal_places, true,
+                                         expected) &&
            (memcmp(expected, DisplayModel_Get()->digit_segments,
                    sizeof(expected)) == 0);
 }
@@ -347,6 +362,17 @@ static void TestCommandAndConfig(void)
            DEVICE_CS1237_DATA_RATE_10_HZ);
     (void)Stage4A_Command(COMMAND_CANCEL_CONFIG_EDIT,
         COMMAND_SOURCE_LOCAL_KEY, 0, 0, &response);
+    CHECK4(Stage4A_Command(COMMAND_BEGIN_CONFIG_EDIT,COMMAND_SOURCE_BLE,
+        0,0,&response)==COMMAND_RESULT_OK);
+    CHECK4(CommandService_ReserveConfigOwner(COMMAND_SOURCE_MODBUS)==
+        COMMAND_RESULT_BUSY);
+    CHECK4(Stage4A_Command(COMMAND_CANCEL_CONFIG_EDIT,COMMAND_SOURCE_BLE,
+        0,0,&response)==COMMAND_RESULT_OK);
+    CHECK4(CommandService_ReserveConfigOwner(COMMAND_SOURCE_MODBUS)==
+        COMMAND_RESULT_OK);
+    CHECK4(Stage4A_Command(COMMAND_BEGIN_CONFIG_EDIT,COMMAND_SOURCE_BLE,
+        0,0,&response)==COMMAND_RESULT_BUSY);
+    CommandService_ClearStagedConfig();
 }
 
 static void TestZeroCommandFeedback(void)
@@ -1255,6 +1281,232 @@ static void TestCalibrationSmallSpanError(void)
     CHECK4(!SystemContext_Get()->config.calibration.calibration_valid);
 }
 
+static void TestAlarmConfigEditFields(void)
+{
+    DeviceConfig config;
+    DeviceConfig target;
+
+    Stage4A_MakeConfig(&config, false);
+    CHECK_A3(ConfigEdit_Init());
+    CHECK_A3(ConfigEdit_Begin(&config));
+    CHECK_A3(ConfigEdit_SetMassField(CONFIG_MASS_FIELD_ALARM_LOWER_LIMIT,
+                                    INT64_C(499000000)));
+    CHECK_A3(ConfigEdit_SetMassField(CONFIG_MASS_FIELD_ALARM_UPPER_LIMIT,
+                                    INT64_C(501000000)));
+    CHECK_A3(ConfigEdit_SetMassField(CONFIG_MASS_FIELD_ALARM_HYSTERESIS,
+                                    INT64_C(200000)));
+    CHECK_A3(ConfigEdit_SetIntegerField(CONFIG_FIELD_ALARM_WEIGHT_SOURCE,
+                                        ALARM_WEIGHT_NET));
+    CHECK_A3(ConfigEdit_SetIntegerField(CONFIG_FIELD_INTERNAL_BUZZER_ENABLE,
+                                        1));
+    CHECK_A3(ConfigEdit_SetIntegerField(CONFIG_FIELD_EXTERNAL_BUZZER_ENABLE,
+                                        1));
+    CHECK_A3(ConfigEdit_SetIntegerField(CONFIG_FIELD_QUALIFIED_BEEP_ENABLE,
+                                        1));
+    CHECK_A3(ConfigEdit_SetIntegerField(CONFIG_FIELD_LIMIT_ENABLE, 1));
+    CHECK_A3(ConfigEdit_Validate());
+    target = config;
+    CHECK_A3(ConfigEdit_CommitToRam(&target));
+    CHECK_A3(target.alarm.limit_function_enable);
+    CHECK_A3(target.alarm.lower_limit_ug == INT64_C(499000000));
+    CHECK_A3(target.alarm.upper_limit_ug == INT64_C(501000000));
+    CHECK_A3(target.alarm.hysteresis_ug == INT64_C(200000));
+    CHECK_A3(target.alarm.weight_source == ALARM_WEIGHT_NET);
+    CHECK_A3(target.alarm.internal_buzzer_enable &&
+             target.alarm.external_buzzer_enable &&
+             target.alarm.qualified_beep_enable);
+
+    CHECK_A3(ConfigEdit_Begin(&target));
+    CHECK_A3(ConfigEdit_SetMassField(CONFIG_MASS_FIELD_ALARM_LOWER_LIMIT,
+                                    INT64_C(505000000)));
+    CHECK_A3(!ConfigEdit_Validate());
+    CHECK_A3(target.alarm.lower_limit_ug == INT64_C(499000000));
+    ConfigEdit_Cancel();
+
+    CHECK_A3(ConfigEdit_Begin(&target));
+    CHECK_A3(ConfigEdit_SetMassField(CONFIG_MASS_FIELD_ALARM_HYSTERESIS,
+                                    INT64_C(1000001)));
+    CHECK_A3(!ConfigEdit_Validate());
+    ConfigEdit_Cancel();
+
+    Stage4A_MakeConfig(&config, false);
+    CHECK_A3(ConfigEdit_Begin(&config));
+    CHECK_A3(ConfigEdit_SetIntegerField(CONFIG_FIELD_LIMIT_ENABLE, 1));
+    CHECK_A3(!ConfigEdit_Validate());
+    ConfigEdit_Cancel();
+
+    CHECK_A3(ConfigEdit_Begin(&target));
+    CHECK_A3(ConfigEdit_SetMassField(CONFIG_MASS_FIELD_ALARM_LOWER_LIMIT,
+                                    INT64_C(-1000000)));
+    CHECK_A3(!ConfigEdit_SetMassField(CONFIG_MASS_FIELD_ALARM_HYSTERESIS,
+                                     INT64_C(-1)));
+    CHECK_A3(!ConfigEdit_SetIntegerField(CONFIG_FIELD_LIMIT_ENABLE, -1));
+    CHECK_A3(!ConfigEdit_SetIntegerField(CONFIG_FIELD_LIMIT_ENABLE, 2));
+    CHECK_A3(!ConfigEdit_SetIntegerField(CONFIG_FIELD_ALARM_WEIGHT_SOURCE,
+                                         ALARM_WEIGHT_SOURCE_COUNT));
+    ConfigEdit_Cancel();
+    CHECK_A3(target.alarm.lower_limit_ug == INT64_C(499000000));
+    CHECK_A3(target.alarm.internal_buzzer_enable);
+}
+
+static void Stage4A_AlarmMenuKey(KeyId key, uint32_t *now_ms)
+{
+    KeyEvent event;
+    *now_ms += 10U;
+    TestMock_SetTimeMs(*now_ms);
+    event = Stage4A_Key(key, KEY_EVENT_SHORT, *now_ms);
+    CHECK_A3(MenuController_HandleKeyEvent(&event));
+}
+
+static void Stage4A_EnterAdvancedMenu(uint32_t *now_ms)
+{
+    CHECK_A3(MenuController_Enter());
+    Stage4A_AlarmMenuKey(KEY_ID_STAR, now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_HASH, now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_STAR, now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_HASH, now_ms);
+    CHECK_A3(MenuController_IsAdvanced());
+    CHECK_A3(MenuController_GetItem() == MENU_ITEM_CAPACITY);
+}
+
+static void Stage4A_NavigateAlarmMenu(MenuItem item, uint32_t *now_ms)
+{
+    uint8_t guard = 0U;
+    while ((MenuController_GetItem() != item) && (guard < MENU_ITEM_COUNT))
+    {
+        Stage4A_AlarmMenuKey(KEY_ID_HASH, now_ms);
+        ++guard;
+    }
+    CHECK_A3(MenuController_GetItem() == item);
+}
+
+static void Stage4A_ClearMenuMessage(uint32_t *now_ms)
+{
+    *now_ms += UI_MESSAGE_DEFAULT_MS + 1U;
+    TestMock_SetTimeMs(*now_ms);
+    DisplayController_Process20ms();
+}
+
+static void TestAlarmMenu(void)
+{
+    static const MenuItem items[] = {
+        MENU_ITEM_LIMIT_ENABLE, MENU_ITEM_ALARM_LOWER_LIMIT,
+        MENU_ITEM_ALARM_UPPER_LIMIT, MENU_ITEM_ALARM_HYSTERESIS,
+        MENU_ITEM_ALARM_SOURCE, MENU_ITEM_INTERNAL_BUZZER,
+        MENU_ITEM_EXTERNAL_BUZZER, MENU_ITEM_QUALIFIED_BEEP
+    };
+    static const char labels[][6] = {
+        {'L','-','E','n',' ',' '}, {'L','o',' ',' ',' ',' '},
+        {'H','i',' ',' ',' ',' '}, {'H','y','S',' ',' ',' '},
+        {'S','r','c',' ',' ',' '}, {'b','I','n',' ',' ',' '},
+        {'b','E','H',' ',' ',' '}, {'b','O','K',' ',' ',' '}
+    };
+    DeviceConfig config;
+    uint32_t now_ms = 0U;
+    uint8_t index;
+
+    Stage4A_InitRuntime(&config, true);
+    config = SystemContext_Get()->config;
+    config.metrology.active_unit = MASS_UNIT_G;
+    config.metrology.unit_display[MASS_UNIT_G].decimal_places = 2U;
+    config.metrology.unit_display[MASS_UNIT_G].division_digit = 1U;
+    config.alarm.limit_function_enable = false;
+    config.alarm.lower_limit_ug = INT64_C(499000000);
+    config.alarm.upper_limit_ug = INT64_C(501000000);
+    config.alarm.hysteresis_ug = INT64_C(200000);
+    config.alarm.weight_source = ALARM_WEIGHT_NET;
+    CHECK_A3(SystemContext_ApplyConfig(&config, false));
+    CommandService_Init();
+    MenuController_Init();
+    CHECK_A3(SystemContext_SetState(APP_STATE_MENU, now_ms));
+    Stage4A_EnterAdvancedMenu(&now_ms);
+
+    for (index = 0U; index < (sizeof(items) / sizeof(items[0])); ++index)
+    {
+        Stage4A_NavigateAlarmMenu(items[index], &now_ms);
+        DisplayController_Process20ms();
+        CHECK_A3(Stage4A_ModelShows(labels[index]));
+    }
+    Stage4A_AlarmMenuKey(KEY_ID_HASH, &now_ms);
+    CHECK_A3(MenuController_GetItem() == MENU_ITEM_SAVE);
+    Stage4A_NavigateAlarmMenu(MENU_ITEM_LIMIT_ENABLE, &now_ms);
+
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    DisplayController_Process20ms();
+    CHECK_A3(Stage4A_ModelShows("   OFF"));
+    Stage4A_AlarmMenuKey(KEY_ID_HASH, &now_ms);
+    DisplayController_Process20ms();
+    CHECK_A3(Stage4A_ModelShows("    On"));
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    CHECK_A3(SystemContext_Get()->config.alarm.limit_function_enable);
+    CHECK_A3(SystemContext_Get()->runtime.config_dirty);
+    Stage4A_ClearMenuMessage(&now_ms);
+
+    Stage4A_NavigateAlarmMenu(MENU_ITEM_ALARM_LOWER_LIMIT, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    DisplayController_Process20ms();
+    CHECK_A3(Stage4A_ModelShowsWeight(49900, 2U));
+    Stage4A_AlarmMenuKey(KEY_ID_HASH, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    CHECK_A3(SystemContext_Get()->config.alarm.lower_limit_ug ==
+             INT64_C(499010000));
+    Stage4A_ClearMenuMessage(&now_ms);
+
+    Stage4A_NavigateAlarmMenu(MENU_ITEM_ALARM_UPPER_LIMIT, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    DisplayController_Process20ms();
+    CHECK_A3(Stage4A_ModelShowsWeight(50100, 2U));
+    Stage4A_AlarmMenuKey(KEY_ID_STAR, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    CHECK_A3(SystemContext_Get()->config.alarm.upper_limit_ug ==
+             INT64_C(500990000));
+    Stage4A_ClearMenuMessage(&now_ms);
+
+    Stage4A_NavigateAlarmMenu(MENU_ITEM_ALARM_HYSTERESIS, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    DisplayController_Process20ms();
+    CHECK_A3(Stage4A_ModelShowsWeight(20, 2U));
+    Stage4A_AlarmMenuKey(KEY_ID_HASH, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    CHECK_A3(SystemContext_Get()->config.alarm.hysteresis_ug ==
+             INT64_C(210000));
+    Stage4A_ClearMenuMessage(&now_ms);
+
+    Stage4A_NavigateAlarmMenu(MENU_ITEM_ALARM_SOURCE, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    DisplayController_Process20ms();
+    CHECK_A3(Stage4A_ModelShows("   nEt"));
+    Stage4A_AlarmMenuKey(KEY_ID_HASH, &now_ms);
+    DisplayController_Process20ms();
+    CHECK_A3(Stage4A_ModelShows(" GroSS"));
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    CHECK_A3(SystemContext_Get()->config.alarm.weight_source ==
+             ALARM_WEIGHT_GROSS);
+    Stage4A_ClearMenuMessage(&now_ms);
+
+    for (index = 0U; index < 3U; ++index)
+    {
+        bool enabled;
+        Stage4A_NavigateAlarmMenu(items[5U + index], &now_ms);
+        Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+        DisplayController_Process20ms();
+        CHECK_A3(Stage4A_ModelShows("   OFF"));
+        Stage4A_AlarmMenuKey(KEY_ID_HASH, &now_ms);
+        Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+        enabled = (index == 0U) ?
+            SystemContext_Get()->config.alarm.internal_buzzer_enable :
+            (index == 1U) ?
+            SystemContext_Get()->config.alarm.external_buzzer_enable :
+            SystemContext_Get()->config.alarm.qualified_beep_enable;
+        CHECK_A3(enabled);
+        Stage4A_ClearMenuMessage(&now_ms);
+    }
+
+    Stage4A_AlarmMenuKey(KEY_ID_TARE, &now_ms);
+    CHECK_A3(!MenuController_IsActive());
+    CHECK_A3(MenuController_TakeExitRequest());
+}
+
 unsigned int Stage4A_RunTests(void)
 {
     TestKeyMapAndService();
@@ -1275,5 +1527,8 @@ unsigned int Stage4A_RunTests(void)
     TestCalibrationControllerDirection(true);
     TestCalibrationCancelAndGuards();
     TestCalibrationSmallSpanError();
+    TestAlarmConfigEditFields();
+    TestAlarmMenu();
+    (void)printf("Alarm config/menu checks: %u\n", s_alarm_menu_checks);
     return s_stage4a_failures;
 }

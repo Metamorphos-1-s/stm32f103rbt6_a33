@@ -11,6 +11,8 @@ bool MetrologyLegacyStabilityProjection_Update(
     const MetrologyConfig *metrology, StabilityConfig *stability);
 bool CalibrationLegacyProjection_Update(CalibrationConfig *config,
     MassUnit unit, const UnitDisplayConfig *display);
+bool AlarmLegacyProjection_Update(AlarmConfig *config, MassUnit unit,
+    const UnitDisplayConfig *display);
 bool RuntimeLegacyProjection_Update(RuntimeState *runtime, MassUnit unit,
     const UnitDisplayConfig *display);
 

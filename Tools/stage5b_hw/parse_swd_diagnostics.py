@@ -7,15 +7,24 @@ from pathlib import Path
 
 # Addresses for the current Release link map. Keep these synchronized with
 # build/Release/stm32f103rbt6_a33.map when the firmware layout changes.
-TX_LAST_ERROR = 0x2000103B
-TX_STATE = 0x20001050
-TRANSPORT_RECOVERY_FAILURES = 0x20001051
-TRANSPORT_RECEIVE_ERROR = 0x20001054
-UART_STATS = 0x20001124
-FRAMER_STATS = 0x20001A00
-FRAMER_STATE = 0x20001B34
-SERVER_STATS = 0x20001E54
-SERVER_STATE = 0x20001E9C
+TX_LAST_ERROR = 0x2000108B
+TX_STATE = 0x200010A0
+TRANSPORT_RECOVERY_FAILURES = 0x200010A1
+TRANSPORT_RECEIVE_ERROR = 0x200010A4
+UART_STATS = 0x20001174
+FRAMER_STATS = 0x20001A74
+FRAMER_STATE = 0x20001BA8
+SERVER_STATS = 0x20001EC8
+SERVER_STATE = 0x20001F10
+CS1237_READ_ERRORS = 0x20000FAC
+CS1237_BUFFER_OVERRUNS = 0x20000FB0
+CS1237_SAMPLE_COUNT = 0x20000FB4
+EVENT_QUEUE_DROPPED = 0x200026D0
+FAULT_MASK = 0x20002818
+BLE_TRANSPORT_DIAGNOSTICS = 0x200028DC
+BLE_CONNECTION_DIAGNOSTICS = 0x20002E74
+BLE_TELEMETRY_SCHEDULER = 0x20002F30
+BLE_COMMAND_DIAGNOSTICS = 0x20002F84
 
 
 def _slice(data, base, address, size):
@@ -52,8 +61,56 @@ def parse(data, base_address):
         "tx_start_error_count", "tx_timeout_error_count",
         "protocol_violation_count", "last_request_address", "last_function",
         "last_exception", "last_request_length", "last_response_length"]
+    ble_transport_values = struct.unpack(
+        "<9I2HB3xI?3x",
+        _slice(data, base_address, BLE_TRANSPORT_DIAGNOSTICS, 52))
+    ble_transport_names = ["rx_bytes", "tx_bytes", "rx_overflow",
+        "uart_error", "tx_error", "tx_complete", "transport_reset_count",
+        "last_rx_ms", "last_tx_ms", "rx_pending", "tx_pending",
+        "priority_pending", "priority_queue_full", "tx_busy"]
+    ble_connection_values = struct.unpack(
+        "<BB2x13I",
+        _slice(data, base_address, BLE_CONNECTION_DIAGNOSTICS, 56))
+    ble_connection_names = ["module_state", "link_state", "rx_bytes",
+        "tx_bytes", "rx_frames", "tx_frames", "rx_overflow", "uart_error",
+        "parse_error", "crc_error", "disconnect_count", "reconnect_count",
+        "transport_reset_count", "last_rx_ms", "last_tx_ms"]
+    telemetry_values = struct.unpack(
+        "<15I",
+        _slice(data, base_address, BLE_TELEMETRY_SCHEDULER + 16, 60))
+    telemetry_names = ["frames_generated", "frames_sent",
+        "frames_dropped_queue_full", "frames_dropped_transport_not_ready",
+        "bytes_sent", "encode_errors", "fast_frames_generated",
+        "fast_frames_sent", "fast_frames_dropped", "slow_frames_generated",
+        "slow_frames_sent", "slow_frames_dropped",
+        "checkweigh_frames_generated", "checkweigh_frames_sent",
+        "checkweigh_frames_dropped"]
+    command_values = struct.unpack(
+        "<10I", _slice(data, base_address, BLE_COMMAND_DIAGNOSTICS, 40))
+    command_names = ["requests_received", "responses_sent", "responses_queued",
+        "response_queue_full", "duplicate_requests", "transaction_conflicts",
+        "pending_save_requests", "parser_crc_errors", "parser_length_errors",
+        "parser_resync_count"]
     return {
         "dump_base": "0x%08X" % base_address,
+        "cs1237": {
+            "read_error_count": struct.unpack("<I", _slice(
+                data, base_address, CS1237_READ_ERRORS, 4))[0],
+            "buffer_overrun_count": struct.unpack("<I", _slice(
+                data, base_address, CS1237_BUFFER_OVERRUNS, 4))[0],
+            "sample_count": struct.unpack("<I", _slice(
+                data, base_address, CS1237_SAMPLE_COUNT, 4))[0],
+        },
+        "event_queue": {
+            "dropped_count": struct.unpack("<I", _slice(
+                data, base_address, EVENT_QUEUE_DROPPED, 4))[0],
+        },
+        "fault_mask": "0x%016X" % struct.unpack("<Q", _slice(
+            data, base_address, FAULT_MASK, 8))[0],
+        "ble_transport": dict(zip(ble_transport_names, ble_transport_values)),
+        "ble_connection": dict(zip(ble_connection_names, ble_connection_values)),
+        "ble_telemetry": dict(zip(telemetry_names, telemetry_values)),
+        "ble_command": dict(zip(command_names, command_values)),
         "uart_dma": dict(zip(uart_names, uart_values)),
         "framer": dict(zip(framer_names, framer_values)),
         "server": dict(zip(server_names, server_values)),

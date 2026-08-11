@@ -22,34 +22,12 @@ static bool s_runtime_drift_fault_latched;
 
 bool MetrologyManager_FaultInvalidatesRuntimeDrift(FaultCode fault)
 {
-    switch (fault)
-    {
-        case FAULT_ADC_ERROR:
-        case FAULT_CS1237_NOT_READY:
-        case FAULT_CS1237_DATA_ERROR:
-        case FAULT_CALIBRATION_INVALID:
-        case FAULT_CS1237_CONFIG_ERROR:
-        case FAULT_METROLOGY_CONFIG_INVALID:
-        case FAULT_CALIBRATION_DATA_CORRUPT:
-        case FAULT_WEIGHT_MATH_OVERFLOW:
-        case FAULT_CONFIG_APPLY_INCONSISTENT:
-            return true;
-        default:
-            return false;
-    }
+    return FaultManager_FaultInvalidatesWeight(fault);
 }
 
 static bool MetrologyManager_ActiveFaultInvalidatesReference(void)
 {
-    return FaultManager_IsActive(FAULT_ADC_ERROR) ||
-        FaultManager_IsActive(FAULT_CS1237_NOT_READY) ||
-        FaultManager_IsActive(FAULT_CS1237_DATA_ERROR) ||
-        FaultManager_IsActive(FAULT_CALIBRATION_INVALID) ||
-        FaultManager_IsActive(FAULT_CS1237_CONFIG_ERROR) ||
-        FaultManager_IsActive(FAULT_METROLOGY_CONFIG_INVALID) ||
-        FaultManager_IsActive(FAULT_CALIBRATION_DATA_CORRUPT) ||
-        FaultManager_IsActive(FAULT_WEIGHT_MATH_OVERFLOW) ||
-        FaultManager_IsActive(FAULT_CONFIG_APPLY_INCONSISTENT);
+    return FaultManager_HasWeightInvalidFault();
 }
 
 static MassValueUg MetrologyManager_DisplaySourceMass(

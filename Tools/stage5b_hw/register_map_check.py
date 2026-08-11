@@ -48,6 +48,10 @@ def check(repo_root=None):
         "MODBUS_RUNTIME_DRIFT_FIRST": reg.RUNTIME_DRIFT_FIRST,
         "MODBUS_RUNTIME_DRIFT_LAST": reg.RUNTIME_DRIFT_LAST,
         "MODBUS_RUNTIME_DRIFT_RESERVED": reg.RUNTIME_DRIFT_RESERVED,
+        "MODBUS_ALARM_ACTIVE_FIRST": reg.ALARM_ACTIVE_FIRST,
+        "MODBUS_ALARM_ACTIVE_LAST": reg.ALARM_ACTIVE_LAST,
+        "MODBUS_ALARM_STAGING_FIRST": reg.ALARM_STAGING_FIRST,
+        "MODBUS_ALARM_STAGING_LAST": reg.ALARM_STAGING_LAST,
         "MODBUS_EXECUTE_VALUE": reg.EXECUTE_VALUE,
     }.items():
         _require(r"#define\s+%s\s+0x%04XU" % (name, value), header, name)
@@ -70,6 +74,26 @@ def check(repo_root=None):
         "MODBUS_RUNTIME_DRIFT_ARMING_ELAPSED_FIRST": reg.RUNTIME_DRIFT_ARMING_ELAPSED,
         "MODBUS_RUNTIME_DRIFT_WINDOW_ELAPSED_FIRST": reg.RUNTIME_DRIFT_WINDOW_ELAPSED,
         "MODBUS_RUNTIME_DRIFT_SAMPLE_COUNT_FIRST": reg.RUNTIME_DRIFT_SAMPLE_COUNT,
+        "MODBUS_ALARM_LIMIT_ENABLE": reg.ALARM_LIMIT_ENABLE,
+        "MODBUS_ALARM_WEIGHT_SOURCE": reg.ALARM_WEIGHT_SOURCE,
+        "MODBUS_ALARM_LOWER_LIMIT_FIRST": reg.ALARM_LOWER_LIMIT,
+        "MODBUS_ALARM_UPPER_LIMIT_FIRST": reg.ALARM_UPPER_LIMIT,
+        "MODBUS_ALARM_HYSTERESIS_FIRST": reg.ALARM_HYSTERESIS,
+        "MODBUS_ALARM_INTERNAL_ENABLE": reg.ALARM_INTERNAL_ENABLE,
+        "MODBUS_ALARM_EXTERNAL_ENABLE": reg.ALARM_EXTERNAL_ENABLE,
+        "MODBUS_ALARM_QUALIFIED_ENABLE": reg.ALARM_QUALIFIED_ENABLE,
+        "MODBUS_ALARM_STATE": reg.ALARM_STATE,
+        "MODBUS_ALARM_STABLE": reg.ALARM_STABLE,
+        "MODBUS_ALARM_ACTIVE": reg.ALARM_ACTIVE,
+        "MODBUS_ALARM_GREEN_ACTIVE": reg.ALARM_GREEN_ACTIVE,
+        "MODBUS_ALARM_YELLOW_ACTIVE": reg.ALARM_YELLOW_ACTIVE,
+        "MODBUS_ALARM_RED_ACTIVE": reg.ALARM_RED_ACTIVE,
+        "MODBUS_ALARM_INTERNAL_ACTIVE": reg.ALARM_INTERNAL_ACTIVE,
+        "MODBUS_ALARM_EXTERNAL_ACTIVE": reg.ALARM_EXTERNAL_ACTIVE,
+        "MODBUS_ALARM_CONFIG_REVISION_FIRST": reg.ALARM_CONFIG_REVISION,
+        "MODBUS_ALARM_CONFIG_DIRTY": reg.ALARM_CONFIG_DIRTY,
+        "MODBUS_ALARM_STAGING_VALIDATION": reg.ALARM_STAGING_VALIDATION,
+        "MODBUS_ALARM_STAGING_DIRTY": reg.ALARM_STAGING_DIRTY,
     }.items():
         _require(r"#define\s+%s\s+0x%04XU" % (name, value), header, name)
     for address in (reg.REQUEST_TOKEN, reg.COMMAND_ID, reg.EXECUTE,
@@ -94,7 +118,7 @@ def check(repo_root=None):
                  drift_types, "runtime drift state %s" % name)
     _require(r"`0203`\s*\|\s*reserved, read-as-zero", docs,
              "documented reserved register")
-    _require(r"`000E=0102`", docs, "documented map version")
+    _require(r"`000E=0103`", docs, "documented map version")
     _require(r"Command ID 25", docs, "documented command 25")
     fields = [
         (reg.RUNTIME_DRIFT_STATE, reg.RUNTIME_DRIFT_STATE),
@@ -114,6 +138,32 @@ def check(repo_root=None):
     if len(addresses) != len(set(addresses)) or min(addresses) != reg.RUNTIME_DRIFT_FIRST or \
             max(addresses) != reg.RUNTIME_DRIFT_LAST:
         raise RegisterMapMismatch("runtime drift fields overlap or leave the declared range")
+    alarm_active_fields = [
+        (reg.ALARM_LIMIT_ENABLE, reg.ALARM_LIMIT_ENABLE),
+        (reg.ALARM_WEIGHT_SOURCE, reg.ALARM_WEIGHT_SOURCE),
+        (reg.ALARM_LOWER_LIMIT, reg.ALARM_LOWER_LIMIT + 3),
+        (reg.ALARM_UPPER_LIMIT, reg.ALARM_UPPER_LIMIT + 3),
+        (reg.ALARM_HYSTERESIS, reg.ALARM_HYSTERESIS + 3),
+        (reg.ALARM_INTERNAL_ENABLE, reg.ALARM_CONFIG_DIRTY),
+    ]
+    alarm_staging_fields = [
+        (reg.ALARM_STAGING_LIMIT_ENABLE, reg.ALARM_STAGING_LIMIT_ENABLE),
+        (reg.ALARM_STAGING_WEIGHT_SOURCE, reg.ALARM_STAGING_WEIGHT_SOURCE),
+        (reg.ALARM_STAGING_LOWER_LIMIT, reg.ALARM_STAGING_LOWER_LIMIT + 3),
+        (reg.ALARM_STAGING_UPPER_LIMIT, reg.ALARM_STAGING_UPPER_LIMIT + 3),
+        (reg.ALARM_STAGING_HYSTERESIS, reg.ALARM_STAGING_HYSTERESIS + 3),
+        (reg.ALARM_STAGING_INTERNAL_ENABLE, reg.ALARM_STAGING_DIRTY),
+    ]
+    for fields, first, last, label in (
+            (alarm_active_fields, reg.ALARM_ACTIVE_FIRST,
+             reg.ALARM_ACTIVE_LAST, "alarm active"),
+            (alarm_staging_fields, reg.ALARM_STAGING_FIRST,
+             reg.ALARM_STAGING_LAST, "alarm staging")):
+        addresses = [address for field_first, field_last in fields
+                     for address in range(field_first, field_last + 1)]
+        if len(addresses) != len(set(addresses)) or min(addresses) != first or \
+                max(addresses) > last:
+            raise RegisterMapMismatch("%s fields overlap or leave the declared range" % label)
     return True
 
 

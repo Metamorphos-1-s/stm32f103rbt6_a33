@@ -14,12 +14,14 @@ Addresses are zero-based PDU addresses. PLC notation is 40001 plus the PDU addre
 | `01C0-01DF` | persistence state and statistics | RO |
 | `01E0-01F0` | conditioned panel-display telemetry | RO |
 | `0200-021D` | provisional runtime drift telemetry | RO |
+| `0220-023F` | checkweigh alarm active configuration and status | RO |
+| `0240-025F` | checkweigh alarm staging | mixed |
 
 ## Realtime block
 
 - `0000-0001` conditioned current-panel display int32; `0002` decimals; `0003` unit.
 - `0004-0005` status; `0006-000B` net/gross/tare display int32.
-- `000C` division; `000D` page; `000E=0102` map version; `000F` firmware value.
+- `000C` division; `000D` page; `000E=0103` map version; `000F` firmware value.
 - `0010-001B` net/gross/tare signed int64 ug.
 - `001C-001F` raw and filtered raw signed int32.
 
@@ -78,6 +80,43 @@ MODE**, **DEFAULT DISABLED**, and **NOT METROLOGICALLY VALIDATED**.
 ## Mailbox
 
 `0040` token, `0041` command, `0042-0049` arguments, `004A` flags and `004B` execute. Write `A55A` last. `004C-0057` contain response token/result/state/value/status. Reserved writes are rejected. Token zero is invalid; repeating the last token does not execute twice.
+
+## Checkweigh alarm configuration and status
+
+Map version `0x0103` adds the following ranges without moving any older
+register. Signed `int64` values use two's complement and the configured word
+order. Their unit is micrograms (`1 g = 1,000,000 ug`).
+
+| Address | Name | Type | Access | Meaning |
+|---|---|---|---|---|
+| `0220` | limit_enable | bool | RO | active limit function enable |
+| `0221` | weight_source | u16 enum | RO | 0 NET, 1 GROSS |
+| `0222-0225` | lower_limit_ug | i64 | RO | active lower limit |
+| `0226-0229` | upper_limit_ug | i64 | RO | active upper limit |
+| `022A-022D` | hysteresis_ug | i64 | RO | active hysteresis |
+| `022E` | internal_buzzer_enable | bool | RO | active internal output enable |
+| `022F` | external_buzzer_enable | bool | RO | active external output enable |
+| `0230` | qualified_beep_enable | bool | RO | active OK transition beep enable |
+| `0231` | checkweigh_state | u16 enum | RO | 0 disabled, 1 low, 2 OK, 3 high, 4 overload, 5 fault |
+| `0232` | stable | bool | RO | current WeightSnapshot stable flag |
+| `0233` | alarm_active | bool | RO | logical alarm mode, including buzzer OFF phase |
+| `0234-0236` | green/yellow/red_active | bool | RO | actual runtime lamp outputs |
+| `0237-0238` | internal/external_buzzer_active | bool | RO | actual runtime GPIO output phase |
+| `0239-023A` | config_revision | u32 | RO | active configuration revision |
+| `023B` | config_dirty | bool | RO | active configuration differs from saved revision |
+
+The staging layout is `0240` enable, `0241` source, `0242-0245` lower,
+`0246-0249` upper, `024A-024D` hysteresis, `024E` internal enable, `024F`
+external enable, and `0250` qualified enable. `0251` is the shared validation
+result and `0252` is the shared staging dirty flag. Reserved words read zero.
+Bool/source words may be written with FC06 or FC16. Each signed i64 field must
+be written atomically as all four words with FC16; FC06 and partial FC16 writes
+are rejected. Writes reserve the shared MODBUS ConfigEdit ownership, so BLE or
+local mutation receives BUSY until APPLY or DISCARD. Existing mailbox commands
+9 BEGIN, 10 VALIDATE, 11 APPLY_RAM, 12 DISCARD and 13 SAVE remain authoritative.
+Validation and APPLY operate on one complete DeviceConfig; invalid alarm
+relationships do not change active configuration, revision, dirty state, lamps,
+or buzzers.
 
 Commands cover zero/reset-zero/tare/clear-tare, view/unit/profile, manual output,
 config begin/validate/apply/cancel/save, calibration workflow, factory reset,

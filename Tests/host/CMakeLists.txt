@@ -17,6 +17,7 @@ add_executable(stage4a_host_tests
     ../../App/self_test_controller.c
     ../../App/system_context.c
     ../../App/weighing_profile_manager.c
+    ../../Config/alarm_config_validation.c
     ../../Config/default_config.c
     ../../Diagnostics/stage2b_board_diagnostics.c
     ../../Diagnostics/stage2b_display_font.c
@@ -123,6 +124,7 @@ add_executable(stage4b_storage_tests
     test_stage4b.c
     fake_flash_backend.c
     ../../App/system_context.c
+    ../../Config/alarm_config_validation.c
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/metrology_config_validator.c
@@ -153,6 +155,7 @@ add_executable(stage4br_persistence_tests
     fake_flash_backend.c
     ../../App/persistence_manager.c
     ../../App/system_context.c
+    ../../Config/alarm_config_validation.c
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/metrology_config_validator.c
@@ -185,6 +188,7 @@ add_test(NAME stage4br_persistence_logic COMMAND stage4br_persistence_tests)
 add_executable(stage5a_host_tests
     test_stage5a.c
     stage5a_model_adapters.c
+    ../../Config/alarm_config_validation.c
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/mass_math.c
@@ -205,6 +209,7 @@ target_include_directories(stage5a_host_tests PRIVATE
     ../../Domain/measurement ../../Domain/stability ../../Services/config_store
     ../../Services/fault_manager ../../Services/storage_power_guard
     ../../Protocol/command_service ../../Protocol/modbus ../../Drivers/cs1237
+    ../../Domain/limit_checker ../../Services/alarm_output_manager
     ../../UI/key_service)
 if(MSVC)
     target_compile_options(stage5a_host_tests PRIVATE /W4 /WX)
@@ -245,7 +250,8 @@ target_include_directories(stage5b_host_tests PRIVATE
     ../../Drivers/serial ../../Protocol/command_service ../../Protocol/modbus
     ../../Protocol/crc16
     ../../Services/config_store ../../Services/fault_manager
-    ../../Services/storage_power_guard ../../UI/key_service)
+    ../../Services/storage_power_guard ../../Services/alarm_output_manager
+    ../../Domain/limit_checker ../../UI/key_service)
 if(MSVC)
     target_compile_options(stage5b_host_tests PRIVATE /W4 /WX)
 else()
@@ -276,11 +282,13 @@ add_executable(stage5c_ble_telemetry_tests
     test_ble_telemetry.c
     ../../Protocol/crc16/crc16.c
     ../../Protocol/ble/ble_frame_codec.c
+    ../../Protocol/ble/ble_checkweigh_codec.c
     ../../Services/ble_telemetry_service/ble_telemetry_scheduler.c
 )
 target_include_directories(stage5c_ble_telemetry_tests PRIVATE
     . ../../Protocol/crc16 ../../Protocol/ble
-    ../../Services/ble_telemetry_service)
+    ../../Services/ble_telemetry_service ../../Config ../../Domain/measurement
+    ../../Domain/limit_checker)
 if(MSVC)
     target_compile_options(stage5c_ble_telemetry_tests PRIVATE /W4 /WX)
 else()
@@ -304,6 +312,23 @@ else()
 endif()
 add_test(NAME stage5c_ble_command_protocol_logic
     COMMAND stage5c_ble_command_protocol_tests)
+
+add_executable(stage5e_config_edit_no_menu_tests
+    test_config_edit_no_menu.c
+    ../../Services/config_edit/config_edit.c)
+target_compile_definitions(stage5e_config_edit_no_menu_tests PRIVATE
+    ENABLE_STAGE5E_A3_LOCAL_MENU=0)
+target_include_directories(stage5e_config_edit_no_menu_tests PRIVATE
+    ../../Config ../../Domain/calibration ../../Domain/measurement
+    ../../Domain/stability ../../Domain/filter ../../Services/config_edit)
+if(MSVC)
+    target_compile_options(stage5e_config_edit_no_menu_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5e_config_edit_no_menu_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5e_config_edit_no_menu_logic
+    COMMAND stage5e_config_edit_no_menu_tests)
 
 add_executable(stage5c_ble_command_service_tests
     test_ble_command_service.c
@@ -341,3 +366,34 @@ else()
     target_compile_options(uart2_dma_recovery_tests PRIVATE -Wall -Wextra -Werror)
 endif()
 add_test(NAME uart2_dma_recovery_logic COMMAND uart2_dma_recovery_tests)
+
+add_executable(checkweigh_tests
+    test_checkweigh.c
+    ../../Config/alarm_config_validation.c
+    ../../Domain/limit_checker/limit_checker.c
+    ../../Services/fault_manager/fault_manager.c
+)
+target_include_directories(checkweigh_tests PRIVATE
+    ../../Config ../../Domain/limit_checker ../../Domain/measurement
+    ../../Services/fault_manager)
+if(MSVC)
+    target_compile_options(checkweigh_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(checkweigh_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME checkweigh_logic COMMAND checkweigh_tests)
+
+add_executable(alarm_output_manager_tests
+    test_alarm_output_manager.c
+    ../../Services/alarm_output_manager/alarm_output_manager.c
+)
+target_include_directories(alarm_output_manager_tests PRIVATE
+    ../../Config ../../Domain/limit_checker ../../Domain/measurement
+    ../../Drivers/output_gpio ../../Services/alarm_output_manager)
+if(MSVC)
+    target_compile_options(alarm_output_manager_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(alarm_output_manager_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME alarm_output_manager_logic COMMAND alarm_output_manager_tests)
