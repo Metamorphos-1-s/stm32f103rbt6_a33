@@ -1,5 +1,36 @@
 # Project stage status
 
+## Stage 5E
+
+Branch `stage5e-checkweigh-alarm` completed final hardware qualification from
+the frozen product baseline `b27df9af2923697490c382500f7069862a7c16aa`.
+LOW/OK/HIGH, exact canonical boundaries, both hysteresis directions, direct
+transitions, fast-load gating, a 120.079 s slow ramp, NET/GROSS/TARE/ZERO,
+RGY/buzzer controls, safe OVERLOAD and recovery, calibration priority, local
+configuration, Modbus map `0x0103`, BLE Protocol V1 and CHECKWEIGH_STATUS,
+cross-transport ownership, persistence, power-cycle restore, and Flash A/B all
+passed.
+
+The final 606.047 s Release concurrency run received 4,214 BLE frames (FAST
+3,010, SLOW 602, CHECKWEIGH 602), completed 5/5 BLE commands and 2,724/2,724
+RS485 polling cycles, and had zero disconnect, timeout, retry, CRC, gap,
+duplicate, resync, exception, or partial frame. SWD showed zero UART/DMA/RTU,
+BLE drop/overflow, CS1237 overrun, event queue drop, and fault counters.
+
+The slow ramp remained STABLE under the current short-window detector while
+classification and outputs stayed correct; this is a P2 characterization for
+Stage 6. Physical destructive FAULT injection was not performed because no
+safe production mechanism exists; Host classification and the output chain
+passed. Selected-digit blink and higher-position numeric editing are P2 UI
+items deferred to the next version.
+
+Stage 5E status: **SOFTWARE COMPLETE; HARDWARE COMPLETE; PERSISTENCE TESTED;
+LOCAL/MODBUS/BLE TESTED; CONCURRENCY REGRESSION TESTED; COMPLETE**.
+
+Full evidence is in `Docs/STAGE5E_FINAL_HARDWARE_VALIDATION.md`. Stage 6 may
+begin only after the Stage 5E branch is merged, rebuilt on `main`, and frozen
+by annotated tag `stage5e-hw-tested`.
+
 ## Stage 5C-A Closeout
 
 Stage 5C-A BLE transport hardware and BLE/RS485 concurrency validation is
