@@ -7,6 +7,7 @@
 #include "display_codes.h"
 #include "mass_math.h"
 #include "metrology_manager.h"
+#include "numeric_edit_cursor.h"
 #include "project_config.h"
 #include "system_context.h"
 #include "unit_converter.h"
@@ -57,7 +58,7 @@ static MenuEditKind s_edit_kind;
 static ConfigFieldId s_integer_field;
 static ConfigMassFieldId s_mass_field;
 static int64_t s_value;
-static uint16_t s_step_multiplier;
+static NumericEditCursor s_edit_cursor;
 static MassUnit s_edit_unit;
 static WeighingProfileId s_edit_profile;
 static UnitDisplayConfig s_edit_display;
@@ -148,13 +149,18 @@ static void Render(void)
     if ((s_edit_kind == MENU_EDIT_MASS) &&
         (s_value <= INT32_MAX) && (s_value >= INT32_MIN))
     {
-        (void)DisplayController_SetNumericPage(DISPLAY_PAGE_EDIT,
-            (int32_t)s_value, s_edit_display.decimal_places);
+        (void)DisplayController_SetNumericEditPage(DISPLAY_PAGE_EDIT,
+            (int32_t)s_value, s_edit_display.decimal_places,
+            s_edit_cursor.selected_digit, s_edit_cursor.visible);
     }
     else
     {
         FormatInteger(s_value, text);
-        (void)DisplayController_SetTextPage(DISPLAY_PAGE_EDIT, text);
+        if (s_edit_kind == MENU_EDIT_STABILITY_HOLD)
+            (void)DisplayController_SetTextEditPage(DISPLAY_PAGE_EDIT, text,
+                s_edit_cursor.selected_digit, s_edit_cursor.visible);
+        else
+            (void)DisplayController_SetTextPage(DISPLAY_PAGE_EDIT, text);
     }
 }
 
@@ -249,7 +255,7 @@ static bool HandleAdvancedSequence(const KeyEvent *event)
     return true;
 }
 
-static bool BeginEdit(MenuItem item)
+static bool BeginEdit(MenuItem item, uint32_t now_ms)
 {
     const SystemContext *context = SystemContext_Get();
     const MetrologyConfig *metrology;
@@ -265,7 +271,7 @@ static bool BeginEdit(MenuItem item)
     s_edit_profile = metrology->active_profile;
     s_edit_display = metrology->unit_display[s_edit_unit];
     profile = &metrology->profiles[s_edit_profile];
-    s_step_multiplier = 1U;
+    NumericEditCursor_Init(&s_edit_cursor, now_ms);
     switch (item)
     {
         case MENU_ITEM_UNIT:
@@ -502,8 +508,9 @@ static void AdjustEdit(KeyId key)
         return;
     }
     delta = (s_edit_kind == MENU_EDIT_MASS) ?
-        (int64_t)s_edit_display.division_digit * s_step_multiplier :
-        (int64_t)s_step_multiplier;
+        (int64_t)s_edit_display.division_digit *
+            NumericEditCursor_GetStep(&s_edit_cursor) :
+        (int64_t)NumericEditCursor_GetStep(&s_edit_cursor);
     if (key == KEY_ID_STAR) delta = -delta;
     if (MassMath_Add(s_value, delta, &next) &&
         ((s_edit_kind != MENU_EDIT_MASS) ||
@@ -538,6 +545,11 @@ void MenuController_Process10ms(void)
 {
     uint32_t now = BSP_TimeNowMs();
     if (!s_active) return;
+    if (s_editing &&
+        ((s_edit_kind == MENU_EDIT_MASS) ||
+         (s_edit_kind == MENU_EDIT_STABILITY_HOLD)) &&
+        NumericEditCursor_Process(&s_edit_cursor, now))
+        Render();
     if ((s_sequence_count != 0U) &&
         (((uint32_t)(now - s_sequence_last_ms) > 1000U) ||
          ((uint32_t)(now - s_sequence_start_ms) > 4000U)))
@@ -595,13 +607,19 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
              (event->key == KEY_ID_HASH)) &&
             ((event->type == KEY_EVENT_SHORT) ||
              (event->type == KEY_EVENT_REPEAT)))
+        {
             AdjustEdit(event->key);
+            if ((s_edit_kind == MENU_EDIT_MASS) ||
+                (s_edit_kind == MENU_EDIT_STABILITY_HOLD))
+                NumericEditCursor_ResetVisible(&s_edit_cursor,
+                                               event->timestamp_ms);
+        }
         else if ((event->key == KEY_ID_ZERO) &&
                  (event->type == KEY_EVENT_SHORT) &&
                  ((s_edit_kind == MENU_EDIT_MASS) ||
                   (s_edit_kind == MENU_EDIT_STABILITY_HOLD)))
-            s_step_multiplier = (s_step_multiplier >= 1000U) ? 1U :
-                (uint16_t)(s_step_multiplier * 10U);
+            NumericEditCursor_SelectNext(&s_edit_cursor,
+                                         event->timestamp_ms);
         else if ((event->key == KEY_ID_FUNCTION) &&
                  (event->type == KEY_EVENT_SHORT))
         {
@@ -630,6 +648,10 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                 s_editing = false; Render(); ShowCode(DISPLAY_CODE_RAM_SAVE);
                 return true;
             }
+            (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,
+                                         0, 0, 0U, 0);
+            s_editing = false;
+            Render();
             ShowCode(DISPLAY_CODE_INVALID_CONFIG);
             return true;
         }
@@ -658,7 +680,8 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         context = SystemContext_Get();
         if ((s_item == MENU_ITEM_UNIT) && (context != NULL))
         {
-            if (!BeginEdit(s_item)) ShowCode(s_begin_error);
+            if (!BeginEdit(s_item, event->timestamp_ms))
+                ShowCode(s_begin_error);
             return true;
         }
         else if ((s_item == MENU_ITEM_PROFILE) && (context != NULL))
@@ -707,7 +730,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         {
             ShowCode(DISPLAY_CODE_READ_ONLY); return true;
         }
-        else if (!BeginEdit(s_item))
+        else if (!BeginEdit(s_item, event->timestamp_ms))
         {
             ShowCode(s_begin_error);
             return true;

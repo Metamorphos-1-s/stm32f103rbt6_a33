@@ -50,6 +50,7 @@ add_executable(stage4a_host_tests
     ../../UI/display_model/display_codes.c
     ../../UI/display_model/display_formatter.c
     ../../UI/display_model/display_model.c
+    ../../UI/numeric_edit_cursor.c
     ../../UI/key_service/key_map.c
     ../../UI/key_service/key_service.c
     ../../UI/menu_controller/menu_controller.c

@@ -27,6 +27,30 @@ static bool s_numeric_override;
 static bool s_message_active;
 static bool s_initialized;
 
+static bool DisplayController_ApplyEditCursor(uint16_t segments[6],
+    uint8_t selected_digit, bool cursor_visible)
+{
+    uint8_t display_index;
+    uint16_t decimal_point;
+
+    if ((segments == NULL) || (selected_digit >= 6U)) return false;
+    display_index = (uint8_t)(5U - selected_digit);
+    decimal_point = (uint16_t)(segments[display_index] &
+        SEGMENT_BIT(BOARD_SEG_DP));
+    if (!cursor_visible)
+    {
+        segments[display_index] = decimal_point;
+    }
+    else if ((segments[display_index] &
+              (uint16_t)~SEGMENT_BIT(BOARD_SEG_DP)) == 0U)
+    {
+        if (!DisplayFormatter_EncodeCharacter('0',
+                &segments[display_index])) return false;
+        segments[display_index] |= decimal_point;
+    }
+    return true;
+}
+
 static void DisplayController_BuildIndicators(const WeightSnapshot *snapshot,
     uint8_t *top, uint8_t *bottom)
 {
@@ -255,6 +279,42 @@ bool DisplayController_SetNumericPage(DisplayPage page, int32_t display_count,
     {
         return false;
     }
+    s_text_override = false;
+    s_numeric_override = true;
+    (void)memcpy(s_numeric_segments, segments, sizeof(s_numeric_segments));
+    s_page = page;
+    if (page == DISPLAY_PAGE_FAULT) s_message_active = false;
+    return true;
+}
+
+bool DisplayController_SetTextEditPage(DisplayPage page, const char text[6],
+    uint8_t selected_digit, bool cursor_visible)
+{
+    uint16_t segments[6];
+    if ((text == NULL) || ((uint32_t)page > (uint32_t)DISPLAY_PAGE_FAULT) ||
+        !DisplayFormatter_FormatText6(text, segments) ||
+        !DisplayController_ApplyEditCursor(segments, selected_digit,
+                                           cursor_visible))
+        return false;
+    s_text_override = false;
+    s_numeric_override = true;
+    (void)memcpy(s_numeric_segments, segments, sizeof(s_numeric_segments));
+    s_page = page;
+    if (page == DISPLAY_PAGE_FAULT) s_message_active = false;
+    return true;
+}
+
+bool DisplayController_SetNumericEditPage(DisplayPage page,
+    int32_t display_count, uint8_t decimal_places, uint8_t selected_digit,
+    bool cursor_visible)
+{
+    uint16_t segments[6];
+    if (((uint32_t)page > (uint32_t)DISPLAY_PAGE_FAULT) ||
+        !DisplayFormatter_FormatWeight(display_count, decimal_places, true,
+                                       segments) ||
+        !DisplayController_ApplyEditCursor(segments, selected_digit,
+                                           cursor_visible))
+        return false;
     s_text_override = false;
     s_numeric_override = true;
     (void)memcpy(s_numeric_segments, segments, sizeof(s_numeric_segments));

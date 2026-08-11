@@ -15,6 +15,7 @@
 #include "menu_controller.h"
 #include "metrology_manager.h"
 #include "mock_hal.h"
+#include "numeric_edit_cursor.h"
 #include "output_gpio.h"
 #include "project_config.h"
 #include "raw_measurement.h"
@@ -1279,6 +1280,7 @@ static void TestCalibrationSmallSpanError(void)
     Stage4A_FeedCalibrationRaw(100500, 2000U);
     CHECK4(CalibrationController_GetState() == CAL_STATE_ERROR);
     CHECK4(!SystemContext_Get()->config.calibration.calibration_valid);
+    CalibrationController_Cancel();
 }
 
 static void TestAlarmConfigEditFields(void)
@@ -1507,6 +1509,242 @@ static void TestAlarmMenu(void)
     CHECK_A3(MenuController_TakeExitRequest());
 }
 
+static void TestNumericEditCursorCoreAndMapping(void)
+{
+    static const uint32_t expected_steps[6] = {
+        1U, 10U, 100U, 1000U, 10000U, 100000U
+    };
+    DeviceConfig config;
+    NumericEditCursor cursor;
+    uint16_t base[6];
+    uint8_t selected;
+    uint8_t index;
+
+    NumericEditCursor_Init(&cursor, 100U);
+    for (selected = 0U; selected < 6U; ++selected)
+    {
+        CHECK4(cursor.selected_digit == selected);
+        CHECK4(cursor.visible);
+        CHECK4(NumericEditCursor_GetStep(&cursor) ==
+               expected_steps[selected]);
+        NumericEditCursor_SelectNext(&cursor, 100U + selected);
+    }
+    CHECK4(cursor.selected_digit == 0U);
+    CHECK4(NumericEditCursor_GetStep(&cursor) == 1U);
+
+    NumericEditCursor_Init(&cursor, 100U);
+    CHECK4(!NumericEditCursor_Process(&cursor, 349U));
+    CHECK4(cursor.visible);
+    CHECK4(NumericEditCursor_Process(&cursor, 350U));
+    CHECK4(!cursor.visible);
+    CHECK4(!NumericEditCursor_Process(&cursor, 599U));
+    CHECK4(NumericEditCursor_Process(&cursor, 600U));
+    CHECK4(cursor.visible);
+    NumericEditCursor_Init(&cursor, 0xFFFFFFF0U);
+    CHECK4(!NumericEditCursor_Process(&cursor, 0x000000E9U));
+    CHECK4(NumericEditCursor_Process(&cursor, 0x000000EAU));
+    CHECK4(!cursor.visible);
+
+    Stage4A_InitRuntime(&config, true);
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
+    CHECK4(DisplayFormatter_FormatWeight(123456, 2U, true, base));
+    for (selected = 0U; selected < 6U; ++selected)
+    {
+        uint8_t display_index = (uint8_t)(5U - selected);
+        CHECK4(DisplayController_SetNumericEditPage(DISPLAY_PAGE_EDIT,
+            123456, 2U, selected, false));
+        DisplayController_Process20ms();
+        for (index = 0U; index < 6U; ++index)
+        {
+            uint16_t expected = (index == display_index) ?
+                (uint16_t)(base[index] &
+                    (uint16_t)(1U << BOARD_SEG_DP)) : base[index];
+            CHECK4(DisplayModel_Get()->digit_segments[index] == expected);
+        }
+        CHECK4(DisplayController_SetNumericEditPage(DISPLAY_PAGE_EDIT,
+            123456, 2U, selected, true));
+        DisplayController_Process20ms();
+        CHECK4(memcmp(base, DisplayModel_Get()->digit_segments,
+                      sizeof(base)) == 0);
+    }
+
+    CHECK4(DisplayController_SetNumericEditPage(DISPLAY_PAGE_EDIT,
+        50000, 2U, 5U, true));
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_SegmentIs('0', DisplayModel_Get()->digit_segments[0]));
+    CHECK4(DisplayController_SetNumericEditPage(DISPLAY_PAGE_EDIT,
+        50000, 2U, 5U, false));
+    DisplayController_Process20ms();
+    CHECK4(DisplayModel_Get()->digit_segments[0] == 0U);
+
+    CHECK4(DisplayController_SetNumericEditPage(DISPLAY_PAGE_EDIT,
+        50000, 2U, 2U, false));
+    DisplayController_Process20ms();
+    CHECK4((DisplayModel_Get()->digit_segments[3] &
+            (uint16_t)(1U << BOARD_SEG_DP)) != 0U);
+    CHECK4((DisplayModel_Get()->digit_segments[3] &
+            (uint16_t)~(uint16_t)(1U << BOARD_SEG_DP)) == 0U);
+}
+
+static void TestSixDigitMenuEditAndBlink(void)
+{
+    DeviceConfig config;
+    uint32_t now_ms = 0U;
+    uint8_t index;
+
+    Stage4A_InitRuntime(&config, false);
+    config = SystemContext_Get()->config;
+    config.metrology.active_unit = MASS_UNIT_G;
+    config.metrology.unit_display[MASS_UNIT_G].decimal_places = 2U;
+    config.metrology.unit_display[MASS_UNIT_G].division_digit = 1U;
+    CHECK4(SystemContext_ApplyConfig(&config, false));
+    CommandService_Init();
+    MenuController_Init();
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, now_ms));
+    Stage4A_EnterAdvancedMenu(&now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+
+    for (index = 0U; index < 5U; ++index)
+        Stage4A_AlarmMenuKey(KEY_ID_ZERO, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_STAR, &now_ms);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShowsWeight(200000, 2U));
+    Stage4A_AlarmMenuKey(KEY_ID_HASH, &now_ms);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShowsWeight(300000, 2U));
+
+    Stage4A_AlarmMenuKey(KEY_ID_ZERO, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_HASH, &now_ms);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShowsWeight(300001, 2U));
+    Stage4A_AlarmMenuKey(KEY_ID_TARE, &now_ms);
+    CHECK4(SystemContext_Get()->config.metrology.capacity_ug ==
+           INT64_C(3000000000));
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("CAP   "));
+    now_ms += 500U;
+    TestMock_SetTimeMs(now_ms);
+    MenuController_Process10ms();
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("CAP   "));
+
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    now_ms += 250U;
+    TestMock_SetTimeMs(now_ms);
+    MenuController_Process10ms();
+    DisplayController_Process20ms();
+    CHECK4(DisplayModel_Get()->digit_segments[5] == 0U);
+    Stage4A_AlarmMenuKey(KEY_ID_ZERO, &now_ms);
+    DisplayController_Process20ms();
+    CHECK4(DisplayModel_Get()->digit_segments[4] != 0U);
+    Stage4A_AlarmMenuKey(KEY_ID_TARE, &now_ms);
+
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    for (index = 0U; index < 5U; ++index)
+        Stage4A_AlarmMenuKey(KEY_ID_ZERO, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_STAR, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    CHECK4(SystemContext_Get()->config.metrology.capacity_ug ==
+           INT64_C(2000000000));
+    Stage4A_ClearMenuMessage(&now_ms);
+
+    Stage4A_NavigateAlarmMenu(MENU_ITEM_STABILITY, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    for (index = 0U; index < 5U; ++index)
+        Stage4A_AlarmMenuKey(KEY_ID_ZERO, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_HASH, &now_ms);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("100010"));
+    Stage4A_AlarmMenuKey(KEY_ID_TARE, &now_ms);
+    CHECK4(SystemContext_Get()->config.metrology.profiles[0].stability_hold_ms ==
+           10U);
+}
+
+static void TestInvalidEditStopsBlink(void)
+{
+    DeviceConfig config;
+    uint32_t now_ms = 0U;
+    uint8_t index;
+
+    Stage4A_InitRuntime(&config, true);
+    config = SystemContext_Get()->config;
+    config.metrology.active_unit = MASS_UNIT_G;
+    config.metrology.unit_display[MASS_UNIT_G].decimal_places = 2U;
+    config.metrology.unit_display[MASS_UNIT_G].division_digit = 1U;
+    config.alarm.limit_function_enable = true;
+    config.alarm.lower_limit_ug = INT64_C(499000000);
+    config.alarm.upper_limit_ug = INT64_C(501000000);
+    config.alarm.hysteresis_ug = INT64_C(200000);
+    CHECK4(SystemContext_ApplyConfig(&config, false));
+    CommandService_Init();
+    MenuController_Init();
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, now_ms));
+    Stage4A_EnterAdvancedMenu(&now_ms);
+    Stage4A_NavigateAlarmMenu(MENU_ITEM_ALARM_LOWER_LIMIT, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    for (index = 0U; index < 5U; ++index)
+        Stage4A_AlarmMenuKey(KEY_ID_ZERO, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_HASH, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("InUALd"));
+    CHECK4(SystemContext_Get()->config.alarm.lower_limit_ug ==
+           INT64_C(499000000));
+    now_ms += 500U;
+    TestMock_SetTimeMs(now_ms);
+    MenuController_Process10ms();
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("InUALd"));
+}
+
+static void TestCalibrationSixDigitEdit(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+    uint8_t index;
+
+    Stage4A_InitRuntime(&config, false);
+    config = SystemContext_Get()->config;
+    config.metrology.capacity_ug = INT64_C(500000000000);
+    config.metrology.load_cell.rated_capacity_ug = INT64_C(500000000000);
+    config.metrology.overload_threshold_ug = INT64_C(500000000000);
+    config.metrology.active_unit = MASS_UNIT_KG;
+    config.metrology.unit_display[MASS_UNIT_KG].decimal_places = 3U;
+    config.metrology.unit_display[MASS_UNIT_KG].division_digit = 1U;
+    CHECK4(SystemContext_ApplyConfig(&config, false));
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
+    CHECK4(CalibrationController_Begin());
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 1U);
+    CHECK4(CalibrationController_HandleKeyEvent(&event));
+    Stage4A_FeedCalibrationRaw(100000, 100U);
+    CHECK4(CalibrationController_GetState() == CAL_STATE_INPUT_SPAN_WEIGHT);
+    CHECK4(CalibrationController_GetSession()->span_display_count == 500000);
+
+    for (index = 0U; index < 5U; ++index)
+    {
+        event = Stage4A_Key(KEY_ID_ZERO, KEY_EVENT_SHORT,
+                           1000U + (uint32_t)index);
+        CHECK4(CalibrationController_HandleKeyEvent(&event));
+    }
+    CHECK4(CalibrationController_GetSession()->edit_cursor.selected_digit ==
+           5U);
+    CHECK4(NumericEditCursor_GetStep(
+        &CalibrationController_GetSession()->edit_cursor) == 100000U);
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 1010U);
+    CHECK4(CalibrationController_HandleKeyEvent(&event));
+    CHECK4(CalibrationController_GetSession()->span_display_count == 400000);
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 1020U);
+    CHECK4(CalibrationController_HandleKeyEvent(&event));
+    CHECK4(CalibrationController_GetSession()->span_display_count == 500000);
+    event = Stage4A_Key(KEY_ID_ZERO, KEY_EVENT_SHORT, 1030U);
+    CHECK4(CalibrationController_HandleKeyEvent(&event));
+    CHECK4(CalibrationController_GetSession()->edit_cursor.selected_digit ==
+           0U);
+    CalibrationController_Cancel();
+    CHECK4(CalibrationController_GetState() == CAL_STATE_CANCELLED);
+    CHECK4(!SystemContext_Get()->config.calibration.calibration_valid);
+}
+
 unsigned int Stage4A_RunTests(void)
 {
     TestKeyMapAndService();
@@ -1529,6 +1767,10 @@ unsigned int Stage4A_RunTests(void)
     TestCalibrationSmallSpanError();
     TestAlarmConfigEditFields();
     TestAlarmMenu();
+    TestNumericEditCursorCoreAndMapping();
+    TestSixDigitMenuEditAndBlink();
+    TestInvalidEditStopsBlink();
+    TestCalibrationSixDigitEdit();
     (void)printf("Alarm config/menu checks: %u\n", s_alarm_menu_checks);
     return s_stage4a_failures;
 }

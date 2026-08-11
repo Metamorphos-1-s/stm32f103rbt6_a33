@@ -75,9 +75,11 @@ static void CalibrationController_FormatSpan(void)
 {
     if ((s_session.span_display_count > INT32_MAX) ||
         (s_session.span_display_count < INT32_MIN) ||
-        !DisplayController_SetNumericPage(DISPLAY_PAGE_CALIBRATION,
+        !DisplayController_SetNumericEditPage(DISPLAY_PAGE_CALIBRATION,
             (int32_t)s_session.span_display_count,
-            s_session.input_decimal_places))
+            s_session.input_decimal_places,
+            s_session.edit_cursor.selected_digit,
+            s_session.edit_cursor.visible))
         CalibrationController_ShowCode(DISPLAY_CODE_UNIT_ERROR);
 }
 
@@ -151,7 +153,7 @@ bool CalibrationController_Begin(void)
     s_session.input_unit = context->config.metrology.active_unit;
     s_session.input_decimal_places = display->decimal_places;
     s_session.input_division_digit = display->division_digit;
-    s_session.edit_step_multiplier = 1U;
+    NumericEditCursor_Init(&s_session.edit_cursor, BSP_TimeNowMs());
     s_session.result = CALIBRATION_RESULT_INCONSISTENT;
     s_last_sample_sequence = 0U;
     CalibrationController_SetState(CAL_STATE_CONFIRM_EMPTY,
@@ -226,8 +228,14 @@ void CalibrationController_Process10ms(void)
             ((uint32_t)(BSP_TimeNowMs() - s_session.state_enter_ms) >= 500U))
         {
             s_unit_hint_active = false;
+            NumericEditCursor_ResetVisible(&s_session.edit_cursor,
+                                            BSP_TimeNowMs());
             CalibrationController_FormatSpan();
         }
+        else if (!s_unit_hint_active &&
+                 NumericEditCursor_Process(&s_session.edit_cursor,
+                                           BSP_TimeNowMs()))
+            CalibrationController_FormatSpan();
         return;
     }
     if (
@@ -279,7 +287,7 @@ bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
                 MassValueUg next_mass;
                 DisplayWeightValue roundtrip;
                 int64_t step = (int64_t)s_session.input_division_digit *
-                               s_session.edit_step_multiplier;
+                    NumericEditCursor_GetStep(&s_session.edit_cursor);
                 int64_t signed_step = (event->key == KEY_ID_HASH) ? step : -step;
                 int64_t next;
                 if (MassMath_Add(s_session.span_display_count, signed_step,
@@ -299,14 +307,17 @@ bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
                     s_session.span_mass_ug = next_mass;
                 }
                 s_unit_hint_active = false;
+                NumericEditCursor_ResetVisible(&s_session.edit_cursor,
+                                               event->timestamp_ms);
                 CalibrationController_FormatSpan();
             }
             else if ((event->key == KEY_ID_ZERO) &&
                      (event->type == KEY_EVENT_SHORT))
             {
-                s_session.edit_step_multiplier =
-                    (s_session.edit_step_multiplier >= 1000U) ? 1U :
-                    (uint16_t)(s_session.edit_step_multiplier * 10U);
+                s_unit_hint_active = false;
+                NumericEditCursor_SelectNext(&s_session.edit_cursor,
+                                             event->timestamp_ms);
+                CalibrationController_FormatSpan();
             }
             else if ((event->key == KEY_ID_FUNCTION) &&
                      (event->type == KEY_EVENT_SHORT) &&
