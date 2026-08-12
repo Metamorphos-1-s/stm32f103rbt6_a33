@@ -1,5 +1,33 @@
 # Project stage status
 
+## Stage 5F
+
+Branch `stage5f-six-digit-edit` adds six-position ZERO selection and a
+selected-digit cursor blink to the existing menu and calibration numeric
+editors. STAR/HASH direction and repeat, KeyService, ConfigEdit, metrology,
+calibration math, alarm/checkweigh, protocols, Schema/Flash, UART settings, and
+the `.ioc` file remain frozen.
+
+Host 15/15, Stage 5B Python 28/28, Stage 5C Python 12/12, and Debug, Release,
+and BoardDiagnostics clean builds passed. Release is 73,840 B Flash / 14,816 B
+RAM; BoardDiagnostics ends at `0x0801DE6C`, leaving 4,500 B before the config
+region.
+
+CAP all-six-position cycling, 10000/100000-position edits, blink timing, DP,
+leading blank, FUNCTION/TARE/invalid behavior, OL/Hi/HyS/Stability regressions,
+and the independent calibration mass editor passed on hardware. The clean
+60-second BLE/RS485 run received FAST 310, SLOW 62, CHECKWEIGH 62, completed
+3/3 BLE commands and 222/222 FC03 requests, and had zero CRC, gap, duplicate,
+disconnect, timeout, retry, exception, CS1237 overrun, event drop, or transport
+error.
+
+Stage 5F status: **SOFTWARE COMPLETE; HARDWARE COMPLETE; SIX-DIGIT EDIT AND
+CURSOR BLINK TESTED; CONCURRENCY REGRESSION TESTED; COMPLETE**.
+
+Full evidence is in `Docs/STAGE5F_SIX_DIGIT_EDIT_BLINK.md`. Stage 6 may begin
+after merge to `main`, final software rebuild, and annotated tag
+`stage5f-ui-tested`.
+
 ## Stage 5E
 
 Branch `stage5e-checkweigh-alarm` completed final hardware qualification from
