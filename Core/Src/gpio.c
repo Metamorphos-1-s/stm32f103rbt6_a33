@@ -70,20 +70,27 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(MCU_DE_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : MCU_AD_SCLK_Pin MCU_AD_EN_Pin MCU_BUZZER_Pin MCU_RGY_G_Pin
-                           MCU_RGY_R_Pin MCU_RGY_Y_Pin MCU_RGY_BUZZER_Pin */
-  GPIO_InitStruct.Pin = MCU_AD_SCLK_Pin|MCU_AD_EN_Pin|MCU_BUZZER_Pin|MCU_RGY_G_Pin
-                          |MCU_RGY_R_Pin|MCU_RGY_Y_Pin|MCU_RGY_BUZZER_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  /*Configure GPIO pin : MCU_AD_SCLK_Pin */
+  GPIO_InitStruct.Pin = MCU_AD_SCLK_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(MCU_AD_SCLK_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : MCU_AD_DOUT_Pin */
   GPIO_InitStruct.Pin = MCU_AD_DOUT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(MCU_AD_DOUT_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : MCU_AD_EN_Pin MCU_BUZZER_Pin MCU_RGY_G_Pin MCU_RGY_R_Pin
+                           MCU_RGY_Y_Pin MCU_RGY_BUZZER_Pin */
+  GPIO_InitStruct.Pin = MCU_AD_EN_Pin|MCU_BUZZER_Pin|MCU_RGY_G_Pin|MCU_RGY_R_Pin
+                          |MCU_RGY_Y_Pin|MCU_RGY_BUZZER_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : MCU_TM_DIO_Pin MCU_TM_CLK_Pin MCU_TM_STB_Pin */
   GPIO_InitStruct.Pin = MCU_TM_DIO_Pin|MCU_TM_CLK_Pin|MCU_TM_STB_Pin;
@@ -104,7 +111,7 @@ void MX_GPIO_Init(void)
 /* USER CODE BEGIN 2 */
 
 /* W02_PWRKEY is released high; short active-low pulses are owned by BSP. */
-/* TODO: Confirm whether MCU_AD_DOUT requires an external pull-up. */
+/* CS1237 SCLK/DOUT use board-level external pull-ups; MCU pulls stay disabled. */
 /* TODO: Confirm the active level of MCU_AD_EN with the ADC datasheet. */
 
 /* USER CODE END 2 */
