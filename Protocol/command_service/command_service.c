@@ -384,7 +384,11 @@ CommandResult CommandService_Execute(const CommandRequest *request,
          (request->id == COMMAND_BEGIN_CONFIG_EDIT) ||
          (request->id == COMMAND_CALIBRATION_BEGIN) ||
          (request->id == COMMAND_REQUEST_CONFIG_SAVE) ||
-         (request->id == COMMAND_SET_DISPLAY_UNIT)))
+         (request->id == COMMAND_SET_DISPLAY_UNIT) ||
+         (request->id == COMMAND_SET_RUNTIME_DRIFT_ENABLED) ||
+         (request->id == COMMAND_RUNTIME_DRIFT_ENABLE) ||
+         (request->id == COMMAND_RUNTIME_DRIFT_DISABLE) ||
+         (request->id == COMMAND_RUNTIME_DRIFT_RESET)))
     {
         response->result = COMMAND_RESULT_BUSY;
         return COMMAND_RESULT_BUSY;
@@ -402,7 +406,11 @@ CommandResult CommandService_Execute(const CommandRequest *request,
          (request->id == COMMAND_CONFIG_VALIDATE) ||
          (request->id == COMMAND_COMMIT_CONFIG_EDIT) ||
          (request->id == COMMAND_SET_DISPLAY_UNIT) ||
-         (request->id == COMMAND_SWITCH_WEIGHING_PROFILE)))
+         (request->id == COMMAND_SWITCH_WEIGHING_PROFILE) ||
+         (request->id == COMMAND_SET_RUNTIME_DRIFT_ENABLED) ||
+         (request->id == COMMAND_RUNTIME_DRIFT_ENABLE) ||
+         (request->id == COMMAND_RUNTIME_DRIFT_DISABLE) ||
+         (request->id == COMMAND_RUNTIME_DRIFT_RESET)))
     {
         response->result = COMMAND_RESULT_BUSY;
         return COMMAND_RESULT_BUSY;
@@ -766,6 +774,42 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             result = ((request->value0 == 0) || (request->value0 == 1)) &&
                 MetrologyManager_SetRuntimeDriftEnabled(request->value0 != 0) ?
                 COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
+            break;
+        case COMMAND_RUNTIME_DRIFT_ENABLE:
+            if ((request->value0 != 0) || (request->value1 != 0) ||
+                (request->flags != 0U) || (request->value64 != 0))
+            {
+                result = COMMAND_RESULT_INVALID_ARGUMENT;
+                break;
+            }
+            result = MetrologyManager_SetRuntimeDriftEnabled(true) ?
+                COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_STATE;
+            break;
+        case COMMAND_RUNTIME_DRIFT_DISABLE:
+            if ((request->value0 != 0) || (request->value1 != 0) ||
+                (request->flags != 0U) || (request->value64 != 0))
+            {
+                result = COMMAND_RESULT_INVALID_ARGUMENT;
+                break;
+            }
+            result = MetrologyManager_SetRuntimeDriftEnabled(false) ?
+                COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_STATE;
+            break;
+        case COMMAND_RUNTIME_DRIFT_RESET:
+            if ((request->value0 != 0) || (request->value1 != 0) ||
+                (request->flags != 0U) || (request->value64 != 0))
+            {
+                result = COMMAND_RESULT_INVALID_ARGUMENT;
+                break;
+            }
+            if ((SystemContext_GetState() == APP_STATE_RUN) ||
+                (SystemContext_GetState() == APP_STATE_MENU))
+            {
+                MetrologyManager_ResetRuntimeDrift(
+                    RUNTIME_DRIFT_RESET_EXPLICIT_CONTROL);
+                result = COMMAND_RESULT_OK;
+            }
+            else result = COMMAND_RESULT_INVALID_STATE;
             break;
         case COMMAND_COUNT:
         default:

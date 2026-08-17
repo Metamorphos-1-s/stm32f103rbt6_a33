@@ -10,6 +10,9 @@ def validate_arguments(command, arg0=0, arg1=0):
         raise ValueError("command arguments must be unsigned 32-bit values")
     if command == "RUNTIME_DRIFT_CONTROL" and arg0 not in (0, 1):
         raise ValueError("RUNTIME_DRIFT_CONTROL arg0 must be 0 or 1")
+    if command in ("RUNTIME_DRIFT_ENABLE", "RUNTIME_DRIFT_DISABLE",
+                   "RUNTIME_DRIFT_RESET") and (arg0 != 0 or arg1 != 0):
+        raise ValueError("%s does not accept arguments" % command)
 
 
 def run(client, report, command="NOP", repeat_token=False, arg0=0, arg1=0):
