@@ -81,6 +81,10 @@ bool ConfigEdit_SetIntegerField(ConfigFieldId field, int32_t value)
             if ((value < 0) || (value > 1)) return false;
             s_working.alarm.qualified_beep_enable = (value != 0);
             break;
+        case CONFIG_FIELD_STARTUP_AUTO_ZERO_ENABLE:
+            if ((value < 0) || (value > 1)) return false;
+            s_working.system.startup_auto_zero_enable = (value != 0);
+            break;
         case CONFIG_FIELD_CAPACITY:
         case CONFIG_FIELD_DIVISION:
         case CONFIG_FIELD_DECIMAL_PLACES:

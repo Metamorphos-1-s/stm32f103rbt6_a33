@@ -167,6 +167,8 @@ static uint16_t BuildActiveConfig(uint8_t *data)
         context->config.alarm.upper_limit_ug);
     BleFrameCodec_PutI64(data, &offset,
         context->config.alarm.hysteresis_ug);
+    BleFrameCodec_PutU8(data, &offset,
+        context->config.system.startup_auto_zero_enable ? 1U : 0U);
     return offset;
 }
 
@@ -178,7 +180,8 @@ static bool IsBleMassFieldAllowed(uint8_t field)
 static bool IsBleScalarFieldAllowed(uint8_t field)
 {
     return (field >= CONFIG_FIELD_LIMIT_ENABLE) &&
-           (field <= CONFIG_FIELD_QUALIFIED_BEEP_ENABLE);
+           ((field <= CONFIG_FIELD_QUALIFIED_BEEP_ENABLE) ||
+            (field == CONFIG_FIELD_STARTUP_AUTO_ZERO_ENABLE));
 }
 
 static uint16_t BuildCalibrationState(uint8_t *data)

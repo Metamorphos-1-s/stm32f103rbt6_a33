@@ -171,7 +171,10 @@ def decode_operation_data(operation, data):
                            "qualified_beep_enabled", "lower_limit_ug",
                            "upper_limit_ug", "hysteresis_ug")
             decoded.update(dict(zip(alarm_names, alarm)))
+        if len(data) >= 85:
+            decoded["startup_auto_zero_enabled"] = bool(data[84])
         decoded["extended_alarm_config"] = len(data) >= 84
+        decoded["startup_auto_zero_config"] = len(data) >= 85
         return decoded
     if (operation in range(OPERATIONS["cal-status"],
                           OPERATIONS["cal-cancel"] + 1) and

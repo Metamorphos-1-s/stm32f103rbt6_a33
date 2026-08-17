@@ -23,10 +23,10 @@ typedef enum
     MENU_EDIT_MASS,
     MENU_EDIT_UNIT_DISPLAY,
     MENU_EDIT_FILTER,
-    MENU_EDIT_STABILITY_HOLD
+    MENU_EDIT_STABILITY_HOLD,
+    MENU_EDIT_BOOL
 #if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
     ,
-    MENU_EDIT_BOOL,
     MENU_EDIT_ALARM_SOURCE
 #endif
 } MenuEditKind;
@@ -36,7 +36,8 @@ static const char s_labels[MENU_ITEM_COUNT][6] = {
     {'C','A','L',' ',' ',' '}, {'C','A','P',' ',' ',' '},
     {'d','I','U',' ',' ',' '}, {'d','P',' ',' ',' ',' '},
     {'F','I','L','t',' ',' '}, {'S','t','A','b',' ',' '},
-    {'Z','r','n','G',' ',' '}, {'O','L',' ',' ',' ',' '},
+    {'Z','r','n','G',' ',' '}, {'P','-','Z','r',' ',' '},
+    {'O','L',' ',' ',' ',' '},
     {'b','r','I','G','H','t'}, {'S','P','d',' ',' ',' '},
     {'G','A','I','n',' ',' '}, {'t','r','r','E','t',' '},
 #if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
@@ -132,13 +133,13 @@ static void Render(void)
             ShowCode(DISPLAY_CODE_UNIT_ERROR);
         return;
     }
-#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
     if (s_edit_kind == MENU_EDIT_BOOL)
     {
         (void)DisplayController_SetTextPage(DISPLAY_PAGE_EDIT,
             (s_value != 0) ? "    On" : "   OFF");
         return;
     }
+#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
     if (s_edit_kind == MENU_EDIT_ALARM_SOURCE)
     {
         (void)DisplayController_SetTextPage(DISPLAY_PAGE_EDIT,
@@ -296,6 +297,11 @@ static bool BeginEdit(MenuItem item, uint32_t now_ms)
             s_mass_field = CONFIG_MASS_FIELD_ZERO_RANGE;
             mass = metrology->zero_range_ug;
             break;
+        case MENU_ITEM_STARTUP_AUTO_ZERO:
+            s_edit_kind = MENU_EDIT_BOOL;
+            s_integer_field = CONFIG_FIELD_STARTUP_AUTO_ZERO_ENABLE;
+            s_value = context->config.system.startup_auto_zero_enable ? 1 : 0;
+            break;
         case MENU_ITEM_OVERLOAD:
             if (metrology->compliance_mode ==
                 METROLOGY_COMPLIANCE_CLASS_III_REFERENCE)
@@ -405,8 +411,8 @@ static bool SubmitEditValue(void)
     switch (s_edit_kind)
     {
         case MENU_EDIT_INTEGER:
-#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
         case MENU_EDIT_BOOL:
+#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
         case MENU_EDIT_ALARM_SOURCE:
 #endif
             return MenuController_Command(COMMAND_SET_CONFIG_FIELD,
@@ -443,12 +449,12 @@ static void AdjustEdit(KeyId key)
 {
     int64_t delta;
     int64_t next;
-#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
     if (s_edit_kind == MENU_EDIT_BOOL)
     {
         s_value = (s_value == 0) ? 1 : 0;
         return;
     }
+#if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
     if (s_edit_kind == MENU_EDIT_ALARM_SOURCE)
     {
         s_value = (s_value == ALARM_WEIGHT_NET) ?
