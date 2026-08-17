@@ -4,15 +4,11 @@
 
 Branch: `stage5h-startup-zero-drift-control`
 
-Development base: provisional Stage 5G tip
-`57c9a179c06044ed14a75ffaba62699722e1cc25`.
+Development base: formal Stage 5G main merge `9615751` (tag
+`stage5g-cs1237-od-tested`).
 
-Status: **CODE COMPLETE; SOFTWARE REGRESSION PASS; HARDWARE VALIDATION
-PENDING; FINAL CLOSEOUT BLOCKED BY STAGE 5G**.
-
-Stage 5G remains **OPEN - OLD BOARD VALIDATION PENDING**. This branch must not
-be merged to main or tagged as tested until Stage 5G is formally qualified,
-merged and tagged, then final main is merged back into Stage 5H.
+Status: **SOFTWARE REGRESSION PASS; OLD- AND NEW-BOARD HARDWARE PASS; READY
+FOR FORMAL MERGE AND TESTED TAG**.
 
 ## Startup Auto Zero (P-Zr)
 
@@ -63,7 +59,39 @@ it; TARE/CLEAR TARE rearm it; profile/filter reconfiguration resets it.
 
 ## Required Hardware Validation
 
-On the new board, verify P-Zr OFF, ON/in-range APPLIED, out-of-range skip,
-unstable timeout and restored-tare skip. Verify Drift ENABLE/ARMING,
-DISABLE/OFF, enabled RESET/ARMING and power-cycle OFF. Then repeat final Stage
-5H qualification on both boards only after Stage 5G has formally closed.
+### Old board (ST-LINK + COM7, 2026-08-17)
+
+P-Zr OFF/terminal-disabled, ON/in-range/APPLIED, out-of-range/SKIPPED_RANGE,
+10 s unstable/TIMEOUT, and restored-tare/SKIPPED_TARE all passed. Runtime Drift
+ENABLE/ARMING, RESET while enabled, DISABLE/OFF, and power-cycle OFF passed.
+BLE V1 GET_CONFIG returned 85 bytes with P-Zr enabled. The final concurrent
+120 s run passed BLE 854 telemetry frames and 6/6 command responses with zero
+disconnect, timeout, CRC, sequence-gap, duplicate, or retry errors; COM7
+passed 557/557 FC03 requests with zero timeout/CRC/exception/retry errors.
+The first retention/TARE setup attempt returned an invalid validation result;
+the corrected configuration and subsequent restored-tare test passed.
+
+The old board is currently empty, P-Zr enabled, tare cleared, and
+`config_dirty=0`; the operator restored the original ZrnG locally.
+
+### Remaining gate
+
+### New board (W02_00832C + COM7, 2026-08-17)
+
+The Stage 5H Release image was programmed and verified while preserving the
+configuration region. P-Zr OFF/terminal-disabled, ON/in-range/APPLIED,
+SKIPPED_RANGE, 10 s TIMEOUT, and restored-tare/SKIPPED_TARE all passed. Runtime
+Drift ENABLE/ARMING, RESET, DISABLE/OFF, and power-cycle OFF passed. BLE
+GET_CONFIG returned 85 bytes with P-Zr enabled. After clearing TARE and saving,
+the final empty-board state was stable with `config_dirty=0`.
+
+The final concurrent 120 s run passed BLE 854 telemetry frames and 6/6 command
+responses with zero disconnect, timeout, CRC, sequence-gap, duplicate, or retry
+errors; COM7 passed 556/556 FC03 requests with zero timeout/CRC/exception/retry
+errors. The first invalid-report-directory collision was a host-side naming
+collision before APPLY and did not affect the board; the command was rerun
+successfully.
+
+SWD-only counters are not Modbus-mapped and were not captured in either final
+concurrency run. The 10 s timeout is an engineering default pending Stage 6
+qualification. 640 Hz remains Deferred P1 and is not production-qualified.
