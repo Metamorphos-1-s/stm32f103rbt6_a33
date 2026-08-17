@@ -2,7 +2,7 @@
 
 ## Status
 
-Stage 5G is **OPEN - OLD BOARD CALIBRATION AND CONCURRENCY PENDING** on branch
+Stage 5G is **OPEN - OLD BOARD CONCURRENCY PENDING** on branch
 `stage5g-cs1237-open-drain` from the
 Stage 5F baseline `0e10a53dd1b89eafc34b8dc3a95964394bc1c01b`. The GPIO change
 is functional commit `c3d1f10`. Both PCB revisions pass the qualified 10/40 Hz
@@ -181,10 +181,10 @@ driver path remains compiled and within the Flash boundary.
 
 ## Hardware record
 
-The old-PCB pull-up, production-rate waveform, ZERO/RESET ZERO, and
-TARE/CLEAR TARE checks are now recorded below. The final old-board calibration
-workflow and Stage 5G concurrent rerun remain pending, so Stage 5G cannot yet
-be closed, merged, or tagged.
+The old-PCB pull-up, production-rate waveform, ZERO/RESET ZERO, TARE/CLEAR
+TARE and calibration checks are now recorded below. The final Stage 5G
+concurrent rerun remains pending, so Stage 5G cannot yet be closed, merged, or
+tagged.
 
 The connected board is identified by the operator as the old hardware
 revision. ST-LINK serial `E1007200D0D2139393740544`, firmware `V2J47S7`, read
@@ -403,6 +403,18 @@ no SAVE was issued during these actions. Reports are
 `Tools/stage5b_hw/reports/20260817_201824_rs485`, and
 `Tools/stage5b_hw/reports/20260817_201535_rs485`.
 
+The old-board calibration workflow then completed with a 500 g span. The
+zero and span captures, commit, Flash SAVE and power-cycle recovery all
+returned `OK`; after power-up the calibration-valid flag was `1`, the saved
+slot sequence was `17`, the calibration sequence was `4`, and the stable
+reading was 499.97 g. The calibration reports are
+`Tools/stage5b_hw/reports/20260817_205112_rs485`,
+`Tools/stage5b_hw/reports/20260817_205114_rs485`,
+`Tools/stage5b_hw/reports/20260817_205313_rs485`,
+`Tools/stage5b_hw/reports/20260817_205557_rs485`, and the post-cycle reads
+under `Tools/stage5b_hw/reports/20260817_210207_rs485` through
+`Tools/stage5b_hw/reports/20260817_210617_rs485`.
+
 | Gate | Old PCB | New PCB |
 | --- | --- | --- |
 | Stage 5G Release programmed/verified | PASS | PASS; blank MCU programmed and verified |
@@ -413,7 +425,7 @@ no SAVE was issued during these actions. Reports are
 | Empty/known-load/unload | PASS; 499.96 g at stable 500 g | PASS at empty and 500 g before/after save and power cycle |
 | ZERO/RESET ZERO | PASS; command/readback and underlying baseline restored | PASS at 10 Hz; command/readback and return passed |
 | TARE/CLEAR TARE | PASS; TARE_ACTIVE set and cleared | PASS at 10 Hz; 500.02 -> 0.00 -> 500.03 g |
-| Calibration read/workflow | Pending | PASS; slot A sequence 1 restored after power cycle |
+| Calibration read/workflow | PASS; 500 g span, SAVE and power-cycle recovery, valid=1, sequence 4 | PASS; slot A sequence 1 restored after power cycle |
 | 10 min ADC sanity | PASS; clean 599.967 s rerun after documented CH340 interruption | PASS after local `FILt=3` normalized strength to 1 |
 | 30 min continuous sampling | PASS; 1799.979 s, 8187/8187, zero ADC/transport error | PASS; 1799.850 s, 8213/8213, zero ADC/transport error |
 | 60 s BLE/RS485 concurrency | Pending | PASS; BLE 438 frames/3 commands, RS485 164/164, all error counters zero |
@@ -462,7 +474,7 @@ transactions, concurrency, and long-duration sampling.
 The 640 Hz finding is no longer a blocking product issue because Release now
 prevents entry and Stage 6 explicitly excludes it. It remains Deferred P1 and
 must not be described as PASS. Qualified-rate sampling, configuration,
-electrical waveforms and ZERO/TARE pass on both revisions. Old-board
-calibration workflow and the final BLE/RS485/CS1237 concurrency rerun remain
-closing gates. Stage 5G therefore remains **OPEN - OLD BOARD CALIBRATION AND
-CONCURRENCY PENDING** and must not yet be merged or tagged.
+electrical waveforms, ZERO/TARE and calibration pass on both revisions. The
+final BLE/RS485/CS1237 concurrency rerun remains the closing gate. Stage 5G
+therefore remains **OPEN - OLD BOARD CONCURRENCY PENDING** and must not yet be
+merged or tagged.
