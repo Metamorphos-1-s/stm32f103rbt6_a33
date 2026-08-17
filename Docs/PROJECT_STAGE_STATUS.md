@@ -1,5 +1,28 @@
 # Project stage status
 
+## Stage 5H
+
+Branch `stage5h-startup-zero-drift-control` is based on formal Stage 5G main
+merge `9615751` (tag `stage5g-cs1237-od-tested`). Startup Auto Zero (P-Zr) and
+volatile Runtime Drift Modbus engineering controls are code complete. Schema
+V2 remains 344 bytes; Modbus map is now `0x0104`; BLE V1 keeps its original
+55-byte GET_CONFIG prefix and appends P-Zr after the Alarm tail.
+
+Host 16/16, Stage 5B Python 29/29 and Stage 5C Python 12/12 pass. Debug is
+87,212 B Flash / 14,864 B RAM; Release is 74,840 B / 14,848 B; and
+BoardDiagnostics is 124,324 B / 14,760 B. BoardDiagnostics occupies 97.91% of
+its application Flash region and has little remaining margin. New-board
+Stage 5H hardware validation remains pending.
+
+Old- and new-board Stage 5H hardware validation passed: P-Zr terminal/APPLIED/
+SKIPPED_RANGE/TIMEOUT/SKIPPED_TARE paths and Runtime Drift command/power-cycle
+paths were verified. Final 120 s concurrent BLE/RS485 passed on the old board
+with BLE 854 frames and 6/6 commands plus COM7 557/557 FC03 requests, and on
+the new board with BLE 854 frames and 6/6 commands plus COM7 556/556 FC03
+requests, all with zero externally observed transport errors. The branch is
+ready for formal main merge and the tested Stage5H tag. Details are in
+`Docs/STAGE5H_STARTUP_ZERO_DRIFT_CONTROL.md`.
+
 ## Stage 5G
 
 Branch `stage5g-cs1237-open-drain` aligns the CS1237 two-wire interface to the

@@ -52,6 +52,8 @@ def check(repo_root=None):
         "MODBUS_ALARM_ACTIVE_LAST": reg.ALARM_ACTIVE_LAST,
         "MODBUS_ALARM_STAGING_FIRST": reg.ALARM_STAGING_FIRST,
         "MODBUS_ALARM_STAGING_LAST": reg.ALARM_STAGING_LAST,
+        "MODBUS_STARTUP_ZERO_FIRST": reg.STARTUP_ZERO_FIRST,
+        "MODBUS_STARTUP_ZERO_LAST": reg.STARTUP_ZERO_LAST,
         "MODBUS_EXECUTE_VALUE": reg.EXECUTE_VALUE,
     }.items():
         _require(r"#define\s+%s\s+0x%04XU" % (name, value), header, name)
@@ -94,6 +96,12 @@ def check(repo_root=None):
         "MODBUS_ALARM_CONFIG_DIRTY": reg.ALARM_CONFIG_DIRTY,
         "MODBUS_ALARM_STAGING_VALIDATION": reg.ALARM_STAGING_VALIDATION,
         "MODBUS_ALARM_STAGING_DIRTY": reg.ALARM_STAGING_DIRTY,
+        "MODBUS_STARTUP_ZERO_STATE": reg.STARTUP_ZERO_STATE,
+        "MODBUS_STARTUP_ZERO_ENABLED_AT_BOOT": reg.STARTUP_ZERO_ENABLED_AT_BOOT,
+        "MODBUS_STARTUP_ZERO_TERMINAL": reg.STARTUP_ZERO_TERMINAL,
+        "MODBUS_STARTUP_ZERO_LAST_RESULT": reg.STARTUP_ZERO_LAST_RESULT,
+        "MODBUS_STARTUP_ZERO_ELAPSED_FIRST": reg.STARTUP_ZERO_ELAPSED,
+        "MODBUS_STARTUP_ZERO_GROSS_FIRST": reg.STARTUP_ZERO_GROSS,
     }.items():
         _require(r"#define\s+%s\s+0x%04XU" % (name, value), header, name)
     for address in (reg.REQUEST_TOKEN, reg.COMMAND_ID, reg.EXECUTE,
@@ -113,13 +121,18 @@ def check(repo_root=None):
              "external command ID 25")
     _require(r"case\s+COMMAND_SET_RUNTIME_DRIFT_ENABLED", command_service,
              "runtime drift command handling")
+    for command in ("ENABLE", "DISABLE", "RESET"):
+        _require(r"case\s+COMMAND_RUNTIME_DRIFT_%s" % command,
+                 command_service, "runtime drift %s" % command.lower())
     for value, name in reg.RUNTIME_DRIFT_STATES.items():
         _require(r"RUNTIME_DRIFT_%s(?:\s*=\s*%d)?[,\s]" % (name, value),
                  drift_types, "runtime drift state %s" % name)
     _require(r"`0203`\s*\|\s*reserved, read-as-zero", docs,
              "documented reserved register")
-    _require(r"`000E=0103`", docs, "documented map version")
+    _require(r"`000E=0104`", docs, "documented map version")
     _require(r"Command ID 25", docs, "documented command 25")
+    _require(r"IDs 26 ENABLE,\s*27 DISABLE and 28 RESET", docs,
+             "documented explicit drift commands")
     fields = [
         (reg.RUNTIME_DRIFT_STATE, reg.RUNTIME_DRIFT_STATE),
         (reg.RUNTIME_DRIFT_ENABLED, reg.RUNTIME_DRIFT_ENABLED),

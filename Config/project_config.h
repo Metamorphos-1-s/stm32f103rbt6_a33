@@ -15,6 +15,8 @@
 /* A33 hardware profile: fitted load cell rated capacity. */
 #define A33_SENSOR_RATED_CAPACITY_UG 3000000000LL
 #define A33_RUNTIME_DRIFT_DEFAULT_ENABLED 0U
+/* Engineering default; pending Stage 6 qualification. */
+#define STARTUP_AUTO_ZERO_TIMEOUT_MS 10000U
 
 #define SYSTEM_TICK_HZ                1000U
 #define SCHEDULER_MAX_TASKS           8U

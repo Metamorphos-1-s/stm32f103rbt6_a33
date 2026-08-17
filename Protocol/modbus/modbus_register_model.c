@@ -80,6 +80,7 @@ static bool DecodeStaging(const DeviceConfig *active,DeviceConfig *candidate)
     candidate->metrology.semi_auto_zero_range_permille=s_staging[13];
     candidate->metrology.auto_zero_tracking_enable=s_staging[14]!=0U;
     candidate->system.tare_power_loss_retention=s_staging[15]!=0U;
+    candidate->system.startup_auto_zero_enable=s_staging[60]!=0U;
     for(p=0U;p<MASS_UNIT_COUNT;++p)
     {
         candidate->metrology.unit_display[p].decimal_places=(uint8_t)s_staging[16U+p*2U];
@@ -198,7 +199,7 @@ static ModbusRegisterResult ReadActive(uint16_t address,
             *value=m->profiles[(address==0x0124U)?0:1].stability_window; break;
         case 0x0125U: case 0x0133U:
             *value=(uint16_t)m->profiles[(address==0x0125U)?0:1].stability_hold_ms; break;
-        case 0x013CU:*value=0U; break;
+        case 0x013CU:*value=config->system.startup_auto_zero_enable?1U:0U; break;
         case 0x013EU:*value=CONFIG_STORE_SCHEMA_V2; break;
         case 0x013FU:*value=(uint16_t)MetrologyConfig_Validate(m,&config->stability); break;
         default:
@@ -445,6 +446,29 @@ static ModbusRegisterResult ReadOne(uint16_t address,
             return MODBUS_REGISTER_ILLEGAL_ADDRESS;
         return MODBUS_REGISTER_OK;
     }
+    if ((address >= MODBUS_STARTUP_ZERO_FIRST) &&
+        (address <= MODBUS_STARTUP_ZERO_LAST))
+    {
+        StartupAutoZeroSnapshot empty = {0};
+        const StartupAutoZeroSnapshot *live = App_GetStartupAutoZeroSnapshot();
+        const StartupAutoZeroSnapshot *startup = (live != NULL) ? live : &empty;
+        if (address == MODBUS_STARTUP_ZERO_STATE)
+            *value = (uint16_t)startup->state;
+        else if (address == MODBUS_STARTUP_ZERO_ENABLED_AT_BOOT)
+            *value = startup->enabled_at_boot ? 1U : 0U;
+        else if (address == MODBUS_STARTUP_ZERO_TERMINAL)
+            *value = startup->terminal ? 1U : 0U;
+        else if (address == MODBUS_STARTUP_ZERO_LAST_RESULT)
+            *value = (uint16_t)startup->last_zero_result;
+        else if ((address >= MODBUS_STARTUP_ZERO_ELAPSED_FIRST) &&
+                 (address <= MODBUS_STARTUP_ZERO_ELAPSED_LAST))
+            *value = Word32(startup->elapsed_ms,
+                (uint8_t)(address - MODBUS_STARTUP_ZERO_ELAPSED_FIRST), order);
+        else
+            *value = Word64((uint64_t)startup->observed_gross_mass_ug,
+                (uint8_t)(address - MODBUS_STARTUP_ZERO_GROSS_FIRST), order);
+        return MODBUS_REGISTER_OK;
+    }
     return MODBUS_REGISTER_ILLEGAL_ADDRESS;
 }
 
@@ -509,6 +533,8 @@ static bool CommunicationValueValid(uint16_t address,uint16_t value)
 
 static ModbusRegisterResult ValidateWriteAddress(uint16_t address,uint16_t value)
 {
+    if(address==0x017CU)
+        return value<=1U?MODBUS_REGISTER_OK:MODBUS_REGISTER_ILLEGAL_VALUE;
     if((address>=0x0140U)&&(address<=0x017DU))return MODBUS_REGISTER_OK;
     if(address==0x0240U || address==0x024EU || address==0x024FU ||
        address==0x0250U)
@@ -527,7 +553,9 @@ static ModbusRegisterResult ValidateWriteAddress(uint16_t address,uint16_t value
        ((address>=0x0100U)&&(address<=0x013FU))||
        ((address>=0x017EU)&&(address<=MODBUS_ALARM_ACTIVE_LAST))||
        ((address>=MODBUS_ALARM_STAGING_VALIDATION)&&
-        (address<=MODBUS_ALARM_STAGING_LAST)))
+        (address<=MODBUS_ALARM_STAGING_LAST))||
+       ((address>=MODBUS_STARTUP_ZERO_FIRST)&&
+        (address<=MODBUS_STARTUP_ZERO_LAST)))
         return MODBUS_REGISTER_READ_ONLY;
     return MODBUS_REGISTER_ILLEGAL_ADDRESS;
 }

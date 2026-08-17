@@ -383,10 +383,15 @@ bool WeightEngine_ReconfigureFilter(WeightEngine *engine, FilterMode mode,
 
 bool WeightEngine_SetRuntimeDriftEnabled(WeightEngine *engine, bool enabled)
 {
-    return (engine != NULL) && engine->initialized &&
-        RuntimeDriftCompensator_SetEnabled(&engine->runtime_drift, enabled,
-            engine->snapshot.sample_timestamp_ms) &&
-        (!engine->has_raw_sample || UpdateDerived(engine, false));
+    uint32_t now_ms;
+    if ((engine == NULL) || !engine->initialized) return false;
+    now_ms = engine->snapshot.sample_timestamp_ms;
+    if (!RuntimeDriftCompensator_SetEnabled(&engine->runtime_drift, enabled,
+            now_ms) || (engine->has_raw_sample && !UpdateDerived(engine, false)))
+        return false;
+    /* Reassert the explicit control state after snapshot recomputation. */
+    return RuntimeDriftCompensator_SetEnabled(&engine->runtime_drift, enabled,
+                                               now_ms);
 }
 
 void WeightEngine_SetRuntimeDriftLearningAllowed(WeightEngine *engine,

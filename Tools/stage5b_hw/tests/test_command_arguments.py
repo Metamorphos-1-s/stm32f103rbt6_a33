@@ -18,6 +18,14 @@ class CommandArgumentTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_arguments("RUNTIME_DRIFT_CONTROL", 2, 0)
 
+    def test_explicit_runtime_drift_commands(self):
+        self.assertEqual(reg.COMMANDS["RUNTIME_DRIFT_ENABLE"], 26)
+        self.assertEqual(reg.COMMANDS["RUNTIME_DRIFT_DISABLE"], 27)
+        self.assertEqual(reg.COMMANDS["RUNTIME_DRIFT_RESET"], 28)
+        validate_arguments("RUNTIME_DRIFT_RESET", 0, 0)
+        with self.assertRaises(ValueError):
+            validate_arguments("RUNTIME_DRIFT_ENABLE", 1, 0)
+
     def test_unsigned_32_bit_range(self):
         with self.assertRaises(ValueError):
             validate_arguments("NOP", -1, 0)

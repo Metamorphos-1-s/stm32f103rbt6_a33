@@ -102,6 +102,7 @@ void DefaultConfig_Load(DeviceConfig *config)
 
     config->system.tare_power_loss_retention = false;
     config->system.watchdog_enable = (PROJECT_ENABLE_IWDG != 0U);
+    config->system.startup_auto_zero_enable = false;
 }
 
 uint32_t DefaultConfig_NormalizeLegacyDevelopment(DeviceConfig *config)

@@ -27,6 +27,7 @@
 #include "stage2b_board_diagnostics.h"
 #include "stage3_metrology_diagnostics.h"
 #include "storage_power_guard.h"
+#include "startup_auto_zero_controller.h"
 #include "system_context.h"
 #include "weighing_profile_manager.h"
 #include "ble_connection_manager.h"
@@ -62,6 +63,7 @@ static void App_UpdateAlarmOutputs(uint32_t now_ms);
 static bool s_device_manager_init_attempted;
 static bool s_fault_entry_applied;
 static uint32_t s_last_published_raw_count;
+static StartupAutoZeroController s_startup_auto_zero;
 #if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
 static AlarmOutputManager s_alarm_output_manager;
 static LimitChecker s_limit_checker;
@@ -140,6 +142,10 @@ bool App_Init(void)
     return false;
   }
   (void)MetrologyManager_Init(&config, &SystemContext_Get()->runtime);
+  (void)StartupAutoZeroController_Init(&s_startup_auto_zero,
+      config.system.startup_auto_zero_enable,
+      config.system.tare_power_loss_retention && runtime.tare_active,
+      STARTUP_AUTO_ZERO_TIMEOUT_MS);
   CommandService_Init();
   BleCommandService_Init();
   ModbusRegisterModel_Init();
@@ -262,6 +268,11 @@ bool App_GetAlarmOutputDiagnostics(AlarmOutputDiagnostics *diagnostics)
 #endif
 }
 
+const StartupAutoZeroSnapshot *App_GetStartupAutoZeroSnapshot(void)
+{
+  return StartupAutoZeroController_GetSnapshot(&s_startup_auto_zero);
+}
+
 static void App_1msTask(void *context)
 {
   const SystemContext *system_context;
@@ -340,10 +351,34 @@ static void App_100msTask(void *context)
 
 static void App_20msTask(void *context)
 {
+  const SystemContext *system;
+  const WeightSnapshot *snapshot;
+  StartupAutoZeroInput zero_input = {0};
   (void)context;
   DeviceManager_Process20ms();
   App_PublishRawMeasurement();
   MetrologyManager_Process20ms();
+  system = SystemContext_Get();
+  snapshot = MetrologyManager_GetSnapshot();
+  if (system != NULL)
+  {
+    zero_input.now_ms = BSP_TimeNowMs();
+    zero_input.app_running = (SystemContext_GetState() == APP_STATE_RUN);
+    zero_input.calibration_valid = system->config.calibration.calibration_valid;
+    zero_input.weight_fault = FaultManager_HasWeightInvalidFault();
+    zero_input.zero_range_ug = system->config.metrology.zero_range_ug;
+    if (snapshot != NULL)
+    {
+      zero_input.measurement_ready =
+          (snapshot->status_flags & WEIGHT_STATUS_WEIGHT_VALID) != 0U;
+      zero_input.stable =
+          (snapshot->status_flags & WEIGHT_STATUS_STABLE) != 0U;
+      zero_input.gross_mass_ug = snapshot->gross_mass_ug;
+    }
+    if (StartupAutoZeroController_Process(&s_startup_auto_zero, &zero_input))
+      StartupAutoZeroController_CompleteZero(&s_startup_auto_zero,
+          MetrologyManager_Zero());
+  }
 #if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
   App_UpdateAlarmOutputs(BSP_TimeNowMs());
 #endif

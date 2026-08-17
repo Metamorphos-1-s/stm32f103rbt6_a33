@@ -532,7 +532,7 @@ void MetrologyManager_HandleFaultState(void)
     if (!s_initialized || s_runtime_drift_fault_latched) return;
     snapshot = WeightEngine_GetSnapshot(&s_engine);
     if (MetrologyManager_ActiveFaultInvalidatesReference())
-        WeightEngine_ResetRuntimeDrift(&s_engine,
+        MetrologyManager_ResetRuntimeDrift(
             RUNTIME_DRIFT_RESET_REFERENCE_INVALID);
     else
         WeightEngine_FreezeRuntimeDrift(&s_engine,

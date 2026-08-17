@@ -242,7 +242,8 @@ typedef struct
 {
     bool tare_power_loss_retention;
     bool watchdog_enable;
-    uint8_t reserved[6];
+    bool startup_auto_zero_enable;
+    uint8_t reserved[5];
 } SystemConfig;
 
 typedef struct

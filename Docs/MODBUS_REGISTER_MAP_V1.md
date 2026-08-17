@@ -16,12 +16,13 @@ Addresses are zero-based PDU addresses. PLC notation is 40001 plus the PDU addre
 | `0200-021D` | provisional runtime drift telemetry | RO |
 | `0220-023F` | checkweigh alarm active configuration and status | RO |
 | `0240-025F` | checkweigh alarm staging | mixed |
+| `0260-0269` | startup auto-zero boot result | RO |
 
 ## Realtime block
 
 - `0000-0001` conditioned current-panel display int32; `0002` decimals; `0003` unit.
 - `0004-0005` status; `0006-000B` net/gross/tare display int32.
-- `000C` division; `000D` page; `000E=0103` map version; `000F` firmware value.
+- `000C` division; `000D` page; `000E=0104` map version; `000F` firmware value.
 - `0010-001B` net/gross/tare signed int64 ug.
 - `001C-001F` raw and filtered raw signed int32.
 
@@ -83,7 +84,7 @@ MODE**, **DEFAULT DISABLED**, and **NOT METROLOGICALLY VALIDATED**.
 
 ## Checkweigh alarm configuration and status
 
-Map version `0x0103` adds the following ranges without moving any older
+Map version `0x0103` added the following ranges without moving any older
 register. Signed `int64` values use two's complement and the configured word
 order. Their unit is micrograms (`1 g = 1,000,000 ug`).
 
@@ -122,12 +123,41 @@ Commands cover zero/reset-zero/tare/clear-tare, view/unit/profile, manual output
 config begin/validate/apply/cancel/save, calibration workflow, factory reset,
 communication apply, and runtime drift control. Command ID 25 sets the volatile
 runtime drift enable: argument0 must be 0 (disable) or 1 (enable). Enabling or
-disabling clears its prior volatile learning state and offset. Asynchronous
+disabling clears its prior volatile learning state and offset. IDs 26 ENABLE,
+27 DISABLE and 28 RESET are argument-free engineering commands. ENABLE clears
+state and enters ARMING; DISABLE clears state and enters DISABLED; RESET clears
+correction/reference/window while preserving enabled state. These commands are
+non-persistent and duplicate request tokens replay the cached response without
+executing twice. Asynchronous
 ACCEPTED is not completion.
 
 ## Configuration
 
 Active fields include compliance/unit/mask/word order, Max/e, zero policies, each unit's decimals/division, brightness, load-cell metadata, both complete profiles and validation status. Staging has the same layout at `+0040`; `017E` is validation result and `017F` is dirty.
+
+Map `0x0104` assigns active `013C` and staging `017C` to
+`startup_auto_zero_enable` (`0=OFF`, `1=On`). It participates in the normal
+BEGIN/VALIDATE/APPLY/CANCEL/SAVE flow. Applying it does not zero the live
+measurement; the saved value is sampled only at the next boot. Manual ZERO and
+startup auto-zero share the existing `zero_range_ug` / `ZrnG` limit.
+
+## Startup auto-zero result block
+
+This Map `0x0104` block is read-only and reports the once-per-boot operation.
+Multi-register values use configured word order.
+
+| PDU range | Value | Type / unit |
+|---|---|---|
+| `0260` | state | uint16 enum |
+| `0261` | enabled at boot | bool |
+| `0262` | terminal for this boot | bool |
+| `0263` | last WeightActionResult | uint16 enum |
+| `0264-0265` | elapsed since first RUN entry | uint32 ms |
+| `0266-0269` | last observed gross mass | signed int64 ug |
+
+States are 0 DISABLED, 1 WAIT_MEASUREMENT, 2 WAIT_STABLE, 3 APPLIED,
+4 SKIPPED_RANGE, 5 SKIPPED_TARE, 6 INVALID_CALIBRATION, 7 TIMEOUT and 8 FAULT.
+The timeout is a 10 s engineering default pending Stage 6 qualification.
 
 FC16 validates the whole address range before mutation. EXECUTE must be the final register when present. Active and response registers are read-only. APPLY_RAM never saves flash; SAVE is a separate mailbox command.
 
