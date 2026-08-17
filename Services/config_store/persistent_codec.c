@@ -260,7 +260,8 @@ PersistentCodecResult PersistentCodec_EncodeV1(
 
     PUT_BOOL(config->system.tare_power_loss_retention);
     PUT_BOOL(config->system.watchdog_enable);
-    for (index = 0U; index < 6U; ++index) PutU8(&w, 0U);
+    PUT_BOOL(config->system.startup_auto_zero_enable);
+    for (index = 0U; index < 5U; ++index) PutU8(&w, 0U);
 
     PutU8(&w, (uint8_t)runtime->weight_view);
     PutU32(&w, (uint32_t)runtime->current_tare);
@@ -445,7 +446,8 @@ static PersistentCodecResult DecodeV1Payload(
 
     valid &= GetBool(&r, &config->system.tare_power_loss_retention);
     valid &= GetBool(&r, &config->system.watchdog_enable);
-    valid &= GetReserved(&r, 6U);
+    valid &= GetBool(&r, &config->system.startup_auto_zero_enable);
+    valid &= GetReserved(&r, 5U);
 
     value = GetU8(&r);
     runtime->weight_view = (WeightViewMode)value;

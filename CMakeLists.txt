@@ -54,6 +54,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     App/metrology_manager.c
     App/persistence_manager.c
     App/self_test_controller.c
+    App/startup_auto_zero_controller.c
     App/system_context.c
     App/weighing_profile_manager.c
     BSP/bsp_adc.c
