@@ -113,13 +113,22 @@ sampling. Actual 10/40 Hz and return configuration transactions also showed no
 unexpected Input-to-OD LOW glitch, normal OD-to-input release, and no
 contention or abnormal spike. The new-board electrical waveform gate passes.
 
-Stage 5G status: **OPEN - OLD BOARD VALIDATION PENDING; QUALIFIED 10/40 HZ
-PATHS PASS ON BOTH BOARDS; 640 HZ DEFERRED P1; OLD-BOARD ELECTRICAL,
-FUNCTIONAL, AND CONCURRENCY GATES PENDING**.
+Stage 5G status: **COMPLETE WITH KNOWN LIMITATION; QUALIFIED 10/40 HZ PATHS,
+ELECTRICAL, ZERO/TARE, CALIBRATION/PERSISTENCE, AND OLD-BOARD 120 S BLE/RS485/
+CS1237 CONCURRENCY PASS; BLOCKING P0=0, BLOCKING P1=0, 640 HZ DEFERRED P1**.
 
-The operator has temporarily deferred the remaining old-board pull-up,
-waveform, ZERO/TARE, and concurrent rerun. These rows remain PENDING, so Stage
-5G is not ready to merge or tag despite completion of the new-board gates.
+Old-board pull-ups are 4.7 kOhm to 3.33 V on both lines; 10/40 Hz waveforms
+showed 250 ns SCLK rise, 15 ns DOUT rise and no glitch, spike or contention.
+ZERO/RESET ZERO, TARE/CLEAR TARE, stable 500 g (499.96 g), and a 300 s FC03
+run with 1108/1108 successful requests passed. Calibration workflow and the
+calibration-valid=1 after SAVE and power-cycle recovery passed. The final old-
+board 120 s concurrent run passed BLE 854 frames/6 commands and RS485 443/443
+FC03 with zero externally observed errors. Two earlier attempts are retained
+as retry history; internal SWD snapshot counters were not captured for the
+final run because they are not Modbus-mapped and the GDB server capture was
+unavailable. The 499.97 g post-cycle result validates calibration persistence
+and power-cycle recovery only; it is not an accuracy, repeatability, linearity,
+or legal-metrology result.
 
 Full evidence is in `Docs/STAGE5G_CS1237_OPEN_DRAIN_VALIDATION.md`. Do not
 merge, tag, or begin formal Stage 6 measurements yet.
