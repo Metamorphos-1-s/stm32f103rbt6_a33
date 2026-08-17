@@ -2,7 +2,7 @@
 
 ## Status
 
-Stage 5G is **OPEN - OLD BOARD CONCURRENCY PENDING** on branch
+Stage 5G is **COMPLETE WITH KNOWN LIMITATION** on branch
 `stage5g-cs1237-open-drain` from the
 Stage 5F baseline `0e10a53dd1b89eafc34b8dc3a95964394bc1c01b`. The GPIO change
 is functional commit `c3d1f10`. Both PCB revisions pass the qualified 10/40 Hz
@@ -183,8 +183,8 @@ driver path remains compiled and within the Flash boundary.
 
 The old-PCB pull-up, production-rate waveform, ZERO/RESET ZERO, TARE/CLEAR
 TARE and calibration checks are now recorded below. The final Stage 5G
-concurrent rerun remains pending, so Stage 5G cannot yet be closed, merged, or
-tagged.
+concurrent rerun is recorded below. Earlier failed attempts are retained as
+retry history; only the clean third run is the final functional PASS.
 
 The connected board is identified by the operator as the old hardware
 revision. ST-LINK serial `E1007200D0D2139393740544`, firmware `V2J47S7`, read
@@ -415,6 +415,33 @@ reading was 499.97 g. The calibration reports are
 under `Tools/stage5b_hw/reports/20260817_210207_rs485` through
 `Tools/stage5b_hw/reports/20260817_210617_rs485`.
 
+### Final old-board 120 s BLE/RS485/CS1237 concurrency (2026-08-17)
+
+The final run used the old PCB, Stage 5G firmware commit `eca9921`, Release
+ELF SHA256
+`3C90E13117EE673BEA04C1348840140106E24695255829F5F6F99BBB97277942`, and
+Profile 0 / 10 Hz / gain 128. W02 was `C8:46:82:00:83:24` on COM7 RS485.
+
+BLE remained connected for the 120 s run (`disconnects=0`, connected at end)
+and received 854 frames: FAST 610, SLOW 122, and CHECKWEIGH/`0x03` 122.
+Six command requests/responses completed with zero timeout, retry, command
+error, or transaction mismatch. BLE telemetry CRC, sequence-gap, duplicate,
+timestamp, stream-CRC, unknown-frame, and partial-frame counters were all 0.
+
+Concurrent RS485 completed 443/443 read-only FC03 requests with zero timeout,
+CRC error, exception, or retry. Sample-sequence growth was 1221; mean response
+latency was 55.917 ms and P99 was 57.545 ms. No CS1237 read error, overrun, or
+other ADC error was externally observed during the run.
+
+The first attempt had one RS485 timeout at request 250, and the second attempt
+had a BLE GATT-services `Unreachable` startup failure while its independent
+RS485 run passed 444/444. Both recovered without firmware changes; they remain
+documented retry history, not hidden. The third run above is the final clean
+functional result. The dedicated internal UART/DMA/RTU/BLE snapshot counters
+were not verified for this run: they are not Modbus-mapped and the attempted
+ST-LINK GDB capture could not bind its server port. No counter values are
+invented.
+
 | Gate | Old PCB | New PCB |
 | --- | --- | --- |
 | Stage 5G Release programmed/verified | PASS | PASS; blank MCU programmed and verified |
@@ -428,7 +455,7 @@ under `Tools/stage5b_hw/reports/20260817_210207_rs485` through
 | Calibration read/workflow | PASS; 500 g span, SAVE and power-cycle recovery, valid=1, sequence 4 | PASS; slot A sequence 1 restored after power cycle |
 | 10 min ADC sanity | PASS; clean 599.967 s rerun after documented CH340 interruption | PASS after local `FILt=3` normalized strength to 1 |
 | 30 min continuous sampling | PASS; 1799.979 s, 8187/8187, zero ADC/transport error | PASS; 1799.850 s, 8213/8213, zero ADC/transport error |
-| 60 s BLE/RS485 concurrency | Pending | PASS; BLE 438 frames/3 commands, RS485 164/164, all error counters zero |
+| 120 s BLE/RS485/CS1237 concurrency | PASS; BLE 854 frames/6 commands, RS485 443/443, external error counters zero; internal snapshot not captured | PASS; 60 s gate retained above |
 | Open-drain waveform | PASS at 10/40 Hz; no glitch, spike or contention | PASS at production 10 Hz, including actual configuration direction switching |
 
 ## Known Limitation - CS1237 640 Hz Mode
@@ -475,6 +502,8 @@ The 640 Hz finding is no longer a blocking product issue because Release now
 prevents entry and Stage 6 explicitly excludes it. It remains Deferred P1 and
 must not be described as PASS. Qualified-rate sampling, configuration,
 electrical waveforms, ZERO/TARE and calibration pass on both revisions. The
-final BLE/RS485/CS1237 concurrency rerun remains the closing gate. Stage 5G
-therefore remains **OPEN - OLD BOARD CONCURRENCY PENDING** and must not yet be
-merged or tagged.
+final BLE/RS485/CS1237 concurrency rerun passed on the old board. Stage 5G is
+therefore **COMPLETE WITH KNOWN LIMITATION**. Blocking P0=0, blocking P1=0;
+Deferred P1=1 is the excluded, unqualified CS1237 640 Hz path. Internal SWD
+snapshot counters remain an evidence limitation for this run, not a product
+failure, and are not represented as verified values.
