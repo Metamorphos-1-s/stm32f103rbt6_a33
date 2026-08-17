@@ -133,7 +133,7 @@ unsupported.
 | 2 | 1 | u8 | firmware_version low byte (`10`) |
 | 3 | 1 | u8 | reserved (`0`) |
 | 4 | 2 | u16 | schema_version (`2`) |
-| 6 | 2 | u16 | register_map_version (`0x0103`) |
+| 6 | 2 | u16 | register_map_version (`0x0104`) |
 | 8 | 4 | u32 | capability bits |
 
 The firmware bytes combine as `(high << 8) | low`, currently `0x050A`.
@@ -161,9 +161,10 @@ changes active RAM and sets `persistent_dirty`. `SAVE_CONFIG` responds only
 after the existing persistence completion/no-change/failure event.
 
 `GET_ACTIVE_CONFIG` remains prefix compatible. The original 55-byte prefix and
-all offsets are frozen. An optional 29-byte AlarmConfig tail extends new
-responses to 84 bytes. Parsers must accept at least 55 bytes, parse the old
-prefix first, and parse the tail only when 84 or more bytes are present.
+all offsets are frozen. A 29-byte AlarmConfig tail extends responses to 84
+bytes, followed by a one-byte startup-auto-zero tail for a current total of 85
+bytes. Parsers must accept at least 55 bytes and process each tail only when
+enough bytes are present.
 
 | Tail offset | Absolute offset | Size | Type | Name |
 |---:|---:|---:|---|---|
@@ -176,10 +177,17 @@ prefix first, and parse the tail only when 84 or more bytes are present.
 | 13 | 68 | 8 | i64 ug | upper_limit_ug |
 | 21 | 76 | 8 | i64 ug | hysteresis_ug |
 
+The startup-auto-zero tail is:
+
+| Tail offset | Absolute offset | Size | Type | Name |
+|---:|---:|---:|---|---|
+| 0 | 84 | 1 | bool | startup_auto_zero_enable |
+
 `SET_CONFIG_MASS (0x21)` keeps its `field u8 + value i64` layout and exposes
 mass field IDs 3 lower, 4 upper and 5 hysteresis. `SET_CONFIG_FIELD (0x28)` uses
 `field u8 + value i32`; exposed scalar IDs are 15 limit enable, 16 source,
-17 internal buzzer, 18 external buzzer and 19 qualified beep. These allowlists
+17 internal buzzer, 18 external buzzer, 19 qualified beep and 20 startup
+auto-zero enable. These allowlists
 do not expose other internal ConfigField values. All requests operate on the
 same ConfigEdit staging copy and use the existing validate/apply/replay/conflict
 semantics. Classification fields reset old qualification after successful

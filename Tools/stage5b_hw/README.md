@@ -37,6 +37,8 @@ python Tools\stage5b_hw\stage5b_hw.py rs485 --port COM6 --count 100 --include-er
 python Tools\stage5b_hw\stage5b_hw.py soak --port COM6 --interface rs485 --duration-s 3600 --interval-ms 50 --output-csv soak.csv
 python Tools\stage5b_hw\stage5b_hw.py commands --port COM5 --name NOP --allow-write
 python Tools\stage5b_hw\stage5b_hw.py commands --port COM5 --name RUNTIME_DRIFT_CONTROL --arg0 1 --allow-write --allow-actions
+python Tools\stage5b_hw\stage5b_hw.py commands --port COM5 --name RUNTIME_DRIFT_ENABLE --allow-write --allow-actions
+python Tools\stage5b_hw\stage5b_hw.py commands --port COM5 --name RUNTIME_DRIFT_RESET --allow-write --allow-actions
 python Tools\stage5b_hw\stage5b_hw.py config-apply --port COM5 --allow-write
 python Tools\stage5b_hw\stage5b_hw.py config-apply --port COM5 --communication --new-baud 19200 --new-slave 2 --allow-write --allow-comm-change
 python Tools\stage5b_hw\stage5b_hw.py save --port COM5 --allow-write --allow-flash --manual-power-cycle
@@ -46,10 +48,11 @@ python Tools\stage5b_hw\stage5b_hw.py hf2-r1-regression --port auto --interface 
 
 PDU addresses are zero based. The tool prints the corresponding PLC-style address as `40001 + PDU address`. Every exchange prints raw TX/RX hexadecimal bytes and test runs write reports under `reports/YYYYMMDD_HHMMSS_<interface>/`.
 
-`hf2-status` requires map `0x0102` and reads the complete DisplayConditioner and
+`hf2-status` requires the current map and reads the complete DisplayConditioner and
 Runtime Drift blocks. It reports signed masses in both ug and g and treats a
-nonzero reserved register `0x0203` as an error. Runtime drift command 25 is
-volatile, is not saved to Flash, and accepts only `--arg0 0` or `--arg0 1`.
+nonzero reserved register `0x0203` as an error. Runtime drift command 25 remains
+the compatible 0/1 control; commands 26 ENABLE, 27 DISABLE and 28 RESET are
+argument-free. All are volatile and are not saved to Flash.
 
 `--port auto` selects an adapter only when exactly one USB serial device is
 present. With multiple USB serial devices it lists VID/PID and descriptions and
