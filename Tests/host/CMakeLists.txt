@@ -212,6 +212,8 @@ target_include_directories(stage5a_host_tests PRIVATE
     ../../Protocol/command_service ../../Protocol/modbus ../../Drivers/cs1237
     ../../Domain/limit_checker ../../Services/alarm_output_manager
     ../../UI/key_service)
+target_compile_definitions(stage5a_host_tests PRIVATE
+    ENABLE_STAGE2B_BOARD_DIAGNOSTICS=0)
 if(MSVC)
     target_compile_options(stage5a_host_tests PRIVATE /W4 /WX)
 else()

@@ -264,6 +264,18 @@ static void TestProductDefaults(void)
         .stability_hold_ms==1000U);
     CHECK(MetrologyConfig_ValidateProductHardware(&config.metrology)==
         METROLOGY_CONFIG_OK);
+    config.metrology.profiles[WEIGHING_PROFILE_HIGH_SPEED].sample_rate =
+        DEVICE_CS1237_DATA_RATE_640_HZ;
+    CHECK(MetrologyConfig_ValidateCanonical(&config.metrology) ==
+        METROLOGY_CONFIG_OK);
+    CHECK(MetrologyConfig_ValidateProductHardware(&config.metrology) ==
+        METROLOGY_CONFIG_INVALID_PROFILE);
+    config.metrology.profiles[WEIGHING_PROFILE_HIGH_SPEED].sample_rate =
+        DEVICE_CS1237_DATA_RATE_1280_HZ;
+    CHECK(MetrologyConfig_ValidateProductHardware(&config.metrology) ==
+        METROLOGY_CONFIG_INVALID_PROFILE);
+    config.metrology.profiles[WEIGHING_PROFILE_HIGH_SPEED].sample_rate =
+        DEVICE_CS1237_DATA_RATE_40_HZ;
     config.metrology.overload_threshold_ug=INT64_C(3000000001);
     CHECK(MetrologyConfig_ValidateProductHardware(&config.metrology)==
         METROLOGY_CONFIG_INVALID_OVERLOAD);
