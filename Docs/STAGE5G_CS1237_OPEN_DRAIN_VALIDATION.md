@@ -2,7 +2,7 @@
 
 ## Status
 
-Stage 5G is **OPEN - OLD BOARD VALIDATION PENDING** on branch
+Stage 5G is **OPEN - OLD BOARD CALIBRATION AND CONCURRENCY PENDING** on branch
 `stage5g-cs1237-open-drain` from the
 Stage 5F baseline `0e10a53dd1b89eafc34b8dc3a95964394bc1c01b`. The GPIO change
 is functional commit `c3d1f10`. Both PCB revisions pass the qualified 10/40 Hz
@@ -134,23 +134,23 @@ Primary references:
 ## Pull-up and waveform record
 
 The repository contains no schematic, PCB source, or BOM from which the
-pull-up values can be verified. The prompt confirms that both signals have
-external pull-ups, but does not establish their voltage or resistance.
-Electrical safety and timing are therefore not yet accepted.
+pull-up values can be verified. The operator measured both old-board pull-ups
+and their rail directly; the production-rate electrical measurements below
+are accepted for this validation.
 
 | Item | Old PCB | New PCB |
 | --- | --- | --- |
-| SCLK pull-up voltage | Pending measurement | 4.997 V |
-| DOUT pull-up voltage | Pending measurement | 4.997 V |
-| SCLK pull-up resistance | Pending identification/measurement | 4.7 kOhm |
-| DOUT pull-up resistance | Pending identification/measurement | 4.7 kOhm |
-| SCLK LOW/HIGH voltage | Pending oscilloscope | 66.667 mV / 5.000 V |
-| DOUT LOW/HIGH voltage | Pending oscilloscope | 66.667 mV / 5.000 V |
-| SCLK 10%-90% rise time | Pending oscilloscope | Approximately 315 ns |
-| DOUT 10%-90% rise time | Pending oscilloscope | Approximately 15 ns |
-| SCLK HIGH/LOW time | Pending oscilloscope | 2.515 us / 3.055 us |
-| Input-to-OD glitch/contention | Pending capture | PASS; no unexpected LOW glitch during actual 10/40 Hz configuration transactions |
-| OD-to-input glitch/contention | Pending capture | PASS; normal release, no contention or abnormal spike |
+| SCLK pull-up voltage | 3.33 V | 4.997 V |
+| DOUT pull-up voltage | 3.33 V | 4.997 V |
+| SCLK pull-up resistance | 4.7 kOhm | 4.7 kOhm |
+| DOUT pull-up resistance | 4.7 kOhm | 4.7 kOhm |
+| SCLK LOW/HIGH voltage | 66.66 mV / 3.26 V | 66.667 mV / 5.000 V |
+| DOUT LOW/HIGH voltage | 66.66 mV / 3.26 V | 66.667 mV / 5.000 V |
+| SCLK 10%-90% rise time | 250 ns | Approximately 315 ns |
+| DOUT 10%-90% rise time | 15 ns | Approximately 15 ns |
+| SCLK HIGH/LOW time | 2.5 us / 3.1 us | 2.515 us / 3.055 us |
+| Input-to-OD glitch/contention | PASS; none observed | PASS; no unexpected LOW glitch during actual 10/40 Hz configuration transactions |
+| OD-to-input glitch/contention | PASS; normal release, no contention or abnormal spike | PASS; normal release, no contention or abnormal spike |
 
 The new-board production-rate waveform levels, rise times, and SCLK pulse
 widths pass. SCLK reaches the CS1237 VIH threshold within its measured HIGH
@@ -181,12 +181,10 @@ driver path remains compiled and within the Flash boundary.
 
 ## Hardware record
 
-The operator elected to defer the remaining old-PCB work after completing the
-new-PCB gates. Old-board pull-up values, production-rate waveform capture,
-ZERO/RESET ZERO, TARE/CLEAR TARE, and the Stage 5G concurrent rerun therefore
-remain explicitly PENDING. Existing old-board sampling and configuration
-results below remain valid, but they do not substitute for these closing
-checks. Stage 5G cannot be closed, merged, or tagged while they are pending.
+The old-PCB pull-up, production-rate waveform, ZERO/RESET ZERO, and
+TARE/CLEAR TARE checks are now recorded below. The final old-board calibration
+workflow and Stage 5G concurrent rerun remain pending, so Stage 5G cannot yet
+be closed, merged, or tagged.
 
 The connected board is identified by the operator as the old hardware
 revision. ST-LINK serial `E1007200D0D2139393740544`, firmware `V2J47S7`, read
@@ -382,6 +380,29 @@ transport, UART, parse, CRC, queue, scheduler-drop, or command-parser error;
 all 3 command requests had 3 responses. Evidence is in
 `Results/stage5g_hw/20260817_1721_new_board_60s`.
 
+The current old-board session measured 4.7 kOhm pull-ups to 3.33 V on both
+SCLK and DOUT. At Profile 0/10 Hz, SCLK measured 66.66 mV LOW, 3.26 V HIGH,
+250 ns rise time and 2.5 us/3.1 us HIGH/LOW; DOUT measured 66.66 mV/3.26 V
+and 15 ns rise time. The same values were observed at Profile 1/40 Hz. No
+glitch, spike or bus contention was observed at either rate or during the
+profile direction transitions.
+
+The same session completed 1108/1108 read-only FC03 requests in 300 s with
+zero timeout, CRC error, exception or retry; sample sequence growth was 3055,
+mean response 56.061 ms and P99 57.577 ms. The report is
+`Tools/stage5b_hw/reports/20260817_200629_rs485` and the CSV is
+`Results/stage5g_old_board_stage5h_session.csv`.
+
+With the scale empty and stable, ZERO, RESET ZERO, TARE and CLEAR TARE each
+returned `OK`. A stable 500 g load read 499.96 g before unload. RESET ZERO
+returned the empty reading to its underlying approximately 0.97 g baseline;
+no SAVE was issued during these actions. Reports are
+`Tools/stage5b_hw/reports/20260817_201341_rs485`,
+`Tools/stage5b_hw/reports/20260817_201724_rs485`,
+`Tools/stage5b_hw/reports/20260817_201744_rs485`,
+`Tools/stage5b_hw/reports/20260817_201824_rs485`, and
+`Tools/stage5b_hw/reports/20260817_201535_rs485`.
+
 | Gate | Old PCB | New PCB |
 | --- | --- | --- |
 | Stage 5G Release programmed/verified | PASS | PASS; blank MCU programmed and verified |
@@ -389,14 +410,14 @@ all 3 command requests had 3 responses. Evidence is in
 | Config write/readback and restore | PASS at 10/40 Hz; 640 Hz enters RUNNING | PASS at all gains, 10/40 Hz; power-cycle restore PASS |
 | Production rate/gain/profile transactions | PASS at 10/40 Hz, all gains | PASS at 10/40 Hz, all gains |
 | 640/1280 Hz | DEFERRED / NOT QUALIFIED | DEFERRED / NOT QUALIFIED |
-| Empty/known-load/unload | Pending | PASS at empty and 500 g before/after save and power cycle |
-| ZERO/RESET ZERO | Pending | PASS at 10 Hz; command/readback and return passed |
-| TARE/CLEAR TARE | Pending | PASS at 10 Hz; 500.02 -> 0.00 -> 500.03 g |
+| Empty/known-load/unload | PASS; 499.96 g at stable 500 g | PASS at empty and 500 g before/after save and power cycle |
+| ZERO/RESET ZERO | PASS; command/readback and underlying baseline restored | PASS at 10 Hz; command/readback and return passed |
+| TARE/CLEAR TARE | PASS; TARE_ACTIVE set and cleared | PASS at 10 Hz; 500.02 -> 0.00 -> 500.03 g |
 | Calibration read/workflow | Pending | PASS; slot A sequence 1 restored after power cycle |
 | 10 min ADC sanity | PASS; clean 599.967 s rerun after documented CH340 interruption | PASS after local `FILt=3` normalized strength to 1 |
 | 30 min continuous sampling | PASS; 1799.979 s, 8187/8187, zero ADC/transport error | PASS; 1799.850 s, 8213/8213, zero ADC/transport error |
 | 60 s BLE/RS485 concurrency | Pending | PASS; BLE 438 frames/3 commands, RS485 164/164, all error counters zero |
-| Open-drain waveform | Pending | PASS at production 10 Hz, including actual configuration direction switching |
+| Open-drain waveform | PASS at 10/40 Hz; no glitch, spike or contention | PASS at production 10 Hz, including actual configuration direction switching |
 
 ## Known Limitation - CS1237 640 Hz Mode
 
@@ -440,8 +461,8 @@ transactions, concurrency, and long-duration sampling.
 
 The 640 Hz finding is no longer a blocking product issue because Release now
 prevents entry and Stage 6 explicitly excludes it. It remains Deferred P1 and
-must not be described as PASS. Qualified-rate sampling and configuration pass
-on both revisions. Pull-up values, production-rate waveforms, remaining
-functional regressions, and 60-second BLE/RS485 concurrency remain closing
-gates. Stage 5G therefore remains **OPEN - OLD BOARD VALIDATION PENDING** and
-must not yet be merged or tagged.
+must not be described as PASS. Qualified-rate sampling, configuration,
+electrical waveforms and ZERO/TARE pass on both revisions. Old-board
+calibration workflow and the final BLE/RS485/CS1237 concurrency rerun remain
+closing gates. Stage 5G therefore remains **OPEN - OLD BOARD CALIBRATION AND
+CONCURRENCY PENDING** and must not yet be merged or tagged.
