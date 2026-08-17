@@ -121,6 +121,19 @@ else()
 endif()
 add_test(NAME runtime_drift_logic COMMAND runtime_drift_tests)
 
+add_executable(startup_auto_zero_tests
+    test_startup_auto_zero.c
+    ../../App/startup_auto_zero_controller.c)
+target_include_directories(startup_auto_zero_tests PRIVATE
+    ../../App ../../Domain/measurement)
+if(MSVC)
+    target_compile_options(startup_auto_zero_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(startup_auto_zero_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME startup_auto_zero_logic COMMAND startup_auto_zero_tests)
+
 add_executable(stage4b_storage_tests
     test_stage4b.c
     fake_flash_backend.c

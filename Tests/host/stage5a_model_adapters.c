@@ -18,6 +18,7 @@ static RuntimeDriftSnapshot s_runtime_drift;
 static unsigned s_command_count;
 static CommandRequest s_last_command;
 static AlarmOutputDiagnostics s_alarm_diagnostics;
+static StartupAutoZeroSnapshot s_startup_auto_zero;
 
 void Stage5A_ModelAdaptersInit(void)
 {
@@ -32,6 +33,7 @@ void Stage5A_ModelAdaptersInit(void)
     s_command_count=0U;
     (void)memset(&s_last_command,0,sizeof(s_last_command));
     (void)memset(&s_alarm_diagnostics,0,sizeof(s_alarm_diagnostics));
+    (void)memset(&s_startup_auto_zero,0,sizeof(s_startup_auto_zero));
 }
 SystemContext *Stage5A_ModelContext(void){return &s_context;}
 MassSnapshot *Stage5A_ModelSnapshot(void){return &s_snapshot;}
@@ -40,8 +42,12 @@ RuntimeDriftSnapshot *Stage5A_ModelRuntimeDrift(void){return &s_runtime_drift;}
 unsigned Stage5A_ModelCommandCount(void){return s_command_count;}
 const CommandRequest *Stage5A_ModelLastCommand(void){return &s_last_command;}
 AlarmOutputDiagnostics *Stage5A_ModelAlarmDiagnostics(void){return &s_alarm_diagnostics;}
+StartupAutoZeroSnapshot *Stage5A_ModelStartupAutoZero(void)
+{return &s_startup_auto_zero;}
 bool App_GetAlarmOutputDiagnostics(AlarmOutputDiagnostics *diagnostics)
 {if(diagnostics==NULL)return false;*diagnostics=s_alarm_diagnostics;return true;}
+const StartupAutoZeroSnapshot *App_GetStartupAutoZeroSnapshot(void)
+{return &s_startup_auto_zero;}
 const SystemContext *SystemContext_Get(void){return &s_context;}
 const MassSnapshot *MetrologyManager_GetMassSnapshot(void){return &s_snapshot;}
 const DisplayConditionSnapshot *MetrologyManager_GetDisplayConditionSnapshot(void)

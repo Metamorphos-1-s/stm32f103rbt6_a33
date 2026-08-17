@@ -742,6 +742,26 @@ static void TestRuntimeDriftTareAndFaultSemantics(void)
     CHECK4(drift->last_reset_reason ==
         RUNTIME_DRIFT_RESET_REFERENCE_INVALID);
     FaultManager_Clear(FAULT_CS1237_DATA_ERROR);
+    CHECK4(Stage4A_Command(COMMAND_RUNTIME_DRIFT_RESET,
+        COMMAND_SOURCE_MODBUS, 0, 0, &response) ==
+        COMMAND_RESULT_INVALID_STATE);
+    CHECK4(SystemContext_SetState(APP_STATE_RUN, 721100U));
+    CHECK4(Stage4A_Command(COMMAND_RUNTIME_DRIFT_DISABLE,
+        COMMAND_SOURCE_MODBUS, 0, 0, &response) == COMMAND_RESULT_OK);
+    CHECK4(drift->state == RUNTIME_DRIFT_DISABLED && !drift->enabled &&
+        drift->offset_ug == 0);
+    CHECK4(Stage4A_Command(COMMAND_RUNTIME_DRIFT_ENABLE,
+        COMMAND_SOURCE_MODBUS, 1, 0, &response) ==
+        COMMAND_RESULT_INVALID_ARGUMENT);
+    CHECK4(Stage4A_Command(COMMAND_RUNTIME_DRIFT_ENABLE,
+        COMMAND_SOURCE_MODBUS, 0, 0, &response) == COMMAND_RESULT_OK);
+    CHECK4(drift->state == RUNTIME_DRIFT_ARMING && drift->enabled &&
+        drift->offset_ug == 0);
+    CHECK4(Stage4A_Command(COMMAND_RUNTIME_DRIFT_RESET,
+        COMMAND_SOURCE_MODBUS, 0, 0, &response) == COMMAND_RESULT_OK);
+    CHECK4(drift->state == RUNTIME_DRIFT_ARMING && drift->enabled &&
+        drift->offset_ug == 0 && drift->last_reset_reason ==
+        RUNTIME_DRIFT_RESET_EXPLICIT_CONTROL);
 }
 
 static void TestMenuStarHashLongDoesNotAdjust(void)
@@ -830,7 +850,7 @@ static void TestOverloadMenuRecovery(void)
     CHECK4(MenuController_HandleKeyEvent(&event));
     event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, 40U);
     CHECK4(MenuController_HandleKeyEvent(&event));
-    for (index = 0U; index < 6U; ++index)
+    for (index = 0U; index < 7U; ++index)
     {
         event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT,
             50U + (uint32_t)index * 10U);
@@ -1344,6 +1364,10 @@ static void TestAlarmConfigEditFields(void)
                                      INT64_C(-1)));
     CHECK_A3(!ConfigEdit_SetIntegerField(CONFIG_FIELD_LIMIT_ENABLE, -1));
     CHECK_A3(!ConfigEdit_SetIntegerField(CONFIG_FIELD_LIMIT_ENABLE, 2));
+    CHECK_A3(!ConfigEdit_SetIntegerField(
+        CONFIG_FIELD_STARTUP_AUTO_ZERO_ENABLE, -1));
+    CHECK_A3(!ConfigEdit_SetIntegerField(
+        CONFIG_FIELD_STARTUP_AUTO_ZERO_ENABLE, 2));
     CHECK_A3(!ConfigEdit_SetIntegerField(CONFIG_FIELD_ALARM_WEIGHT_SOURCE,
                                          ALARM_WEIGHT_SOURCE_COUNT));
     ConfigEdit_Cancel();
@@ -1422,6 +1446,19 @@ static void TestAlarmMenu(void)
     MenuController_Init();
     CHECK_A3(SystemContext_SetState(APP_STATE_MENU, now_ms));
     Stage4A_EnterAdvancedMenu(&now_ms);
+
+    Stage4A_NavigateAlarmMenu(MENU_ITEM_STARTUP_AUTO_ZERO, &now_ms);
+    DisplayController_Process20ms();
+    CHECK_A3(Stage4A_ModelShows("P-Zr  "));
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    DisplayController_Process20ms();
+    CHECK_A3(Stage4A_ModelShows("   OFF"));
+    Stage4A_AlarmMenuKey(KEY_ID_ZERO, &now_ms);
+    CHECK_A3(Stage4A_ModelShows("   OFF"));
+    Stage4A_AlarmMenuKey(KEY_ID_HASH, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
+    CHECK_A3(SystemContext_Get()->config.system.startup_auto_zero_enable);
+    Stage4A_ClearMenuMessage(&now_ms);
 
     for (index = 0U; index < (sizeof(items) / sizeof(items[0])); ++index)
     {

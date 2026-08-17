@@ -297,7 +297,7 @@ static void TestAlarmRegisterMap(void)
     alarm->internal_buzzer_active=true;
     ModbusRegisterModel_Init();
     CHECK(ModbusRegisterModel_ReadHolding(0x000EU,1U,words)==MODBUS_REGISTER_OK);
-    CHECK(words[0]==0x0103U);
+    CHECK(words[0]==MODBUS_REGISTER_MAP_VERSION);
     CHECK(ModbusRegisterModel_ReadHolding(MODBUS_ALARM_ACTIVE_FIRST,28U,words)==MODBUS_REGISTER_OK);
     CHECK(words[0]==1U&&words[1]==ALARM_WEIGHT_NET);
     CHECK((int64_t)JoinHighWords(&words[2])==INT64_C(499000000));

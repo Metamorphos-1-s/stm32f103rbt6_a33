@@ -285,6 +285,12 @@ static void TestAlarmConfigExposure(void)
         BleCommandService_Process(64U);
         assert(s_execute_count==1U&&
                ResponseResult()==BLE_COMMAND_RESULT_INVALID_ARGUMENT);
+        scalar[0]=CONFIG_FIELD_STARTUP_AUTO_ZERO_ENABLE;
+        FeedRequest(65U,BLE_OPERATION_SET_CONFIG_FIELD,scalar,sizeof(scalar));
+        BleCommandService_Process(65U);
+        assert(s_execute_count==2U&&
+               s_last_command_request.value0==
+                   CONFIG_FIELD_STARTUP_AUTO_ZERO_ENABLE);
     }
 }
 
@@ -299,16 +305,18 @@ static void TestExtendedActiveConfig(void)
     s_context.config.alarm.lower_limit_ug=INT64_C(499000000);
     s_context.config.alarm.upper_limit_ug=INT64_C(501000000);
     s_context.config.alarm.hysteresis_ug=INT64_C(200000);
+    s_context.config.system.startup_auto_zero_enable=true;
     FeedRequest(65U,BLE_OPERATION_GET_ACTIVE_CONFIG,NULL,0U);
     BleCommandService_Process(65U);
     assert(s_execute_count==0U&&ResponseResult()==BLE_COMMAND_RESULT_OK);
-    assert(s_last_response_length==106U);
+    assert(s_last_response_length==107U);
     assert(s_last_response[75]==1U&&s_last_response[76]==ALARM_WEIGHT_GROSS&&
            s_last_response[77]==1U&&s_last_response[78]==0U&&
            s_last_response[79]==1U);
     assert(BleCommandProtocol_GetI64(&s_last_response[80])==INT64_C(499000000));
     assert(BleCommandProtocol_GetI64(&s_last_response[88])==INT64_C(501000000));
     assert(BleCommandProtocol_GetI64(&s_last_response[96])==INT64_C(200000));
+    assert(s_last_response[104]==1U);
 }
 
 int main(void)
