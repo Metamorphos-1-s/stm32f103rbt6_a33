@@ -1,5 +1,120 @@
 # Project stage status
 
+## Stage 5G
+
+Branch `stage5g-cs1237-open-drain` aligns the CS1237 two-wire interface to the
+external-pull-up hardware baseline: PB10 SCLK is open-drain/NOPULL, PB11 DOUT
+is input/NOPULL while reading and open-drain/NOPULL while writing. CubeMX
+startup configuration and the runtime BSP agree, and both DOUT direction
+changes preload the released-high latch. Protocol timing and all weighing,
+calibration, UI, storage, Modbus, BLE, and UART behavior remain frozen.
+
+Host 15/15, Stage 5B Python 28/28, Stage 5C Python 12/12, and Debug, Release,
+and BoardDiagnostics clean builds pass. Release is 73,896 B Flash / 14,816 B
+RAM. BoardDiagnostics ends at `0x0801DE94`, leaving 4,460 B before the config
+region.
+
+The Stage 5G Release image has been programmed and verified on the connected
+old board. At the saved 10 Hz / gain 128 profile, the post-flash probe is clean
+and a 300-second run completed 1368/1368 FC03 requests with zero communication
+error or CS1237 overrun. Config write/readback, settling, sampling, and restore
+passed for every gain at 10 and 40 Hz. The saved slot B sequence 16 and
+calibration remain unchanged.
+
+The clean empty-scale ADC sanity rerun completed 599.967 seconds and 2733/2733
+FC03 requests with zero timeout, CRC error, exception, retry, CS1237 read error,
+or overrun. Raw-count standard deviation was 18.140 with peak-to-peak 166;
+filtered-raw standard deviation was 13.944 with peak-to-peak 121. An earlier
+287-second attempt ended when the CH340 USB-RS485 adapter dropped from Windows;
+SWD confirmed that the MCU and CS1237 continued sampling without reset or ADC
+error, and the full test passed after reinserting only the adapter.
+
+The separate 1799.979-second empty-scale continuous run also passed:
+8187/8187 FC03 requests, zero timeout/CRC/exception/retry, sample-sequence
+growth 18342, and zero CS1237 read error or overrun by SWD. Raw standard
+deviation/peak-to-peak were 19.616/145 counts; filtered values were
+15.700/117 counts. The first-to-last five-minute filtered-mean shift was
+`+22.134` counts and is retained only as Stage 5G sanity characterization.
+
+Preliminary new-board testing has started. The new MCU application Flash was
+blank; the Stage 5G Release image programmed and verified successfully. SWD
+then showed CS1237 RUNNING, an advancing sample count, and zero driver read
+error or overrun. The initial Modbus failure was traced to the USB converter
+not being in RS485 mode; address 1 at 115200 N1 works after selecting that
+mode. A local 500 g CAL completed in RAM but has intentionally not been saved;
+the empty configuration area remains slot NONE/sequence 0. A loaded
+299.984-second run passed 1364/1364 FC03 requests with zero transport or
+CS1237 error. The blank-Flash default used hidden filter strength 3 with visible
+`FILt=3`; re-submitting `FILt=3` in the local menu normalized the hidden
+strength to 1 and restored the expected response speed. Modbus readback
+confirmed mode 3/strength 1. A subsequent empty-scale 599.781-second run passed
+2737/2737 requests with zero timeout, CRC error, exception, retry, or CS1237
+overrun. Raw standard deviation/peak-to-peak were 17.410/108 counts and filtered
+values were 16.157/89 counts. The RAM calibration remains unsaved. New-board
+return-to-zero then exposed an approximately `+0.27 g` stable offset, so the
+operator repeated the two-point CAL after warm-up. The replacement calibration
+read `500.01 g` loaded and `0.05 g` after unload. It was explicitly saved;
+post-save readback showed slot A sequence 1, dirty zero, calibration sequence 2,
+and active mode 3/strength 1. A physical power cycle restored the same slot,
+sequence, calibration, and filter settings with dirty zero; the stable empty
+display read `-0.01 g`. The post-cycle 500 g check read `500.03 g`, stable,
+with CS1237 RUNNING and zero overrun. The new-board local calibration,
+persistence, and restore loop therefore passes. The new-board normal-rate
+matrix subsequently passed all four gains at both 10 Hz
+and 40 Hz with correct readback, sampling, and zero overrun. The full active
+configuration was restored word-for-word and Profile 0 was reselected; the RAM
+revision was then cleared by a power cycle. Slot A sequence 1, Profile 0 mode
+3/strength 1, calibration, stable empty weighing, and zero CS1237 overrun all
+restored correctly. A subsequent 1799.850-second empty-scale run passed
+8213/8213 requests with zero timeout, CRC error, exception, retry, or overrun.
+Raw standard deviation/peak-to-peak were 14.702/110 counts; filtered values
+were 12.912/87 counts, with a first-to-last five-minute mean change of
+`+29.146` counts. New-board ZERO, RESET ZERO, TARE, and CLEAR TARE also pass
+at 10 Hz; the 500 g tare sequence read `500.02 -> 0.00 -> 500.03 g` and the
+previously saved local calibration path remains valid. The new-board 60-second concurrency
+gate then passed: BLE received FAST 312, SLOW 63, CHECKWEIGH 63 and returned
+3/3 command responses with zero CRC, gap, duplicate, retry, or disconnect;
+RS485 completed 164/164 FC03 with zero error. Post-run SWD showed zero CS1237
+read error/FIFO overrun, event drop, Fault, UART/DMA error, Modbus error, and
+BLE transport/scheduler/parser error.
+
+At 640 Hz, gain 1 and gain 128 both reach RUNNING with correct readback and no
+overrun, but RS485 command responses then become intermittently incomplete and
+the profile cannot be switched back reliably without reset. This is Deferred
+P1 and is not production-qualified; 1280 Hz was not continued. Release product
+validation now rejects profiles above 40 Hz while BoardDiagnostics retains the
+driver modes for engineering. Stage 6 is fixed to Profile 0 at 10 Hz / gain
+128 and explicitly excludes 640 Hz. Pull-up voltage/resistance, production-rate
+waveforms, remaining functional regressions, and concurrency remain pending.
+The new PCB has measured 4.7 kOhm external pull-ups on both SCLK and DOUT to
+4.997 V. PB10/PB11 are FT pins and internal pulls remain disabled; production-
+rate waveform levels/timing pass: both lines measure 66.667 mV LOW and 5.000 V
+HIGH, SCLK rise is approximately 315 ns with 2.515 us HIGH and 3.055 us LOW,
+and DOUT rise is approximately 15 ns. No glitch was seen during ordinary
+sampling. Actual 10/40 Hz and return configuration transactions also showed no
+unexpected Input-to-OD LOW glitch, normal OD-to-input release, and no
+contention or abnormal spike. The new-board electrical waveform gate passes.
+
+Stage 5G status: **COMPLETE WITH KNOWN LIMITATION; QUALIFIED 10/40 HZ PATHS,
+ELECTRICAL, ZERO/TARE, CALIBRATION/PERSISTENCE, AND OLD-BOARD 120 S BLE/RS485/
+CS1237 CONCURRENCY PASS; BLOCKING P0=0, BLOCKING P1=0, 640 HZ DEFERRED P1**.
+
+Old-board pull-ups are 4.7 kOhm to 3.33 V on both lines; 10/40 Hz waveforms
+showed 250 ns SCLK rise, 15 ns DOUT rise and no glitch, spike or contention.
+ZERO/RESET ZERO, TARE/CLEAR TARE, stable 500 g (499.96 g), and a 300 s FC03
+run with 1108/1108 successful requests passed. Calibration workflow and the
+calibration-valid=1 after SAVE and power-cycle recovery passed. The final old-
+board 120 s concurrent run passed BLE 854 frames/6 commands and RS485 443/443
+FC03 with zero externally observed errors. Two earlier attempts are retained
+as retry history; internal SWD snapshot counters were not captured for the
+final run because they are not Modbus-mapped and the GDB server capture was
+unavailable. The 499.97 g post-cycle result validates calibration persistence
+and power-cycle recovery only; it is not an accuracy, repeatability, linearity,
+or legal-metrology result.
+
+Full evidence is in `Docs/STAGE5G_CS1237_OPEN_DRAIN_VALIDATION.md`. Do not
+merge, tag, or begin formal Stage 6 measurements yet.
+
 ## Stage 5F
 
 Branch `stage5f-six-digit-edit` adds six-position ZERO selection and a

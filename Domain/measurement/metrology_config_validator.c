@@ -85,8 +85,20 @@ MetrologyConfigResult MetrologyConfig_ValidateCanonical(
 MetrologyConfigResult MetrologyConfig_ValidateProductHardware(
     const MetrologyConfig *metrology)
 {
+    uint8_t index;
     MetrologyConfigResult result = MetrologyConfig_ValidateCanonical(metrology);
     if (result != METROLOGY_CONFIG_OK) return result;
+#if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
+    /* Production profiles are qualified only at 10 Hz and 40 Hz. */
+    for (index = 0U; index < WEIGHING_PROFILE_COUNT; ++index)
+    {
+        if (metrology->profiles[index].sample_rate >
+            DEVICE_CS1237_DATA_RATE_40_HZ)
+            return METROLOGY_CONFIG_INVALID_PROFILE;
+    }
+#else
+    (void)index;
+#endif
     if ((metrology->overload_threshold_ug <= 0) ||
         (metrology->overload_threshold_ug >
          (MassValueUg)A33_SENSOR_RATED_CAPACITY_UG))

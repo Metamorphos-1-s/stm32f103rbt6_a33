@@ -76,6 +76,7 @@ void BSP_LimitOutputsOff(void)
 
 void BSP_CS1237_SetClock(bool high)
 {
+    /* HIGH releases the open-drain pin to the board-level pull-up. */
     BSP_GPIO_Write(MCU_AD_SCLK_GPIO_Port, MCU_AD_SCLK_Pin, high);
 }
 
@@ -88,13 +89,18 @@ bool BSP_CS1237_SetDataDirection(BspCs1237DataDirection direction)
 
     if (direction == BSP_CS1237_DATA_INPUT)
     {
+        /* Release DOUT before returning ownership to the CS1237. */
+        BSP_GPIO_Write(MCU_AD_DOUT_GPIO_Port, MCU_AD_DOUT_Pin, true);
         gpio.Mode = GPIO_MODE_INPUT;
     }
     else if (direction == BSP_CS1237_DATA_OUTPUT)
     {
-        /* Match the device's released-high level before enabling push-pull. */
+        /*
+         * Preload the output latch high before switching DOUT to open-drain.
+         * HIGH means released; the board-level pull-up establishes the level.
+         */
         BSP_GPIO_Write(MCU_AD_DOUT_GPIO_Port, MCU_AD_DOUT_Pin, true);
-        gpio.Mode = GPIO_MODE_OUTPUT_PP;
+        gpio.Mode = GPIO_MODE_OUTPUT_OD;
         gpio.Speed = GPIO_SPEED_FREQ_HIGH;
     }
     else
