@@ -28,6 +28,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 project(${CMAKE_PROJECT_NAME})
 message("Build type: " ${CMAKE_BUILD_TYPE})
 option(A33_ENABLE_BOARD_DIAGNOSTICS "Enable Stage 2B board diagnostics" OFF)
+option(A33_ENABLE_STAGE5I_USART3_BRINGUP
+    "Enable Stage 5I-A USART3 raw bring-up diagnostics" OFF)
 
 # Enable CMake support for ASM and C languages
 enable_language(C ASM)
@@ -66,6 +68,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     BSP/bsp_time.c
     BSP/bsp_uart.c
     BSP/bsp_uart_dma.c
+    BSP/bsp_uart3_dma.c
     Config/alarm_config_validation.c
     Config/default_config.c
     Diagnostics/stage2a_driver_diagnostics.c
@@ -75,6 +78,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Diagnostics/stage4b_storage_diagnostics.c
     Diagnostics/stage5b_modbus_diagnostics.c
     Diagnostics/stage5c_ble_diagnostics.c
+    Diagnostics/stage5i_usart3_diagnostics.c
     Domain/calibration/calibration_model.c
     Domain/calibration/raw_calibration_stability.c
     Domain/filter/weight_filter.c
@@ -181,6 +185,14 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 # Add project symbols (macros)
+if(A33_ENABLE_STAGE5I_USART3_BRINGUP)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5I_USART3_BRINGUP=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5I_USART3_BRINGUP=0)
+endif()
+
 if(A33_ENABLE_BOARD_DIAGNOSTICS)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
         ENABLE_STAGE2B_BOARD_DIAGNOSTICS=1

@@ -33,6 +33,15 @@
                 "A33_DEBUG_OPTIMIZATION": "-O0",
                 "A33_ENABLE_BOARD_DIAGNOSTICS": "ON"
             }
+        },
+        {
+            "name": "Usart3Bringup",
+            "inherits": "default",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "A33_DEBUG_OPTIMIZATION": "-Og",
+                "A33_ENABLE_STAGE5I_USART3_BRINGUP": "ON"
+            }
         }
     ],
     "buildPresets": [
@@ -47,6 +56,10 @@
         {
             "name": "BoardDiagnostics",
             "configurePreset": "BoardDiagnostics"
+        },
+        {
+            "name": "Usart3Bringup",
+            "configurePreset": "Usart3Bringup"
         }
     ]
 }

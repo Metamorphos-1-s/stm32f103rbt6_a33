@@ -2,6 +2,7 @@
 
 #include "bsp_gpio.h"
 #include "bsp_time.h"
+#include "bsp_uart3_dma.h"
 #include "usart.h"
 #include "w02_uart.h"
 
@@ -206,18 +207,21 @@ void BSP_Uart2TxDmaIrqHandler(void) { HAL_DMA_IRQHandler(&hdma_usart2_tx); }
 void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *handle)
 {
     if (handle == &huart2) ++s_events.rx_half_count;
+    else if (handle == &huart3) BSP_Uart3DmaOnRxHalfComplete();
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *handle)
 {
     if (handle == &huart2) ++s_events.rx_complete_count;
     else if (handle == &huart1) W02Uart_OnRxComplete();
+    else if (handle == &huart3) BSP_Uart3DmaOnRxComplete();
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *handle)
 {
     if (handle == &huart2) ++s_events.tx_dma_complete_count;
     else if (handle == &huart1) W02Uart_OnTxComplete();
+    else if (handle == &huart3) BSP_Uart3DmaOnTxComplete();
 }
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *handle)
@@ -225,6 +229,11 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *handle)
     if (handle == &huart1)
     {
         W02Uart_OnError();
+        return;
+    }
+    if (handle == &huart3)
+    {
+        BSP_Uart3DmaOnError(handle->ErrorCode);
         return;
     }
     if (handle != &huart2) return;

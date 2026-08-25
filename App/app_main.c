@@ -4,6 +4,7 @@
 #include "bsp_flash.h"
 #include "bsp_power_monitor.h"
 #include "bsp_time.h"
+#include "bsp_uart3_dma.h"
 #include "calibration_controller.h"
 #include "command_service.h"
 #include "communication_manager.h"
@@ -34,6 +35,7 @@
 #include "ble_telemetry_service.h"
 #include "ble_command_service.h"
 #include "stage5c_ble_diagnostics.h"
+#include "stage5i_usart3_diagnostics.h"
 #if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
 #include "alarm_output_manager.h"
 #include "alarm_config_validation.h"
@@ -89,6 +91,16 @@ bool App_Init(void)
   {
     return false;
   }
+  if (!BSP_Uart3DmaInit())
+  {
+    return false;
+  }
+#if (A33_ENABLE_STAGE5I_USART3_BRINGUP != 0U)
+  if (!Stage5iUsart3Diagnostics_Init())
+  {
+    return false;
+  }
+#endif
 
   Scheduler_Init();
   EventQueue_Init();
@@ -220,6 +232,9 @@ void App_Run(void)
     BleCommandService_Process(BSP_TimeNowMs());
   }
   Stage5C_BleDiagnosticsProcess();
+#if (A33_ENABLE_STAGE5I_USART3_BRINGUP != 0U)
+  Stage5iUsart3Diagnostics_Process();
+#endif
   Stage2B_DiagnosticsUpdateCs1237Stats(
       MeasurementBridge_GetLastBacklog(),
       MeasurementBridge_GetObservedOverrunCount());

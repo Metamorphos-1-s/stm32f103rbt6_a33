@@ -77,6 +77,10 @@ void Error_Handler(void);
 #define MCU_TM_CLK_GPIO_Port GPIOC
 #define MCU_TM_STB_Pin GPIO_PIN_9
 #define MCU_TM_STB_GPIO_Port GPIOC
+#define MCU_CH579_TX_Pin GPIO_PIN_10
+#define MCU_CH579_TX_GPIO_Port GPIOC
+#define MCU_CH579_RX_Pin GPIO_PIN_11
+#define MCU_CH579_RX_GPIO_Port GPIOC
 #define W02_PWRKEY_Pin GPIO_PIN_8
 #define W02_PWRKEY_GPIO_Port GPIOA
 #define MCU_BLE_TX_Pin GPIO_PIN_9
