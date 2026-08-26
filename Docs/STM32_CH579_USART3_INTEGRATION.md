@@ -165,3 +165,108 @@ Stage 5I-B must not begin its dual-port Modbus integration until:
    decision is recorded before adding protocol code.
 
 Current conclusion: **Stage 5I-A CODE COMPLETE; hardware validation pending**.
+
+## Stage 5I-A-HW validation attempt - 2026-08-26
+
+### Environment and blocker
+
+The validation attempt started on branch `stage5i-ch579-usart3` at commit
+`458cb1db545d56f9f1dc282b29f64b5247dd23eb` with a clean worktree. Windows
+enumerated `COM20` as WCH CH343 and `COM3` as WCH CH340. Their physical wiring
+to PC10/PC11 or CH579 UART1 was not identifiable from USB metadata and was not
+assumed. STM32CubeProgrammer 2.19.0 returned `No ST-Link detected!` for
+`-l stlink`. Consequently the diagnostic image could not be programmed and no
+SWD snapshot, reset evidence, pin measurement, or physical serial result was
+available. No USB-TTL or CH579 TX line was driven without confirmed wiring.
+
+### CubeMX regeneration
+
+STM32CubeMX 6.15.0/DB.6.0.150 loaded, saved, and generated the project twice
+in quiet script mode. The first generation normalized only generated ordering:
+PC10/PC11 pin records, CH579 pin defines, and USART2/USART3 DMA handle
+declarations. The second generation produced byte-identical key files; SHA256
+values before and after the second generation matched:
+
+| Key file | SHA256 after both generations |
+|---|---|
+| `stm32f103rbt6_a33.ioc` | `4BC1C13599D562FB98004E6A810F3A834D41794BE07BE21BD73A9B63BE0CD7EB` |
+| `Core/Inc/main.h` | `234DC8DEBDC0375688DC96BF5E2E7DC56D5E185A543D399A242C01F665782F5F` |
+| `Core/Inc/stm32f1xx_it.h` | `905E53400896A745AF6F67AEDCE841247D2E353341E7EA7F47BAFF763E269A28` |
+| `Core/Inc/usart.h` | `6295C53F36A77D18300BEEF8324E37FD3CD769D7F0B37488E6F7BCDE75A0CEC8` |
+| `Core/Src/dma.c` | `535D134CA0C7AAA8E29B4D79D22CFCE0C298A86C4828AE4A55D60D8CD64BFAD2` |
+| `Core/Src/main.c` | `EC059267306193DABEFEDED529A4EE0B3942F8C63F0F14B10692A82B33A389C6` |
+| `Core/Src/stm32f1xx_it.c` | `F2E9AD681CD957CDCB4B3766DC5A897BE7810FF40DCB6ED5AD34A31AB648DD6E` |
+| `Core/Src/usart.c` | `353E91D50CB827CAA050ED6EB7C6A002998422692ADF2582360069F8ECA53BF5` |
+
+Both generated results retained PC10 TX, PC11 RX, USART3 partial remap,
+DMA1 Channel 3 circular/high RX, DMA1 Channel 2 normal/medium TX, all three
+new IRQs, and the pre-existing USART1, USART2, DMA1 Channel 6/7, TIM4 and USER
+CODE paths. CubeMX logged optional import diagnostics saying DMA request
+parameters were "currently not set" for both pre-existing USART2 and new
+USART3 requests, plus unrelated installed third-party pack warnings. The saved
+IOC and generated sources nevertheless retained the complete DMA parameters,
+the second generation was stable, and all four firmware builds passed.
+
+### Rebuild evidence
+
+`A33_ENABLE_STAGE5I_USART3_BRINGUP` was OFF in Debug, Release, and
+BoardDiagnostics CMake caches and ON only in Usart3Bringup. GNU Arm 13.3.1
+reported no compiler warnings.
+
+| Image | Flash / RAM | ELF timestamp (Asia/Shanghai) | ELF SHA256 |
+|---|---:|---|---|
+| Debug | 88,260 / 15,224 B | 2026-08-26 16:29:45 | `169CD56954DADF250879B7D2C64BB2170EEF5FE68651D2ABAA6FCC2D7A4A238D` |
+| Release | 75,824 / 15,208 B | 2026-08-26 16:29:44 | `BCA8310A5D39996F4DFC2D47F06D32D3321D8A1E0D54CB5627E2C1A4AB107925` |
+| BoardDiagnostics | 125,836 / 15,120 B | 2026-08-26 16:29:45 | `AD8605FAB90EB8269F23D7581DC9082BA754F6B8D5B81BDFE503F5BB3B02D558` |
+| Usart3Bringup | 89,468 / 16,240 B | 2026-08-26 16:27:09 | `5582C57208DC85B23C1142CBDA2BA91CF5E7CFD5F853B965DA142759371313E9` |
+
+The programming candidate is
+`build/Usart3Bringup/stm32f103rbt6_a33.elf`. It was not programmed because no
+ST-Link was detected. Host CTest passed 16/16 with the existing `/W4 /WX`
+policy, Stage 5B Python passed 29/29, and Stage 5C Python passed 12/12.
+
+### Diagnostic contract confirmed from source
+
+- RX buffer: 512-byte static circular DMA buffer.
+- TX buffer: 256-byte static buffer; requests are copied before DMA starts.
+- Test-frame trigger: explicit SWD call to
+  `Stage5iUsart3Diagnostics_SendTestFrame()`; no automatic transmit.
+- Echo: disabled and not implemented.
+- Snapshot symbol/API: `Stage5iUsart3Diagnostics_Get()` returning
+  `Stage5iUsart3Diagnostics`; `last_rx[64]`, `last_tx[64]`, lengths and totals
+  are bounded fields in that structure.
+- DMA position: `BSP_Uart3DmaGetRxPosition(512)`.
+- IDLE/UART/DMA counters: `uart_events` inside the diagnostic snapshot, sourced
+  from `BSP_Uart3DmaGetEvents()`.
+
+### Validation matrix
+
+| Item | Result | Evidence / reason |
+|---|---|---|
+| CubeMX two regenerations | PASS | second-generation key-file hashes identical; build passed |
+| USART3 115200 8N1 | NOT RUN | no ST-Link/programmed target |
+| PC10 TX | NOT RUN | no waveform or USB-TTL capture |
+| PC11 RX | NOT RUN | no SWD snapshot |
+| Partial Remap | NOT RUN | generated configuration retained; physical route unverified |
+| USB-TTL to STM32 | NOT RUN | wiring not confirmed and target not programmed |
+| STM32 to USB-TTL | NOT RUN | target not programmed |
+| RX Circular DMA | NOT RUN | requires SWD counters/data |
+| DMA position wrap | NOT RUN | requires at least 1,553 received bytes and SWD evidence |
+| IDLE single event | NOT RUN | requires programmed target |
+| IDLE multiple frames | NOT RUN | requires programmed target |
+| 256-byte transfer | NOT RUN | requires physical byte comparison |
+| 1,000-frame stress | NOT RUN | requires physical link and diagnostic capture |
+| CH579 to STM32 | NOT RUN | CH579 raw UART0 mode/wiring not confirmed |
+| STM32 to CH579 | NOT RUN | CH579 raw UART0 mode/wiring not confirmed |
+| CH579 continuous communication | NOT RUN | physical prerequisite unavailable |
+| USART2 RS232 regression | NOT RUN | requires USART3 traffic and physical RS232 link |
+| USART2 RS485 regression | NOT RUN | requires USART3 traffic and physical RS485 link |
+| USART1 W02 regression | NOT RUN | requires three-port physical concurrency |
+| USART3 FC03 | NOT RUN | outside Stage 5I-A-HW scope; Stage 5I-B |
+| USART3 FC06 | NOT RUN | outside Stage 5I-A-HW scope |
+| USART3 FC16 | NOT RUN | outside Stage 5I-A-HW scope |
+
+UART/DMA runtime error counters are **NOT READ**, not zero: the target was not
+programmed or attached through SWD. Actual wiring is also **NOT CONFIRMED**.
+Stage 5I-B entry conditions are not satisfied. The conclusion remains:
+**Stage 5I-A CODE COMPLETE; hardware validation pending**.
