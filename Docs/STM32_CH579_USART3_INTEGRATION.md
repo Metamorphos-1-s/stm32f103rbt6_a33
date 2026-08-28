@@ -860,3 +860,60 @@ The next authorized stage remains blocked until a verified USB-RS232 path is
 available and the BLE external path produces a zero-gap 600-second window, or
 the user explicitly approves a changed acceptance metric. No ACK,
 retransmission or BLE protocol change was introduced.
+
+## Stage 5I-B-Final new-board W02 window - 2026-08-29
+
+The previously validated spare mainboard was connected to ST-Link SN
+`E1007200D0D2139393740544` and programmed with the Release ELF
+(`2D4C83425D0BA4F4854BED7A3D937C5FF588FEC1EFAC1B5425CD3BE5BBEDF096`).
+ST-Link measured 3.29 V and verified the download. COM5 remained the USB-485
+adapter; COM3 remained the CH579 UART1 log port.
+
+### W02 rediscovery and window
+
+The W02 was rediscovered from advertising as `W02_008324`, address
+`C8:46:82:00:83:24` (RSSI approximately -22 dBm). DEVICE_INFO and GET_CONFIG
+both returned OK, reporting firmware `0x050A`, Schema V2 and map `0x0104`.
+
+The formal 600-second BLE telemetry window ran for 605.56 s on the new board:
+
+| Metric | Result |
+|---|---:|
+| total frames | 4,200 |
+| FAST / SLOW / CHECKWEIGH | 3,000 / 600 / 600 |
+| CRC errors | 0 |
+| sequence gaps | 0 |
+| parser resync | 0 |
+| duplicates | 0 |
+| partial bytes | 0 |
+| disconnects | 0 |
+
+The same connection then completed 24 read-only commands: eight each of
+DEVICE_INFO, GET_CONFIG and CAL_STATUS. Result: **24/24 OK**. Evidence is in
+`Results/stage5ibfinal_w02_window/telemetry_summary.json` and
+`Results/stage5ibfinal_newboard_w02_commands.json`.
+
+The post-window COM5 RS485 probe also passed: four complete FC03 exchanges,
+all CRC-valid, with register-map version 0x0104, firmware 0x050A and response
+latency approximately 55.5 ms. SWD evidence is in
+`Results/stage5ibfinal_newboard_swd/swd_diagnostics.json`; it shows USART2
+valid/complete `4/4`, zero DMA/UART/TX/Framer errors, and no USART3 traffic
+because the CH579 PC10/PC11 cable was not connected in that probe.
+
+### Aborted combined run
+
+A combined CH579 TCP + COM5 RS485 + W02 attempt was started to check the new
+board under three-interface load, but it was stopped after approximately one
+minute when the missing CH579-to-PC10/PC11 connection became evident. The TCP
+worker recorded 0 successful responses and 59 timeouts; this is **not** a
+firmware PASS or a valid three-interface gate. COM5 returned a valid FC03 with
+the new board's current value `01 03 02 FF FF B9 F4`; the test's old fixed
+`00 00` payload expectation was invalid for this board. The partial BLE process
+was terminated and the MCU was reset through ST-Link. Raw partial-run evidence
+is retained under `Results/stage5ibfinal_newboard_threeway_ble/` and
+`Results/stage5ibfinal_newboard_failed_concurrent_swd/`.
+
+The new-board W02 window therefore closes the standalone BLE zero-gap gate, but
+does not close Gate A or Gate B: a complete combined run requires the CH579
+UART0 wiring to PC11/PC10 and a response checker that validates CRC/protocol
+fields rather than a board-specific weight value.
