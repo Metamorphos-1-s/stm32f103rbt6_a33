@@ -1,23 +1,11 @@
 #include "modbus_rtu_framer.h"
 
-#include "bsp_rtu_timer.h"
 #include "bsp_time.h"
-#include "uart2_dma_transport.h"
 
 #include <stddef.h>
 #include <string.h>
 
-#define FRAMER_MAX_BYTES_PER_PROCESS 128U
-
-static ModbusRtuTiming s_timing;
-static ModbusFramerState s_state;
-static uint8_t s_frame[MODBUS_RTU_ADU_MAX_SIZE];
-static uint16_t s_length;
-static uint16_t s_silence_dma_position;
-static ModbusRtuFramerStatistics s_statistics;
-
-static bool IdleIntervalElapsed(uint32_t timestamp_cycles,
-                                uint32_t interval_us)
+static bool IntervalElapsed(uint32_t timestamp_cycles, uint32_t interval_us)
 {
     uint32_t interval_cycles;
     return BSP_TimeUsToCycles(interval_us, &interval_cycles) &&
@@ -25,197 +13,222 @@ static bool IdleIntervalElapsed(uint32_t timestamp_cycles,
                               interval_cycles);
 }
 
-static void CompleteReceivedFrame(void)
+static void StopTimer(ModbusRtuFramer *framer)
 {
-    if (s_length < 4U)
+    framer->timer_active = false;
+}
+
+static void StartTimer(ModbusRtuFramer *framer, uint32_t delay_us)
+{
+    uint32_t delay_cycles;
+    if (!BSP_TimeUsToCycles(delay_us, &delay_cycles) || (delay_cycles == 0U))
     {
-        ++s_statistics.short_frame_count;
-        ModbusRtuFramer_Reset();
+        framer->timer_active = false;
+        ++framer->statistics.timer_start_failure_count;
+        return;
+    }
+    framer->timer_start_cycles = BSP_TimeNowCycles();
+    framer->timer_delay_cycles = delay_cycles;
+    framer->timer_active = true;
+}
+
+static void CompleteReceivedFrame(ModbusRtuFramer *framer)
+{
+    StopTimer(framer);
+    if (framer->length < 4U)
+    {
+        ++framer->statistics.short_frame_count;
+        ModbusRtuFramer_Reset(framer, framer->silence_position);
     }
     else
     {
-        s_state = MODBUS_FRAMER_FRAME_READY;
-        ++s_statistics.frame_count;
+        framer->state = MODBUS_FRAMER_FRAME_READY;
+        ++framer->statistics.frame_count;
     }
 }
 
-static void StartTimer(uint32_t delay_us)
+static void DiscardUntilSilence(ModbusRtuFramer *framer)
 {
-    if (!BSP_RtuTimerStartUs(delay_us))
-        ++s_statistics.timer_start_failure_count;
+    framer->length = 0U;
+    framer->statistics.current_frame_length = 0U;
+    framer->state = MODBUS_FRAMER_DISCARD_UNTIL_SILENCE;
+    StartTimer(framer, framer->timing.t3_5_us);
 }
 
-static void DiscardUntilSilence(void)
+static uint32_t RemainingAfterIdle(const ModbusRtuFramer *framer,
+                                   uint32_t interval_us)
 {
-    s_length = 0U;
-    s_statistics.current_frame_length = 0U;
-    s_state = MODBUS_FRAMER_DISCARD_UNTIL_SILENCE;
-    StartTimer(s_timing.t3_5_us);
+    return (interval_us > framer->timing.character_time_us) ?
+        (interval_us - framer->timing.character_time_us) : 1U;
 }
 
-static uint32_t RemainingAfterIdle(uint32_t interval_us)
+bool ModbusRtuFramer_Init(ModbusRtuFramer *framer,
+                          const ModbusRtuTiming *timing,
+                          uint16_t initial_position)
 {
-    return (interval_us > s_timing.character_time_us) ?
-        (interval_us - s_timing.character_time_us) : 1U;
-}
-
-bool ModbusRtuFramer_Init(const ModbusRtuTiming *timing)
-{
-    if ((timing == NULL) || (timing->t1_5_us == 0U) ||
+    if ((framer == NULL) || (timing == NULL) || (timing->t1_5_us == 0U) ||
         (timing->t3_5_us <= timing->t1_5_us)) return false;
-    s_timing = *timing;
-    (void)memset(&s_statistics, 0, sizeof(s_statistics));
-    ModbusRtuFramer_Reset();
-    DiscardUntilSilence();
+    (void)memset(framer, 0, sizeof(*framer));
+    framer->timing = *timing;
+    ModbusRtuFramer_Reset(framer, initial_position);
+    DiscardUntilSilence(framer);
     return true;
 }
 
-void ModbusRtuFramer_OnByte(uint8_t byte)
+void ModbusRtuFramer_OnByte(ModbusRtuFramer *framer, uint8_t byte)
 {
-    if (s_state == MODBUS_FRAMER_FRAME_READY)
+    if (framer == NULL) return;
+    if ((framer->state == MODBUS_FRAMER_FRAME_READY) ||
+        (framer->state == MODBUS_FRAMER_WAIT_T3_5))
     {
-        ++s_statistics.inter_character_error_count;
-        DiscardUntilSilence();
+        ++framer->statistics.inter_character_error_count;
+        DiscardUntilSilence(framer);
         return;
     }
-    if (s_state == MODBUS_FRAMER_WAIT_T3_5)
+    if (framer->state == MODBUS_FRAMER_DISCARD_UNTIL_SILENCE)
     {
-        ++s_statistics.inter_character_error_count;
-        DiscardUntilSilence();
+        StartTimer(framer, framer->timing.t3_5_us);
         return;
     }
-    if (s_state == MODBUS_FRAMER_DISCARD_UNTIL_SILENCE)
+    if (framer->state == MODBUS_FRAMER_WAIT_T1_5) StopTimer(framer);
+    if (framer->length >= MODBUS_RTU_ADU_MAX_SIZE)
     {
-        StartTimer(s_timing.t3_5_us);
+        ++framer->statistics.overflow_count;
+        DiscardUntilSilence(framer);
         return;
     }
-    if (s_state == MODBUS_FRAMER_WAIT_T1_5) BSP_RtuTimerStop();
-    if (s_length >= MODBUS_RTU_ADU_MAX_SIZE)
-    {
-        ++s_statistics.overflow_count;
-        DiscardUntilSilence();
-        return;
-    }
-    s_frame[s_length++] = byte;
-    s_statistics.current_frame_length = s_length;
-    s_state = MODBUS_FRAMER_RECEIVING;
+    framer->frame[framer->length++] = byte;
+    framer->statistics.current_frame_length = framer->length;
+    framer->state = MODBUS_FRAMER_RECEIVING;
 }
 
-void ModbusRtuFramer_Process(void)
+void ModbusRtuFramer_Process(ModbusRtuFramer *framer,
+                             const ModbusRtuTransport *transport)
 {
     uint16_t count = 0U;
     uint16_t position;
     uint32_t timestamp;
     uint8_t byte;
-    if (Uart2DmaTransport_TakeReceiveError())
+    if ((framer == NULL) || !ModbusRtuTransport_IsValid(transport)) return;
+    if (transport->take_receive_error(transport->context))
     {
-        ++s_statistics.transport_error_count;
-        Uart2DmaTransport_DiscardPending();
-        DiscardUntilSilence();
+        ++framer->statistics.transport_error_count;
+        transport->discard_pending(transport->context);
+        DiscardUntilSilence(framer);
     }
-    while ((count < FRAMER_MAX_BYTES_PER_PROCESS) &&
-           Uart2DmaTransport_TryReadByte(&byte))
+    while ((count < MODBUS_RTU_MAX_BYTES_PER_PROCESS) &&
+           transport->try_read_byte(transport->context, &byte))
     {
-        ModbusRtuFramer_OnByte(byte);
+        ModbusRtuFramer_OnByte(framer, byte);
         ++count;
     }
-    if (Uart2DmaTransport_TakeIdleEvent(&position, &timestamp))
-        ModbusRtuFramer_OnIdleEvent(position, timestamp);
-    if (BSP_RtuTimerTakeElapsed()) ModbusRtuFramer_OnTimerEvent();
+    if (transport->take_idle_event(transport->context, &position, &timestamp))
+        ModbusRtuFramer_OnIdleEvent(framer, position, timestamp);
+    if (framer->timer_active && BSP_TimeCyclesElapsed(BSP_TimeNowCycles(),
+        framer->timer_start_cycles, framer->timer_delay_cycles))
+        ModbusRtuFramer_OnTimerEvent(framer,
+            transport->get_rx_position(transport->context));
 }
 
-void ModbusRtuFramer_OnIdleEvent(uint16_t dma_position,
-                                uint32_t timestamp_cycles)
+void ModbusRtuFramer_OnIdleEvent(ModbusRtuFramer *framer,
+                                 uint16_t dma_position,
+                                 uint32_t timestamp_cycles)
 {
-    (void)timestamp_cycles;
-    ++s_statistics.idle_event_count;
-    s_silence_dma_position = dma_position;
-    if (s_state == MODBUS_FRAMER_RECEIVING)
+    if (framer == NULL) return;
+    ++framer->statistics.idle_event_count;
+    framer->silence_position = dma_position;
+    if (framer->state == MODBUS_FRAMER_RECEIVING)
     {
-        if (IdleIntervalElapsed(timestamp_cycles,
-                RemainingAfterIdle(s_timing.t3_5_us)))
+        if (IntervalElapsed(timestamp_cycles,
+            RemainingAfterIdle(framer, framer->timing.t3_5_us)))
         {
-            CompleteReceivedFrame();
+            CompleteReceivedFrame(framer);
             return;
         }
-        s_state = MODBUS_FRAMER_WAIT_T1_5;
-        StartTimer(RemainingAfterIdle(s_timing.t1_5_us));
+        framer->state = MODBUS_FRAMER_WAIT_T1_5;
+        StartTimer(framer,
+            RemainingAfterIdle(framer, framer->timing.t1_5_us));
     }
-    else if (s_state == MODBUS_FRAMER_DISCARD_UNTIL_SILENCE)
+    else if (framer->state == MODBUS_FRAMER_DISCARD_UNTIL_SILENCE)
     {
-        if (IdleIntervalElapsed(timestamp_cycles,
-                RemainingAfterIdle(s_timing.t3_5_us)))
+        if (IntervalElapsed(timestamp_cycles,
+            RemainingAfterIdle(framer, framer->timing.t3_5_us)))
         {
-            ModbusRtuFramer_Reset();
+            ModbusRtuFramer_Reset(framer, dma_position);
             return;
         }
-        StartTimer(RemainingAfterIdle(s_timing.t3_5_us));
+        StartTimer(framer,
+            RemainingAfterIdle(framer, framer->timing.t3_5_us));
     }
 }
 
-void ModbusRtuFramer_OnTimerEvent(void)
+void ModbusRtuFramer_OnTimerEvent(ModbusRtuFramer *framer,
+                                  uint16_t current_position)
 {
-    uint16_t current = Uart2DmaTransport_GetStatistics()->dma_write_position;
-    ++s_statistics.timer_event_count;
-    if (current != s_silence_dma_position)
+    if (framer == NULL) return;
+    StopTimer(framer);
+    ++framer->statistics.timer_event_count;
+    if (current_position != framer->silence_position)
     {
-        ++s_statistics.timer_race_count;
-        if (s_state == MODBUS_FRAMER_WAIT_T3_5)
+        ++framer->statistics.timer_race_count;
+        if (framer->state == MODBUS_FRAMER_WAIT_T3_5)
         {
-            ++s_statistics.inter_character_error_count;
-            DiscardUntilSilence();
+            ++framer->statistics.inter_character_error_count;
+            DiscardUntilSilence(framer);
         }
-        else if (s_state == MODBUS_FRAMER_WAIT_T1_5)
-        {
-            s_state = MODBUS_FRAMER_RECEIVING;
-        }
-        else if (s_state == MODBUS_FRAMER_DISCARD_UNTIL_SILENCE)
-        {
-            StartTimer(s_timing.t3_5_us);
-        }
+        else if (framer->state == MODBUS_FRAMER_WAIT_T1_5)
+            framer->state = MODBUS_FRAMER_RECEIVING;
+        else if (framer->state == MODBUS_FRAMER_DISCARD_UNTIL_SILENCE)
+            StartTimer(framer, framer->timing.t3_5_us);
         return;
     }
-    if (s_state == MODBUS_FRAMER_WAIT_T1_5)
+    if (framer->state == MODBUS_FRAMER_WAIT_T1_5)
     {
-        ++s_statistics.timer_t1_5_elapsed_count;
-        s_state = MODBUS_FRAMER_WAIT_T3_5;
-        StartTimer(s_timing.t3_5_us - s_timing.t1_5_us);
+        ++framer->statistics.timer_t1_5_elapsed_count;
+        framer->state = MODBUS_FRAMER_WAIT_T3_5;
+        StartTimer(framer,
+            framer->timing.t3_5_us - framer->timing.t1_5_us);
     }
-    else if (s_state == MODBUS_FRAMER_WAIT_T3_5)
+    else if (framer->state == MODBUS_FRAMER_WAIT_T3_5)
     {
-        ++s_statistics.timer_t3_5_elapsed_count;
-        CompleteReceivedFrame();
+        ++framer->statistics.timer_t3_5_elapsed_count;
+        CompleteReceivedFrame(framer);
     }
-    else if (s_state == MODBUS_FRAMER_DISCARD_UNTIL_SILENCE)
-    {
-        ModbusRtuFramer_Reset();
-    }
+    else if (framer->state == MODBUS_FRAMER_DISCARD_UNTIL_SILENCE)
+        ModbusRtuFramer_Reset(framer, current_position);
 }
 
-bool ModbusRtuFramer_TryGetFrame(uint8_t *destination, uint16_t capacity,
-                                uint16_t *length)
+bool ModbusRtuFramer_TryGetFrame(ModbusRtuFramer *framer,
+                                 uint8_t *destination, uint16_t capacity,
+                                 uint16_t *length)
 {
-    if ((destination == NULL) || (length == NULL) ||
-        (s_state != MODBUS_FRAMER_FRAME_READY) || (capacity < s_length))
-        return false;
-    (void)memcpy(destination, s_frame, s_length);
-    *length = s_length;
-    ModbusRtuFramer_Reset();
+    if ((framer == NULL) || (destination == NULL) || (length == NULL) ||
+        (framer->state != MODBUS_FRAMER_FRAME_READY) ||
+        (capacity < framer->length)) return false;
+    (void)memcpy(destination, framer->frame, framer->length);
+    *length = framer->length;
+    ModbusRtuFramer_Reset(framer, framer->silence_position);
     return true;
 }
 
-void ModbusRtuFramer_Reset(void)
+void ModbusRtuFramer_Reset(ModbusRtuFramer *framer,
+                           uint16_t current_position)
 {
-    BSP_RtuTimerStop();
-    s_length = 0U;
-    s_statistics.current_frame_length = 0U;
-    s_state = MODBUS_FRAMER_WAITING;
-    s_silence_dma_position =
-        Uart2DmaTransport_GetStatistics()->dma_write_position;
+    if (framer == NULL) return;
+    StopTimer(framer);
+    framer->length = 0U;
+    framer->statistics.current_frame_length = 0U;
+    framer->state = MODBUS_FRAMER_WAITING;
+    framer->silence_position = current_position;
 }
 
-ModbusFramerState ModbusRtuFramer_GetState(void) { return s_state; }
-const ModbusRtuFramerStatistics *ModbusRtuFramer_GetStatistics(void)
+ModbusFramerState ModbusRtuFramer_GetState(const ModbusRtuFramer *framer)
 {
-    return &s_statistics;
+    return (framer != NULL) ? framer->state : MODBUS_FRAMER_ERROR;
+}
+
+const ModbusRtuFramerStatistics *ModbusRtuFramer_GetStatistics(
+    const ModbusRtuFramer *framer)
+{
+    return (framer != NULL) ? &framer->statistics : NULL;
 }

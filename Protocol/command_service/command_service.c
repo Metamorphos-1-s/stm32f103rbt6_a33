@@ -87,7 +87,8 @@ static CalibrationOwner CommandService_CalibrationOwner(CommandSource source)
 {
     switch (source)
     {
-        case COMMAND_SOURCE_MODBUS: return CAL_OWNER_MODBUS;
+        case COMMAND_SOURCE_MODBUS:
+        case COMMAND_SOURCE_MODBUS_USART3: return CAL_OWNER_MODBUS;
         case COMMAND_SOURCE_BLE: return CAL_OWNER_BLE;
         case COMMAND_SOURCE_LOCAL_KEY:
         case COMMAND_SOURCE_USB:
@@ -535,7 +536,8 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             }
             break;
         case COMMAND_REQUEST_CONFIG_SAVE:
-            result = (request->source == COMMAND_SOURCE_MODBUS) ?
+            result = ((request->source == COMMAND_SOURCE_MODBUS) ||
+                (request->source == COMMAND_SOURCE_MODBUS_USART3)) ?
                 CommunicationManager_RequestDeferredSave() :
                 PersistenceManager_RequestSave();
             break;
@@ -768,7 +770,8 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             }
             break;
         case COMMAND_COMMUNICATION_APPLY:
-            result = CommunicationManager_RequestApply();
+            result = CommunicationManager_RequestApplyForSource(
+                request->source);
             break;
         case COMMAND_SET_RUNTIME_DRIFT_ENABLED:
             result = ((request->value0 == 0) || (request->value0 == 1)) &&
@@ -891,19 +894,26 @@ bool CommandService_GetCalibrationSnapshot(
 
 bool CommandService_SetStagedConfig(const DeviceConfig *candidate)
 {
-    if ((candidate == NULL) ||
-        (s_config_owner_valid && (s_config_owner != COMMAND_SOURCE_MODBUS)))
+    return CommandService_SetStagedConfigForSource(candidate,
+                                                   COMMAND_SOURCE_MODBUS);
+}
+
+bool CommandService_SetStagedConfigForSource(const DeviceConfig *candidate,
+                                             CommandSource source)
+{
+    if ((candidate == NULL) || (s_config_owner_valid &&
+        (s_config_owner != source)))
         return false;
     s_staged_config = *candidate;
     s_staged_config_valid = true;
-    s_config_owner = COMMAND_SOURCE_MODBUS;
+    s_config_owner = source;
     s_config_owner_valid = true;
     return true;
 }
 
 CommandResult CommandService_ReserveConfigOwner(CommandSource source)
 {
-    if ((uint32_t)source > (uint32_t)COMMAND_SOURCE_DIAGNOSTIC)
+    if ((uint32_t)source > (uint32_t)COMMAND_SOURCE_MODBUS_USART3)
         return COMMAND_RESULT_INVALID_ARGUMENT;
     if (s_calibration.active)
         return COMMAND_RESULT_BUSY;
@@ -919,7 +929,12 @@ CommandResult CommandService_ReserveConfigOwner(CommandSource source)
 
 void CommandService_ClearStagedConfig(void)
 {
-    if (!s_config_owner_valid || (s_config_owner == COMMAND_SOURCE_MODBUS))
+    CommandService_ClearStagedConfigForSource(COMMAND_SOURCE_MODBUS);
+}
+
+void CommandService_ClearStagedConfigForSource(CommandSource source)
+{
+    if (!s_config_owner_valid || (s_config_owner == source))
     {
         s_staged_config_valid = false;
         if (ConfigEdit_GetState() == CONFIG_EDIT_IDLE)

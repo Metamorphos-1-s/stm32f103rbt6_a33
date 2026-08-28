@@ -57,9 +57,13 @@ const RuntimeDriftSnapshot *MetrologyManager_GetRuntimeDriftSnapshot(void)
 CommandResult CommandService_Execute(const CommandRequest *request,CommandResponse *response)
 {++s_command_count;s_last_command=*request;(void)memset(response,0,sizeof(*response));response->result=COMMAND_RESULT_OK;return COMMAND_RESULT_OK;}
 bool CommandService_SetStagedConfig(const DeviceConfig *candidate){return candidate!=NULL;}
+bool CommandService_SetStagedConfigForSource(const DeviceConfig *candidate,
+    CommandSource source){(void)source;return candidate!=NULL;}
 CommandResult CommandService_ReserveConfigOwner(CommandSource source)
 {(void)source;return COMMAND_RESULT_OK;}
 void CommandService_ClearStagedConfig(void){}
+void CommandService_ClearStagedConfigForSource(CommandSource source)
+{(void)source;}
 CS1237_State CS1237_GetState(void){return CS1237_STATE_RUNNING;}
 uint16_t CS1237_GetBufferedSampleCount(void){return 0U;}
 uint32_t CS1237_GetBufferOverrunCount(void){return 0U;}

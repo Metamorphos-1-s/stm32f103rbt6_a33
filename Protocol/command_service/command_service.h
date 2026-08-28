@@ -59,7 +59,10 @@ const CalibrationConfig *CommandService_GetCalibrationCandidate(void);
 bool CommandService_GetCalibrationSnapshot(
     CalibrationSessionSnapshot *snapshot);
 bool CommandService_SetStagedConfig(const DeviceConfig *candidate);
+bool CommandService_SetStagedConfigForSource(const DeviceConfig *candidate,
+                                             CommandSource source);
 CommandResult CommandService_ReserveConfigOwner(CommandSource source);
 void CommandService_ClearStagedConfig(void);
+void CommandService_ClearStagedConfigForSource(CommandSource source);
 
 #endif /* COMMAND_SERVICE_H */

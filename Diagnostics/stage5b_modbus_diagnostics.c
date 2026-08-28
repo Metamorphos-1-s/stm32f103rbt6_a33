@@ -17,11 +17,15 @@ void Stage5BModbusDiagnostics_Get(Stage5BModbusDiagnosticSnapshot *snapshot)
     (void)memset(snapshot, 0, sizeof(*snapshot));
     config = CommunicationManager_GetActiveConfig();
     transport = Uart2DmaTransport_GetStatistics();
-    framer = ModbusRtuFramer_GetStatistics();
-    server = ModbusRtuServer_GetStatistics();
+    framer = ModbusRtuFramer_GetStatistics(
+        CommunicationManager_GetFramer(0U));
+    server = ModbusRtuServer_GetStatistics(
+        CommunicationManager_GetServer(0U));
     snapshot->manager_state = CommunicationManager_GetState();
-    snapshot->server_state = ModbusRtuServer_GetState();
-    snapshot->framer_state = ModbusRtuFramer_GetState();
+    snapshot->server_state = ModbusRtuServer_GetState(
+        CommunicationManager_GetServer(0U));
+    snapshot->framer_state = ModbusRtuFramer_GetState(
+        CommunicationManager_GetFramer(0U));
     snapshot->tx_state = Rs485TxController_GetState();
     if ((config != NULL) && ModbusRtuTiming_Calculate(config->baud_rate,
         config->parity, config->stop_bits, &timing))

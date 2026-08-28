@@ -21,6 +21,9 @@ typedef struct
     uint16_t response_value0[2];
     uint16_t response_value64[4];
     uint16_t response_status[2];
+    CommandSource owner;
+    uint32_t busy_reject_count;
+    bool owner_valid;
     bool have_response;
 } Mailbox;
 
@@ -53,7 +56,7 @@ static bool MapCommand(uint16_t id, CommandId *command)
     return true;
 }
 
-static ModbusRegisterResult Execute(void)
+static ModbusRegisterResult Execute(CommandSource source)
 {
     CommandRequest request;
     CommandResponse response;
@@ -72,7 +75,7 @@ static ModbusRegisterResult Execute(void)
     }
     else
     {
-        request.id = command; request.source = COMMAND_SOURCE_MODBUS;
+        request.id = command; request.source = source;
         request.value0 = Join32(s_mailbox.argument0);
         request.value1 = Join32(s_mailbox.argument1);
         request.flags = s_mailbox.command_flags;
@@ -124,11 +127,21 @@ ModbusRegisterResult ModbusCommandMailbox_Read(uint16_t address, uint16_t *value
     return MODBUS_REGISTER_OK;
 }
 
-ModbusRegisterResult ModbusCommandMailbox_Write(uint16_t address, uint16_t value)
+ModbusRegisterResult ModbusCommandMailbox_Write(uint16_t address,
+                                                uint16_t value,
+                                                CommandSource source)
 {
+    ModbusRegisterResult result;
     if ((address < 0x0040U) || (address > 0x004BU))
         return (address <= MODBUS_MAILBOX_LAST) ? MODBUS_REGISTER_READ_ONLY :
             MODBUS_REGISTER_ILLEGAL_ADDRESS;
+    if (s_mailbox.owner_valid && (s_mailbox.owner != source))
+    {
+        ++s_mailbox.busy_reject_count;
+        return MODBUS_REGISTER_BUSY;
+    }
+    s_mailbox.owner = source;
+    s_mailbox.owner_valid = true;
     switch (address)
     {
         case 0x0040U: s_mailbox.request_token=value; break;
@@ -140,10 +153,16 @@ ModbusRegisterResult ModbusCommandMailbox_Write(uint16_t address, uint16_t value
         case 0x004AU: s_mailbox.command_flags=value; break;
         case 0x004BU:
             if (value != MODBUS_EXECUTE_VALUE) return MODBUS_REGISTER_ILLEGAL_VALUE;
-            return Execute();
+            result = Execute(source);
+            s_mailbox.owner_valid = false;
+            return result;
         default: return MODBUS_REGISTER_ILLEGAL_ADDRESS;
     }
     return MODBUS_REGISTER_OK;
 }
 
 uint16_t ModbusCommandMailbox_GetLastResult(void) { return s_mailbox.command_result; }
+uint32_t ModbusCommandMailbox_GetBusyRejectCount(void)
+{
+    return s_mailbox.busy_reject_count;
+}

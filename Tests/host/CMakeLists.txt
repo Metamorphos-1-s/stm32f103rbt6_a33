@@ -255,6 +255,8 @@ add_executable(stage5b_host_tests
     ../../Protocol/modbus/modbus_rtu_server.c
     ../../Protocol/modbus/modbus_rtu_framer.c
     ../../Protocol/modbus/modbus_rtu_timing.c
+    ../../Protocol/modbus/modbus_rtu_transport.c
+    ../../Drivers/serial/modbus_uart2_transport.c
     ../../Drivers/serial/rs485_tx_controller.c
     ../../Drivers/serial/uart2_dma_position.c
     ../../UI/key_service/key_service.c
@@ -268,6 +270,9 @@ target_include_directories(stage5b_host_tests PRIVATE
     ../../Services/config_store ../../Services/fault_manager
     ../../Services/storage_power_guard ../../Services/alarm_output_manager
     ../../Domain/limit_checker ../../UI/key_service)
+target_compile_definitions(stage5b_host_tests PRIVATE
+    A33_ENABLE_STAGE5I_USART3_BRINGUP=1
+    ENABLE_STAGE2B_BOARD_DIAGNOSTICS=0)
 if(MSVC)
     target_compile_options(stage5b_host_tests PRIVATE /W4 /WX)
 else()

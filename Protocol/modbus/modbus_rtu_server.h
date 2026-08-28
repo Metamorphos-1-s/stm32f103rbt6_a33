@@ -2,6 +2,9 @@
 #define MODBUS_RTU_SERVER_H
 
 #include "device_config.h"
+#include "command_types.h"
+#include "modbus_rtu_framer.h"
+#include "modbus_rtu_transport.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -43,15 +46,41 @@ typedef struct
     uint16_t last_response_length;
 } ModbusRtuServerStatistics;
 
-bool ModbusRtuServer_Init(const CommunicationConfig *config);
-void ModbusRtuServer_Process(void);
-bool ModbusRtuServer_IsBusy(void);
-void ModbusRtuServer_Suspend(void);
-bool ModbusRtuServer_Resume(const CommunicationConfig *config);
-bool ModbusRtuServer_HandleAdu(const uint8_t *request, uint16_t request_length,
+#define MODBUS_TX_BUFFER_SIZE 256U
+
+typedef struct ModbusRtuServer
+{
+    CommunicationConfig config;
+    ModbusRtuServerState state;
+    ModbusRtuServerStatistics statistics;
+    uint8_t request[MODBUS_RTU_ADU_MAX_SIZE];
+    uint8_t response[MODBUS_TX_BUFFER_SIZE];
+    uint16_t registers[125U];
+    uint16_t request_length;
+    uint16_t response_length;
+    uint32_t delay_start_ms;
+    bool suspended;
+    CommandSource source;
+    ModbusRtuFramer *framer;
+    const ModbusRtuTransport *transport;
+} ModbusRtuServer;
+
+bool ModbusRtuServer_Init(ModbusRtuServer *server,
+                          const CommunicationConfig *config,
+                          ModbusRtuFramer *framer,
+                          const ModbusRtuTransport *transport,
+                          CommandSource source);
+void ModbusRtuServer_Process(ModbusRtuServer *server);
+bool ModbusRtuServer_IsBusy(const ModbusRtuServer *server);
+void ModbusRtuServer_Suspend(ModbusRtuServer *server);
+bool ModbusRtuServer_Resume(ModbusRtuServer *server,
+                           const CommunicationConfig *config);
+bool ModbusRtuServer_HandleAdu(ModbusRtuServer *server,
+                              const uint8_t *request, uint16_t request_length,
                               uint8_t *response, uint16_t response_capacity,
                               uint16_t *response_length, bool *respond);
-ModbusRtuServerState ModbusRtuServer_GetState(void);
-const ModbusRtuServerStatistics *ModbusRtuServer_GetStatistics(void);
+ModbusRtuServerState ModbusRtuServer_GetState(const ModbusRtuServer *server);
+const ModbusRtuServerStatistics *ModbusRtuServer_GetStatistics(
+    const ModbusRtuServer *server);
 
 #endif

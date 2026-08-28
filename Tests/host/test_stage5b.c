@@ -18,6 +18,42 @@ static unsigned failures;
 static unsigned checks;
 #define CHECK(x) do { ++checks; if (!(x)) { ++failures; printf("FAIL %s:%d: %s\n", __FILE__, __LINE__, #x); } } while (0)
 
+static void TestTransportProcess(void *context) { (void)context; }
+static bool TestTransportRead(void *context, uint8_t *byte)
+{ (void)context; (void)byte; return false; }
+static bool TestTransportIdle(void *context, uint16_t *position,
+                              uint32_t *timestamp)
+{ (void)context; (void)position; (void)timestamp; return false; }
+static bool TestTransportError(void *context) { (void)context; return false; }
+static void TestTransportDiscard(void *context) { (void)context; }
+static uint16_t TestTransportPosition(void *context)
+{ (void)context; return 0U; }
+static bool TestTransportStartTx(void *context, const uint8_t *data,
+                                 uint16_t length)
+{ (void)context; return (data != NULL) && (length != 0U); }
+static bool TestTransportCompleted(void *context) { (void)context; return true; }
+static bool TestTransportTxError(void *context, bool *timeout)
+{ (void)context; (void)timeout; return false; }
+static void TestTransportAbort(void *context) { (void)context; }
+
+static const ModbusRtuTransport s_test_transport = {
+    NULL, TestTransportProcess, TestTransportRead, TestTransportIdle,
+    TestTransportError, TestTransportDiscard, TestTransportPosition,
+    TestTransportStartTx, TestTransportCompleted, TestTransportTxError,
+    TestTransportAbort
+};
+
+static bool InitTestServer(ModbusRtuServer *server, ModbusRtuFramer *framer,
+                           const CommunicationConfig *config,
+                           CommandSource source)
+{
+    ModbusRtuTiming timing;
+    return ModbusRtuTiming_Calculate(115200U, COMM_PARITY_NONE,
+        COMM_STOP_BITS_1, &timing) &&
+        ModbusRtuFramer_Init(framer, &timing, 0U) &&
+        ModbusRtuServer_Init(server, config, framer, &s_test_transport, source);
+}
+
 static uint16_t AddCrc(uint8_t *frame, uint16_t length)
 {
     uint16_t crc = ModbusCrc16_Calculate(frame, length);
@@ -73,6 +109,8 @@ static void TestCommunicationManagerStart(void)
 static void TestServer(void)
 {
     DeviceConfig config;
+    ModbusRtuFramer framer;
+    ModbusRtuServer server;
     uint8_t request[256];
     uint8_t response[256];
     uint16_t request_length;
@@ -81,81 +119,83 @@ static void TestServer(void)
     DefaultConfig_Load(&config);
     Stage5A_ModelAdaptersInit();
     ModbusRegisterModel_Init();
-    CHECK(ModbusRtuServer_Init(&config.communication));
+    CHECK(InitTestServer(&server, &framer, &config.communication,
+                         COMMAND_SOURCE_MODBUS));
 
     request[0]=1U; request[1]=3U; request[2]=0U; request[3]=0U;
     request[4]=0U; request[5]=2U; request_length=AddCrc(request,6U);
-    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+    CHECK(ModbusRtuServer_HandleAdu(&server,request,request_length,response,
         sizeof(response),&response_length,&respond));
     CHECK(respond && response_length==9U && response[1]==3U && response[2]==4U);
     CHECK(ModbusCrc16_Calculate(response,response_length)==0U);
 
     request[0]=1U; request[1]=3U; request[2]=2U; request[3]=3U;
     request[4]=0U; request[5]=1U; request_length=AddCrc(request,6U);
-    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+    CHECK(ModbusRtuServer_HandleAdu(&server,request,request_length,response,
         sizeof(response),&response_length,&respond));
     CHECK(respond&&response_length==7U&&response[2]==2U&&
         response[3]==0U&&response[4]==0U);
     request[2]=2U; request[3]=0U; request[4]=0U; request[5]=30U;
     request_length=AddCrc(request,6U);
-    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+    CHECK(ModbusRtuServer_HandleAdu(&server,request,request_length,response,
         sizeof(response),&response_length,&respond));
     CHECK(respond&&response_length==65U&&response[2]==60U&&
         response[9]==0U&&response[10]==0U);
     request[2]=2U; request[3]=0x1EU; request[4]=0U; request[5]=1U;
     request_length=AddCrc(request,6U);
-    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+    CHECK(ModbusRtuServer_HandleAdu(&server,request,request_length,response,
         sizeof(response),&response_length,&respond));
     CHECK(respond&&ExceptionCode(response,response_length)==2U);
 
     request[0]=1U; request[1]=6U; request[2]=1U; request[3]=0U;
     request[4]=0U; request[5]=1U; request_length=AddCrc(request,6U);
-    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+    CHECK(ModbusRtuServer_HandleAdu(&server,request,request_length,response,
         sizeof(response),&response_length,&respond));
     CHECK(respond && ExceptionCode(response,response_length)==2U);
 
     request[0]=1U; request[1]=0x7FU; request[2]=0U; request[3]=0U;
     request_length=AddCrc(request,4U);
-    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+    CHECK(ModbusRtuServer_HandleAdu(&server,request,request_length,response,
         sizeof(response),&response_length,&respond));
     CHECK(respond && ExceptionCode(response,response_length)==1U);
 
     request[0]=2U; request[1]=3U; request[2]=0U; request[3]=0U;
     request[4]=0U; request[5]=1U; request_length=AddCrc(request,6U);
-    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+    CHECK(ModbusRtuServer_HandleAdu(&server,request,request_length,response,
         sizeof(response),&response_length,&respond) && !respond);
     request[0]=0U; request_length=AddCrc(request,6U);
-    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+    CHECK(ModbusRtuServer_HandleAdu(&server,request,request_length,response,
         sizeof(response),&response_length,&respond) && !respond);
     request[0]=1U; request[request_length-1U]^=1U;
-    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+    CHECK(ModbusRtuServer_HandleAdu(&server,request,request_length,response,
         sizeof(response),&response_length,&respond) && !respond);
 
     request[0]=1U; request[1]=16U; request[2]=1U; request[3]=0x40U;
     request[4]=0U; request[5]=2U; request[6]=4U;
     request[7]=0x12U; request[8]=0x34U; request[9]=0x56U; request[10]=0x78U;
     request_length=AddCrc(request,11U);
-    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+    CHECK(ModbusRtuServer_HandleAdu(&server,request,request_length,response,
         sizeof(response),&response_length,&respond));
     CHECK(respond && response_length==8U && response[1]==16U);
     request[6]=3U; request_length=AddCrc(request,11U);
-    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+    CHECK(ModbusRtuServer_HandleAdu(&server,request,request_length,response,
         sizeof(response),&response_length,&respond));
     CHECK(respond && ExceptionCode(response,response_length)==3U);
 
     request[0]=1U; request[1]=3U; request[2]=0U; request[3]=0U;
     request[4]=0U; request[5]=0U; request_length=AddCrc(request,6U);
-    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+    CHECK(ModbusRtuServer_HandleAdu(&server,request,request_length,response,
         sizeof(response),&response_length,&respond));
     CHECK(ExceptionCode(response,response_length)==3U);
     request[4]=0U; request[5]=126U; request_length=AddCrc(request,6U);
-    CHECK(ModbusRtuServer_HandleAdu(request,request_length,response,
+    CHECK(ModbusRtuServer_HandleAdu(&server,request,request_length,response,
         sizeof(response),&response_length,&respond));
     CHECK(ExceptionCode(response,response_length)==3U);
 }
 
 static void TestFramerAndRs485(void)
 {
+    ModbusRtuFramer framer;
     ModbusRtuTiming timing;
     uint8_t frame[8];
     uint8_t output[256];
@@ -166,33 +206,33 @@ static void TestFramerAndRs485(void)
     Stage5B_TransportReset();
     CHECK(ModbusRtuTiming_Calculate(115200U, COMM_PARITY_NONE,
                                     COMM_STOP_BITS_1, &timing));
-    CHECK(ModbusRtuFramer_Init(&timing));
-    ModbusRtuFramer_OnTimerEvent();
-    CHECK(ModbusRtuFramer_GetState() == MODBUS_FRAMER_WAITING);
+    CHECK(ModbusRtuFramer_Init(&framer,&timing,0U));
+    ModbusRtuFramer_OnTimerEvent(&framer,0U);
+    CHECK(ModbusRtuFramer_GetState(&framer) == MODBUS_FRAMER_WAITING);
     frame[0]=1U; frame[1]=3U; frame[2]=0U; frame[3]=0U;
-    for(index=0U; index<4U; ++index) ModbusRtuFramer_OnByte(frame[index]);
-    ModbusRtuFramer_OnIdleEvent(0U,0U);
-    CHECK(ModbusRtuFramer_GetState() == MODBUS_FRAMER_WAIT_T1_5);
-    ModbusRtuFramer_OnTimerEvent();
-    CHECK(ModbusRtuFramer_GetState() == MODBUS_FRAMER_WAIT_T3_5);
-    ModbusRtuFramer_OnTimerEvent();
-    CHECK(ModbusRtuFramer_TryGetFrame(output,sizeof(output),&length));
+    for(index=0U; index<4U; ++index) ModbusRtuFramer_OnByte(&framer,frame[index]);
+    ModbusRtuFramer_OnIdleEvent(&framer,0U,0U);
+    CHECK(ModbusRtuFramer_GetState(&framer) == MODBUS_FRAMER_WAIT_T1_5);
+    ModbusRtuFramer_OnTimerEvent(&framer,0U);
+    CHECK(ModbusRtuFramer_GetState(&framer) == MODBUS_FRAMER_WAIT_T3_5);
+    ModbusRtuFramer_OnTimerEvent(&framer,0U);
+    CHECK(ModbusRtuFramer_TryGetFrame(&framer,output,sizeof(output),&length));
     CHECK(length==4U && memcmp(output,frame,4U)==0);
 
-    for(index=0U; index<4U; ++index) ModbusRtuFramer_OnByte(frame[index]);
+    for(index=0U; index<4U; ++index) ModbusRtuFramer_OnByte(&framer,frame[index]);
     Stage5B_SetNowUs(10000U);
-    ModbusRtuFramer_OnIdleEvent(0U, 0U);
-    CHECK(ModbusRtuFramer_TryGetFrame(output,sizeof(output),&length));
+    ModbusRtuFramer_OnIdleEvent(&framer,0U, 0U);
+    CHECK(ModbusRtuFramer_TryGetFrame(&framer,output,sizeof(output),&length));
     CHECK(length==4U && memcmp(output,frame,4U)==0);
 
-    for(index=0U; index<4U; ++index) ModbusRtuFramer_OnByte(frame[index]);
-    ModbusRtuFramer_OnIdleEvent(0U,0U);
-    ModbusRtuFramer_OnTimerEvent();
-    ModbusRtuFramer_OnByte(0x55U);
-    CHECK(ModbusRtuFramer_GetState()==MODBUS_FRAMER_DISCARD_UNTIL_SILENCE);
-    ModbusRtuFramer_Reset();
-    for(index=0U; index<257U; ++index) ModbusRtuFramer_OnByte((uint8_t)index);
-    CHECK(ModbusRtuFramer_GetState()==MODBUS_FRAMER_DISCARD_UNTIL_SILENCE);
+    for(index=0U; index<4U; ++index) ModbusRtuFramer_OnByte(&framer,frame[index]);
+    ModbusRtuFramer_OnIdleEvent(&framer,0U,0U);
+    ModbusRtuFramer_OnTimerEvent(&framer,0U);
+    ModbusRtuFramer_OnByte(&framer,0x55U);
+    CHECK(ModbusRtuFramer_GetState(&framer)==MODBUS_FRAMER_DISCARD_UNTIL_SILENCE);
+    ModbusRtuFramer_Reset(&framer,0U);
+    for(index=0U; index<257U; ++index) ModbusRtuFramer_OnByte(&framer,(uint8_t)index);
+    CHECK(ModbusRtuFramer_GetState(&framer)==MODBUS_FRAMER_DISCARD_UNTIL_SILENCE);
 
     Stage5B_TransportReset();
     Rs485TxController_Init();
@@ -308,22 +348,25 @@ static void TestAlarmRegisterMap(void)
     CHECK(words[20]==0U&&words[21]==0U&&words[22]==1U);
     CHECK(words[23]==1U&&words[24]==0U);
     CHECK(words[25]==0x1234U&&words[26]==0x5678U&&words[27]==1U);
-    CHECK(ModbusRegisterModel_WriteSingle(0x0240U,2U)==MODBUS_REGISTER_ILLEGAL_VALUE);
-    CHECK(ModbusRegisterModel_WriteSingle(0x0241U,2U)==MODBUS_REGISTER_ILLEGAL_VALUE);
-    CHECK(ModbusRegisterModel_WriteSingle(0x0242U,0U)==MODBUS_REGISTER_ILLEGAL_VALUE);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0240U,2U,COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_ILLEGAL_VALUE);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0241U,2U,COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_ILLEGAL_VALUE);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0242U,0U,COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_ILLEGAL_VALUE);
     SplitHighWords((uint64_t)INT64_MIN,encoded);
-    CHECK(ModbusRegisterModel_WriteMultiple(0x0242U,3U,encoded)==MODBUS_REGISTER_ILLEGAL_VALUE);
-    CHECK(ModbusRegisterModel_WriteMultiple(0x0242U,4U,encoded)==MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteMultiple(0x0242U,3U,encoded,COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_ILLEGAL_VALUE);
+    CHECK(ModbusRegisterModel_WriteMultiple(0x0242U,4U,encoded,COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_OK);
     CHECK(ModbusRegisterModel_ReadHolding(0x0242U,4U,words)==MODBUS_REGISTER_OK);
     CHECK((int64_t)JoinHighWords(words)==INT64_MIN);
     SplitHighWords(UINT64_MAX,encoded);
-    CHECK(ModbusRegisterModel_WriteMultiple(0x024AU,4U,encoded)==MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteMultiple(0x024AU,4U,encoded,COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_OK);
     CHECK(ModbusRegisterModel_ReadHolding(0x024AU,4U,words)==MODBUS_REGISTER_OK);
     CHECK(JoinHighWords(words)==UINT64_MAX);
 }
 
 static void TestDeterministicBadFrames(void)
 {
+    DeviceConfig config;
+    ModbusRtuFramer framer;
+    ModbusRtuServer server;
     uint32_t state = 0x13579BDFU;
     uint8_t frame[256];
     uint8_t response[256];
@@ -331,6 +374,9 @@ static void TestDeterministicBadFrames(void)
     uint16_t response_length;
     unsigned iteration;
     bool respond;
+    DefaultConfig_Load(&config);
+    CHECK(InitTestServer(&server, &framer, &config.communication,
+                         COMMAND_SOURCE_MODBUS));
     for (iteration=0U; iteration<512U; ++iteration)
     {
         uint16_t index;
@@ -347,10 +393,89 @@ static void TestDeterministicBadFrames(void)
             frame[length-2U]=0U;
             frame[length-1U]=0U;
         }
-        CHECK(ModbusRtuServer_HandleAdu(frame,length,response,
+        CHECK(ModbusRtuServer_HandleAdu(&server,frame,length,response,
             sizeof(response),&response_length,&respond));
         CHECK(response_length <= sizeof(response));
     }
+}
+
+static void TestDualPortInstances(void)
+{
+    DeviceConfig config;
+    ModbusRtuFramer framer2;
+    ModbusRtuFramer framer3;
+    ModbusRtuServer server2;
+    ModbusRtuServer server3;
+    ModbusRtuTiming timing;
+    uint8_t request2[8] = {1U, 3U, 0U, 0U, 0U, 2U};
+    uint8_t request3[8] = {1U, 3U, 0U, 2U, 0U, 1U};
+    uint8_t response2[256];
+    uint8_t response3[256];
+    uint8_t damaged[8];
+    uint16_t length2;
+    uint16_t length3;
+    uint16_t index;
+    bool respond2;
+    bool respond3;
+    DefaultConfig_Load(&config);
+    Stage5A_ModelAdaptersInit();
+    ModbusRegisterModel_Init();
+    CHECK(ModbusRtuTiming_Calculate(115200U, COMM_PARITY_NONE,
+        COMM_STOP_BITS_1, &timing));
+    CHECK(ModbusRtuFramer_Init(&framer2, &timing, 0U));
+    CHECK(ModbusRtuFramer_Init(&framer3, &timing, 0U));
+    ModbusRtuFramer_OnTimerEvent(&framer2, 0U);
+    ModbusRtuFramer_OnTimerEvent(&framer3, 0U);
+    CHECK(ModbusRtuServer_Init(&server2, &config.communication, &framer2,
+        &s_test_transport, COMMAND_SOURCE_MODBUS));
+    CHECK(ModbusRtuServer_Init(&server3, &config.communication, &framer3,
+        &s_test_transport, COMMAND_SOURCE_MODBUS_USART3));
+    length2 = AddCrc(request2, 6U);
+    length3 = AddCrc(request3, 6U);
+    for (index = 0U; index < length2; ++index)
+        ModbusRtuFramer_OnByte(&framer2, request2[index]);
+    for (index = 0U; index < length3; ++index)
+        ModbusRtuFramer_OnByte(&framer3, request3[index]);
+    ModbusRtuFramer_OnIdleEvent(&framer2, 8U, 0U);
+    ModbusRtuFramer_OnIdleEvent(&framer3, 8U, 0U);
+    ModbusRtuFramer_OnTimerEvent(&framer2, 8U);
+    ModbusRtuFramer_OnTimerEvent(&framer3, 8U);
+    ModbusRtuFramer_OnTimerEvent(&framer2, 8U);
+    ModbusRtuFramer_OnTimerEvent(&framer3, 8U);
+    CHECK(ModbusRtuFramer_TryGetFrame(&framer2, response2, sizeof(response2),
+        &length2));
+    CHECK(ModbusRtuFramer_TryGetFrame(&framer3, response3, sizeof(response3),
+        &length3));
+    CHECK(ModbusRtuServer_HandleAdu(&server2, response2, length2, response2,
+        sizeof(response2), &length2, &respond2));
+    CHECK(ModbusRtuServer_HandleAdu(&server3, response3, length3, response3,
+        sizeof(response3), &length3, &respond3));
+    CHECK(respond2 && respond3 && length2 == 9U && length3 == 7U);
+    CHECK(response2[0] == 1U && response2[1] == 3U && response2[2] == 4U &&
+        ModbusCrc16_Calculate(response2, length2) == 0U);
+    CHECK(response3[0] == 1U && response3[1] == 3U && response3[2] == 2U &&
+        ModbusCrc16_Calculate(response3, length3) == 0U);
+    (void)memcpy(damaged, request2, sizeof(damaged));
+    damaged[7] ^= 0x01U;
+    CHECK(ModbusRtuServer_HandleAdu(&server2, damaged, sizeof(damaged),
+        response2, sizeof(response2), &length2, &respond2) && !respond2);
+    CHECK(ModbusRtuServer_GetStatistics(&server2)->crc_error_count == 1U);
+    CHECK(ModbusRtuServer_GetStatistics(&server3)->crc_error_count == 0U);
+    damaged[0] = 2U;
+    length2 = AddCrc(damaged, 6U);
+    CHECK(ModbusRtuServer_HandleAdu(&server2, damaged, length2, response2,
+        sizeof(response2), &length2, &respond2) && !respond2);
+    CHECK(ModbusRtuServer_GetStatistics(&server2)->ignored_address_count == 1U);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0040U, 42U,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0040U, 43U,
+        COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_BUSY);
+    CHECK(ModbusRegisterModel_WriteSingle(0x004BU, MODBUS_EXECUTE_VALUE,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0040U, 43U,
+        COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteSingle(0x004BU, MODBUS_EXECUTE_VALUE,
+        COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_OK);
 }
 
 int main(void)
@@ -362,6 +487,7 @@ int main(void)
     TestDmaPositionResolution();
     TestAlarmRegisterMap();
     TestDeterministicBadFrames();
+    TestDualPortInstances();
     CHECK(checks >= 128U);
     if(failures==0U) printf("Stage 5B host tests passed (%u checks).\n",checks);
     return failures==0U?0:1;

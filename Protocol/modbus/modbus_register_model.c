@@ -29,6 +29,8 @@ static uint16_t s_alarm_staging[ALARM_STAGING_REGISTER_COUNT];
 static uint16_t s_staging_validation;
 static bool s_staging_dirty;
 static CommunicationConfig s_pending_communication;
+static CommandSource s_pending_communication_owner;
+static bool s_pending_communication_owner_valid;
 static ModbusRegisterResult ReadActive(uint16_t address,
     const DeviceConfig *config, uint16_t *value);
 static uint16_t Word32(uint32_t value, uint8_t index, ModbusWordOrder order);
@@ -476,6 +478,7 @@ void ModbusRegisterModel_Init(void)
 {
     const SystemContext *context=SystemContext_Get();
     ModbusCommandMailbox_Init(); s_staging_dirty=false; s_staging_validation=0U;
+    s_pending_communication_owner_valid=false;
     if(context!=NULL)
     {
         RefreshStaging(&context->config);
@@ -485,7 +488,15 @@ void ModbusRegisterModel_Init(void)
 
 bool ModbusRegisterModel_GetPendingCommunication(CommunicationConfig *config)
 {
-    if (config == NULL) return false;
+    return ModbusRegisterModel_GetPendingCommunicationForSource(
+        COMMAND_SOURCE_MODBUS, config);
+}
+
+bool ModbusRegisterModel_GetPendingCommunicationForSource(
+    CommandSource source, CommunicationConfig *config)
+{
+    if ((config == NULL) || (s_pending_communication_owner_valid &&
+        (s_pending_communication_owner != source))) return false;
     *config = s_pending_communication;
     return s_pending_communication.pending_apply;
 }
@@ -496,6 +507,7 @@ bool ModbusRegisterModel_CompleteCommunicationApply(
     if (active == NULL) return false;
     s_pending_communication = *active;
     s_pending_communication.pending_apply = false;
+    s_pending_communication_owner_valid = false;
     return true;
 }
 
@@ -573,7 +585,7 @@ static bool AlarmMassWriteComplete(uint16_t start,uint16_t count)
 }
 
 static ModbusRegisterResult WriteOne(uint16_t address,uint16_t value,
-    bool allow_alarm_mass)
+    bool allow_alarm_mass,CommandSource source)
 {
     ModbusRegisterResult result=ValidateWriteAddress(address,value);
     const SystemContext *context;
@@ -584,7 +596,7 @@ static ModbusRegisterResult WriteOne(uint16_t address,uint16_t value,
         return MODBUS_REGISTER_ILLEGAL_VALUE;
     if(address>=0x0240U&&address<=0x0250U)
     {
-        if(CommandService_ReserveConfigOwner(COMMAND_SOURCE_MODBUS)!=
+        if(CommandService_ReserveConfigOwner(source)!=
            COMMAND_RESULT_OK)return MODBUS_REGISTER_BUSY;
         s_alarm_staging[address-0x0240U]=value;
         s_staging_dirty=true;
@@ -593,7 +605,7 @@ static ModbusRegisterResult WriteOne(uint16_t address,uint16_t value,
     }
     if(address>=0x0140U&&address<=0x017DU)
     {
-        if(CommandService_ReserveConfigOwner(COMMAND_SOURCE_MODBUS)!=
+        if(CommandService_ReserveConfigOwner(source)!=
            COMMAND_RESULT_OK)return MODBUS_REGISTER_BUSY;
         s_staging[address-0x0140U]=value;s_staging_dirty=true;
         s_staging_validation=0xFFFFU;return MODBUS_REGISTER_OK;
@@ -605,22 +617,26 @@ static ModbusRegisterResult WriteOne(uint16_t address,uint16_t value,
             context=SystemContext_Get();
             if((context==NULL)||(ModbusCommandMailbox_Read(0x0041U,&command_id)!=MODBUS_REGISTER_OK))
                 return MODBUS_REGISTER_DEVICE_FAILURE;
-            if(command_id==9U){RefreshStaging(&context->config);CommandService_ClearStagedConfig();}
+            if(command_id==9U){RefreshStaging(&context->config);CommandService_ClearStagedConfigForSource(source);}
             else if((command_id==10U)||(command_id==11U))
             {
                 if(!DecodeStaging(&context->config,&candidate)||
-                   !CommandService_SetStagedConfig(&candidate))return MODBUS_REGISTER_BUSY;
+                   !CommandService_SetStagedConfigForSource(&candidate,source))return MODBUS_REGISTER_BUSY;
             }
-            else if(command_id==12U)CommandService_ClearStagedConfig();
-            result=ModbusCommandMailbox_Write(address,value);
+            else if(command_id==12U)CommandService_ClearStagedConfigForSource(source);
+            result=ModbusCommandMailbox_Write(address,value,source);
             if(command_id==10U)s_staging_validation=ModbusCommandMailbox_GetLastResult();
             if((command_id==11U)&&(ModbusCommandMailbox_GetLastResult()==COMMAND_RESULT_OK))s_staging_dirty=false;
             return result;
         }
-        return ModbusCommandMailbox_Write(address,value);
+        return ModbusCommandMailbox_Write(address,value,source);
     }
     if(address>=0x01A1U&&address<=0x01A8U)
     {
+        if(s_pending_communication_owner_valid&&
+           (s_pending_communication_owner!=source))return MODBUS_REGISTER_BUSY;
+        s_pending_communication_owner=source;
+        s_pending_communication_owner_valid=true;
         switch(address)
         {
             case 0x01A1U: s_pending_communication.modbus_address=(uint8_t)value; break;
@@ -639,19 +655,20 @@ static ModbusRegisterResult WriteOne(uint16_t address,uint16_t value,
     return MODBUS_REGISTER_OK;
 }
 
-ModbusRegisterResult ModbusRegisterModel_WriteSingle(uint16_t address,uint16_t value)
+ModbusRegisterResult ModbusRegisterModel_WriteSingle(uint16_t address,
+    uint16_t value,CommandSource source)
 {
-    return WriteOne(address,value,false);
+    return WriteOne(address,value,false,source);
 }
 
 ModbusRegisterResult ModbusRegisterModel_WriteMultiple(uint16_t start_address,
-    uint16_t count,const uint16_t *values)
+    uint16_t count,const uint16_t *values,CommandSource source)
 {
     uint16_t i; ModbusRegisterResult result;
     if((count==0U)||(values==NULL)||((uint32_t)start_address+count>0x10000UL))return MODBUS_REGISTER_ILLEGAL_VALUE;
     if(!AlarmMassWriteComplete(start_address,count))return MODBUS_REGISTER_ILLEGAL_VALUE;
     for(i=0U;i<count;++i){result=ValidateWriteAddress((uint16_t)(start_address+i),values[i]);if(result!=MODBUS_REGISTER_OK)return result;
         if(((uint16_t)(start_address+i)==0x004BU)&&(i!=(uint16_t)(count-1U)))return MODBUS_REGISTER_ILLEGAL_VALUE;}
-    for(i=0U;i<count;++i){result=WriteOne((uint16_t)(start_address+i),values[i],true);if(result!=MODBUS_REGISTER_OK)return result;}
+    for(i=0U;i<count;++i){result=WriteOne((uint16_t)(start_address+i),values[i],true,source);if(result!=MODBUS_REGISTER_OK)return result;}
     return MODBUS_REGISTER_OK;
 }

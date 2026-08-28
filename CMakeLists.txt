@@ -99,8 +99,10 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Drivers/cs1237/cs1237.c
     Drivers/output_gpio/output_gpio.c
     Drivers/serial/rs485_tx_controller.c
+    Drivers/serial/modbus_uart2_transport.c
     Drivers/serial/uart2_dma_position.c
     Drivers/serial/uart2_dma_transport.c
+    Drivers/serial/uart3_modbus_transport.c
     Drivers/tm1628/tm1628.c
     Drivers/tm1628/tm1628_board_map.c
     Drivers/w02/w02_pwrkey.c
@@ -116,6 +118,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Protocol/modbus/modbus_rtu_timing.c
     Protocol/modbus/modbus_rtu_framer.c
     Protocol/modbus/modbus_rtu_server.c
+    Protocol/modbus/modbus_rtu_transport.c
     Services/config_edit/config_edit.c
     Services/config_store/config_store.c
     Services/config_store/persistent_codec.c
@@ -200,7 +203,13 @@ if(A33_ENABLE_BOARD_DIAGNOSTICS)
     # Keep board diagnostics at -O0 while size-optimizing transport code that
     # the diagnostic image still links but does not need to single-step.
     set_source_files_properties(
+        App/communication_manager.c
+        Drivers/serial/modbus_uart2_transport.c
+        Drivers/serial/uart3_modbus_transport.c
         Protocol/modbus/modbus_register_model.c
+        Protocol/modbus/modbus_rtu_framer.c
+        Protocol/modbus/modbus_rtu_server.c
+        Protocol/modbus/modbus_rtu_transport.c
         Services/ble_command_service/ble_command_service.c
         Services/ble_telemetry_service/ble_telemetry_service.c
         PROPERTIES COMPILE_OPTIONS "-Os")

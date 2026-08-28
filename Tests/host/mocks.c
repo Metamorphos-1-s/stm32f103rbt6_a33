@@ -28,6 +28,12 @@ CommandResult CommunicationManager_RequestApply(void)
     return COMMAND_RESULT_NOT_IMPLEMENTED;
 }
 
+CommandResult CommunicationManager_RequestApplyForSource(CommandSource source)
+{
+    (void)source;
+    return COMMAND_RESULT_NOT_IMPLEMENTED;
+}
+
 CommandResult CommunicationManager_RequestDeferredSave(void)
 {
     return COMMAND_RESULT_STORAGE_UNAVAILABLE;

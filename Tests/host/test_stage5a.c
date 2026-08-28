@@ -418,7 +418,7 @@ static void TestModbusModel(void)
         words[0]==1U);
     CHECK(ModbusRegisterModel_ReadHolding(0x017CU,1U,words)==MODBUS_REGISTER_OK&&
         words[0]==1U);
-    CHECK(ModbusRegisterModel_WriteSingle(0x017CU,2U)==
+    CHECK(ModbusRegisterModel_WriteSingle(0x017CU,2U,COMMAND_SOURCE_MODBUS)==
         MODBUS_REGISTER_ILLEGAL_VALUE);
     CHECK(ModbusRegisterModel_ReadHolding(MODBUS_RUNTIME_DRIFT_STATE,2U,
         words)==MODBUS_REGISTER_OK);
@@ -449,9 +449,9 @@ static void TestModbusModel(void)
     CHECK(ModbusRegisterModel_ReadHolding((uint16_t)(MODBUS_RUNTIME_DRIFT_LAST+1U),
         1U,words)==MODBUS_REGISTER_ILLEGAL_ADDRESS);
     CHECK(ModbusRegisterModel_WriteSingle(MODBUS_RUNTIME_DRIFT_RESERVED,
-        0U)==MODBUS_REGISTER_READ_ONLY);
+        0U,COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_READ_ONLY);
     CHECK(ModbusRegisterModel_WriteSingle(MODBUS_RUNTIME_DRIFT_OFFSET_FIRST,
-        0U)==MODBUS_REGISTER_READ_ONLY);
+        0U,COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_READ_ONLY);
     CHECK(ModbusRegisterModel_ReadHolding(0x0010U,4U,words)==MODBUS_REGISTER_OK);
     CHECK(words[0]==0x1122U&&words[1]==0x3344U&&words[2]==0x5566U&&words[3]==0x7788U);
     Stage5A_ModelContext()->config.communication.word_order=MODBUS_WORD_ORDER_LOW_WORD_FIRST;
@@ -476,30 +476,30 @@ static void TestModbusModel(void)
     CHECK(words[0]==0x5678U&&words[1]==0x1234U);
     CHECK(ModbusRegisterModel_ReadHolding(MODBUS_DISPLAY_CONDITION_RELEASE_REASON,1U,words)==MODBUS_REGISTER_OK);
     CHECK(words[0]==DISPLAY_RELEASE_DEVIATION);
-    CHECK(ModbusRegisterModel_WriteSingle(MODBUS_DISPLAY_CONDITION_STATE,0U)==MODBUS_REGISTER_READ_ONLY);
-    CHECK(ModbusRegisterModel_WriteMultiple(0x0040U,12U,request)==MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteSingle(MODBUS_DISPLAY_CONDITION_STATE,0U,COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_READ_ONLY);
+    CHECK(ModbusRegisterModel_WriteMultiple(0x0040U,12U,request,COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_OK);
     CHECK(Stage5A_ModelCommandCount()==1U);
-    CHECK(ModbusRegisterModel_WriteSingle(0x004BU,0xA55AU)==MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteSingle(0x004BU,0xA55AU,COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_OK);
     CHECK(Stage5A_ModelCommandCount()==1U);
     request[0]=2U; request[1]=25U; request[2]=0U; request[3]=1U;
-    CHECK(ModbusRegisterModel_WriteMultiple(0x0040U,12U,request)==
+    CHECK(ModbusRegisterModel_WriteMultiple(0x0040U,12U,request,COMMAND_SOURCE_MODBUS)==
         MODBUS_REGISTER_OK);
     CHECK(Stage5A_ModelCommandCount()==2U);
     CHECK(Stage5A_ModelLastCommand()->id==COMMAND_SET_RUNTIME_DRIFT_ENABLED&&
         Stage5A_ModelLastCommand()->value0==1);
     request[0]=3U; request[1]=26U; request[2]=0U; request[3]=0U;
-    CHECK(ModbusRegisterModel_WriteMultiple(0x0040U,12U,request)==
+    CHECK(ModbusRegisterModel_WriteMultiple(0x0040U,12U,request,COMMAND_SOURCE_MODBUS)==
         MODBUS_REGISTER_OK);
     CHECK(Stage5A_ModelLastCommand()->id==COMMAND_RUNTIME_DRIFT_ENABLE);
     request[0]=4U; request[1]=27U;
-    CHECK(ModbusRegisterModel_WriteMultiple(0x0040U,12U,request)==
+    CHECK(ModbusRegisterModel_WriteMultiple(0x0040U,12U,request,COMMAND_SOURCE_MODBUS)==
         MODBUS_REGISTER_OK);
     CHECK(Stage5A_ModelLastCommand()->id==COMMAND_RUNTIME_DRIFT_DISABLE);
     request[0]=5U; request[1]=28U;
-    CHECK(ModbusRegisterModel_WriteMultiple(0x0040U,12U,request)==
+    CHECK(ModbusRegisterModel_WriteMultiple(0x0040U,12U,request,COMMAND_SOURCE_MODBUS)==
         MODBUS_REGISTER_OK);
     CHECK(Stage5A_ModelLastCommand()->id==COMMAND_RUNTIME_DRIFT_RESET);
-    CHECK(ModbusRegisterModel_WriteSingle(0x004BU,0xA55AU)==MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteSingle(0x004BU,0xA55AU,COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_OK);
     CHECK(Stage5A_ModelCommandCount()==5U);
     CHECK(ModbusRegisterModel_ReadHolding(MODBUS_STARTUP_ZERO_FIRST,10U,
         drift_words)==MODBUS_REGISTER_OK);
@@ -507,13 +507,13 @@ static void TestModbusModel(void)
         drift_words[2]==1U&&drift_words[3]==WEIGHT_ACTION_OK&&
         drift_words[4]==0x3344U&&drift_words[5]==0x1122U&&
         drift_words[6]==0x0708U&&drift_words[9]==0x0102U);
-    CHECK(ModbusRegisterModel_WriteSingle(MODBUS_STARTUP_ZERO_STATE,0U)==
-        MODBUS_REGISTER_READ_ONLY);
-    CHECK(ModbusRegisterModel_WriteSingle(0x0100U,1U)==MODBUS_REGISTER_READ_ONLY);
-    CHECK(ModbusRegisterModel_WriteMultiple(0x0140U,2U,words)==MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteSingle(MODBUS_STARTUP_ZERO_STATE,0U,
+        COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_READ_ONLY);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0100U,1U,COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_READ_ONLY);
+    CHECK(ModbusRegisterModel_WriteMultiple(0x0140U,2U,words,COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_OK);
     CHECK(ModbusRegisterModel_ReadHolding(0x017FU,1U,words)==MODBUS_REGISTER_OK&&words[0]==1U);
     words[0]=2U; words[1]=5U;
-    CHECK(ModbusRegisterModel_WriteMultiple(0x01A1U,2U,words)==MODBUS_REGISTER_ILLEGAL_VALUE);
+    CHECK(ModbusRegisterModel_WriteMultiple(0x01A1U,2U,words,COMMAND_SOURCE_MODBUS)==MODBUS_REGISTER_ILLEGAL_VALUE);
     CHECK(ModbusRegisterModel_ReadHolding(0x01A1U,1U,words)==MODBUS_REGISTER_OK&&words[0]==1U);
 }
 

@@ -2,6 +2,7 @@
 #define MODBUS_REGISTER_MODEL_H
 
 #include "device_config.h"
+#include "command_types.h"
 #include "modbus_register_types.h"
 
 #include <stdint.h>
@@ -9,13 +10,16 @@
 
 void ModbusRegisterModel_Init(void);
 bool ModbusRegisterModel_GetPendingCommunication(CommunicationConfig *config);
+bool ModbusRegisterModel_GetPendingCommunicationForSource(
+    CommandSource source, CommunicationConfig *config);
 bool ModbusRegisterModel_CompleteCommunicationApply(
     const CommunicationConfig *active);
 ModbusRegisterResult ModbusRegisterModel_ReadHolding(
     uint16_t start_address, uint16_t count, uint16_t *destination);
 ModbusRegisterResult ModbusRegisterModel_WriteSingle(
-    uint16_t address, uint16_t value);
+    uint16_t address, uint16_t value, CommandSource source);
 ModbusRegisterResult ModbusRegisterModel_WriteMultiple(
-    uint16_t start_address, uint16_t count, const uint16_t *values);
+    uint16_t start_address, uint16_t count, const uint16_t *values,
+    CommandSource source);
 
 #endif

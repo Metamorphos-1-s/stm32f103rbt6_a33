@@ -198,7 +198,7 @@ bool Uart2DmaTransport_TryReadByte(uint8_t *byte)
 bool Uart2DmaTransport_StartTx(const uint8_t *data, uint16_t length)
 {
     if (!s_initialized || s_suspended || (data == NULL) || (length == 0U) ||
-        (length > MODBUS_TX_BUFFER_SIZE)) return false;
+        (length > UART2_TX_MAX_TRANSFER_SIZE)) return false;
     ++s_statistics.tx_request_count;
     return BSP_Uart2DmaStartTx(data, length) == BSP_UART_DMA_OK;
 }

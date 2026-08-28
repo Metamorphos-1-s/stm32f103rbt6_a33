@@ -448,3 +448,166 @@ allowing retries would hide the observed failures and is not accepted.
 USART3 FC03, FC06, and FC16 remain **NOT RUN - outside Stage 5I-A-HW scope**.
 Until the strict three-interface concurrency gate passes, the conclusion remains:
 **Stage 5I-A CODE COMPLETE; hardware validation pending**.
+
+## Stage 5I-B architecture review - 2026-08-28
+
+Stage 5I-B starts from commit `95ed17b`. The Stage 5I-A USART3/CH579 raw
+transport result is accepted as an input. The intermittent external RS485 PC
+adapter timeout and W02/Windows BLE sequence gaps remain open release gates;
+they are not attributed solely to either adapter and are not reported as
+zero-error passes.
+
+### Existing singleton to instance mapping
+
+| Existing mutable singleton | Stage 5I-B owner |
+|---|---|
+| Framer state, 256-byte RX frame and length | One `ModbusRtuFramer` per port |
+| RTU timing and TIM4 pending event | Per-framer timing and software deadline from the common cycle clock |
+| Framer counters and last DMA position | One framer statistics block per port |
+| Server state and configuration snapshot | One `ModbusRtuServer` per port |
+| 256-byte request and response buffers | Private buffers in each server instance |
+| Register scratch buffer | Private server scratch buffer; register values still come from the shared model |
+| Server counters and delayed-response state | One statistics/state block per port |
+| USART2 DMA receive bookkeeping | USART2 transport adapter only |
+| RS485 DE, TX DMA and USART TC state | USART2 transport adapter only |
+| USART3 DMA receive/TX bookkeeping | USART3 transport adapter only |
+| Register map, weighing state and configuration edit | Shared `ModbusRegisterModel` and `CommandService` |
+| SAVE/Flash operation | Shared `PersistenceManager`, one operation at a time |
+| Modbus mailbox request fields | Shared mailbox with explicit requesting `CommandSource` ownership |
+
+The current CRC/address/FC03/FC06/FC16/exception implementation remains one
+protocol implementation. A second protocol copy or USART3-specific register
+map is not introduced.
+
+### Reviewed behavior and ownership rules
+
+The existing USART2 path consumes circular DMA bytes through
+`Uart2DmaTransport`, treats IDLE as an observation rather than a frame end,
+then advances through t1.5 and t3.5 before submitting a frame. The server owns
+address and CRC checks, FC03/FC06/FC16 dispatch, exception construction and
+the response delay. `Rs485TxController` owns PA1 DE setup, DMA completion,
+physical USART TC and the final 10 us DE hold. This adapter remains USART2
+private.
+
+The new protocol core receives an explicit instance and transport binding on
+every stateful entry. Each port owns RX assembly, request/response buffers,
+silence deadline, TX state and diagnostics. The common monotonic cycle clock
+is only a time base: no shared timer owner or global selected-port variable is
+used. Consequently, an IDLE, overflow, CRC error, DMA wrap or TX busy event on
+one port cannot reset or overwrite the other port.
+
+USART2 remains configured from `CommunicationConfig`. USART3 binds to the
+Stage 5I-A circular RX DMA and normal TX DMA at fixed 115200 8N1 without DE.
+The `Usart3Bringup` image retains sole ownership of USART3 for raw diagnostics;
+normal dual-Modbus startup is excluded when that compile-time diagnostic is
+enabled.
+
+Both servers use the same active Slave ID and the same register model.
+Business writes carry an explicit source (`MODBUS` for USART2 and a distinct
+USART3 Modbus source) into the shared mailbox and `CommandService`. The
+existing edit owner and BUSY semantics serialize concurrent writes and SAVE;
+Flash remains a single commit-last operation. During Flash, both servers are
+suspended and both receive backlogs are discarded before resume.
+
+Communication changes keep the existing old-settings response guarantee. The
+manager waits for both port responses to finish, but only stops and
+reconfigures USART2 for baud/parity/stop-bit changes. A request received on
+USART3 therefore completes on USART3 before USART2 changes. A Slave ID change
+is committed once and then copied into both server snapshots. Failed apply
+restores the one shared configuration and both snapshots.
+
+`CommunicationManager_Process()` gives each port a bounded step and alternates
+which port is serviced first on successive calls. It never drains an
+unbounded backlog in one `App_Run()` iteration. Ordinary FC03 requests remain
+independent and may have concurrent DMA responses; shared writes are submitted
+in the deterministic rotating service order and preserve the existing BUSY
+semantics.
+
+Implementation, host/build measurements and hardware result tables will be
+added below after their corresponding evidence is produced. No Stage 5I-B
+hardware result is claimed by this architecture review.
+
+### Stage 5I-B implementation and evidence
+
+The implementation uses one protocol core with two static instances. USART2
+is bound through `modbus_uart2_transport.c` to the existing circular DMA and
+`Rs485TxController` (including PA1 DE setup, physical TC and the 10 us hold).
+USART3 is bound through `uart3_modbus_transport.c` to the Stage 5I-A
+`BSP_Uart3Dma*` circular RX/IDLE and normal TX APIs at fixed 115200 8N1. Its
+producer and consumer positions, error latches and TX state are private to
+that adapter. Raw `Usart3Bringup` keeps exclusive ownership of the same BSP
+when enabled.
+
+The Framer stores one silence position and one software deadline per instance,
+using the common monotonic cycle counter only as a time base. IDLE therefore
+starts or refreshes the t1.5/t3.5 sequence and never submits a frame by itself.
+The manager alternates the first service port on each bounded process call;
+each port consumes at most 128 bytes and at most one queued IDLE event per
+call. Response buffers and delayed-response state remain in their originating
+server, so a response cannot cross ports.
+
+Writes and mailbox commands carry `CommandSource`. USART2 uses
+`COMMAND_SOURCE_MODBUS`; USART3 uses `COMMAND_SOURCE_MODBUS_USART3`. The
+shared mailbox rejects a different owner with `MODBUS_REGISTER_BUSY` until the
+current owner executes or completes its transaction. SAVE remains delegated to
+the existing shared persistence manager. Configuration application waits for
+both server instances to become idle, then reconfigures USART2 only; USART3
+stays fixed. A committed Slave ID is copied to both snapshots and a failed
+apply restores the previous shared configuration.
+
+Host evidence (MSVC developer environment):
+
+| Test | Result | Evidence |
+|---|---|---|
+| Existing Host CTest | PASS | 16/16 tests |
+| Dual instance FC03 | PASS | complete response bytes and CRC checked on both instances |
+| Interleaved framing | PASS | independent Framer buffers/timers and source-port responses |
+| CRC/address isolation | PASS | USART2 error/miss counters changed; USART3 stayed unchanged |
+| Shared mailbox ownership | PASS | USART3 write rejected BUSY while USART2 transaction owned mailbox, then released |
+| FC06 / FC16 semantics | PASS | existing Stage 5A/5B assertions, both server paths call the same model |
+| DMA position regression | PASS | existing UART2 recovery test and bounded USART3 adapter |
+| Stage 5B Python suite | NOT RUN | `pytest` is unavailable in the current Python environment |
+| Stage 5C Python suite | NOT RUN | `pytest` is unavailable in the current Python environment |
+
+Build evidence after the dual-port change:
+
+| Image | Flash / RAM | Result | Change vs Stage 5I-A |
+|---|---:|---|---:|
+| Debug | 90,804 / 17,608 B | PASS | +2,544 / +2,384 B |
+| Release | 78,072 / 17,576 B | PASS | +2,248 / +2,368 B |
+| BoardDiagnostics | 126,172 / 17,504 B | PASS, 99.37% Flash | +336 / +2,384 B |
+| Usart3Bringup | 90,520 / 17,216 B | PASS, diagnostics ON | +644 / +928 B |
+
+The BoardDiagnostics image initially exceeded Flash by 3,092 B at `-O0`.
+The existing project size policy was applied to the new protocol and adapter
+translation units with `-Os`; no diagnostics or product behavior was removed.
+The final image has 804 B Flash headroom and no compiler warnings.
+
+Static checks: no dynamic allocation, `HAL_Delay`, blocking TX, duplicated
+CRC/function-code implementation, global selected-port pointer, cross-port
+mutable frame buffer or protocol logging were introduced. `git diff --check`
+is clean.
+
+Hardware status remains conditional. USART3/CH579 raw transport retains the
+Stage 5I-A evidence (600 s bidirectional soak, zero transport errors), but
+Stage 5I-B USART3 FC03/FC06/FC16 and dual-port target-side tests were not run
+on the programmed target in this change. The previously recorded intermittent
+COM5 RS485 timeout and W02 BLE sequence gaps remain open external-link
+waivers. No Stage 5I-B final hardware PASS or tested tag is claimed.
+
+Files changed for this stage:
+
+* `Protocol/modbus/modbus_rtu_framer.[ch]` - explicit Framer instances and independent software timing.
+* `Protocol/modbus/modbus_rtu_server.[ch]` - explicit server instances and transport-bound TX.
+* `Protocol/modbus/modbus_rtu_transport.[ch]` - minimal protocol transport contract.
+* `Drivers/serial/modbus_uart2_transport.[ch]` - USART2/RS485 binding.
+* `Drivers/serial/uart3_modbus_transport.[ch]` - USART3/CH579 binding.
+* `App/communication_manager.[ch]` - two-port lifecycle, fairness and shared apply rules.
+* `Protocol/modbus/modbus_register_model.[ch]`, `modbus_command_mailbox.[ch]`, and
+  `Protocol/command_service/*` - explicit source and mailbox ownership.
+* `Tests/host/*`, `CMakeLists.txt` - regression coverage and image integration.
+
+The next-stage input is a programmed board with the CH579 Modbus gateway
+enabled and a reliable RS232/RS485 adapter. Product release still requires
+the strict external three-interface 600 s gate with zero RS485 timeouts and
+zero BLE sequence gaps.
