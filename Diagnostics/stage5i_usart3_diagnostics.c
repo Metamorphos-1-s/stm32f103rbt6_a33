@@ -7,7 +7,8 @@
 static Stage5iUsart3Diagnostics s_diagnostics;
 static uint8_t s_rx_buffer[STAGE5I_USART3_RX_BUFFER_SIZE];
 static uint8_t s_tx_buffer[STAGE5I_USART3_TX_BUFFER_SIZE];
-static uint32_t s_rx_consumed_absolute;
+static uint32_t s_rx_frame_start_absolute;
+static uint32_t s_rx_observed_absolute;
 static uint32_t s_rx_start_error_count;
 static uint32_t s_rx_overwrite_count;
 static uint32_t s_tx_start_error_count;
@@ -36,7 +37,6 @@ static void UpdateErrorCounts(const BspUart3DmaEvents *events)
 static void CaptureRxFrame(const BspUart3IdleEvent *event)
 {
     uint32_t producer_absolute;
-    uint32_t available_start;
     uint32_t copy_start;
     uint32_t length;
     uint16_t capture_length;
@@ -44,24 +44,20 @@ static void CaptureRxFrame(const BspUart3IdleEvent *event)
 
     producer_absolute = event->rx_complete_count *
         STAGE5I_USART3_RX_BUFFER_SIZE + event->dma_position;
-    if (producer_absolute < s_rx_consumed_absolute)
+    if (producer_absolute < s_rx_frame_start_absolute)
     {
-        ++s_rx_overwrite_count;
-        s_rx_consumed_absolute = producer_absolute;
         return;
     }
-    length = producer_absolute - s_rx_consumed_absolute;
+    length = producer_absolute - s_rx_frame_start_absolute;
     if (length == 0U) return;
 
-    available_start = s_rx_consumed_absolute;
     if (length > STAGE5I_USART3_RX_BUFFER_SIZE)
     {
-        available_start = producer_absolute - STAGE5I_USART3_RX_BUFFER_SIZE;
-        ++s_rx_overwrite_count;
+        ++s_diagnostics.rx_capture_truncated_count;
     }
     capture_length = (length < STAGE5I_USART3_DIAGNOSTIC_CAPTURE_SIZE) ?
         (uint16_t)length : STAGE5I_USART3_DIAGNOSTIC_CAPTURE_SIZE;
-    copy_start = available_start;
+    copy_start = producer_absolute - capture_length;
     for (index = 0U; index < capture_length; ++index)
     {
         s_diagnostics.last_rx[index] = s_rx_buffer[
@@ -73,11 +69,50 @@ static void CaptureRxFrame(const BspUart3IdleEvent *event)
             STAGE5I_USART3_DIAGNOSTIC_CAPTURE_SIZE - capture_length);
     }
     ++s_diagnostics.rx_frame_count;
-    s_diagnostics.rx_byte_count += length;
     s_diagnostics.last_rx_length = (length > UINT16_MAX) ?
         UINT16_MAX : (uint16_t)length;
     s_diagnostics.last_idle_timestamp_cycles = event->timestamp_cycles;
-    s_rx_consumed_absolute = producer_absolute;
+    s_rx_frame_start_absolute = producer_absolute;
+}
+
+static void ObserveRxStream(void)
+{
+    BspUart3DmaEvents before;
+    BspUart3DmaEvents after;
+    uint32_t producer_absolute;
+    uint32_t start_absolute;
+    uint32_t delta;
+    uint16_t position;
+
+    BSP_Uart3DmaGetEvents(&before);
+    position = BSP_Uart3DmaGetRxPosition(STAGE5I_USART3_RX_BUFFER_SIZE);
+    BSP_Uart3DmaGetEvents(&after);
+    if (after.rx_complete_count != before.rx_complete_count)
+    {
+        position = BSP_Uart3DmaGetRxPosition(STAGE5I_USART3_RX_BUFFER_SIZE);
+    }
+    producer_absolute = after.rx_complete_count *
+        STAGE5I_USART3_RX_BUFFER_SIZE + position;
+
+    /* The DMA can wrap before its completion callback runs. Retry next pass. */
+    if (producer_absolute < s_rx_observed_absolute) return;
+    delta = producer_absolute - s_rx_observed_absolute;
+    if (delta == 0U) return;
+
+    start_absolute = s_rx_observed_absolute;
+    if (delta > STAGE5I_USART3_RX_BUFFER_SIZE)
+    {
+        start_absolute = producer_absolute - STAGE5I_USART3_RX_BUFFER_SIZE;
+        ++s_rx_overwrite_count;
+    }
+    while (start_absolute < producer_absolute)
+    {
+        s_diagnostics.rx_checksum32 += s_rx_buffer[
+            start_absolute % STAGE5I_USART3_RX_BUFFER_SIZE];
+        ++start_absolute;
+    }
+    s_diagnostics.rx_byte_count += delta;
+    s_rx_observed_absolute = producer_absolute;
 }
 
 bool Stage5iUsart3Diagnostics_Init(void)
@@ -86,7 +121,8 @@ bool Stage5iUsart3Diagnostics_Init(void)
     (void)memset(&s_diagnostics, 0, sizeof(s_diagnostics));
     (void)memset(s_rx_buffer, 0, sizeof(s_rx_buffer));
     (void)memset(s_tx_buffer, 0, sizeof(s_tx_buffer));
-    s_rx_consumed_absolute = 0U;
+    s_rx_frame_start_absolute = 0U;
+    s_rx_observed_absolute = 0U;
     s_rx_start_error_count = 0U;
     s_rx_overwrite_count = 0U;
     s_tx_start_error_count = 0U;
@@ -111,6 +147,7 @@ void Stage5iUsart3Diagnostics_Process(void)
     BspUart3DmaEvents events;
     if (!s_diagnostics.initialized) return;
 
+    ObserveRxStream();
     while (BSP_Uart3DmaTakeIdleEvent(&idle_event))
     {
         CaptureRxFrame(&idle_event);

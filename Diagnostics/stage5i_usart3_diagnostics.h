@@ -19,6 +19,8 @@ typedef struct
     uint32_t rx_error_count;
     uint32_t tx_error_count;
     uint32_t rx_overwrite_count;
+    uint32_t rx_capture_truncated_count;
+    uint32_t rx_checksum32;
     uint32_t tx_busy_count;
     uint32_t last_idle_timestamp_cycles;
     uint16_t last_rx_length;
