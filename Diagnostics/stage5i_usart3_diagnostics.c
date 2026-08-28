@@ -1,5 +1,7 @@
 #include "stage5i_usart3_diagnostics.h"
 
+#include "bsp_time.h"
+
 #include <limits.h>
 #include <stddef.h>
 #include <string.h>
@@ -14,7 +16,12 @@ static uint32_t s_rx_overwrite_count;
 static uint32_t s_tx_start_error_count;
 static uint32_t s_tx_complete_baseline;
 static uint32_t s_tx_error_baseline;
+static uint32_t s_soak_next_tx_ms;
 static volatile bool s_debug_entry_guard;
+
+static const uint8_t s_test_frame[8] = {
+    0xA5U, 0x5AU, 0x00U, 0xFFU, 0x81U, 0x03U, 0x56U, 0x78U
+};
 
 #if defined(__GNUC__)
 #define STAGE5I_DEBUG_ENTRY __attribute__((used, noinline))
@@ -115,64 +122,8 @@ static void ObserveRxStream(void)
     s_rx_observed_absolute = producer_absolute;
 }
 
-bool Stage5iUsart3Diagnostics_Init(void)
-{
-    BspUartDmaResult result;
-    (void)memset(&s_diagnostics, 0, sizeof(s_diagnostics));
-    (void)memset(s_rx_buffer, 0, sizeof(s_rx_buffer));
-    (void)memset(s_tx_buffer, 0, sizeof(s_tx_buffer));
-    s_rx_frame_start_absolute = 0U;
-    s_rx_observed_absolute = 0U;
-    s_rx_start_error_count = 0U;
-    s_rx_overwrite_count = 0U;
-    s_tx_start_error_count = 0U;
-    s_tx_complete_baseline = 0U;
-    s_tx_error_baseline = 0U;
-    BSP_Uart3DmaClearIdleEvents();
-    result = BSP_Uart3DmaStartRx(s_rx_buffer, sizeof(s_rx_buffer));
-    s_diagnostics.initialized = result == BSP_UART_DMA_OK;
-    s_diagnostics.rx_active = s_diagnostics.initialized;
-    if (!s_diagnostics.initialized) ++s_rx_start_error_count;
-    if (s_debug_entry_guard)
-    {
-        (void)Stage5iUsart3Diagnostics_SendTestFrame();
-        (void)Stage5iUsart3Diagnostics_Get();
-    }
-    return s_diagnostics.initialized;
-}
-
-void Stage5iUsart3Diagnostics_Process(void)
-{
-    BspUart3IdleEvent idle_event;
-    BspUart3DmaEvents events;
-    if (!s_diagnostics.initialized) return;
-
-    ObserveRxStream();
-    while (BSP_Uart3DmaTakeIdleEvent(&idle_event))
-    {
-        CaptureRxFrame(&idle_event);
-    }
-    BSP_Uart3DmaGetEvents(&events);
-    s_diagnostics.uart_events = events;
-    if (s_diagnostics.tx_busy)
-    {
-        if (events.tx_dma_complete_count != s_tx_complete_baseline)
-        {
-            s_diagnostics.tx_busy = false;
-            ++s_diagnostics.tx_frame_count;
-            s_diagnostics.tx_byte_count += s_diagnostics.last_tx_length;
-        }
-        else if (events.tx_dma_error_count != s_tx_error_baseline)
-        {
-            s_diagnostics.tx_busy = false;
-        }
-    }
-    UpdateErrorCounts(&events);
-}
-
-STAGE5I_DEBUG_ENTRY
-BspUartDmaResult Stage5iUsart3Diagnostics_RequestTx(
-    const uint8_t *data, uint16_t length)
+static BspUartDmaResult RequestTxInternal(const uint8_t *data,
+                                          uint16_t length)
 {
     BspUartDmaResult result;
     BspUart3DmaEvents events;
@@ -184,7 +135,6 @@ BspUartDmaResult Stage5iUsart3Diagnostics_RequestTx(
     {
         return BSP_UART_DMA_INVALID_ARGUMENT;
     }
-    Stage5iUsart3Diagnostics_Process();
     if (s_diagnostics.tx_busy)
     {
         ++s_diagnostics.tx_busy_count;
@@ -219,14 +169,136 @@ BspUartDmaResult Stage5iUsart3Diagnostics_RequestTx(
     return BSP_UART_DMA_OK;
 }
 
+static void ProcessSoak(void)
+{
+    BspUartDmaResult result;
+    uint32_t now_ms;
+    uint32_t intervals;
+
+    if (!s_diagnostics.soak_active) return;
+    now_ms = BSP_TimeNowMs();
+    if ((uint32_t)(now_ms - s_diagnostics.soak_start_ms) >=
+        s_diagnostics.soak_duration_ms)
+    {
+        s_diagnostics.soak_active = false;
+        return;
+    }
+    if ((int32_t)(now_ms - s_soak_next_tx_ms) < 0) return;
+
+    intervals = ((now_ms - s_soak_next_tx_ms) /
+        s_diagnostics.soak_interval_ms) + 1U;
+    s_soak_next_tx_ms += intervals * s_diagnostics.soak_interval_ms;
+    ++s_diagnostics.soak_request_count;
+    result = RequestTxInternal(s_test_frame, sizeof(s_test_frame));
+    if (result == BSP_UART_DMA_OK)
+        ++s_diagnostics.soak_accepted_count;
+    else if (result == BSP_UART_DMA_BUSY)
+        ++s_diagnostics.soak_busy_count;
+    else
+        ++s_diagnostics.soak_error_count;
+}
+
+bool Stage5iUsart3Diagnostics_Init(void)
+{
+    BspUartDmaResult result;
+    (void)memset(&s_diagnostics, 0, sizeof(s_diagnostics));
+    (void)memset(s_rx_buffer, 0, sizeof(s_rx_buffer));
+    (void)memset(s_tx_buffer, 0, sizeof(s_tx_buffer));
+    s_rx_frame_start_absolute = 0U;
+    s_rx_observed_absolute = 0U;
+    s_rx_start_error_count = 0U;
+    s_rx_overwrite_count = 0U;
+    s_tx_start_error_count = 0U;
+    s_tx_complete_baseline = 0U;
+    s_tx_error_baseline = 0U;
+    s_soak_next_tx_ms = 0U;
+    BSP_Uart3DmaClearIdleEvents();
+    result = BSP_Uart3DmaStartRx(s_rx_buffer, sizeof(s_rx_buffer));
+    s_diagnostics.initialized = result == BSP_UART_DMA_OK;
+    s_diagnostics.rx_active = s_diagnostics.initialized;
+    if (!s_diagnostics.initialized) ++s_rx_start_error_count;
+    if (s_debug_entry_guard)
+    {
+        (void)Stage5iUsart3Diagnostics_SendTestFrame();
+        (void)Stage5iUsart3Diagnostics_StartSoak(1000U, 1000U);
+        Stage5iUsart3Diagnostics_StopSoak();
+        (void)Stage5iUsart3Diagnostics_Get();
+    }
+    return s_diagnostics.initialized;
+}
+
+void Stage5iUsart3Diagnostics_Process(void)
+{
+    BspUart3IdleEvent idle_event;
+    BspUart3DmaEvents events;
+    if (!s_diagnostics.initialized) return;
+
+    ObserveRxStream();
+    while (BSP_Uart3DmaTakeIdleEvent(&idle_event))
+    {
+        CaptureRxFrame(&idle_event);
+    }
+    BSP_Uart3DmaGetEvents(&events);
+    s_diagnostics.uart_events = events;
+    if (s_diagnostics.tx_busy)
+    {
+        if (events.tx_dma_complete_count != s_tx_complete_baseline)
+        {
+            s_diagnostics.tx_busy = false;
+            ++s_diagnostics.tx_frame_count;
+            s_diagnostics.tx_byte_count += s_diagnostics.last_tx_length;
+        }
+        else if (events.tx_dma_error_count != s_tx_error_baseline)
+        {
+            s_diagnostics.tx_busy = false;
+        }
+    }
+    UpdateErrorCounts(&events);
+    ProcessSoak();
+}
+
+STAGE5I_DEBUG_ENTRY
+BspUartDmaResult Stage5iUsart3Diagnostics_RequestTx(
+    const uint8_t *data, uint16_t length)
+{
+    Stage5iUsart3Diagnostics_Process();
+    return RequestTxInternal(data, length);
+}
+
 STAGE5I_DEBUG_ENTRY
 BspUartDmaResult Stage5iUsart3Diagnostics_SendTestFrame(void)
 {
-    static const uint8_t test_frame[8] = {
-        0xA5U, 0x5AU, 0x00U, 0xFFU, 0x81U, 0x03U, 0x56U, 0x78U
-    };
-    return Stage5iUsart3Diagnostics_RequestTx(test_frame,
-        sizeof(test_frame));
+    return Stage5iUsart3Diagnostics_RequestTx(s_test_frame,
+        sizeof(s_test_frame));
+}
+
+STAGE5I_DEBUG_ENTRY
+bool Stage5iUsart3Diagnostics_StartSoak(uint32_t duration_ms,
+                                       uint32_t interval_ms)
+{
+    uint32_t now_ms;
+    if (!s_diagnostics.initialized || s_diagnostics.soak_active ||
+        (duration_ms == 0U) || (interval_ms == 0U))
+    {
+        return false;
+    }
+    now_ms = BSP_TimeNowMs();
+    s_diagnostics.soak_request_count = 0U;
+    s_diagnostics.soak_accepted_count = 0U;
+    s_diagnostics.soak_busy_count = 0U;
+    s_diagnostics.soak_error_count = 0U;
+    s_diagnostics.soak_start_ms = now_ms;
+    s_diagnostics.soak_duration_ms = duration_ms;
+    s_diagnostics.soak_interval_ms = interval_ms;
+    s_soak_next_tx_ms = now_ms;
+    s_diagnostics.soak_active = true;
+    return true;
+}
+
+STAGE5I_DEBUG_ENTRY
+void Stage5iUsart3Diagnostics_StopSoak(void)
+{
+    s_diagnostics.soak_active = false;
 }
 
 STAGE5I_DEBUG_ENTRY
