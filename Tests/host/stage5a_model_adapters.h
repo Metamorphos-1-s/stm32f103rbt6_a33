@@ -10,6 +10,7 @@
 #include "startup_auto_zero_controller.h"
 
 void Stage5A_ModelAdaptersInit(void);
+void Stage5A_ModelSetContextAvailable(bool available);
 SystemContext *Stage5A_ModelContext(void);
 MassSnapshot *Stage5A_ModelSnapshot(void);
 DisplayConditionSnapshot *Stage5A_ModelDisplayCondition(void);

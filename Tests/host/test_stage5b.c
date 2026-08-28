@@ -175,6 +175,94 @@ static void TestCommunicationManagerStart(void)
     CHECK(CommunicationManager_Init(&config.communication));
     CHECK(CommunicationManager_GetState()==COMM_STATE_RUNNING);
     CHECK(CommunicationManager_GetActiveConfig()->baud_rate==115200U);
+    CHECK(CommunicationManager_IsUart3Enabled());
+}
+
+static void TestCommunicationManagerDualGates(void)
+{
+    DeviceConfig config;
+    const ModbusRtuFramer *framer2;
+    const ModbusRtuFramer *framer3;
+    const ModbusRtuServer *server2;
+    const ModbusRtuServer *server3;
+    uint32_t before2;
+    uint32_t before3;
+    unsigned index;
+    DefaultConfig_Load(&config);
+    Stage5A_ModelAdaptersInit();
+    ModbusRegisterModel_Init();
+    CHECK(CommunicationManager_Init(&config.communication));
+    framer2 = CommunicationManager_GetFramer(0U);
+    framer3 = CommunicationManager_GetFramer(1U);
+    server2 = CommunicationManager_GetServer(0U);
+    server3 = CommunicationManager_GetServer(1U);
+    CHECK((framer2 != NULL) && (framer3 != NULL) && (server2 != NULL) &&
+        (server3 != NULL));
+    CHECK(framer2 != framer3 && server2 != server3);
+    CHECK(&framer2->frame[0] != &framer3->frame[0]);
+    CHECK(&server2->request[0] != &server3->request[0]);
+    CHECK(&server2->response[0] != &server3->response[0]);
+    before2 = CommunicationManager_GetFirstServiceCount(0U);
+    before3 = CommunicationManager_GetFirstServiceCount(1U);
+    for (index = 0U; index < 20U; ++index) CommunicationManager_Process();
+    CHECK(CommunicationManager_GetFirstServiceCount(0U) - before2 == 10U);
+    CHECK(CommunicationManager_GetFirstServiceCount(1U) - before3 == 10U);
+    CHECK((CommunicationManager_GetFirstServiceCount(0U) -
+        CommunicationManager_GetFirstServiceCount(1U)) <= 1U);
+
+    CHECK(ModbusRegisterModel_WriteSingle(0x01A1U, 7U,
+        COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_OK);
+    CHECK(CommunicationManager_RequestApplyForSource(
+        COMMAND_SOURCE_MODBUS_USART3) == COMMAND_RESULT_ACCEPTED);
+    for (index = 0U; index < 8U; ++index) CommunicationManager_Process();
+    server2 = CommunicationManager_GetServer(0U);
+    server3 = CommunicationManager_GetServer(1U);
+    CHECK(CommunicationManager_GetActiveConfig()->modbus_address == 7U);
+    CHECK(server2->config.modbus_address == 7U &&
+        server3->config.modbus_address == 7U);
+
+    CHECK(ModbusRegisterModel_WriteSingle(0x01A1U, 8U,
+        COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_OK);
+    ((ModbusRtuServer *)server3)->state = MODBUS_SERVER_RESPONSE_DELAY;
+    CHECK(CommunicationManager_RequestApplyForSource(
+        COMMAND_SOURCE_MODBUS_USART3) == COMMAND_RESULT_ACCEPTED);
+    CommunicationManager_Process();
+    CHECK(CommunicationManager_GetActiveConfig()->modbus_address == 7U);
+    ((ModbusRtuServer *)server3)->state = MODBUS_SERVER_IDLE;
+    for (index = 0U; index < 8U; ++index) CommunicationManager_Process();
+    CHECK(CommunicationManager_GetActiveConfig()->modbus_address == 8U);
+    CHECK(CommunicationManager_GetServer(0U)->config.modbus_address == 8U &&
+        CommunicationManager_GetServer(1U)->config.modbus_address == 8U);
+
+    CHECK(CommunicationManager_RequestDeferredSave() == COMMAND_RESULT_ACCEPTED);
+    CHECK(CommunicationManager_RequestDeferredSave() == COMMAND_RESULT_BUSY);
+    Stage5B_SetPersistenceBusy(true);
+    CommunicationManager_Process();
+    CHECK(CommunicationManager_GetState() == COMM_STATE_SUSPENDED_STORAGE);
+    CHECK(CommunicationManager_GetServer(0U)->suspended &&
+        CommunicationManager_GetServer(1U)->suspended);
+    Stage5B_SetPersistenceBusy(false);
+    CommunicationManager_Process();
+    CHECK(CommunicationManager_GetState() == COMM_STATE_RUNNING);
+    CHECK(!CommunicationManager_GetServer(0U)->suspended &&
+        !CommunicationManager_GetServer(1U)->suspended);
+    Stage5B_SetPersistenceSaveResult(COMMAND_RESULT_INTERNAL_ERROR);
+    Stage5B_SetPersistenceBusy(true);
+    CommunicationManager_Process();
+    Stage5B_SetPersistenceBusy(false);
+    CommunicationManager_Process();
+    CHECK(CommunicationManager_GetState() == COMM_STATE_RUNNING);
+    Stage5B_SetPersistenceSaveResult(COMMAND_RESULT_ACCEPTED);
+    CHECK(ModbusRegisterModel_WriteSingle(0x01A1U, 9U,
+        COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_OK);
+    Stage5B_SetApplyConfigResult(false);
+    CHECK(CommunicationManager_RequestApplyForSource(
+        COMMAND_SOURCE_MODBUS_USART3) == COMMAND_RESULT_ACCEPTED);
+    for (index = 0U; index < 8U; ++index) CommunicationManager_Process();
+    CHECK(CommunicationManager_GetActiveConfig()->modbus_address == 8U);
+    CHECK(CommunicationManager_GetServer(0U)->config.modbus_address == 8U &&
+        CommunicationManager_GetServer(1U)->config.modbus_address == 8U);
+    Stage5B_SetApplyConfigResult(true);
 }
 
 static void TestServer(void)
@@ -621,6 +709,38 @@ static void TestDualMockTransportRouting(void)
         sizeof(mock3.tx), &response_length, &respond) && respond &&
         response_length == 5U && mock3.tx[2] == 3U);
     CHECK(ModbusCrc16_Calculate(mock3.tx, response_length) == 0U);
+    mock3.tx_started = false;
+    CHECK(ModbusRegisterModel_WriteSingle(0x0040U, 42U,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    {
+        uint8_t busy_write[8] = {1U, 6U, 0U, 0x40U, 0U, 43U};
+        length = AddCrc(busy_write, 6U);
+        PrepareReadyFrame(&framer3, busy_write, length);
+        RunServerToTx(&server3);
+        CHECK(mock3.tx_started && mock3.tx_length == 5U &&
+            mock3.tx[1] == 0x86U && mock3.tx[2] == 6U &&
+            ModbusCrc16_Calculate(mock3.tx, mock3.tx_length) == 0U);
+    }
+    CHECK(ModbusRegisterModel_WriteSingle(0x004BU, MODBUS_EXECUTE_VALUE,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    mock2.tx_started = false;
+    mock3.tx_started = false;
+    {
+        uint8_t failure_write[8] = {1U, 6U, 0U, 0x4BU, 0xA5U, 0x5AU};
+        Stage5A_ModelSetContextAvailable(false);
+        length = AddCrc(failure_write, 6U);
+        PrepareReadyFrame(&framer2, failure_write, length);
+        PrepareReadyFrame(&framer3, failure_write, length);
+        RunServerToTx(&server2);
+        RunServerToTx(&server3);
+        CHECK(mock2.tx_started && mock2.tx[1] == 0x86U &&
+            mock2.tx[2] == 4U &&
+            ModbusCrc16_Calculate(mock2.tx, mock2.tx_length) == 0U);
+        CHECK(mock3.tx_started && mock3.tx[1] == 0x86U &&
+            mock3.tx[2] == 4U &&
+            ModbusCrc16_Calculate(mock3.tx, mock3.tx_length) == 0U);
+        Stage5A_ModelSetContextAvailable(true);
+    }
     mock2.tx_busy = true;
     PrepareReadyFrame(&framer2, fc03, AddCrc(fc03, 6U));
     RunServerToTx(&server2);
@@ -636,6 +756,7 @@ int main(void)
 {
     TestCrcAndTiming();
     TestCommunicationManagerStart();
+    TestCommunicationManagerDualGates();
     TestServer();
     TestFramerAndRs485();
     TestDmaPositionResolution();

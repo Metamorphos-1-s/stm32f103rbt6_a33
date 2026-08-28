@@ -740,3 +740,123 @@ Stage 5I-A waiver, although this 600-second replacement run had zero COM5
 timeouts. The external-link waiver therefore remains open until an independent
 RS232 run and a clean zero-gap BLE run are completed. No final product tag is
 created.
+
+## Stage 5I-B-Final verification - 2026-08-29
+
+This close-out was performed on top of `4ea99dd` without rewriting prior
+history. The software evidence review found that the original 1,164
+assertions did not exercise every lifecycle gate, so
+`TestCommunicationManagerDualGates` and the UART3 Mock Transport path were
+added. The resulting Stage 5B executable passed **1,197 assertions**.
+
+### Software evidence closure
+
+| Gate | Test evidence | Result |
+|---|---|---|
+| Instance/private buffers | `TestDualPortInstances`, `TestDualMockTransportRouting` | PASS; Framer/request/response addresses differ |
+| FC03/FC06/FC16 routing | `TestDualMockTransportRouting` | PASS; both Mock TX buffers and CRC checked |
+| CRC/address/overflow isolation | `TestDualPortInstances`, existing Framer tests | PASS |
+| TX BUSY isolation | `TestDualMockTransportRouting` | PASS; blocked USART2 does not block USART3 |
+| Mailbox source/BUSY | `TestDualPortInstances`, FC06 BUSY vector | PASS |
+| Fair rotation | `TestCommunicationManagerDualGates` | PASS; 20 cycles give 10 first-service turns per port |
+| SAVE accepted/BUSY | `TestCommunicationManagerDualGates` | PASS; second deferred SAVE rejected BUSY |
+| SAVE pause/resume | `TestCommunicationManagerDualGates` with persistence busy Mock | PASS; both servers suspend and recover |
+| SAVE failure recovery | `TestCommunicationManagerDualGates` with failed-save Mock | PASS; both servers return RUNNING |
+| USART3 parameter-apply wait | `TestCommunicationManagerDualGates` | PASS; active address stays old while Port B is busy |
+| Slave ID synchronization | `TestCommunicationManagerDualGates` | PASS; both snapshots update together |
+| Configuration apply rollback | `TestCommunicationManagerDualGates` with apply failure Mock | PASS; both snapshots remain at old address |
+| Exception 06 | `TestDualMockTransportRouting` | PASS; complete exception response and CRC |
+| Exception 04 | No deterministic production-path Mock result is exposed | NOT SEPARATELY COVERED; not claimed as a Stage 5I-B PASS |
+
+The existing Stage 4A/4B persistence and command suites continue to cover
+Flash commit-last, rollback and CommandService error semantics. Exception 04
+is explicitly left as a documented coverage gap rather than inferred from the
+static exception mapping.
+
+| Suite | Result |
+|---|---|
+| Host CTest | PASS, 16/16 |
+| Stage 5B Host assertions | PASS, 1,197 |
+| Stage 5B Python | PASS, 29/29 |
+| Stage 5C Python | PASS, 12/12 |
+| BLE parser random fragmentation | PASS, 1,000 deterministic seeds; 1-97 byte chunks, merged frames, header/CRC splits; zero gap/duplicate/resync |
+
+### RS232 adapter gate
+
+Windows enumeration showed only:
+
+| Port | Device | VID/PID | Assignment |
+|---|---|---|---|
+| COM3 | USB-SERIAL CH340 | `1A86:7523` | CH579 UART1 log port |
+| COM5 | USB-SERIAL CH340 | `1A86:7523` | USB-RS485 adapter used for USART2 |
+
+No independent, verified USB-RS232 adapter or DB9 electrical path was
+available. COM3 and COM5 were not relabeled as RS232. Therefore these items
+are **NOT RUN - no verified USB-RS232 adapter**:
+
+* RS232 local loopback and adapter identification.
+* USART2 RS232 FC03/FC06/FC16 and exception tests.
+* Gate A (USART3 + USART2 RS232 + BLE) 600-second concurrency.
+
+### BLE final gate and Gate B
+
+The W02 was `W02_00DB8C`, address `C8:46:82:00:DB:8C`. DEVICE_INFO reported
+firmware `0x050A`, Schema V2 and map `0x0104`. The 600-second BLE window
+received 4,198 frames (2,998 FAST, 600 SLOW, 600 CHECKWEIGH), with zero CRC
+errors, disconnects, duplicates and partial bytes. It still reported **3
+sequence gaps and 165 parser-resync bytes**, so the strict BLE zero-gap gate
+failed. This is an external W02/Bluetooth/Windows path result, not a parser
+fragmentation failure.
+
+Gate B (USART3 + USART2 RS485 + BLE) ran for 601.12 s with TCP 800 ms and
+RS485 1200 ms polling:
+
+| Port | Requests | Responses | Timeout/bad |
+|---|---:|---:|---:|
+| USART3 via CH579 | 749 | 749 | 0 / 0 |
+| USART2 via COM5 RS485 | 500 | 500 | 0 / 0 |
+
+The final SWD snapshot at
+`Results/stage5ibv_threeway_swd_updated/swd_diagnostics.json` shows:
+
+* USART2 valid/complete `1000/1000`; USART3 valid/complete `2639/2639`.
+* USART2 and USART3 DMA, UART, queue, TX and Framer errors all zero.
+* USART2 RS485 state IDLE and last error NONE.
+* BLE generated/sent `16193/16193`; queue, transport, encode, UART and TX errors zero.
+
+Gate B passed the target-side STM32 and CH579 requirements but failed the
+strict external BLE zero-gap requirement. The historical COM5 RS485 timeout
+waiver remains documented; this final combined run itself had zero COM5
+timeouts.
+
+### Final build and artifact record
+
+Debug, Release, BoardDiagnostics and Usart3Bringup all rebuilt with zero new
+warnings and unchanged target resources versus `4ea99dd`:
+
+| Image | Flash / RAM |
+|---|---:|
+| Debug | 90,820 / 17,608 B |
+| Release | 78,088 / 17,576 B |
+| BoardDiagnostics | 126,196 / 17,504 B |
+| Usart3Bringup | 90,520 / 17,216 B |
+
+Release ELF SHA256 remains
+`2D4C83425D0BA4F4854BED7A3D937C5FF588FEC1EFAC1B5425CD3BE5BBEDF096`.
+SWD dump tooling now uses the current Release map and decodes both Framer and
+Server instances; stale Stage 5I-A addresses are no longer used.
+
+Final conclusion:
+
+```text
+Stage 5I-B CODE COMPLETE
+USART3/CH579 and USART2 RS485 target-side validation passed
+RS232 physical regression not run - no verified USB-RS232 adapter
+BLE zero-gap final gate failed (3 gaps, 165 resync bytes)
+External-link waiver remains open
+```
+
+The next authorized stage remains blocked until a verified USB-RS232 path is
+available and the BLE external path produces a zero-gap 600-second window, or
+the user explicitly approves a changed acceptance metric. No ACK,
+retransmission or BLE protocol change was introduced.

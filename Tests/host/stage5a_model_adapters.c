@@ -19,6 +19,7 @@ static unsigned s_command_count;
 static CommandRequest s_last_command;
 static AlarmOutputDiagnostics s_alarm_diagnostics;
 static StartupAutoZeroSnapshot s_startup_auto_zero;
+static bool s_context_available;
 
 void Stage5A_ModelAdaptersInit(void)
 {
@@ -31,10 +32,13 @@ void Stage5A_ModelAdaptersInit(void)
     s_context.initialized=true;
     s_snapshot.status_flags=WEIGHT_STATUS_WEIGHT_VALID;
     s_command_count=0U;
+    s_context_available=true;
     (void)memset(&s_last_command,0,sizeof(s_last_command));
     (void)memset(&s_alarm_diagnostics,0,sizeof(s_alarm_diagnostics));
     (void)memset(&s_startup_auto_zero,0,sizeof(s_startup_auto_zero));
 }
+void Stage5A_ModelSetContextAvailable(bool available)
+{ s_context_available=available; }
 SystemContext *Stage5A_ModelContext(void){return &s_context;}
 MassSnapshot *Stage5A_ModelSnapshot(void){return &s_snapshot;}
 DisplayConditionSnapshot *Stage5A_ModelDisplayCondition(void){return &s_display_condition;}
@@ -48,7 +52,7 @@ bool App_GetAlarmOutputDiagnostics(AlarmOutputDiagnostics *diagnostics)
 {if(diagnostics==NULL)return false;*diagnostics=s_alarm_diagnostics;return true;}
 const StartupAutoZeroSnapshot *App_GetStartupAutoZeroSnapshot(void)
 {return &s_startup_auto_zero;}
-const SystemContext *SystemContext_Get(void){return &s_context;}
+const SystemContext *SystemContext_Get(void){return s_context_available ? &s_context : NULL;}
 const MassSnapshot *MetrologyManager_GetMassSnapshot(void){return &s_snapshot;}
 const DisplayConditionSnapshot *MetrologyManager_GetDisplayConditionSnapshot(void)
 {return &s_display_condition;}

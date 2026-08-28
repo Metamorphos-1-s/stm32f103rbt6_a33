@@ -1,5 +1,6 @@
 import struct
 import unittest
+import random
 
 from ble_telemetry import (CHECKWEIGH_TYPE, FAST_TYPE, HEADER_SIZE, SLOW_TYPE,
                            TelemetryParser, crc16)
@@ -21,6 +22,37 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(parser.feed(fast[1:7]), [])
         self.assertEqual(len(parser.feed(fast[7:] + slow)), 2)
         self.assertEqual(parser.frames_received, 2)
+        frames = [frame(FAST_TYPE, sequence, 1000 + sequence,
+                        bytes([sequence & 0xFF]) * 42)
+                  for sequence in range(20)]
+        stream = b"".join(frames)
+        expected_parser = TelemetryParser()
+        expected = expected_parser.feed(stream)
+        self.assertEqual(len(expected), 20)
+        expected_wire = []
+        for item in expected:
+            normalized = dict(item)
+            normalized.pop("host_timestamp", None)
+            expected_wire.append(normalized)
+        for seed in range(1000):
+            rng = random.Random(0x5B000000 + seed)
+            parser = TelemetryParser()
+            parsed = []
+            offset = 0
+            while offset < len(stream):
+                chunk_length = rng.randint(1, 97)
+                parsed.extend(parser.feed(stream[offset:offset + chunk_length]))
+                offset += chunk_length
+            parsed_wire = []
+            for item in parsed:
+                normalized = dict(item)
+                normalized.pop("host_timestamp", None)
+                parsed_wire.append(normalized)
+            self.assertEqual(parsed_wire, expected_wire)
+            self.assertEqual(parser.crc_errors, 0)
+            self.assertEqual(parser.sequence_gaps, 0)
+            self.assertEqual(parser.duplicates, 0)
+            self.assertEqual(parser.parser_resync, 0)
 
     def test_checkweigh_status_and_interleave(self):
         fast = frame(FAST_TYPE, 10, 100, bytes(42))

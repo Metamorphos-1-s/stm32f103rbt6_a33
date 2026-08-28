@@ -1,6 +1,7 @@
 #include "stage5b_transport_adapters.h"
 
 #include "bsp_rtu_timer.h"
+#include "bsp_uart3_dma.h"
 #include "bsp_uart_dma.h"
 #include "fault_manager.h"
 #include "persistence_manager.h"
@@ -14,6 +15,9 @@ static uint32_t s_now_us;
 static bool s_tx_complete;
 static bool s_de;
 static bool s_timer_elapsed;
+static bool s_persistence_busy;
+static CommandResult s_save_result;
+static bool s_apply_config_result;
 static Uart2DmaTransportStatistics s_transport;
 
 uint32_t BSP_TimeNowMs(void) { return 0U; }
@@ -31,6 +35,9 @@ void Stage5B_TransportReset(void)
     s_tx_complete = false;
     s_de = false;
     s_timer_elapsed = false;
+    s_persistence_busy = false;
+    s_save_result = COMMAND_RESULT_ACCEPTED;
+    s_apply_config_result = true;
     (void)memset(&s_transport, 0, sizeof(s_transport));
 }
 
@@ -91,14 +98,42 @@ bool Uart2DmaTransport_Init(const BspUart2Config *config)
 void Uart2DmaTransport_Process(void) { }
 void Uart2DmaTransport_Suspend(void) { }
 
-bool PersistenceManager_IsBusy(void) { return false; }
+bool BSP_Uart3DmaInit(void) { return true; }
+BspUartDmaResult BSP_Uart3DmaStartRx(uint8_t *buffer, uint16_t length)
+{ return ((buffer != NULL) && (length != 0U)) ? BSP_UART_DMA_OK : BSP_UART_DMA_INVALID_ARGUMENT; }
+BspUartDmaResult BSP_Uart3DmaStartTx(const uint8_t *data, uint16_t length)
+{ return ((data != NULL) && (length != 0U)) ? BSP_UART_DMA_OK : BSP_UART_DMA_INVALID_ARGUMENT; }
+uint16_t BSP_Uart3DmaGetRxPosition(uint16_t buffer_length)
+{ (void)buffer_length; return 0U; }
+void BSP_Uart3DmaStopRx(void) { }
+void BSP_Uart3DmaAbortTx(void) { }
+bool BSP_Uart3IsTxCompletelyFinished(void) { return true; }
+void BSP_Uart3EnableIdleInterrupt(void) { }
+void BSP_Uart3DisableIdleInterrupt(void) { }
+void BSP_Uart3DmaGetEvents(BspUart3DmaEvents *events)
+{ if (events != NULL) (void)memset(events, 0, sizeof(*events)); }
+bool BSP_Uart3DmaTakeIdleEvent(BspUart3IdleEvent *event)
+{ (void)event; return false; }
+void BSP_Uart3DmaClearIdleEvents(void) { }
+void BSP_Uart3IrqHandler(void) { }
+void BSP_Uart3RxDmaIrqHandler(void) { }
+void BSP_Uart3TxDmaIrqHandler(void) { }
+void BSP_Uart3DmaOnRxHalfComplete(void) { }
+void BSP_Uart3DmaOnRxComplete(void) { }
+void BSP_Uart3DmaOnTxComplete(void) { }
+void BSP_Uart3DmaOnError(uint32_t error_code) { (void)error_code; }
+
+void Stage5B_SetPersistenceBusy(bool busy) { s_persistence_busy = busy; }
+void Stage5B_SetPersistenceSaveResult(CommandResult result) { s_save_result = result; }
+void Stage5B_SetApplyConfigResult(bool result) { s_apply_config_result = result; }
+bool PersistenceManager_IsBusy(void) { return s_persistence_busy; }
 CommandResult PersistenceManager_RequestSave(void)
 {
-    return COMMAND_RESULT_ACCEPTED;
+    return s_save_result;
 }
 bool SystemContext_ApplyConfig(const DeviceConfig *config, bool dirty)
 {
     (void)dirty;
-    return config != NULL;
+    return (config != NULL) && s_apply_config_result;
 }
 void FaultManager_Set(FaultCode fault) { (void)fault; }
