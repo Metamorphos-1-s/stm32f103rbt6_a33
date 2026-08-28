@@ -917,3 +917,46 @@ The new-board W02 window therefore closes the standalone BLE zero-gap gate, but
 does not close Gate A or Gate B: a complete combined run requires the CH579
 UART0 wiring to PC11/PC10 and a response checker that validates CRC/protocol
 fields rather than a board-specific weight value.
+
+## Stage 5I-B-Final old-board W02 isolation - 2026-08-29
+
+The original mainboard was reconnected to the same ST-Link and programmed with
+the same verified Release ELF. W02 was rediscovered as `W02_00DB8C`, address
+`C8:46:82:00:DB:8C` (RSSI approximately -16 dBm). This run intentionally
+excluded CH579 and USART2 traffic and exercised the BLE telemetry path alone.
+
+The standalone window lasted 604.38 s and produced:
+
+| Metric | Result |
+|---|---:|
+| total frames | 4,202 |
+| FAST / SLOW / CHECKWEIGH | 3,000 / 601 / 601 |
+| CRC errors | 0 |
+| sequence gaps | **2** |
+| parser resync | **110** |
+| duplicates | 0 |
+| partial bytes | 0 |
+| disconnects | 0 |
+
+This is the first isolated old-board BLE window in the Stage 5I-B record. It
+shows that the old-board W02 path can reproduce the gap/resync symptom without
+Modbus concurrency; the earlier old-board failures were therefore not caused
+only by simultaneous USART2/USART3 load. The new-board standalone window
+passed with 4,200 frames and zero gap/resync, so the board/module/physical
+BLE setup remains a differential to investigate. No single component is
+assigned as the root cause without a line-side or raw-notification capture.
+
+The old-board SWD snapshot is under
+`Results/stage5ifinal_oldboard_w02_swd/swd_diagnostics.json`:
+
+* BLE generated/sent `4732/4732`.
+* BLE transport queue, UART and TX errors were zero.
+* STM32 fault mask and event-queue drops were zero.
+* The Modbus instances were idle and had no new errors because this was a
+  standalone BLE test.
+
+The raw telemetry summary is under
+`Results/stage5ifinal_oldboard_w02_window/telemetry_summary.json`. The BLE
+zero-gap waiver remains open despite the new-board pass because the old-board
+standalone result is reproducibly non-zero and no line-side capture has yet
+located the missing bytes.
