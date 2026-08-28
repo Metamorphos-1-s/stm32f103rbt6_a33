@@ -960,3 +960,27 @@ The raw telemetry summary is under
 zero-gap waiver remains open despite the new-board pass because the old-board
 standalone result is reproducibly non-zero and no line-side capture has yet
 located the missing bytes.
+
+### Old-board standalone W02 rerun
+
+A second standalone 600-second run was performed with the same old board and
+`W02_00DB8C` (`C8:46:82:00:DB:8C`, RSSI approximately -18 dBm). CH579 and
+USART2 traffic remained excluded. The 604.05-second window received 4,197
+frames: 2,997 FAST, 600 SLOW and 600 CHECKWEIGH. It again failed the strict
+gate with **3 sequence gaps and 165 parser-resync bytes**. CRC errors,
+duplicates, partial bytes, timestamp anomalies and disconnects were zero.
+
+The corresponding SWD snapshot shows BLE generated/sent `5622/5622`, with
+zero BLE queue drops, transport drops, encode errors, UART errors, TX errors,
+transport resets and event-queue drops. USART3 reported receive errors because
+PC10/PC11 were not connected to CH579 and the unused RX line was electrically
+floating; those counters are outside this standalone BLE result and are not
+reported as a Modbus concurrency failure.
+
+Evidence is under
+`Results/stage5ifinal_oldboard_w02_window_rerun/telemetry_summary.json` and
+`Results/stage5ifinal_oldboard_w02_swd_rerun/swd_diagnostics.json`. Across two
+independent old-board standalone windows the external result is now 2 gaps /
+110 resync and 3 gaps / 165 resync, while both MCU BLE snapshots remain
+internally complete. This confirms the symptom is reproducible without
+three-interface load.
