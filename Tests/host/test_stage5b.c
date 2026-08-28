@@ -43,6 +43,77 @@ static const ModbusRtuTransport s_test_transport = {
     TestTransportAbort
 };
 
+typedef struct
+{
+    uint8_t tx[MODBUS_TX_BUFFER_SIZE];
+    uint16_t tx_length;
+    bool tx_started;
+    bool tx_busy;
+} DualMockTransport;
+
+static void DualMockProcess(void *context) { (void)context; }
+static bool DualMockRead(void *context, uint8_t *byte)
+{ (void)context; (void)byte; return false; }
+static bool DualMockIdle(void *context, uint16_t *position,
+                         uint32_t *timestamp)
+{ (void)context; (void)position; (void)timestamp; return false; }
+static bool DualMockError(void *context) { (void)context; return false; }
+static void DualMockDiscard(void *context) { (void)context; }
+static uint16_t DualMockPosition(void *context) { (void)context; return 0U; }
+static bool DualMockStartTx(void *context, const uint8_t *data,
+                            uint16_t length)
+{
+    DualMockTransport *mock = (DualMockTransport *)context;
+    if ((mock == NULL) || mock->tx_busy || (data == NULL) ||
+        (length > sizeof(mock->tx))) return false;
+    (void)memcpy(mock->tx, data, length);
+    mock->tx_length = length;
+    mock->tx_started = true;
+    return true;
+}
+static bool DualMockCompleted(void *context)
+{
+    DualMockTransport *mock = (DualMockTransport *)context;
+    return (mock != NULL) && mock->tx_started && !mock->tx_busy;
+}
+static bool DualMockTxError(void *context, bool *timeout)
+{ (void)context; if (timeout != NULL) *timeout = false; return false; }
+static void DualMockAbort(void *context)
+{
+    DualMockTransport *mock = (DualMockTransport *)context;
+    if (mock != NULL) mock->tx_started = false;
+}
+
+static void InitDualTransport(ModbusRtuTransport *transport,
+                              DualMockTransport *mock)
+{
+    transport->context = mock;
+    transport->process = DualMockProcess;
+    transport->try_read_byte = DualMockRead;
+    transport->take_idle_event = DualMockIdle;
+    transport->take_receive_error = DualMockError;
+    transport->discard_pending = DualMockDiscard;
+    transport->get_rx_position = DualMockPosition;
+    transport->start_tx = DualMockStartTx;
+    transport->take_tx_completed = DualMockCompleted;
+    transport->take_tx_error = DualMockTxError;
+    transport->abort_tx = DualMockAbort;
+}
+
+static void PrepareReadyFrame(ModbusRtuFramer *framer, const uint8_t *frame,
+                              uint16_t length)
+{
+    (void)memcpy(framer->frame, frame, length);
+    framer->length = length;
+    framer->state = MODBUS_FRAMER_FRAME_READY;
+}
+
+static void RunServerToTx(ModbusRtuServer *server)
+{
+    unsigned step;
+    for (step = 0U; step < 8U; ++step) ModbusRtuServer_Process(server);
+}
+
 static bool InitTestServer(ModbusRtuServer *server, ModbusRtuFramer *framer,
                            const CommunicationConfig *config,
                            CommandSource source)
@@ -478,6 +549,89 @@ static void TestDualPortInstances(void)
         COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_OK);
 }
 
+static void TestDualMockTransportRouting(void)
+{
+    DeviceConfig config;
+    ModbusRtuTiming timing;
+    ModbusRtuFramer framer2;
+    ModbusRtuFramer framer3;
+    ModbusRtuServer server2;
+    ModbusRtuServer server3;
+    ModbusRtuTransport transport2;
+    ModbusRtuTransport transport3;
+    DualMockTransport mock2 = {0};
+    DualMockTransport mock3 = {0};
+    uint8_t fc03[8] = {1U, 3U, 0U, 0U, 0U, 1U};
+    uint8_t fc06[8] = {1U, 6U, 0x01U, 0x7CU, 0U, 1U};
+    uint8_t fc16[13] = {1U, 16U, 0x01U, 0x40U, 0U, 2U, 4U,
+                        0U, 1U, 0U, 2U};
+    uint16_t length;
+    uint16_t response_length;
+    bool respond;
+    DefaultConfig_Load(&config);
+    config.communication.response_delay_ms = 0U;
+    Stage5A_ModelAdaptersInit();
+    ModbusRegisterModel_Init();
+    CHECK(ModbusRtuTiming_Calculate(115200U, COMM_PARITY_NONE,
+        COMM_STOP_BITS_1, &timing));
+    InitDualTransport(&transport2, &mock2);
+    InitDualTransport(&transport3, &mock3);
+    CHECK(ModbusRtuFramer_Init(&framer2, &timing, 0U));
+    CHECK(ModbusRtuFramer_Init(&framer3, &timing, 0U));
+    CHECK(ModbusRtuServer_Init(&server2, &config.communication, &framer2,
+        &transport2, COMMAND_SOURCE_MODBUS));
+    CHECK(ModbusRtuServer_Init(&server3, &config.communication, &framer3,
+        &transport3, COMMAND_SOURCE_MODBUS_USART3));
+    length = AddCrc(fc03, 6U);
+    PrepareReadyFrame(&framer2, fc03, length);
+    PrepareReadyFrame(&framer3, fc03, length);
+    RunServerToTx(&server2);
+    RunServerToTx(&server3);
+    CHECK(mock2.tx_started && mock3.tx_started);
+    CHECK(mock2.tx_length == 7U && mock3.tx_length == 7U);
+    CHECK(ModbusCrc16_Calculate(mock2.tx, mock2.tx_length) == 0U);
+    CHECK(ModbusCrc16_Calculate(mock3.tx, mock3.tx_length) == 0U);
+    CHECK(mock2.tx[0] == 1U && mock2.tx[1] == 3U &&
+        mock3.tx[0] == 1U && mock3.tx[1] == 3U);
+    mock2.tx_started = false;
+    mock3.tx_started = false;
+    length = AddCrc(fc06, 6U);
+    PrepareReadyFrame(&framer2, fc06, length);
+    RunServerToTx(&server2);
+    CHECK(mock2.tx_started && mock2.tx_length == 8U &&
+        memcmp(mock2.tx, fc06, 8U) == 0 &&
+        ModbusCrc16_Calculate(mock2.tx, 8U) == 0U);
+    mock2.tx_started = false;
+    fc06[5] = 2U;
+    length = AddCrc(fc06, 6U);
+    PrepareReadyFrame(&framer3, fc06, length);
+    RunServerToTx(&server3);
+    CHECK(mock3.tx_started && mock3.tx[0] == 1U && mock3.tx[1] == 0x86U &&
+        mock3.tx[2] == 3U && ModbusCrc16_Calculate(mock3.tx, 5U) == 0U);
+    mock3.tx_started = false;
+    length = AddCrc(fc16, 11U);
+    PrepareReadyFrame(&framer2, fc16, length);
+    RunServerToTx(&server2);
+    CHECK(mock2.tx_started && mock2.tx[1] == 16U && mock2.tx_length == 8U &&
+        ModbusCrc16_Calculate(mock2.tx, mock2.tx_length) == 0U);
+    mock2.tx_started = false;
+    fc16[6] = 3U;
+    length = AddCrc(fc16, 11U);
+    CHECK(ModbusRtuServer_HandleAdu(&server3, fc16, length, mock3.tx,
+        sizeof(mock3.tx), &response_length, &respond) && respond &&
+        response_length == 5U && mock3.tx[2] == 3U);
+    CHECK(ModbusCrc16_Calculate(mock3.tx, response_length) == 0U);
+    mock2.tx_busy = true;
+    PrepareReadyFrame(&framer2, fc03, AddCrc(fc03, 6U));
+    RunServerToTx(&server2);
+    CHECK(!mock2.tx_started);
+    mock2.tx_busy = false;
+    mock3.tx_started = false;
+    PrepareReadyFrame(&framer3, fc03, AddCrc(fc03, 6U));
+    RunServerToTx(&server3);
+    CHECK(mock3.tx_started && mock3.tx[1] == 3U);
+}
+
 int main(void)
 {
     TestCrcAndTiming();
@@ -488,6 +642,7 @@ int main(void)
     TestAlarmRegisterMap();
     TestDeterministicBadFrames();
     TestDualPortInstances();
+    TestDualMockTransportRouting();
     CHECK(checks >= 128U);
     if(failures==0U) printf("Stage 5B host tests passed (%u checks).\n",checks);
     return failures==0U?0:1;

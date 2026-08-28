@@ -611,3 +611,132 @@ The next-stage input is a programmed board with the CH579 Modbus gateway
 enabled and a reliable RS232/RS485 adapter. Product release still requires
 the strict external three-interface 600 s gate with zero RS485 timeouts and
 zero BLE sequence gaps.
+
+## Stage 5I-B-V verification - 2026-08-29
+
+Verification was run from commit `f454220` plus the test/tooling commit below.
+The target was programmed with the Release ELF through ST-Link SN
+`E1007200D0D2139393740544` at 3.29 V. The CH579 gateway was reached at
+`192.168.1.100:5000`; COM5 was the USB-RS485 adapter at 115200 8N1. COM3 was
+available as the CH579 UART1 log port. No destructive Flash SAVE or
+communication-parameter change was performed on the target.
+
+### Software gate completion
+
+The Host Stage 5B executable now includes the explicit dual-port test function
+`TestDualMockTransportRouting` in addition to the earlier instance, framing
+and mailbox tests. It checks separate Mock TX buffers, complete FC03/FC06/FC16
+responses and CRC, invalid-value exception 03, TX BUSY isolation, CRC/address
+isolation and source-owned mailbox release. The executable passed **1,164
+assertions**; CTest remains 16/16 because the new coverage is an additional
+function in the existing Stage 5B target.
+
+Python tests use the repository's standard-library `unittest` suites (the
+initial `pytest` command was not the declared framework):
+
+| Suite | Result |
+|---|---|
+| Host CTest | PASS, 16/16 |
+| Stage 5B Python | PASS, 29/29 (`unittest discover`, `PYTHONPATH=Tools/stage5b_hw`) |
+| Stage 5C Python | PASS, 12/12 (`unittest discover`, `PYTHONPATH=Tools/stage5c_hw`) |
+
+Build results were unchanged by the Host-only additions:
+
+| Image | Flash / RAM | Result | Delta vs `f454220` |
+|---|---:|---|---:|
+| Debug | 90,820 / 17,608 B | PASS | 0 / 0 B |
+| Release | 78,088 / 17,576 B | PASS | 0 / 0 B |
+| BoardDiagnostics | 126,196 / 17,504 B | PASS, 99.39% | 0 / 0 B |
+| Usart3Bringup | 90,520 / 17,216 B | PASS | 0 / 0 B |
+
+The SWD parser and dump script were updated to the current Release map and
+now decode both Modbus instances. The previous Stage 5I-A fixed-address
+parser output must not be used for this image.
+
+### USART3/CH579 target-side tests
+
+The CH579 raw TCP/UART0 bridge sent Modbus frames to STM32 PC11 and received
+responses from PC10. The fixed FC03 response was `01 03 02 00 00 B8 44`.
+
+| Test | Result |
+|---|---|
+| FC03 single | PASS, exact bytes and CRC |
+| FC03 continuous | PASS, 1000/1000 |
+| FC06 at 0x017C | PASS, toggled 0->1 and restored 1->0; echo/CRC checked |
+| FC16 at 0x0140..0x0141 | PASS, wrote [1,2] and restored [0,1]; acknowledgement/CRC checked |
+| Exception 01 | PASS, `01 FF 01 A0 30` |
+| Exception 02 | PASS, `01 86 02 C3 A1` |
+| Exception 03 | PASS, `01 86 03 02 61` |
+| CRC error silence | PASS, no response |
+| Non-local address silence | PASS, no response |
+| Recovery after malformed input | PASS, next FC03 exact |
+
+The FC06/FC16 registers were staging/configuration fields selected for
+reversibility; original values were read first and restored after each test.
+No calibration or irreversible output register was written.
+
+### 600-second dual Modbus concurrency
+
+Two independent host workers used different periods (TCP 800 ms, RS485
+1200 ms) for 600.91 s. Results were:
+
+| Port | Requests | Valid responses | Timeout | Bad/error |
+|---|---:|---:|---:|---:|
+| USART3 via CH579 TCP/UART0 | 749 | 749 | 0 | 0 |
+| USART2 via COM5 RS485 | 500 | 500 | 0 | 0 |
+
+The final SWD snapshot is under
+`Results/stage5ibv_swd_full/` and the corrected parser output under
+`Results/stage5ibv_threeway_swd_updated/`. Relevant Release counters after
+the dual-port run:
+
+| Counter | USART2 | USART3 |
+|---|---:|---:|
+| valid/addressed requests | 1000 / 1000 | 2639 / 2639 |
+| completed responses | 1000 | 2639 |
+| FC03 | 1000 | 2629 |
+| FC06 / FC16 | 0 / 0 | 6 / 2 |
+| CRC errors | 0 | 2 (intentional malformed-frame test) |
+| DMA/UART/queue errors | 0 | 0 |
+| TX errors/timeouts | 0 / 0 | 0 / 0 |
+| Framer overflow/inter-character errors | 0 / 0 | 0 / 0 |
+| Framer timer races | 0 | 0 |
+| DMA producer/consumer positions | 832 / 832 | 655 / 655 |
+| RS485 state / last error | IDLE / NONE | n/a |
+
+The USART3 two CRC errors and six exception responses are expected evidence
+from the deliberate malformed/exception vectors run before the final soak;
+they did not produce transport or TX failures. No Port-B byte or frame was
+counted on the USART2 instance.
+
+### Three-interface 600-second run
+
+While the same TCP and COM5 workers ran for 601.12 s, W02
+`C8:46:82:00:DB:8C` (`W02_00DB8C`) was connected for the BLE telemetry test.
+The BLE script received 4,198 frames: 2,998 FAST, 600 SLOW and 600 CHECKWEIGH.
+BLE CRC errors, disconnects, duplicates and partial bytes were zero. It did
+report 3 sequence gaps and 165 parser-resync bytes, matching the known
+Stage 5I-A external W02/Windows path behavior. STM32 BLE counters in the SWD
+snapshot remained internally consistent: 16,193 generated and 16,193 sent,
+all queue/transport/encode drops zero; BLE transport UART and TX errors were
+zero. The CH579 TCP/UART path had no timeout or error in either Modbus run.
+
+The final three-interface evidence is in
+`Results/stage5ibv_threeway_ble/telemetry_summary.json` and
+`Results/stage5ibv_threeway_swd_updated/swd_diagnostics.json`.
+
+### Hardware conclusion and remaining waiver
+
+USART3/CH579 FC03, FC06, FC16, exceptions and 600-second dual-port target-side
+traffic passed. USART2 RS485 passed the 600-second concurrent window with
+500/500 host responses and 1000/1000 internal responses; PA1/RS485 ended IDLE
+with last error NONE. USART2 RS232 was **NOT RUN** in this round because no
+separate confirmed RS232 adapter/path was available; COM3 was the CH579 UART1
+log port and COM5 was used for RS485.
+
+The external BLE sequence-gap issue remains open (3 gaps / 165 resync bytes in
+this run). The prior COM5 RS485 timeout evidence is retained as a historical
+Stage 5I-A waiver, although this 600-second replacement run had zero COM5
+timeouts. The external-link waiver therefore remains open until an independent
+RS232 run and a clean zero-gap BLE run are completed. No final product tag is
+created.

@@ -7,24 +7,29 @@ from pathlib import Path
 
 # Addresses for the current Release link map. Keep these synchronized with
 # build/Release/stm32f103rbt6_a33.map when the firmware layout changes.
-TX_LAST_ERROR = 0x20001093
-TX_STATE = 0x200010A8
-TRANSPORT_RECOVERY_FAILURES = 0x200010A9
-TRANSPORT_RECEIVE_ERROR = 0x200010AC
-UART_STATS = 0x2000117C
-FRAMER_STATS = 0x20001A7C
-FRAMER_STATE = 0x20001BB0
-SERVER_STATS = 0x20001ED0
-SERVER_STATE = 0x20001F18
-CS1237_READ_ERRORS = 0x20000FB4
-CS1237_BUFFER_OVERRUNS = 0x20000FB8
-CS1237_SAMPLE_COUNT = 0x20000FBC
-EVENT_QUEUE_DROPPED = 0x200026D8
-FAULT_MASK = 0x20002820
-BLE_TRANSPORT_DIAGNOSTICS = 0x200028E4
-BLE_CONNECTION_DIAGNOSTICS = 0x20002E7C
-BLE_TELEMETRY_SCHEDULER = 0x20002F38
-BLE_COMMAND_DIAGNOSTICS = 0x20002F8C
+TX_LAST_ERROR = 0x20001BDB
+TX_STATE = 0x20001BF0
+TRANSPORT_RECOVERY_FAILURES = 0x20001BF1
+TRANSPORT_RECEIVE_ERROR = 0x20001BF4
+UART_STATS = 0x20001CC4
+FRAMER2_STATS = 0x20000D78
+FRAMER2_STATE = 0x20000C68
+SERVER2_STATS = 0x200007A0
+SERVER2_STATE = 0x20000780 + 0x1C
+FRAMER3_STATS = 0x20000C20
+FRAMER3_STATE = 0x20000AF8 + 0x14
+SERVER3_STATS = 0x20000428
+SERVER3_STATE = 0x20000408 + 0x1C
+UART3_MODBUS_STATS = 0x20002108
+CS1237_READ_ERRORS = 0x20001AFC
+CS1237_BUFFER_OVERRUNS = 0x20001B00
+CS1237_SAMPLE_COUNT = 0x20001B04
+EVENT_QUEUE_DROPPED = 0x200031A0
+FAULT_MASK = 0x200032E8
+BLE_TRANSPORT_DIAGNOSTICS = 0x200033AC
+BLE_CONNECTION_DIAGNOSTICS = 0x20003944
+BLE_TELEMETRY_SCHEDULER = 0x20003A00
+BLE_COMMAND_DIAGNOSTICS = 0x20003A54
 
 
 def _slice(data, base, address, size):
@@ -45,14 +50,16 @@ def parse(data, base_address):
         "uart_noise_error_count", "uart_overrun_error_count",
         "tx_request_count", "tx_complete_count", "tx_dma_error_count",
         "tx_timeout_count", "dma_write_position", "dma_read_position"]
-    framer_values = struct.unpack("<11IH2x", _slice(data, base_address, FRAMER_STATS, 48))
+    framer2_values = struct.unpack("<11IH2x", _slice(data, base_address, FRAMER2_STATS, 48))
+    framer3_values = struct.unpack("<11IH2x", _slice(data, base_address, FRAMER3_STATS, 48))
     framer_names = ["frame_count", "short_frame_count",
         "inter_character_error_count", "overflow_count",
         "transport_error_count", "idle_event_count", "timer_event_count",
         "timer_race_count", "timer_t1_5_elapsed_count",
         "timer_t3_5_elapsed_count", "timer_start_failure_count",
         "current_frame_length"]
-    server_values = struct.unpack("<16I3Bx2H", _slice(data, base_address, SERVER_STATS, 72))
+    server2_values = struct.unpack("<16I3Bx2H", _slice(data, base_address, SERVER2_STATS, 72))
+    server3_values = struct.unpack("<16I3Bx2H", _slice(data, base_address, SERVER3_STATS, 72))
     server_names = ["valid_frame_count", "addressed_frame_count",
         "ignored_address_count", "broadcast_count", "crc_error_count",
         "length_error_count", "function03_count", "function06_count",
@@ -112,8 +119,18 @@ def parse(data, base_address):
         "ble_telemetry": dict(zip(telemetry_names, telemetry_values)),
         "ble_command": dict(zip(command_names, command_values)),
         "uart_dma": dict(zip(uart_names, uart_values)),
-        "framer": dict(zip(framer_names, framer_values)),
-        "server": dict(zip(server_names, server_values)),
+        "uart3_modbus": dict(zip(
+            ["rx_byte_count", "rx_overrun_count", "rx_error_count",
+             "tx_request_count", "tx_complete_count", "tx_error_count",
+             "tx_timeout_count", "dma_write_position", "dma_read_position"],
+            struct.unpack("<7I2H", _slice(data, base_address,
+                                           UART3_MODBUS_STATS, 32)))),
+        "framer2": dict(zip(framer_names, framer2_values)),
+        "framer3": dict(zip(framer_names, framer3_values)),
+        "server2": dict(zip(server_names, server2_values)),
+        "server3": dict(zip(server_names, server3_values)),
+        "framer": dict(zip(framer_names, framer2_values)),
+        "server": dict(zip(server_names, server2_values)),
         "states": {
             "tx": _slice(data, base_address, TX_STATE, 1)[0],
             "tx_last_error": _slice(data, base_address, TX_LAST_ERROR, 1)[0],
@@ -121,8 +138,10 @@ def parse(data, base_address):
                 data, base_address, TRANSPORT_RECOVERY_FAILURES, 1)[0],
             "transport_receive_error": _slice(
                 data, base_address, TRANSPORT_RECEIVE_ERROR, 1)[0],
-            "framer": _slice(data, base_address, FRAMER_STATE, 1)[0],
-            "server": _slice(data, base_address, SERVER_STATE, 1)[0],
+            "framer2": _slice(data, base_address, FRAMER2_STATE, 1)[0],
+            "server2": _slice(data, base_address, SERVER2_STATE, 1)[0],
+            "framer3": _slice(data, base_address, FRAMER3_STATE, 1)[0],
+            "server3": _slice(data, base_address, SERVER3_STATE, 1)[0],
         },
     }
 
