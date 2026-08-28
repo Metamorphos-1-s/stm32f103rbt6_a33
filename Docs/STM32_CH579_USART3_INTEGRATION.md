@@ -390,7 +390,7 @@ W02 was subsequently returned to advertising state as `W02_00DB8C`, address
 `C8:46:82:00:DB:8C`. Read-only DEVICE_INFO and GET_CONFIG passed and reported
 firmware `0x050A`, Schema V2, and Modbus map `0x0104`.
 
-Three complete three-interface attempts were made with USART3/CH579 raw traffic,
+Four complete three-interface attempts were made with USART3/CH579 raw traffic,
 COM5 RS485 FC03 traffic, and BLE telemetry/read-only commands. None of them
 met the strict zero-error gate:
 
@@ -399,12 +399,14 @@ met the strict zero-error gate:
 | 1 | 630 cycles, errors 0 | 442/443 success; one storage-state timeout | 4,211 frames; 3 sequence gaps; 24/24 commands |
 | 2 | 630 cycles, errors 0 | 482/483 success; one realtime timeout | 4,210 frames; 5 sequence gaps; 24/24 commands |
 | 3, COM3 closed | 630 cycles, errors 0 | 108/109 success; one storage-state timeout | 4,212 frames; 2 sequence gaps; 24/24 commands |
+| 4, replacement adapter | 630 cycles, errors 0 | 261/262 success; one sample-sequence timeout | 4,210 frames; 4 sequence gaps; 24/24 commands |
 
 All BLE attempts had zero disconnect, command timeout/retry/result error,
 transaction mismatch, CRC error, duplicate, and partial byte. Attempt 1 had
 165 stream-resync bytes for three missing FAST sequences; attempt 2 had 275
 resync bytes for five missing FAST sequences; attempt 3 had 110 resync bytes
-for two missing FAST sequences. The ratio of 55 discarded bytes per missing
+for two missing FAST sequences; attempt 4 had 220 resync bytes for four missing
+FAST sequences. The ratio of 55 discarded bytes per missing
 56-byte FAST frame is consistent with one missing byte followed by
 resynchronization across the remainder of that frame.
 
@@ -415,13 +417,18 @@ BLE transport reported zero RX overflow, UART error, TX error, priority queue
 full, and transport reset. The missing bytes therefore occur after the STM32
 USART1 transport boundary, in the W02/radio/Windows BLE path.
 
-The three RS485 timeouts occurred after clean request sequences. MCU
+The RS485 timeouts occurred after clean request sequences. MCU
 statistics showed every request reached USART2 as a complete 8-byte frame, but
 one fewer response completed in each failed run. USART2 DMA error, overrun,
 IDLE queue overflow, UART parity/frame/noise/overrun error, TX DMA error, and TX
 timeout were all zero; the RS485 controller ended IDLE with last error NONE.
 Standalone 600-second RS485 concurrency previously passed 2,137/2,137, so the
 COM5 USB-RS485/host path remains intermittent under the final combined setup.
+With the replacement adapter in attempt 4, MCU counters showed 1,321 valid and
+addressed FC03 frames and 1,321 completed responses, with zero server CRC,
+Framer, DMA, UART, TX, and DE-controller error. The PC still missed one
+response, locating that timeout after the STM32 response boundary in the
+adapter/USB/Windows receive path.
 
 Failed-run evidence is under:
 
@@ -431,6 +438,8 @@ Failed-run evidence is under:
 - `Results/stage5i_hw/20260828_final_threeway_rerun_ble/summary.json`
 - `Results/stage5i_hw/20260828_final_clean_rerun_rs485.json`
 - `Results/stage5i_hw/20260828_final_clean_rerun_ble/summary.json`
+- `Results/stage5i_hw/20260828_final_newadapter_rs485.json`
+- `Results/stage5i_hw/20260828_final_newadapter_ble/summary.json`
 
 The final gate requires a clean 600-second rerun after the external BLE and
 USB-RS485 links are corrected or replaced. Repeating unchanged hardware while
