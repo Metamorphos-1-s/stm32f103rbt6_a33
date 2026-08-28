@@ -270,3 +270,168 @@ UART/DMA runtime error counters are **NOT READ**, not zero: the target was not
 programmed or attached through SWD. Actual wiring is also **NOT CONFIRMED**.
 Stage 5I-B entry conditions are not satisfied. The conclusion remains:
 **Stage 5I-A CODE COMPLETE; hardware validation pending**.
+
+## Stage 5I-A-HW continuation - 2026-08-28
+
+### Programming and diagnostic corrections
+
+ST-Link `E1007200D0D2139393740544` connected to the STM32F103RBT6 target at
+3.29 V. STM32CubeProgrammer identified device ID `0x410`, programmed the
+Usart3Bringup ELF, verified it, and reset the MCU without a mass erase. The
+final diagnostic ELF SHA256 is
+`35BC6F553660E95152DB6DABD2FA3A7600CAE180B32274DAB5F4E989AEB08E11`.
+
+Hardware testing exposed two diagnostic-only limitations. Long continuous RX
+spans were originally counted as capture overwrites because the bounded
+snapshot consumed data only at IDLE. Commit `fe449ee` separated continuous DMA
+observation from the IDLE snapshot and added a full-stream checksum. Commit
+`df165f6` added a bounded, explicitly started, automatically terminating soak
+sender so sustained tests do not repeatedly attach a debugger. Neither change
+is present in normal Debug, Release, or BoardDiagnostics behavior because the
+Stage 5I diagnostic option remains OFF in those images.
+
+Final build results after both fixes:
+
+| Image | Flash / RAM | Result |
+|---|---:|---|
+| Debug | 88,260 / 15,224 B | PASS, no warnings |
+| Release | 75,824 / 15,208 B | PASS, no warnings |
+| BoardDiagnostics | 125,836 / 15,120 B | PASS, 99.10% Flash |
+| Usart3Bringup | 89,876 / 16,288 B | PASS, diagnostics ON |
+
+Host CTest passed 16/16, Stage 5B Python passed 29/29, and Stage 5C Python
+passed 12/12 after each diagnostic correction.
+
+### USB-TTL validation
+
+COM20 was connected as 3.3 V USB-TTL with TX to PC11, RX to PC10, and common
+ground. The STM32 USART3 register divisor was `0x0138` at a 36 MHz APB1 clock,
+corresponding to 115200 baud. AFIO MAPR was `0x02000010`, confirming USART3
+partial remap while retaining SWD. PC10 was alternate-function push-pull and
+PC11 was input with no internal pull.
+
+| Test | Result | Evidence |
+|---|---|---|
+| PC to STM32 fixed frame | PASS | exact `55 AA 00 FF 01 03 12 34`, one IDLE, errors 0 |
+| STM32 to PC fixed frame | PASS | exact `A5 5A 00 FF 81 03 56 78`, DMA complete and TC |
+| RX 1/8/64/256 bytes | PASS | exact lengths, content snapshot and checksum |
+| TX 1/8/64/256 bytes | PASS | complete byte comparison, mismatch index -1 |
+| TX BUSY semantics | PASS | first 256-byte request OK, overlapping request BUSY |
+| Circular wrap | PASS | 1,553 bytes, checksum `0x0002FD88`, half/full 3/3, position 17 |
+| 100 IDLE frames | PASS | 100 frames, 800 bytes, 100 IDLE events |
+| RX 1000 x 8 | PASS | 8,000 bytes, checksum `0x00006D60`, all errors 0 |
+| RX 500 x 64 | PASS | 32,000 bytes, checksum `0x000F6180`, all errors 0 |
+| RX 100 x 256 | PASS | 25,600 bytes, checksum `0x0031CE00`, all errors 0 |
+| TX 1000 x 8 | PASS | 8,000/8,000 bytes, no mismatch |
+| TX 500 x 64 | PASS | 32,000/32,000 bytes, no mismatch |
+| TX 100 x 256 | PASS | 25,600/25,600 bytes, no mismatch |
+| 60 s continuous RX | PASS | 691,968 bytes and checksum `0x05423880` match |
+
+The continuous stream produced 1,352 RX half and 1,351 RX full callbacks,
+ended at DMA position 256, and had zero stream overwrite, UART error, DMA
+error, or IDLE queue overflow. Long IDLE-delimited snapshots are explicitly
+marked capture-truncated while their complete byte count and checksum remain
+verified.
+
+### CH579 direct validation
+
+CH579 PB7/TXD0 was connected to PC11, PB4/RXD0 to PC10, with common ground.
+The connected CH579 ran its previously validated Stage 3B raw TCP-to-UART0
+bridge at `192.168.1.100:5000`; COM3/UART1 at 115200 8N1 supplied internal
+statistics. This mode forwards raw bytes and does not run the Stage 4A Modbus
+master during the test.
+
+| Direction/test | Result | Evidence |
+|---|---|---|
+| CH579 to STM32 fixed frame | PASS | exact 8-byte RX snapshot and checksum |
+| STM32 to CH579 fixed frame | PASS | exact 8-byte TCP return |
+| CH579 to STM32 1000 x 8 | PASS | 8,000 bytes/checksum match |
+| CH579 to STM32 500 x 64 | PASS | 32,000 bytes/checksum match |
+| CH579 to STM32 100 x 256 | PASS | 25,600 bytes/checksum match |
+| STM32 to CH579 1000 x 8 | PASS | 8,000/8,000 bytes, no mismatch |
+| STM32 to CH579 500 x 64 | PASS | 32,000/32,000 bytes, no mismatch |
+| STM32 to CH579 100 x 256 | PASS | 25,600/25,600 bytes, no mismatch |
+| 600 s bidirectional soak | PASS | 600/600 cycles, 19,200/4,800 bytes, errors 0 |
+
+The final 600-second soak checksum was `0x00217D50`. STM32 soak
+request/accepted counts were 600/600, busy/error counts were zero, and TX DMA
+complete/TC counts were 600/600. CH579 reported zero TCP/UART buffer overflow,
+TCP send error, and UART line error.
+
+### USART2 concurrent regression
+
+USART3/CH579 raw traffic continued for 630 seconds around each 600-second
+USART2 window.
+
+| Interface | FC03 result | Latency | Concurrent USART3 |
+|---|---|---|---|
+| RS232 COM9 | 2,150/2,150 PASS | mean 59.851 ms, P99 61.657 ms | 630 cycles, errors 0 |
+| RS485 COM10 | 2,137/2,137 PASS | mean 60.079 ms, P99 61.973 ms | 630 cycles, errors 0 |
+
+Both runs had zero timeout, CRC error, Modbus exception, retry recovery, and
+retry failure. USART2 SWD statistics after the runs showed zero DMA error,
+DMA overrun, IDLE queue overflow, UART parity/frame/noise/overrun error, TX DMA
+error, and TX timeout. One supported DMA wrap-race recovery occurred without
+transport or protocol loss. After RS485, the TX controller was IDLE, its last
+error was NONE, and PA1 DE was released low.
+
+Evidence summaries are under:
+
+- `Results/stage5i_hw/20260828_rs232_concurrent.json` and `.csv`
+- `Results/stage5i_hw/20260828_rs485_concurrent.json` and `.csv`
+- `Results/stage5i_hw/20260828_ch579_final_10min_uart1.log`
+- `Results/stage5i_hw/20260828_rs232_concurrent_uart1.log`
+- `Results/stage5i_hw/20260828_rs485_concurrent_uart1.log`
+- `Results/stage5i_hw/20260828_usart3_soak_flash.json` and `.log`
+
+### Remaining gate
+
+W02 was subsequently returned to advertising state as `W02_00DB8C`, address
+`C8:46:82:00:DB:8C`. Read-only DEVICE_INFO and GET_CONFIG passed and reported
+firmware `0x050A`, Schema V2, and Modbus map `0x0104`.
+
+Two complete three-interface attempts were made with USART3/CH579 raw traffic,
+COM5 RS485 FC03 traffic, and BLE telemetry/read-only commands. Neither attempt
+met the strict zero-error gate:
+
+| Attempt | USART3 | RS485 | BLE |
+|---|---|---|---|
+| 1 | 630 cycles, errors 0 | 442/443 success; one storage-state timeout | 4,211 frames; 3 sequence gaps; 24/24 commands |
+| 2 | 630 cycles, errors 0 | 482/483 success; one realtime timeout | 4,210 frames; 5 sequence gaps; 24/24 commands |
+
+Both BLE attempts had zero disconnect, command timeout/retry/result error,
+transaction mismatch, CRC error, duplicate, and partial byte. Attempt 1 had
+165 stream-resync bytes for three missing FAST sequences; attempt 2 had 275
+resync bytes for five missing FAST sequences. The ratio of 55 discarded bytes
+per missing 56-byte FAST frame is consistent with one missing byte followed by
+resynchronization across the remainder of that frame.
+
+MCU evidence does not show a firmware queue or UART fault. After attempt 2 the
+BLE scheduler reported 5,646 generated and 5,646 sent frames, with every queue,
+transport-not-ready, encode, FAST, SLOW, and CHECKWEIGH drop counter at zero.
+BLE transport reported zero RX overflow, UART error, TX error, priority queue
+full, and transport reset. The missing bytes therefore occur after the STM32
+USART1 transport boundary, in the W02/radio/Windows BLE path.
+
+The two RS485 timeouts also occurred after hundreds of clean requests. MCU
+statistics showed every request reached USART2 as a complete 8-byte frame, but
+one fewer response completed in each failed run. USART2 DMA error, overrun,
+IDLE queue overflow, UART parity/frame/noise/overrun error, TX DMA error, and TX
+timeout were all zero; the RS485 controller ended IDLE with last error NONE.
+Standalone 600-second RS485 concurrency previously passed 2,137/2,137, so the
+COM5 USB-RS485/host path remains intermittent under the final combined setup.
+
+Failed-run evidence is under:
+
+- `Results/stage5i_hw/20260828_final_threeway_rs485.json`
+- `Results/stage5i_hw/20260828_final_threeway_ble/summary.json`
+- `Results/stage5i_hw/20260828_final_threeway_rerun_rs485.json`
+- `Results/stage5i_hw/20260828_final_threeway_rerun_ble/summary.json`
+
+The final gate requires a clean 600-second rerun after the external BLE and
+USB-RS485 links are corrected or replaced. Repeating unchanged hardware while
+allowing retries would hide the observed failures and is not accepted.
+
+USART3 FC03, FC06, and FC16 remain **NOT RUN - outside Stage 5I-A-HW scope**.
+Until the strict three-interface concurrency gate passes, the conclusion remains:
+**Stage 5I-A CODE COMPLETE; hardware validation pending**.
