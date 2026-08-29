@@ -1048,3 +1048,30 @@ alone is the cause. Signal integrity, ground/contact quality, capacitor
 placement/value and other board-level differences remain open; a high-
 impedance USART1_TX capture and simultaneous W02 rail measurement are still
 the next discriminating tests.
+
+### Old-board USART1 series resistor 20-ohm rerun
+
+The old-board STM32-to-W02 series resistor was changed from 100 ohms to 20
+ohms, and the additional power-filter capacitor from the preceding experiment
+was removed. The same `W02_008324` advertised at
+`C8:46:82:00:83:24` with RSSI approximately -22 dBm. No CH579 or USART2 load
+was applied.
+
+The 604.11-second standalone window received 4,197 frames: 2,997 FAST, 600
+SLOW and 600 CHECKWEIGH. It reported **3 sequence gaps and 165 parser-resync
+bytes**. CRC errors, duplicates, partial bytes, timestamp anomalies and
+disconnects were zero.
+
+The SWD snapshot under
+`Results/stage5ifinal_oldboard_neww02_20r_swd/swd_diagnostics.json` shows BLE
+generated/sent `6373/6373`, with zero BLE queue drops, transport drops, encode
+errors, UART errors, TX errors, transport resets, event-queue drops and active
+MCU faults. The PC summary is under
+`Results/stage5ifinal_oldboard_neww02_20r_window/telemetry_summary.json`.
+
+This is one fewer missing FAST frame than the immediately preceding 100-ohm
+cross-swap and capacitor runs (4 gaps / 220 resync), but it remains within the
+old-board observed range of 2-4 gaps per 600-second window. A single run does
+not establish a statistically meaningful improvement, and 20 ohms does not
+meet the zero-gap requirement. The resistor change is therefore classified as
+**not validated as a fix**; signal/power capture remains required.
