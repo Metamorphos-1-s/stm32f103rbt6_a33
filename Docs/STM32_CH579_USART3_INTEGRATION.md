@@ -1034,12 +1034,14 @@ test condition.
 
 Evidence is under
 `Results/stage5ifinal_oldboard_neww02_cap_window/telemetry_summary.json`.
-The post-window SWD snapshot is **NOT READ**: two non-resetting Hot Plug
-attempts, including a 1 MHz SWD retry, failed with `Unable to get core ID`.
-The target was deliberately not reset because that would erase the accumulated
-window counters. The earlier pre-capacitor cross-swap SWD result remains the
-valid internal reference (`5853/5853`, zero BLE queue/UART/TX errors), but it
-is not substituted for this run.
+Two initial non-resetting Hot Plug attempts failed because SWD was not
+physically connected. After reconnecting ST-Link, the original live target was
+read without reset. The resulting snapshot is under
+`Results/stage5ifinal_oldboard_neww02_cap_swd/swd_diagnostics.json`: BLE
+generated/sent `6708/6708`, with zero BLE queue drops, transport drops, encode
+errors, UART errors, TX errors, transport resets, event-queue drops and active
+MCU faults. USART3 receive/framer errors are from the unconnected, floating
+CH579/PC11 input and are outside this BLE-only result.
 
 The unchanged result weakens the hypothesis that the addressed supply noise
 alone is the cause. Signal integrity, ground/contact quality, capacitor
