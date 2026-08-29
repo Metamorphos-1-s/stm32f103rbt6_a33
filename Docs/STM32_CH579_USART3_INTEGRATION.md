@@ -1017,3 +1017,32 @@ the old board USART1-to-W02 signal path, connector/contact quality, W02 power
 integrity or local electrical environment. A high-impedance USART1_TX capture
 and power-rail measurement are still required before assigning the exact
 component-level root cause.
+
+### Old-board power-filter capacitor rerun
+
+A power-filter capacitor was added to the old-board W02 supply path and the
+same `W02_008324` standalone test was repeated. The W02 advertised at
+`C8:46:82:00:83:24` with RSSI approximately -24 dBm. No CH579 or USART2 load
+was applied.
+
+The 603.91-second window received 4,196 frames: 2,996 FAST, 600 SLOW and 600
+CHECKWEIGH. It reported **4 sequence gaps and 220 parser-resync bytes**. CRC
+errors, duplicates, partial bytes, timestamp anomalies and disconnects were
+zero. This exactly matches the pre-capacitor cross-swap result (4 gaps / 220
+resync), so the added filtering produced no measurable improvement in this
+test condition.
+
+Evidence is under
+`Results/stage5ifinal_oldboard_neww02_cap_window/telemetry_summary.json`.
+The post-window SWD snapshot is **NOT READ**: two non-resetting Hot Plug
+attempts, including a 1 MHz SWD retry, failed with `Unable to get core ID`.
+The target was deliberately not reset because that would erase the accumulated
+window counters. The earlier pre-capacitor cross-swap SWD result remains the
+valid internal reference (`5853/5853`, zero BLE queue/UART/TX errors), but it
+is not substituted for this run.
+
+The unchanged result weakens the hypothesis that the addressed supply noise
+alone is the cause. Signal integrity, ground/contact quality, capacitor
+placement/value and other board-level differences remain open; a high-
+impedance USART1_TX capture and simultaneous W02 rail measurement are still
+the next discriminating tests.
