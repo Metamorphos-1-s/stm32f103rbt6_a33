@@ -984,3 +984,36 @@ independent old-board standalone windows the external result is now 2 gaps /
 110 resync and 3 gaps / 165 resync, while both MCU BLE snapshots remain
 internally complete. This confirms the symptom is reproducible without
 three-interface load.
+
+### W02 cross-swap: new module on old board
+
+The W02 that passed the new-board zero-gap window was moved to the old board.
+Advertising confirmed `W02_008324`, address `C8:46:82:00:83:24` (RSSI
+approximately -22 dBm). The test again excluded CH579 and USART2 traffic.
+
+The 604.88-second standalone window produced:
+
+| Metric | Result |
+|---|---:|
+| total frames | 4,197 |
+| FAST / SLOW / CHECKWEIGH | 2,997 / 600 / 600 |
+| CRC errors | 0 |
+| sequence gaps | **4** |
+| parser resync | **220** |
+| duplicates / partial bytes / disconnects | 0 / 0 / 0 |
+
+The SWD snapshot remained internally clean: BLE generated/sent `5853/5853`,
+all BLE queue/transport/encode/UART/TX errors zero, and no event-queue drops or
+active MCU faults. Evidence is under
+`Results/stage5ifinal_oldboard_neww02_window/telemetry_summary.json` and
+`Results/stage5ifinal_oldboard_neww02_swd/swd_diagnostics.json`.
+
+This cross-swap is strong differential evidence. `W02_008324` passed on the
+new board with zero gap/resync but failed on the old board with 4 gaps / 220
+resync. The old board also failed twice with its original `W02_00DB8C` (2/110
+and 3/165). The symptom therefore follows the old board/board-level physical
+environment rather than one specific W02 module. The remaining candidates are
+the old board USART1-to-W02 signal path, connector/contact quality, W02 power
+integrity or local electrical environment. A high-impedance USART1_TX capture
+and power-rail measurement are still required before assigning the exact
+component-level root cause.
