@@ -1139,3 +1139,20 @@ Final target counters after Gate A:
 RS232 physical validation and both Modbus sides of Gate A therefore passed.
 Gate A as a whole failed only the unchanged strict BLE zero-gap requirement.
 The external BLE waiver remains open.
+
+## Revised BLE monitoring acceptance for Stage 5I-C
+
+BLE is a best-effort auxiliary monitoring interface. BLE telemetry is not
+guaranteed to be gap-free. BLE is not used for legal metrology records,
+closed-loop control, critical alarms, or guaranteed event delivery.
+
+Historical evidence remains unchanged: `W02_00DB8C` produced 3 sequence gaps
+and 165 resync bytes in a representative window; `W02_008324` produced 2 gaps
+and 110 resync bytes during Gate A. In both cases STM32 generated/sent counts
+matched and internal queue, transport and UART errors were zero. These results
+are not rewritten as zero-gap passes.
+
+For Stage 5I-C, BLE remains enabled as an auxiliary concurrency monitor. BLE
+gap/resync counts are recorded but do not block the Modbus TCP gateway stage.
+Any new MCU-internal BLE drop, UART error, deadlock, reset or scheduling fault
+remains a blocking regression.
