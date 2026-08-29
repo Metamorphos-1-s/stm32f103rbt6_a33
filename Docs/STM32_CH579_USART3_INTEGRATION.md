@@ -1075,3 +1075,67 @@ old-board observed range of 2-4 gaps per 600-second window. A single run does
 not establish a statistically meaningful improvement, and 20 ohms does not
 meet the zero-gap requirement. The resistor change is therefore classified as
 **not validated as a fix**; signal/power capture remains required.
+
+## Stage 5I-B-Final RS232 and Gate A - 2026-08-29
+
+COM5 was identified as the newly connected USB-RS232 adapter. Windows exposed
+it as CH340, VID/PID `1A86:7523`, at 115200 8N1. COM3 was independently
+confirmed as the CH579 UART1 log port. The RS232-side loopback passed exact
+byte comparison for `00`, `FF`, a 256-byte 0..255 sequence and a deterministic
+1024-byte sequence.
+
+After removing the loopback and connecting the instrument RS232 interface,
+the independent protocol results were:
+
+| Test | Result |
+|---|---|
+| FC03 single/probe | PASS; firmware 0x050A, map 0x0104, Schema V2 |
+| FC03 continuous | PASS, 1000/1000, zero timeout/bad frame |
+| FC03 latency | mean 7.023 ms, P95 7.801 ms, P99 8.291 ms |
+| FC06 0x017C | PASS; 0->1 readback and restored to 0; exact echo/CRC |
+| FC16 0x0140..0x0141 | PASS; [0,1]->[1,2] and restored; exact acknowledgement/CRC |
+| Exception 01/02/03 | PASS; complete response and CRC |
+| CRC/non-local silence | PASS |
+| Recovery after malformed input | PASS |
+
+An initial SWD snapshot included line errors accumulated while changing the
+loopback and instrument wiring, so it was retained but not used as the formal
+zero-error window. The target was reset, then both RS232 and CH579 FC03 probes
+passed before Gate A began.
+
+### Gate A result
+
+Gate A ran with a 610-second BLE window and 600-second overlapping Modbus
+workers. USART3/CH579 used an 800 ms period; USART2/RS232 used 1200 ms. The
+same BLE connection distributed 24 read-only commands across the window.
+
+| Interface | Result |
+|---|---|
+| USART3/CH579 | 750/750, timeout/bad/error 0 |
+| USART2/RS232 | 500/500, timeout/bad/error 0 |
+| BLE commands | 24/24 OK (DEVICE_INFO/GET_CONFIG/CAL_STATUS) |
+| BLE telemetry | 4,269 frames: 3,049 FAST, 610 SLOW, 610 CHECKWEIGH |
+| BLE CRC/duplicate/partial/disconnect | 0/0/0/0 |
+| BLE sequence gap / resync | **2 / 110** |
+
+The first Gate tool summary incorrectly counted legal command-response frames
+as telemetry resync. `ble_gate.py` was corrected to reassemble the shared byte
+stream first and route complete frames by message type. Reprocessing the
+bounded raw notification log produced the values above: 24 command responses,
+2 genuine FAST gaps and 110 genuine resync bytes. Evidence is under
+`Results/stage5ibfinal_gate_a_ble_final/reparsed_summary.json`,
+`Results/stage5ibfinal_gate_a_modbus_summary.json` and
+`Results/stage5ibfinal_gate_a_swd/swd_diagnostics.json`.
+
+Final target counters after Gate A:
+
+* USART2 valid/complete `501/501`; USART3 valid/complete `751/751`.
+* Both Modbus ports: DMA, UART, queue, TX, Framer and timer-race errors zero.
+* BLE generated/sent `7617/7617`; all BLE queue/transport/encode/UART/TX
+  errors zero.
+* Event queue drops and MCU fault mask zero; both servers and RS485 controller
+  ended IDLE.
+
+RS232 physical validation and both Modbus sides of Gate A therefore passed.
+Gate A as a whole failed only the unchanged strict BLE zero-gap requirement.
+The external BLE waiver remains open.
