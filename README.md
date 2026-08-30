@@ -18,6 +18,8 @@ Stage 1; protocol tests consume the JSON contracts under `contracts/`.
 ## Verification
 
 Run TypeScript tests with Node 20+ after installing dependencies in
-`apps/wechat-mini` (`npm ci && npm test`). Build the PC solution with .NET 10
-on Windows (`dotnet test apps/pc/A33.Instrument.sln`). No hardware tests are
-claimed by Stage 0.
+`apps/wechat-mini` (`npm ci && npm test`). Build and test the PC solution with
+.NET 10 on Windows (`dotnet build apps/pc/A33.Instrument.sln` and
+`dotnet test apps/pc/tests/A33.Instrument.Protocol.Tests`). The executed
+Stage 0-V gate is recorded in `docs/STAGE0_TOOLCHAIN_VALIDATION.md`; hardware
+tests remain outside Stage 0.

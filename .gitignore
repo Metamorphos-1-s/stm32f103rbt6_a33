@@ -6,3 +6,4 @@
 *.suo
 *.log
 apps/wechat-mini/private.config.json
+apps/wechat-mini/project.private.config.json

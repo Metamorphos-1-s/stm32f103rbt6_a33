@@ -18,3 +18,7 @@ Configuration changes are read back; SAVE waits for an explicit completion.
 
 Stage 1 adds production UI and platform transports. Stage 2 adds diagnostics,
 configuration and calibration workflows after hardware validation.
+
+The Stage 0-V build and test evidence is maintained in
+`docs/STAGE0_TOOLCHAIN_VALIDATION.md`; it intentionally does not claim BLE or
+Modbus hardware access.
