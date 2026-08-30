@@ -1,0 +1,8 @@
+**/node_modules/
+**/dist/
+**/bin/
+**/obj/
+*.user
+*.suo
+*.log
+apps/wechat-mini/private.config.json

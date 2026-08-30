@@ -1,0 +1,1 @@
+{"name":"a33-wechat-client","private":true,"scripts":{"test":"tsc -p tsconfig.json && node --test dist/tests/**/*.test.js","build":"tsc -p tsconfig.json"},"devDependencies":{"@types/node":"^22.0.0","typescript":"^5.6.0"}}

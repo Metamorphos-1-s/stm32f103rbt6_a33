@@ -1,0 +1,2 @@
+import { DeviceInfo, WeightSnapshot, SlowStatus, CheckweighStatus, ActiveConfig, ConnectionState, ProtocolDiagnostics } from '../domain/device-model';
+export class DeviceStore { state:ConnectionState='CLOSED'; deviceInfo?:DeviceInfo; weight?:WeightSnapshot; slow?:SlowStatus; checkweigh?:CheckweighStatus; activeConfig?:ActiveConfig; diagnostics:ProtocolDiagnostics={sequenceGaps:0,duplicates:0,crcErrors:0,resyncBytes:0}; setConnectionState(s:ConnectionState){this.state=s} updateDiagnostics(d:ProtocolDiagnostics){this.diagnostics={...d}} }

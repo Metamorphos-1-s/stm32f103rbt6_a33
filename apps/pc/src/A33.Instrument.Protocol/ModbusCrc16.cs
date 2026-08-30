@@ -1,0 +1,2 @@
+namespace A33.Instrument.Protocol;
+public static class ModbusCrc16 { public static ushort Compute(ReadOnlySpan<byte> data){ushort crc=0xffff;foreach(var b in data){crc^=b;for(var i=0;i<8;i++)crc=(ushort)((crc&1)!=0?(crc>>1)^0xa001:crc>>1);}return crc;} public static bool Verify(ReadOnlySpan<byte> frame){return frame.Length>=3 && Compute(frame[..^2])==(ushort)(frame[^2]|frame[^1]<<8);} public static void Append(Span<byte> frame){var c=Compute(frame[..^2]);frame[^2]=(byte)c;frame[^1]=(byte)(c>>8);} }

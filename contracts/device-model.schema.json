@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "A33 device model",
+  "type": "object",
+  "properties": {
+    "deviceInfo": {"type":"object"},
+    "weight": {"type":"object"},
+    "slowStatus": {"type":"object"},
+    "checkweigh": {"type":"object"},
+    "activeConfig": {"type":"object"},
+    "communication": {"type":"object"},
+    "connectionState": {"enum":["CLOSED","OPENING_ADAPTER","SCANNING","CONNECTING","DISCOVERING","SUBSCRIBING","READY","RECONNECT_WAIT","ERROR","INCOMPATIBLE"]},
+    "diagnostics": {"type":"object"}
+  },
+  "required": ["connectionState"]
+}

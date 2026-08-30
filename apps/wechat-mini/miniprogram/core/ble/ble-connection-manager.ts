@@ -1,0 +1,10 @@
+import { BleAdapter, BleDevice, UUID } from './ble-adapter'; import { BleStreamParser } from './ble-stream-parser'; import { decodeCommandResponse, encodeCommandRequest } from '../protocol/ble-codec';
+export type ConnectionState='CLOSED'|'OPENING_ADAPTER'|'SCANNING'|'CONNECTING'|'DISCOVERING'|'SUBSCRIBING'|'READY'|'RECONNECT_WAIT'|'ERROR'|'INCOMPATIBLE';
+export class BleConnectionManager { state:ConnectionState='CLOSED'; devices:BleDevice[]=[]; readonly parser=new BleStreamParser(); private busy=false; private selected?:BleDevice;
+ constructor(private readonly adapter:BleAdapter,private readonly onState:(s:ConnectionState)=>void=()=>{},private readonly validateDevice?:()=>Promise<boolean>){}
+ private set(s:ConnectionState){this.state=s;this.onState(s)}
+ async scan(){if(this.busy)return;this.busy=true;try{this.set('OPENING_ADAPTER');await this.adapter.open();this.set('SCANNING');this.devices=[];await this.adapter.startDiscovery(d=>{if(!this.devices.some(x=>x.deviceId===d.deviceId))this.devices.push(d)});}catch{this.set('ERROR');}finally{this.busy=false;}}
+ async connect(device:BleDevice){if(this.busy||this.state==='READY')return;this.busy=true;this.selected=device;try{this.set('CONNECTING');await this.adapter.connect(device.deviceId);this.set('DISCOVERING');const services=await this.adapter.discoverServices(device.deviceId);if(!services.some(s=>s.toLowerCase().includes('ffe0')))throw new Error('FFE0 not found');this.set('SUBSCRIBING');await this.adapter.subscribe(device.deviceId,UUID.service,UUID.notify,d=>this.onData(d));if(this.validateDevice && !(await this.validateDevice())){this.set('INCOMPATIBLE');return;}this.set('READY');}catch(e){this.set('ERROR');}finally{this.busy=false;}}
+ private onData(data:Uint8Array){this.parser.push(data)}
+ async close(){if(this.busy)return;this.busy=true;try{await this.adapter.stopDiscovery();if(this.selected)await this.adapter.disconnect(this.selected.deviceId);await this.adapter.close();}finally{this.selected=undefined;this.set('CLOSED');this.busy=false;}}
+}

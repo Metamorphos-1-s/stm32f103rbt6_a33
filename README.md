@@ -1,0 +1,23 @@
+# A33 Instrument Clients
+
+Client Stage 0 contracts and protocol libraries for the A33 weighing instrument.
+The STM32 protocol source of truth is the sibling repository
+`stm32f103rbt6_a33` at commit `9e242c7649ad79ac4c3bae347b3259847f4bc09e`.
+
+This repository contains a native TypeScript WeChat Mini Program core and a
+.NET 10/WPF PC skeleton. Hardware communication is intentionally deferred to
+Stage 1; protocol tests consume the JSON contracts under `contracts/`.
+
+## Layout
+
+- `contracts/`: machine-readable BLE V1 and Modbus map 0x0104 contracts.
+- `apps/wechat-mini/`: TypeScript BLE adapter, stream parser and domain model.
+- `apps/pc/`: C# Modbus codec, transport and WPF skeleton.
+- `docs/`: architecture and firmware traceability.
+
+## Verification
+
+Run TypeScript tests with Node 20+ after installing dependencies in
+`apps/wechat-mini` (`npm ci && npm test`). Build the PC solution with .NET 10
+on Windows (`dotnet test apps/pc/A33.Instrument.sln`). No hardware tests are
+claimed by Stage 0.
