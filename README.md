@@ -23,3 +23,9 @@ Run TypeScript tests with Node 20+ after installing dependencies in
 `dotnet test apps/pc/tests/A33.Instrument.Protocol.Tests`). The executed
 Stage 0-V gate is recorded in `docs/STAGE0_TOOLCHAIN_VALIDATION.md`; hardware
 tests remain outside Stage 0.
+
+The WeChat project uses the validated test AppID in
+`apps/wechat-mini/project.config.json`. The DevTools simulator may emit
+non-blocking preload advisories for its own `WAAutoService.js` and
+`WAServiceMainContext.js` resources; these are documented in the validation
+record and are not application errors.
