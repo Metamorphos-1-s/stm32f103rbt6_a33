@@ -75,7 +75,7 @@ calibration or factory-reset path is exposed.
 
 ## Verification
 
-Automated TypeScript gate: 19/19 tests passed. It includes Stage 0 CRC,
+Automated TypeScript gate: 21/21 tests passed. It includes Stage 0 CRC,
 golden-frame splitting and signed-int64 coverage plus Stage 1 Mock adapter,
 state-machine, old-callback isolation, write queue, read-only command,
 byte-identical retry, stale-data and bounded-diagnostic tests.
@@ -110,13 +110,13 @@ least 600 seconds are captured.
 | --- | --- | --- |
 | Xiaomi 15 system information | PARTIAL | Model known; OS/HyperOS/WeChat versions pending in `android_device_info.json` |
 | WeChat real-device debug startup | PASS | READY screenshot `android_ready_diagnostics.jpg` |
-| Bluetooth-off and permission paths | NOT RUN | `android_basic_gate.json` |
+| Bluetooth-off and permission paths | PARTIAL | Off prompt PASS; restore failed on original build; permission path unreported |
 | Scan, deduplication and W02 connection | PARTIAL | W02 scan/connection PASS; deduplication unreported |
 | FFE0 / FFE1 Notify / FFE2 Write | PASS | All three found in screenshot and copied diagnostics |
 | GET_DEVICE_INFO 5 times | PASS | 8/8 success, 0 timeout and 0 mismatch |
 | GET_ACTIVE_CONFIG 5 times | PASS | 8/8 success, 0 timeout and 0 mismatch |
 | FAST / SLOW / CHECKWEIGH display | PARTIAL | 3777 / 665 / 664 frames received; panel comparison unreported |
-| Intentional and unexpected disconnect recovery | NOT RUN | `android_basic_gate.json` |
+| Intentional and unexpected disconnect recovery | PARTIAL | Six intentional cycles PASS; Bluetooth restore issue fixed in `47824bc`, retest required |
 | gap/resync recovery | PASS | Gap 2, duplicate 0, CRC 0, resync 0; session remained READY |
 | 600-second stability window | METRICS PASS | 799.504 s, READY, CRC 0, max stale 416 ms, no unexpected disconnect; app error count unreported |
 | Android conclusion | PARTIAL | Stability metrics pass; permission/disconnect gates and device system information remain open |

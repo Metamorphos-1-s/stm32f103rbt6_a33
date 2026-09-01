@@ -45,3 +45,7 @@ Xiaomi 15 Android validation is in progress. The 799.504-second stability
 window met its frame, command, CRC, disconnect and stale-data metrics. The
 permission/disconnect functional gates and phone system information remain
 open. iOS remains not run.
+
+The first Xiaomi 15 Bluetooth-off recovery test exposed an adapter-state
+recovery defect. Commit `47824bc` fixes adapter reopen, stale-error clearing
+and listener de-duplication; the phone retest remains pending.

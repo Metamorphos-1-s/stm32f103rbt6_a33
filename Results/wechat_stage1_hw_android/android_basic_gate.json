@@ -1,6 +1,6 @@
 {
   "status": "PARTIAL",
-  "bluetooth_off": "NOT_RUN",
+  "bluetooth_off": "PASS_PROMPT",
   "permission_denied": "NOT_RUN",
   "permission_recovery": "NOT_RUN",
   "scan_w02": "PASS",
@@ -16,14 +16,17 @@
   "fast_display": "PASS_DATA_RECEIVED",
   "slow_display": "PASS_DATA_RECEIVED",
   "checkweigh_display": "PASS_DATA_RECEIVED",
-  "intentional_disconnect_reconnect": "NOT_RUN",
-  "unexpected_disconnect_recovery": "NOT_RUN",
+  "intentional_disconnect_reconnect": "PASS_6_CYCLES",
+  "unexpected_disconnect_recovery": "FAIL_FIXED_RETEST_REQUIRED",
   "notes": [
     "READY screenshot captured at approximately 2026-09-01 19:19 CST.",
     "Protocol 1, firmware 0x050A, schema 2 and register map 0x0104 matched.",
     "Two sequence gaps were recorded; parsing recovered with state still READY, CRC 0 and resync 0.",
     "The read-only refresh button completed 8/8 GET_DEVICE_INFO and 8/8 GET_ACTIVE_CONFIG requests with zero timeout or mismatch.",
     "Missing visual feedback on the refresh button was fixed in commit dbdc053; protocol execution was successful.",
+    "Six intentional disconnect and device-list reconnect cycles completed after the stability window.",
+    "Turning phone Bluetooth off correctly entered ADAPTER_UNAVAILABLE, but the original build could not restart scanning after Bluetooth was restored and retained the old error after reconnect.",
+    "Adapter recovery, error clearing and listener de-duplication were fixed in commit 47824bc; Xiaomi 15 retest is required.",
     "Permission, Bluetooth-off, disconnect and display comparison checks remain unreported."
   ]
 }
