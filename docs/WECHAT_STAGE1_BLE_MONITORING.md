@@ -99,6 +99,28 @@ application warnings.
 Hardware results must be recorded without removing gaps, resync events or
 failed attempts. Simulator results are not hardware evidence.
 
+### Xiaomi 15 Android acceptance
+
+The controlled evidence files are under
+`Results/wechat_stage1_hw_android/`. They remain `NOT_RUN` until phone system
+information, the basic gate and a complete diagnostic summary from a run of at
+least 600 seconds are captured.
+
+| Item | Result | Evidence |
+| --- | --- | --- |
+| Xiaomi 15 system information | NOT RUN | `android_device_info.json` |
+| WeChat real-device debug startup | NOT RUN | `android_basic_gate.json` |
+| Bluetooth-off and permission paths | NOT RUN | `android_basic_gate.json` |
+| Scan, deduplication and W02 connection | NOT RUN | `android_basic_gate.json` |
+| FFE0 / FFE1 Notify / FFE2 Write | NOT RUN | `android_basic_gate.json` |
+| GET_DEVICE_INFO 5 times | NOT RUN | `android_basic_gate.json` |
+| GET_ACTIVE_CONFIG 5 times | NOT RUN | `android_basic_gate.json` |
+| FAST / SLOW / CHECKWEIGH display | NOT RUN | `android_basic_gate.json` |
+| Intentional and unexpected disconnect recovery | NOT RUN | `android_basic_gate.json` |
+| 600-second stability window | NOT RUN | `android_600s_summary.json` |
+| Android conclusion | NOT RUN | Hardware interaction pending |
+| iOS | NOT RUN | No iPhone hardware available |
+
 ## Known limitations and security
 
 The MCU cannot provide a reliable BLE disconnect indication through W02, and
@@ -106,8 +128,8 @@ mobile platforms may use different notification fragmentation and opaque
 device identifiers. Reconnect is bounded to three attempts. BLE remains an
 auxiliary monitoring interface.
 
-`COMPROMISED — rotation pending`
+`ROTATED — previous exposed secret invalidated`
 
-The compromised AppSecret must be rotated and the previous value invalidated
-before preview distribution, upload, release or use of any server API. No
-AppSecret, token, cloud API, upload or release operation is present here.
+Rotation was confirmed on 2026-09-01. The new secret is not stored in source
+code or Git. No AppSecret, token, cloud API, upload or release operation is
+present here.

@@ -37,3 +37,6 @@ FAST/SLOW/CHECKWEIGH monitoring and bounded diagnostics. Only
 GET_DEVICE_INFO and GET_ACTIVE_CONFIG are permitted on FFE2. Automated tests
 and pending mobile hardware gates are documented in
 `docs/WECHAT_STAGE1_BLE_MONITORING.md`.
+
+Security status: the previously exposed AppSecret was rotated on 2026-09-01;
+the replacement secret is not stored in this repository.

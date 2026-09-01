@@ -8,4 +8,5 @@ export class BleStreamParser {
     return result;
   }
   get bufferedBytes(){return this.buffer.length}
+  resetStatistics(){this.stats.crcErrors=0;this.stats.resyncBytes=0;this.stats.sequenceGaps=0;this.stats.duplicates=0;this.stats.frames=0;}
 }

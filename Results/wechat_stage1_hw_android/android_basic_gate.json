@@ -1,0 +1,22 @@
+{
+  "status": "NOT_RUN",
+  "bluetooth_off": "NOT_RUN",
+  "permission_denied": "NOT_RUN",
+  "permission_recovery": "NOT_RUN",
+  "scan_w02": "NOT_RUN",
+  "device_deduplication": "NOT_RUN",
+  "connect_w02": "NOT_RUN",
+  "ffe0_found": "NOT_RUN",
+  "ffe1_notify": "NOT_RUN",
+  "ffe2_write": "NOT_RUN",
+  "device_info_success": 0,
+  "device_info_attempts": 0,
+  "active_config_success": 0,
+  "active_config_attempts": 0,
+  "fast_display": "NOT_RUN",
+  "slow_display": "NOT_RUN",
+  "checkweigh_display": "NOT_RUN",
+  "intentional_disconnect_reconnect": "NOT_RUN",
+  "unexpected_disconnect_recovery": "NOT_RUN",
+  "notes": []
+}
