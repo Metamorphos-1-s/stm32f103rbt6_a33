@@ -44,12 +44,17 @@ the replacement secret is not stored in this repository.
 Xiaomi 15 Android validation is in progress. A post-fix run exceeded the
 600-second gate by fixed-rate telemetry evidence and passed frame, command,
 CRC, disconnect, stale-data and application-error criteria. Permission and
-Bluetooth recovery gates, panel comparison and phone system information remain
-open. iOS remains not run.
+Bluetooth recovery, device deduplication and instrument-panel comparison now
+pass. The permission-denial first-click fix needs one retest; Android version
+and RF environment metadata remain open. iOS remains not run.
 
 The first Xiaomi 15 Bluetooth-off recovery test exposed an adapter-state
 recovery defect. Commit `47824bc` fixes adapter reopen, stale-error clearing
-and listener de-duplication; the phone retest remains pending.
+and listener de-duplication; its phone retest passed.
 
 Commit `b65d245` removes BigInt exponentiation that the WeChat runtime lowered
 to unsupported `Math.pow`; the post-fix monitor stability retest passed.
+
+Commit `d8ba694` ensures every scan first reopens the adapter, avoiding a
+transient `not init` error when permission is revoked. Its first-click denial
+path remains to be confirmed on the Xiaomi 15.

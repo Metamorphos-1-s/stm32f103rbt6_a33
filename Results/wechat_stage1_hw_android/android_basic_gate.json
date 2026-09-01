@@ -1,10 +1,10 @@
 {
   "status": "PARTIAL",
   "bluetooth_off": "PASS_PROMPT",
-  "permission_denied": "NOT_RUN",
-  "permission_recovery": "NOT_RUN",
+  "permission_denied": "PASS_PROMPT_NO_CRASH_ONE_CLICK_FIX_RETEST_REQUIRED",
+  "permission_recovery": "PASS",
   "scan_w02": "PASS",
-  "device_deduplication": "NOT_RUN",
+  "device_deduplication": "PASS",
   "connect_w02": "PASS",
   "ffe0_found": "PASS",
   "ffe1_notify": "PASS",
@@ -13,11 +13,12 @@
   "device_info_attempts": 8,
   "active_config_success": 8,
   "active_config_attempts": 8,
-  "fast_display": "PASS_DATA_RECEIVED",
+  "fast_display": "PASS_PANEL_MATCH",
   "slow_display": "PASS_DATA_RECEIVED",
   "checkweigh_display": "PASS_DATA_RECEIVED",
   "intentional_disconnect_reconnect": "PASS_6_CYCLES",
-  "unexpected_disconnect_recovery": "FAIL_FIXED_RETEST_REQUIRED",
+  "unexpected_disconnect_recovery": "PASS",
+  "panel_weight_stability_comparison": "PASS",
   "notes": [
     "READY screenshot captured at approximately 2026-09-01 19:19 CST.",
     "Protocol 1, firmware 0x050A, schema 2 and register map 0x0104 matched.",
@@ -26,8 +27,11 @@
     "Missing visual feedback on the refresh button was fixed in commit dbdc053; protocol execution was successful.",
     "Six intentional disconnect and device-list reconnect cycles completed after the stability window.",
     "Turning phone Bluetooth off correctly entered ADAPTER_UNAVAILABLE, but the original build could not restart scanning after Bluetooth was restored and retained the old error after reconnect.",
-    "Adapter recovery, error clearing and listener de-duplication were fixed in commit 47824bc; Xiaomi 15 retest is required.",
-    "A real MiniProgramError occurred in formatMass because the WeChat runtime lowered BigInt exponentiation to Math.pow. Fixed in commit b65d245; monitor page and 600-second stability must be retested.",
-    "Permission, Bluetooth-off, disconnect and display comparison checks remain unreported."
+    "Adapter recovery, error clearing and listener de-duplication were fixed in commit 47824bc; Xiaomi 15 Bluetooth recovery retest passed.",
+    "A real MiniProgramError occurred in formatMass because the WeChat runtime lowered BigInt exponentiation to Math.pow. Fixed in commit b65d245; the post-fix monitor stability retest passed.",
+    "HyperOS 3.0.302.0 and WeChat 8.0.69 were reported by the user; Android version remains unreported.",
+    "Permission denial produced a clear prompt without hang or crash; permission restoration allowed scan and connection without restarting the mini program.",
+    "The tested build showed one transient ERROR startBluetoothDevicesDiscovery:fail:not init before auth deny on a second scan. Commit d8ba694 forces adapter open before discovery so the first scan reports permission denial directly; one-click retest remains required.",
+    "Device deduplication matched expectations. Bluetooth-off recovery and instrument-panel weight/stability comparison passed."
   ]
 }

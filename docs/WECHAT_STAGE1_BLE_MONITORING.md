@@ -75,7 +75,7 @@ calibration or factory-reset path is exposed.
 
 ## Verification
 
-Automated TypeScript gate: 22/22 tests passed. It includes Stage 0 CRC,
+Automated TypeScript gate: 23/23 tests passed. It includes Stage 0 CRC,
 golden-frame splitting and signed-int64 coverage plus Stage 1 Mock adapter,
 state-machine, old-callback isolation, write queue, read-only command,
 byte-identical retry, stale-data and bounded-diagnostic tests.
@@ -108,18 +108,18 @@ least 600 seconds are captured.
 
 | Item | Result | Evidence |
 | --- | --- | --- |
-| Xiaomi 15 system information | PARTIAL | Model known; OS/HyperOS/WeChat versions pending in `android_device_info.json` |
+| Xiaomi 15 system information | PARTIAL | HyperOS 3.0.302.0, WeChat 8.0.69; Android version pending |
 | WeChat real-device debug startup | PASS | READY screenshot `android_ready_diagnostics.jpg` |
-| Bluetooth-off and permission paths | PARTIAL | Off prompt PASS; restore failed on original build; permission path unreported |
-| Scan, deduplication and W02 connection | PARTIAL | W02 scan/connection PASS; deduplication unreported |
+| Bluetooth-off and permission paths | PARTIAL | Bluetooth recovery and permission restore PASS; permission denial one-click fix `d8ba694` needs retest |
+| Scan, deduplication and W02 connection | PASS | Scan, one-entry deduplication and connection matched expectations |
 | FFE0 / FFE1 Notify / FFE2 Write | PASS | All three found in screenshot and copied diagnostics |
 | GET_DEVICE_INFO 5 times | PASS | 8/8 success, 0 timeout and 0 mismatch |
 | GET_ACTIVE_CONFIG 5 times | PASS | 8/8 success, 0 timeout and 0 mismatch |
-| FAST / SLOW / CHECKWEIGH display | PARTIAL | 3777 / 665 / 664 frames received; panel comparison unreported |
-| Intentional and unexpected disconnect recovery | PARTIAL | Six intentional cycles PASS; Bluetooth restore issue fixed in `47824bc`, retest required |
+| FAST / SLOW / CHECKWEIGH display | PASS | Telemetry received and instrument-panel weight/stability comparison passed |
+| Intentional and unexpected disconnect recovery | PASS | Six intentional cycles and post-fix Bluetooth-off recovery passed |
 | gap/resync recovery | PASS | Gap 2, duplicate 0, CRC 0, resync 0; session remained READY |
 | 600-second stability window | PASS | Post-fix run: FAST 5184, SLOW 1037, CHECK 1037, READY, CRC/resync 0, max stale 421 ms, commands 5/5 each, app errors 0 |
-| Android conclusion | PARTIAL | Stability window passed; permission/recovery gates, panel comparison and system information remain open |
+| Android conclusion | PARTIAL | Core hardware and stability gates pass; permission-denial first-click retest and missing environment metadata remain open |
 | iOS | NOT RUN | No iPhone hardware available |
 
 ## Known limitations and security
