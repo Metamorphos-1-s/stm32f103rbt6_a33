@@ -118,8 +118,8 @@ least 600 seconds are captured.
 | FAST / SLOW / CHECKWEIGH display | PARTIAL | 3777 / 665 / 664 frames received; panel comparison unreported |
 | Intentional and unexpected disconnect recovery | PARTIAL | Six intentional cycles PASS; Bluetooth restore issue fixed in `47824bc`, retest required |
 | gap/resync recovery | PASS | Gap 2, duplicate 0, CRC 0, resync 0; session remained READY |
-| 600-second stability window | FAIL / RETEST | Transport metrics passed over 799.504 s, but an unhandled BigInt formatting error occurred; fixed in `b65d245` |
-| Android conclusion | PARTIAL | Formal window must restart after the runtime fix; permission/recovery gates and system information remain open |
+| 600-second stability window | PASS | Post-fix run: FAST 5184, SLOW 1037, CHECK 1037, READY, CRC/resync 0, max stale 421 ms, commands 5/5 each, app errors 0 |
+| Android conclusion | PARTIAL | Stability window passed; permission/recovery gates, panel comparison and system information remain open |
 | iOS | NOT RUN | No iPhone hardware available |
 
 ## Known limitations and security
@@ -145,3 +145,16 @@ multiplication and adds a true-runtime-compatible formatting regression test.
 The tool-internal missing log/config, background-fetch privacy and advertising
 scope messages are unrelated to this project. Because an unhandled project
 exception occurred, the formal 600-second acceptance window must be restarted.
+
+### Post-fix stability window
+
+The post-`b65d245` Xiaomi 15 run ended at 2026-09-02 00:04:55 CST with
+FAST/SLOW/CHECKWEIGH counts 5184/1037/1037. `durationS` was not populated
+because the session timer was not started, but the fixed firmware scheduling
+rates cap FAST at 5 Hz and SLOW/CHECKWEIGH at 1 Hz. The counts independently
+establish approximately 1036.8--1037 seconds of continuous reception, above
+the 600-second gate. State remained READY, command reads passed 5/5 for each
+operation, maximum stale time was 421 ms, CRC/resync/duplicates were zero and
+the user reported no other project error. Four sequence gaps recovered without
+disconnect or long stale data. The first failed run remains preserved as
+`android_600s_failed_run.json`.

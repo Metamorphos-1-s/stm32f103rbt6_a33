@@ -41,14 +41,15 @@ and pending mobile hardware gates are documented in
 Security status: the previously exposed AppSecret was rotated on 2026-09-01;
 the replacement secret is not stored in this repository.
 
-Xiaomi 15 Android validation is in progress. The first 799.504-second window
-met its BLE transport metrics but raised a BigInt formatting exception, so the
-formal window must be rerun. Permission/disconnect functional gates and phone
-system information remain open. iOS remains not run.
+Xiaomi 15 Android validation is in progress. A post-fix run exceeded the
+600-second gate by fixed-rate telemetry evidence and passed frame, command,
+CRC, disconnect, stale-data and application-error criteria. Permission and
+Bluetooth recovery gates, panel comparison and phone system information remain
+open. iOS remains not run.
 
 The first Xiaomi 15 Bluetooth-off recovery test exposed an adapter-state
 recovery defect. Commit `47824bc` fixes adapter reopen, stale-error clearing
 and listener de-duplication; the phone retest remains pending.
 
 Commit `b65d245` removes BigInt exponentiation that the WeChat runtime lowered
-to unsupported `Math.pow`; monitor-page and stability retests remain pending.
+to unsupported `Math.pow`; the post-fix monitor stability retest passed.

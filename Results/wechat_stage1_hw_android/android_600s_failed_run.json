@@ -1,0 +1,21 @@
+{
+  "status": "FAIL_APP_ERROR",
+  "phone_model": "Xiaomi 15",
+  "start_time": "2026-09-01T19:21:34.001+08:00",
+  "end_time": "2026-09-01T19:34:53.505+08:00",
+  "duration_s": 799.504,
+  "connection_state": "READY",
+  "fast_frames": 3777,
+  "slow_frames": 665,
+  "checkweigh_frames": 664,
+  "sequence_gaps": 2,
+  "duplicates": 0,
+  "crc_errors": 0,
+  "resync_bytes": 0,
+  "max_stale_ms": 416,
+  "device_info_success": 8,
+  "active_config_success": 8,
+  "app_errors": 1,
+  "failure": "WeChat runtime lowered BigInt exponentiation in formatMass to unsupported Math.pow.",
+  "fixed_by_commit": "b65d245aa53ac513f2fdff2290f5ec457997487c"
+}
