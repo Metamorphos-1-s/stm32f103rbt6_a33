@@ -22,12 +22,13 @@ function mapWxError(error:any):BleAdapterError { const code=Number(error?.errCod
 
 export class WxBleAdapter implements BleAdapter {
   private deviceFound?: (event:any)=>void; private valueChanged?: (event:any)=>void;
+  private listenersRegistered=false;
   private adapterListeners=new Set<(s:BleAdapterState)=>void>(); private connectionListeners=new Set<(e:BleDisconnectEvent)=>void>();
   private readonly adapterChanged=(s:any)=>this.adapterListeners.forEach(x=>x({available:!!s.available,discovering:!!s.discovering}));
   private readonly connectionChanged=(e:any)=>this.connectionListeners.forEach(x=>x({deviceId:String(e.deviceId),connected:!!e.connected}));
-  async open(){await callWx('openBluetoothAdapter');(wx as any).onBluetoothAdapterStateChange?.(this.adapterChanged);(wx as any).onBLEConnectionStateChange?.(this.connectionChanged);}
+  async open(){await callWx('openBluetoothAdapter');if(!this.listenersRegistered){(wx as any).onBluetoothAdapterStateChange?.(this.adapterChanged);(wx as any).onBLEConnectionStateChange?.(this.connectionChanged);this.listenersRegistered=true;}}
   async close(){await this.stopDiscovery().catch(()=>{});await callWx('closeBluetoothAdapter').catch(()=>{});this.dispose();}
-  async startDiscovery(onDevice:(d:BleDevice)=>void){this.deviceFound=(event:any)=>{for(const d of event.devices||[])onDevice({...d,deviceId:String(d.deviceId),lastSeenAt:Date.now()});};(wx as any).onBluetoothDeviceFound(this.deviceFound);await callWx('startBluetoothDevicesDiscovery',{allowDuplicatesKey:true,interval:500});}
+  async startDiscovery(onDevice:(d:BleDevice)=>void){if(this.deviceFound)(wx as any).offBluetoothDeviceFound?.(this.deviceFound);this.deviceFound=(event:any)=>{for(const d of event.devices||[])onDevice({...d,deviceId:String(d.deviceId),lastSeenAt:Date.now()});};(wx as any).onBluetoothDeviceFound(this.deviceFound);await callWx('startBluetoothDevicesDiscovery',{allowDuplicatesKey:true,interval:500});}
   async stopDiscovery(){await callWx('stopBluetoothDevicesDiscovery').catch(()=>{});if(this.deviceFound)(wx as any).offBluetoothDeviceFound?.(this.deviceFound);this.deviceFound=undefined;}
   async connect(deviceId:string,timeoutMs=8000){await callWx('createBLEConnection',{deviceId,timeout:timeoutMs});}
   async disconnect(deviceId:string){await callWx('closeBLEConnection',{deviceId}).catch(()=>{});}
@@ -37,5 +38,5 @@ export class WxBleAdapter implements BleAdapter {
   async write(deviceId:string,serviceId:string,characteristicId:string,data:Uint8Array,withResponse=true){const value=data.buffer.slice(data.byteOffset,data.byteOffset+data.byteLength);await callWx('writeBLECharacteristicValue',{deviceId,serviceId,characteristicId,value,writeType:withResponse?'write':'writeNoResponse'});}
   onAdapterStateChange(listener:(s:BleAdapterState)=>void){this.adapterListeners.add(listener);return()=>this.adapterListeners.delete(listener);}
   onConnectionStateChange(listener:(e:BleDisconnectEvent)=>void){this.connectionListeners.add(listener);return()=>this.connectionListeners.delete(listener);}
-  dispose(){if(this.deviceFound)(wx as any).offBluetoothDeviceFound?.(this.deviceFound);if(this.valueChanged)(wx as any).offBLECharacteristicValueChange?.(this.valueChanged);(wx as any).offBluetoothAdapterStateChange?.(this.adapterChanged);(wx as any).offBLEConnectionStateChange?.(this.connectionChanged);this.deviceFound=undefined;this.valueChanged=undefined;this.adapterListeners.clear();this.connectionListeners.clear();}
+  dispose(){if(this.deviceFound)(wx as any).offBluetoothDeviceFound?.(this.deviceFound);if(this.valueChanged)(wx as any).offBLECharacteristicValueChange?.(this.valueChanged);if(this.listenersRegistered){(wx as any).offBluetoothAdapterStateChange?.(this.adapterChanged);(wx as any).offBLEConnectionStateChange?.(this.connectionChanged);}this.listenersRegistered=false;this.deviceFound=undefined;this.valueChanged=undefined;this.adapterListeners.clear();this.connectionListeners.clear();}
 }
