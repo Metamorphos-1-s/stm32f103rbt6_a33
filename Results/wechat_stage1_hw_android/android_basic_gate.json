@@ -27,6 +27,7 @@
     "Six intentional disconnect and device-list reconnect cycles completed after the stability window.",
     "Turning phone Bluetooth off correctly entered ADAPTER_UNAVAILABLE, but the original build could not restart scanning after Bluetooth was restored and retained the old error after reconnect.",
     "Adapter recovery, error clearing and listener de-duplication were fixed in commit 47824bc; Xiaomi 15 retest is required.",
+    "A real MiniProgramError occurred in formatMass because the WeChat runtime lowered BigInt exponentiation to Math.pow. Fixed in commit b65d245; monitor page and 600-second stability must be retested.",
     "Permission, Bluetooth-off, disconnect and display comparison checks remain unreported."
   ]
 }

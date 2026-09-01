@@ -75,7 +75,7 @@ calibration or factory-reset path is exposed.
 
 ## Verification
 
-Automated TypeScript gate: 21/21 tests passed. It includes Stage 0 CRC,
+Automated TypeScript gate: 22/22 tests passed. It includes Stage 0 CRC,
 golden-frame splitting and signed-int64 coverage plus Stage 1 Mock adapter,
 state-machine, old-callback isolation, write queue, read-only command,
 byte-identical retry, stale-data and bounded-diagnostic tests.
@@ -118,8 +118,8 @@ least 600 seconds are captured.
 | FAST / SLOW / CHECKWEIGH display | PARTIAL | 3777 / 665 / 664 frames received; panel comparison unreported |
 | Intentional and unexpected disconnect recovery | PARTIAL | Six intentional cycles PASS; Bluetooth restore issue fixed in `47824bc`, retest required |
 | gap/resync recovery | PASS | Gap 2, duplicate 0, CRC 0, resync 0; session remained READY |
-| 600-second stability window | METRICS PASS | 799.504 s, READY, CRC 0, max stale 416 ms, no unexpected disconnect; app error count unreported |
-| Android conclusion | PARTIAL | Stability metrics pass; permission/disconnect gates and device system information remain open |
+| 600-second stability window | FAIL / RETEST | Transport metrics passed over 799.504 s, but an unhandled BigInt formatting error occurred; fixed in `b65d245` |
+| Android conclusion | PARTIAL | Formal window must restart after the runtime fix; permission/recovery gates and system information remain open |
 | iOS | NOT RUN | No iPhone hardware available |
 
 ## Known limitations and security
@@ -134,3 +134,14 @@ auxiliary monitoring interface.
 Rotation was confirmed on 2026-09-01. The new secret is not stored in source
 code or Git. No AppSecret, token, cloud API, upload or release operation is
 present here.
+
+### First Android failure record
+
+The first long Xiaomi 15 run produced healthy BLE transport counters but also
+raised `MiniProgramError: Cannot convert a BigInt value to a number` when the
+WeChat runtime lowered a BigInt exponent expression in `formatMass` to
+`Math.pow`. Commit `b65d245` replaces exponentiation with integer
+multiplication and adds a true-runtime-compatible formatting regression test.
+The tool-internal missing log/config, background-fetch privacy and advertising
+scope messages are unrelated to this project. Because an unhandled project
+exception occurred, the formal 600-second acceptance window must be restarted.

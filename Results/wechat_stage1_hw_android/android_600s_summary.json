@@ -1,5 +1,5 @@
 {
-  "status": "STABILITY_METRICS_PASS_BASIC_GATES_PENDING",
+  "status": "FAIL_APP_ERROR_RETEST_REQUIRED",
   "phone_model": "Xiaomi 15",
   "android_version": null,
   "hyperos_version": null,
@@ -32,9 +32,10 @@
   "device_info_timeout": 0,
   "active_config_success": 8,
   "active_config_timeout": 0,
-  "app_errors": null,
+  "app_errors": 1,
   "frame_thresholds_met": true,
-  "stability_metrics_met": true,
+  "transport_metrics_met": true,
+  "stability_metrics_met": false,
   "pass_criteria_met": false,
-  "failure_reason": "Stability metrics passed, but application error count and remaining Android basic gates have not been reported."
+  "failure_reason": "Unhandled MiniProgramError in formatMass: WeChat runtime converted BigInt exponentiation to Math.pow. Fixed in b65d245; the formal 600-second window must restart."
 }
