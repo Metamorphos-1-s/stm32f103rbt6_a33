@@ -108,17 +108,18 @@ least 600 seconds are captured.
 
 | Item | Result | Evidence |
 | --- | --- | --- |
-| Xiaomi 15 system information | NOT RUN | `android_device_info.json` |
-| WeChat real-device debug startup | NOT RUN | `android_basic_gate.json` |
+| Xiaomi 15 system information | PARTIAL | Model known; OS/HyperOS/WeChat versions pending in `android_device_info.json` |
+| WeChat real-device debug startup | PASS | READY screenshot `android_ready_diagnostics.jpg` |
 | Bluetooth-off and permission paths | NOT RUN | `android_basic_gate.json` |
-| Scan, deduplication and W02 connection | NOT RUN | `android_basic_gate.json` |
-| FFE0 / FFE1 Notify / FFE2 Write | NOT RUN | `android_basic_gate.json` |
-| GET_DEVICE_INFO 5 times | NOT RUN | `android_basic_gate.json` |
-| GET_ACTIVE_CONFIG 5 times | NOT RUN | `android_basic_gate.json` |
-| FAST / SLOW / CHECKWEIGH display | NOT RUN | `android_basic_gate.json` |
+| Scan, deduplication and W02 connection | PARTIAL | W02 scan/connection PASS; deduplication unreported |
+| FFE0 / FFE1 Notify / FFE2 Write | PASS | All three found in screenshot and copied diagnostics |
+| GET_DEVICE_INFO 5 times | PARTIAL | 1/1 success, 0 timeout; four more required |
+| GET_ACTIVE_CONFIG 5 times | PARTIAL | 1/1 success, 0 timeout; four more required |
+| FAST / SLOW / CHECKWEIGH display | PARTIAL | 538 / 96 / 95 frames received; panel comparison unreported |
 | Intentional and unexpected disconnect recovery | NOT RUN | `android_basic_gate.json` |
-| 600-second stability window | NOT RUN | `android_600s_summary.json` |
-| Android conclusion | NOT RUN | Hardware interaction pending |
+| gap/resync recovery | PASS | Gap 2, duplicate 0, CRC 0, resync 0; session remained READY |
+| 600-second stability window | NOT RUN | Snapshot estimated at 107.6 s; formal duration absent |
+| Android conclusion | PARTIAL | Basic BLE path works; formal hardware gate remains open |
 | iOS | NOT RUN | No iPhone hardware available |
 
 ## Known limitations and security

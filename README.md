@@ -40,3 +40,7 @@ and pending mobile hardware gates are documented in
 
 Security status: the previously exposed AppSecret was rotated on 2026-09-01;
 the replacement secret is not stored in this repository.
+
+Xiaomi 15 Android validation is in progress. A first READY snapshot confirmed
+the W02 GATT and read-only telemetry path, but the formal 600-second window and
+permission/disconnect gates are not yet complete. iOS remains not run.
