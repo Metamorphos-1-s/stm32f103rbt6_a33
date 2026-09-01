@@ -113,13 +113,13 @@ least 600 seconds are captured.
 | Bluetooth-off and permission paths | NOT RUN | `android_basic_gate.json` |
 | Scan, deduplication and W02 connection | PARTIAL | W02 scan/connection PASS; deduplication unreported |
 | FFE0 / FFE1 Notify / FFE2 Write | PASS | All three found in screenshot and copied diagnostics |
-| GET_DEVICE_INFO 5 times | PARTIAL | 1/1 success, 0 timeout; four more required |
-| GET_ACTIVE_CONFIG 5 times | PARTIAL | 1/1 success, 0 timeout; four more required |
-| FAST / SLOW / CHECKWEIGH display | PARTIAL | 538 / 96 / 95 frames received; panel comparison unreported |
+| GET_DEVICE_INFO 5 times | PASS | 8/8 success, 0 timeout and 0 mismatch |
+| GET_ACTIVE_CONFIG 5 times | PASS | 8/8 success, 0 timeout and 0 mismatch |
+| FAST / SLOW / CHECKWEIGH display | PARTIAL | 3777 / 665 / 664 frames received; panel comparison unreported |
 | Intentional and unexpected disconnect recovery | NOT RUN | `android_basic_gate.json` |
 | gap/resync recovery | PASS | Gap 2, duplicate 0, CRC 0, resync 0; session remained READY |
-| 600-second stability window | NOT RUN | Snapshot estimated at 107.6 s; formal duration absent |
-| Android conclusion | PARTIAL | Basic BLE path works; formal hardware gate remains open |
+| 600-second stability window | METRICS PASS | 799.504 s, READY, CRC 0, max stale 416 ms, no unexpected disconnect; app error count unreported |
+| Android conclusion | PARTIAL | Stability metrics pass; permission/disconnect gates and device system information remain open |
 | iOS | NOT RUN | No iPhone hardware available |
 
 ## Known limitations and security

@@ -9,10 +9,10 @@
   "ffe0_found": "PASS",
   "ffe1_notify": "PASS",
   "ffe2_write": "PASS",
-  "device_info_success": 1,
-  "device_info_attempts": 1,
-  "active_config_success": 1,
-  "active_config_attempts": 1,
+  "device_info_success": 8,
+  "device_info_attempts": 8,
+  "active_config_success": 8,
+  "active_config_attempts": 8,
   "fast_display": "PASS_DATA_RECEIVED",
   "slow_display": "PASS_DATA_RECEIVED",
   "checkweigh_display": "PASS_DATA_RECEIVED",
@@ -22,6 +22,8 @@
     "READY screenshot captured at approximately 2026-09-01 19:19 CST.",
     "Protocol 1, firmware 0x050A, schema 2 and register map 0x0104 matched.",
     "Two sequence gaps were recorded; parsing recovered with state still READY, CRC 0 and resync 0.",
+    "The read-only refresh button completed 8/8 GET_DEVICE_INFO and 8/8 GET_ACTIVE_CONFIG requests with zero timeout or mismatch.",
+    "Missing visual feedback on the refresh button was fixed in commit dbdc053; protocol execution was successful.",
     "Permission, Bluetooth-off, disconnect and display comparison checks remain unreported."
   ]
 }
