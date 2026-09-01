@@ -29,3 +29,11 @@ The WeChat project uses the validated test AppID in
 non-blocking preload advisories for its own `WAAutoService.js` and
 `WAServiceMainContext.js` resources; these are documented in the validation
 record and are not application errors.
+
+## WeChat Stage 1
+
+The mini program now provides read-only W02 scanning, BLE connection,
+FAST/SLOW/CHECKWEIGH monitoring and bounded diagnostics. Only
+GET_DEVICE_INFO and GET_ACTIVE_CONFIG are permitted on FFE2. Automated tests
+and pending mobile hardware gates are documented in
+`docs/WECHAT_STAGE1_BLE_MONITORING.md`.

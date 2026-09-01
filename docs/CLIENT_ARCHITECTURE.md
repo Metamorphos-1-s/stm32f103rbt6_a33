@@ -1,10 +1,12 @@
 # Client Architecture
 
 The WeChat Mini Program discovers a user-selected W02 through the native BLE
-API, subscribes to FFE1 notifications and writes framed commands to FFE2. W02
-is a transparent bridge to STM32 USART1. BLE is an auxiliary monitoring path;
-sequence gaps and stale data remain visible diagnostics and never become
-fabricated weight samples.
+API, subscribes to FFE1 notifications and uses FFE2 only for the read-only
+GET_DEVICE_INFO and GET_ACTIVE_CONFIG commands in Stage 1. W02 is a transparent
+bridge to STM32 USART1. BLE is an auxiliary monitoring path; sequence gaps and
+stale data remain visible diagnostics and never become fabricated weight
+samples. Stage 1 implementation details are in
+`docs/WECHAT_STAGE1_BLE_MONITORING.md`.
 
 The Windows client has the same domain model above either Modbus TCP (PC to
 CH579 gateway to STM32) or Modbus RTU (PC USART2 RS232/RS485 directly to

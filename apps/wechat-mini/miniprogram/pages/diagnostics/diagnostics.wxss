@@ -1,1 +1,1 @@
-.page{padding:32rpx;color:#17212b;font-size:30rpx;line-height:2}.title{font-size:44rpx;font-weight:600;margin-bottom:24rpx}
+.page{font-size:28rpx}.state{font-size:34rpx;font-weight:600}.grid{display:grid;grid-template-columns:1fr 1.35fr;gap:14rpx 20rpx}.grid text:nth-child(odd){color:#68767e}.wrap{word-break:break-all}.error{margin-top:14rpx}
