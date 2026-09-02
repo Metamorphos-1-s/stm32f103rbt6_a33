@@ -63,3 +63,11 @@ The recorded Android RF setup is 5 m through one door, without the instrument
 enclosure and using the W02 module's integrated PCB antenna. The phone did not
 expose a separate Android version in Settings, so the evidence does not infer
 one from HyperOS.
+
+## PC Stage 1
+
+The WPF application now implements read-only Modbus TCP and RTU monitoring with
+Map `0x0104` compatibility gating, exact signed-microgram decoding, bounded
+diagnostics, stale-data handling and bounded reconnect. Runtime APIs and the UI
+expose FC03 only. Software verification is complete; TCP/RS232/RS485 hardware
+validation remains pending as documented in `docs/PC_STAGE1_MODBUS_MONITORING.md`.

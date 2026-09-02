@@ -1,0 +1,20 @@
+{
+  "status": "NOT_RUN",
+  "reason": "192.168.1.100:502 was unreachable from the active WLAN interface during Stage 1 software validation.",
+  "endpoint": "192.168.1.100:502",
+  "unit_id": 1,
+  "client_commit": null,
+  "stm32_commit": "9e242c7649ad79ac4c3bae347b3259847f4bc09e",
+  "ch579_commit": "3cd21ecefe6486d28a664ea356cb4ed6e7b3090a",
+  "duration_s": 0,
+  "requests": 0,
+  "responses": 0,
+  "timeouts": 0,
+  "crc_errors": 0,
+  "tid_errors": 0,
+  "bad_frames": 0,
+  "modbus_exceptions": 0,
+  "reconnects": 0,
+  "write_function_observed": false,
+  "panel_comparison": "NOT_RUN"
+}

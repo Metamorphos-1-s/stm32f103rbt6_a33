@@ -11,8 +11,14 @@ samples. Stage 1 implementation details are in
 The Windows client has the same domain model above either Modbus TCP (PC to
 CH579 gateway to STM32) or Modbus RTU (PC USART2 RS232/RS485 directly to
 STM32). `IModbusTransport` owns bytes and timing, protocol codecs own framing,
-and `DeviceRepository` maps registers to domain values. WPF never builds a
+and `InstrumentMonitoringService` maps registers to domain values. WPF never builds a
 Modbus frame or touches sockets/SerialPort directly.
+
+PC Stage 1 uses `ReadOnlyModbusClient` and `InstrumentMonitoringService` in the
+Core layer. The runtime surface exposes FC03 only, validates Map `0x0104`
+before decoding, and reads addresses from the shared JSON contract embedded in
+the Protocol assembly. Details and verification are in
+`docs/PC_STAGE1_MODBUS_MONITORING.md`.
 
 Writes are serialized, bounded by timeout, matched by transaction/request
 identity, and retried with identical request bytes where a retry is safe.

@@ -1,0 +1,8 @@
+{
+  "status": "NOT_RUN",
+  "tcp_reconnect_cycles": 0,
+  "rs232_reconnect_cycles": 0,
+  "rs485_reconnect_cycles": 0,
+  "network_recovery": "NOT_RUN",
+  "serial_unplug_recovery": "NOT_RUN"
+}

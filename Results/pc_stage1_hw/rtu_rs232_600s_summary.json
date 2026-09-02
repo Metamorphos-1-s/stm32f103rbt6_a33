@@ -1,0 +1,13 @@
+{
+  "status": "NOT_RUN — verified adapter connection/type unavailable",
+  "reason": "COM3 and COM5 are CH340 devices, but neither physical converter type nor USART2 connection was confirmed.",
+  "settings": "115200 8N1, unit 1",
+  "duration_s": 0,
+  "requests": 0,
+  "responses": 0,
+  "timeouts": 0,
+  "crc_errors": 0,
+  "bad_frames": 0,
+  "write_function_observed": false,
+  "panel_comparison": "NOT_RUN"
+}

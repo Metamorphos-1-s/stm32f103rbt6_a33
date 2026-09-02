@@ -2,7 +2,7 @@
   "sourceCommit": "9e242c7649ad79ac4c3bae347b3259847f4bc09e",
   "rtu": {
     "fc03Request": "010300000002c40b",
-    "fc03Response": "0103040000000000b343",
+    "fc03Response": "01030400000000fa33",
     "fc06Request": "0106000ea55a1362",
     "fc16Request": "01061000000204010400009fd8"
   },
