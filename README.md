@@ -58,3 +58,8 @@ to unsupported `Math.pow`; the post-fix monitor stability retest passed.
 Commit `d8ba694` ensures every scan first reopens the adapter, avoiding a
 transient `not init` error when permission is revoked. Its first-click denial
 path remains to be confirmed on the Xiaomi 15.
+
+The recorded Android RF setup is 5 m through one door, without the instrument
+enclosure and using the W02 module's integrated PCB antenna. The phone did not
+expose a separate Android version in Settings, so the evidence does not infer
+one from HyperOS.

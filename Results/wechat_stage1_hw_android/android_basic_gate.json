@@ -30,6 +30,8 @@
     "Adapter recovery, error clearing and listener de-duplication were fixed in commit 47824bc; Xiaomi 15 Bluetooth recovery retest passed.",
     "A real MiniProgramError occurred in formatMass because the WeChat runtime lowered BigInt exponentiation to Math.pow. Fixed in commit b65d245; the post-fix monitor stability retest passed.",
     "HyperOS 3.0.302.0 and WeChat 8.0.69 were reported by the user; Android version remains unreported.",
+    "Android version could not be found in the phone settings and is recorded as unavailable rather than inferred from HyperOS.",
+    "Hardware test condition: 5 m, one door obstruction, instrument enclosure not installed, W02 module integrated PCB antenna.",
     "Permission denial produced a clear prompt without hang or crash; permission restoration allowed scan and connection without restarting the mini program.",
     "The tested build showed one transient ERROR startBluetoothDevicesDiscovery:fail:not init before auth deny on a second scan. Commit d8ba694 forces adapter open before discovery so the first scan reports permission denial directly; one-click retest remains required.",
     "Device deduplication matched expectations. Bluetooth-off recovery and instrument-panel weight/stability comparison passed."

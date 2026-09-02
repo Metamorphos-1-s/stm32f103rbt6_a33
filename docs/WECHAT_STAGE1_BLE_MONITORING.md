@@ -108,7 +108,7 @@ least 600 seconds are captured.
 
 | Item | Result | Evidence |
 | --- | --- | --- |
-| Xiaomi 15 system information | PARTIAL | HyperOS 3.0.302.0, WeChat 8.0.69; Android version pending |
+| Xiaomi 15 system information | PARTIAL | HyperOS 3.0.302.0, WeChat 8.0.69; Android version was not exposed by phone settings |
 | WeChat real-device debug startup | PASS | READY screenshot `android_ready_diagnostics.jpg` |
 | Bluetooth-off and permission paths | PARTIAL | Bluetooth recovery and permission restore PASS; permission denial one-click fix `d8ba694` needs retest |
 | Scan, deduplication and W02 connection | PASS | Scan, one-entry deduplication and connection matched expectations |
@@ -158,3 +158,9 @@ operation, maximum stale time was 421 ms, CRC/resync/duplicates were zero and
 the user reported no other project error. Four sequence gaps recovered without
 disconnect or long stale data. The first failed run remains preserved as
 `android_600s_failed_run.json`.
+
+Reported RF setup was 5 m with one door between phone and instrument. The
+instrument enclosure was not installed and W02 used its integrated PCB
+antenna. Phone orientation and nearby 2.4 GHz/BLE activity were not recorded.
+The phone settings did not expose a separate Android version, so no version was
+inferred from the reported HyperOS 3.0.302.0 value.

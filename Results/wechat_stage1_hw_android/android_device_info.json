@@ -1,16 +1,17 @@
 {
   "status": "PARTIAL",
   "phone_model": "Xiaomi 15",
-  "android_version": null,
+  "android_version": "NOT AVAILABLE — device settings did not expose the Android version",
   "hyperos_version": "HyperOS 3.0.302.0",
   "wechat_version": "8.0.69",
   "devtools_version": "2.02.0",
   "base_library_version": "3.16.2",
   "w02_name": "W02_008324",
   "w02_device_id": "C8:46:82:00:83:24",
-  "test_distance": null,
+  "test_distance": "5 m",
   "test_orientation": null,
-  "enclosure_installed": null,
-  "antenna_installation": null,
+  "test_obstruction": "one door",
+  "enclosure_installed": false,
+  "antenna_installation": "W02 module integrated PCB antenna",
   "rf_environment": null
 }
