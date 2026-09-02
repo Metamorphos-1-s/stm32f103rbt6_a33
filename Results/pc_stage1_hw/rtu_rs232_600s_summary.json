@@ -1,6 +1,9 @@
 {
-  "status": "NOT_RUN — verified adapter connection/type unavailable",
-  "reason": "COM3 and COM5 are CH340 devices, but neither physical converter type nor USART2 connection was confirmed.",
+  "status": "BLOCKED — COM5 serial tool interference",
+  "reason": "COM5 is a working USB-SERIAL CH340 and is identified as USB-RS232 by the user, but SerialDebug was running and the first client I/O returned IOException: The I/O operation was aborted. No blind retries were sent.",
+  "probe_duration_s": 0.1304,
+  "probe_status": "FAIL_IO_ABORTED",
+  "port_occupancy_process": "SerialDebug",
   "settings": "115200 8N1, unit 1",
   "duration_s": 0,
   "requests": 0,

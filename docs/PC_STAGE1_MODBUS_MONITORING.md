@@ -117,11 +117,13 @@ same corrected JSON contract.
 | Path | Result | Evidence |
 | --- | --- | --- |
 | Modbus TCP | PARTIAL | 600.040 s and 5346/5346 responses PASS; 10/10 reconnect cycles and WPF live path PASS; network interruption and panel comparison pending |
-| RTU RS232 | NOT RUN | CH340 ports detected but physical type/wiring unconfirmed |
+| RTU RS232 | BLOCKED | COM5 identified as USB-RS232, but SerialDebug interference caused first-I/O abort; clean retest pending |
 | RTU RS485 | NOT RUN | CH340 ports detected but physical type/wiring unconfirmed |
 
 TCP hardware FC03 monitoring was executed; no write function was observed.
-RTU hardware requests were not sent. See `Results/pc_stage1_hw/environment.md`.
+The COM5 RTU probe sent one FC03 request but received no response before the
+I/O-aborted port failure; no blind retries were sent. See
+`Results/pc_stage1_hw/environment.md`.
 
 The TCP window ran from 2026-09-02 19:52:01 to 20:02:02 CST for 600.040
 seconds. It completed 5346/5346 requests/responses with zero timeout, MBAP/TID,

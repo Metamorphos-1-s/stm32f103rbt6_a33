@@ -75,3 +75,6 @@ validation remains pending as documented in `docs/PC_STAGE1_MODBUS_MONITORING.md
 TCP hardware monitoring has passed a 600.040-second read-only run, 10/10
 connection cycles and a WPF live-data check. Network interruption recovery and
 panel comparison remain open; COM5 RTU awaits RS232/RS485 type confirmation.
+COM5 has been identified as USB-RS232. Its first RTU probe was blocked by the
+running SerialDebug process and an I/O-aborted receive; close that tool before
+the clean RS232 retest. RS485 remains untested.
