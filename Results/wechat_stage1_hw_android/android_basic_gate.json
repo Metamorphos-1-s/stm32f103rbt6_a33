@@ -1,7 +1,7 @@
 {
-  "status": "PARTIAL",
+  "status": "PASS",
   "bluetooth_off": "PASS_PROMPT",
-  "permission_denied": "PASS_PROMPT_NO_CRASH_ONE_CLICK_FIX_RETEST_REQUIRED",
+  "permission_denied": "PASS_FIRST_CLICK_DIRECT_PROMPT_NO_CRASH",
   "permission_recovery": "PASS",
   "scan_w02": "PASS",
   "device_deduplication": "PASS",
@@ -33,7 +33,8 @@
     "Android version could not be found in the phone settings and is recorded as unavailable rather than inferred from HyperOS.",
     "Hardware test condition: 5 m, one door obstruction, instrument enclosure not installed, W02 module integrated PCB antenna.",
     "Permission denial produced a clear prompt without hang or crash; permission restoration allowed scan and connection without restarting the mini program.",
-    "The tested build showed one transient ERROR startBluetoothDevicesDiscovery:fail:not init before auth deny on a second scan. Commit d8ba694 forces adapter open before discovery so the first scan reports permission denial directly; one-click retest remains required.",
+    "The original build showed one transient ERROR startBluetoothDevicesDiscovery:fail:not init before auth deny on a second scan. Commit d8ba694 forces adapter open before discovery.",
+    "Latest-build Xiaomi 15 retest confirmed the first scan after permission denial directly shows the permission prompt with no transient not-init error.",
     "Device deduplication matched expectations. Bluetooth-off recovery and instrument-panel weight/stability comparison passed."
   ]
 }

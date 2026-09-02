@@ -110,7 +110,7 @@ least 600 seconds are captured.
 | --- | --- | --- |
 | Xiaomi 15 system information | PARTIAL | HyperOS 3.0.302.0, WeChat 8.0.69; Android version was not exposed by phone settings |
 | WeChat real-device debug startup | PASS | READY screenshot `android_ready_diagnostics.jpg` |
-| Bluetooth-off and permission paths | PARTIAL | Bluetooth recovery and permission restore PASS; permission denial one-click fix `d8ba694` needs retest |
+| Bluetooth-off and permission paths | PASS | First-click denial prompt, permission recovery and Bluetooth recovery passed on latest build |
 | Scan, deduplication and W02 connection | PASS | Scan, one-entry deduplication and connection matched expectations |
 | FFE0 / FFE1 Notify / FFE2 Write | PASS | All three found in screenshot and copied diagnostics |
 | GET_DEVICE_INFO 5 times | PASS | 8/8 success, 0 timeout and 0 mismatch |
@@ -119,7 +119,7 @@ least 600 seconds are captured.
 | Intentional and unexpected disconnect recovery | PASS | Six intentional cycles and post-fix Bluetooth-off recovery passed |
 | gap/resync recovery | PASS | Gap 2, duplicate 0, CRC 0, resync 0; session remained READY |
 | 600-second stability window | PASS | Post-fix run: FAST 5184, SLOW 1037, CHECK 1037, READY, CRC/resync 0, max stale 421 ms, commands 5/5 each, app errors 0 |
-| Android conclusion | PARTIAL | Core hardware and stability gates pass; permission-denial first-click retest and missing environment metadata remain open |
+| Android conclusion | PASS | Xiaomi 15 read-only BLE monitoring hardware gate passed; unavailable metadata is explicitly recorded |
 | iOS | NOT RUN | No iPhone hardware available |
 
 ## Known limitations and security
@@ -164,3 +164,18 @@ instrument enclosure was not installed and W02 used its integrated PCB
 antenna. Phone orientation and nearby 2.4 GHz/BLE activity were not recorded.
 The phone settings did not expose a separate Android version, so no version was
 inferred from the reported HyperOS 3.0.302.0 value.
+
+The final permission-denial retest used the latest build containing `d8ba694`.
+The first scan attempt directly displayed the permission-denied state without
+the former transient `startBluetoothDevicesDiscovery:fail:not init` error.
+Restoring permission required no mini-program restart and scanning/connection
+resumed normally.
+
+Final Android status:
+
+```text
+WeChat Stage 1 ANDROID HARDWARE VALIDATED
+Xiaomi 15 read-only BLE monitoring passed
+iOS NOT RUN — no iPhone hardware available
+Overall dual-platform hardware validation remains open
+```

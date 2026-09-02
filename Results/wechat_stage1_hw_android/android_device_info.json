@@ -1,5 +1,5 @@
 {
-  "status": "PARTIAL",
+  "status": "COMPLETE_WITH_UNAVAILABLE_FIELDS",
   "phone_model": "Xiaomi 15",
   "android_version": "NOT AVAILABLE — device settings did not expose the Android version",
   "hyperos_version": "HyperOS 3.0.302.0",
@@ -9,9 +9,9 @@
   "w02_name": "W02_008324",
   "w02_device_id": "C8:46:82:00:83:24",
   "test_distance": "5 m",
-  "test_orientation": null,
+  "test_orientation": "NOT RECORDED",
   "test_obstruction": "one door",
   "enclosure_installed": false,
   "antenna_installation": "W02 module integrated PCB antenna",
-  "rf_environment": null
+  "rf_environment": "NOT RECORDED"
 }

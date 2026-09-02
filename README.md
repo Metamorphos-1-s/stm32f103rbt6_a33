@@ -41,12 +41,12 @@ and pending mobile hardware gates are documented in
 Security status: the previously exposed AppSecret was rotated on 2026-09-01;
 the replacement secret is not stored in this repository.
 
-Xiaomi 15 Android validation is in progress. A post-fix run exceeded the
+Xiaomi 15 Android hardware validation passed. A post-fix run exceeded the
 600-second gate by fixed-rate telemetry evidence and passed frame, command,
 CRC, disconnect, stale-data and application-error criteria. Permission and
-Bluetooth recovery, device deduplication and instrument-panel comparison now
-pass. The permission-denial first-click fix needs one retest; Android version
-and RF environment metadata remain open. iOS remains not run.
+Bluetooth recovery, device deduplication and instrument-panel comparison pass.
+The Android version was unavailable in phone settings and optional RF metadata
+is explicitly marked not recorded. iOS remains not run.
 
 The first Xiaomi 15 Bluetooth-off recovery test exposed an adapter-state
 recovery defect. Commit `47824bc` fixes adapter reopen, stale-error clearing
@@ -57,7 +57,7 @@ to unsupported `Math.pow`; the post-fix monitor stability retest passed.
 
 Commit `d8ba694` ensures every scan first reopens the adapter, avoiding a
 transient `not init` error when permission is revoked. Its first-click denial
-path remains to be confirmed on the Xiaomi 15.
+path passed on the Xiaomi 15.
 
 The recorded Android RF setup is 5 m through one door, without the instrument
 enclosure and using the W02 module's integrated PCB antenna. The phone did not
