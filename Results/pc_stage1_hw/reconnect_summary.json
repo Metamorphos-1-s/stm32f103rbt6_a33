@@ -1,8 +1,14 @@
 {
-  "status": "NOT_RUN",
-  "tcp_reconnect_cycles": 0,
+  "status": "PARTIAL",
+  "tcp_reconnect_cycles": 10,
+  "tcp_reconnect_passed": 10,
+  "tcp_reconnect_failed": 0,
+  "tcp_cycle_requests": 117,
+  "tcp_cycle_responses": 110,
+  "tcp_cycle_timeouts": 0,
+  "tcp_cycle_protocol_errors": 0,
   "rs232_reconnect_cycles": 0,
   "rs485_reconnect_cycles": 0,
-  "network_recovery": "NOT_RUN",
+  "network_recovery": "NOT RUN — manual cable or adapter interruption pending",
   "serial_unplug_recovery": "NOT_RUN"
 }

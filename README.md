@@ -71,3 +71,7 @@ Map `0x0104` compatibility gating, exact signed-microgram decoding, bounded
 diagnostics, stale-data handling and bounded reconnect. Runtime APIs and the UI
 expose FC03 only. Software verification is complete; TCP/RS232/RS485 hardware
 validation remains pending as documented in `docs/PC_STAGE1_MODBUS_MONITORING.md`.
+
+TCP hardware monitoring has passed a 600.040-second read-only run, 10/10
+connection cycles and a WPF live-data check. Network interruption recovery and
+panel comparison remain open; COM5 RTU awaits RS232/RS485 type confirmation.

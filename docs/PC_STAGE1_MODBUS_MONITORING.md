@@ -116,12 +116,20 @@ same corrected JSON contract.
 
 | Path | Result | Evidence |
 | --- | --- | --- |
-| Modbus TCP | NOT RUN | Target `192.168.1.100:502` unreachable; `Results/pc_stage1_hw/tcp_600s_summary.json` |
+| Modbus TCP | PARTIAL | 600.040 s and 5346/5346 responses PASS; 10/10 reconnect cycles and WPF live path PASS; network interruption and panel comparison pending |
 | RTU RS232 | NOT RUN | CH340 ports detected but physical type/wiring unconfirmed |
 | RTU RS485 | NOT RUN | CH340 ports detected but physical type/wiring unconfirmed |
 
-No hardware FC03 was sent and no hardware PASS is claimed. See
-`Results/pc_stage1_hw/environment.md`.
+TCP hardware FC03 monitoring was executed; no write function was observed.
+RTU hardware requests were not sent. See `Results/pc_stage1_hw/environment.md`.
+
+The TCP window ran from 2026-09-02 19:52:01 to 20:02:02 CST for 600.040
+seconds. It completed 5346/5346 requests/responses with zero timeout, MBAP/TID,
+Unit ID, exception, bad-frame, transport or reconnect errors. Maximum sampled
+data age was 288.534 ms. Map `0x0104` and HighWordFirst were read from the
+device. Ten subsequent connect/monitor/disconnect cycles passed 10/10. The WPF
+path entered MONITORING, displayed live g values and Map `0x0104`, then stopped,
+disconnected and exited without a remaining process.
 
 ## Known limitations and Stage 2 gate
 

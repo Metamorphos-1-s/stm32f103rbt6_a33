@@ -6,12 +6,14 @@ Recorded during software validation on 2026-09-02.
 - STM32 baseline: `9e242c7649ad79ac4c3bae347b3259847f4bc09e`
 - CH579 required baseline: `3cd21ecefe6486d28a664ea356cb4ed6e7b3090a`
 - CH579 repository/image was not locally available for commit verification.
-- `192.168.1.100:502` did not accept a TCP connection from the active WLAN.
+- CH579 became reachable at `192.168.1.100:502` through Ethernet; PC source
+  address was `192.168.1.10`.
 - COM3: USB-SERIAL CH340, `VID_1A86&PID_7523`.
 - COM5: USB-SERIAL CH340, `VID_1A86&PID_7523`.
 - COM1: built-in communications port.
 - The physical RS232/RS485 type and USART2 wiring of COM3/COM5 were not
   confirmed. No serial request was sent to avoid driving an unknown interface.
 
-TCP, RS232 and RS485 hardware outcomes remain NOT RUN. Mock transport results
-are software evidence only.
+TCP completed a 600.040-second Core run, 10 connect/disconnect cycles and a
+WPF live-monitoring check. Network-interruption recovery and panel comparison
+remain open. RS232/RS485 remain NOT RUN until COM5's electrical type is stated.
