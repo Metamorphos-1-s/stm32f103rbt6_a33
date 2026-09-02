@@ -12,13 +12,21 @@ Recorded during software validation on 2026-09-02.
 - COM5: USB-SERIAL CH340, `VID_1A86&PID_7523`.
 - COM1: built-in communications port.
 - COM5 was identified by the user as USB-RS232 and selected for the RTU test.
-- A 10-second COM5 probe was blocked at the first receive with `IOException:
+- An initial COM5 probe was blocked at the first receive with `IOException:
   The I/O operation was aborted because of either a thread exit or an
   application request.` The `SerialDebug` process was running at the time;
   the port was not forcefully closed and no blind retries were sent.
+- After SerialDebug was closed, a Python FC03 cross-check returned Map
+  `0x0104`. The C# transport was changed from CH340-incompatible BaseStream
+  async reads to a cancellable background short-timeout SerialPort read loop.
+- The corrected C# path passed a 10.087-second probe, a 600.087-second run and
+  10/10 connect/monitor/disconnect cycles on COM5.
+- A controlled port-occupancy test returned UnauthorizedAccessException with
+  zero transmitted requests and no application crash; COM5 was released after
+  the test.
 - COM3 remains unclassified and is not used.
 
 TCP completed a 600.040-second Core run, 10 connect/disconnect cycles and a
 WPF live-monitoring check. Network-interruption recovery and panel comparison
-remain open. RS232 requires a clean COM5 retest after SerialDebug is closed;
-RS485 remains NOT RUN.
+remain open. RS232 unplug/recovery and panel comparison remain open. RS485
+remains NOT RUN.

@@ -96,7 +96,7 @@ mode) were fixed before signoff.
 
 - Protocol: 16/16 passed.
 - Core/transport: 12/12 passed.
-- Total xUnit: 28/28 passed, 0 failed, 0 skipped, 5.250 s Release run.
+- Total xUnit: 29/29 passed, 0 failed, 0 skipped (one added for serial occupancy classification).
 - Debug build: PASS, 0 warnings, 0 errors.
 - Release build: PASS, 0 warnings, 0 errors.
 - WeChat TypeScript regression: 23/23 passed.
@@ -117,7 +117,7 @@ same corrected JSON contract.
 | Path | Result | Evidence |
 | --- | --- | --- |
 | Modbus TCP | PARTIAL | 600.040 s and 5346/5346 responses PASS; 10/10 reconnect cycles and WPF live path PASS; network interruption and panel comparison pending |
-| RTU RS232 | BLOCKED | COM5 identified as USB-RS232, but SerialDebug interference caused first-I/O abort; clean retest pending |
+| RTU RS232 | PARTIAL | COM5 600.087 s and 5336/5336 responses PASS; 10/10 cycles and port-occupancy handling PASS; unplug recovery and panel comparison pending |
 | RTU RS485 | NOT RUN | CH340 ports detected but physical type/wiring unconfirmed |
 
 TCP hardware FC03 monitoring was executed; no write function was observed.
@@ -132,6 +132,18 @@ data age was 288.534 ms. Map `0x0104` and HighWordFirst were read from the
 device. Ten subsequent connect/monitor/disconnect cycles passed 10/10. The WPF
 path entered MONITORING, displayed live g values and Map `0x0104`, then stopped,
 disconnected and exited without a remaining process.
+
+COM5 was identified as USB-RS232 with CH340 `VID_1A86&PID_7523`. A firmware
+Python FC03 cross-check first confirmed Map `0x0104`. The original .NET
+BaseStream async receive produced a CH340 I/O-aborted error, so the serial path
+was changed to a background short-timeout `SerialPort.Read` loop that remains
+asynchronous to WPF and checks cancellation at 50 ms boundaries. The corrected
+path ran from 2026-09-03 00:53:51 to 01:03:51 CST for 600.087 seconds and
+completed 5336/5336 responses. Timeout, CRC, Unit ID, Modbus exception,
+bad-frame and transport errors were zero; maximum data age was 242.700 ms and
+no write function was observed. Ten subsequent connect/monitor/disconnect
+cycles passed 10/10 (110/110 responses). Controlled port occupancy produced a
+clear UnauthorizedAccessException with no request sent or application crash.
 
 ## Known limitations and Stage 2 gate
 

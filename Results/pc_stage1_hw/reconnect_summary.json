@@ -7,8 +7,16 @@
   "tcp_cycle_responses": 110,
   "tcp_cycle_timeouts": 0,
   "tcp_cycle_protocol_errors": 0,
-  "rs232_reconnect_cycles": 0,
+  "rs232_reconnect_cycles": 10,
+  "rs232_reconnect_passed": 10,
+  "rs232_reconnect_failed": 0,
+  "rs232_cycle_requests": 110,
+  "rs232_cycle_responses": 110,
+  "rs232_cycle_timeouts": 0,
+  "rs232_cycle_crc_errors": 0,
+  "rs232_cycle_other_errors": 0,
   "rs485_reconnect_cycles": 0,
   "network_recovery": "NOT RUN — manual cable or adapter interruption pending",
-  "serial_unplug_recovery": "NOT_RUN"
+  "serial_port_occupancy": "PASS",
+  "serial_unplug_recovery": "NOT_RUN — physical unplug pending"
 }
