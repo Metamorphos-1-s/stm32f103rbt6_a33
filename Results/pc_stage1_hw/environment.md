@@ -24,9 +24,13 @@ Recorded during software validation on 2026-09-02.
 - A controlled port-occupancy test returned UnauthorizedAccessException with
   zero transmitted requests and no application crash; COM5 was released after
   the test.
+- Physical COM5 removal stopped reception, exposed stale data and exhausted
+  exactly three bounded reconnect attempts before FAULTED. Replugging COM5 and
+  initiating a new connection restored Map `0x0104` and completed 91/91
+  responses over 10.097 seconds with zero protocol or transport error.
 - COM3 remains unclassified and is not used.
 
 TCP completed a 600.040-second Core run, 10 connect/disconnect cycles and a
 WPF live-monitoring check. Network-interruption recovery and panel comparison
-remain open. RS232 unplug/recovery and panel comparison remain open. RS485
-remains NOT RUN.
+remain open. RS232 unplug/recovery passed; panel comparison remains open.
+RS485 remains NOT RUN.

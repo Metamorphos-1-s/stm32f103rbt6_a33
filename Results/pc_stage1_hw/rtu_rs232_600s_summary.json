@@ -48,5 +48,5 @@
   ,"monitoring_state_before_clean_shutdown": "Monitoring"
   ,"port_occupancy_test": "PASS — UnauthorizedAccessException, zero requests, application remained controlled"
   ,"panel_comparison": "NOT_RUN"
-  ,"adapter_unplug_recovery": "NOT_RUN"
+  ,"adapter_unplug_recovery": "PASS — bounded fault on unplug and clean user reconnect after replug"
 }

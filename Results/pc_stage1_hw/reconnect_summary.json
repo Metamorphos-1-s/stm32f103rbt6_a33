@@ -18,5 +18,7 @@
   "rs485_reconnect_cycles": 0,
   "network_recovery": "NOT RUN — manual cable or adapter interruption pending",
   "serial_port_occupancy": "PASS",
-  "serial_unplug_recovery": "NOT_RUN — physical unplug pending"
+  "serial_unplug_detection": "PASS — stale data and FAULTED after three bounded reconnect attempts",
+  "serial_unplug_reconnect_attempts": 3,
+  "serial_replug_recovery": "PASS — COM5 re-enumerated and a user-initiated connection completed 91/91 responses"
 }

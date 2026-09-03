@@ -77,5 +77,5 @@ connection cycles and a WPF live-data check. Network interruption recovery and
 panel comparison remain open; COM5 RTU awaits RS232/RS485 type confirmation.
 COM5 USB-RS232 now passes a 600.087-second read-only run, 10/10 connection
 cycles and controlled port-occupancy handling after a CH340 receive-path fix.
-Physical unplug recovery and panel comparison remain open. RS485 remains
-untested.
+Physical unplug/replug recovery passed; panel comparison remains open. RS485
+remains untested.
