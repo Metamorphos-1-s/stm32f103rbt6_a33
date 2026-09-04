@@ -72,6 +72,13 @@ configuration. Display conversion and formatting use integer arithmetic only.
 The UI hides live weight once data is stale while retaining the timestamp and
 last snapshot for diagnostics.
 
+The firmware realtime status word is a special fixed layout: register `0x0004`
+contains the low word and `0x0005` the high word, independent of configured
+multi-register word order. The decoder applies the stable (`bit 4`), zero
+(`bit 5`), tare-active (`bit 6`) and overload (`bit 7`) masks to that low-word
+layout. Other signed 32/64-bit fields continue to use the configured word
+order.
+
 Diagnostics expose TX/RX, timeout, CRC, MBAP/TID, Unit ID, exception, bad-frame,
 transport and reconnect counts; request/response snapshots are capped at 128
 bytes and the event list at 200 entries. Clearing diagnostics is local and

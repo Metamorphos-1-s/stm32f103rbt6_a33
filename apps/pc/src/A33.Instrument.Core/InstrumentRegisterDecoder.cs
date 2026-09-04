@@ -9,7 +9,10 @@ public static class InstrumentRegisterDecoder
         int Offset(string name) => RegisterMap.Get(name).Address - startAddress;
         var unit = (byte)values[Offset("active_unit")]; var decimals = (byte)values[Offset("decimal_places")];
         var displayCount = RegisterValueCodec.Int32(values[Offset("display_weight")..], order);
-        var flags = RegisterValueCodec.UInt32(values[Offset("status_flags")..], order);
+        // Firmware exposes status flags as low-word at 0x0004 and high-word at
+        // 0x0005, independent of the configurable multi-register word order.
+        var statusOffset = Offset("status_flags");
+        var flags = (uint)values[statusOffset] | ((uint)values[statusOffset + 1] << 16);
         var now = DateTimeOffset.Now;
         return new InstrumentSnapshot(
             DisplayCountToMicrograms(displayCount, unit, decimals),

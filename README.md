@@ -77,6 +77,10 @@ connection cycles and a WPF live-data check. A controlled full power-loss probe
 passed bounded fault detection, a new client reconnected cleanly after CH579
 restore, and a quick cable-only replug returned the same process to Monitoring.
 Panel comparison remains open.
+
+The WPF realtime status decoder now follows the firmware's fixed low-word
+layout for `STATUS_FLAGS`, so a stable instrument state is displayed as
+`STABLE` instead of being misread as `UNSTABLE`.
 COM5 USB-RS232 now passes a 600.087-second read-only run, 10/10 connection
 cycles and controlled port-occupancy handling after a CH340 receive-path fix.
 Physical unplug/replug recovery passed; panel comparison remains open. COM5
