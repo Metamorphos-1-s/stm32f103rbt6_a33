@@ -29,6 +29,10 @@ Recorded during software validation on 2026-09-02.
   initiating a new connection restored Map `0x0104` and completed 91/91
   responses over 10.097 seconds with zero protocol or transport error.
 - COM3 remains unclassified and is not used.
+- The user later switched COM5 to USB-RS485. After SerialDebug was closed, a
+  real FC03 short probe passed for 10.047 seconds with 91/91 responses, Map
+  `0x0104`, zero Timeout/CRC/Unit/exception/bad-frame/transport errors and no
+  write function observed. The RS485 600-second run is pending.
 
 TCP completed a 600.040-second Core run, 10 connect/disconnect cycles and a
 WPF live-monitoring check. Network-interruption recovery and panel comparison

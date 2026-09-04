@@ -118,7 +118,7 @@ same corrected JSON contract.
 | --- | --- | --- |
 | Modbus TCP | PARTIAL | 600.040 s and 5346/5346 responses PASS; 10/10 reconnect cycles, WPF live path, bounded interruption detection and quick cable-only same-process recovery PASS; panel comparison pending |
 | RTU RS232 | PARTIAL | COM5 600.087 s and 5336/5336 responses PASS; 10/10 cycles, occupancy and unplug/replug recovery PASS; panel comparison pending |
-| RTU RS485 | NOT RUN | CH340 ports detected but physical type/wiring unconfirmed |
+| RTU RS485 | PARTIAL | COM5 identified as USB-RS485; 10.047 s FC03 short probe 91/91 PASS; 600 s run pending |
 
 TCP hardware FC03 monitoring was executed; no write function was observed.
 The COM5 RTU probe sent one FC03 request but received no response before the
