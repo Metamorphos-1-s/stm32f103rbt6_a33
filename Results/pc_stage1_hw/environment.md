@@ -39,9 +39,8 @@ Recorded during software validation on 2026-09-02.
   with 110/110 responses and no errors.
 
 TCP completed a 600.040-second Core run, 10 connect/disconnect cycles and a
-WPF live-monitoring check. Network-interruption recovery and panel comparison
-remain open. RS232 unplug/recovery passed; panel comparison remains open.
-RS485 remains NOT RUN.
+WPF live-monitoring check. Quick cable-only recovery and panel comparison
+passed. RS232 and RS485 unplug/recovery and long runs also passed.
 
 During the controlled TCP interruption probe on 2026-09-04, the test included
 a full instrument/CH579 power loss. The client retained the last snapshot,
@@ -63,3 +62,7 @@ the bounded reconnect window. The same process recovered to MONITORING in a
 120.009-second run with 1035/1034 request/response counts, 2 reconnects, 1
 timeout, 1 transport error, zero CRC/MBAP/Unit/bad frames and maximum stale
 time 4770.364 ms. No write function was observed.
+
+The WPF panel comparison was completed after the realtime STATUS_FLAGS and
+display-source fixes: WPF and the instrument panel showed the same weight and
+stable state. No further hardware gate remains for this Stage 1 scope.

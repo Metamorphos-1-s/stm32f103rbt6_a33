@@ -46,7 +46,7 @@
   ,"monitoring_state_before_clean_shutdown": "Monitoring"
   ,"wpf_live_monitoring": "PASS"
   ,"wpf_observed_display": "approximately -0.03 g; net/gross approximately -0.04 g; tare 0.00 g"
-  ,"panel_comparison": "NOT_RUN"
+  ,"panel_comparison": "PASS — WPF and instrument panel display matched after realtime status/display-source fixes"
   ,"network_interruption_detection": "PASS — separate 180 s controlled probe faulted after power loss with bounded reconnect"
   ,"network_interruption_recovery": "NOT_RUN — target remained unreachable after power cycle"
   ,"network_cable_only_same_process_recovery": "PASS — quick replug returned same process to Monitoring"

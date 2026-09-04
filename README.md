@@ -70,7 +70,7 @@ The WPF application now implements read-only Modbus TCP and RTU monitoring with
 Map `0x0104` compatibility gating, exact signed-microgram decoding, bounded
 diagnostics, stale-data handling and bounded reconnect. Runtime APIs and the UI
 expose FC03 only. Software verification is complete; TCP/RS232/RS485 hardware
-validation remains pending as documented in `docs/PC_STAGE1_MODBUS_MONITORING.md`.
+validation evidence is documented in `docs/PC_STAGE1_MODBUS_MONITORING.md`.
 
 TCP hardware monitoring has passed a 600.040-second read-only run, 10/10
 connection cycles and a WPF live-data check. A controlled full power-loss probe
@@ -83,5 +83,7 @@ layout for `STATUS_FLAGS`, so a stable instrument state is displayed as
 `STABLE` instead of being misread as `UNSTABLE`.
 COM5 USB-RS232 now passes a 600.087-second read-only run, 10/10 connection
 cycles and controlled port-occupancy handling after a CH340 receive-path fix.
-Physical unplug/replug recovery passed; panel comparison remains open. COM5
-USB-RS485 now also passes a 600.069-second run and 10/10 connection cycles.
+Physical unplug/replug recovery passed, and WPF now matches the instrument
+panel for weight and stable state. COM5 USB-RS485 also passes a 600.069-second
+run and 10/10 connection cycles. PC Client Stage 1 hardware validation is
+complete.

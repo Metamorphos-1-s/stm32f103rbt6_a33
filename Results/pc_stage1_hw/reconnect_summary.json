@@ -1,5 +1,5 @@
 {
-  "status": "PARTIAL",
+  "status": "PASS",
   "tcp_reconnect_cycles": 10,
   "tcp_reconnect_passed": 10,
   "tcp_reconnect_failed": 0,
@@ -23,7 +23,7 @@
   "rs485_cycle_timeouts": 0,
   "rs485_cycle_crc_errors": 0,
   "rs485_cycle_other_errors": 0,
-  "network_recovery": "PARTIAL — cable-only interruption detected and bounded-fault behavior passed; reinsertion occurred after the three-attempt recovery window, so same-process recovery requires a quick-replug retest",
+  "network_recovery": "PASS — quick cable-only replug returned the same process to Monitoring; power-cycle recovery also passed with a new client",
   "network_cable_only_probe": "RECOVERY_WINDOW_MISSED",
   "network_cable_only_reconnect_attempts": 3,
   "network_cable_only_quick_replug": "PASS",

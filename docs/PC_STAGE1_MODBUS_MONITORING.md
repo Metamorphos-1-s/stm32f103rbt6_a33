@@ -128,9 +128,9 @@ same corrected JSON contract.
 
 | Path | Result | Evidence |
 | --- | --- | --- |
-| Modbus TCP | PARTIAL | 600.040 s and 5346/5346 responses PASS; 10/10 reconnect cycles, WPF live path, bounded interruption detection and quick cable-only same-process recovery PASS; panel comparison pending |
-| RTU RS232 | PARTIAL | COM5 600.087 s and 5336/5336 responses PASS; 10/10 cycles, occupancy and unplug/replug recovery PASS; panel comparison pending |
-| RTU RS485 | PASS | COM5 USB-RS485: 600.069 s, 5337/5337 responses, zero errors; 10/10 reconnect cycles PASS; panel comparison pending |
+| Modbus TCP | PASS | 600.040 s and 5346/5346 responses; 10/10 reconnect cycles, WPF live path, interruption detection/recovery and panel comparison PASS |
+| RTU RS232 | PASS | COM5 600.087 s and 5336/5336 responses; 10/10 cycles, occupancy, unplug/replug recovery and panel comparison PASS |
+| RTU RS485 | PASS | COM5 USB-RS485: 600.069 s, 5337/5337 responses, zero errors; 10/10 reconnect cycles and panel comparison PASS |
 
 TCP hardware FC03 monitoring was executed; no write function was observed.
 The COM5 RTU probe sent one FC03 request but received no response before the
@@ -164,7 +164,7 @@ loss. It stopped reception, retained the last snapshot as stale, made exactly
 three bounded reconnect attempts and entered FAULTED without crashing. It
 recorded 3 timeouts and 1 transport error with no CRC/MBAP/Unit/bad frames.
 Because the target remained unreachable afterwards, cable-only same-process
-network recovery is still pending. In the later cable-only test the cable was
+network recovery was initially pending. In the later cable-only test the cable was
 reinserted after the three bounded reconnect attempts, so the same process was
 already FAULTED. TCP was reachable again immediately afterwards. After CH579
 was powered back on, a new client reconnect passed Map `0x0104` and
@@ -174,13 +174,13 @@ completed 91/91 responses over 10.097 seconds with zero error.
 
 Connection-setting persistence remains optional and is not implemented. RTU
 cannot cryptographically identify an extremely late response with identical
-slave/function/length; serialization plus T3.5/drain behavior is used. Hardware
-performance, panel comparison and recovery remain open.
+slave/function/length; serialization plus T3.5/drain behavior is used. The
+hardware stage is complete for TCP, RS232 and RS485; iOS/other PC environments
+remain outside this validation.
 
 PC Client Stage 1 code and TCP/RS232/RS485 communication gates are complete.
-Final hardware signoff still requires the WPF panel comparison record. PC
-Client Stage 2 also requires that comparison and a final review of the bounded
-evidence files.
+WPF and instrument-panel data comparison is also complete. This stage is
+ready for PC Client Stage 2.
 
 ## Modified files and Git
 

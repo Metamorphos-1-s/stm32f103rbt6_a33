@@ -1,5 +1,6 @@
 {
   "status": "PASS",
+  "panel_comparison": "PASS — WPF and instrument panel display matched",
   "client_commit": "03e66260ee222521becf8bf1ecbc78566fb0d73e",
   "stm32_commit": "9e242c7649ad79ac4c3bae347b3259847f4bc09e",
   "adapter": "USB-SERIAL CH340 USB-RS485",
