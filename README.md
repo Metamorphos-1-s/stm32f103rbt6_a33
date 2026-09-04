@@ -76,7 +76,7 @@ TCP hardware monitoring has passed a 600.040-second read-only run, 10/10
 connection cycles and a WPF live-data check. A controlled full power-loss probe
 passed bounded fault detection, a new client reconnected cleanly after CH579
 restore, and a quick cable-only replug returned the same process to Monitoring.
-Panel comparison remains open.
+WPF and instrument-panel comparison passed.
 
 The WPF realtime status decoder now follows the firmware's fixed low-word
 layout for `STATUS_FLAGS`, so a stable instrument state is displayed as
@@ -87,3 +87,9 @@ Physical unplug/replug recovery passed, and WPF now matches the instrument
 panel for weight and stable state. COM5 USB-RS485 also passes a 600.069-second
 run and 10/10 connection cycles. PC Client Stage 1 hardware validation is
 complete.
+
+PC Stage 2A runtime-operation infrastructure (ZERO/TARE/CLEAR TARE/NET/GROSS)
+is developed on branch `pc-stage2a-runtime-operations`. Hardware writes remain
+gated pending explicit authorization and safe test-state confirmation. The
+automated gate is 33/33 PC tests, Debug/Release build clean, 23/23 WeChat
+tests, and 69 register definitions validated without overlap.

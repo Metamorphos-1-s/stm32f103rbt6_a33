@@ -33,4 +33,16 @@ public sealed class ReadOnlyModbusClient(IModbusTransport transport, byte unitId
         }
         finally { gate.Release(); }
     }
+
+    public async Task<ModbusExchangeResult> WriteMultipleAsync(ushort address, ReadOnlyMemory<ushort> values, CancellationToken cancellationToken = default)
+    {
+        await gate.WaitAsync(cancellationToken);
+        try
+        {
+            using var timeout=CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);timeout.CancelAfter(requestTimeout);
+            var pdu=ModbusRequestCodec.WriteMultiple( unitId,address,values.Span).AsSpan(1).ToArray();
+            LastExchange=await transport.ExchangeAsync(unitId,pdu,timeout.Token);var echo=ModbusResponseCodec.ValidateWriteMultiple(LastExchange.Pdu.Span);if(echo.Address!=address||echo.Quantity!=values.Length)throw new ModbusFrameException(ModbusFrameError.Malformed,"FC16 echo mismatch.");return LastExchange;
+        }
+        finally{gate.Release();}
+    }
 }

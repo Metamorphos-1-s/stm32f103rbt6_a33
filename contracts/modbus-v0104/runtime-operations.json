@@ -1,0 +1,6 @@
+{
+  "map_version": "0x0104",
+  "mailbox": {"base_address":"0x0040","register_count":12,"request_token":"0x0040","command_id":"0x0041","argument0":"0x0042","argument1":"0x0044","argument64":"0x0046","command_flags":"0x004A","execute":"0x004B","execute_value":"0xA55A","response_base":"0x004C","response_register_count":12,"response_token":"0x004C","command_result":"0x004D","command_state":"0x004E","last_command_id":"0x004F","response_value0":"0x0050","response_value64":"0x0052","response_status":"0x0056","submit_function":16,"read_function":3},
+  "operations": {"ZERO":{"command_id":1,"argument0":0,"requires_stable":true},"TARE":{"command_id":3,"argument0":0,"requires_stable":true},"CLEAR_TARE":{"command_id":4,"argument0":0,"requires_stable":true},"SET_WEIGHT_VIEW_NET":{"command_id":5,"argument0":0,"requires_stable":false},"SET_WEIGHT_VIEW_GROSS":{"command_id":5,"argument0":1,"requires_stable":false}},
+  "result_codes": {"OK":0,"ACCEPTED":1,"NOT_IMPLEMENTED":2,"INVALID_ARGUMENT":3,"INVALID_STATE":4,"NOT_STABLE":5,"NOT_CALIBRATED":6,"OUT_OF_ZERO_RANGE":7,"OVERLOAD":8,"BUSY":9,"STORAGE_UNAVAILABLE":10,"POWER_UNSAFE":11,"INTERNAL_ERROR":12,"TARE_ACTIVE":13,"ZERO_DISABLED":14,"CALIBRATION_INVALID":15}
+}

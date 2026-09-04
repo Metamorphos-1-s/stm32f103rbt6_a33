@@ -14,7 +14,7 @@ public static class ModbusResponseCodec
         for (var i = 0; i < result.Length; i++) result[i] = (ushort)(pdu[2 + 2 * i] << 8 | pdu[3 + 2 * i]);
         return result;
     }
-    public static void ValidateWriteSingle(ReadOnlySpan<byte> pdu){if(pdu.Length!=6||pdu[0]!=6)throw new FormatException("invalid FC06 response");}
-    public static ushort ValidateWriteMultiple(ReadOnlySpan<byte> pdu){if(pdu.Length!=6||pdu[0]!=16)throw new FormatException("invalid FC16 response");return (ushort)(pdu[4]<<8|pdu[5]);}
+    public static void ValidateWriteSingle(ReadOnlySpan<byte> pdu){if(pdu.Length!=5||pdu[0]!=6)throw new FormatException("invalid FC06 response");}
+    public static (ushort Address, ushort Quantity) ValidateWriteMultiple(ReadOnlySpan<byte> pdu){if(pdu.Length!=5||pdu[0]!=16)throw new FormatException("invalid FC16 response");return ((ushort)(pdu[1]<<8|pdu[2]),(ushort)(pdu[3]<<8|pdu[4]));}
     public static ModbusException? Exception(ReadOnlySpan<byte> pdu)=>pdu.Length>=2&&(pdu[0]&0x80)!=0?new ModbusException((byte)(pdu[0]&0x7f),pdu[1]):null;
 }

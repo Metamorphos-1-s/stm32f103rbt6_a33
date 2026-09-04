@@ -1,0 +1,1 @@
+{"status":"NOT RUN — explicit hardware-operation authorization required","transport":"Modbus RTU RS232","endpoint":"COM5","settings":"115200 8N1 unit 1","operations":{"ZERO":"NOT RUN","TARE":"NOT RUN","CLEAR_TARE":"NOT RUN","NET_GROSS":"NOT RUN"},"writes_sent":0,"save_or_calibration_sent":false}

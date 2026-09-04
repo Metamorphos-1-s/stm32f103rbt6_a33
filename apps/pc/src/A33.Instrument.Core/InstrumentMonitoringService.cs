@@ -8,8 +8,8 @@ namespace A33.Instrument.Core;
 public sealed class InstrumentMonitoringService(IModbusTransportFactory? transportFactory = null) : IAsyncDisposable
 {
     private readonly IModbusTransportFactory factory = transportFactory ?? new ModbusTransportFactory();
-    private readonly SemaphoreSlim lifecycle = new(1,1);private IModbusTransport? transport;private ReadOnlyModbusClient? client;private MonitoringOptions? options;private CancellationTokenSource? monitorCancellation;private Task? monitorTask;private long generation;
-    public MonitoringConnectionState State {get;private set;}=MonitoringConnectionState.Disconnected;public InstrumentSnapshot? Snapshot{get;private set;}public CommunicationDiagnostics Diagnostics{get;}=new();public WordOrder WordOrder{get;private set;}=WordOrder.HighWordFirst;public ushort MapVersion{get;private set;}public string Endpoint=>transport?.Endpoint??"Not connected";public bool IsStale=>Snapshot is null||DateTimeOffset.Now-Snapshot.CapturedAt>TimeSpan.FromSeconds(3);public event EventHandler? Updated;
+    private readonly SemaphoreSlim lifecycle = new(1,1);private readonly SemaphoreSlim commandGate=new(1,1);private IModbusTransport? transport;private ReadOnlyModbusClient? client;private MonitoringOptions? options;private CancellationTokenSource? monitorCancellation;private Task? monitorTask;private long generation;private bool commandInProgress;
+    public MonitoringConnectionState State {get;private set;}=MonitoringConnectionState.Disconnected;public InstrumentSnapshot? Snapshot{get;private set;}public CommunicationDiagnostics Diagnostics{get;}=new();public WordOrder WordOrder{get;private set;}=WordOrder.HighWordFirst;public ushort MapVersion{get;private set;}public string Endpoint=>transport?.Endpoint??"Not connected";public MonitoringOptions? CurrentOptions=>options;public bool IsStale=>Snapshot is null||DateTimeOffset.Now-Snapshot.CapturedAt>TimeSpan.FromSeconds(3);public event EventHandler? Updated;
     private void SetState(MonitoringConnectionState state){State=state;Updated?.Invoke(this,EventArgs.Empty);}
 
     public async Task ConnectAsync(MonitoringOptions connectionOptions,CancellationToken cancellationToken=default)
@@ -34,7 +34,7 @@ public sealed class InstrumentMonitoringService(IModbusTransportFactory? transpo
         var clock=Stopwatch.StartNew();long nextFast=0,nextSlow=0;
         while(!token.IsCancellationRequested&&expectedGeneration==generation)
         {
-            try{var now=clock.ElapsedMilliseconds;if(now>=nextFast){await PollRealtimeAsync(token);nextFast=now+options!.PollIntervalMs;}if(now>=nextSlow){await PollSlowAndCheckweighAsync(token);nextSlow=now+1000;}if(State==MonitoringConnectionState.Degraded)SetState(MonitoringConnectionState.Monitoring);var delay=Math.Max(10,Math.Min(nextFast,nextSlow)-clock.ElapsedMilliseconds);await Task.Delay(TimeSpan.FromMilliseconds(delay),token);}
+            try{if(commandInProgress){await Task.Delay(10,token);continue;}var now=clock.ElapsedMilliseconds;if(now>=nextFast){await PollRealtimeAsync(token);nextFast=now+options!.PollIntervalMs;}if(now>=nextSlow){await PollSlowAndCheckweighAsync(token);nextSlow=now+1000;}if(State==MonitoringConnectionState.Degraded)SetState(MonitoringConnectionState.Monitoring);var delay=Math.Max(10,Math.Min(nextFast,nextSlow)-clock.ElapsedMilliseconds);await Task.Delay(TimeSpan.FromMilliseconds(delay),token);}
             catch(OperationCanceledException)when(token.IsCancellationRequested){break;}
             catch(OperationCanceledException error){Diagnostics.Error(error);SetState(MonitoringConnectionState.Degraded);await Task.Delay(50,token);}
             catch(Exception error)when(error is IOException or SocketException or InvalidOperationException){Diagnostics.Error(error);if(!await TryReconnectAsync(expectedGeneration,token))break;}
@@ -55,6 +55,8 @@ public sealed class InstrumentMonitoringService(IModbusTransportFactory? transpo
         Snapshot=Snapshot with{DisplayLocked=displayValues[RegisterMap.Get("display_locked").Address-display.Address]!=0,ConfigDirty=dirtyValue,FaultMask=faultValue,CheckweighState=alarmValues[RegisterMap.Get("checkweigh_state").Address-alarmFirst.Address]};Updated?.Invoke(this,EventArgs.Empty);
     }
     private async Task<ushort[]> ReadAsync(ushort address,ushort count,CancellationToken token){if(client is null)throw new InvalidOperationException("Client is not connected.");Diagnostics.RequestStarted();var result=await client.ReadHoldingAsync(address,count,token);if(client.LastExchange is not null)Diagnostics.ExchangeCompleted(client.LastExchange);return result;}
+    internal void ReplaceSnapshot(InstrumentSnapshot snapshot){Snapshot=snapshot;Updated?.Invoke(this,EventArgs.Empty);}
+    internal async Task<T> WithCommandExclusiveAsync<T>(Func<ReadOnlyModbusClient,Task<T>> operation,CancellationToken token=default){if(State!=MonitoringConnectionState.Monitoring||Snapshot is null||IsStale||MapVersion!=RegisterMap.Version)throw new InvalidOperationException("Runtime operation requires a fresh compatible monitoring connection.");await commandGate.WaitAsync(token);commandInProgress=true;try{if(client is null)throw new InvalidOperationException("Client is not connected.");return await operation(client);}finally{commandInProgress=false;commandGate.Release();}}
 
     private async Task<bool> TryReconnectAsync(long expectedGeneration,CancellationToken token)
     {
