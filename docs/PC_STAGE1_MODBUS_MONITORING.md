@@ -116,7 +116,7 @@ same corrected JSON contract.
 
 | Path | Result | Evidence |
 | --- | --- | --- |
-| Modbus TCP | PARTIAL | 600.040 s and 5346/5346 responses PASS; 10/10 reconnect cycles, WPF live path, bounded interruption detection and post-power-cycle reconnect PASS; cable-only same-process recovery and panel comparison pending |
+| Modbus TCP | PARTIAL | 600.040 s and 5346/5346 responses PASS; 10/10 reconnect cycles, WPF live path and bounded interruption detection PASS; cable-only same-process recovery window missed and panel comparison pending |
 | RTU RS232 | PARTIAL | COM5 600.087 s and 5336/5336 responses PASS; 10/10 cycles, occupancy and unplug/replug recovery PASS; panel comparison pending |
 | RTU RS485 | NOT RUN | CH340 ports detected but physical type/wiring unconfirmed |
 
@@ -149,8 +149,10 @@ loss. It stopped reception, retained the last snapshot as stale, made exactly
 three bounded reconnect attempts and entered FAULTED without crashing. It
 recorded 3 timeouts and 1 transport error with no CRC/MBAP/Unit/bad frames.
 Because the target remained unreachable afterwards, cable-only same-process
-network recovery is still pending. After CH579 was powered back on, a new
-client reconnect passed Map `0x0104` and
+network recovery is still pending. In the later cable-only test the cable was
+reinserted after the three bounded reconnect attempts, so the same process was
+already FAULTED. TCP was reachable again immediately afterwards. After CH579
+was powered back on, a new client reconnect passed Map `0x0104` and
 completed 91/91 responses over 10.097 seconds with zero error.
 
 ## Known limitations and Stage 2 gate

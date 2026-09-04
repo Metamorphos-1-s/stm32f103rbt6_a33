@@ -44,3 +44,8 @@ not assessed. After CH579 was powered back on, a new client recovery probe
 completed 91/91 responses over 10.021 seconds with Map `0x0104` and zero
 Timeout/CRC/MBAP/Unit/bad-frame/transport errors. This is a clean
 post-power-cycle reconnect, not same-process automatic recovery.
+
+On 2026-09-05 a cable-only test kept CH579/instrument powered. The client
+detected the loss, retained stale data, attempted three reconnects and entered
+FAULTED. The cable was reinserted after that bounded window, so same-process
+recovery was not observed; TCP was reachable again immediately afterwards.
