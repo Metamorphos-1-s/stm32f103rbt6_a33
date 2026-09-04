@@ -116,7 +116,7 @@ same corrected JSON contract.
 
 | Path | Result | Evidence |
 | --- | --- | --- |
-| Modbus TCP | PARTIAL | 600.040 s and 5346/5346 responses PASS; 10/10 reconnect cycles and WPF live path PASS; network interruption and panel comparison pending |
+| Modbus TCP | PARTIAL | 600.040 s and 5346/5346 responses PASS; 10/10 reconnect cycles, WPF live path and bounded interruption detection PASS; network recovery and panel comparison pending |
 | RTU RS232 | PARTIAL | COM5 600.087 s and 5336/5336 responses PASS; 10/10 cycles, occupancy and unplug/replug recovery PASS; panel comparison pending |
 | RTU RS485 | NOT RUN | CH340 ports detected but physical type/wiring unconfirmed |
 
@@ -144,9 +144,12 @@ bad-frame and transport errors were zero; maximum data age was 242.700 ms and
 no write function was observed. Ten subsequent connect/monitor/disconnect
 cycles passed 10/10 (110/110 responses). Controlled port occupancy produced a
 clear UnauthorizedAccessException with no request sent or application crash.
-Physical unplug stopped reception, retained the last snapshot as stale, made
-exactly three bounded reconnect attempts and entered FAULTED without crashing.
-After COM5 re-enumerated, a user-initiated reconnect passed Map `0x0104` and
+The controlled TCP interruption probe included a full instrument/CH579 power
+loss. It stopped reception, retained the last snapshot as stale, made exactly
+three bounded reconnect attempts and entered FAULTED without crashing. It
+recorded 3 timeouts and 1 transport error with no CRC/MBAP/Unit/bad frames.
+Because the target remained unreachable afterwards, cable-only network
+recovery is still pending. After COM5 re-enumerated, a user-initiated reconnect passed Map `0x0104` and
 completed 91/91 responses over 10.097 seconds with zero error.
 
 ## Known limitations and Stage 2 gate

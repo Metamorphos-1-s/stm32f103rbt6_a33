@@ -34,3 +34,10 @@ TCP completed a 600.040-second Core run, 10 connect/disconnect cycles and a
 WPF live-monitoring check. Network-interruption recovery and panel comparison
 remain open. RS232 unplug/recovery passed; panel comparison remains open.
 RS485 remains NOT RUN.
+
+During the controlled TCP interruption probe on 2026-09-04, the test included
+a full instrument/CH579 power loss. The client retained the last snapshot,
+detected stale data, attempted exactly three reconnects, then entered FAULTED;
+the probe recorded 3 timeouts and 1 transport error with no CRC/MBAP/Unit/bad
+frames. The target remained unreachable afterwards, so cable-only recovery was
+not assessed.
