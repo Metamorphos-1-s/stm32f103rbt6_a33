@@ -79,6 +79,11 @@ multi-register word order. The decoder applies the stable (`bit 4`), zero
 layout. Other signed 32/64-bit fields continue to use the configured word
 order.
 
+The final panel display value comes from realtime `0x0000–0x0001`. The slower
+display-condition block is used for lock/release diagnostics only and never
+overwrites the live panel value; doing so would mix two sampling epochs and can
+make a stable 0.01 g panel display flicker with a stale 0.00 g diagnostic value.
+
 Diagnostics expose TX/RX, timeout, CRC, MBAP/TID, Unit ID, exception, bad-frame,
 transport and reconnect counts; request/response snapshots are capped at 128
 bytes and the event list at 200 entries. Clearing diagnostics is local and

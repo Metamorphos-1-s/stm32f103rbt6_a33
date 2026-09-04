@@ -50,7 +50,9 @@ public sealed class InstrumentMonitoringService(IModbusTransportFactory? transpo
     {
         if(Snapshot is null)return;var dirty=RegisterMap.Get("config_dirty");var fault=RegisterMap.Get("fault_mask");var display=RegisterMap.Get("display_condition_state");var displayMass=RegisterMap.Get("conditioned_display_mass_ug");var alarmFirst=RegisterMap.Get("alarm_limit_enable");var alarmLast=RegisterMap.Get("alarm_config_dirty");
         var dirtyValue=(await ReadAsync(dirty.Address,dirty.RegisterCount,token))[0]!=0;var faultValue=RegisterValueCodec.UInt32(await ReadAsync(fault.Address,fault.RegisterCount,token),WordOrder);var displayValues=await ReadAsync(display.Address,(ushort)(displayMass.Address+displayMass.RegisterCount-display.Address),token);var alarmValues=await ReadAsync(alarmFirst.Address,(ushort)(alarmLast.Address+alarmLast.RegisterCount-alarmFirst.Address),token);
-        Snapshot=Snapshot with{DisplayMassUg=RegisterValueCodec.Int64(displayValues.AsSpan(displayMass.Address-display.Address),WordOrder),DisplayLocked=displayValues[RegisterMap.Get("display_locked").Address-display.Address]!=0,ConfigDirty=dirtyValue,FaultMask=faultValue,CheckweighState=alarmValues[RegisterMap.Get("checkweigh_state").Address-alarmFirst.Address]};Updated?.Invoke(this,EventArgs.Empty);
+        // 0x0000 is the authoritative final panel value. The display-condition
+        // block is diagnostic and must not overwrite it with a slower snapshot.
+        Snapshot=Snapshot with{DisplayLocked=displayValues[RegisterMap.Get("display_locked").Address-display.Address]!=0,ConfigDirty=dirtyValue,FaultMask=faultValue,CheckweighState=alarmValues[RegisterMap.Get("checkweigh_state").Address-alarmFirst.Address]};Updated?.Invoke(this,EventArgs.Empty);
     }
     private async Task<ushort[]> ReadAsync(ushort address,ushort count,CancellationToken token){if(client is null)throw new InvalidOperationException("Client is not connected.");Diagnostics.RequestStarted();var result=await client.ReadHoldingAsync(address,count,token);if(client.LastExchange is not null)Diagnostics.ExchangeCompleted(client.LastExchange);return result;}
 
