@@ -20,6 +20,8 @@
   "network_power_cycle_faulted": "PASS",
   "network_power_cycle_reconnect_attempts": 3,
   "network_power_cycle_timeouts": 3,
+  "network_power_cycle_recovery": "PASS — after CH579 power restore, a new client connection completed 91/91 responses with zero errors",
+  "network_power_cycle_recovery_duration_s": 10.0205,
   "serial_port_occupancy": "PASS",
   "serial_unplug_detection": "PASS — stale data and FAULTED after three bounded reconnect attempts",
   "serial_unplug_reconnect_attempts": 3,

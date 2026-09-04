@@ -40,4 +40,7 @@ a full instrument/CH579 power loss. The client retained the last snapshot,
 detected stale data, attempted exactly three reconnects, then entered FAULTED;
 the probe recorded 3 timeouts and 1 transport error with no CRC/MBAP/Unit/bad
 frames. The target remained unreachable afterwards, so cable-only recovery was
-not assessed.
+not assessed. After CH579 was powered back on, a new client recovery probe
+completed 91/91 responses over 10.021 seconds with Map `0x0104` and zero
+Timeout/CRC/MBAP/Unit/bad-frame/transport errors. This is a clean
+post-power-cycle reconnect, not same-process automatic recovery.
