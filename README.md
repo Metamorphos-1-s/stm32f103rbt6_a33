@@ -79,5 +79,5 @@ restore, and a quick cable-only replug returned the same process to Monitoring.
 Panel comparison remains open.
 COM5 USB-RS232 now passes a 600.087-second read-only run, 10/10 connection
 cycles and controlled port-occupancy handling after a CH340 receive-path fix.
-Physical unplug/replug recovery passed; panel comparison remains open. RS485
-remains untested.
+Physical unplug/replug recovery passed; panel comparison remains open. COM5
+USB-RS485 now also passes a 600.069-second run and 10/10 connection cycles.

@@ -33,6 +33,10 @@ Recorded during software validation on 2026-09-02.
   real FC03 short probe passed for 10.047 seconds with 91/91 responses, Map
   `0x0104`, zero Timeout/CRC/Unit/exception/bad-frame/transport errors and no
   write function observed. The RS485 600-second run is pending.
+- RS485 then passed a 600.069-second run with 5337/5337 responses, zero
+  Timeout/CRC/Unit/exception/bad-frame/transport errors and maximum data age
+  239.078 ms. Ten additional connect/monitor/disconnect cycles passed 10/10
+  with 110/110 responses and no errors.
 
 TCP completed a 600.040-second Core run, 10 connect/disconnect cycles and a
 WPF live-monitoring check. Network-interruption recovery and panel comparison

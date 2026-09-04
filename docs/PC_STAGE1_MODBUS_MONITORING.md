@@ -118,7 +118,7 @@ same corrected JSON contract.
 | --- | --- | --- |
 | Modbus TCP | PARTIAL | 600.040 s and 5346/5346 responses PASS; 10/10 reconnect cycles, WPF live path, bounded interruption detection and quick cable-only same-process recovery PASS; panel comparison pending |
 | RTU RS232 | PARTIAL | COM5 600.087 s and 5336/5336 responses PASS; 10/10 cycles, occupancy and unplug/replug recovery PASS; panel comparison pending |
-| RTU RS485 | PARTIAL | COM5 identified as USB-RS485; 10.047 s FC03 short probe 91/91 PASS; 600 s run pending |
+| RTU RS485 | PASS | COM5 USB-RS485: 600.069 s, 5337/5337 responses, zero errors; 10/10 reconnect cycles PASS; panel comparison pending |
 
 TCP hardware FC03 monitoring was executed; no write function was observed.
 The COM5 RTU probe sent one FC03 request but received no response before the
@@ -165,10 +165,10 @@ cannot cryptographically identify an extremely late response with identical
 slave/function/length; serialization plus T3.5/drain behavior is used. Hardware
 performance, panel comparison and recovery remain open.
 
-PC Client Stage 1 code is complete, but hardware validation is pending. PC
-Client Stage 2 requires TCP hardware PASS plus at least one actual RTU physical
-link PASS, including 600-second monitoring, reconnect/recovery and confirmation
-that no write function was observed.
+PC Client Stage 1 code and TCP/RS232/RS485 communication gates are complete.
+Final hardware signoff still requires the WPF panel comparison record. PC
+Client Stage 2 also requires that comparison and a final review of the bounded
+evidence files.
 
 ## Modified files and Git
 
