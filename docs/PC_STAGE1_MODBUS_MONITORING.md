@@ -116,7 +116,7 @@ same corrected JSON contract.
 
 | Path | Result | Evidence |
 | --- | --- | --- |
-| Modbus TCP | PARTIAL | 600.040 s and 5346/5346 responses PASS; 10/10 reconnect cycles, WPF live path and bounded interruption detection PASS; cable-only same-process recovery window missed and panel comparison pending |
+| Modbus TCP | PARTIAL | 600.040 s and 5346/5346 responses PASS; 10/10 reconnect cycles, WPF live path, bounded interruption detection and quick cable-only same-process recovery PASS; panel comparison pending |
 | RTU RS232 | PARTIAL | COM5 600.087 s and 5336/5336 responses PASS; 10/10 cycles, occupancy and unplug/replug recovery PASS; panel comparison pending |
 | RTU RS485 | NOT RUN | CH340 ports detected but physical type/wiring unconfirmed |
 
@@ -131,7 +131,10 @@ Unit ID, exception, bad-frame, transport or reconnect errors. Maximum sampled
 data age was 288.534 ms. Map `0x0104` and HighWordFirst were read from the
 device. Ten subsequent connect/monitor/disconnect cycles passed 10/10. The WPF
 path entered MONITORING, displayed live g values and Map `0x0104`, then stopped,
-disconnected and exited without a remaining process.
+disconnected and exited without a remaining process. A quick cable-only replug
+test returned the same process to MONITORING with 1035/1034 responses, two
+reconnects, one timeout, one transport error, zero CRC/MBAP/Unit/bad frames and
+maximum stale time 4770.364 ms.
 
 COM5 was identified as USB-RS232 with CH340 `VID_1A86&PID_7523`. A firmware
 Python FC03 cross-check first confirmed Map `0x0104`. The original .NET

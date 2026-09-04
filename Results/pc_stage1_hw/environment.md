@@ -49,3 +49,9 @@ On 2026-09-05 a cable-only test kept CH579/instrument powered. The client
 detected the loss, retained stale data, attempted three reconnects and entered
 FAULTED. The cable was reinserted after that bounded window, so same-process
 recovery was not observed; TCP was reachable again immediately afterwards.
+
+A repeat quick-replug test on 2026-09-05 removed and restored the cable within
+the bounded reconnect window. The same process recovered to MONITORING in a
+120.009-second run with 1035/1034 request/response counts, 2 reconnects, 1
+timeout, 1 transport error, zero CRC/MBAP/Unit/bad frames and maximum stale
+time 4770.364 ms. No write function was observed.

@@ -49,4 +49,5 @@
   ,"panel_comparison": "NOT_RUN"
   ,"network_interruption_detection": "PASS — separate 180 s controlled probe faulted after power loss with bounded reconnect"
   ,"network_interruption_recovery": "NOT_RUN — target remained unreachable after power cycle"
+  ,"network_cable_only_same_process_recovery": "PASS — quick replug returned same process to Monitoring"
 }
