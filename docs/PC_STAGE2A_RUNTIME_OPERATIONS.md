@@ -73,3 +73,12 @@ subsequent writes on that transport were stopped. The RTU receiver was fixed to
 read the complete FC06/FC16 response length; the test must be repeated with a
 fresh WPF process before continuing the matrix. See
 `Results/pc_stage2a_hw/rs485_runtime_operations.json`.
+
+After the RTU fix and new-mainboard replacement, RS485 on COM5 passed the
+complete command matrix: ZERO 5/5, five TARE cycles including GROSS/NET/CLEAR
+TARE, and one fast-double-click suppression test for each operation. The
+post-command 600-second read-only window also passed with no timeout, CRC,
+MBAP, unit, exception, bad-frame, transport or reconnect errors. Evidence is
+in `Results/pc_stage2a_hw/rs485_new_board_zero.json` and
+`Results/pc_stage2a_hw/rs485_post_command_600s.json`. TCP and RS232 hardware
+matrices remain pending.

@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "transport": "Modbus RTU RS485",
+  "endpoint": "COM5",
+  "durationSeconds": 600,
+  "diagnostics": {
+    "TxRequests": 22476,
+    "RxResponses": 22475,
+    "Timeouts": 0,
+    "CrcErrors": 0,
+    "MbapErrors": 0,
+    "UnitErrors": 0,
+    "Exceptions": 0,
+    "BadFrames": 0,
+    "TransportErrors": 0,
+    "Reconnects": 0,
+    "LastError": ""
+  },
+  "unexpectedFc16": 0,
+  "finalState": {
+    "weight": "-0.07 g",
+    "stable": true,
+    "tare": "0.00",
+    "gross": "-0.09",
+    "net": "-0.09",
+    "zero": true,
+    "panelMatch": true
+  },
+  "safeState": true,
+  "saveOrCalibrationSent": false
+}
