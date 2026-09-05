@@ -1,0 +1,13 @@
+{
+  "status": "FAIL — inconsistent/invalid TCP ZERO business results",
+  "transport": "Modbus TCP",
+  "endpoint": "192.168.1.100:502",
+  "unitId": 1,
+  "observedResults": [
+    {"transaction":"0x0020","resultCode":8,"meaning":"OVERLOAD","panel":"-0.07 g; local ZERO permitted"},
+    {"transaction":"0x002C","resultCode":96,"meaning":"not defined by fixed firmware contract"}
+  ],
+  "readOnlyDiagnostics": {"timeouts":0,"crcErrors":0,"mbapErrors":0,"unitErrors":0,"exceptions":0,"badFrames":0,"transportErrors":0,"reconnects":0},
+  "action": "All TCP writes paused; do not continue ZERO/TARE/NET/GROSS/CLEAR TARE",
+  "requires": "Capture mailbox 0x004C-0x0057 raw FC03 response and verify CH579 TCP forwarding/device identity before any further write"
+}
