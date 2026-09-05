@@ -62,3 +62,14 @@ NET view and an empty platform. Run TCP, RS232 and RS485 independently with
 five successful operations per supported command, state readback, panel
 comparison and post-command 600-second read-only monitoring. Never use SAVE or
 calibration. Stage 2B starts only after all evidence is complete.
+
+## Hardware validation status
+
+Hardware authorization was received for the non-production test setup. The
+first RS485 ZERO attempt on COM5 changed the instrument to `0.00 g STABLE` and
+matched the physical panel, but the client reported `RTU CRC mismatch` while
+parsing the FC16 response. The attempt is not accepted as a PASS and all
+subsequent writes on that transport were stopped. The RTU receiver was fixed to
+read the complete FC06/FC16 response length; the test must be repeated with a
+fresh WPF process before continuing the matrix. See
+`Results/pc_stage2a_hw/rs485_runtime_operations.json`.
