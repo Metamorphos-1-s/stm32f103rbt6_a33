@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "transport": "Modbus RTU RS485",
+  "endpoint": "COM5",
+  "settings": "115200 8N1 unit 1",
+  "zeroAttempts": 5,
+  "zeroPassed": 5,
+  "transactions": ["0x0001", "0x0002", "0x0003", "0x0004", "0x0005"],
+  "finalState": {
+    "weight": "0.00 g",
+    "stable": true,
+    "zero": true,
+    "tare": "0.00",
+    "panelMatch": true
+  },
+  "diagnostics": {
+    "TxRequests": 2144,
+    "RxResponses": 2144,
+    "Timeouts": 0,
+    "CrcErrors": 0,
+    "MbapErrors": 0,
+    "UnitErrors": 0,
+    "Exceptions": 0,
+    "BadFrames": 0,
+    "TransportErrors": 0,
+    "Reconnects": 0,
+    "LastError": ""
+  },
+  "saveOrCalibrationSent": false
+}
