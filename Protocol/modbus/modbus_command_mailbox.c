@@ -58,8 +58,8 @@ static bool MapCommand(uint16_t id, CommandId *command)
 
 static ModbusRegisterResult Execute(CommandSource source)
 {
-    CommandRequest request;
-    CommandResponse response;
+    CommandRequest request = {0};
+    CommandResponse response = {0};
     CommandId command;
     if (s_mailbox.request_token == 0U) return MODBUS_REGISTER_ILLEGAL_VALUE;
     if (s_mailbox.have_response &&
@@ -83,7 +83,7 @@ static ModbusRegisterResult Execute(CommandSource source)
             ((int64_t)(uint64_t)s_mailbox.argument64[1] << 32U) |
             ((int64_t)(uint64_t)s_mailbox.argument64[2] << 16U) |
             s_mailbox.argument64[3];
-        (void)CommandService_Execute(&request, &response);
+        response.result = CommandService_Execute(&request, &response);
     }
     s_mailbox.response_token = s_mailbox.request_token;
     s_mailbox.command_result = (uint16_t)response.result;

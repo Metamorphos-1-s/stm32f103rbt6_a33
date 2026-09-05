@@ -187,6 +187,8 @@ CommandResult CommunicationManager_RequestApply(void)
 
 CommandResult CommunicationManager_RequestApplyForSource(CommandSource source)
 {
+    if ((uint32_t)source >= (uint32_t)COMMAND_SOURCE_COUNT)
+        return COMMAND_RESULT_INVALID_ARGUMENT;
     if (s_apply_requested || (s_state == COMM_STATE_ERROR) ||
         PersistenceManager_IsBusy()) return COMMAND_RESULT_BUSY;
     if (!ModbusRegisterModel_GetPendingCommunicationForSource(source,

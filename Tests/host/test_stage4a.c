@@ -280,6 +280,44 @@ static CommandResult Stage4A_Command(CommandId id, CommandSource source,
     return Stage4A_CommandEx(id, source, value0, value1, 0U, 0, response);
 }
 
+static void TestCommandSourceBoundsAndUsart3(void)
+{
+    DeviceConfig config;
+    CommandResponse response;
+    CommandRequest request = {COMMAND_GET_WEIGHT, COMMAND_SOURCE_COUNT,
+                              0, 0, 0U, 0};
+    (void)memset(&response, 0xA5, sizeof(response));
+    Stage4A_InitRuntime(&config, true);
+    CHECK4(CommandService_Execute(&request, &response) ==
+           COMMAND_RESULT_INVALID_ARGUMENT);
+    CHECK4(response.result == COMMAND_RESULT_INVALID_ARGUMENT);
+    CHECK4(response.value0 == 0 && response.value1 == 0 &&
+           response.status_flags == 0U);
+    request.source = (CommandSource)0x7FU;
+    (void)memset(&response, 0x5A, sizeof(response));
+    CHECK4(CommandService_Execute(&request, &response) ==
+           COMMAND_RESULT_INVALID_ARGUMENT);
+    CHECK4(response.result == COMMAND_RESULT_INVALID_ARGUMENT);
+    CHECK4(response.value0 == 0 && response.value1 == 0 &&
+           response.status_flags == 0U);
+    Stage4A_FeedStable(100000);
+    CHECK4(Stage4A_Command(COMMAND_GET_WEIGHT,
+        COMMAND_SOURCE_MODBUS_USART3, 0, 0, &response) !=
+        COMMAND_RESULT_INVALID_ARGUMENT);
+    CHECK4(Stage4A_Command(COMMAND_SET_WEIGHT_VIEW,
+        COMMAND_SOURCE_MODBUS_USART3, 0, 0, &response) ==
+        COMMAND_RESULT_OK);
+    CHECK4(Stage4A_Command(COMMAND_ZERO,
+        COMMAND_SOURCE_MODBUS_USART3, 0, 0, &response) !=
+        COMMAND_RESULT_INVALID_ARGUMENT);
+    CHECK4(Stage4A_Command(COMMAND_TARE,
+        COMMAND_SOURCE_MODBUS_USART3, 0, 0, &response) !=
+        COMMAND_RESULT_INVALID_ARGUMENT);
+    CHECK4(Stage4A_Command(COMMAND_CLEAR_TARE,
+        COMMAND_SOURCE_MODBUS_USART3, 0, 0, &response) !=
+        COMMAND_RESULT_INVALID_ARGUMENT);
+}
+
 static void TestCommandAndConfig(void)
 {
     DeviceConfig config;
@@ -1784,6 +1822,7 @@ static void TestCalibrationSixDigitEdit(void)
 
 unsigned int Stage4A_RunTests(void)
 {
+    TestCommandSourceBoundsAndUsart3();
     TestKeyMapAndService();
     TestDisplayFormattingAndModel();
     TestCommandAndConfig();

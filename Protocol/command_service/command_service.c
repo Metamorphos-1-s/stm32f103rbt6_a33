@@ -369,13 +369,18 @@ CommandResult CommandService_Execute(const CommandRequest *request,
     const SystemContext *context;
     CommandResult result;
 
-    if ((request == NULL) || (response == NULL) ||
-        ((uint32_t)request->id >= (uint32_t)COMMAND_COUNT) ||
-        ((uint32_t)request->source > (uint32_t)COMMAND_SOURCE_DIAGNOSTIC))
+    if (response == NULL)
     {
         return COMMAND_RESULT_INVALID_ARGUMENT;
     }
     (void)memset(response, 0, sizeof(*response));
+    response->result = COMMAND_RESULT_INVALID_ARGUMENT;
+    if ((request == NULL) ||
+        ((uint32_t)request->id >= (uint32_t)COMMAND_COUNT) ||
+        ((uint32_t)request->source >= (uint32_t)COMMAND_SOURCE_COUNT))
+    {
+        return COMMAND_RESULT_INVALID_ARGUMENT;
+    }
     if ((PersistenceManager_IsBusy() || WeighingProfileManager_IsBusy() ||
          CommandService_CommunicationBusy()) &&
         ((request->id == COMMAND_ZERO) ||
@@ -901,7 +906,8 @@ bool CommandService_SetStagedConfig(const DeviceConfig *candidate)
 bool CommandService_SetStagedConfigForSource(const DeviceConfig *candidate,
                                              CommandSource source)
 {
-    if ((candidate == NULL) || (s_config_owner_valid &&
+    if (((uint32_t)source >= (uint32_t)COMMAND_SOURCE_COUNT) ||
+        (candidate == NULL) || (s_config_owner_valid &&
         (s_config_owner != source)))
         return false;
     s_staged_config = *candidate;
@@ -913,7 +919,7 @@ bool CommandService_SetStagedConfigForSource(const DeviceConfig *candidate,
 
 CommandResult CommandService_ReserveConfigOwner(CommandSource source)
 {
-    if ((uint32_t)source > (uint32_t)COMMAND_SOURCE_MODBUS_USART3)
+    if ((uint32_t)source >= (uint32_t)COMMAND_SOURCE_COUNT)
         return COMMAND_RESULT_INVALID_ARGUMENT;
     if (s_calibration.active)
         return COMMAND_RESULT_BUSY;
@@ -934,7 +940,8 @@ void CommandService_ClearStagedConfig(void)
 
 void CommandService_ClearStagedConfigForSource(CommandSource source)
 {
-    if (!s_config_owner_valid || (s_config_owner == source))
+    if (((uint32_t)source < (uint32_t)COMMAND_SOURCE_COUNT) &&
+        (!s_config_owner_valid || (s_config_owner == source)))
     {
         s_staged_config_valid = false;
         if (ConfigEdit_GetState() == CONFIG_EDIT_IDLE)
