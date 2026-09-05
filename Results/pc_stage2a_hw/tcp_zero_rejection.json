@@ -1,0 +1,15 @@
+{
+  "status": "FAIL — device rejection requires investigation before more TCP writes",
+  "transport": "Modbus TCP",
+  "endpoint": "192.168.1.100:502",
+  "unitId": 1,
+  "operation": "ZERO",
+  "transaction": "0x0020",
+  "resultCode": 8,
+  "resultMeaning": "OVERLOAD",
+  "clientStateBefore": {"map": "0x0104", "weight": "-0.07 g", "stable": true, "tare": "0.00", "zero": true},
+  "panelObservation": "-0.07 g; local key ZERO permitted; no overload indication reported",
+  "diagnostics": {"timeouts": 0, "crcErrors": 0, "mbapErrors": 0, "unitErrors": 0, "exceptions": 0, "badFrames": 0, "transportErrors": 0, "reconnects": 0},
+  "acceptedForPass": false,
+  "subsequentWrites": "PAUSED"
+}
