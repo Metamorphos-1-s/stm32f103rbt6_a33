@@ -1,0 +1,15 @@
+{
+  "status": "DIAGNOSTIC READ ONLY",
+  "endpoint": "192.168.1.100:502",
+  "unitId": 1,
+  "request": "FC03 address 0x004C count 12",
+  "responseHex": "7A020000001B010318002C00600000000100000C17000000000000000046A10000",
+  "registers": [44,96,0,1,0,3095,0,0,0,0,18081,0],
+  "responseToken": "0x002C",
+  "resultCode": 96,
+  "commandState": 0,
+  "lastCommandId": 1,
+  "identityRead": {"map": "0x0104", "firmware": "0x050A", "statusRawRegisters": [63,0]},
+  "interpretation": "Result Code 96 is outside fixed firmware contract 0-15; TCP mailbox path requires CH579 forwarding/device-side investigation",
+  "writesSentByProbe": 0
+}
