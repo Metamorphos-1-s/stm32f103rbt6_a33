@@ -1,5 +1,24 @@
 # Project stage status
 
+## Keypad, STATUS and battery divider update
+
+The current development branch adds an independent STATUS overlay: RUN STAR
+short is side-effect free, RUN STAR long enters STATUS, and STATUS consumes all
+key events before RUN behavior. Confirmed communication edits use the existing
+asynchronous UART2 apply/rollback path and only request PersistenceManager SAVE
+after apply success. STATUS and menu SAVE completion are revision-bound; foreign
+configuration changes are rejected rather than merged into a whole-snapshot
+save. Menu long FUNCTION saves confirmed changes and exits after completion,
+while TARE and timeout exit without saving.
+
+Local brightness is constrained to 1..7, tare retention is boolean, and StAb is
+saturated to the validator's 10..10000 ms range. SPd/GAIn are hidden from the
+advanced edit menu and exposed read-only in STATUS. The battery divider default
+is 47k/10k; exact legacy 30k/10k records migrate in RAM and become dirty without
+an automatic startup Flash write. Host and build evidence is recorded by the
+change commit; hardware behavior is not claimed by this document until the new
+image is programmed and explicitly observed.
+
 ## Stage 5H
 
 Branch `stage5h-startup-zero-drift-control` is based on formal Stage 5G main

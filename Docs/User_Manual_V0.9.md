@@ -255,15 +255,15 @@ HASH 短按可在 NET 和 GROSS 之间快速切换。
 | FUNCTION | NET → GROSS → TARE → BATTERY 循环 | 进入普通菜单 |
 | TARE | 执行去皮 | 清除皮重 |
 | ZERO | 执行置零 | 复位日常零点 |
-| STAR | 保留操作；当前版本无普通用户可见输出 | 显示 STATUS 页 |
+| STAR | 暂无功能，不产生命令或配置副作用 | 进入 STATUS 页 |
 | HASH | NET/GROSS 快速切换 | 无用户操作 |
 
 ## 5.2 菜单与编辑状态
 
 | 按键 | 菜单浏览 | 数值/选项编辑 | 标定 |
 |---|---|---|---|
-| FUNCTION | 进入项目或执行命令 | 短按确认；长按退出菜单并取消当前未确认编辑 | 确认当前步骤 |
-| TARE | 返回称重界面 | 取消当前编辑 | 取消整个标定会话 |
+| FUNCTION | 进入项目或执行命令；长按保存并退出 | 短按确认；长按取消当前未确认值、保存此前确认值并退出 | 确认当前步骤 |
+| TARE | 不保存并返回称重界面 | 取消当前未确认值、不保存并退出菜单 | 取消整个标定会话 |
 | ZERO | 无菜单浏览作用 | 数值编辑时移动选中位 | 标定质量编辑时移动选中位 |
 | STAR | 上一项目 | 减小所选数字/切换到上一选项 | 减小标定质量 |
 | HASH | 下一项目 | 增大所选数字/切换到下一选项 | 增大标定质量 |
@@ -276,7 +276,25 @@ HASH 短按可在 NET 和 GROSS 之间快速切换。
 - 长按判定约 1.5 s。
 - STAR/HASH 按住约 0.6 s 后开始以固定间隔重复。
 - 本版本没有逐渐加速功能；大数值应先用 ZERO 选择高位，再用 STAR/HASH 调整。
-- 菜单约 30 s 无操作会自动退出；未确认的编辑被取消。
+- 菜单约 30 s 无操作会自动退出；未确认的编辑被取消，且不会请求 Flash 保存。
+
+## 5.4 STATUS 页面
+
+在正常称重页长按 STAR 进入 STATUS。STATUS 是称重页上的独立显示和按键层；
+后台称重、报警和通信继续运行，但按键不会透传成 ZERO、TARE 或 NET/GROSS
+操作。STAR/HASH 浏览上一项/下一项，FUNCTION 在可编辑项进入编辑并确认，
+编辑时 STAR/HASH 选择上一/下一合法值。
+
+只读项为固件版本、Register Map、Schema、Profile、实际 SPd、实际 GAIn、
+电池电压和当前协议。可编辑项为共享 Modbus 地址（1～247）、USART2 波特率
+（9600/19200/38400/57600/115200）、parity（None/Even/Odd）、stop bits
+（1/2）和 word order（HI/Lo）。字段名显示约 0.6 s 后显示值。
+
+长按 STAR 会取消屏幕上尚未确认的编辑值，只应用并保存此前经 FUNCTION
+确认的候选项；只有通信应用和真实 Flash 保存均完成后才显示 `donE`。TARE
+或约 30 s 超时会丢弃整个 STATUS 会话，不应用 RAM，也不写 Flash。无改动时
+显示 `noCHG` 后退出；并发配置 revision 变化时显示 `bUSY` 并留在 STATUS。
+退出后恢复进入前的重量视图。
 
 ---
 
@@ -403,8 +421,9 @@ Stage 5F 支持全部六位选择。进入数值编辑后，ZERO 每短按一次
 ## 7.4 确认、取消与无效参数
 
 - FUNCTION 短按：验证完整配置并提交到 RAM。
-- TARE 短按：取消当前项目，恢复进入编辑前的值。
-- FUNCTION 长按：退出菜单；正在编辑的未确认内容会被取消。
+- TARE 短按：取消当前未确认值并直接退出菜单，不请求 Flash 保存。
+- FUNCTION 长按：取消当前未确认值，异步保存此前已确认并应用到 RAM 的修改，
+  成功显示 `donE` 后退出；无改动显示 `noCHG` 后退出。
 - 显示 `InUALd`：当前值或参数组合不合法，仪表未采用该编辑结果；这不等于仪表损坏。
 - 显示 `UnItHI`：按当前单位/小数位无法表示该质量或量程，应调整 CAP、单位或 dP。
 - 显示 `bUSY`：配置或标定资源正在被本地、Modbus 或 BLE 的另一会话使用。
@@ -413,7 +432,11 @@ Stage 5F 支持全部六位选择。进入数值编辑后，ZERO 每短按一次
 
 FUNCTION 确认成功后显示 `rAnonL`，表示参数已经在当前运行中生效。它不表示已经写入非易失存储。
 
-> **重要：需要断电保持的参数修改完成后，请进入 `SAUE` 并按 FUNCTION。只有看到 `donE` 或 `noCHG`，才可认为保存流程正常结束。**
+> **重要：需要断电保持的参数可在 `SAUE` 按 FUNCTION，或长按 FUNCTION 保存退出。只有看到 `donE` 或 `noCHG`，才可认为保存流程正常结束。**
+
+`SAUE` 与长按 FUNCTION 复用同一异步保存协调逻辑。Flash 失败显示
+`ErrSAU` 并留在菜单，不自动重试。菜单保存的是整体配置快照；若菜单会话中
+检测到 Modbus/BLE 等来源改变了 revision，则拒绝保存，不做字段级合并。
 
 ---
 
@@ -438,7 +461,7 @@ UnIt → PrOF → briGHt → trrEt → SAUE → EHIt → UnIt
 |---|---|---|---|---|
 | `UnIt` | 显示单位 | kg / g / lb | 选择当前重量单位；受已启用单位和模式限制 | 需要 |
 | `PrOF` | 称重配置档 | 两个预置档切换 | 在高精度/高速预置档间切换；显示 `APPLY` 后完成运行切换 | 需要 |
-| `briGHt` | 显示亮度 | 0～7 | 0 最暗，7 最亮 | 需要 |
+| `briGHt` | 显示亮度 | 1～7循环 | 7 后回到 1；从 1 向下回到 7 | 需要 |
 | `trrEt` | 皮重掉电保持 | 0 / 1 | 0 不恢复皮重；1 允许从已保存记录恢复皮重 | 需要 |
 | `SAUE` | 保存 | 执行 | 将当前需要持久化的配置写入 Flash | 不适用 |
 | `EHIt` | 退出 | 执行 | 返回称重界面 | 不适用 |
@@ -465,7 +488,7 @@ UnIt → PrOF → briGHt → trrEt → SAUE → EHIt → UnIt
 
 ```text
 UnIt → PrOF → CAL → CAP → dIU → dP → FILt → StAb → ZrnG → OL
-  → briGHt → SPd → GAIn → trrEt
+  → briGHt → trrEt
   → L-En → Lo → Hi → HyS → Src → bIn → bEH → bOK
   → SAUE → rESEt → EHIt → UnIt
 ```
@@ -483,8 +506,23 @@ UnIt → PrOF → CAL → CAP → dIU → dP → FILt → StAb → ZrnG → OL
 | `StAb` | 稳定保持时间 | 10～10000 ms | 影响稳定判断保持时间；完整稳定判断还受配置档其他参数影响 | 需要 |
 | `ZrnG` | 置零范围 | 0～CAP | ZERO 允许的空载偏移范围；0 表示禁用 ZERO | 需要 |
 | `OL` | 软件过载值 | 不低于 CAP，且受硬件上限约束 | 达到条件后显示/状态进入过载；不等于机械极限 | 需要 |
-| `SPd` | 采样速率 | 只读 | 当前配置档采样速率；FUNCTION 显示 `rEAd` | 不可编辑 |
-| `GAIn` | 增益 | 只读 | 当前配置档 ADC 增益；FUNCTION 显示 `rEAd` | 不可编辑 |
+
+`SPd` 和 `GAIn` 已从高级编辑菜单隐藏，在 STATUS 中显示实际值；`rEAd`
+表示 Read Only，不表示 Exit。采样率由 `PrOF` 在已验证的 10 Hz/40 Hz 档间
+安全切换。增益会改变称重换算和标定结果，而当前标定数据未按 gain 绑定，
+因此不能任意编辑；未来开放需要安全重配置、稳定等待、失败回滚以及重新标定
+或按 gain 保存标定数据。640/1280 Hz 工程档也不在本菜单开放。
+
+## 9.4 通信与电池硬件说明
+
+STATUS 中的 Modbus 地址由 RS232/RS485 与 CH579/TCP 链路共享。波特率、
+parity 和 stop bits 只重配置 USART2；USART3/CH579 保持固定 115200 8N1。
+应用失败会恢复旧通信配置，且不会继续请求 Flash 保存。
+
+新硬件电池采样分压为 `VBAT—47k—ADC—10k—GND`，换算倍率为 5.7。
+固件只把 Flash 中精确的旧 30k/10k 组合迁移为 47k/10k，立即按新倍率运行并
+标记待保存，但启动过程不会自行写 Flash。其他非精确组合视为可能的工厂校准，
+不会被覆盖。长期应把分压电阻作为板级属性，仅在 Flash 保存电压增益/偏移校准。
 
 ### CAP
 
@@ -1047,8 +1085,7 @@ Stage 5F 已支持六位选位和闪烁。ZERO 依次选择右 1 到右 6；前�
 ```text
 普通菜单 UnIt 页：STAR → HASH → STAR → HASH
 
-CAP → dIU → dP → FILt → StAb → ZrnG → OL → briGHt
- → SPd[只读] → GAIn[只读] → trrEt
+CAP → dIU → dP → FILt → StAb → ZrnG → OL → briGHt → trrEt
  → L-En → Lo → Hi → HyS → Src → bIn → bEH → bOK
  → SAUE → rESEt → EHIt → UnIt → PrOF → CAL → CAP
 ```
@@ -1060,9 +1097,9 @@ CAP → dIU → dP → FILt → StAb → ZrnG → OL → briGHt
 | 下一菜单项/增大 | HASH |
 | 上一菜单项/减小 | STAR |
 | 进入/确认 | FUNCTION 短按 |
-| 取消当前编辑/退出 | TARE 短按 |
+| 取消当前编辑且不保存退出 | TARE 短按 |
 | 选择下一数字位 | ZERO 短按 |
-| 退出菜单并取消未确认编辑 | FUNCTION 长按 |
+| 取消未确认值、保存已确认值并退出 | FUNCTION 长按 |
 | 保存 | `SAUE` 页 FUNCTION |
 
 ---

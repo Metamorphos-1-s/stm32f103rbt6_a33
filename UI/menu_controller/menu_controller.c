@@ -7,6 +7,7 @@
 #include "display_codes.h"
 #include "mass_math.h"
 #include "metrology_manager.h"
+#include "persistence_manager.h"
 #include "numeric_edit_cursor.h"
 #include "project_config.h"
 #include "system_context.h"
@@ -78,6 +79,12 @@ static KeyId s_sequence_keys[4];
 static uint8_t s_sequence_count;
 static uint32_t s_sequence_start_ms;
 static uint32_t s_sequence_last_ms;
+static uint32_t s_expected_revision;
+static uint32_t s_save_revision;
+static uint32_t s_message_until_ms;
+static bool s_local_confirmed;
+static bool s_save_waiting;
+static bool s_exit_after_save;
 
 static CommandResult MenuController_Command(CommandId id, int32_t value0,
     int32_t value1, uint32_t flags, int64_t value64)
@@ -170,6 +177,59 @@ static void ClearSequence(void)
     s_sequence_count = 0U;
 }
 
+static void ExitMenu(void)
+{
+    s_active = false;
+    s_editing = false;
+    s_save_waiting = false;
+    s_factory_confirmation = false;
+    ClearSequence();
+    s_exit_request = true;
+}
+
+static void CancelUnconfirmedEdit(void)
+{
+    if (s_editing && (s_edit_kind != MENU_EDIT_UNIT))
+        (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,
+            0, 0, 0U, 0);
+    s_editing = false;
+}
+
+static void RequestSave(bool exit_after, uint32_t now_ms)
+{
+    CommandResult result;
+    CancelUnconfirmedEdit();
+    if (!s_local_confirmed || (SystemContext_GetConfigRevision() ==
+                              SystemContext_GetSavedRevision()))
+    {
+        ShowCode(DISPLAY_CODE_NO_CHANGE);
+        if (exit_after)
+        {
+            s_exit_after_save = true;
+            s_message_until_ms = now_ms + UI_MESSAGE_DEFAULT_MS;
+        }
+        return;
+    }
+    /* ConfigStore persists the whole snapshot, so any foreign revision makes
+       an automatic menu save unsafe; no field-level merge is attempted. */
+    if (SystemContext_GetConfigRevision() != s_expected_revision)
+    {
+        ShowCode(DISPLAY_CODE_BUSY);
+        return;
+    }
+    result = PersistenceManager_RequestSave();
+    if ((result != COMMAND_RESULT_ACCEPTED) &&
+        (result != COMMAND_RESULT_OK))
+    {
+        ShowCode(DISPLAY_CODE_SAVE_ERROR);
+        return;
+    }
+    s_save_revision = SystemContext_GetConfigRevision();
+    s_save_waiting = true;
+    s_exit_after_save = exit_after;
+    ShowCode(DISPLAY_CODE_SAVE);
+}
+
 static void Navigate(KeyId key)
 {
     if (s_advanced)
@@ -178,6 +238,14 @@ static void Navigate(KeyId key)
             (MenuItem)(((uint32_t)s_item + 1U) % MENU_ITEM_COUNT) :
             (MenuItem)(((uint32_t)s_item + MENU_ITEM_COUNT - 1U) %
                        MENU_ITEM_COUNT);
+        while ((s_item == MENU_ITEM_SAMPLE_RATE) ||
+               (s_item == MENU_ITEM_GAIN))
+        {
+            s_item = (key == KEY_ID_HASH) ?
+                (MenuItem)(((uint32_t)s_item + 1U) % MENU_ITEM_COUNT) :
+                (MenuItem)(((uint32_t)s_item + MENU_ITEM_COUNT - 1U) %
+                           MENU_ITEM_COUNT);
+        }
     }
     else
     {
@@ -266,6 +334,8 @@ static bool BeginEdit(MenuItem item, uint32_t now_ms)
     char unit_label[6];
     if (context == NULL) return false;
     s_begin_error = DISPLAY_CODE_BUSY;
+    if (SystemContext_GetConfigRevision() != s_expected_revision)
+        return false;
     s_begin_warning = false;
     metrology = &context->config.metrology;
     s_edit_unit = metrology->active_unit;
@@ -330,7 +400,7 @@ static bool BeginEdit(MenuItem item, uint32_t now_ms)
             s_value = context->config.display.brightness;
             break;
         case MENU_ITEM_TARE_RETENTION:
-            s_edit_kind = MENU_EDIT_INTEGER;
+            s_edit_kind = MENU_EDIT_BOOL;
             s_integer_field = CONFIG_FIELD_TARE_RETENTION;
             s_value = context->config.system.tare_power_loss_retention ? 1 : 0;
             break;
@@ -513,6 +583,13 @@ static void AdjustEdit(KeyId key)
         s_value = (value + FILTER_MODE_COUNT) % FILTER_MODE_COUNT;
         return;
     }
+    if (s_item == MENU_ITEM_BRIGHTNESS)
+    {
+        s_value = (key == KEY_ID_HASH) ?
+            ((s_value >= 7) ? 1 : s_value + 1) :
+            ((s_value <= 1) ? 7 : s_value - 1);
+        return;
+    }
     delta = (s_edit_kind == MENU_EDIT_MASS) ?
         (int64_t)s_edit_display.division_digit *
             NumericEditCursor_GetStep(&s_edit_cursor) :
@@ -529,7 +606,14 @@ static void AdjustEdit(KeyId key)
          (next >= ((s_mass_field == CONFIG_MASS_FIELD_CAPACITY) ? 1 : 0))) &&
 #endif
         (next <= ((s_edit_kind == MENU_EDIT_MASS) ? 999999 : INT32_MAX)))
+    {
+        if (s_edit_kind == MENU_EDIT_STABILITY_HOLD)
+        {
+            if (next < 10) next = 10;
+            if (next > 10000) next = 10000;
+        }
         s_value = next;
+    }
 }
 
 void MenuController_Init(void)
@@ -537,6 +621,8 @@ void MenuController_Init(void)
     s_active = false; s_editing = false; s_calibration_request = false;
     s_exit_request = false; s_factory_confirmation = false;
     s_item = MENU_ITEM_UNIT; s_advanced = false; ClearSequence();
+    s_local_confirmed = false; s_save_waiting = false;
+    s_exit_after_save = false;
 }
 
 bool MenuController_Enter(void)
@@ -544,6 +630,9 @@ bool MenuController_Enter(void)
     if (s_active) return false;
     s_active = true; s_editing = false; s_factory_confirmation = false;
     s_item = MENU_ITEM_UNIT; s_advanced = false; ClearSequence();
+    s_expected_revision = SystemContext_GetConfigRevision();
+    s_local_confirmed = false; s_save_waiting = false;
+    s_exit_after_save = false;
     s_last_activity_ms = BSP_TimeNowMs(); Render(); return true;
 }
 
@@ -551,6 +640,33 @@ void MenuController_Process10ms(void)
 {
     uint32_t now = BSP_TimeNowMs();
     if (!s_active) return;
+    if (s_save_waiting)
+    {
+        PersistenceStatus status = PersistenceManager_GetStatus();
+        if (((status == PERSISTENCE_STATUS_SUCCESS) ||
+             (status == PERSISTENCE_STATUS_NO_CHANGE)) &&
+            (SystemContext_GetSavedRevision() == s_save_revision))
+        {
+            s_save_waiting = false; s_local_confirmed = false;
+            ShowCode(status == PERSISTENCE_STATUS_SUCCESS ?
+                DISPLAY_CODE_DONE : DISPLAY_CODE_NO_CHANGE);
+            if (s_exit_after_save)
+                s_message_until_ms = now + UI_MESSAGE_DEFAULT_MS;
+        }
+        else if ((status == PERSISTENCE_STATUS_FAILED) ||
+                 (status == PERSISTENCE_STATUS_REBOOT_REQUIRED))
+        {
+            s_save_waiting = false; s_exit_after_save = false;
+            ShowCode(DISPLAY_CODE_SAVE_ERROR);
+        }
+        return;
+    }
+    if (s_exit_after_save &&
+        ((int32_t)(now - s_message_until_ms) >= 0))
+    {
+        ExitMenu();
+        return;
+    }
     if (s_editing &&
         ((s_edit_kind == MENU_EDIT_MASS) ||
          (s_edit_kind == MENU_EDIT_STABILITY_HOLD)) &&
@@ -567,8 +683,9 @@ void MenuController_Process10ms(void)
             COMMAND_CANCEL_CONFIG_EDIT, 0, 0, 0U, 0);
         if (s_factory_confirmation) (void)MenuController_Command(
             COMMAND_FACTORY_RESET_CANCEL, 0, 0, 0U, 0);
-        s_active = false; s_editing = false; s_factory_confirmation = false;
-        ClearSequence(); s_exit_request = true;
+        CancelUnconfirmedEdit();
+        s_factory_confirmation = false;
+        ExitMenu();
     }
 }
 
@@ -579,6 +696,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         ((event->type != KEY_EVENT_SHORT) &&
          (event->type != KEY_EVENT_REPEAT) &&
          (event->type != KEY_EVENT_LONG))) return false;
+    if (s_save_waiting || s_exit_after_save) return true;
     s_last_activity_ms = event->timestamp_ms;
     if (HandleAdvancedSequence(event)) return true;
     if (s_factory_confirmation)
@@ -601,11 +719,8 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
     }
     if ((event->key == KEY_ID_FUNCTION) && (event->type == KEY_EVENT_LONG))
     {
-        if (s_editing && (s_edit_kind != MENU_EDIT_UNIT))
-            (void)MenuController_Command(
-            COMMAND_CANCEL_CONFIG_EDIT, 0, 0, 0U, 0);
-        s_editing = false; s_active = false; ClearSequence();
-        s_exit_request = true; return true;
+        RequestSave(true, event->timestamp_ms);
+        return true;
     }
     if (s_editing)
     {
@@ -629,6 +744,12 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         else if ((event->key == KEY_ID_FUNCTION) &&
                  (event->type == KEY_EVENT_SHORT))
         {
+            if (SystemContext_GetConfigRevision() != s_expected_revision)
+            {
+                CancelUnconfirmedEdit();
+                ShowCode(DISPLAY_CODE_BUSY);
+                return true;
+            }
             if (s_edit_kind == MENU_EDIT_UNIT)
             {
                 if (s_candidate_unit == s_original_unit)
@@ -643,6 +764,8 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                     s_editing = false;
                     Render();
                     ShowCode(DISPLAY_CODE_RAM_SAVE);
+                    s_local_confirmed = true;
+                    s_expected_revision = SystemContext_GetConfigRevision();
                 }
                 else ShowCode(DISPLAY_CODE_UNIT_ERROR);
                 return true;
@@ -652,6 +775,8 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                     0, 0, 0U, 0) == COMMAND_RESULT_OK))
             {
                 s_editing = false; Render(); ShowCode(DISPLAY_CODE_RAM_SAVE);
+                s_local_confirmed = true;
+                s_expected_revision = SystemContext_GetConfigRevision();
                 return true;
             }
             (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,
@@ -667,7 +792,8 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
             if (s_edit_kind != MENU_EDIT_UNIT)
                 (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,
                                              0, 0, 0U, 0);
-            s_editing = false;
+            ExitMenu();
+            return true;
         }
         Render(); return true;
     }
@@ -678,7 +804,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
     else if ((event->key == KEY_ID_TARE) &&
              (event->type == KEY_EVENT_SHORT))
     {
-        s_active = false; s_exit_request = true;
+        ExitMenu();
     }
     else if ((event->key == KEY_ID_FUNCTION) &&
              (event->type == KEY_EVENT_SHORT))
@@ -700,6 +826,11 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                 0, 0U, 0);
             ShowCode((result == COMMAND_RESULT_ACCEPTED) ?
                 DISPLAY_CODE_APPLYING : DISPLAY_CODE_BUSY);
+            if (result == COMMAND_RESULT_ACCEPTED)
+            {
+                s_local_confirmed = true;
+                s_expected_revision = SystemContext_GetConfigRevision() + 1U;
+            }
             return true;
         }
         else if (s_item == MENU_ITEM_CALIBRATION)
@@ -712,10 +843,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         }
         else if (s_item == MENU_ITEM_SAVE)
         {
-            CommandResult result = MenuController_Command(
-                COMMAND_REQUEST_CONFIG_SAVE, 0, 0, 0U, 0);
-            if ((result != COMMAND_RESULT_ACCEPTED) &&
-                (result != COMMAND_RESULT_OK)) ShowCode(DISPLAY_CODE_SAVE_ERROR);
+            RequestSave(false, event->timestamp_ms);
             return true;
         }
         else if (s_item == MENU_ITEM_FACTORY_RESET)

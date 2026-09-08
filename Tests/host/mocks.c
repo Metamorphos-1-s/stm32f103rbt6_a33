@@ -6,6 +6,8 @@
 #include "event_queue.h"
 #include "command_types.h"
 #include "communication_manager.h"
+#include "persistence_manager.h"
+#include "system_context.h"
 
 #include <string.h>
 
@@ -17,6 +19,12 @@ static uint32_t s_rejected_event_pushes;
 static EventType s_rejected_event_type;
 static bool s_reject_event_type_once;
 static bool s_outputs[OUTPUT_COUNT];
+static CommandResult s_save_request_result;
+static PersistenceStatus s_persistence_status;
+static uint32_t s_save_request_count;
+static uint32_t s_local_apply_count;
+static CommandResult s_local_apply_request_result;
+static CommunicationApplyResult s_local_apply_result;
 
 CommunicationManagerState CommunicationManager_GetState(void)
 {
@@ -34,6 +42,35 @@ CommandResult CommunicationManager_RequestApplyForSource(CommandSource source)
     return COMMAND_RESULT_NOT_IMPLEMENTED;
 }
 
+CommandResult CommunicationManager_RequestLocalApply(
+    const CommunicationConfig *candidate)
+{
+    const SystemContext *context = SystemContext_Get();
+    DeviceConfig updated;
+    ++s_local_apply_count;
+    if ((candidate == NULL) || (context == NULL))
+        return COMMAND_RESULT_INVALID_ARGUMENT;
+    if ((s_local_apply_request_result == COMMAND_RESULT_ACCEPTED) &&
+        (s_local_apply_result == COMM_APPLY_RESULT_SUCCESS))
+    {
+        updated = context->config;
+        updated.communication = *candidate;
+        (void)SystemContext_ApplyConfig(&updated, true);
+    }
+    return s_local_apply_request_result;
+}
+
+CommunicationApplyResult CommunicationManager_GetApplyResult(void)
+{
+    return s_local_apply_result;
+}
+
+bool CommunicationManager_IsConfigValid(const CommunicationConfig *config)
+{
+    return (config != NULL) && (config->modbus_address >= 1U) &&
+        (config->modbus_address <= 247U);
+}
+
 CommandResult CommunicationManager_RequestDeferredSave(void)
 {
     return COMMAND_RESULT_STORAGE_UNAVAILABLE;
@@ -46,12 +83,24 @@ bool PersistenceManager_IsBusy(void)
 
 CommandResult PersistenceManager_RequestSave(void)
 {
-    return COMMAND_RESULT_STORAGE_UNAVAILABLE;
+    ++s_save_request_count;
+    if (((s_save_request_result == COMMAND_RESULT_ACCEPTED) ||
+         (s_save_request_result == COMMAND_RESULT_OK)) &&
+        ((s_persistence_status == PERSISTENCE_STATUS_SUCCESS) ||
+         (s_persistence_status == PERSISTENCE_STATUS_NO_CHANGE)))
+        (void)SystemContext_MarkRevisionSaved(
+            SystemContext_GetConfigRevision());
+    return s_save_request_result;
 }
 
 CommandResult PersistenceManager_RequestFactoryReset(void)
 {
     return COMMAND_RESULT_STORAGE_UNAVAILABLE;
+}
+
+PersistenceStatus PersistenceManager_GetStatus(void)
+{
+    return s_persistence_status;
 }
 
 void TestMock_Reset(void)
@@ -64,6 +113,36 @@ void TestMock_Reset(void)
     s_reject_event_type_once = false;
     (void)memset(s_event_type_count, 0, sizeof(s_event_type_count));
     (void)memset(s_outputs, 0, sizeof(s_outputs));
+    s_save_request_result = COMMAND_RESULT_STORAGE_UNAVAILABLE;
+    s_persistence_status = PERSISTENCE_STATUS_IDLE;
+    s_save_request_count = 0U;
+    s_local_apply_count = 0U;
+    s_local_apply_request_result = COMMAND_RESULT_ACCEPTED;
+    s_local_apply_result = COMM_APPLY_RESULT_SUCCESS;
+}
+
+void TestMock_SetPersistenceResult(CommandResult request,
+                                   PersistenceStatus status)
+{
+    s_save_request_result = request;
+    s_persistence_status = status;
+}
+
+void TestMock_SetCommunicationApplyResult(CommandResult request,
+                                          CommunicationApplyResult status)
+{
+    s_local_apply_request_result = request;
+    s_local_apply_result = status;
+}
+
+uint32_t TestMock_GetSaveRequestCount(void)
+{
+    return s_save_request_count;
+}
+
+uint32_t TestMock_GetLocalCommunicationApplyCount(void)
+{
+    return s_local_apply_count;
 }
 
 void TestMock_SetTimeMs(uint32_t now_ms)

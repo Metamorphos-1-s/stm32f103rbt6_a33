@@ -128,13 +128,18 @@ static void TestTm1628Mapping(void)
 static void TestBatteryConversion(void)
 {
     BatteryConfig config = {0};
+    uint32_t full_raw;
 
-    config.divider_top_ohm = 30000U;
+    config.divider_top_ohm = 47000U;
     config.divider_bottom_ohm = 10000U;
-    CHECK(BatteryAdc_ConvertAdcMv(3150U, &config) == 12600U);
+    CHECK(BatteryAdc_ConvertAdcMv(2947U, &config) == 16798U);
+    CHECK(BatteryAdc_ConvertAdcMv(2596U, &config) == 14797U);
+    full_raw = ((2947U * BATTERY_ADC_FULL_SCALE) +
+        (BATTERY_DEFAULT_VDDA_MV / 2U)) / BATTERY_DEFAULT_VDDA_MV;
+    CHECK(full_raw == 3657U);
     config.calibration_gain_ppm = 10000;
     config.calibration_offset_mv = -100;
-    CHECK(BatteryAdc_ConvertAdcMv(3150U, &config) == 12626U);
+    CHECK(BatteryAdc_ConvertAdcMv(2947U, &config) == 16865U);
 }
 
 static void TestW02PulseGuard(void)

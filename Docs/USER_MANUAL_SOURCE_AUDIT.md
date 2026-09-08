@@ -55,15 +55,16 @@
 | 正常页 TARE | 短按 TARE，长按 CLEAR TARE | `App/app_main.c`、`Domain/zero_tare/zero_tare.c` | Confirmed |
 | 正常页 ZERO | 短按 ZERO，长按 RESET ZERO | `App/app_main.c`、`Domain/zero_tare/zero_tare.c` | Confirmed |
 | 正常页 HASH | NET/GROSS 快速切换 | `App/app_main.c` | Confirmed |
-| 正常页 STAR | 手动输出请求无外部传输；长按状态页 | `App/app_main.c`、`Protocol/command_service/command_service.c` | Confirmed |
+| 正常页 STAR | 短按严格无操作；长按进入独立 STATUS 控制器 | `App/app_main.c`、`UI/status_controller` | Software verified |
+| STATUS | 独立消费按键；只读版本/Profile/SPd/GAIn/电池/协议；编辑共享通信配置 | `UI/status_controller` | Software verified; hardware pending |
 | 长按时间 | 约 1.5 s | `Config/project_config.h` | Confirmed |
 | STAR/HASH 重复 | 600 ms 后每 150 ms固定重复 | `Config/project_config.h`、`UI/key_service/key_service.c` | Confirmed |
 | 无长按加速 | 固定重复，无加速 | Stage 5F 范围、KeyService 源码 | Confirmed |
-| 菜单超时 | 30 s，取消未确认编辑并退出 | `Config/project_config.h`、`UI/menu_controller/menu_controller.c` | Confirmed |
+| 菜单保存/退出 | 长 FUNCTION 保存已确认修改后退出；TARE/30 s超时不保存退出 | `UI/menu_controller/menu_controller.c` | Software verified; hardware pending |
 | 普通菜单 | UnIt/PrOF/briGHt/trrEt/SAUE/EHIt | `UI/menu_controller/menu_controller.c::s_ordinary` | Confirmed |
 | 高级入口 | UnIt 页 STAR/HASH/STAR/HASH | `UI/menu_controller/menu_controller.c::HandleAdvancedSequence` | Confirmed |
 | 高级菜单顺序 | 当前 MenuItem 枚举和 `s_labels` 全量 | `UI/menu_controller/menu_types.h`、`menu_controller.c` | Confirmed |
-| SPd/GAIn | 面板只读，显示 `rEAd` | `UI/menu_controller/menu_controller.c` | Confirmed |
+| SPd/GAIn | 从高级编辑菜单隐藏，在 STATUS 显示实际值；`rEAd`意为只读 | `UI/menu_controller`、`UI/status_controller` | Software verified |
 | 恢复默认 | rESEt? 后 FUNCTION 长按确认，TARE 取消 | `UI/menu_controller/menu_controller.c`、`App/persistence_manager.c` | Confirmed |
 
 ## 5. 六位编辑与显示
@@ -79,7 +80,9 @@
 | dP | 0～5，需通过完整配置验证 | 同上 | Confirmed |
 | FILt | 0 None、1 Average、2 IIR、3 Median3+IIR | `Config/device_config.h`、菜单源码 | Confirmed |
 | StAb 面板项 | 编辑当前配置档 stability_hold_ms，10～10000 ms有效 | 菜单源码、`metrology_config_validator.c` | Confirmed |
-| briGHt | 0～7 | `Services/config_edit/config_edit.c` | Confirmed |
+| briGHt | 本地UI为1～7双向循环；底层保留历史值0兼容 | `UI/menu_controller/menu_controller.c`、`Services/config_edit/config_edit.c` | Software verified |
+| trrEt | 本地UI为布尔0/1 | 同上 | Software verified |
+| 电池分压 | 47k/10k；精确旧30k/10k启动迁移并标脏，不自动写Flash | `Config/default_config.c`、`Config/project_config.h` | Software verified; hardware pending |
 | 显示小数位≠准确度 | Stage 6 未完成 | Documentation Stage D1、`Docs/METROLOGY_REQUIREMENTS_V1.md` | Confirmed restriction |
 
 ## 6. ZERO、TARE 与保存

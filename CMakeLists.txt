@@ -140,6 +140,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     UI/key_service/key_map.c
     UI/key_service/key_service.c
     UI/menu_controller/menu_controller.c
+    UI/status_controller/status_controller.c
+    UI/status_controller/run_key_policy.c
 )
 
 if(NOT A33_ENABLE_BOARD_DIAGNOSTICS)
@@ -185,6 +187,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     UI/display_model
     UI/key_service
     UI/menu_controller
+    UI/status_controller
 )
 
 # Add project symbols (macros)

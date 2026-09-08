@@ -178,6 +178,50 @@ static void TestCommunicationManagerStart(void)
     CHECK(CommunicationManager_IsUart3Enabled());
 }
 
+static void TestCommunicationManagerLocalApply(void)
+{
+    DeviceConfig config;
+    CommunicationConfig candidate;
+    unsigned index;
+
+    DefaultConfig_Load(&config);
+    Stage5A_ModelAdaptersInit();
+    ModbusRegisterModel_Init();
+    Stage5B_TransportReset();
+    CHECK(CommunicationManager_Init(&config.communication));
+    candidate = config.communication;
+    candidate.modbus_address = 7U;
+    candidate.baud_rate = 9600U;
+    candidate.parity = COMM_PARITY_EVEN;
+    candidate.stop_bits = COMM_STOP_BITS_2;
+    candidate.word_order = MODBUS_WORD_ORDER_LOW_WORD_FIRST;
+    CHECK(CommunicationManager_IsConfigValid(&candidate));
+    CHECK(CommunicationManager_RequestLocalApply(&candidate) ==
+          COMMAND_RESULT_ACCEPTED);
+    CHECK(CommunicationManager_GetApplyResult() == COMM_APPLY_RESULT_PENDING);
+    for (index = 0U; index < 8U; ++index) CommunicationManager_Process();
+    CHECK(CommunicationManager_GetApplyResult() == COMM_APPLY_RESULT_SUCCESS);
+    CHECK(memcmp(CommunicationManager_GetActiveConfig(), &candidate,
+                 sizeof(candidate)) == 0);
+    CHECK(CommunicationManager_GetServer(0U)->config.modbus_address == 7U);
+    CHECK(CommunicationManager_GetServer(1U)->config.modbus_address == 7U);
+    candidate.modbus_address = 0U;
+    CHECK(!CommunicationManager_IsConfigValid(&candidate));
+    CHECK(CommunicationManager_RequestLocalApply(&candidate) ==
+          COMMAND_RESULT_INVALID_ARGUMENT);
+
+    candidate = config.communication;
+    candidate.modbus_address = 8U;
+    Stage5B_SetApplyConfigResult(false);
+    CHECK(CommunicationManager_RequestLocalApply(&candidate) ==
+          COMMAND_RESULT_ACCEPTED);
+    for (index = 0U; index < 10U; ++index) CommunicationManager_Process();
+    CHECK(CommunicationManager_GetApplyResult() == COMM_APPLY_RESULT_FAILED);
+    CHECK(CommunicationManager_GetState() == COMM_STATE_ERROR);
+    CHECK(CommunicationManager_GetActiveConfig()->modbus_address == 7U);
+    Stage5B_SetApplyConfigResult(true);
+}
+
 static void TestCommunicationManagerDualGates(void)
 {
     DeviceConfig config;
@@ -756,6 +800,7 @@ int main(void)
 {
     TestCrcAndTiming();
     TestCommunicationManagerStart();
+    TestCommunicationManagerLocalApply();
     TestCommunicationManagerDualGates();
     TestServer();
     TestFramerAndRs485();

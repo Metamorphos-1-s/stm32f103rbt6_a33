@@ -29,6 +29,8 @@
 #include "stage3_metrology_diagnostics.h"
 #include "storage_power_guard.h"
 #include "startup_auto_zero_controller.h"
+#include "status_controller.h"
+#include "run_key_policy.h"
 #include "system_context.h"
 #include "weighing_profile_manager.h"
 #include "ble_connection_manager.h"
@@ -164,6 +166,7 @@ bool App_Init(void)
   (void)CommunicationManager_Init(&config.communication);
   BleTelemetryService_Init(now_ms);
   MenuController_Init();
+  StatusController_Init();
   SelfTestController_Init();
   if (!KeyService_Init(&g_key_map_development_default))
   {
@@ -327,6 +330,7 @@ static void App_10msTask(void *context)
   }
   SelfTestController_Process10ms();
   MenuController_Process10ms();
+  StatusController_Process10ms();
   CommandService_Process(BSP_TimeNowMs());
   CalibrationController_Process10ms();
 
@@ -651,6 +655,7 @@ static void App_RunStateMachine(void)
     Stage2B_DiagnosticsEnterFault();
     SelfTestController_Cancel();
     MenuController_Cancel();
+    StatusController_Cancel();
     CalibrationController_Cancel();
     DisplayController_SetPage(DISPLAY_PAGE_FAULT);
     DeviceManager_EnterSafeState();
@@ -722,6 +727,11 @@ static void App_ProcessKeyEvent(const KeyEvent *event)
   {
     return;
   }
+  if (StatusController_IsActive())
+  {
+    (void)StatusController_HandleKeyEvent(event);
+    return;
+  }
   if (state == APP_STATE_MENU)
   {
     (void)MenuController_HandleKeyEvent(event);
@@ -771,11 +781,13 @@ static void App_ProcessKeyEvent(const KeyEvent *event)
     App_ShowCommandResult(App_ExecuteLocalCommand(COMMAND_RESET_ZERO, 0), false);
   else if ((event->key == KEY_ID_STAR) &&
            (event->type == KEY_EVENT_SHORT))
-    App_ShowCommandResult(App_ExecuteLocalCommand(
-        COMMAND_REQUEST_MANUAL_OUTPUT, 0), false);
+  {
+    /* Reserved for future UX; short STAR is deliberately side-effect free. */
+  }
   else if ((event->key == KEY_ID_STAR) &&
-           (event->type == KEY_EVENT_LONG))
-    DisplayController_SetPage(DISPLAY_PAGE_STATUS);
+           (RunKeyPolicy_GetStarAction(event) ==
+            RUN_STAR_ACTION_ENTER_STATUS))
+    (void)StatusController_Enter();
   else if ((event->key == KEY_ID_HASH) &&
            (event->type == KEY_EVENT_SHORT))
   {

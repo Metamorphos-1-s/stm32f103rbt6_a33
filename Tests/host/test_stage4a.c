@@ -22,6 +22,8 @@
 #include "raw_calibration_stability.h"
 #include "self_test_controller.h"
 #include "system_context.h"
+#include "status_controller.h"
+#include "run_key_policy.h"
 #include "tm1628.h"
 #include "tm1628_board_map.h"
 #include "weight_types.h"
@@ -278,6 +280,392 @@ static CommandResult Stage4A_Command(CommandId id, CommandSource source,
     int32_t value0, int32_t value1, CommandResponse *response)
 {
     return Stage4A_CommandEx(id, source, value0, value1, 0U, 0, response);
+}
+
+static void TestStatusControllerAndRunStarPolicy(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+    uint8_t index;
+
+    Stage4A_InitRuntime(&config, false);
+    DisplayController_SetPage(DISPLAY_PAGE_GROSS);
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 1U);
+    CHECK4(RunKeyPolicy_GetStarAction(&event) == RUN_STAR_ACTION_NONE);
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, 2U);
+    CHECK4(RunKeyPolicy_GetStarAction(&event) ==
+           RUN_STAR_ACTION_ENTER_STATUS);
+    StatusController_Init();
+    CHECK4(StatusController_Enter());
+    CHECK4(StatusController_IsActive());
+    CHECK4(StatusController_GetItem() == STATUS_ITEM_FIRMWARE);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 3U);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    CHECK4(!StatusController_IsEditing());
+    for (index = 0U; index < 8U; ++index)
+    {
+        event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT,
+                           10U + index);
+        CHECK4(StatusController_HandleKeyEvent(&event));
+    }
+    CHECK4(StatusController_GetItem() == STATUS_ITEM_ADDRESS);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 20U);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    CHECK4(StatusController_IsEditing());
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 21U);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 22U);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, 23U);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    CHECK4(!StatusController_IsActive());
+    CHECK4(DisplayController_GetPage() == DISPLAY_PAGE_GROSS);
+    CHECK4(SystemContext_Get()->config.communication.modbus_address == 1U);
+
+    TestMock_SetTimeMs(100U);
+    CHECK4(StatusController_Enter());
+    TestMock_SetTimeMs(100U + MENU_TIMEOUT_MS);
+    StatusController_Process10ms();
+    CHECK4(!StatusController_IsActive());
+    CHECK4(SystemContext_Get()->config.communication.modbus_address == 1U);
+}
+
+static void TestBatteryDividerMigration(void)
+{
+    DeviceConfig config;
+    RuntimeState runtime = {0};
+    uint32_t flags;
+
+    DefaultConfig_Load(&config);
+    CHECK4(config.battery.divider_top_ohm == 47000U);
+    CHECK4(config.battery.divider_bottom_ohm == 10000U);
+    config.battery.divider_top_ohm = 30000U;
+    flags = DefaultConfig_NormalizeStartup(&config, &runtime);
+    CHECK4((flags & DEFAULT_CONFIG_NORMALIZED_BATTERY_DIVIDER) != 0U);
+    CHECK4(config.battery.divider_top_ohm == 47000U);
+    CHECK4(runtime.migration_pending_save && runtime.config_dirty);
+    DefaultConfig_Load(&config);
+    config.battery.divider_top_ohm = 31000U;
+    runtime = (RuntimeState){0};
+    flags = DefaultConfig_NormalizeStartup(&config, &runtime);
+    CHECK4((flags & DEFAULT_CONFIG_NORMALIZED_BATTERY_DIVIDER) == 0U);
+    CHECK4(config.battery.divider_top_ohm == 31000U);
+}
+
+static void StatusNavigateTo(StatusItem item, uint32_t *now_ms)
+{
+    KeyEvent event;
+    uint8_t guard = 0U;
+    while ((StatusController_GetItem() != item) &&
+           (guard < STATUS_ITEM_COUNT))
+    {
+        ++*now_ms;
+        event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, *now_ms);
+        CHECK4(StatusController_HandleKeyEvent(&event));
+        ++guard;
+    }
+    CHECK4(StatusController_GetItem() == item);
+}
+
+static void TestStatusApplySaveAndConflict(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+    uint32_t now = 100U;
+
+    Stage4A_InitRuntime(&config, false);
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+                                  PERSISTENCE_STATUS_SUCCESS);
+    CHECK4(StatusController_Enter());
+    StatusNavigateTo(STATUS_ITEM_ADDRESS, &now);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    TestMock_SetTimeMs(++now); StatusController_Process10ms();
+    TestMock_SetTimeMs(++now); StatusController_Process10ms();
+    CHECK4(TestMock_GetLocalCommunicationApplyCount() == 1U);
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    CHECK4(SystemContext_Get()->config.communication.modbus_address == 2U);
+    TestMock_SetTimeMs(now + UI_MESSAGE_DEFAULT_MS);
+    StatusController_Process10ms();
+    CHECK4(!StatusController_IsActive());
+
+    CHECK4(StatusController_Enter());
+    now += UI_MESSAGE_DEFAULT_MS;
+    StatusNavigateTo(STATUS_ITEM_ADDRESS, &now);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    CHECK4(SystemContext_MarkConfigChanged());
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    CHECK4(TestMock_GetLocalCommunicationApplyCount() == 1U);
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    CHECK4(StatusController_IsActive());
+    StatusController_Cancel();
+}
+
+static void TestStatusCommunicationRanges(void)
+{
+    DeviceConfig config;
+    CommunicationConfig visible;
+    KeyEvent event;
+    uint32_t now = 0U;
+
+    Stage4A_InitRuntime(&config, false);
+    StatusController_Init();
+    CHECK4(StatusController_Enter());
+    StatusNavigateTo(STATUS_ITEM_ADDRESS, &now);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    CHECK4(StatusController_GetVisibleCommunication(&visible));
+    CHECK4(visible.modbus_address == 247U);
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    CHECK4(StatusController_GetVisibleCommunication(&visible));
+    CHECK4(visible.modbus_address == 1U);
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+
+    CHECK4(StatusController_Enter());
+    StatusNavigateTo(STATUS_ITEM_BAUD, &now);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    CHECK4(StatusController_GetVisibleCommunication(&visible));
+    CHECK4(visible.baud_rate == 9600U);
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+
+    CHECK4(StatusController_Enter());
+    StatusNavigateTo(STATUS_ITEM_PARITY, &now);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    CHECK4(StatusController_GetVisibleCommunication(&visible));
+    CHECK4(visible.parity == COMM_PARITY_ODD);
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+
+    CHECK4(StatusController_Enter());
+    StatusNavigateTo(STATUS_ITEM_STOP_BITS, &now);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    CHECK4(StatusController_GetVisibleCommunication(&visible));
+    CHECK4(visible.stop_bits == COMM_STOP_BITS_2);
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+
+    CHECK4(StatusController_Enter());
+    StatusNavigateTo(STATUS_ITEM_WORD_ORDER, &now);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    CHECK4(StatusController_GetVisibleCommunication(&visible));
+    CHECK4(visible.word_order == MODBUS_WORD_ORDER_LOW_WORD_FIRST);
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+}
+
+static void TestStatusFailureAndUnconfirmedEdit(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+    uint32_t now = 0U;
+
+    Stage4A_InitRuntime(&config, false);
+    StatusController_Init();
+    TestMock_SetCommunicationApplyResult(COMMAND_RESULT_ACCEPTED,
+                                          COMM_APPLY_RESULT_FAILED);
+    CHECK4(StatusController_Enter());
+    StatusNavigateTo(STATUS_ITEM_ADDRESS, &now);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    StatusController_Process10ms();
+    CHECK4(StatusController_IsActive());
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+
+    Stage4A_InitRuntime(&config, false);
+    StatusController_Init();
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+                                  PERSISTENCE_STATUS_FAILED);
+    CHECK4(StatusController_Enter());
+    StatusNavigateTo(STATUS_ITEM_ADDRESS, &now);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    StatusController_Process10ms();
+    StatusController_Process10ms();
+    CHECK4(StatusController_IsActive());
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+
+    Stage4A_InitRuntime(&config, false);
+    StatusController_Init();
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+                                  PERSISTENCE_STATUS_SUCCESS);
+    CHECK4(StatusController_Enter());
+    StatusNavigateTo(STATUS_ITEM_ADDRESS, &now);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    StatusNavigateTo(STATUS_ITEM_BAUD, &now);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    StatusController_Process10ms();
+    StatusController_Process10ms();
+    CHECK4(SystemContext_Get()->config.communication.modbus_address == 2U);
+    CHECK4(SystemContext_Get()->config.communication.baud_rate == 115200U);
+}
+
+static void TestMenuSaveExitPolicy(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+    uint32_t now = 0U;
+
+    Stage4A_InitRuntime(&config, false);
+    CommandService_Init();
+    MenuController_Init();
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+                                  PERSISTENCE_STATUS_SUCCESS);
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_GetItem() == MENU_ITEM_BRIGHTNESS);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(SystemContext_Get()->config.display.brightness == 4U);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_LONG, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    TestMock_SetTimeMs(++now); MenuController_Process10ms();
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    TestMock_SetTimeMs(now + UI_MESSAGE_DEFAULT_MS);
+    MenuController_Process10ms();
+    CHECK4(!MenuController_IsActive());
+    CHECK4(MenuController_TakeExitRequest());
+
+    MenuController_Init();
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_LONG, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    TestMock_SetTimeMs(now + UI_MESSAGE_DEFAULT_MS);
+    MenuController_Process10ms();
+    CHECK4(MenuController_TakeExitRequest());
+
+    Stage4A_InitRuntime(&config, false);
+    MenuController_Init();
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+                                  PERSISTENCE_STATUS_NO_CHANGE);
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_LONG, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    MenuController_Process10ms();
+    TestMock_SetTimeMs(now + UI_MESSAGE_DEFAULT_MS);
+    MenuController_Process10ms();
+    CHECK4(MenuController_TakeExitRequest());
+}
+
+static void TestMenuDiscardAndConflictPolicy(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+    uint32_t now = 0U;
+
+    Stage4A_InitRuntime(&config, false);
+    MenuController_Init();
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(!MenuController_IsActive());
+    CHECK4(SystemContext_Get()->config.display.brightness == 3U);
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
+
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(SystemContext_MarkConfigChanged());
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_LONG, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_IsActive());
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
+    MenuController_Cancel();
+
+    MenuController_Init();
+    CHECK4(MenuController_Enter());
+    TestMock_SetTimeMs(MENU_TIMEOUT_MS);
+    MenuController_Process10ms();
+    CHECK4(!MenuController_IsActive());
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
 }
 
 static void TestCommandSourceBoundsAndUsart3(void)
@@ -901,12 +1289,6 @@ static void TestOverloadMenuRecovery(void)
     CHECK4(MenuController_HandleKeyEvent(&event));
     CHECK4(SystemContext_Get()->config.metrology.overload_threshold_ug ==
         INT64_C(10000000000));
-    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 140U);
-    CHECK4(MenuController_HandleKeyEvent(&event));
-    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 150U);
-    CHECK4(MenuController_HandleKeyEvent(&event));
-    CHECK4(SystemContext_Get()->config.metrology.overload_threshold_ug ==
-        INT64_C(3000000000));
 }
 
 static void TestDisplayMessageOverlay(void)
@@ -994,6 +1376,7 @@ static void TestUnitMenuEdit(void)
     CHECK4(SystemContext_Get()->config.metrology.active_unit == MASS_UNIT_KG);
     CHECK4(!SystemContext_Get()->runtime.config_dirty);
 
+    CHECK4(MenuController_Enter());
     event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 40U);
     CHECK4(MenuController_HandleKeyEvent(&event));
     event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_SHORT, 50U);
@@ -1695,6 +2078,7 @@ static void TestSixDigitMenuEditAndBlink(void)
     Stage4A_AlarmMenuKey(KEY_ID_TARE, &now_ms);
     CHECK4(SystemContext_Get()->config.metrology.capacity_ug ==
            INT64_C(3000000000));
+    Stage4A_EnterAdvancedMenu(&now_ms);
     DisplayController_Process20ms();
     CHECK4(Stage4A_ModelShows("CAP   "));
     now_ms += 500U;
@@ -1714,6 +2098,7 @@ static void TestSixDigitMenuEditAndBlink(void)
     CHECK4(DisplayModel_Get()->digit_segments[4] != 0U);
     Stage4A_AlarmMenuKey(KEY_ID_TARE, &now_ms);
 
+    Stage4A_EnterAdvancedMenu(&now_ms);
     Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
     for (index = 0U; index < 5U; ++index)
         Stage4A_AlarmMenuKey(KEY_ID_ZERO, &now_ms);
@@ -1728,11 +2113,9 @@ static void TestSixDigitMenuEditAndBlink(void)
     for (index = 0U; index < 5U; ++index)
         Stage4A_AlarmMenuKey(KEY_ID_ZERO, &now_ms);
     Stage4A_AlarmMenuKey(KEY_ID_HASH, &now_ms);
-    DisplayController_Process20ms();
-    CHECK4(Stage4A_ModelShows("100010"));
-    Stage4A_AlarmMenuKey(KEY_ID_TARE, &now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, &now_ms);
     CHECK4(SystemContext_Get()->config.metrology.profiles[0].stability_hold_ms ==
-           10U);
+           10000U);
 }
 
 static void TestInvalidEditStopsBlink(void)
@@ -1824,6 +2207,13 @@ unsigned int Stage4A_RunTests(void)
 {
     TestCommandSourceBoundsAndUsart3();
     TestKeyMapAndService();
+    TestStatusControllerAndRunStarPolicy();
+    TestBatteryDividerMigration();
+    TestStatusApplySaveAndConflict();
+    TestStatusCommunicationRanges();
+    TestStatusFailureAndUnconfirmedEdit();
+    TestMenuSaveExitPolicy();
+    TestMenuDiscardAndConflictPolicy();
     TestDisplayFormattingAndModel();
     TestCommandAndConfig();
     TestZeroCommandFeedback();

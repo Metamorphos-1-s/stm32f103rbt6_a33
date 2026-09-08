@@ -54,6 +54,8 @@ add_executable(stage4a_host_tests
     ../../UI/key_service/key_map.c
     ../../UI/key_service/key_service.c
     ../../UI/menu_controller/menu_controller.c
+    ../../UI/status_controller/status_controller.c
+    ../../UI/status_controller/run_key_policy.c
 )
 
 target_compile_definitions(stage4a_host_tests PRIVATE
@@ -72,6 +74,7 @@ target_include_directories(stage4a_host_tests PRIVATE
     ../../Domain/stability
     ../../Domain/zero_tare
     ../../Protocol/command_service
+    ../../Protocol/modbus
     ../../Drivers/battery_adc
     ../../Drivers/cs1237
     ../../Drivers/output_gpio
@@ -85,6 +88,7 @@ target_include_directories(stage4a_host_tests PRIVATE
     ../../UI/display_model
     ../../UI/key_service
     ../../UI/menu_controller
+    ../../UI/status_controller
 )
 
 if(MSVC)

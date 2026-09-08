@@ -113,12 +113,23 @@ uint32_t DefaultConfig_NormalizeLegacyDevelopment(DeviceConfig *config)
     bool hf1_profile;
     uint32_t flags = DEFAULT_CONFIG_NORMALIZED_NONE;
 
-    if ((config == NULL) ||
-        (config->metrology.compliance_mode != METROLOGY_COMPLIANCE_GENERAL))
+    if (config == NULL)
     {
         return flags;
     }
     candidate = *config;
+    if ((candidate.battery.divider_top_ohm == 30000U) &&
+        (candidate.battery.divider_bottom_ohm == 10000U))
+    {
+        candidate.battery.divider_top_ohm = BATTERY_DIVIDER_TOP_OHM;
+        candidate.battery.divider_bottom_ohm = BATTERY_DIVIDER_BOTTOM_OHM;
+        flags |= DEFAULT_CONFIG_NORMALIZED_BATTERY_DIVIDER;
+    }
+    if (config->metrology.compliance_mode != METROLOGY_COMPLIANCE_GENERAL)
+    {
+        if (flags != DEFAULT_CONFIG_NORMALIZED_NONE) *config = candidate;
+        return flags;
+    }
     profile = &candidate.metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION];
     legacy_profile =
         (profile->sample_rate == DEVICE_CS1237_DATA_RATE_10_HZ) &&

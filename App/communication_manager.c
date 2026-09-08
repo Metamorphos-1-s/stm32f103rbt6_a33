@@ -37,6 +37,8 @@ static bool s_uart3_enabled;
 static bool s_uart3_first;
 static uint32_t s_uart2_first_count;
 static uint32_t s_uart3_first_count;
+static CommunicationApplyResult s_apply_result;
+static bool s_local_apply;
 
 static BspUart2Config ToUartConfig(const CommunicationConfig *config)
 {
@@ -47,7 +49,7 @@ static BspUart2Config ToUartConfig(const CommunicationConfig *config)
     return uart;
 }
 
-static bool IsCommunicationValid(const CommunicationConfig *config)
+bool CommunicationManager_IsConfigValid(const CommunicationConfig *config)
 {
     ModbusRtuTiming timing;
     return (config != NULL) && (config->modbus_address >= 1U) &&
@@ -151,7 +153,7 @@ static void ProcessTransports(void)
 
 bool CommunicationManager_Init(const CommunicationConfig *config)
 {
-    if (!IsCommunicationValid(config))
+    if (!CommunicationManager_IsConfigValid(config))
     {
         s_state = COMM_STATE_ERROR;
         return false;
@@ -164,6 +166,8 @@ bool CommunicationManager_Init(const CommunicationConfig *config)
     s_uart3_first = false;
     s_uart2_first_count = 0U;
     s_uart3_first_count = 0U;
+    s_apply_result = COMM_APPLY_RESULT_IDLE;
+    s_local_apply = false;
     if (config->protocol_mode != PROTOCOL_MODE_MODBUS_RTU)
     {
         s_state = COMM_STATE_DISABLED;
@@ -192,9 +196,26 @@ CommandResult CommunicationManager_RequestApplyForSource(CommandSource source)
     if (s_apply_requested || (s_state == COMM_STATE_ERROR) ||
         PersistenceManager_IsBusy()) return COMMAND_RESULT_BUSY;
     if (!ModbusRegisterModel_GetPendingCommunicationForSource(source,
-        &s_candidate) || !IsCommunicationValid(&s_candidate))
+        &s_candidate) || !CommunicationManager_IsConfigValid(&s_candidate))
         return COMMAND_RESULT_INVALID_ARGUMENT;
     s_apply_requested = true;
+    s_apply_result = COMM_APPLY_RESULT_PENDING;
+    s_local_apply = false;
+    return COMMAND_RESULT_ACCEPTED;
+}
+
+CommandResult CommunicationManager_RequestLocalApply(
+    const CommunicationConfig *candidate)
+{
+    if (s_apply_requested || (s_state == COMM_STATE_ERROR) ||
+        PersistenceManager_IsBusy()) return COMMAND_RESULT_BUSY;
+    if (!CommunicationManager_IsConfigValid(candidate))
+        return COMMAND_RESULT_INVALID_ARGUMENT;
+    s_candidate = *candidate;
+    s_candidate.pending_apply = true;
+    s_apply_requested = true;
+    s_apply_result = COMM_APPLY_RESULT_PENDING;
+    s_local_apply = true;
     return COMMAND_RESULT_ACCEPTED;
 }
 
@@ -221,7 +242,8 @@ static bool CommitCandidate(void)
     updated.communication = s_candidate;
     if (!SystemContext_ApplyConfig(&updated, true)) return false;
     s_active = s_candidate;
-    return ModbusRegisterModel_CompleteCommunicationApply(&s_active);
+    return s_local_apply ||
+        ModbusRegisterModel_CompleteCommunicationApply(&s_active);
 }
 
 static void SuspendServers(void)
@@ -315,6 +337,8 @@ void CommunicationManager_Process(void)
             break;
         case COMM_STATE_RESTART_RX:
             s_apply_requested = false;
+            s_local_apply = false;
+            s_apply_result = COMM_APPLY_RESULT_SUCCESS;
             s_state = (s_active.protocol_mode == PROTOCOL_MODE_MODBUS_RTU) ?
                 COMM_STATE_RUNNING : COMM_STATE_DISABLED;
             break;
@@ -323,15 +347,38 @@ void CommunicationManager_Process(void)
                 (!s_uart3_enabled ||
                  ModbusRtuServer_Resume(&s_server3, &s_rollback)))
             {
-                s_active = s_rollback;
-                s_apply_requested = false;
-                s_state = COMM_STATE_RUNNING;
-                FaultManager_Set(FAULT_COMM_CONFIG_APPLY);
+                bool context_restored = false;
+                {
+                    const SystemContext *context = SystemContext_Get();
+                    if (context != NULL)
+                    {
+                        DeviceConfig restored = context->config;
+                        restored.communication = s_rollback;
+                        context_restored =
+                            SystemContext_ApplyConfig(&restored, true);
+                    }
+                }
+                if (context_restored)
+                {
+                    s_active = s_rollback;
+                    s_apply_requested = false;
+                    s_local_apply = false;
+                    s_apply_result = COMM_APPLY_RESULT_FAILED;
+                    s_state = COMM_STATE_RUNNING;
+                    FaultManager_Set(FAULT_COMM_CONFIG_APPLY);
+                }
+                else
+                {
+                    FaultManager_Set(FAULT_MODBUS_TRANSPORT_FATAL);
+                    s_state = COMM_STATE_ERROR;
+                    s_apply_result = COMM_APPLY_RESULT_FAILED;
+                }
             }
             else
             {
                 FaultManager_Set(FAULT_MODBUS_TRANSPORT_FATAL);
                 s_state = COMM_STATE_ERROR;
+                s_apply_result = COMM_APPLY_RESULT_FAILED;
             }
             break;
         case COMM_STATE_DISABLED:
@@ -346,6 +393,11 @@ void CommunicationManager_Process(void)
 CommunicationManagerState CommunicationManager_GetState(void)
 {
     return s_state;
+}
+
+CommunicationApplyResult CommunicationManager_GetApplyResult(void)
+{
+    return s_apply_result;
 }
 
 const CommunicationConfig *CommunicationManager_GetActiveConfig(void)

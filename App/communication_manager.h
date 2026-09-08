@@ -25,11 +25,21 @@ typedef enum
     COMM_STATE_SUSPENDED_STORAGE,
     COMM_STATE_ERROR
 } CommunicationManagerState;
+typedef enum
+{
+    COMM_APPLY_RESULT_IDLE = 0,
+    COMM_APPLY_RESULT_PENDING,
+    COMM_APPLY_RESULT_SUCCESS,
+    COMM_APPLY_RESULT_FAILED
+} CommunicationApplyResult;
 
 bool CommunicationManager_Init(const CommunicationConfig *config);
 void CommunicationManager_Process(void);
 CommandResult CommunicationManager_RequestApply(void);
 CommandResult CommunicationManager_RequestApplyForSource(CommandSource source);
+CommandResult CommunicationManager_RequestLocalApply(
+    const CommunicationConfig *candidate);
+CommunicationApplyResult CommunicationManager_GetApplyResult(void);
 CommandResult CommunicationManager_RequestDeferredSave(void);
 CommunicationManagerState CommunicationManager_GetState(void);
 const CommunicationConfig *CommunicationManager_GetActiveConfig(void);
@@ -37,5 +47,6 @@ const ModbusRtuFramer *CommunicationManager_GetFramer(uint8_t port);
 const ModbusRtuServer *CommunicationManager_GetServer(uint8_t port);
 bool CommunicationManager_IsUart3Enabled(void);
 uint32_t CommunicationManager_GetFirstServiceCount(uint8_t port);
+bool CommunicationManager_IsConfigValid(const CommunicationConfig *config);
 
 #endif
