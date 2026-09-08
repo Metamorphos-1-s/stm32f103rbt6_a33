@@ -5,6 +5,7 @@
 #include "menu_types.h"
 
 #include <stdbool.h>
+#include <stdint.h>
 
 void MenuController_Init(void);
 bool MenuController_Enter(void);
@@ -16,5 +17,8 @@ bool MenuController_TakeCalibrationRequest(void);
 bool MenuController_TakeExitRequest(void);
 MenuItem MenuController_GetItem(void);
 bool MenuController_IsAdvanced(void);
+#if defined(STAGE2A_HOST_TEST)
+uint32_t MenuController_GetCancelRequestCount(void);
+#endif
 
 #endif /* MENU_CONTROLLER_H */

@@ -721,15 +721,20 @@ static void App_ProcessKeyEvent(const KeyEvent *event)
 {
   AppState state = SystemContext_GetState();
 
-  if ((event == NULL) || ((event->type != KEY_EVENT_SHORT) &&
-      (event->type != KEY_EVENT_LONG) &&
-      (event->type != KEY_EVENT_REPEAT)))
+  if (event == NULL)
   {
     return;
   }
+  /* STATUS owns RELEASED as well as action events for its entry-key gate. */
   if (StatusController_IsActive())
   {
     (void)StatusController_HandleKeyEvent(event);
+    return;
+  }
+  if ((event->type != KEY_EVENT_SHORT) &&
+      (event->type != KEY_EVENT_LONG) &&
+      (event->type != KEY_EVENT_REPEAT))
+  {
     return;
   }
   if (state == APP_STATE_MENU)

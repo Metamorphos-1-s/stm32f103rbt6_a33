@@ -56,11 +56,11 @@
 | 正常页 ZERO | 短按 ZERO，长按 RESET ZERO | `App/app_main.c`、`Domain/zero_tare/zero_tare.c` | Confirmed |
 | 正常页 HASH | NET/GROSS 快速切换 | `App/app_main.c` | Confirmed |
 | 正常页 STAR | 短按严格无操作；长按进入独立 STATUS 控制器 | `App/app_main.c`、`UI/status_controller` | Software verified |
-| STATUS | 独立消费按键；只读版本/Profile/SPd/GAIn/电池/协议；编辑共享通信配置 | `UI/status_controller` | Software verified; hardware pending |
+| STATUS | LIST→VIEW/EDIT分层；入场STAR释放门禁；只读版本/Profile/SPd/GAIn/电池/协议；编辑共享通信配置 | `UI/status_controller` | Software verified; hardware pending |
 | 长按时间 | 约 1.5 s | `Config/project_config.h` | Confirmed |
 | STAR/HASH 重复 | 600 ms 后每 150 ms固定重复 | `Config/project_config.h`、`UI/key_service/key_service.c` | Confirmed |
 | 无长按加速 | 固定重复，无加速 | Stage 5F 范围、KeyService 源码 | Confirmed |
-| 菜单保存/退出 | 长 FUNCTION 保存已确认修改后退出；TARE/30 s超时不保存退出 | `UI/menu_controller/menu_controller.c` | Software verified; hardware pending |
+| 菜单保存/退出 | 编辑TARE返回列表；列表TARE和30 s超时不保存退出；长FUNCTION只保存会话修改；SAUE可保存预先dirty快照 | `UI/menu_controller/menu_controller.c` | Software verified; hardware pending |
 | 普通菜单 | UnIt/PrOF/briGHt/trrEt/SAUE/EHIt | `UI/menu_controller/menu_controller.c::s_ordinary` | Confirmed |
 | 高级入口 | UnIt 页 STAR/HASH/STAR/HASH | `UI/menu_controller/menu_controller.c::HandleAdvancedSequence` | Confirmed |
 | 高级菜单顺序 | 当前 MenuItem 枚举和 `s_labels` 全量 | `UI/menu_controller/menu_types.h`、`menu_controller.c` | Confirmed |

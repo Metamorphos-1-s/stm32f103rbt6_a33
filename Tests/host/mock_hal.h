@@ -23,5 +23,6 @@ void TestMock_SetCommunicationApplyResult(CommandResult request,
                                           CommunicationApplyResult status);
 uint32_t TestMock_GetSaveRequestCount(void);
 uint32_t TestMock_GetLocalCommunicationApplyCount(void);
+void TestMock_SetPersistenceBusy(bool busy);
 
 #endif /* STAGE2A_MOCK_HAL_H */

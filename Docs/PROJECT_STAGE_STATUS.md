@@ -8,8 +8,10 @@ key events before RUN behavior. Confirmed communication edits use the existing
 asynchronous UART2 apply/rollback path and only request PersistenceManager SAVE
 after apply success. STATUS and menu SAVE completion are revision-bound; foreign
 configuration changes are rejected rather than merged into a whole-snapshot
-save. Menu long FUNCTION saves confirmed changes and exits after completion,
-while TARE and timeout exit without saving.
+save. STATUS now uses explicit LIST/VIEW/EDIT levels and gates the entry STAR
+until release. Menu edit-level TARE returns to its list; list TARE and timeout
+exit without saving. Long FUNCTION saves only session-confirmed changes, while
+explicit SAUE retains authority to save an already-dirty entry snapshot.
 
 Local brightness is constrained to 1..7, tare retention is boolean, and StAb is
 saturated to the validator's 10..10000 ms range. SPd/GAIn are hidden from the

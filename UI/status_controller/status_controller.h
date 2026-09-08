@@ -25,6 +25,17 @@ typedef enum
     STATUS_ITEM_COUNT
 } StatusItem;
 
+typedef enum
+{
+    STATUS_MODE_LIST = 0,
+    STATUS_MODE_VIEW,
+    STATUS_MODE_EDIT,
+    STATUS_MODE_APPLYING,
+    STATUS_MODE_SAVING,
+    STATUS_MODE_MESSAGE,
+    STATUS_MODE_COMPLETE
+} StatusMode;
+
 void StatusController_Init(void);
 bool StatusController_Enter(void);
 void StatusController_Cancel(void);
@@ -32,6 +43,7 @@ void StatusController_Process10ms(void);
 bool StatusController_HandleKeyEvent(const KeyEvent *event);
 bool StatusController_IsActive(void);
 StatusItem StatusController_GetItem(void);
+StatusMode StatusController_GetMode(void);
 bool StatusController_IsEditing(void);
 #if defined(STAGE2A_HOST_TEST)
 bool StatusController_GetVisibleCommunication(CommunicationConfig *config);

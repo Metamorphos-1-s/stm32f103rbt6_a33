@@ -12,17 +12,6 @@
 #include <stddef.h>
 #include <string.h>
 
-#define STATUS_LABEL_MS 600U
-
-typedef enum
-{
-    STATUS_MODE_BROWSE = 0,
-    STATUS_MODE_EDIT,
-    STATUS_MODE_APPLYING,
-    STATUS_MODE_SAVING,
-    STATUS_MODE_COMPLETE
-} StatusMode;
-
 static const char s_labels[STATUS_ITEM_COUNT][6] = {
     {'F','I','r',' ',' ',' '}, {'r','A','P',' ',' ',' '},
     {'S','C','H',' ',' ',' '}, {'P','r','O','F',' ',' '},
@@ -35,40 +24,34 @@ static const char s_labels[STATUS_ITEM_COUNT][6] = {
 static const uint32_t s_baud[] = {9600U,19200U,38400U,57600U,115200U};
 static bool s_active;
 static bool s_confirmed;
+static bool s_applied;
+static bool s_apply_uncertain;
+static bool s_save_uncertain;
+static bool s_wait_entry_key_release;
 static StatusItem s_item;
 static StatusMode s_mode;
+static StatusMode s_message_return_mode;
 static DisplayPage s_previous_page;
 static CommunicationConfig s_original;
 static CommunicationConfig s_candidate;
 static CommunicationConfig s_edit;
+static CommunicationConfig s_applied_candidate;
 static uint32_t s_original_revision;
-static uint32_t s_target_revision;
+static uint32_t s_applied_revision;
 static uint32_t s_last_activity_ms;
-static uint32_t s_label_until_ms;
-static uint32_t s_complete_until_ms;
+static uint32_t s_transaction_started_ms;
+static uint32_t s_message_until_ms;
 
-static uint32_t NextRevision(uint32_t revision)
-{
-    uint32_t next = revision + 1U;
-    return next == 0xFFFFFFFFUL ? 0U : next;
-}
-
-static bool IsEditable(StatusItem item)
-{
-    return item >= STATUS_ITEM_ADDRESS;
-}
-
+static bool IsEditable(StatusItem item) { return item >= STATUS_ITEM_ADDRESS; }
 static void Show(const char text[6])
-{
-    (void)DisplayController_SetTextPage(DISPLAY_PAGE_STATUS, text);
-}
-
+{ (void)DisplayController_SetTextPage(DISPLAY_PAGE_STATUS, text); }
 static void ShowNumber(uint32_t value)
 {
     if (value > 999999U) value = 999999U;
     (void)DisplayController_SetNumericPage(DISPLAY_PAGE_STATUS,
                                            (int32_t)value, 0U);
 }
+static void RenderLabel(void) { Show(s_labels[s_item]); }
 
 static void RenderValue(void)
 {
@@ -83,13 +66,11 @@ static void RenderValue(void)
         case STATUS_ITEM_FIRMWARE:
             (void)DisplayController_SetNumericPage(DISPLAY_PAGE_STATUS,
                 (int32_t)(FW_RELEASE_VERSION_MAJOR * 100U +
-                          FW_RELEASE_VERSION_MINOR), 2U);
-            break;
+                          FW_RELEASE_VERSION_MINOR), 2U); break;
         case STATUS_ITEM_MAP:
             (void)DisplayController_SetNumericPage(DISPLAY_PAGE_STATUS,
                 (int32_t)(((MODBUS_REGISTER_MAP_VERSION >> 8U) & 0xFFU) *
-                          100U +
-                          (MODBUS_REGISTER_MAP_VERSION & 0xFFU)), 2U);
+                          100U + (MODBUS_REGISTER_MAP_VERSION & 0xFFU)), 2U);
             break;
         case STATUS_ITEM_SCHEMA: ShowNumber(DEVICE_CONFIG_SCHEMA_VERSION); break;
         case STATUS_ITEM_PROFILE:
@@ -111,8 +92,7 @@ static void RenderValue(void)
             break;
         case STATUS_ITEM_PROTOCOL:
             Show(context->config.communication.protocol_mode ==
-                 PROTOCOL_MODE_MODBUS_RTU ? "   rtU" : "  CUSt");
-            break;
+                 PROTOCOL_MODE_MODBUS_RTU ? "   rtU" : "  CUSt"); break;
         case STATUS_ITEM_ADDRESS: ShowNumber((s_mode == STATUS_MODE_EDIT) ?
             s_edit.modbus_address : s_candidate.modbus_address); break;
         case STATUS_ITEM_BAUD: ShowNumber((s_mode == STATUS_MODE_EDIT) ?
@@ -122,8 +102,7 @@ static void RenderValue(void)
             CommunicationParity parity = (s_mode == STATUS_MODE_EDIT) ?
                 s_edit.parity : s_candidate.parity;
             Show(parity == COMM_PARITY_NONE ? "  nonE" :
-                 parity == COMM_PARITY_EVEN ? "  EUEn" : "   Odd");
-            break;
+                 parity == COMM_PARITY_EVEN ? "  EUEn" : "   Odd"); break;
         }
         case STATUS_ITEM_STOP_BITS: ShowNumber(((s_mode == STATUS_MODE_EDIT) ?
             s_edit.stop_bits : s_candidate.stop_bits) == COMM_STOP_BITS_2 ?
@@ -136,17 +115,27 @@ static void RenderValue(void)
     }
 }
 
-static void ShowItem(uint32_t now_ms)
-{
-    Show(s_labels[s_item]);
-    s_label_until_ms = now_ms + STATUS_LABEL_MS;
-}
-
-static void ExitDiscard(void)
+static void ExitStatus(void)
 {
     s_active = false;
-    s_mode = STATUS_MODE_BROWSE;
+    s_mode = STATUS_MODE_LIST;
     DisplayController_SetPage(s_previous_page);
+}
+
+static void ShowMessage(const char text[6], StatusMode return_mode,
+                        uint32_t now_ms)
+{
+    Show(text);
+    s_mode = STATUS_MODE_MESSAGE;
+    s_message_return_mode = return_mode;
+    s_message_until_ms = now_ms + UI_MESSAGE_DEFAULT_MS;
+}
+
+static void ShowCompletion(const char text[6], uint32_t now_ms)
+{
+    Show(text);
+    s_mode = STATUS_MODE_COMPLETE;
+    s_message_until_ms = now_ms + UI_MESSAGE_DEFAULT_MS;
 }
 
 static void Adjust(KeyId key)
@@ -181,42 +170,88 @@ static void Adjust(KeyId key)
             MODBUS_WORD_ORDER_HIGH_WORD_FIRST;
 }
 
+static bool AppliedCandidateIsCurrent(void)
+{
+    const SystemContext *context = SystemContext_Get();
+    return s_applied && (context != NULL) &&
+        (SystemContext_GetConfigRevision() == s_applied_revision) &&
+        (memcmp(&context->config.communication, &s_applied_candidate,
+                sizeof(s_applied_candidate)) == 0);
+}
+
+static void RequestSaveOnly(uint32_t now_ms)
+{
+    CommandResult result;
+    if (!AppliedCandidateIsCurrent())
+    {
+        ShowMessage(" bUSY ", STATUS_MODE_LIST, now_ms); return;
+    }
+    result = PersistenceManager_RequestSave();
+    if (result == COMMAND_RESULT_ACCEPTED)
+    {
+        Show(" SAUE ");
+        s_mode = STATUS_MODE_SAVING;
+        s_transaction_started_ms = now_ms;
+        s_save_uncertain = false;
+    }
+    else if ((result == COMMAND_RESULT_OK) &&
+             (SystemContext_GetSavedRevision() == s_applied_revision))
+        ShowCompletion("noCHG ", now_ms);
+    else ShowMessage("ErrSAU", STATUS_MODE_LIST, now_ms);
+}
+
 static void BeginSave(uint32_t now_ms)
 {
-    if (s_mode == STATUS_MODE_EDIT) s_mode = STATUS_MODE_BROWSE;
+    if (s_mode == STATUS_MODE_EDIT) s_mode = STATUS_MODE_LIST;
     if (!s_confirmed ||
         (memcmp(&s_candidate, &s_original, sizeof(s_candidate)) == 0))
+    { ShowCompletion("noCHG ", now_ms); return; }
+    if (s_save_uncertain)
     {
-        Show("noCHG ");
-        s_mode = STATUS_MODE_COMPLETE;
-        s_complete_until_ms = now_ms + UI_MESSAGE_DEFAULT_MS;
+        PersistenceStatus status = PersistenceManager_GetStatus();
+        if (((status == PERSISTENCE_STATUS_SUCCESS) ||
+             (status == PERSISTENCE_STATUS_NO_CHANGE)) &&
+            (SystemContext_GetSavedRevision() == s_applied_revision))
+            ShowCompletion(status == PERSISTENCE_STATUS_SUCCESS ?
+                           "  donE" : "noCHG ", now_ms);
+        else if (PersistenceManager_IsBusy())
+            ShowMessage(" UnC  ", STATUS_MODE_LIST, now_ms);
+        else { s_save_uncertain = false; RequestSaveOnly(now_ms); }
+        return;
+    }
+    if (s_applied) { RequestSaveOnly(now_ms); return; }
+    if (s_apply_uncertain)
+    {
+        CommunicationApplyResult result = CommunicationManager_GetApplyResult();
+        const SystemContext *context = SystemContext_Get();
+        if ((result == COMM_APPLY_RESULT_SUCCESS) && (context != NULL) &&
+            (memcmp(&context->config.communication, &s_candidate,
+                    sizeof(s_candidate)) == 0))
+        {
+            s_applied = true;
+            s_apply_uncertain = false;
+            s_applied_candidate = s_candidate;
+            s_applied_revision = SystemContext_GetConfigRevision();
+            RequestSaveOnly(now_ms);
+        }
+        else ShowMessage(result == COMM_APPLY_RESULT_PENDING ? " UnC  " :
+                         " Err  ", STATUS_MODE_LIST, now_ms);
         return;
     }
     if (!CommunicationManager_IsConfigValid(&s_candidate))
-    {
-        Show("InUALd");
-        return;
-    }
+    { ShowMessage("InUALd", STATUS_MODE_LIST, now_ms); return; }
     if (SystemContext_GetConfigRevision() != s_original_revision)
-    {
-        Show(" bUSY ");
-        return;
-    }
+    { ShowMessage(" bUSY ", STATUS_MODE_LIST, now_ms); return; }
     if (CommunicationManager_RequestLocalApply(&s_candidate) !=
         COMMAND_RESULT_ACCEPTED)
-    {
-        Show(" Err  ");
-        return;
-    }
+    { ShowMessage(" Err  ", STATUS_MODE_LIST, now_ms); return; }
     Show("APPLY ");
     s_mode = STATUS_MODE_APPLYING;
+    s_transaction_started_ms = now_ms;
 }
 
 void StatusController_Init(void)
-{
-    s_active = false;
-    s_mode = STATUS_MODE_BROWSE;
-}
+{ s_active = false; s_mode = STATUS_MODE_LIST; }
 
 bool StatusController_Enter(void)
 {
@@ -224,154 +259,158 @@ bool StatusController_Enter(void)
     if (s_active || (context == NULL)) return false;
     s_active = true;
     s_confirmed = false;
+    s_applied = false;
+    s_apply_uncertain = false;
+    s_save_uncertain = false;
+    s_wait_entry_key_release = true;
     s_item = STATUS_ITEM_FIRMWARE;
-    s_mode = STATUS_MODE_BROWSE;
+    s_mode = STATUS_MODE_LIST;
     s_previous_page = DisplayController_GetPage();
     s_original = context->config.communication;
     s_candidate = s_original;
     s_original_revision = SystemContext_GetConfigRevision();
     s_last_activity_ms = BSP_TimeNowMs();
-    ShowItem(s_last_activity_ms);
+    RenderLabel();
     return true;
 }
 
-void StatusController_Cancel(void)
-{
-    if (s_active) ExitDiscard();
-}
+void StatusController_Cancel(void) { if (s_active) ExitStatus(); }
 
 void StatusController_Process10ms(void)
 {
     uint32_t now = BSP_TimeNowMs();
     if (!s_active) return;
-    if ((s_mode == STATUS_MODE_BROWSE) || (s_mode == STATUS_MODE_EDIT))
+    if ((s_mode == STATUS_MODE_LIST) || (s_mode == STATUS_MODE_VIEW) ||
+        (s_mode == STATUS_MODE_EDIT))
     {
         if ((uint32_t)(now - s_last_activity_ms) >= MENU_TIMEOUT_MS)
+        { ExitStatus(); return; }
+    }
+    else if (s_mode == STATUS_MODE_MESSAGE)
+    {
+        if ((int32_t)(now - s_message_until_ms) >= 0)
         {
-            ExitDiscard();
-            return;
+            s_mode = s_message_return_mode;
+            if (s_mode == STATUS_MODE_LIST) RenderLabel(); else RenderValue();
         }
-        if ((s_mode == STATUS_MODE_BROWSE) &&
-            ((int32_t)(now - s_label_until_ms) >= 0)) RenderValue();
     }
     else if (s_mode == STATUS_MODE_APPLYING)
     {
         CommunicationApplyResult result = CommunicationManager_GetApplyResult();
         if (result == COMM_APPLY_RESULT_SUCCESS)
         {
-            s_target_revision = SystemContext_GetConfigRevision();
-            if ((s_target_revision != NextRevision(s_original_revision)) ||
-                (memcmp(&SystemContext_Get()->config.communication,
-                        &s_candidate, sizeof(s_candidate)) != 0))
-            {
-                Show(" bUSY ");
-                s_mode = STATUS_MODE_BROWSE;
-                return;
-            }
-            if (PersistenceManager_RequestSave() == COMMAND_RESULT_ACCEPTED)
-            {
-                Show(" SAUE ");
-                s_mode = STATUS_MODE_SAVING;
-            }
-            else
-            {
-                Show("ErrSAU");
-                s_mode = STATUS_MODE_BROWSE;
-            }
+            const SystemContext *context = SystemContext_Get();
+            if ((context == NULL) ||
+                (memcmp(&context->config.communication, &s_candidate,
+                        sizeof(s_candidate)) != 0))
+            { ShowMessage(" bUSY ", STATUS_MODE_LIST, now); return; }
+            s_applied = true;
+            s_applied_candidate = s_candidate;
+            s_applied_revision = SystemContext_GetConfigRevision();
+            RequestSaveOnly(now);
         }
         else if (result == COMM_APPLY_RESULT_FAILED)
+            ShowMessage(" Err  ", STATUS_MODE_LIST, now);
+        else if ((uint32_t)(now - s_transaction_started_ms) >=
+                 STATUS_TRANSACTION_TIMEOUT_MS)
         {
-            Show(" Err  ");
-            s_mode = STATUS_MODE_BROWSE;
+            s_apply_uncertain = true;
+            ShowMessage(" UnC  ", STATUS_MODE_LIST, now);
         }
     }
     else if (s_mode == STATUS_MODE_SAVING)
     {
         PersistenceStatus status = PersistenceManager_GetStatus();
-        if ((status == PERSISTENCE_STATUS_SUCCESS) &&
-            (SystemContext_GetSavedRevision() == s_target_revision))
-        {
-            Show("  donE");
-            s_mode = STATUS_MODE_COMPLETE;
-            s_complete_until_ms = now + UI_MESSAGE_DEFAULT_MS;
-        }
+        if (((status == PERSISTENCE_STATUS_SUCCESS) ||
+             (status == PERSISTENCE_STATUS_NO_CHANGE)) &&
+            (SystemContext_GetSavedRevision() == s_applied_revision))
+            ShowCompletion(status == PERSISTENCE_STATUS_SUCCESS ?
+                           "  donE" : "noCHG ", now);
         else if ((status == PERSISTENCE_STATUS_FAILED) ||
                  (status == PERSISTENCE_STATUS_REBOOT_REQUIRED))
+            ShowMessage("ErrSAU", STATUS_MODE_LIST, now);
+        else if ((uint32_t)(now - s_transaction_started_ms) >=
+                 STATUS_TRANSACTION_TIMEOUT_MS)
         {
-            Show("ErrSAU");
-            s_mode = STATUS_MODE_BROWSE;
+            s_save_uncertain = true;
+            ShowMessage(" UnC  ", STATUS_MODE_LIST, now);
         }
     }
     else if ((s_mode == STATUS_MODE_COMPLETE) &&
-             ((int32_t)(now - s_complete_until_ms) >= 0)) ExitDiscard();
+             ((int32_t)(now - s_message_until_ms) >= 0)) ExitStatus();
 }
 
 bool StatusController_HandleKeyEvent(const KeyEvent *event)
 {
     if (!s_active || (event == NULL)) return false;
-    if ((event->type != KEY_EVENT_SHORT) &&
-        (event->type != KEY_EVENT_REPEAT) &&
-        (event->type != KEY_EVENT_LONG)) return true;
-    s_last_activity_ms = event->timestamp_ms;
-    if ((event->key == KEY_ID_TARE) && (event->type == KEY_EVENT_SHORT) &&
-        (s_mode != STATUS_MODE_APPLYING) && (s_mode != STATUS_MODE_SAVING))
+    if (s_wait_entry_key_release && (event->key == KEY_ID_STAR))
     {
-        ExitDiscard();
+        if (event->type == KEY_EVENT_RELEASED)
+            s_wait_entry_key_release = false;
         return true;
     }
+    if ((event->type != KEY_EVENT_SHORT) &&
+        (event->type != KEY_EVENT_LONG)) return true;
+    s_last_activity_ms = event->timestamp_ms;
     if ((event->key == KEY_ID_STAR) && (event->type == KEY_EVENT_LONG) &&
-        ((s_mode == STATUS_MODE_BROWSE) || (s_mode == STATUS_MODE_EDIT)))
+        ((s_mode == STATUS_MODE_LIST) || (s_mode == STATUS_MODE_VIEW) ||
+         (s_mode == STATUS_MODE_EDIT)))
+    { BeginSave(event->timestamp_ms); return true; }
+    if (s_mode == STATUS_MODE_VIEW)
     {
-        BeginSave(event->timestamp_ms);
+        if ((event->key == KEY_ID_TARE) && (event->type == KEY_EVENT_SHORT))
+        { s_mode = STATUS_MODE_LIST; RenderLabel(); }
         return true;
     }
     if (s_mode == STATUS_MODE_EDIT)
     {
         if (((event->key == KEY_ID_STAR) || (event->key == KEY_ID_HASH)) &&
-            ((event->type == KEY_EVENT_SHORT) ||
-             (event->type == KEY_EVENT_REPEAT)))
-        {
-            Adjust(event->key);
-            RenderValue();
-        }
+            (event->type == KEY_EVENT_SHORT))
+        { Adjust(event->key); RenderValue(); }
         else if ((event->key == KEY_ID_FUNCTION) &&
                  (event->type == KEY_EVENT_SHORT))
         {
             s_candidate = s_edit;
             s_confirmed = memcmp(&s_candidate, &s_original,
                                  sizeof(s_candidate)) != 0;
-            s_mode = STATUS_MODE_BROWSE;
-            RenderValue();
+            s_mode = STATUS_MODE_LIST; RenderLabel();
         }
+        else if ((event->key == KEY_ID_TARE) &&
+                 (event->type == KEY_EVENT_SHORT))
+        { s_mode = STATUS_MODE_LIST; RenderLabel(); }
         return true;
     }
-    if (s_mode != STATUS_MODE_BROWSE) return true;
+    if (s_mode != STATUS_MODE_LIST) return true;
+    if ((event->key == KEY_ID_TARE) && (event->type == KEY_EVENT_SHORT))
+    { ExitStatus(); return true; }
     if (((event->key == KEY_ID_STAR) || (event->key == KEY_ID_HASH)) &&
-        ((event->type == KEY_EVENT_SHORT) ||
-         (event->type == KEY_EVENT_REPEAT)))
+        (event->type == KEY_EVENT_SHORT))
     {
         s_item = (event->key == KEY_ID_HASH) ?
             (StatusItem)(((uint32_t)s_item + 1U) % STATUS_ITEM_COUNT) :
             (StatusItem)(((uint32_t)s_item + STATUS_ITEM_COUNT - 1U) %
                          STATUS_ITEM_COUNT);
-        ShowItem(event->timestamp_ms);
+        RenderLabel();
     }
     else if ((event->key == KEY_ID_FUNCTION) &&
              (event->type == KEY_EVENT_SHORT))
     {
-        if (IsEditable(s_item))
+        if (IsEditable(s_item) && s_applied)
         {
-            s_edit = s_candidate;
-            s_mode = STATUS_MODE_EDIT;
-            RenderValue();
+            ShowMessage(" rAn  ", STATUS_MODE_LIST, event->timestamp_ms);
+            return true;
         }
-        else ShowItem(event->timestamp_ms);
+        if (IsEditable(s_item))
+        { s_edit = s_candidate; s_mode = STATUS_MODE_EDIT; }
+        else s_mode = STATUS_MODE_VIEW;
+        RenderValue();
     }
     return true;
 }
 
 bool StatusController_IsActive(void) { return s_active; }
 StatusItem StatusController_GetItem(void) { return s_item; }
+StatusMode StatusController_GetMode(void) { return s_mode; }
 bool StatusController_IsEditing(void) { return s_mode == STATUS_MODE_EDIT; }
 #if defined(STAGE2A_HOST_TEST)
 bool StatusController_GetVisibleCommunication(CommunicationConfig *config)

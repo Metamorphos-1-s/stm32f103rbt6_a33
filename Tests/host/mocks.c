@@ -25,6 +25,9 @@ static uint32_t s_save_request_count;
 static uint32_t s_local_apply_count;
 static CommandResult s_local_apply_request_result;
 static CommunicationApplyResult s_local_apply_result;
+static bool s_persistence_busy;
+static bool s_local_candidate_pending;
+static CommunicationConfig s_local_candidate;
 
 CommunicationManagerState CommunicationManager_GetState(void)
 {
@@ -50,12 +53,15 @@ CommandResult CommunicationManager_RequestLocalApply(
     ++s_local_apply_count;
     if ((candidate == NULL) || (context == NULL))
         return COMMAND_RESULT_INVALID_ARGUMENT;
+    s_local_candidate = *candidate;
+    s_local_candidate_pending = true;
     if ((s_local_apply_request_result == COMMAND_RESULT_ACCEPTED) &&
         (s_local_apply_result == COMM_APPLY_RESULT_SUCCESS))
     {
         updated = context->config;
         updated.communication = *candidate;
         (void)SystemContext_ApplyConfig(&updated, true);
+        s_local_candidate_pending = false;
     }
     return s_local_apply_request_result;
 }
@@ -78,7 +84,7 @@ CommandResult CommunicationManager_RequestDeferredSave(void)
 
 bool PersistenceManager_IsBusy(void)
 {
-    return false;
+    return s_persistence_busy;
 }
 
 CommandResult PersistenceManager_RequestSave(void)
@@ -119,6 +125,8 @@ void TestMock_Reset(void)
     s_local_apply_count = 0U;
     s_local_apply_request_result = COMMAND_RESULT_ACCEPTED;
     s_local_apply_result = COMM_APPLY_RESULT_SUCCESS;
+    s_persistence_busy = false;
+    s_local_candidate_pending = false;
 }
 
 void TestMock_SetPersistenceResult(CommandResult request,
@@ -133,7 +141,17 @@ void TestMock_SetCommunicationApplyResult(CommandResult request,
 {
     s_local_apply_request_result = request;
     s_local_apply_result = status;
+    if ((status == COMM_APPLY_RESULT_SUCCESS) && s_local_candidate_pending &&
+        (SystemContext_Get() != NULL))
+    {
+        DeviceConfig updated = SystemContext_Get()->config;
+        updated.communication = s_local_candidate;
+        (void)SystemContext_ApplyConfig(&updated, true);
+        s_local_candidate_pending = false;
+    }
 }
+
+void TestMock_SetPersistenceBusy(bool busy) { s_persistence_busy = busy; }
 
 uint32_t TestMock_GetSaveRequestCount(void)
 {

@@ -130,3 +130,10 @@ bool WeighingProfileManager_IsBusy(void)
 
 WeighingProfileSwitchState WeighingProfileManager_GetState(void) { return s_state; }
 CommandResult WeighingProfileManager_GetLastResult(void) { return s_last_result; }
+#if defined(STAGE2A_HOST_TEST)
+void WeighingProfileManager_TestSetResult(CommandResult result)
+{
+    s_last_result = result;
+    s_state = PROFILE_SWITCH_IDLE;
+}
+#endif

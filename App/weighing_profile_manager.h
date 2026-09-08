@@ -27,5 +27,8 @@ void WeighingProfileManager_Process(void);
 bool WeighingProfileManager_IsBusy(void);
 WeighingProfileSwitchState WeighingProfileManager_GetState(void);
 CommandResult WeighingProfileManager_GetLastResult(void);
+#if defined(STAGE2A_HOST_TEST)
+void WeighingProfileManager_TestSetResult(CommandResult result);
+#endif
 
 #endif

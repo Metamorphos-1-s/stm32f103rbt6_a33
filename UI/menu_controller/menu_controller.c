@@ -12,6 +12,7 @@
 #include "project_config.h"
 #include "system_context.h"
 #include "unit_converter.h"
+#include "weighing_profile_manager.h"
 
 #include <limits.h>
 #include <stddef.h>
@@ -85,6 +86,11 @@ static uint32_t s_message_until_ms;
 static bool s_local_confirmed;
 static bool s_save_waiting;
 static bool s_exit_after_save;
+static bool s_profile_apply_pending;
+static WeighingProfileId s_profile_target;
+#if defined(STAGE2A_HOST_TEST)
+static uint32_t s_cancel_request_count;
+#endif
 
 static CommandResult MenuController_Command(CommandId id, int32_t value0,
     int32_t value1, uint32_t flags, int64_t value64)
@@ -190,17 +196,27 @@ static void ExitMenu(void)
 static void CancelUnconfirmedEdit(void)
 {
     if (s_editing && (s_edit_kind != MENU_EDIT_UNIT))
+    {
         (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,
             0, 0, 0U, 0);
+#if defined(STAGE2A_HOST_TEST)
+        ++s_cancel_request_count;
+#endif
+    }
     s_editing = false;
 }
 
-static void RequestSave(bool exit_after, uint32_t now_ms)
+static void RequestSave(bool exit_after, bool explicit_save, uint32_t now_ms)
 {
     CommandResult result;
     CancelUnconfirmedEdit();
-    if (!s_local_confirmed || (SystemContext_GetConfigRevision() ==
-                              SystemContext_GetSavedRevision()))
+    if (s_profile_apply_pending)
+    {
+        ShowCode(DISPLAY_CODE_BUSY);
+        return;
+    }
+    if ((!explicit_save && !s_local_confirmed) ||
+        (SystemContext_GetConfigRevision() == SystemContext_GetSavedRevision()))
     {
         ShowCode(DISPLAY_CODE_NO_CHANGE);
         if (exit_after)
@@ -622,7 +638,10 @@ void MenuController_Init(void)
     s_exit_request = false; s_factory_confirmation = false;
     s_item = MENU_ITEM_UNIT; s_advanced = false; ClearSequence();
     s_local_confirmed = false; s_save_waiting = false;
-    s_exit_after_save = false;
+    s_exit_after_save = false; s_profile_apply_pending = false;
+#if defined(STAGE2A_HOST_TEST)
+    s_cancel_request_count = 0U;
+#endif
 }
 
 bool MenuController_Enter(void)
@@ -632,7 +651,7 @@ bool MenuController_Enter(void)
     s_item = MENU_ITEM_UNIT; s_advanced = false; ClearSequence();
     s_expected_revision = SystemContext_GetConfigRevision();
     s_local_confirmed = false; s_save_waiting = false;
-    s_exit_after_save = false;
+    s_exit_after_save = false; s_profile_apply_pending = false;
     s_last_activity_ms = BSP_TimeNowMs(); Render(); return true;
 }
 
@@ -640,6 +659,24 @@ void MenuController_Process10ms(void)
 {
     uint32_t now = BSP_TimeNowMs();
     if (!s_active) return;
+    if (s_profile_apply_pending)
+    {
+        if (!WeighingProfileManager_IsBusy())
+        {
+            const SystemContext *context = SystemContext_Get();
+            s_profile_apply_pending = false;
+            if ((WeighingProfileManager_GetLastResult() == COMMAND_RESULT_OK) &&
+                (context != NULL) &&
+                (context->config.metrology.active_profile == s_profile_target))
+            {
+                s_local_confirmed = true;
+                s_expected_revision = SystemContext_GetConfigRevision();
+                ShowCode(DISPLAY_CODE_RAM_SAVE);
+            }
+            else ShowCode(DISPLAY_CODE_ERROR);
+        }
+        return;
+    }
     if (s_save_waiting)
     {
         PersistenceStatus status = PersistenceManager_GetStatus();
@@ -678,9 +715,6 @@ void MenuController_Process10ms(void)
         ReplaySequence();
     if ((uint32_t)(now - s_last_activity_ms) >= MENU_TIMEOUT_MS)
     {
-        if (s_editing && (s_edit_kind != MENU_EDIT_UNIT))
-            (void)MenuController_Command(
-            COMMAND_CANCEL_CONFIG_EDIT, 0, 0, 0U, 0);
         if (s_factory_confirmation) (void)MenuController_Command(
             COMMAND_FACTORY_RESET_CANCEL, 0, 0, 0U, 0);
         CancelUnconfirmedEdit();
@@ -696,7 +730,8 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         ((event->type != KEY_EVENT_SHORT) &&
          (event->type != KEY_EVENT_REPEAT) &&
          (event->type != KEY_EVENT_LONG))) return false;
-    if (s_save_waiting || s_exit_after_save) return true;
+    if (s_save_waiting || s_exit_after_save || s_profile_apply_pending)
+        return true;
     s_last_activity_ms = event->timestamp_ms;
     if (HandleAdvancedSequence(event)) return true;
     if (s_factory_confirmation)
@@ -719,7 +754,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
     }
     if ((event->key == KEY_ID_FUNCTION) && (event->type == KEY_EVENT_LONG))
     {
-        RequestSave(true, event->timestamp_ms);
+        RequestSave(true, false, event->timestamp_ms);
         return true;
     }
     if (s_editing)
@@ -789,10 +824,8 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         else if ((event->key == KEY_ID_TARE) &&
                  (event->type == KEY_EVENT_SHORT))
         {
-            if (s_edit_kind != MENU_EDIT_UNIT)
-                (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,
-                                             0, 0, 0U, 0);
-            ExitMenu();
+            CancelUnconfirmedEdit();
+            Render();
             return true;
         }
         Render(); return true;
@@ -828,8 +861,12 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                 DISPLAY_CODE_APPLYING : DISPLAY_CODE_BUSY);
             if (result == COMMAND_RESULT_ACCEPTED)
             {
-                s_local_confirmed = true;
-                s_expected_revision = SystemContext_GetConfigRevision() + 1U;
+                s_profile_target =
+                    (context->config.metrology.active_profile ==
+                     WEIGHING_PROFILE_HIGH_PRECISION) ?
+                    WEIGHING_PROFILE_HIGH_SPEED :
+                    WEIGHING_PROFILE_HIGH_PRECISION;
+                s_profile_apply_pending = true;
             }
             return true;
         }
@@ -843,7 +880,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         }
         else if (s_item == MENU_ITEM_SAVE)
         {
-            RequestSave(false, event->timestamp_ms);
+            RequestSave(false, true, event->timestamp_ms);
             return true;
         }
         else if (s_item == MENU_ITEM_FACTORY_RESET)
@@ -891,3 +928,7 @@ bool MenuController_TakeExitRequest(void)
 { bool value = s_exit_request; s_exit_request = false; return value; }
 MenuItem MenuController_GetItem(void) { return s_item; }
 bool MenuController_IsAdvanced(void) { return s_advanced; }
+#if defined(STAGE2A_HOST_TEST)
+uint32_t MenuController_GetCancelRequestCount(void)
+{ return s_cancel_request_count; }
+#endif

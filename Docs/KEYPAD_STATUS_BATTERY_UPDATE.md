@@ -13,10 +13,12 @@ before RUN dispatch, so STATUS TARE/HASH/ZERO cannot become weighing actions.
 The previous display page and weight view are restored on exit.
 
 STATUS keeps the entry communication snapshot, a confirmed candidate, a
-separate unconfirmed edit value, and the entry configuration revision. TARE or
-timeout discards the whole candidate. STAR long cancels only the current
-unconfirmed edit, validates the confirmed candidate, rejects a foreign revision,
-and requests the existing asynchronous CommunicationManager apply. Only a
+separate unconfirmed edit value, and the entry configuration revision. LIST
+TARE or timeout discards the whole not-yet-applied candidate; VIEW/EDIT TARE
+returns to LIST and EDIT TARE cancels only that field's unconfirmed value. STAR
+long cancels only the current unconfirmed edit, validates the confirmed
+candidate, rejects a foreign revision, and requests the existing asynchronous
+CommunicationManager apply. Only a
 successful, candidate-matching apply at the expected next revision can request
 PersistenceManager SAVE. The saved revision must match the request revision
 before `donE` is shown. There is no retry.
@@ -24,16 +26,26 @@ before `donE` is shown. There is no retry.
 The menu follows the same whole-snapshot safety rule. FUNCTION short confirms
 and applies an item to RAM. FUNCTION long cancels the current unconfirmed value,
 saves prior confirmed changes, waits for the matching Flash result, and exits
-after `donE`/`noCHG`. TARE and timeout cancel an unconfirmed edit and exit
-without requesting Flash. The existing `SAUE` item uses the same coordinator
-without exiting. Since ConfigStore persists a complete configuration/runtime
-snapshot, any unexpected revision rejects the save; no field-level merge is
-attempted.
+after `donE`/`noCHG`. EDIT TARE returns to the menu list; LIST TARE and timeout
+exit without requesting Flash. Explicit `SAUE` can save a dirty snapshot that
+predates menu entry, while long FUNCTION only saves changes confirmed in this
+menu session. Since ConfigStore persists a complete configuration/runtime
+snapshot, any unexpected revision rejects automatic save; no field-level merge
+is attempted. Profile switching waits for its real asynchronous result and
+reads the resulting revision instead of predicting it.
 
 ## STATUS items
 
-Each item first shows a six-character driver-supported label for 600 ms and then
-its value.
+LIST shows only six-character driver-supported labels. FUNCTION opens the
+selected value in VIEW or EDIT; TARE returns from either parameter level to the
+same label. LIST ignores key-repeat events. The STAR used to enter STATUS is
+blocked until its matching release event, preventing post-long-press repeats
+from moving the selection.
+
+APPLY and SAVE use separate bounded transaction timeouts. Errors and uncertain
+results remain visible for the full UI message interval. If communication was
+applied to RAM but SAVE failed, another explicit long STAR retries SAVE only;
+it does not reconfigure the UART or increment the configuration revision again.
 
 | Item | Access | Display or UI domain |
 |---|---|---|
