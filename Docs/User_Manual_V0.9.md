@@ -814,7 +814,7 @@ HyS 是检重状态回差，不是传感器的计量迟滞。计量迟滞将在 
 | `0003` | 单位 | 0=kg，1=g，2=lb |
 | `0004-0005` | 状态 | 稳定、过载等 |
 | `000E` | Register Map | 应读到 `0x0103` |
-| `000F` | Firmware | 当前为 `0x050A` |
+| `000F` | Firmware | 当前为 `0x050B` |
 | `0010-001B` | NET/GROSS/TARE | 有符号 64 位，单位 µg |
 | `0220-023B` | 检重配置和实时状态 | 包含灯、蜂鸣器相位、dirty |
 
@@ -1194,7 +1194,7 @@ CAP → dIU → dP → FILt → StAb → ZrnG → OL → briGHt → trrEt
 | Firmware tag | `stage5f-ui-tested` |
 | Firmware baseline | `0e10a53dd1b89eafc34b8dc3a95964394bc1c01b` |
 | Tag object | `f409849e4a42a121eaefc0e89e5d96df30dcb809` |
-| Firmware reported value | `0x050A` |
+| Firmware reported value | `0x050B` |
 | Modbus map | `0x0103` |
 | BLE protocol | V1 |
 | Config schema | V2 / 344 B |

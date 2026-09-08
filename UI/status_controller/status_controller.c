@@ -195,7 +195,8 @@ static void RequestSaveOnly(uint32_t now_ms)
         s_save_uncertain = false;
     }
     else if ((result == COMMAND_RESULT_OK) &&
-             (SystemContext_GetSavedRevision() == s_applied_revision))
+             (SystemContext_GetSavedRevision() == s_applied_revision) &&
+             AppliedCandidateIsCurrent())
         ShowCompletion("noCHG ", now_ms);
     else ShowMessage("ErrSAU", STATUS_MODE_LIST, now_ms);
 }
@@ -211,11 +212,12 @@ static void BeginSave(uint32_t now_ms)
         PersistenceStatus status = PersistenceManager_GetStatus();
         if (((status == PERSISTENCE_STATUS_SUCCESS) ||
              (status == PERSISTENCE_STATUS_NO_CHANGE)) &&
-            (SystemContext_GetSavedRevision() == s_applied_revision))
+            (SystemContext_GetSavedRevision() == s_applied_revision) &&
+            AppliedCandidateIsCurrent())
             ShowCompletion(status == PERSISTENCE_STATUS_SUCCESS ?
                            "  donE" : "noCHG ", now_ms);
         else if (PersistenceManager_IsBusy())
-            ShowMessage(" UnC  ", STATUS_MODE_LIST, now_ms);
+            ShowMessage(" UnC  ", STATUS_MODE_SAVING, now_ms);
         else { s_save_uncertain = false; RequestSaveOnly(now_ms); }
         return;
     }
@@ -235,7 +237,8 @@ static void BeginSave(uint32_t now_ms)
             RequestSaveOnly(now_ms);
         }
         else ShowMessage(result == COMM_APPLY_RESULT_PENDING ? " UnC  " :
-                         " Err  ", STATUS_MODE_LIST, now_ms);
+                         " Err  ", result == COMM_APPLY_RESULT_PENDING ?
+                         STATUS_MODE_APPLYING : STATUS_MODE_LIST, now_ms);
         return;
     }
     if (!CommunicationManager_IsConfigValid(&s_candidate))
@@ -291,6 +294,9 @@ void StatusController_Process10ms(void)
         if ((int32_t)(now - s_message_until_ms) >= 0)
         {
             s_mode = s_message_return_mode;
+            if ((s_mode == STATUS_MODE_APPLYING) ||
+                (s_mode == STATUS_MODE_SAVING))
+                s_transaction_started_ms = now;
             if (s_mode == STATUS_MODE_LIST) RenderLabel(); else RenderValue();
         }
     }
@@ -315,7 +321,7 @@ void StatusController_Process10ms(void)
                  STATUS_TRANSACTION_TIMEOUT_MS)
         {
             s_apply_uncertain = true;
-            ShowMessage(" UnC  ", STATUS_MODE_LIST, now);
+            ShowMessage(" UnC  ", STATUS_MODE_APPLYING, now);
         }
     }
     else if (s_mode == STATUS_MODE_SAVING)
@@ -323,7 +329,8 @@ void StatusController_Process10ms(void)
         PersistenceStatus status = PersistenceManager_GetStatus();
         if (((status == PERSISTENCE_STATUS_SUCCESS) ||
              (status == PERSISTENCE_STATUS_NO_CHANGE)) &&
-            (SystemContext_GetSavedRevision() == s_applied_revision))
+            (SystemContext_GetSavedRevision() == s_applied_revision) &&
+            AppliedCandidateIsCurrent())
             ShowCompletion(status == PERSISTENCE_STATUS_SUCCESS ?
                            "  donE" : "noCHG ", now);
         else if ((status == PERSISTENCE_STATUS_FAILED) ||
@@ -333,7 +340,7 @@ void StatusController_Process10ms(void)
                  STATUS_TRANSACTION_TIMEOUT_MS)
         {
             s_save_uncertain = true;
-            ShowMessage(" UnC  ", STATUS_MODE_LIST, now);
+            ShowMessage(" UnC  ", STATUS_MODE_SAVING, now);
         }
     }
     else if ((s_mode == STATUS_MODE_COMPLETE) &&

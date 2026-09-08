@@ -27,7 +27,7 @@
 |---|---|---|---|
 | 封面 | Manual V0.9、适用 `stage5f-ui-tested` | 本轮 Documentation Stage D1 要求 | Confirmed |
 | 封面 | baseline `0e10a53`、tag object `f409849` | `git rev-parse`、`git cat-file -p stage5f-ui-tested` | Confirmed |
-| 封面/附录 E | Firmware reported value `0x050A` | `Config/project_config.h`、`Docs/BLE_PROTOCOL_V1.md` | Confirmed |
+| 封面/附录 E | Firmware reported value `0x050B` | `Config/project_config.h`、`Docs/BLE_PROTOCOL_V1.md` | Current software value; historical records retain 0x050A |
 | 封面/附录 E | Modbus map `0x0103` | `Docs/MODBUS_REGISTER_MAP_V1.md`、Stage 5E/5F 验证 | Confirmed |
 | 封面/附录 E | BLE Protocol V1 | `Protocol/ble/ble_frame_codec.h`、`Docs/BLE_PROTOCOL_V1.md` | Confirmed |
 | 封面/附录 E | Schema V2 / 344 B | `Services/config_store/persistent_schema.h`、Stage 5E/5F 验证 | Confirmed |

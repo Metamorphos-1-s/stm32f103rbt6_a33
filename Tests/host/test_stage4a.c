@@ -701,6 +701,12 @@ static void TestStatusTransactionTimeoutAndSaveRetry(void)
     TestMock_SetTimeMs(now + STATUS_TRANSACTION_TIMEOUT_MS);
     StatusController_Process10ms();
     CHECK4(StatusController_GetMode() == STATUS_MODE_MESSAGE);
+    TestMock_SetTimeMs(now + STATUS_TRANSACTION_TIMEOUT_MS + UI_MESSAGE_DEFAULT_MS);
+    StatusController_Process10ms();
+    CHECK4(StatusController_GetMode() == STATUS_MODE_APPLYING);
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, now + 6000U);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    CHECK4(StatusController_IsActive());
     CHECK4(TestMock_GetLocalCommunicationApplyCount() == 1U);
     CHECK4(TestMock_GetSaveRequestCount() == 0U);
     StatusController_Cancel();
@@ -719,6 +725,12 @@ static void TestStatusTransactionTimeoutAndSaveRetry(void)
     TestMock_SetTimeMs(now + STATUS_TRANSACTION_TIMEOUT_MS);
     StatusController_Process10ms();
     CHECK4(StatusController_GetMode() == STATUS_MODE_MESSAGE);
+    TestMock_SetTimeMs(now + STATUS_TRANSACTION_TIMEOUT_MS + UI_MESSAGE_DEFAULT_MS);
+    StatusController_Process10ms();
+    CHECK4(StatusController_GetMode() == STATUS_MODE_SAVING);
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, now + 6000U);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    CHECK4(StatusController_IsActive());
     CHECK4(TestMock_GetLocalCommunicationApplyCount() == 1U);
     CHECK4(TestMock_GetSaveRequestCount() == 1U);
     StatusController_Cancel();

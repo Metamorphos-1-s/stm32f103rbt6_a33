@@ -2,6 +2,10 @@
 
 ## Keypad, STATUS and battery divider update
 
+Current follow-up firmware value is `0x050B` (5.11); Register Map `0x0104` and
+Schema `2` remain unchanged. Historical `0x050A` validation records are kept
+as historical records.
+
 The current development branch adds an independent STATUS overlay: RUN STAR
 short is side-effect free, RUN STAR long enters STATUS, and STATUS consumes all
 key events before RUN behavior. Confirmed communication edits use the existing
