@@ -34,5 +34,26 @@ class SlotTests(unittest.TestCase):
             parse_slot(slot(1), "A"), parse_slot(b"\xff" * SLOT_SIZE, "B")]}
         self.assertTrue(dump_is_usable(result))
 
+    def test_v2_battery_and_runtime_prefix(self):
+        data = slot(7)
+        payload = memoryview(data)[HEADER_SIZE:HEADER_SIZE + 344]
+        struct.pack_into("<IIiiIII", payload, 121, 47000, 10000, 25, -12,
+                         14000, 13500, 14200)
+        payload[149:164] = bytes([1, 1, 1, 1, 0, 0, 0, 0, 0,
+                                  1, 0x34, 0x12, 0, 0, 1])
+        covered = data[:CRC_OFFSET] + data[CRC_OFFSET + 4:HEADER_SIZE] + \
+                  data[HEADER_SIZE:HEADER_SIZE + 344]
+        struct.pack_into("<I", data, CRC_OFFSET,
+                         zlib.crc32(covered) & 0xFFFFFFFF)
+        parsed = parse_slot(data, "A")
+        self.assertTrue(parsed["valid"])
+        self.assertEqual(parsed["persistent"]["battery"]["divider_top_ohm"],
+                         47000)
+        self.assertEqual(parsed["persistent"]["battery"]["divider_bottom_ohm"],
+                         10000)
+        self.assertTrue(parsed["persistent"]["system"]["startup_auto_zero_enable"])
+        self.assertEqual(len(parsed["slot_sha256"]), 64)
+        self.assertEqual(len(parsed["payload_sha256"]), 64)
+
 
 if __name__ == "__main__": unittest.main()

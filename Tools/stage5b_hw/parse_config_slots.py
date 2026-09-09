@@ -1,6 +1,7 @@
 """Parse Stage 4B A/B records using explicit little-endian offsets."""
 
 import argparse
+import hashlib
 import json
 import struct
 import zlib
@@ -14,6 +15,39 @@ CRC_OFFSET = 20
 COMMIT_OFFSET = 2044
 COMMIT_MARKER = 0x434F4D54
 PAYLOAD_LENGTHS = {1: 164, 2: 344}
+
+
+def decode_v1_prefix(payload):
+    if len(payload) < PAYLOAD_LENGTHS[1]:
+        raise ValueError("persistent payload is shorter than the V1 prefix")
+    return {
+        "communication": {
+            "baud_rate": struct.unpack_from("<I", payload, 67)[0],
+            "parity": payload[71], "stop_bits": payload[72],
+            "modbus_address": payload[73], "protocol_mode": payload[74],
+        },
+        "display": {"brightness": payload[113]},
+        "battery": {
+            "divider_top_ohm": struct.unpack_from("<I", payload, 121)[0],
+            "divider_bottom_ohm": struct.unpack_from("<I", payload, 125)[0],
+            "calibration_gain_ppm": struct.unpack_from("<i", payload, 129)[0],
+            "calibration_offset_mv": struct.unpack_from("<i", payload, 133)[0],
+            "low_warning_mv": struct.unpack_from("<I", payload, 137)[0],
+            "critical_low_mv": struct.unpack_from("<I", payload, 141)[0],
+            "recovery_mv": struct.unpack_from("<I", payload, 145)[0],
+            "low_voltage_alarm_enable": bool(payload[149]),
+        },
+        "system": {
+            "tare_power_loss_retention": bool(payload[150]),
+            "watchdog_enable": bool(payload[151]),
+            "startup_auto_zero_enable": bool(payload[152]),
+        },
+        "runtime": {
+            "weight_view": payload[158],
+            "current_tare": struct.unpack_from("<i", payload, 159)[0],
+            "tare_active": bool(payload[163]),
+        },
+    }
 
 
 def sequence_newer(candidate, reference):
@@ -42,7 +76,11 @@ def parse_slot(data, name="?"):
     valid = (magic == MAGIC and format_version == FORMAT_VERSION and
              supported and bounds_ok and stored_crc == calculated_crc and
              commit_marker == COMMIT_MARKER)
-    return {"slot": name, "magic": "0x%08X" % magic,
+    payload = data[HEADER_SIZE:HEADER_SIZE + payload_length]
+    return {"slot": name, "slot_sha256": hashlib.sha256(data).hexdigest().upper(),
+            "payload_sha256": hashlib.sha256(payload).hexdigest().upper(),
+            "persistent": decode_v1_prefix(payload) if supported else None,
+            "magic": "0x%08X" % magic,
             "record_format_version": format_version,
             "payload_schema_version": schema, "header_size": header_size,
             "payload_length": payload_length, "sequence": sequence,
