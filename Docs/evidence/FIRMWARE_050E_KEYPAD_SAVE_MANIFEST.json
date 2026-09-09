@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "firmware": "0x050E",
+  "register_map": "0x0104",
+  "schema": 2,
+  "production_commit": "93bd6ad236c1e0bd79beca79b69688926ad61afd",
+  "elf_sha256": "9D916325F667AC833500F74E4C99031F5B95D4046940F61818088AA8A29FD2FE",
+  "baseline_active_json_sha256": "B7D78D5BD4A6DE0BE2C0DA201C167A0178608FCFF49F6297664C87C79018EE73",
+  "baseline_active_binary_sha256": "4BA7DA269DECB38D631ED8076A4FE90B7EF70AA04123CF15D5662B7DBBD4DD98",
+  "initial_dP": 2,
+  "final_dP": 2,
+  "initial_revision": "21/21",
+  "first_save_revision": "22/22",
+  "final_revision": "23/23",
+  "initial_slot_sequence": "A/21",
+  "first_save_slot_sequence": "B/22",
+  "final_slot_sequence": "A/23",
+  "local_keypad_saves": 2,
+  "save_retries": 0,
+  "modbus_fc03": 18,
+  "modbus_fc06": 0,
+  "modbus_fc16": 0,
+  "mailbox_commands": 0,
+  "stlink_flash": 1,
+  "stlink_verify": 1,
+  "stlink_reset": 1,
+  "physical_power_cycles": 1,
+  "source_evidence": "0x050C keypad failure preserved under Results/stm32_fw050c_keypad_save_validation",
+  "files": [
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_validation/20260910T_after_first_save/config-flash/config_region.bin",
+      "length": 4096,
+      "sha256": "D41DB85857D6F73C401B0FAA5D22D13C7852B05EDCB188CCBBDBCC2A1AED5C91"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_validation/20260910T_after_first_save/config-flash/dump.log",
+      "length": 1223,
+      "sha256": "1B2069011C02A11187BE5A959CB8669A2269746AF33DE157590FB8967999920B"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_validation/20260910T_after_first_save/config-flash/slot_a.bin",
+      "length": 2048,
+      "sha256": "7C409D73C42381A34EC7E9B8C68D7E1EF84B58E72F28AAFCCD9340A7A6EBD1FC"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_validation/20260910T_after_first_save/config-flash/slot_b.bin",
+      "length": 2048,
+      "sha256": "082ECB9AEC7FDEF5141DA94AADC526FCC32C68BDCC95AC8733854D38806CD1E5"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_validation/20260910T_after_powercycle/config-flash/config_region.bin",
+      "length": 4096,
+      "sha256": "2CCC818F4BDFE0BDC0219E3047E1211B1571A99BC31DE38F7C8B6F7159E7ED44"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_validation/20260910T_after_powercycle/config-flash/dump.log",
+      "length": 1223,
+      "sha256": "AE9CD52A71553543D16090C6DD617377F527CCCE74FDE3D2938730A2AE93306A"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_validation/20260910T_after_powercycle/config-flash/slot_a.bin",
+      "length": 2048,
+      "sha256": "FEE1F6F838B961D09A2A57160B95C7FB64349ABFF201EE32801DF42DBDADDEF4"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_validation/20260910T_after_powercycle/config-flash/slot_b.bin",
+      "length": 2048,
+      "sha256": "082ECB9AEC7FDEF5141DA94AADC526FCC32C68BDCC95AC8733854D38806CD1E5"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_validation/20260910T_after_powercycle/final-fc03.json",
+      "length": 3909,
+      "sha256": "0F966EA2900434F67A328EFE954FA524A72D08D899C8D4027D9C8F1C832D75FE"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_validation/20260910T_after_second_save/config-flash/config_region.bin",
+      "length": 4096,
+      "sha256": "2CCC818F4BDFE0BDC0219E3047E1211B1571A99BC31DE38F7C8B6F7159E7ED44"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_validation/20260910T_after_second_save/config-flash/dump.log",
+      "length": 1224,
+      "sha256": "E80F403ED209681A6122E542EF76D76C32A93FF725897B22B4943A7EC861C23C"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_validation/20260910T_after_second_save/config-flash/slot_a.bin",
+      "length": 2048,
+      "sha256": "FEE1F6F838B961D09A2A57160B95C7FB64349ABFF201EE32801DF42DBDADDEF4"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_validation/20260910T_after_second_save/config-flash/slot_b.bin",
+      "length": 2048,
+      "sha256": "082ECB9AEC7FDEF5141DA94AADC526FCC32C68BDCC95AC8733854D38806CD1E5"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_state_recovery/20260910T_050e_flash/flash.json",
+      "length": 815,
+      "sha256": "645CC7212FB01095C59DEA98149B56F35FCBEFAFD5EC8111A51E7FD91C903971"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_state_recovery/20260910T_050e_flash/flash.log",
+      "length": 1722,
+      "sha256": "E2E315B9CBF8909E10D9CFD465B90EE3BD884E5C566BFC4DAB702A18CB9D12C4"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_state_recovery/20260910T_config_restore/config-restore.log",
+      "length": 1656,
+      "sha256": "412EA8B180296BFF0C6D6D40C3B90063FE25635576270E7C3D396E186CECEDC7"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_state_recovery/20260910T_postrestore_readonly/config_region.bin",
+      "length": 4096,
+      "sha256": "3BB553D89C16D9D44BC4AEECA845A9A6AF6180ADCE069B3FC07F7A39B41D7111"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_state_recovery/20260910T_postrestore_readonly/dump.log",
+      "length": 1218,
+      "sha256": "AFDB8427033CDBA5267D1B3F46E2CC73EFD8C6A739D651EEF620A32528022800"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_state_recovery/20260910T_postrestore_readonly/slot_a.bin",
+      "length": 2048,
+      "sha256": "7C409D73C42381A34EC7E9B8C68D7E1EF84B58E72F28AAFCCD9340A7A6EBD1FC"
+    },
+    {
+      "relative_path": "Results/stm32_fw050e_keypad_state_recovery/20260910T_postrestore_readonly/slot_b.bin",
+      "length": 2048,
+      "sha256": "9F714F53FEB493ED44E8EE20754BCE4ABC7F3697A8A608079C89F21A1FCC31C7"
+    }
+  ],
+  "review_result": "PASS",
+  "generated_at_utc": "2026-09-09T20:24:49.1813802Z"
+}
