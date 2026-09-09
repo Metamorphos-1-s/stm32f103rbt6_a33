@@ -37,6 +37,7 @@ bool SystemContext_SyncTareStateMass(MassValueUg tare_mass_ug,
                                      bool tare_active);
 bool SystemContext_SetConfigDirty(bool dirty);
 bool SystemContext_SetWeightView(WeightViewMode view);
+bool SystemContext_SetRuntimeWeightView(WeightViewMode view);
 bool SystemContext_ApplyConfig(const DeviceConfig *config, bool dirty);
 uint32_t SystemContext_GetConfigRevision(void);
 uint32_t SystemContext_GetSavedRevision(void);

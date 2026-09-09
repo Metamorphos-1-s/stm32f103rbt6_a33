@@ -89,7 +89,8 @@ static void TestCodec(void)
                                  &output, &decoded) == PERSISTENT_CODEC_OK);
     CHECK(output.calibration.raw_zero == 100000);
     CHECK(output.calibration.raw_span == 200000);
-    CHECK(decoded.weight_view == WEIGHT_VIEW_GROSS);
+    CHECK(decoded.weight_view ==
+          (WeightViewMode)input.display.default_weight_view);
     CHECK(decoded.current_tare == 500 && decoded.tare_active);
 
     CHECK(CalibrationModel_Build(200000, 100000, 10000, 8U,
@@ -229,7 +230,11 @@ static void TestRevision(void)
     CHECK(SystemContext_InitRestored(&config, &runtime, 10U, true, 0U));
     CHECK(SystemContext_GetConfigRevision() == 10U);
     CHECK(SystemContext_GetSavedRevision() == 10U);
-    CHECK(SystemContext_SetWeightView(WEIGHT_VIEW_GROSS));
+    CHECK(SystemContext_SetRuntimeWeightView(WEIGHT_VIEW_GROSS));
+    CHECK(SystemContext_GetConfigRevision() == 10U);
+    CHECK(!SystemContext_Get()->runtime.config_dirty);
+    CHECK(SystemContext_Get()->runtime.weight_view == WEIGHT_VIEW_GROSS);
+    CHECK(SystemContext_SetWeightView(WEIGHT_VIEW_NET));
     CHECK(SystemContext_GetConfigRevision() == 11U);
     CHECK(SystemContext_Get()->runtime.config_dirty);
     CHECK(SystemContext_MarkRevisionSaved(10U));

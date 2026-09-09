@@ -723,7 +723,7 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             }
             break;
         case COMMAND_SET_WEIGHT_VIEW:
-            result = SystemContext_SetWeightView((WeightViewMode)request->value0) ?
+            result = SystemContext_SetRuntimeWeightView((WeightViewMode)request->value0) ?
                      COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
             if (result == COMMAND_RESULT_OK)
                 MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);

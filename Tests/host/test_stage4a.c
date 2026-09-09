@@ -1039,7 +1039,7 @@ static void TestFirmwareIdentityAndStatusDisplay(void)
 
     Stage4A_InitRuntime(&config, false);
     StatusController_Init();
-    CHECK4(firmware == 0x050DU);
+    CHECK4(firmware == 0x050EU);
     CHECK4(map == 0x0104U);
     CHECK4(schema == 2U);
     CHECK4(StatusController_Enter());
@@ -1664,9 +1664,15 @@ static void TestConditionedDisplayIntegration(void)
         DISPLAY_CONDITION_TRACKING);
 
     Stage4A_LockDisplay(600000, 1000U);
+    {
+        uint32_t revision = SystemContext_GetConfigRevision();
+        bool dirty = SystemContext_Get()->runtime.config_dirty;
     CHECK4(Stage4A_Command(COMMAND_SET_WEIGHT_VIEW,
         COMMAND_SOURCE_LOCAL_KEY, WEIGHT_VIEW_GROSS, 0, &(CommandResponse){0}) ==
         COMMAND_RESULT_OK);
+        CHECK4(SystemContext_GetConfigRevision() == revision);
+        CHECK4(SystemContext_Get()->runtime.config_dirty == dirty);
+    }
     CHECK4(MetrologyManager_GetDisplayConditionSnapshot()->state ==
         DISPLAY_CONDITION_TRACKING);
     Stage4A_LockDisplay(600000, 1200U);

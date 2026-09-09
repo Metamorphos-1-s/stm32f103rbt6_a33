@@ -4,7 +4,7 @@ This note records the software contract implemented on the
 `fix-usart3-command-source-validation` development branch. It is not hardware
 qualification evidence.
 
-The current firmware release value is `0x050D` (5.13), with Register Map
+The current firmware release value is `0x050E` (5.14), with Register Map
 `0x0104` and persistent Schema `2`. Earlier hardware records through `0x050B`
 remain historical evidence and are not rewritten.
 

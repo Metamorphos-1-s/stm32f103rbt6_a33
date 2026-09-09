@@ -34,6 +34,12 @@ bool SystemContext_InitRestored(const DeviceConfig *config,
   (void)memset(&s_system_context, 0, sizeof(s_system_context));
   s_system_context.config = *config;
   s_system_context.runtime = *runtime;
+  if ((uint32_t)s_system_context.config.display.default_weight_view <
+      (uint32_t)WEIGHT_VIEW_COUNT)
+  {
+    s_system_context.runtime.weight_view =
+        (WeightViewMode)s_system_context.config.display.default_weight_view;
+  }
   if (s_system_context.runtime.migration_pending_save)
   {
     uint32_t next = stored_revision + 1U;
@@ -139,6 +145,17 @@ bool SystemContext_SetWeightView(WeightViewMode view)
     s_system_context.runtime.weight_view = view;
     (void)SystemContext_MarkConfigChanged();
   }
+  return true;
+}
+
+bool SystemContext_SetRuntimeWeightView(WeightViewMode view)
+{
+  if (!s_system_context.initialized ||
+      ((uint32_t)view >= (uint32_t)WEIGHT_VIEW_COUNT))
+  {
+    return false;
+  }
+  s_system_context.runtime.weight_view = view;
   return true;
 }
 

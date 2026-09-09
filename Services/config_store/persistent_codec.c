@@ -263,7 +263,8 @@ PersistentCodecResult PersistentCodec_EncodeV1(
     PUT_BOOL(config->system.startup_auto_zero_enable);
     for (index = 0U; index < 5U; ++index) PutU8(&w, 0U);
 
-    PutU8(&w, (uint8_t)runtime->weight_view);
+    /* Runtime view is volatile; persist only the configured startup default. */
+    PutU8(&w, config->display.default_weight_view);
     PutU32(&w, (uint32_t)runtime->current_tare);
     PUT_BOOL(runtime->tare_active);
 #undef PUT_BOOL
@@ -450,7 +451,11 @@ static PersistentCodecResult DecodeV1Payload(
     valid &= GetReserved(&r, 5U);
 
     value = GetU8(&r);
-    runtime->weight_view = (WeightViewMode)value;
+    /* Consume the legacy runtime-view byte but initialize it from the
+       persistent startup default so transient browsing cannot hitchhike into
+       a later SAVE. */
+    (void)value;
+    runtime->weight_view = (WeightViewMode)config->display.default_weight_view;
     runtime->current_tare = (int32_t)GetU32(&r);
     valid &= GetBool(&r, &runtime->tare_active);
 
