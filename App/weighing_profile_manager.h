@@ -5,6 +5,7 @@
 #include "device_config.h"
 
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef enum
 {
@@ -27,6 +28,7 @@ void WeighingProfileManager_Process(void);
 bool WeighingProfileManager_IsBusy(void);
 WeighingProfileSwitchState WeighingProfileManager_GetState(void);
 CommandResult WeighingProfileManager_GetLastResult(void);
+uint32_t WeighingProfileManager_GetResultRevision(void);
 #if defined(STAGE2A_HOST_TEST)
 void WeighingProfileManager_TestSetResult(CommandResult result);
 #endif

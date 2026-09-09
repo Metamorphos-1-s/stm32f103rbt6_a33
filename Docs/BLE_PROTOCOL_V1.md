@@ -130,13 +130,13 @@ unsupported.
 |---:|---:|---|---|
 | 0 | 1 | u8 | protocol_version (`1`) |
 | 1 | 1 | u8 | firmware_version high byte (`5`) |
-| 2 | 1 | u8 | firmware_version low byte (`10`) |
+| 2 | 1 | u8 | firmware_version low byte (`12`) |
 | 3 | 1 | u8 | reserved (`0`) |
 | 4 | 2 | u16 | schema_version (`2`) |
 | 6 | 2 | u16 | register_map_version (`0x0104`) |
 | 8 | 4 | u32 | capability bits |
 
-The firmware bytes combine as `(high << 8) | low`, currently `0x050B`.
+The firmware bytes combine as `(high << 8) | low`, currently `0x050C`.
 
 Result values are `OK=0`, `INVALID_COMMAND=1`, `INVALID_ARGUMENT=2`,
 `INVALID_STATE=3`, `NOT_STABLE=4`, `OUT_OF_RANGE=5`, `TARE_ACTIVE=6`,

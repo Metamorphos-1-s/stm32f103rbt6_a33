@@ -22,6 +22,7 @@ static bool s_outputs[OUTPUT_COUNT];
 static CommandResult s_save_request_result;
 static PersistenceStatus s_persistence_status;
 static uint32_t s_save_request_count;
+static uint32_t s_last_save_requested_revision;
 static uint32_t s_local_apply_count;
 static CommandResult s_local_apply_request_result;
 static CommunicationApplyResult s_local_apply_result;
@@ -90,6 +91,7 @@ bool PersistenceManager_IsBusy(void)
 CommandResult PersistenceManager_RequestSave(void)
 {
     ++s_save_request_count;
+    s_last_save_requested_revision = SystemContext_GetConfigRevision();
     if (((s_save_request_result == COMMAND_RESULT_ACCEPTED) ||
          (s_save_request_result == COMMAND_RESULT_OK)) &&
         ((s_persistence_status == PERSISTENCE_STATUS_SUCCESS) ||
@@ -122,6 +124,7 @@ void TestMock_Reset(void)
     s_save_request_result = COMMAND_RESULT_STORAGE_UNAVAILABLE;
     s_persistence_status = PERSISTENCE_STATUS_IDLE;
     s_save_request_count = 0U;
+    s_last_save_requested_revision = 0U;
     s_local_apply_count = 0U;
     s_local_apply_request_result = COMMAND_RESULT_ACCEPTED;
     s_local_apply_result = COMM_APPLY_RESULT_SUCCESS;
@@ -171,6 +174,11 @@ void TestMock_SetPersistenceBusy(bool busy) { s_persistence_busy = busy; }
 uint32_t TestMock_GetSaveRequestCount(void)
 {
     return s_save_request_count;
+}
+
+uint32_t TestMock_GetLastSaveRequestedRevision(void)
+{
+    return s_last_save_requested_revision;
 }
 
 uint32_t TestMock_GetLocalCommunicationApplyCount(void)

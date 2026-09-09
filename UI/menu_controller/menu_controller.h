@@ -19,6 +19,8 @@ MenuItem MenuController_GetItem(void);
 bool MenuController_IsAdvanced(void);
 #if defined(STAGE2A_HOST_TEST)
 uint32_t MenuController_GetCancelRequestCount(void);
+bool MenuController_HasLocalPendingSave(void);
+uint32_t MenuController_GetLocalPendingRevision(void);
 #endif
 
 #endif /* MENU_CONTROLLER_H */

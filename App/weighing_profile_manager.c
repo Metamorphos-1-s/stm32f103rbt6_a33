@@ -11,6 +11,8 @@ static WeighingProfileSwitchState s_state;
 static WeighingProfileId s_target;
 static WeighingProfileId s_previous;
 static CommandResult s_last_result;
+static uint32_t s_request_revision;
+static uint32_t s_result_revision;
 
 static CS1237_Config MakeConfig(WeighingProfileId id)
 {
@@ -30,6 +32,8 @@ void WeighingProfileManager_Init(void)
     s_target = WEIGHING_PROFILE_HIGH_PRECISION;
     s_previous = WEIGHING_PROFILE_HIGH_PRECISION;
     s_last_result = COMMAND_RESULT_OK;
+    s_request_revision = 0U;
+    s_result_revision = UINT32_MAX;
 }
 
 CommandResult WeighingProfileManager_Request(WeighingProfileId profile)
@@ -42,6 +46,8 @@ CommandResult WeighingProfileManager_Request(WeighingProfileId profile)
         return COMMAND_RESULT_OK;
     s_previous = context->config.metrology.active_profile;
     s_target = profile;
+    s_request_revision = SystemContext_GetConfigRevision();
+    s_result_revision = UINT32_MAX;
     s_last_result = COMMAND_RESULT_ACCEPTED;
     s_state = PROFILE_SWITCH_REQUESTED;
     return COMMAND_RESULT_ACCEPTED;
@@ -84,11 +90,14 @@ void WeighingProfileManager_Process(void)
             break;
         case PROFILE_SWITCH_RESET_METROLOGY:
             context = SystemContext_Get();
-            if (context == NULL) { s_state = PROFILE_SWITCH_ROLLBACK; break; }
+            if ((context == NULL) ||
+                (SystemContext_GetConfigRevision() != s_request_revision))
+            { s_state = PROFILE_SWITCH_ROLLBACK; break; }
             candidate = context->config;
             candidate.metrology.active_profile = s_target;
             if (ConfigApplication_ApplyFactoryDefaults(&candidate) == CONFIG_APPLY_OK)
             {
+                s_result_revision = SystemContext_GetConfigRevision();
                 s_last_result = COMMAND_RESULT_OK;
                 s_state = PROFILE_SWITCH_COMPLETE;
             }
@@ -130,10 +139,14 @@ bool WeighingProfileManager_IsBusy(void)
 
 WeighingProfileSwitchState WeighingProfileManager_GetState(void) { return s_state; }
 CommandResult WeighingProfileManager_GetLastResult(void) { return s_last_result; }
+uint32_t WeighingProfileManager_GetResultRevision(void)
+{ return s_result_revision; }
 #if defined(STAGE2A_HOST_TEST)
 void WeighingProfileManager_TestSetResult(CommandResult result)
 {
     s_last_result = result;
+    s_result_revision = (result == COMMAND_RESULT_OK) ?
+        SystemContext_GetConfigRevision() : UINT32_MAX;
     s_state = PROFILE_SWITCH_IDLE;
 }
 #endif

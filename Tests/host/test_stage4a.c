@@ -1039,7 +1039,7 @@ static void TestFirmwareIdentityAndStatusDisplay(void)
 
     Stage4A_InitRuntime(&config, false);
     StatusController_Init();
-    CHECK4(firmware == 0x050BU);
+    CHECK4(firmware == 0x050CU);
     CHECK4(map == 0x0104U);
     CHECK4(schema == 2U);
     CHECK4(StatusController_Enter());
@@ -1138,6 +1138,7 @@ static void TestMenuDiscardAndConflictPolicy(void)
     CHECK4(MenuController_IsActive());
     CHECK4(SystemContext_Get()->config.display.brightness == 3U);
     CHECK4(TestMock_GetSaveRequestCount() == 0U);
+    CHECK4(!MenuController_HasLocalPendingSave());
     event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, ++now);
     CHECK4(MenuController_HandleKeyEvent(&event));
     CHECK4(!MenuController_IsActive());
@@ -1244,6 +1245,11 @@ static void TestMenuNestedCancelExplicitSaveAndProfile(void)
     CHECK4(SystemContext_ApplyConfig(&updated, true));
     WeighingProfileManager_TestSetResult(COMMAND_RESULT_OK);
     MenuController_Process10ms();
+    CHECK4(WeighingProfileManager_GetResultRevision() ==
+           SystemContext_GetConfigRevision());
+    CHECK4(MenuController_HasLocalPendingSave());
+    CHECK4(MenuController_GetLocalPendingRevision() ==
+           SystemContext_GetConfigRevision());
     event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_LONG, ++now);
     CHECK4(MenuController_HandleKeyEvent(&event));
     CHECK4(TestMock_GetSaveRequestCount() == 1U);
@@ -1259,6 +1265,8 @@ static void TestMenuNestedCancelExplicitSaveAndProfile(void)
     CHECK4(MenuController_HandleKeyEvent(&event));
     WeighingProfileManager_TestSetResult(COMMAND_RESULT_INTERNAL_ERROR);
     MenuController_Process10ms();
+    CHECK4(WeighingProfileManager_GetResultRevision() == UINT32_MAX);
+    CHECK4(!MenuController_HasLocalPendingSave());
     event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
     CHECK4(MenuController_HandleKeyEvent(&event));
     CHECK4(MenuController_GetItem() == MENU_ITEM_BRIGHTNESS);
@@ -2427,6 +2435,262 @@ static void Stage4A_NavigateAlarmMenu(MenuItem item, uint32_t *now_ms)
     CHECK_A3(MenuController_GetItem() == item);
 }
 
+static void Stage4A_ConfirmDecimalChangeAndExit(uint32_t *now_ms,
+                                                bool timeout_exit)
+{
+    Stage4A_EnterAdvancedMenu(now_ms);
+    Stage4A_NavigateAlarmMenu(MENU_ITEM_DECIMALS, now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_STAR, now_ms);
+    Stage4A_AlarmMenuKey(KEY_ID_FUNCTION, now_ms);
+    if (timeout_exit)
+    {
+        *now_ms += MENU_TIMEOUT_MS;
+        TestMock_SetTimeMs(*now_ms);
+        MenuController_Process10ms();
+    }
+    else Stage4A_AlarmMenuKey(KEY_ID_TARE, now_ms);
+}
+
+static void TestMenuCrossSessionSaveOwnership(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+    uint32_t now = 0U;
+    uint32_t owned_revision;
+
+    Stage4A_InitRuntime(&config, false);
+    config = SystemContext_Get()->config;
+    config.metrology.unit_display[config.metrology.active_unit].decimal_places = 2U;
+    CHECK4(SystemContext_ApplyConfig(&config, false));
+    CommandService_Init(); MenuController_Init();
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+                                  PERSISTENCE_STATUS_SUCCESS);
+    Stage4A_ConfirmDecimalChangeAndExit(&now, false);
+    CHECK4(!MenuController_IsActive());
+    CHECK4(SystemContext_Get()->config.metrology.unit_display[
+        SystemContext_Get()->config.metrology.active_unit].decimal_places == 1U);
+    CHECK4(SystemContext_Get()->runtime.config_dirty);
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
+    CHECK4(MenuController_HasLocalPendingSave());
+    owned_revision = MenuController_GetLocalPendingRevision();
+    CHECK4(owned_revision == SystemContext_GetConfigRevision());
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_LONG, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    CHECK4(TestMock_GetLastSaveRequestedRevision() == owned_revision);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows(" SAUE "));
+    MenuController_Process10ms();
+    CHECK4(!MenuController_HasLocalPendingSave());
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("  donE"));
+    TestMock_SetTimeMs(now + UI_MESSAGE_DEFAULT_MS);
+    MenuController_Process10ms();
+    CHECK4(!MenuController_IsActive());
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_LONG,
+                        now + UI_MESSAGE_DEFAULT_MS + 1U);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("noCHG "));
+    MenuController_Cancel();
+
+    Stage4A_InitRuntime(&config, false);
+    config = SystemContext_Get()->config;
+    config.metrology.unit_display[config.metrology.active_unit].decimal_places = 2U;
+    CHECK4(SystemContext_ApplyConfig(&config, false));
+    CommandService_Init(); MenuController_Init(); now = 0U;
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+                                  PERSISTENCE_STATUS_SUCCESS);
+    Stage4A_ConfirmDecimalChangeAndExit(&now, true);
+    CHECK4(!MenuController_IsActive());
+    CHECK4(MenuController_HasLocalPendingSave());
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_LONG, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    MenuController_Cancel();
+}
+
+static void TestMenuOwnershipRejectsForeignDirty(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+    uint32_t now = 0U;
+
+    Stage4A_InitRuntime(&config, false);
+    CHECK4(SystemContext_MarkConfigChanged());
+    MenuController_Init(); CommandService_Init();
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_LONG, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows(" bUSY "));
+    CHECK4(MenuController_IsActive());
+    CHECK4(!MenuController_HasLocalPendingSave());
+    MenuController_Cancel();
+
+    Stage4A_InitRuntime(&config, false);
+    CHECK4(SystemContext_MarkConfigChanged());
+    MenuController_Init(); CommandService_Init();
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(!MenuController_HasLocalPendingSave());
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_LONG, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows(" bUSY "));
+    MenuController_Cancel();
+
+    Stage4A_InitRuntime(&config, false);
+    MenuController_Init(); CommandService_Init(); now = 0U;
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_HasLocalPendingSave());
+    CHECK4(SystemContext_MarkConfigChanged());
+    CHECK4(!MenuController_HasLocalPendingSave());
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_LONG, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows(" bUSY "));
+    MenuController_Cancel();
+}
+
+static void TestMenuOwnershipRevisionUpdatesAndWrap(void)
+{
+    DeviceConfig config;
+    RuntimeState runtime;
+    KeyEvent event;
+    uint32_t now = 0U;
+    uint32_t first_revision;
+
+    Stage4A_InitRuntime(&config, false);
+    MenuController_Init(); CommandService_Init();
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    first_revision = MenuController_GetLocalPendingRevision();
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_HasLocalPendingSave());
+    CHECK4(MenuController_GetLocalPendingRevision() ==
+           SystemContext_GetConfigRevision());
+    CHECK4(MenuController_GetLocalPendingRevision() != first_revision);
+    MenuController_Cancel();
+
+    Stage4A_MakeConfig(&config, false);
+    (void)memset(&runtime, 0, sizeof(runtime));
+    runtime.weight_view = WEIGHT_VIEW_NET;
+    CHECK4(SystemContext_InitRestored(&config, &runtime, 0xFFFFFFFDUL,
+                                      true, 0U));
+    MenuController_Init(); CommandService_Init();
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_GetLocalPendingRevision() == 0xFFFFFFFEUL);
+    CHECK4(SystemContext_MarkConfigChanged());
+    CHECK4(SystemContext_GetConfigRevision() == 0U);
+    CHECK4(!MenuController_HasLocalPendingSave());
+    CHECK4(SystemContext_MarkConfigChanged());
+    CHECK4(!MenuController_HasLocalPendingSave());
+    MenuController_Cancel();
+}
+
+static void TestMenuOwnershipSaveFailureAndInit(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+    uint32_t now = 0U;
+
+    Stage4A_InitRuntime(&config, false);
+    MenuController_Init(); CommandService_Init();
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+                                  PERSISTENCE_STATUS_SAVING);
+    CHECK4(MenuController_Enter());
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_HasLocalPendingSave());
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_LONG, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_HASH, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_LONG, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(MenuController_IsActive());
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    now += STATUS_TRANSACTION_TIMEOUT_MS;
+    TestMock_SetTimeMs(now);
+    MenuController_Process10ms();
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    CHECK4(MenuController_HasLocalPendingSave());
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("ErrSAU"));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_LONG, ++now);
+    CHECK4(MenuController_HandleKeyEvent(&event));
+    CHECK4(TestMock_GetSaveRequestCount() == 2U);
+    CHECK4(MenuController_HasLocalPendingSave());
+    TestMock_CompletePersistence(PERSISTENCE_STATUS_FAILED, false);
+    MenuController_Process10ms();
+    CHECK4(TestMock_GetSaveRequestCount() == 2U);
+    CHECK4(MenuController_HasLocalPendingSave());
+    MenuController_Init();
+    CHECK4(!MenuController_HasLocalPendingSave());
+}
+
 static void Stage4A_ClearMenuMessage(uint32_t *now_ms)
 {
     *now_ms += UI_MESSAGE_DEFAULT_MS + 1U;
@@ -2818,6 +3082,10 @@ unsigned int Stage4A_RunTests(void)
     TestMenuSaveExitPolicy();
     TestMenuDiscardAndConflictPolicy();
     TestMenuNestedCancelExplicitSaveAndProfile();
+    TestMenuCrossSessionSaveOwnership();
+    TestMenuOwnershipRejectsForeignDirty();
+    TestMenuOwnershipRevisionUpdatesAndWrap();
+    TestMenuOwnershipSaveFailureAndInit();
     TestDisplayFormattingAndModel();
     TestCommandAndConfig();
     TestZeroCommandFeedback();

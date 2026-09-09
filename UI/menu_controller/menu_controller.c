@@ -82,12 +82,16 @@ static uint32_t s_sequence_start_ms;
 static uint32_t s_sequence_last_ms;
 static uint32_t s_expected_revision;
 static uint32_t s_save_revision;
+static uint32_t s_save_started_ms;
 static uint32_t s_message_until_ms;
-static bool s_local_confirmed;
+static bool s_local_pending_save;
+static bool s_entry_ownership_allowed;
+static uint32_t s_local_pending_revision;
 static bool s_save_waiting;
 static bool s_exit_after_save;
 static bool s_profile_apply_pending;
 static WeighingProfileId s_profile_target;
+static uint32_t s_profile_start_revision;
 #if defined(STAGE2A_HOST_TEST)
 static uint32_t s_cancel_request_count;
 #endif
@@ -206,6 +210,36 @@ static void CancelUnconfirmedEdit(void)
     s_editing = false;
 }
 
+static void RefreshLocalOwnership(void)
+{
+    uint32_t current = SystemContext_GetConfigRevision();
+    uint32_t saved = SystemContext_GetSavedRevision();
+    if (current == saved)
+    {
+        s_local_pending_save = false;
+        s_local_pending_revision = 0U;
+    }
+    else if (s_local_pending_save && (current != s_local_pending_revision))
+    {
+        /* ConfigStore saves the whole snapshot. A foreign revision permanently
+           invalidates the older menu ownership; no field merge is attempted. */
+        s_local_pending_save = false;
+        s_local_pending_revision = 0U;
+        s_entry_ownership_allowed = false;
+    }
+}
+
+static void RecordLocalConfirmation(void)
+{
+    uint32_t current = SystemContext_GetConfigRevision();
+    if (s_entry_ownership_allowed)
+    {
+        s_local_pending_save = true;
+        s_local_pending_revision = current;
+    }
+    s_expected_revision = current;
+}
+
 static void RequestSave(bool exit_after, bool explicit_save, uint32_t now_ms)
 {
     CommandResult result;
@@ -215,8 +249,8 @@ static void RequestSave(bool exit_after, bool explicit_save, uint32_t now_ms)
         ShowCode(DISPLAY_CODE_BUSY);
         return;
     }
-    if ((!explicit_save && !s_local_confirmed) ||
-        (SystemContext_GetConfigRevision() == SystemContext_GetSavedRevision()))
+    RefreshLocalOwnership();
+    if (SystemContext_GetConfigRevision() == SystemContext_GetSavedRevision())
     {
         ShowCode(DISPLAY_CODE_NO_CHANGE);
         if (exit_after)
@@ -226,10 +260,22 @@ static void RequestSave(bool exit_after, bool explicit_save, uint32_t now_ms)
         }
         return;
     }
+    if (!explicit_save && !s_local_pending_save)
+    {
+        ShowCode(DISPLAY_CODE_BUSY);
+        return;
+    }
     /* ConfigStore persists the whole snapshot, so any foreign revision makes
        an automatic menu save unsafe; no field-level merge is attempted. */
-    if (SystemContext_GetConfigRevision() != s_expected_revision)
+    if ((SystemContext_GetConfigRevision() != s_expected_revision) ||
+        (!explicit_save &&
+         (SystemContext_GetConfigRevision() != s_local_pending_revision)))
     {
+        if (!explicit_save)
+        {
+            s_local_pending_save = false;
+            s_local_pending_revision = 0U;
+        }
         ShowCode(DISPLAY_CODE_BUSY);
         return;
     }
@@ -241,6 +287,7 @@ static void RequestSave(bool exit_after, bool explicit_save, uint32_t now_ms)
         return;
     }
     s_save_revision = SystemContext_GetConfigRevision();
+    s_save_started_ms = now_ms;
     s_save_waiting = true;
     s_exit_after_save = exit_after;
     ShowCode(DISPLAY_CODE_SAVE);
@@ -637,7 +684,8 @@ void MenuController_Init(void)
     s_active = false; s_editing = false; s_calibration_request = false;
     s_exit_request = false; s_factory_confirmation = false;
     s_item = MENU_ITEM_UNIT; s_advanced = false; ClearSequence();
-    s_local_confirmed = false; s_save_waiting = false;
+    s_local_pending_save = false; s_local_pending_revision = 0U;
+    s_entry_ownership_allowed = false; s_save_waiting = false;
     s_exit_after_save = false; s_profile_apply_pending = false;
 #if defined(STAGE2A_HOST_TEST)
     s_cancel_request_count = 0U;
@@ -650,7 +698,12 @@ bool MenuController_Enter(void)
     s_active = true; s_editing = false; s_factory_confirmation = false;
     s_item = MENU_ITEM_UNIT; s_advanced = false; ClearSequence();
     s_expected_revision = SystemContext_GetConfigRevision();
-    s_local_confirmed = false; s_save_waiting = false;
+    RefreshLocalOwnership();
+    s_entry_ownership_allowed =
+        (SystemContext_GetConfigRevision() == SystemContext_GetSavedRevision()) ||
+        (s_local_pending_save &&
+         (SystemContext_GetConfigRevision() == s_local_pending_revision));
+    s_save_waiting = false;
     s_exit_after_save = false; s_profile_apply_pending = false;
     s_last_activity_ms = BSP_TimeNowMs(); Render(); return true;
 }
@@ -667,24 +720,35 @@ void MenuController_Process10ms(void)
             s_profile_apply_pending = false;
             if ((WeighingProfileManager_GetLastResult() == COMMAND_RESULT_OK) &&
                 (context != NULL) &&
+                (SystemContext_GetConfigRevision() !=
+                 s_profile_start_revision) &&
+                (WeighingProfileManager_GetResultRevision() ==
+                 SystemContext_GetConfigRevision()) &&
                 (context->config.metrology.active_profile == s_profile_target))
             {
-                s_local_confirmed = true;
-                s_expected_revision = SystemContext_GetConfigRevision();
+                RecordLocalConfirmation();
                 ShowCode(DISPLAY_CODE_RAM_SAVE);
             }
-            else ShowCode(DISPLAY_CODE_ERROR);
+            else
+            {
+                RefreshLocalOwnership();
+                ShowCode(DISPLAY_CODE_ERROR);
+            }
         }
         return;
     }
+    RefreshLocalOwnership();
     if (s_save_waiting)
     {
         PersistenceStatus status = PersistenceManager_GetStatus();
         if (((status == PERSISTENCE_STATUS_SUCCESS) ||
              (status == PERSISTENCE_STATUS_NO_CHANGE)) &&
-            (SystemContext_GetSavedRevision() == s_save_revision))
+            (SystemContext_GetSavedRevision() == s_save_revision) &&
+            (SystemContext_GetConfigRevision() == s_save_revision))
         {
-            s_save_waiting = false; s_local_confirmed = false;
+            s_save_waiting = false;
+            s_local_pending_save = false;
+            s_local_pending_revision = 0U;
             ShowCode(status == PERSISTENCE_STATUS_SUCCESS ?
                 DISPLAY_CODE_DONE : DISPLAY_CODE_NO_CHANGE);
             if (s_exit_after_save)
@@ -693,6 +757,14 @@ void MenuController_Process10ms(void)
         else if ((status == PERSISTENCE_STATUS_FAILED) ||
                  (status == PERSISTENCE_STATUS_REBOOT_REQUIRED))
         {
+            s_save_waiting = false; s_exit_after_save = false;
+            ShowCode(DISPLAY_CODE_SAVE_ERROR);
+        }
+        else if ((uint32_t)(now - s_save_started_ms) >=
+                 STATUS_TRANSACTION_TIMEOUT_MS)
+        {
+            /* The result is uncertain. Keep valid local ownership, but require
+               another explicit user action before issuing any further SAVE. */
             s_save_waiting = false; s_exit_after_save = false;
             ShowCode(DISPLAY_CODE_SAVE_ERROR);
         }
@@ -799,8 +871,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                     s_editing = false;
                     Render();
                     ShowCode(DISPLAY_CODE_RAM_SAVE);
-                    s_local_confirmed = true;
-                    s_expected_revision = SystemContext_GetConfigRevision();
+                    RecordLocalConfirmation();
                 }
                 else ShowCode(DISPLAY_CODE_UNIT_ERROR);
                 return true;
@@ -810,8 +881,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                     0, 0, 0U, 0) == COMMAND_RESULT_OK))
             {
                 s_editing = false; Render(); ShowCode(DISPLAY_CODE_RAM_SAVE);
-                s_local_confirmed = true;
-                s_expected_revision = SystemContext_GetConfigRevision();
+                RecordLocalConfirmation();
                 return true;
             }
             (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,
@@ -866,6 +936,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                      WEIGHING_PROFILE_HIGH_PRECISION) ?
                     WEIGHING_PROFILE_HIGH_SPEED :
                     WEIGHING_PROFILE_HIGH_PRECISION;
+                s_profile_start_revision = SystemContext_GetConfigRevision();
                 s_profile_apply_pending = true;
             }
             return true;
@@ -931,4 +1002,8 @@ bool MenuController_IsAdvanced(void) { return s_advanced; }
 #if defined(STAGE2A_HOST_TEST)
 uint32_t MenuController_GetCancelRequestCount(void)
 { return s_cancel_request_count; }
+bool MenuController_HasLocalPendingSave(void)
+{ RefreshLocalOwnership(); return s_local_pending_save; }
+uint32_t MenuController_GetLocalPendingRevision(void)
+{ return s_local_pending_revision; }
 #endif

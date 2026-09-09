@@ -440,9 +440,10 @@ FUNCTION 确认成功后显示 `rAnonL`，表示参数已经在当前运行中�
 > **重要：需要断电保持的参数可在 `SAUE` 按 FUNCTION，或长按 FUNCTION 保存退出。只有看到 `donE` 或 `noCHG`，才可认为保存流程正常结束。**
 
 `SAUE` 与长按FUNCTION复用异步完成判断，但授权范围不同：`SAUE`可保存进入
-菜单前已有的dirty完整快照，长FUNCTION只保存本菜单会话确认的修改。Flash失败显示
-`ErrSAU` 并留在菜单，不自动重试。菜单保存的是整体配置快照；若菜单会话中
-检测到 Modbus/BLE 等来源改变了 revision，则拒绝保存，不做字段级合并。
+菜单前已有的dirty完整快照；长FUNCTION只保存仍具有本地归属的菜单确认修改。
+该归属及其精确revision在TARE/超时退出和再次进入后仍保留，但任何外部revision
+变化都会永久使旧归属失效并显示`bUSY`。Flash失败显示`ErrSAU`并留在菜单，
+不自动重试。菜单保存的是整体配置快照，不做字段级合并。
 
 ---
 
@@ -814,7 +815,7 @@ HyS 是检重状态回差，不是传感器的计量迟滞。计量迟滞将在 
 | `0003` | 单位 | 0=kg，1=g，2=lb |
 | `0004-0005` | 状态 | 稳定、过载等 |
 | `000E` | Register Map | 应读到 `0x0103` |
-| `000F` | Firmware | 当前为 `0x050B` |
+| `000F` | Firmware | 当前为 `0x050C` |
 | `0010-001B` | NET/GROSS/TARE | 有符号 64 位，单位 µg |
 | `0220-023B` | 检重配置和实时状态 | 包含灯、蜂鸣器相位、dirty |
 
@@ -1194,7 +1195,7 @@ CAP → dIU → dP → FILt → StAb → ZrnG → OL → briGHt → trrEt
 | Firmware tag | `stage5f-ui-tested` |
 | Firmware baseline | `0e10a53dd1b89eafc34b8dc3a95964394bc1c01b` |
 | Tag object | `f409849e4a42a121eaefc0e89e5d96df30dcb809` |
-| Firmware reported value | `0x050B` |
+| Firmware reported value | `0x050C` |
 | Modbus map | `0x0103` |
 | BLE protocol | V1 |
 | Config schema | V2 / 344 B |

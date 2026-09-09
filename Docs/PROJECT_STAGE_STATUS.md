@@ -2,9 +2,9 @@
 
 ## Keypad, STATUS and battery divider update
 
-Current follow-up firmware value is `0x050B` (5.11); Register Map `0x0104` and
-Schema `2` remain unchanged. Historical `0x050A` validation records are kept
-as historical records.
+Current follow-up firmware value is `0x050C` (5.12); Register Map `0x0104` and
+Schema `2` remain unchanged. Historical validation records through `0x050B`
+are kept as historical records.
 
 The current development branch adds an independent STATUS overlay: RUN STAR
 short is side-effect free, RUN STAR long enters STATUS, and STATUS consumes all
@@ -14,8 +14,10 @@ after apply success. STATUS and menu SAVE completion are revision-bound; foreign
 configuration changes are rejected rather than merged into a whole-snapshot
 save. STATUS now uses explicit LIST/VIEW/EDIT levels and gates the entry STAR
 until release. Menu edit-level TARE returns to its list; list TARE and timeout
-exit without saving. Long FUNCTION saves only session-confirmed changes, while
-explicit SAUE retains authority to save an already-dirty entry snapshot.
+exit without saving. Confirmed menu changes keep exact-revision local ownership
+across TARE/timeout exit and re-entry. Long FUNCTION saves only that owned local
+snapshot; an unknown or externally advanced dirty revision produces `bUSY`,
+while explicit SAUE retains authority to save an already-dirty entry snapshot.
 
 Local brightness is constrained to 1..7, tare retention is boolean, and StAb is
 saturated to the validator's 10..10000 ms range. SPd/GAIn are hidden from the

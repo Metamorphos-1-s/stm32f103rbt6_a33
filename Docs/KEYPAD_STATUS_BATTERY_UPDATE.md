@@ -4,8 +4,8 @@ This note records the software contract implemented on the
 `fix-usart3-command-source-validation` development branch. It is not hardware
 qualification evidence.
 
-The current firmware release value is `0x050B` (5.11), with Register Map
-`0x0104` and persistent Schema `2`. Earlier hardware records using `0x050A`
+The current firmware release value is `0x050C` (5.12), with Register Map
+`0x0104` and persistent Schema `2`. Earlier hardware records through `0x050B`
 remain historical evidence and are not rewritten.
 
 ## UI ownership and persistence
@@ -31,12 +31,17 @@ The menu follows the same whole-snapshot safety rule. FUNCTION short confirms
 and applies an item to RAM. FUNCTION long cancels the current unconfirmed value,
 saves prior confirmed changes, waits for the matching Flash result, and exits
 after `donE`/`noCHG`. EDIT TARE returns to the menu list; LIST TARE and timeout
-exit without requesting Flash. Explicit `SAUE` can save a dirty snapshot that
-predates menu entry, while long FUNCTION only saves changes confirmed in this
-menu session. Since ConfigStore persists a complete configuration/runtime
-snapshot, any unexpected revision rejects automatic save; no field-level merge
-is attempted. Profile switching waits for its real asynchronous result and
-reads the resulting revision instead of predicting it.
+exit without requesting Flash. Confirmed local edits retain an in-memory save
+ownership marker and their exact revision across TARE/timeout exit and menu
+re-entry, so a later long FUNCTION can save them. The marker is cleared by
+initialization or an exactly matching successful SAVE. Any intervening foreign
+revision invalidates it permanently. Explicit `SAUE` can save a dirty snapshot
+that predates menu entry, while long FUNCTION only saves a still-owned local
+snapshot. Since ConfigStore persists a complete configuration/runtime snapshot,
+unknown entry dirtiness and unexpected revisions produce `bUSY`; no field-level
+merge or automatic ownership claim is attempted. Profile switching waits for
+its real asynchronous result and records the resulting revision rather than
+using a predicted revision as the owned SAVE target.
 
 ## STATUS items
 
