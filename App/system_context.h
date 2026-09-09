@@ -32,6 +32,9 @@ bool SystemContext_SetState(AppState state, uint32_t now_ms);
 bool SystemContext_SetTareState(int32_t tare_weight, bool tare_active);
 bool SystemContext_SetTareStateMass(MassValueUg tare_mass_ug,
                                     bool tare_active);
+/* Internal metrology synchronization; does not create a persistence revision. */
+bool SystemContext_SyncTareStateMass(MassValueUg tare_mass_ug,
+                                     bool tare_active);
 bool SystemContext_SetConfigDirty(bool dirty);
 bool SystemContext_SetWeightView(WeightViewMode view);
 bool SystemContext_ApplyConfig(const DeviceConfig *config, bool dirty);

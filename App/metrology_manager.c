@@ -87,7 +87,7 @@ static bool MetrologyManager_CalibrationChanged(
            (left->calibration_valid != right->calibration_valid);
 }
 
-static void MetrologyManager_SyncTare(void)
+static void MetrologyManager_SyncTare(bool mark_config_dirty)
 {
     const WeightSnapshot *snapshot = WeightEngine_GetSnapshot(&s_engine);
 
@@ -95,7 +95,10 @@ static void MetrologyManager_SyncTare(void)
     {
         bool active = (snapshot->status_flags &
                        WEIGHT_STATUS_TARE_ACTIVE) != 0U;
-        (void)SystemContext_SetTareStateMass(snapshot->tare_mass_ug, active);
+        if (mark_config_dirty)
+            (void)SystemContext_SetTareStateMass(snapshot->tare_mass_ug, active);
+        else
+            (void)SystemContext_SyncTareStateMass(snapshot->tare_mass_ug, active);
     }
 }
 
@@ -146,7 +149,7 @@ bool MetrologyManager_Init(const DeviceConfig *config,
         DisplayConditioner_Init(&s_display_conditioner,
             MetrologyManager_DisplaySourceMass(snapshot, SystemContext_Get()),
             (snapshot != NULL) ? snapshot->sample_timestamp_ms : 0U);
-        MetrologyManager_SyncTare();
+        MetrologyManager_SyncTare(false);
     }
     return s_initialized;
 }
@@ -352,7 +355,7 @@ WeightActionResult MetrologyManager_Tare(void)
 
     if (result == WEIGHT_ACTION_OK)
     {
-        MetrologyManager_SyncTare();
+        MetrologyManager_SyncTare(true);
         if ((SystemContext_Get() != NULL) &&
             (SystemContext_Get()->runtime.weight_view == WEIGHT_VIEW_NET))
         {
@@ -377,7 +380,7 @@ WeightActionResult MetrologyManager_ClearTare(void)
 
     if (result == WEIGHT_ACTION_OK)
     {
-        MetrologyManager_SyncTare();
+        MetrologyManager_SyncTare(true);
         MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
     }
     else if (result == WEIGHT_ACTION_INTERNAL_ERROR)
@@ -458,7 +461,7 @@ bool MetrologyManager_Reconfigure(const DeviceConfig *config)
     s_engine = replacement;
     s_last_published_sequence = 0U;
     s_last_published_stable = false;
-    MetrologyManager_SyncTare();
+    MetrologyManager_SyncTare(false);
     MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
     return true;
 }
@@ -493,7 +496,7 @@ bool MetrologyManager_RestartAfterStorage(const DeviceConfig *config)
     s_engine = replacement;
     s_last_published_sequence = 0U;
     s_last_published_stable = false;
-    MetrologyManager_SyncTare();
+    MetrologyManager_SyncTare(false);
     MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
     return true;
 }

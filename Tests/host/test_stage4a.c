@@ -1039,7 +1039,7 @@ static void TestFirmwareIdentityAndStatusDisplay(void)
 
     Stage4A_InitRuntime(&config, false);
     StatusController_Init();
-    CHECK4(firmware == 0x050CU);
+    CHECK4(firmware == 0x050DU);
     CHECK4(map == 0x0104U);
     CHECK4(schema == 2U);
     CHECK4(StatusController_Enter());
@@ -2452,6 +2452,25 @@ static void Stage4A_ConfirmDecimalChangeAndExit(uint32_t *now_ms,
     else Stage4A_AlarmMenuKey(KEY_ID_TARE, now_ms);
 }
 
+static void TestMenuDuplicateRevisionFromTareSync(void)
+{
+    DeviceConfig config;
+    uint32_t now = 0U;
+
+    Stage4A_InitRuntime(&config, false);
+    CHECK4(SystemContext_SetTareStateMass(123000, true));
+    CHECK4(SystemContext_GetConfigRevision() == 1U);
+    CHECK4(SystemContext_MarkRevisionSaved(1U));
+    CHECK4(SystemContext_GetSavedRevision() == 1U);
+    MenuController_Init();
+    Stage4A_ConfirmDecimalChangeAndExit(&now, false);
+    CHECK4(SystemContext_GetConfigRevision() == 2U);
+    CHECK4(SystemContext_GetSavedRevision() == 1U);
+    CHECK4(MenuController_HasLocalPendingSave());
+    CHECK4(MenuController_GetLocalPendingRevision() == 2U);
+    MenuController_Cancel();
+}
+
 static void TestMenuCrossSessionSaveOwnership(void)
 {
     DeviceConfig config;
@@ -3086,6 +3105,7 @@ unsigned int Stage4A_RunTests(void)
     TestMenuOwnershipRejectsForeignDirty();
     TestMenuOwnershipRevisionUpdatesAndWrap();
     TestMenuOwnershipSaveFailureAndInit();
+    TestMenuDuplicateRevisionFromTareSync();
     TestDisplayFormattingAndModel();
     TestCommandAndConfig();
     TestZeroCommandFeedback();

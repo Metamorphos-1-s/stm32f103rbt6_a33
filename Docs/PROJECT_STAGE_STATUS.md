@@ -2,7 +2,7 @@
 
 ## Keypad, STATUS and battery divider update
 
-Current follow-up firmware value is `0x050C` (5.12); Register Map `0x0104` and
+Current follow-up firmware value is `0x050D` (5.13); Register Map `0x0104` and
 Schema `2` remain unchanged. Historical validation records through `0x050B`
 are kept as historical records.
 

@@ -104,6 +104,19 @@ bool SystemContext_SetTareStateMass(MassValueUg tare_mass_ug, bool tare_active)
   return true;
 }
 
+bool SystemContext_SyncTareStateMass(MassValueUg tare_mass_ug, bool tare_active)
+{
+  int32_t tare_compat;
+  if (!s_system_context.initialized) return false;
+  tare_mass_ug = tare_active ? tare_mass_ug : 0;
+  tare_compat = (tare_mass_ug > INT32_MAX) ? INT32_MAX :
+      ((tare_mass_ug < INT32_MIN) ? INT32_MIN : (int32_t)tare_mass_ug);
+  s_system_context.runtime.current_tare_ug = tare_mass_ug;
+  s_system_context.runtime.current_tare = tare_compat;
+  s_system_context.runtime.tare_active = tare_active;
+  return true;
+}
+
 bool SystemContext_SetConfigDirty(bool dirty)
 {
   if (!s_system_context.initialized)
