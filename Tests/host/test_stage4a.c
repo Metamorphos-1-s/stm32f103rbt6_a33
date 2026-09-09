@@ -14,6 +14,7 @@
 #include "key_service.h"
 #include "menu_controller.h"
 #include "metrology_manager.h"
+#include "modbus_register_map.h"
 #include "mock_hal.h"
 #include "numeric_edit_cursor.h"
 #include "output_gpio.h"
@@ -710,6 +711,10 @@ static void TestStatusTransactionTimeoutAndSaveRetry(void)
     CHECK4(TestMock_GetLocalCommunicationApplyCount() == 1U);
     CHECK4(TestMock_GetSaveRequestCount() == 0U);
     StatusController_Cancel();
+    CHECK4(StatusController_IsActive());
+    TestMock_SetCommunicationApplyStatusOnly(COMM_APPLY_RESULT_FAILED);
+    StatusController_Process10ms();
+    CHECK4(!StatusController_IsActive());
 
     Stage4A_InitRuntime(&config, false);
     StatusController_Init();
@@ -734,6 +739,10 @@ static void TestStatusTransactionTimeoutAndSaveRetry(void)
     CHECK4(TestMock_GetLocalCommunicationApplyCount() == 1U);
     CHECK4(TestMock_GetSaveRequestCount() == 1U);
     StatusController_Cancel();
+    CHECK4(StatusController_IsActive());
+    TestMock_CompletePersistence(PERSISTENCE_STATUS_FAILED, false);
+    StatusController_Process10ms();
+    CHECK4(!StatusController_IsActive());
 
     Stage4A_InitRuntime(&config, false);
     StatusController_Init();
@@ -754,6 +763,291 @@ static void TestStatusTransactionTimeoutAndSaveRetry(void)
     CHECK4(StatusController_HandleKeyEvent(&event));
     CHECK4(TestMock_GetLocalCommunicationApplyCount() == 1U);
     CHECK4(TestMock_GetSaveRequestCount() == 2U);
+    StatusController_Cancel();
+}
+
+static void TestStatusAsyncOwnershipDelayedResults(void)
+{
+    static const KeyEvent blocked[] = {
+        {KEY_ID_TARE, KEY_EVENT_SHORT, 6001U, 0U},
+        {KEY_ID_FUNCTION, KEY_EVENT_SHORT, 6002U, 0U},
+        {KEY_ID_FUNCTION, KEY_EVENT_LONG, 6003U, 0U},
+        {KEY_ID_STAR, KEY_EVENT_SHORT, 6004U, 0U},
+        {KEY_ID_STAR, KEY_EVENT_LONG, 6005U, 0U},
+        {KEY_ID_HASH, KEY_EVENT_SHORT, 6006U, 0U},
+        {KEY_ID_HASH, KEY_EVENT_REPEAT, 6007U, 0U}
+    };
+    DeviceConfig config;
+    DeviceConfig updated;
+    CommunicationConfig candidate;
+    KeyEvent event;
+    uint32_t now = 0U;
+    uint32_t applied_revision;
+    uint8_t index;
+
+    Stage4A_InitRuntime(&config, false);
+    StatusController_Init();
+    TestMock_SetCommunicationApplyResult(COMMAND_RESULT_ACCEPTED,
+                                          COMM_APPLY_RESULT_PENDING);
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+                                  PERSISTENCE_STATUS_SAVING);
+    StatusPrepareAddressChange(&now);
+    CHECK4(StatusController_GetVisibleCommunication(&candidate));
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    TestMock_SetTimeMs(now + STATUS_TRANSACTION_TIMEOUT_MS);
+    StatusController_Process10ms();
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows(" UnC  "));
+    for (index = 0U; index < sizeof(blocked) / sizeof(blocked[0]); ++index)
+        CHECK4(StatusController_HandleKeyEvent(&blocked[index]));
+    CHECK4(StatusController_IsActive());
+    CHECK4(StatusController_GetItem() == STATUS_ITEM_ADDRESS);
+    CHECK4(TestMock_GetLocalCommunicationApplyCount() == 1U);
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
+    {
+        CommunicationConfig after;
+    CHECK4(StatusController_GetVisibleCommunication(&after));
+        CHECK4(memcmp(&after, &candidate, sizeof(after)) == 0);
+    }
+    TestMock_SetTimeMs(now + STATUS_TRANSACTION_TIMEOUT_MS +
+                       UI_MESSAGE_DEFAULT_MS);
+    StatusController_Process10ms();
+    CHECK4(StatusController_GetMode() == STATUS_MODE_APPLYING);
+    for (index = 0U; index < sizeof(blocked) / sizeof(blocked[0]); ++index)
+        CHECK4(StatusController_HandleKeyEvent(&blocked[index]));
+    TestMock_SetTimeMs(now + MENU_TIMEOUT_MS + STATUS_TRANSACTION_TIMEOUT_MS);
+    StatusController_Process10ms();
+    CHECK4(StatusController_IsActive());
+    CHECK4(StatusController_GetMode() == STATUS_MODE_MESSAGE);
+    TestMock_SetTimeMs(now + MENU_TIMEOUT_MS + STATUS_TRANSACTION_TIMEOUT_MS +
+                       UI_MESSAGE_DEFAULT_MS);
+    StatusController_Process10ms();
+    CHECK4(StatusController_GetMode() == STATUS_MODE_APPLYING);
+    TestMock_SetCommunicationApplyResult(COMMAND_RESULT_ACCEPTED,
+                                          COMM_APPLY_RESULT_SUCCESS);
+    applied_revision = SystemContext_GetConfigRevision();
+    StatusController_Process10ms();
+    CHECK4(applied_revision == SystemContext_GetConfigRevision());
+    CHECK4(memcmp(&SystemContext_Get()->config.communication, &candidate,
+                  sizeof(candidate)) == 0);
+    CHECK4(TestMock_GetLocalCommunicationApplyCount() == 1U);
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    CHECK4(StatusController_GetMode() == STATUS_MODE_SAVING);
+    StatusController_Cancel();
+    TestMock_CompletePersistence(PERSISTENCE_STATUS_FAILED, false);
+    StatusController_Process10ms();
+
+    Stage4A_InitRuntime(&config, false);
+    StatusController_Init();
+    TestMock_SetCommunicationApplyResult(COMMAND_RESULT_ACCEPTED,
+                                          COMM_APPLY_RESULT_PENDING);
+    now = 0U;
+    StatusPrepareAddressChange(&now);
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    TestMock_SetCommunicationApplyStatusOnly(COMM_APPLY_RESULT_SUCCESS);
+    StatusController_Process10ms();
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
+    CHECK4(StatusController_GetMode() == STATUS_MODE_MESSAGE);
+    StatusController_Cancel();
+
+    Stage4A_InitRuntime(&config, false);
+    StatusController_Init();
+    TestMock_SetCommunicationApplyResult(COMMAND_RESULT_ACCEPTED,
+                                          COMM_APPLY_RESULT_PENDING);
+    now = 0U;
+    StatusPrepareAddressChange(&now);
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    TestMock_SetCommunicationApplyResult(COMMAND_RESULT_ACCEPTED,
+                                          COMM_APPLY_RESULT_SUCCESS);
+    CHECK4(SystemContext_MarkConfigChanged());
+    StatusController_Process10ms();
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
+    CHECK4(StatusController_GetMode() == STATUS_MODE_MESSAGE);
+    StatusController_Cancel();
+
+    Stage4A_InitRuntime(&config, false);
+    StatusController_Init();
+    TestMock_SetCommunicationApplyResult(COMMAND_RESULT_ACCEPTED,
+                                          COMM_APPLY_RESULT_PENDING);
+    now = 0U;
+    StatusPrepareAddressChange(&now);
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    TestMock_SetCommunicationApplyStatusOnly(COMM_APPLY_RESULT_FAILED);
+    StatusController_Process10ms();
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
+    CHECK4(StatusController_GetMode() == STATUS_MODE_MESSAGE);
+    TestMock_SetTimeMs(now + UI_MESSAGE_DEFAULT_MS);
+    StatusController_Process10ms();
+    CHECK4(StatusController_GetMode() == STATUS_MODE_LIST);
+    CHECK4(TestMock_GetLocalCommunicationApplyCount() == 1U);
+    StatusController_Cancel();
+
+    (void)updated;
+}
+
+static void TestStatusSaveDelayedResultsAndConflicts(void)
+{
+    static const KeyEvent blocked[] = {
+        {KEY_ID_TARE, KEY_EVENT_SHORT, 7001U, 0U},
+        {KEY_ID_FUNCTION, KEY_EVENT_SHORT, 7002U, 0U},
+        {KEY_ID_FUNCTION, KEY_EVENT_LONG, 7003U, 0U},
+        {KEY_ID_STAR, KEY_EVENT_SHORT, 7004U, 0U},
+        {KEY_ID_STAR, KEY_EVENT_LONG, 7005U, 0U},
+        {KEY_ID_HASH, KEY_EVENT_SHORT, 7006U, 0U},
+        {KEY_ID_STAR, KEY_EVENT_REPEAT, 7007U, 0U}
+    };
+    DeviceConfig config;
+    DeviceConfig updated;
+    CommunicationConfig applied;
+    KeyEvent event;
+    uint32_t now = 0U;
+    uint32_t revision;
+    uint8_t index;
+
+    Stage4A_InitRuntime(&config, false);
+    StatusController_Init();
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+                                  PERSISTENCE_STATUS_SAVING);
+    TestMock_SetPersistenceBusy(true);
+    StatusPrepareAddressChange(&now);
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    StatusController_Process10ms();
+    revision = SystemContext_GetConfigRevision();
+    applied = SystemContext_Get()->config.communication;
+    TestMock_SetTimeMs(now + STATUS_TRANSACTION_TIMEOUT_MS);
+    StatusController_Process10ms();
+    CHECK4(StatusController_GetMode() == STATUS_MODE_MESSAGE);
+    TestMock_SetTimeMs(now + STATUS_TRANSACTION_TIMEOUT_MS +
+                       UI_MESSAGE_DEFAULT_MS);
+    StatusController_Process10ms();
+    CHECK4(StatusController_GetMode() == STATUS_MODE_SAVING);
+    for (index = 0U; index < sizeof(blocked) / sizeof(blocked[0]); ++index)
+        CHECK4(StatusController_HandleKeyEvent(&blocked[index]));
+    CHECK4(TestMock_GetLocalCommunicationApplyCount() == 1U);
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    TestMock_CompletePersistence(PERSISTENCE_STATUS_SUCCESS, true);
+    StatusController_Process10ms();
+    CHECK4(SystemContext_GetConfigRevision() == revision);
+    CHECK4(SystemContext_GetSavedRevision() == revision);
+    CHECK4(memcmp(&SystemContext_Get()->config.communication, &applied,
+                  sizeof(applied)) == 0);
+    CHECK4(StatusController_GetMode() == STATUS_MODE_COMPLETE);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("  donE"));
+    TestMock_SetTimeMs(now + STATUS_TRANSACTION_TIMEOUT_MS +
+                       UI_MESSAGE_DEFAULT_MS * 2U);
+    StatusController_Process10ms();
+    CHECK4(!StatusController_IsActive());
+    CHECK4(TestMock_GetLocalCommunicationApplyCount() == 1U);
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+
+    Stage4A_InitRuntime(&config, false);
+    StatusController_Init();
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+                                  PERSISTENCE_STATUS_SAVING);
+    now = 0U;
+    StatusPrepareAddressChange(&now);
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    StatusController_Process10ms();
+    revision = SystemContext_GetConfigRevision();
+    TestMock_SetTimeMs(now + STATUS_TRANSACTION_TIMEOUT_MS);
+    StatusController_Process10ms();
+    CHECK4(StatusController_GetMode() == STATUS_MODE_MESSAGE);
+    TestMock_SetTimeMs(now + STATUS_TRANSACTION_TIMEOUT_MS +
+                       UI_MESSAGE_DEFAULT_MS);
+    StatusController_Process10ms();
+    CHECK4(StatusController_GetMode() == STATUS_MODE_SAVING);
+    TestMock_CompletePersistence(PERSISTENCE_STATUS_NO_CHANGE, true);
+    StatusController_Process10ms();
+    CHECK4(SystemContext_GetConfigRevision() == revision);
+    CHECK4(SystemContext_GetSavedRevision() == revision);
+    CHECK4(StatusController_GetMode() == STATUS_MODE_COMPLETE);
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShows("noCHG "));
+    StatusController_Cancel();
+
+    Stage4A_InitRuntime(&config, false);
+    StatusController_Init();
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+                                  PERSISTENCE_STATUS_SAVING);
+    now = 0U;
+    StatusPrepareAddressChange(&now);
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    StatusController_Process10ms();
+    TestMock_CompletePersistence(PERSISTENCE_STATUS_SUCCESS, false);
+    StatusController_Process10ms();
+    CHECK4(StatusController_GetMode() == STATUS_MODE_SAVING);
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    StatusController_Cancel();
+    TestMock_CompletePersistence(PERSISTENCE_STATUS_FAILED, false);
+    StatusController_Process10ms();
+
+    Stage4A_InitRuntime(&config, false);
+    StatusController_Init();
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+                                  PERSISTENCE_STATUS_SAVING);
+    now = 0U;
+    StatusPrepareAddressChange(&now);
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    StatusController_Process10ms();
+    CHECK4(SystemContext_MarkConfigChanged());
+    TestMock_CompletePersistence(PERSISTENCE_STATUS_SUCCESS, true);
+    StatusController_Process10ms();
+    CHECK4(StatusController_GetMode() == STATUS_MODE_SAVING);
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    StatusController_Cancel();
+    TestMock_CompletePersistence(PERSISTENCE_STATUS_FAILED, false);
+    StatusController_Process10ms();
+
+    Stage4A_InitRuntime(&config, false);
+    StatusController_Init();
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+                                  PERSISTENCE_STATUS_SAVING);
+    now = 0U;
+    StatusPrepareAddressChange(&now);
+    event = Stage4A_Key(KEY_ID_STAR, KEY_EVENT_LONG, ++now);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    StatusController_Process10ms();
+    updated = SystemContext_Get()->config;
+    updated.communication.modbus_address = 1U;
+    CHECK4(SystemContext_ApplyConfig(&updated, true));
+    TestMock_CompletePersistence(PERSISTENCE_STATUS_SUCCESS, true);
+    StatusController_Process10ms();
+    CHECK4(StatusController_GetMode() == STATUS_MODE_SAVING);
+    CHECK4(TestMock_GetLocalCommunicationApplyCount() == 1U);
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    StatusController_Cancel();
+    TestMock_CompletePersistence(PERSISTENCE_STATUS_FAILED, false);
+    StatusController_Process10ms();
+}
+
+static void TestFirmwareIdentityAndStatusDisplay(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+    volatile uint32_t firmware = FW_RELEASE_VERSION;
+    volatile uint32_t map = MODBUS_REGISTER_MAP_VERSION;
+    volatile uint32_t schema = DEVICE_CONFIG_SCHEMA_VERSION;
+
+    Stage4A_InitRuntime(&config, false);
+    StatusController_Init();
+    CHECK4(firmware == 0x050BU);
+    CHECK4(map == 0x0104U);
+    CHECK4(schema == 2U);
+    CHECK4(StatusController_Enter());
+    StatusReleaseEntry(0U);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 1U);
+    CHECK4(StatusController_HandleKeyEvent(&event));
+    DisplayController_Process20ms();
+    CHECK4(Stage4A_ModelShowsWeight(511, 2U));
     StatusController_Cancel();
 }
 
@@ -2518,6 +2812,9 @@ unsigned int Stage4A_RunTests(void)
     TestStatusFailureAndUnconfirmedEdit();
     TestStatusEntryReleaseSequenceAndMessages();
     TestStatusTransactionTimeoutAndSaveRetry();
+    TestStatusAsyncOwnershipDelayedResults();
+    TestStatusSaveDelayedResultsAndConflicts();
+    TestFirmwareIdentityAndStatusDisplay();
     TestMenuSaveExitPolicy();
     TestMenuDiscardAndConflictPolicy();
     TestMenuNestedCancelExplicitSaveAndProfile();

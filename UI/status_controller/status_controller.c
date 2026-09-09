@@ -28,6 +28,7 @@ static bool s_applied;
 static bool s_apply_uncertain;
 static bool s_save_uncertain;
 static bool s_wait_entry_key_release;
+static bool s_suppress_display;
 static StatusItem s_item;
 static StatusMode s_mode;
 static StatusMode s_message_return_mode;
@@ -43,10 +44,20 @@ static uint32_t s_transaction_started_ms;
 static uint32_t s_message_until_ms;
 
 static bool IsEditable(StatusItem item) { return item >= STATUS_ITEM_ADDRESS; }
+static uint32_t NextRevision(uint32_t revision)
+{
+    uint32_t next = revision + 1U;
+    return next == 0xFFFFFFFFUL ? 0U : next;
+}
+
 static void Show(const char text[6])
-{ (void)DisplayController_SetTextPage(DISPLAY_PAGE_STATUS, text); }
+{
+    if (!s_suppress_display)
+        (void)DisplayController_SetTextPage(DISPLAY_PAGE_STATUS, text);
+}
 static void ShowNumber(uint32_t value)
 {
+    if (s_suppress_display) return;
     if (value > 999999U) value = 999999U;
     (void)DisplayController_SetNumericPage(DISPLAY_PAGE_STATUS,
                                            (int32_t)value, 0U);
@@ -119,12 +130,26 @@ static void ExitStatus(void)
 {
     s_active = false;
     s_mode = STATUS_MODE_LIST;
-    DisplayController_SetPage(s_previous_page);
+    if (!s_suppress_display) DisplayController_SetPage(s_previous_page);
+}
+
+static bool OwnsTransaction(void)
+{
+    return (s_mode == STATUS_MODE_APPLYING) ||
+        (s_mode == STATUS_MODE_SAVING) ||
+        ((s_mode == STATUS_MODE_MESSAGE) &&
+         ((s_message_return_mode == STATUS_MODE_APPLYING) ||
+          (s_message_return_mode == STATUS_MODE_SAVING)));
 }
 
 static void ShowMessage(const char text[6], StatusMode return_mode,
                         uint32_t now_ms)
 {
+    if (s_suppress_display && (return_mode == STATUS_MODE_LIST))
+    {
+        ExitStatus();
+        return;
+    }
     Show(text);
     s_mode = STATUS_MODE_MESSAGE;
     s_message_return_mode = return_mode;
@@ -133,6 +158,11 @@ static void ShowMessage(const char text[6], StatusMode return_mode,
 
 static void ShowCompletion(const char text[6], uint32_t now_ms)
 {
+    if (s_suppress_display)
+    {
+        ExitStatus();
+        return;
+    }
     Show(text);
     s_mode = STATUS_MODE_COMPLETE;
     s_message_until_ms = now_ms + UI_MESSAGE_DEFAULT_MS;
@@ -227,6 +257,8 @@ static void BeginSave(uint32_t now_ms)
         CommunicationApplyResult result = CommunicationManager_GetApplyResult();
         const SystemContext *context = SystemContext_Get();
         if ((result == COMM_APPLY_RESULT_SUCCESS) && (context != NULL) &&
+            (SystemContext_GetConfigRevision() ==
+             NextRevision(s_original_revision)) &&
             (memcmp(&context->config.communication, &s_candidate,
                     sizeof(s_candidate)) == 0))
         {
@@ -266,6 +298,7 @@ bool StatusController_Enter(void)
     s_apply_uncertain = false;
     s_save_uncertain = false;
     s_wait_entry_key_release = true;
+    s_suppress_display = false;
     s_item = STATUS_ITEM_FIRMWARE;
     s_mode = STATUS_MODE_LIST;
     s_previous_page = DisplayController_GetPage();
@@ -277,7 +310,18 @@ bool StatusController_Enter(void)
     return true;
 }
 
-void StatusController_Cancel(void) { if (s_active) ExitStatus(); }
+void StatusController_Cancel(void)
+{
+    if (!s_active) return;
+    if (OwnsTransaction())
+    {
+        /* FAULT may take over the display, but the controller must retain
+           ownership until the asynchronous operation reaches a terminal state. */
+        s_suppress_display = true;
+        return;
+    }
+    ExitStatus();
+}
 
 void StatusController_Process10ms(void)
 {
@@ -307,6 +351,8 @@ void StatusController_Process10ms(void)
         {
             const SystemContext *context = SystemContext_Get();
             if ((context == NULL) ||
+                (SystemContext_GetConfigRevision() !=
+                 NextRevision(s_original_revision)) ||
                 (memcmp(&context->config.communication, &s_candidate,
                         sizeof(s_candidate)) != 0))
             { ShowMessage(" bUSY ", STATUS_MODE_LIST, now); return; }

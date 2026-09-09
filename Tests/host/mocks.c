@@ -151,6 +151,21 @@ void TestMock_SetCommunicationApplyResult(CommandResult request,
     }
 }
 
+void TestMock_SetCommunicationApplyStatusOnly(CommunicationApplyResult status)
+{
+    s_local_apply_result = status;
+}
+
+void TestMock_CompletePersistence(PersistenceStatus status,
+                                  bool mark_current_saved)
+{
+    s_persistence_status = status;
+    s_persistence_busy = false;
+    if (mark_current_saved)
+        (void)SystemContext_MarkRevisionSaved(
+            SystemContext_GetConfigRevision());
+}
+
 void TestMock_SetPersistenceBusy(bool busy) { s_persistence_busy = busy; }
 
 uint32_t TestMock_GetSaveRequestCount(void)

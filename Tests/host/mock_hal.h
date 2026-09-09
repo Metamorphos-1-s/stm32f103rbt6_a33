@@ -21,6 +21,9 @@ void TestMock_SetPersistenceResult(CommandResult request,
                                    PersistenceStatus status);
 void TestMock_SetCommunicationApplyResult(CommandResult request,
                                           CommunicationApplyResult status);
+void TestMock_SetCommunicationApplyStatusOnly(CommunicationApplyResult status);
+void TestMock_CompletePersistence(PersistenceStatus status,
+                                  bool mark_current_saved);
 uint32_t TestMock_GetSaveRequestCount(void);
 uint32_t TestMock_GetLocalCommunicationApplyCount(void);
 void TestMock_SetPersistenceBusy(bool busy);
