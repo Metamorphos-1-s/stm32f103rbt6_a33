@@ -1,0 +1,114 @@
+{
+  "source": "config_region.bin",
+  "slots": [
+    {
+      "slot": "A",
+      "slot_sha256": "4049798C66EF7AFCDA8024EF74AE6860BEAD0947343B8619802668A29FD40E7C",
+      "payload_sha256": "9DE4251242002DA8D8E53A63799BC731BCD7199388495B049B15DCE1C746FD52",
+      "persistent": {
+        "communication": {
+          "baud_rate": 115200,
+          "parity": 0,
+          "stop_bits": 0,
+          "modbus_address": 1,
+          "protocol_mode": 1
+        },
+        "display": {
+          "brightness": 3
+        },
+        "battery": {
+          "divider_top_ohm": 47000,
+          "divider_bottom_ohm": 10000,
+          "calibration_gain_ppm": 0,
+          "calibration_offset_mv": 0,
+          "low_warning_mv": 0,
+          "critical_low_mv": 0,
+          "recovery_mv": 0,
+          "low_voltage_alarm_enable": false
+        },
+        "system": {
+          "tare_power_loss_retention": true,
+          "watchdog_enable": false,
+          "startup_auto_zero_enable": true
+        },
+        "runtime": {
+          "weight_view": 0,
+          "current_tare": 0,
+          "tare_active": false
+        }
+      },
+      "magic": "0x41333343",
+      "record_format_version": 1,
+      "payload_schema_version": 2,
+      "header_size": 32,
+      "payload_length": 344,
+      "sequence": 25,
+      "record_flags": "0x00000000",
+      "stored_crc32": "0xD4863506",
+      "calculated_crc32": "0xD4863506",
+      "crc_valid": true,
+      "commit_marker": "0x434F4D54",
+      "committed": true,
+      "supported": true,
+      "valid": true
+    },
+    {
+      "slot": "B",
+      "slot_sha256": "15C07506328FEF6F7238349619CD69983CA8E746E462E99F46543616BE2496AD",
+      "payload_sha256": "8ECBC5C77BFBC2800FE7707D1A82218B348DD2ECB3142AB06AC313A9C5BE0232",
+      "persistent": {
+        "communication": {
+          "baud_rate": 115200,
+          "parity": 0,
+          "stop_bits": 0,
+          "modbus_address": 1,
+          "protocol_mode": 1
+        },
+        "display": {
+          "brightness": 4
+        },
+        "battery": {
+          "divider_top_ohm": 47000,
+          "divider_bottom_ohm": 10000,
+          "calibration_gain_ppm": 0,
+          "calibration_offset_mv": 0,
+          "low_warning_mv": 0,
+          "critical_low_mv": 0,
+          "recovery_mv": 0,
+          "low_voltage_alarm_enable": false
+        },
+        "system": {
+          "tare_power_loss_retention": true,
+          "watchdog_enable": false,
+          "startup_auto_zero_enable": true
+        },
+        "runtime": {
+          "weight_view": 0,
+          "current_tare": 0,
+          "tare_active": false
+        }
+      },
+      "magic": "0x41333343",
+      "record_format_version": 1,
+      "payload_schema_version": 2,
+      "header_size": 32,
+      "payload_length": 344,
+      "sequence": 24,
+      "record_flags": "0x00000000",
+      "stored_crc32": "0x03C0FF2C",
+      "calculated_crc32": "0x03C0FF2C",
+      "crc_valid": true,
+      "commit_marker": "0x434F4D54",
+      "committed": true,
+      "supported": true,
+      "valid": true
+    }
+  ],
+  "active_slot": "A",
+  "modbus_comparison": {
+    "active_slot": "A",
+    "sequence": 25,
+    "active_slot_matches": true,
+    "sequence_matches": true
+  }
+}

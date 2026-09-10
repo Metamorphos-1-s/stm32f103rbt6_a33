@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-09-10T23:00:04.6323925+08:00",
+  "git_sha": "b119703cee70b228aa240e7f3477c7dca9946841",
+  "git_status": "",
+  "elf": "E:\\VScode_STM32_Project\\stm32f103rbt6_a33\\build\\Release\\stm32f103rbt6_a33.elf",
+  "elf_sha256": "15C8269A80962E2CA7329A2623AB69F2286C2E3336373D0B658E2755E2B8DE8D",
+  "programmer": "E:\\ST\\STM32CubeCLT_1.18.0\\STM32CubeProgrammer\\bin\\STM32_Programmer_CLI.exe",
+  "mass_erase": false,
+  "config_region_preserved": true,
+  "nrst_connected": true
+}

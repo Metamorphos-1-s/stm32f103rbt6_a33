@@ -1,0 +1,34 @@
+{
+  "firmware": "0x050F",
+  "register_map": "0x0104",
+  "schema": 2,
+  "production_commit": "b119703cee70b228aa240e7f3477c7dca9946841",
+  "release_elf_sha256": "15C8269A80962E2CA7329A2623AB69F2286C2E3336373D0B658E2755E2B8DE8D",
+  "final_probe": {
+    "path": "Results/firmware_050f_unified_menu_ux/post_power_cycle_probe.json",
+    "sha256": "A3C160B91C18B2C801D20D88DA82940ED4605A527F1179C7F66D5CCA15C0CC6A",
+    "revision": 25,
+    "saved_revision": 25,
+    "dirty": 0,
+    "active_slot": "A",
+    "sequence": 25,
+    "brightness": 3
+  },
+  "final_config_region": {
+    "path": "Results/firmware_050f_unified_menu_ux/config_slots_final/config_region.bin",
+    "sha256": "4BCDE2EB7482D29D2AD5153FC1166BBFA1DC651B95F62314F1B50019587F1867",
+    "parsed_path": "Results/firmware_050f_unified_menu_ux/config_slots_final/parsed.json",
+    "parsed_sha256": "02071835286BA44304472A09E1C46C2336A6115192E8E7D0AC8E626D066FF38B"
+  },
+  "hardware_counts": {
+    "application_program_verify_reset": 3,
+    "local_save_success": 2,
+    "local_save_retry": 0,
+    "physical_power_cycle": 1,
+    "fc03": 43,
+    "fc06": 0,
+    "fc16": 0,
+    "mailbox_commands": 0
+  },
+  "result": "PASS_AFTER_PRESERVED_FAILURES"
+}
