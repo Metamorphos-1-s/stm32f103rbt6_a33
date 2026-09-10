@@ -3313,6 +3313,25 @@ static void TestUnifiedCandidateTransactions(void)
 
     Stage4A_InitRuntime(&config, false);
     StatusController_Init();
+    DisplayController_SetPage(DISPLAY_PAGE_STATUS);
+    CHECK4(StatusController_Enter());
+    StatusReleaseEntry(++now);
+    UnifiedStatusKey(KEY_ID_TARE, KEY_EVENT_SHORT, &now);
+    CHECK4(!StatusController_IsActive());
+    CHECK4(DisplayController_GetPage() == DISPLAY_PAGE_NET);
+
+    StatusController_Init();
+    CHECK4(StatusController_Enter());
+    StatusReleaseEntry(++now);
+    TestMock_SetTimeMs(now + MENU_TIMEOUT_MS);
+    StatusController_Process10ms();
+    CHECK4(!StatusController_IsActive());
+    CHECK4(DisplayController_GetPage() == DISPLAY_PAGE_NET);
+    TestMock_SetTimeMs(0U);
+    now = 0U;
+
+    Stage4A_InitRuntime(&config, false);
+    StatusController_Init();
     TestMock_SetCommunicationApplyResult(COMMAND_RESULT_ACCEPTED,
                                           COMM_APPLY_RESULT_FAILED);
     CHECK4(StatusController_Enter());

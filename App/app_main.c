@@ -58,6 +58,7 @@ static bool App_PushStartupEvent(EventType type);
 static bool App_PushEvent(EventType type, uint32_t arg0, uint32_t arg1);
 static void App_PublishRawMeasurement(void);
 static void App_ProcessKeyEvent(const KeyEvent *event);
+static void App_ReconcileUiOwnership(void);
 static CommandResult App_ExecuteLocalCommand(CommandId id, int32_t value0);
 static void App_ShowCommandResult(CommandResult result, bool tare_action);
 #if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
@@ -359,6 +360,24 @@ static void App_10msTask(void *context)
   {
     (void)SystemContext_SetState(APP_STATE_RUN, BSP_TimeNowMs());
   }
+  App_ReconcileUiOwnership();
+}
+
+static void App_ReconcileUiOwnership(void)
+{
+  const SystemContext *context = SystemContext_Get();
+  DisplayPage page = DisplayController_GetPage();
+  bool overlay_page = (page == DISPLAY_PAGE_MENU) ||
+      (page == DISPLAY_PAGE_EDIT) || (page == DISPLAY_PAGE_STATUS);
+
+  if ((context == NULL) || (SystemContext_GetState() != APP_STATE_RUN) ||
+      MenuController_IsActive() || StatusController_IsActive() ||
+      !overlay_page)
+  {
+    return;
+  }
+  DisplayController_SetPage(context->runtime.weight_view == WEIGHT_VIEW_GROSS ?
+      DISPLAY_PAGE_GROSS : DISPLAY_PAGE_NET);
 }
 
 static void App_100msTask(void *context)
@@ -749,6 +768,17 @@ static void App_ProcessKeyEvent(const KeyEvent *event)
   }
   if (state != APP_STATE_RUN)
   {
+    return;
+  }
+
+  /* A stale configuration overlay must never turn its next key into a RUN
+     command. The periodic reconciler restores the page; consume the event if
+     it arrived in the same scheduling window. */
+  if ((DisplayController_GetPage() == DISPLAY_PAGE_MENU) ||
+      (DisplayController_GetPage() == DISPLAY_PAGE_EDIT) ||
+      (DisplayController_GetPage() == DISPLAY_PAGE_STATUS))
+  {
+    App_ReconcileUiOwnership();
     return;
   }
 

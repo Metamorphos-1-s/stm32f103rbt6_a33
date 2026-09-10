@@ -47,6 +47,11 @@ static uint32_t s_transaction_started_ms;
 static uint32_t s_message_until_ms;
 
 static bool IsEditable(StatusItem item) { return item >= STATUS_ITEM_ADDRESS; }
+static bool IsRunPage(DisplayPage page)
+{
+    return (page == DISPLAY_PAGE_NET) || (page == DISPLAY_PAGE_GROSS) ||
+        (page == DISPLAY_PAGE_TARE) || (page == DISPLAY_PAGE_BATTERY);
+}
 static uint32_t NextRevision(uint32_t revision)
 {
     uint32_t next = revision + 1U;
@@ -294,6 +299,9 @@ bool StatusController_Enter(void)
     s_item = STATUS_ITEM_FIRMWARE;
     s_mode = STATUS_MODE_LIST;
     s_previous_page = DisplayController_GetPage();
+    if (!IsRunPage(s_previous_page))
+        s_previous_page = context->runtime.weight_view == WEIGHT_VIEW_GROSS ?
+            DISPLAY_PAGE_GROSS : DISPLAY_PAGE_NET;
     s_original_config = context->config;
     s_candidate_config = s_original_config;
     s_original = s_original_config.communication;
