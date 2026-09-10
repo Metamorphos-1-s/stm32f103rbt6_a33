@@ -68,6 +68,11 @@ Stage 5J supplemental results:
 - PC 0x050F two-SAVE/two-physical-power-cycle qualification: NOT RUN; two
   operator-controlled physical power cycles are still required.
 
+The CH579 TCP/USART3 plus direct RS232 concurrency gate ran 600.391 seconds:
+TCP 739/739, RS232 499/499, 9 FC06 cycles and 1 FC16 cycle, with zero timeout,
+bad frame, TID error or restore failure. Final cleanup and strict read-only
+Preflight reconfirmed the authoritative state.
+
 The first RS232 FC06 attempt is preserved as FAIL/exception 06. Its cause was
 the preceding gateway validation tool restoring Staging values without ending
 the USART3-owned candidate session. The firmware correctly isolated sources.
