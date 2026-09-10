@@ -2,22 +2,19 @@
 
 ## Keypad, STATUS and battery divider update
 
-Current follow-up firmware value is `0x050E` (5.14); Register Map `0x0104` and
+Current follow-up firmware value is `0x050F` (5.15); Register Map `0x0104` and
 Schema `2` remain unchanged. Historical validation records through `0x050B`
 are kept as historical records.
 
-The current development branch adds an independent STATUS overlay: RUN STAR
-short is side-effect free, RUN STAR long enters STATUS, and STATUS consumes all
-key events before RUN behavior. Confirmed communication edits use the existing
-asynchronous UART2 apply/rollback path and only request PersistenceManager SAVE
-after apply success. STATUS and menu SAVE completion are revision-bound; foreign
-configuration changes are rejected rather than merged into a whole-snapshot
-save. STATUS now uses explicit LIST/VIEW/EDIT levels and gates the entry STAR
-until release. Menu edit-level TARE returns to its list; list TARE and timeout
-exit without saving. Confirmed menu changes keep exact-revision local ownership
-across TARE/timeout exit and re-entry. Long FUNCTION saves only that owned local
-snapshot; an unknown or externally advanced dirty revision produces `bUSY`,
-while explicit SAUE retains authority to save an already-dirty entry snapshot.
+The current development branch uses session-local candidates in both the
+FUNCTION menu and independent STATUS overlay. Short FUNCTION confirms only to
+the session candidate; Active RAM, dirty and revision stay unchanged. Long
+FUNCTION is the sole normal commit path. STATUS communication settings use the
+existing asynchronous UART2 apply/rollback path only at final commit. TARE and
+timeout discard the session. `SAUE` and `EHIt` are hidden from navigation.
+Known battery migration and completed local calibration dirty state have
+explicit ownership; unknown or externally advanced dirty state produces
+`bUSY` rather than being merged into a whole-snapshot save.
 
 Local brightness is constrained to 1..7, tare retention is boolean, and StAb is
 saturated to the validator's 10..10000 ms range. SPd/GAIn are hidden from the

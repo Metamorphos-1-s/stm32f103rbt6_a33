@@ -39,6 +39,11 @@ bool SystemContext_SetConfigDirty(bool dirty);
 bool SystemContext_SetWeightView(WeightViewMode view);
 bool SystemContext_SetRuntimeWeightView(WeightViewMode view);
 bool SystemContext_ApplyConfig(const DeviceConfig *config, bool dirty);
+bool SystemContext_ReplaceConfig(const DeviceConfig *config, bool dirty);
+bool SystemContext_FinalizeSavedRevision(uint32_t revision);
+bool SystemContext_RestoreSnapshot(const DeviceConfig *config,
+    const RuntimeState *runtime, uint32_t current_revision,
+    uint32_t saved_revision);
 uint32_t SystemContext_GetConfigRevision(void);
 uint32_t SystemContext_GetSavedRevision(void);
 bool SystemContext_MarkConfigChanged(void);

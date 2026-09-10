@@ -244,3 +244,10 @@ const DeviceConfig *ConfigEdit_GetWorkingCopy(void)
             (s_state == CONFIG_EDIT_VALIDATED) ||
             (s_state == CONFIG_EDIT_ERROR)) ? &s_working : NULL;
 }
+
+bool ConfigEdit_CopyWorking(DeviceConfig *target)
+{
+    if ((target == NULL) || (ConfigEdit_GetWorkingCopy() == NULL)) return false;
+    *target = s_working;
+    return true;
+}

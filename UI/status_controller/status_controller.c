@@ -27,6 +27,7 @@ static bool s_confirmed;
 static bool s_applied;
 static bool s_apply_uncertain;
 static bool s_save_uncertain;
+static bool s_rollback_pending;
 static bool s_wait_entry_key_release;
 static bool s_suppress_display;
 static StatusItem s_item;
@@ -37,6 +38,8 @@ static CommunicationConfig s_original;
 static CommunicationConfig s_candidate;
 static CommunicationConfig s_edit;
 static CommunicationConfig s_applied_candidate;
+static DeviceConfig s_original_config;
+static DeviceConfig s_candidate_config;
 static uint32_t s_original_revision;
 static uint32_t s_applied_revision;
 static uint32_t s_last_activity_ms;
@@ -204,9 +207,19 @@ static bool AppliedCandidateIsCurrent(void)
 {
     const SystemContext *context = SystemContext_Get();
     return s_applied && (context != NULL) &&
-        (SystemContext_GetConfigRevision() == s_applied_revision) &&
+        (SystemContext_GetConfigRevision() == s_original_revision) &&
         (memcmp(&context->config.communication, &s_applied_candidate,
                 sizeof(s_applied_candidate)) == 0);
+}
+
+static bool PublishedCandidateIsCurrent(void)
+{
+    const SystemContext *context = SystemContext_Get();
+    return (context != NULL) &&
+        (SystemContext_GetConfigRevision() == s_applied_revision) &&
+        (SystemContext_GetSavedRevision() == s_applied_revision) &&
+        (memcmp(&context->config, &s_candidate_config,
+                sizeof(s_candidate_config)) == 0);
 }
 
 static void RequestSaveOnly(uint32_t now_ms)
@@ -216,7 +229,10 @@ static void RequestSaveOnly(uint32_t now_ms)
     {
         ShowMessage(" bUSY ", STATUS_MODE_LIST, now_ms); return;
     }
-    result = PersistenceManager_RequestSave();
+    s_candidate_config = s_original_config;
+    s_candidate_config.communication = s_candidate;
+    result = PersistenceManager_RequestCandidateSave(&s_candidate_config,
+        &s_original_config, false, s_original_revision);
     if (result == COMMAND_RESULT_ACCEPTED)
     {
         Show(" SAUE ");
@@ -224,11 +240,18 @@ static void RequestSaveOnly(uint32_t now_ms)
         s_transaction_started_ms = now_ms;
         s_save_uncertain = false;
     }
-    else if ((result == COMMAND_RESULT_OK) &&
-             (SystemContext_GetSavedRevision() == s_applied_revision) &&
-             AppliedCandidateIsCurrent())
-        ShowCompletion("noCHG ", now_ms);
-    else ShowMessage("ErrSAU", STATUS_MODE_LIST, now_ms);
+    else
+    {
+        s_rollback_pending = true;
+        if (CommunicationManager_RequestLocalApply(&s_original) ==
+            COMMAND_RESULT_ACCEPTED)
+        {
+            Show("rOLbAC");
+            s_mode = STATUS_MODE_APPLYING;
+            s_transaction_started_ms = now_ms;
+        }
+        else ShowMessage("ErrSAU", STATUS_MODE_LIST, now_ms);
+    }
 }
 
 static void BeginSave(uint32_t now_ms)
@@ -237,42 +260,10 @@ static void BeginSave(uint32_t now_ms)
     if (!s_confirmed ||
         (memcmp(&s_candidate, &s_original, sizeof(s_candidate)) == 0))
     { ShowCompletion("noCHG ", now_ms); return; }
-    if (s_save_uncertain)
-    {
-        PersistenceStatus status = PersistenceManager_GetStatus();
-        if (((status == PERSISTENCE_STATUS_SUCCESS) ||
-             (status == PERSISTENCE_STATUS_NO_CHANGE)) &&
-            (SystemContext_GetSavedRevision() == s_applied_revision) &&
-            AppliedCandidateIsCurrent())
-            ShowCompletion(status == PERSISTENCE_STATUS_SUCCESS ?
-                           "  donE" : "noCHG ", now_ms);
-        else if (PersistenceManager_IsBusy())
-            ShowMessage(" UnC  ", STATUS_MODE_SAVING, now_ms);
-        else { s_save_uncertain = false; RequestSaveOnly(now_ms); }
-        return;
-    }
+    if (s_save_uncertain || s_apply_uncertain)
+    { ShowMessage(" UnC  ", s_save_uncertain ? STATUS_MODE_SAVING :
+                  STATUS_MODE_APPLYING, now_ms); return; }
     if (s_applied) { RequestSaveOnly(now_ms); return; }
-    if (s_apply_uncertain)
-    {
-        CommunicationApplyResult result = CommunicationManager_GetApplyResult();
-        const SystemContext *context = SystemContext_Get();
-        if ((result == COMM_APPLY_RESULT_SUCCESS) && (context != NULL) &&
-            (SystemContext_GetConfigRevision() ==
-             NextRevision(s_original_revision)) &&
-            (memcmp(&context->config.communication, &s_candidate,
-                    sizeof(s_candidate)) == 0))
-        {
-            s_applied = true;
-            s_apply_uncertain = false;
-            s_applied_candidate = s_candidate;
-            s_applied_revision = SystemContext_GetConfigRevision();
-            RequestSaveOnly(now_ms);
-        }
-        else ShowMessage(result == COMM_APPLY_RESULT_PENDING ? " UnC  " :
-                         " Err  ", result == COMM_APPLY_RESULT_PENDING ?
-                         STATUS_MODE_APPLYING : STATUS_MODE_LIST, now_ms);
-        return;
-    }
     if (!CommunicationManager_IsConfigValid(&s_candidate))
     { ShowMessage("InUALd", STATUS_MODE_LIST, now_ms); return; }
     if (SystemContext_GetConfigRevision() != s_original_revision)
@@ -297,12 +288,15 @@ bool StatusController_Enter(void)
     s_applied = false;
     s_apply_uncertain = false;
     s_save_uncertain = false;
+    s_rollback_pending = false;
     s_wait_entry_key_release = true;
     s_suppress_display = false;
     s_item = STATUS_ITEM_FIRMWARE;
     s_mode = STATUS_MODE_LIST;
     s_previous_page = DisplayController_GetPage();
-    s_original = context->config.communication;
+    s_original_config = context->config;
+    s_candidate_config = s_original_config;
+    s_original = s_original_config.communication;
     s_candidate = s_original;
     s_original_revision = SystemContext_GetConfigRevision();
     s_last_activity_ms = BSP_TimeNowMs();
@@ -350,19 +344,29 @@ void StatusController_Process10ms(void)
         if (result == COMM_APPLY_RESULT_SUCCESS)
         {
             const SystemContext *context = SystemContext_Get();
+            if (s_rollback_pending)
+            {
+                s_rollback_pending = false;
+                s_applied = false;
+                ShowMessage("ErrSAU", STATUS_MODE_LIST, now);
+                return;
+            }
             if ((context == NULL) ||
-                (SystemContext_GetConfigRevision() !=
-                 NextRevision(s_original_revision)) ||
+                (SystemContext_GetConfigRevision() != s_original_revision) ||
                 (memcmp(&context->config.communication, &s_candidate,
                         sizeof(s_candidate)) != 0))
             { ShowMessage(" bUSY ", STATUS_MODE_LIST, now); return; }
             s_applied = true;
             s_applied_candidate = s_candidate;
-            s_applied_revision = SystemContext_GetConfigRevision();
+            s_applied_revision = NextRevision(s_original_revision);
             RequestSaveOnly(now);
         }
         else if (result == COMM_APPLY_RESULT_FAILED)
-            ShowMessage(" Err  ", STATUS_MODE_LIST, now);
+        {
+            s_rollback_pending = false;
+            ShowMessage(s_applied ? "ErrSAU" : " Err  ",
+                        STATUS_MODE_LIST, now);
+        }
         else if ((uint32_t)(now - s_transaction_started_ms) >=
                  STATUS_TRANSACTION_TIMEOUT_MS)
         {
@@ -375,13 +379,26 @@ void StatusController_Process10ms(void)
         PersistenceStatus status = PersistenceManager_GetStatus();
         if (((status == PERSISTENCE_STATUS_SUCCESS) ||
              (status == PERSISTENCE_STATUS_NO_CHANGE)) &&
-            (SystemContext_GetSavedRevision() == s_applied_revision) &&
-            AppliedCandidateIsCurrent())
+            PublishedCandidateIsCurrent())
             ShowCompletion(status == PERSISTENCE_STATUS_SUCCESS ?
                            "  donE" : "noCHG ", now);
-        else if ((status == PERSISTENCE_STATUS_FAILED) ||
-                 (status == PERSISTENCE_STATUS_REBOOT_REQUIRED))
-            ShowMessage("ErrSAU", STATUS_MODE_LIST, now);
+        else if (status == PERSISTENCE_STATUS_REBOOT_REQUIRED)
+        {
+            s_save_uncertain = true;
+            ShowMessage(" UnC  ", STATUS_MODE_SAVING, now);
+        }
+        else if (status == PERSISTENCE_STATUS_FAILED)
+        {
+            s_rollback_pending = true;
+            if (CommunicationManager_RequestLocalApply(&s_original) ==
+                COMMAND_RESULT_ACCEPTED)
+            {
+                Show("rOLbAC");
+                s_mode = STATUS_MODE_APPLYING;
+                s_transaction_started_ms = now;
+            }
+            else ShowMessage("ErrSAU", STATUS_MODE_LIST, now);
+        }
         else if ((uint32_t)(now - s_transaction_started_ms) >=
                  STATUS_TRANSACTION_TIMEOUT_MS)
         {
@@ -405,7 +422,7 @@ bool StatusController_HandleKeyEvent(const KeyEvent *event)
     if ((event->type != KEY_EVENT_SHORT) &&
         (event->type != KEY_EVENT_LONG)) return true;
     s_last_activity_ms = event->timestamp_ms;
-    if ((event->key == KEY_ID_STAR) && (event->type == KEY_EVENT_LONG) &&
+    if ((event->key == KEY_ID_FUNCTION) && (event->type == KEY_EVENT_LONG) &&
         ((s_mode == STATUS_MODE_LIST) || (s_mode == STATUS_MODE_VIEW) ||
          (s_mode == STATUS_MODE_EDIT)))
     { BeginSave(event->timestamp_ms); return true; }
@@ -448,11 +465,6 @@ bool StatusController_HandleKeyEvent(const KeyEvent *event)
     else if ((event->key == KEY_ID_FUNCTION) &&
              (event->type == KEY_EVENT_SHORT))
     {
-        if (IsEditable(s_item) && s_applied)
-        {
-            ShowMessage(" rAn  ", STATUS_MODE_LIST, event->timestamp_ms);
-            return true;
-        }
         if (IsEditable(s_item))
         { s_edit = s_candidate; s_mode = STATUS_MODE_EDIT; }
         else s_mode = STATUS_MODE_VIEW;

@@ -30,6 +30,9 @@ bool PersistenceManager_Init(void);
 ConfigLoadResult PersistenceManager_LoadStartup(DeviceConfig *config,
                                                 RuntimeState *runtime);
 CommandResult PersistenceManager_RequestSave(void);
+CommandResult PersistenceManager_RequestCandidateSave(
+    const DeviceConfig *candidate, const DeviceConfig *original,
+    bool allow_cs1237_change, uint32_t expected_revision);
 CommandResult PersistenceManager_RequestFactoryReset(void);
 void PersistenceManager_Process(void);
 bool PersistenceManager_IsBusy(void);

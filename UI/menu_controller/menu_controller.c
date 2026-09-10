@@ -2,6 +2,7 @@
 
 #include "bsp_time.h"
 #include "command_service.h"
+#include "config_application.h"
 #include "config_edit.h"
 #include "display_controller.h"
 #include "display_codes.h"
@@ -12,15 +13,16 @@
 #include "project_config.h"
 #include "system_context.h"
 #include "unit_converter.h"
-#include "weighing_profile_manager.h"
 
 #include <limits.h>
 #include <stddef.h>
+#include <string.h>
 
 typedef enum
 {
     MENU_EDIT_NONE = 0,
     MENU_EDIT_UNIT,
+    MENU_EDIT_PROFILE,
     MENU_EDIT_INTEGER,
     MENU_EDIT_MASS,
     MENU_EDIT_UNIT_DISPLAY,
@@ -54,7 +56,7 @@ static const char s_labels[MENU_ITEM_COUNT][6] = {
 
 static const MenuItem s_ordinary[] = {
     MENU_ITEM_UNIT, MENU_ITEM_PROFILE, MENU_ITEM_BRIGHTNESS,
-    MENU_ITEM_TARE_RETENTION, MENU_ITEM_SAVE, MENU_ITEM_EXIT};
+    MENU_ITEM_TARE_RETENTION};
 
 static MenuItem s_item;
 static MenuEditKind s_edit_kind;
@@ -84,14 +86,16 @@ static uint32_t s_expected_revision;
 static uint32_t s_save_revision;
 static uint32_t s_save_started_ms;
 static uint32_t s_message_until_ms;
-static bool s_local_pending_save;
 static bool s_entry_ownership_allowed;
-static uint32_t s_local_pending_revision;
 static bool s_save_waiting;
 static bool s_exit_after_save;
-static bool s_profile_apply_pending;
-static WeighingProfileId s_profile_target;
-static uint32_t s_profile_start_revision;
+static DeviceConfig s_original_config;
+static DeviceConfig s_candidate_config;
+static DisplayPage s_previous_page;
+static bool s_candidate_changed;
+static bool s_brightness_previewed;
+static bool s_existing_dirty_owned;
+static uint32_t s_existing_dirty_revision;
 #if defined(STAGE2A_HOST_TEST)
 static uint32_t s_cancel_request_count;
 #endif
@@ -194,102 +198,111 @@ static void ExitMenu(void)
     s_save_waiting = false;
     s_factory_confirmation = false;
     ClearSequence();
+    DisplayController_SetPage(s_previous_page);
     s_exit_request = true;
 }
 
 static void CancelUnconfirmedEdit(void)
 {
-    if (s_editing && (s_edit_kind != MENU_EDIT_UNIT))
-    {
-        (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,
-            0, 0, 0U, 0);
+    if (s_editing && (s_item == MENU_ITEM_BRIGHTNESS))
+        (void)DisplayController_SetBrightness(
+            s_candidate_config.display.brightness);
 #if defined(STAGE2A_HOST_TEST)
+    if (s_editing && (s_edit_kind != MENU_EDIT_UNIT))
         ++s_cancel_request_count;
 #endif
-    }
     s_editing = false;
 }
 
-static void RefreshLocalOwnership(void)
+static void RestoreOriginalBrightness(void)
 {
-    uint32_t current = SystemContext_GetConfigRevision();
-    uint32_t saved = SystemContext_GetSavedRevision();
-    if (current == saved)
-    {
-        s_local_pending_save = false;
-        s_local_pending_revision = 0U;
-    }
-    else if (s_local_pending_save && (current != s_local_pending_revision))
-    {
-        /* ConfigStore saves the whole snapshot. A foreign revision permanently
-           invalidates the older menu ownership; no field merge is attempted. */
-        s_local_pending_save = false;
-        s_local_pending_revision = 0U;
-        s_entry_ownership_allowed = false;
-    }
+    if (s_brightness_previewed)
+        (void)DisplayController_SetBrightness(
+            s_original_config.display.brightness);
 }
 
-static void RecordLocalConfirmation(void)
+static void DiscardCandidate(void)
 {
-    uint32_t current = SystemContext_GetConfigRevision();
-    if (s_entry_ownership_allowed)
-    {
-        s_local_pending_save = true;
-        s_local_pending_revision = current;
-    }
-    s_expected_revision = current;
+    CancelUnconfirmedEdit();
+    RestoreOriginalBrightness();
+    s_brightness_previewed = false;
+    s_candidate_config = s_original_config;
+    s_candidate_changed = false;
 }
 
-static void RequestSave(bool exit_after, bool explicit_save, uint32_t now_ms)
+static uint32_t NextRevision(uint32_t revision)
+{
+    uint32_t next = revision + 1U;
+    return next == 0xFFFFFFFFUL ? 0U : next;
+}
+
+static void RequestSave(uint32_t now_ms)
 {
     CommandResult result;
     CancelUnconfirmedEdit();
-    if (s_profile_apply_pending)
+    if (!s_candidate_changed)
     {
-        ShowCode(DISPLAY_CODE_BUSY);
-        return;
-    }
-    RefreshLocalOwnership();
-    if (SystemContext_GetConfigRevision() == SystemContext_GetSavedRevision())
-    {
-        ShowCode(DISPLAY_CODE_NO_CHANGE);
-        if (exit_after)
+        if (SystemContext_GetConfigRevision() ==
+            SystemContext_GetSavedRevision())
         {
+            ShowCode(DISPLAY_CODE_NO_CHANGE);
             s_exit_after_save = true;
             s_message_until_ms = now_ms + UI_MESSAGE_DEFAULT_MS;
+            return;
         }
-        return;
-    }
-    if (!explicit_save && !s_local_pending_save)
-    {
-        ShowCode(DISPLAY_CODE_BUSY);
-        return;
-    }
-    /* ConfigStore persists the whole snapshot, so any foreign revision makes
-       an automatic menu save unsafe; no field-level merge is attempted. */
-    if ((SystemContext_GetConfigRevision() != s_expected_revision) ||
-        (!explicit_save &&
-         (SystemContext_GetConfigRevision() != s_local_pending_revision)))
-    {
-        if (!explicit_save)
+        if (!s_existing_dirty_owned ||
+            (SystemContext_GetConfigRevision() != s_existing_dirty_revision))
         {
-            s_local_pending_save = false;
-            s_local_pending_revision = 0U;
+            RestoreOriginalBrightness();
+            ShowCode(DISPLAY_CODE_BUSY);
+            return;
         }
+        result = PersistenceManager_RequestSave();
+        if (result != COMMAND_RESULT_ACCEPTED)
+        {
+            RestoreOriginalBrightness();
+            ShowCode(DISPLAY_CODE_SAVE_ERROR);
+            return;
+        }
+        s_save_revision = s_existing_dirty_revision;
+        s_save_started_ms = now_ms;
+        s_save_waiting = true;
+        s_exit_after_save = true;
+        ShowCode(DISPLAY_CODE_SAVE);
+        return;
+    }
+    /* The store writes a complete snapshot. A menu session must neither claim
+       pre-existing dirty state nor overwrite a revision from another owner. */
+    if (!s_entry_ownership_allowed ||
+        (SystemContext_GetConfigRevision() != s_expected_revision) ||
+        ((SystemContext_GetSavedRevision() != s_expected_revision) &&
+         (!s_existing_dirty_owned ||
+          (s_existing_dirty_revision != s_expected_revision))))
+    {
+        RestoreOriginalBrightness();
         ShowCode(DISPLAY_CODE_BUSY);
         return;
     }
-    result = PersistenceManager_RequestSave();
-    if ((result != COMMAND_RESULT_ACCEPTED) &&
-        (result != COMMAND_RESULT_OK))
+    if (ConfigApplication_Validate(&s_candidate_config, true) !=
+        CONFIG_APPLY_OK)
     {
-        ShowCode(DISPLAY_CODE_SAVE_ERROR);
+        RestoreOriginalBrightness();
+        ShowCode(DISPLAY_CODE_INVALID_CONFIG);
         return;
     }
-    s_save_revision = SystemContext_GetConfigRevision();
+    result = PersistenceManager_RequestCandidateSave(&s_candidate_config,
+        &s_original_config, true, s_expected_revision);
+    if (result != COMMAND_RESULT_ACCEPTED)
+    {
+        RestoreOriginalBrightness();
+        ShowCode(result == COMMAND_RESULT_BUSY ? DISPLAY_CODE_BUSY :
+                 DISPLAY_CODE_SAVE_ERROR);
+        return;
+    }
+    s_save_revision = NextRevision(s_expected_revision);
     s_save_started_ms = now_ms;
     s_save_waiting = true;
-    s_exit_after_save = exit_after;
+    s_exit_after_save = true;
     ShowCode(DISPLAY_CODE_SAVE);
 }
 
@@ -302,7 +315,9 @@ static void Navigate(KeyId key)
             (MenuItem)(((uint32_t)s_item + MENU_ITEM_COUNT - 1U) %
                        MENU_ITEM_COUNT);
         while ((s_item == MENU_ITEM_SAMPLE_RATE) ||
-               (s_item == MENU_ITEM_GAIN))
+               (s_item == MENU_ITEM_GAIN) ||
+               (s_item == MENU_ITEM_SAVE) ||
+               (s_item == MENU_ITEM_EXIT))
         {
             s_item = (key == KEY_ID_HASH) ?
                 (MenuItem)(((uint32_t)s_item + 1U) % MENU_ITEM_COUNT) :
@@ -400,7 +415,7 @@ static bool BeginEdit(MenuItem item, uint32_t now_ms)
     if (SystemContext_GetConfigRevision() != s_expected_revision)
         return false;
     s_begin_warning = false;
-    metrology = &context->config.metrology;
+    metrology = &s_candidate_config.metrology;
     s_edit_unit = metrology->active_unit;
     s_edit_profile = metrology->active_profile;
     s_edit_display = metrology->unit_display[s_edit_unit];
@@ -420,6 +435,12 @@ static bool BeginEdit(MenuItem item, uint32_t now_ms)
             }
             s_editing = true;
             return true;
+        case MENU_ITEM_PROFILE:
+            s_edit_kind = MENU_EDIT_PROFILE;
+            s_value = metrology->active_profile;
+            s_editing = true;
+            Render();
+            return true;
         case MENU_ITEM_CAPACITY:
             s_edit_kind = MENU_EDIT_MASS;
             s_mass_field = CONFIG_MASS_FIELD_CAPACITY;
@@ -433,7 +454,7 @@ static bool BeginEdit(MenuItem item, uint32_t now_ms)
         case MENU_ITEM_STARTUP_AUTO_ZERO:
             s_edit_kind = MENU_EDIT_BOOL;
             s_integer_field = CONFIG_FIELD_STARTUP_AUTO_ZERO_ENABLE;
-            s_value = context->config.system.startup_auto_zero_enable ? 1 : 0;
+            s_value = s_candidate_config.system.startup_auto_zero_enable ? 1 : 0;
             break;
         case MENU_ITEM_OVERLOAD:
             if (metrology->compliance_mode ==
@@ -460,53 +481,53 @@ static bool BeginEdit(MenuItem item, uint32_t now_ms)
         case MENU_ITEM_BRIGHTNESS:
             s_edit_kind = MENU_EDIT_INTEGER;
             s_integer_field = CONFIG_FIELD_DISPLAY_BRIGHTNESS;
-            s_value = context->config.display.brightness;
+            s_value = s_candidate_config.display.brightness;
             break;
         case MENU_ITEM_TARE_RETENTION:
             s_edit_kind = MENU_EDIT_BOOL;
             s_integer_field = CONFIG_FIELD_TARE_RETENTION;
-            s_value = context->config.system.tare_power_loss_retention ? 1 : 0;
+            s_value = s_candidate_config.system.tare_power_loss_retention ? 1 : 0;
             break;
 #if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
         case MENU_ITEM_LIMIT_ENABLE:
             s_edit_kind = MENU_EDIT_BOOL;
             s_integer_field = CONFIG_FIELD_LIMIT_ENABLE;
-            s_value = context->config.alarm.limit_function_enable ? 1 : 0;
+            s_value = s_candidate_config.alarm.limit_function_enable ? 1 : 0;
             break;
         case MENU_ITEM_ALARM_LOWER_LIMIT:
             s_edit_kind = MENU_EDIT_MASS;
             s_mass_field = CONFIG_MASS_FIELD_ALARM_LOWER_LIMIT;
-            mass = context->config.alarm.lower_limit_ug;
+            mass = s_candidate_config.alarm.lower_limit_ug;
             break;
         case MENU_ITEM_ALARM_UPPER_LIMIT:
             s_edit_kind = MENU_EDIT_MASS;
             s_mass_field = CONFIG_MASS_FIELD_ALARM_UPPER_LIMIT;
-            mass = context->config.alarm.upper_limit_ug;
+            mass = s_candidate_config.alarm.upper_limit_ug;
             break;
         case MENU_ITEM_ALARM_HYSTERESIS:
             s_edit_kind = MENU_EDIT_MASS;
             s_mass_field = CONFIG_MASS_FIELD_ALARM_HYSTERESIS;
-            mass = context->config.alarm.hysteresis_ug;
+            mass = s_candidate_config.alarm.hysteresis_ug;
             break;
         case MENU_ITEM_ALARM_SOURCE:
             s_edit_kind = MENU_EDIT_ALARM_SOURCE;
             s_integer_field = CONFIG_FIELD_ALARM_WEIGHT_SOURCE;
-            s_value = context->config.alarm.weight_source;
+            s_value = s_candidate_config.alarm.weight_source;
             break;
         case MENU_ITEM_INTERNAL_BUZZER:
             s_edit_kind = MENU_EDIT_BOOL;
             s_integer_field = CONFIG_FIELD_INTERNAL_BUZZER_ENABLE;
-            s_value = context->config.alarm.internal_buzzer_enable ? 1 : 0;
+            s_value = s_candidate_config.alarm.internal_buzzer_enable ? 1 : 0;
             break;
         case MENU_ITEM_EXTERNAL_BUZZER:
             s_edit_kind = MENU_EDIT_BOOL;
             s_integer_field = CONFIG_FIELD_EXTERNAL_BUZZER_ENABLE;
-            s_value = context->config.alarm.external_buzzer_enable ? 1 : 0;
+            s_value = s_candidate_config.alarm.external_buzzer_enable ? 1 : 0;
             break;
         case MENU_ITEM_QUALIFIED_BEEP:
             s_edit_kind = MENU_EDIT_BOOL;
             s_integer_field = CONFIG_FIELD_QUALIFIED_BEEP_ENABLE;
-            s_value = context->config.alarm.qualified_beep_enable ? 1 : 0;
+            s_value = s_candidate_config.alarm.qualified_beep_enable ? 1 : 0;
             break;
 #endif
         default: return false;
@@ -529,8 +550,6 @@ static bool BeginEdit(MenuItem item, uint32_t now_ms)
         }
         s_value = display_value.display_count;
     }
-    if (MenuController_Command(COMMAND_BEGIN_CONFIG_EDIT, 0, 0, 0U, 0) !=
-        COMMAND_RESULT_OK) return false;
     s_editing = true;
     Render();
     if (s_begin_warning) ShowCode(DISPLAY_CODE_UNIT_RANGE);
@@ -541,6 +560,19 @@ static bool SubmitEditValue(void)
 {
     MassValueUg mass;
     uint8_t strength;
+    bool updated = false;
+    if (s_edit_kind == MENU_EDIT_UNIT)
+    {
+        s_candidate_config.metrology.active_unit = s_candidate_unit;
+        return true;
+    }
+    if (s_edit_kind == MENU_EDIT_PROFILE)
+    {
+        s_candidate_config.metrology.active_profile =
+            (WeighingProfileId)s_value;
+        return true;
+    }
+    if (!ConfigEdit_Begin(&s_candidate_config)) return false;
     switch (s_edit_kind)
     {
         case MENU_EDIT_INTEGER:
@@ -548,34 +580,35 @@ static bool SubmitEditValue(void)
 #if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
         case MENU_EDIT_ALARM_SOURCE:
 #endif
-            return MenuController_Command(COMMAND_SET_CONFIG_FIELD,
-                s_integer_field, (int32_t)s_value, 0U, 0) == COMMAND_RESULT_OK;
+            updated = ConfigEdit_SetIntegerField(s_integer_field,
+                                                  (int32_t)s_value);
+            break;
         case MENU_EDIT_MASS:
-            return UnitConverter_CountToMass(s_value, s_edit_unit,
+            updated = UnitConverter_CountToMass(s_value, s_edit_unit,
                 s_edit_display.decimal_places, &mass) &&
-                (MenuController_Command(COMMAND_SET_CONFIG_MASS_FIELD,
-                    s_mass_field, 0, 0U, mass) == COMMAND_RESULT_OK);
+                ConfigEdit_SetMassField(s_mass_field, mass);
+            break;
         case MENU_EDIT_UNIT_DISPLAY:
-            return MenuController_Command(COMMAND_SET_UNIT_DISPLAY_CONFIG,
-                s_edit_unit, s_edit_display.decimal_places,
-                s_edit_display.division_digit, 0) == COMMAND_RESULT_OK;
+            updated = ConfigEdit_SetUnitDisplay(s_edit_unit, &s_edit_display);
+            break;
         case MENU_EDIT_FILTER:
             strength = (s_value == FILTER_MODE_NONE) ? 0U :
                        (s_value == FILTER_MODE_AVERAGE) ? 2U : 1U;
-            return (MenuController_Command(COMMAND_SET_PROFILE_FIELD,
-                    s_edit_profile, CONFIG_PROFILE_FIELD_FILTER_MODE, 0U,
-                    s_value) == COMMAND_RESULT_OK) &&
-                   (MenuController_Command(COMMAND_SET_PROFILE_FIELD,
-                    s_edit_profile, CONFIG_PROFILE_FIELD_FILTER_STRENGTH, 0U,
-                    strength) == COMMAND_RESULT_OK);
+            updated = ConfigEdit_SetProfileField(s_edit_profile,
+                CONFIG_PROFILE_FIELD_FILTER_MODE, s_value) &&
+                ConfigEdit_SetProfileField(s_edit_profile,
+                CONFIG_PROFILE_FIELD_FILTER_STRENGTH, strength);
+            break;
         case MENU_EDIT_STABILITY_HOLD:
-            return MenuController_Command(COMMAND_SET_PROFILE_FIELD,
-                s_edit_profile, CONFIG_PROFILE_FIELD_STABILITY_HOLD_MS, 0U,
-                s_value) == COMMAND_RESULT_OK;
-        case MENU_EDIT_UNIT:
+            updated = ConfigEdit_SetProfileField(s_edit_profile,
+                CONFIG_PROFILE_FIELD_STABILITY_HOLD_MS, s_value);
+            break;
         case MENU_EDIT_NONE:
-        default: return false;
+        default: break;
     }
+    if (updated) updated = ConfigEdit_CopyWorking(&s_candidate_config);
+    ConfigEdit_Cancel();
+    return updated;
 }
 
 static void AdjustEdit(KeyId key)
@@ -606,9 +639,9 @@ static void AdjustEdit(KeyId key)
                 ((uint32_t)s_candidate_unit + offset) % MASS_UNIT_COUNT :
                 ((uint32_t)s_candidate_unit + MASS_UNIT_COUNT - offset) %
                     MASS_UNIT_COUNT;
-            if (((context->config.metrology.enabled_unit_mask &
+            if (((s_candidate_config.metrology.enabled_unit_mask &
                   (uint8_t)(1U << candidate)) != 0U) &&
-                !((context->config.metrology.compliance_mode ==
+                !((s_candidate_config.metrology.compliance_mode ==
                    METROLOGY_COMPLIANCE_CLASS_III_REFERENCE) &&
                   (candidate == MASS_UNIT_LB)))
             {
@@ -646,11 +679,19 @@ static void AdjustEdit(KeyId key)
         s_value = (value + FILTER_MODE_COUNT) % FILTER_MODE_COUNT;
         return;
     }
+    if (s_edit_kind == MENU_EDIT_PROFILE)
+    {
+        s_value = (s_value == WEIGHING_PROFILE_HIGH_PRECISION) ?
+            WEIGHING_PROFILE_HIGH_SPEED : WEIGHING_PROFILE_HIGH_PRECISION;
+        return;
+    }
     if (s_item == MENU_ITEM_BRIGHTNESS)
     {
         s_value = (key == KEY_ID_HASH) ?
             ((s_value >= 7) ? 1 : s_value + 1) :
             ((s_value <= 1) ? 7 : s_value - 1);
+        (void)DisplayController_SetBrightness((uint8_t)s_value);
+        s_brightness_previewed = true;
         return;
     }
     delta = (s_edit_kind == MENU_EDIT_MASS) ?
@@ -684,9 +725,10 @@ void MenuController_Init(void)
     s_active = false; s_editing = false; s_calibration_request = false;
     s_exit_request = false; s_factory_confirmation = false;
     s_item = MENU_ITEM_UNIT; s_advanced = false; ClearSequence();
-    s_local_pending_save = false; s_local_pending_revision = 0U;
     s_entry_ownership_allowed = false; s_save_waiting = false;
-    s_exit_after_save = false; s_profile_apply_pending = false;
+    s_exit_after_save = false;
+    s_candidate_changed = false; s_brightness_previewed = false;
+    s_existing_dirty_owned = false; s_existing_dirty_revision = 0U;
 #if defined(STAGE2A_HOST_TEST)
     s_cancel_request_count = 0U;
 #endif
@@ -694,17 +736,30 @@ void MenuController_Init(void)
 
 bool MenuController_Enter(void)
 {
-    if (s_active) return false;
+    const SystemContext *context = SystemContext_Get();
+    if (s_active || (context == NULL)) return false;
     s_active = true; s_editing = false; s_factory_confirmation = false;
     s_item = MENU_ITEM_UNIT; s_advanced = false; ClearSequence();
     s_expected_revision = SystemContext_GetConfigRevision();
-    RefreshLocalOwnership();
+    if (context->runtime.migration_pending_save)
+    {
+        s_existing_dirty_owned = true;
+        s_existing_dirty_revision = s_expected_revision;
+    }
+    else if (s_existing_dirty_owned &&
+             (s_existing_dirty_revision != s_expected_revision))
+        s_existing_dirty_owned = false;
     s_entry_ownership_allowed =
         (SystemContext_GetConfigRevision() == SystemContext_GetSavedRevision()) ||
-        (s_local_pending_save &&
-         (SystemContext_GetConfigRevision() == s_local_pending_revision));
+        (s_existing_dirty_owned &&
+         (s_existing_dirty_revision == s_expected_revision));
+    s_original_config = context->config;
+    s_candidate_config = s_original_config;
+    s_previous_page = DisplayController_GetPage();
+    s_candidate_changed = false;
+    s_brightness_previewed = false;
     s_save_waiting = false;
-    s_exit_after_save = false; s_profile_apply_pending = false;
+    s_exit_after_save = false;
     s_last_activity_ms = BSP_TimeNowMs(); Render(); return true;
 }
 
@@ -712,32 +767,6 @@ void MenuController_Process10ms(void)
 {
     uint32_t now = BSP_TimeNowMs();
     if (!s_active) return;
-    if (s_profile_apply_pending)
-    {
-        if (!WeighingProfileManager_IsBusy())
-        {
-            const SystemContext *context = SystemContext_Get();
-            s_profile_apply_pending = false;
-            if ((WeighingProfileManager_GetLastResult() == COMMAND_RESULT_OK) &&
-                (context != NULL) &&
-                (SystemContext_GetConfigRevision() !=
-                 s_profile_start_revision) &&
-                (WeighingProfileManager_GetResultRevision() ==
-                 SystemContext_GetConfigRevision()) &&
-                (context->config.metrology.active_profile == s_profile_target))
-            {
-                RecordLocalConfirmation();
-                ShowCode(DISPLAY_CODE_RAM_SAVE);
-            }
-            else
-            {
-                RefreshLocalOwnership();
-                ShowCode(DISPLAY_CODE_ERROR);
-            }
-        }
-        return;
-    }
-    RefreshLocalOwnership();
     if (s_save_waiting)
     {
         PersistenceStatus status = PersistenceManager_GetStatus();
@@ -747,25 +776,31 @@ void MenuController_Process10ms(void)
             (SystemContext_GetConfigRevision() == s_save_revision))
         {
             s_save_waiting = false;
-            s_local_pending_save = false;
-            s_local_pending_revision = 0U;
+            s_candidate_changed = false;
+            s_brightness_previewed = false;
+            s_existing_dirty_owned = false;
             ShowCode(status == PERSISTENCE_STATUS_SUCCESS ?
                 DISPLAY_CODE_DONE : DISPLAY_CODE_NO_CHANGE);
             if (s_exit_after_save)
                 s_message_until_ms = now + UI_MESSAGE_DEFAULT_MS;
         }
-        else if ((status == PERSISTENCE_STATUS_FAILED) ||
-                 (status == PERSISTENCE_STATUS_REBOOT_REQUIRED))
+        else if (status == PERSISTENCE_STATUS_REBOOT_REQUIRED)
+        {
+            s_exit_after_save = false;
+            ShowCode(DISPLAY_CODE_SAVE_ERROR);
+        }
+        else if (status == PERSISTENCE_STATUS_FAILED)
         {
             s_save_waiting = false; s_exit_after_save = false;
+            RestoreOriginalBrightness();
             ShowCode(DISPLAY_CODE_SAVE_ERROR);
         }
         else if ((uint32_t)(now - s_save_started_ms) >=
                  STATUS_TRANSACTION_TIMEOUT_MS)
         {
-            /* The result is uncertain. Keep valid local ownership, but require
-               another explicit user action before issuing any further SAVE. */
-            s_save_waiting = false; s_exit_after_save = false;
+            /* Result is uncertain: retain ownership and block every key. The
+               same operation may still finish, but it must never be retried. */
+            s_exit_after_save = false;
             ShowCode(DISPLAY_CODE_SAVE_ERROR);
         }
         return;
@@ -789,7 +824,7 @@ void MenuController_Process10ms(void)
     {
         if (s_factory_confirmation) (void)MenuController_Command(
             COMMAND_FACTORY_RESET_CANCEL, 0, 0, 0U, 0);
-        CancelUnconfirmedEdit();
+        DiscardCandidate();
         s_factory_confirmation = false;
         ExitMenu();
     }
@@ -802,7 +837,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         ((event->type != KEY_EVENT_SHORT) &&
          (event->type != KEY_EVENT_REPEAT) &&
          (event->type != KEY_EVENT_LONG))) return false;
-    if (s_save_waiting || s_exit_after_save || s_profile_apply_pending)
+    if (s_save_waiting || s_exit_after_save)
         return true;
     s_last_activity_ms = event->timestamp_ms;
     if (HandleAdvancedSequence(event)) return true;
@@ -826,7 +861,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
     }
     if ((event->key == KEY_ID_FUNCTION) && (event->type == KEY_EVENT_LONG))
     {
-        RequestSave(true, false, event->timestamp_ms);
+        RequestSave(event->timestamp_ms);
         return true;
     }
     if (s_editing)
@@ -857,35 +892,14 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                 ShowCode(DISPLAY_CODE_BUSY);
                 return true;
             }
-            if (s_edit_kind == MENU_EDIT_UNIT)
+            if (SubmitEditValue())
             {
-                if (s_candidate_unit == s_original_unit)
-                {
-                    s_editing = false;
-                    Render();
-                    return true;
-                }
-                if (MenuController_Command(COMMAND_SET_DISPLAY_UNIT,
-                        s_candidate_unit, 0, 0U, 0) == COMMAND_RESULT_OK)
-                {
-                    s_editing = false;
-                    Render();
-                    ShowCode(DISPLAY_CODE_RAM_SAVE);
-                    RecordLocalConfirmation();
-                }
-                else ShowCode(DISPLAY_CODE_UNIT_ERROR);
+                s_editing = false;
+                s_candidate_changed = memcmp(&s_candidate_config,
+                    &s_original_config, sizeof(s_candidate_config)) != 0;
+                Render();
                 return true;
             }
-            if (SubmitEditValue() &&
-                (MenuController_Command(COMMAND_COMMIT_CONFIG_EDIT,
-                    0, 0, 0U, 0) == COMMAND_RESULT_OK))
-            {
-                s_editing = false; Render(); ShowCode(DISPLAY_CODE_RAM_SAVE);
-                RecordLocalConfirmation();
-                return true;
-            }
-            (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,
-                                         0, 0, 0U, 0);
             s_editing = false;
             Render();
             ShowCode(DISPLAY_CODE_INVALID_CONFIG);
@@ -907,52 +921,23 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
     else if ((event->key == KEY_ID_TARE) &&
              (event->type == KEY_EVENT_SHORT))
     {
+        DiscardCandidate();
         ExitMenu();
     }
     else if ((event->key == KEY_ID_FUNCTION) &&
              (event->type == KEY_EVENT_SHORT))
     {
         context = SystemContext_Get();
-        if ((s_item == MENU_ITEM_UNIT) && (context != NULL))
+        if (((s_item == MENU_ITEM_UNIT) ||
+             (s_item == MENU_ITEM_PROFILE)) && (context != NULL))
         {
             if (!BeginEdit(s_item, event->timestamp_ms))
                 ShowCode(s_begin_error);
             return true;
         }
-        else if ((s_item == MENU_ITEM_PROFILE) && (context != NULL))
-        {
-            CommandResult result = MenuController_Command(
-                COMMAND_SWITCH_WEIGHING_PROFILE,
-                (context->config.metrology.active_profile ==
-                 WEIGHING_PROFILE_HIGH_PRECISION) ?
-                 WEIGHING_PROFILE_HIGH_SPEED : WEIGHING_PROFILE_HIGH_PRECISION,
-                0, 0U, 0);
-            ShowCode((result == COMMAND_RESULT_ACCEPTED) ?
-                DISPLAY_CODE_APPLYING : DISPLAY_CODE_BUSY);
-            if (result == COMMAND_RESULT_ACCEPTED)
-            {
-                s_profile_target =
-                    (context->config.metrology.active_profile ==
-                     WEIGHING_PROFILE_HIGH_PRECISION) ?
-                    WEIGHING_PROFILE_HIGH_SPEED :
-                    WEIGHING_PROFILE_HIGH_PRECISION;
-                s_profile_start_revision = SystemContext_GetConfigRevision();
-                s_profile_apply_pending = true;
-            }
-            return true;
-        }
         else if (s_item == MENU_ITEM_CALIBRATION)
         {
             s_calibration_request = true;
-        }
-        else if (s_item == MENU_ITEM_EXIT)
-        {
-            s_active = false; s_exit_request = true;
-        }
-        else if (s_item == MENU_ITEM_SAVE)
-        {
-            RequestSave(false, true, event->timestamp_ms);
-            return true;
         }
         else if (s_item == MENU_ITEM_FACTORY_RESET)
         {
@@ -983,9 +968,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
 
 void MenuController_Cancel(void)
 {
-    if (s_editing && (s_edit_kind != MENU_EDIT_UNIT))
-        (void)MenuController_Command(COMMAND_CANCEL_CONFIG_EDIT,
-            0, 0, 0U, 0);
+    DiscardCandidate();
     if (s_factory_confirmation) (void)MenuController_Command(
         COMMAND_FACTORY_RESET_CANCEL, 0, 0, 0U, 0);
     s_active = false; s_editing = false; s_factory_confirmation = false;
@@ -999,11 +982,27 @@ bool MenuController_TakeExitRequest(void)
 { bool value = s_exit_request; s_exit_request = false; return value; }
 MenuItem MenuController_GetItem(void) { return s_item; }
 bool MenuController_IsAdvanced(void) { return s_advanced; }
+void MenuController_AllowCurrentDirtySave(void)
+{
+    const SystemContext *context = SystemContext_Get();
+    if ((context != NULL) && context->runtime.config_dirty)
+    {
+        s_existing_dirty_owned = true;
+        s_existing_dirty_revision = SystemContext_GetConfigRevision();
+    }
+}
 #if defined(STAGE2A_HOST_TEST)
 uint32_t MenuController_GetCancelRequestCount(void)
 { return s_cancel_request_count; }
 bool MenuController_HasLocalPendingSave(void)
-{ RefreshLocalOwnership(); return s_local_pending_save; }
+{ return s_active && s_candidate_changed; }
 uint32_t MenuController_GetLocalPendingRevision(void)
-{ return s_local_pending_revision; }
+{ return (s_active && s_candidate_changed) ? s_expected_revision : 0U; }
+bool MenuController_GetCandidate(DeviceConfig *config)
+{
+    if (!s_active || (config == NULL)) return false;
+    *config = s_candidate_config;
+    return true;
+}
+
 #endif

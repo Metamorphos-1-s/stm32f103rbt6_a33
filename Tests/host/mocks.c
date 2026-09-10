@@ -29,6 +29,12 @@ static CommunicationApplyResult s_local_apply_result;
 static bool s_persistence_busy;
 static bool s_local_candidate_pending;
 static CommunicationConfig s_local_candidate;
+static bool s_candidate_save_pending;
+static DeviceConfig s_candidate_original;
+static RuntimeState s_candidate_original_runtime;
+static uint32_t s_candidate_original_revision;
+static uint32_t s_candidate_original_saved_revision;
+static uint32_t s_candidate_target_revision;
 
 CommunicationManagerState CommunicationManager_GetState(void)
 {
@@ -61,7 +67,8 @@ CommandResult CommunicationManager_RequestLocalApply(
     {
         updated = context->config;
         updated.communication = *candidate;
-        (void)SystemContext_ApplyConfig(&updated, true);
+        (void)SystemContext_ReplaceConfig(&updated,
+            context->runtime.config_dirty);
         s_local_candidate_pending = false;
     }
     return s_local_apply_request_result;
@@ -106,6 +113,38 @@ CommandResult PersistenceManager_RequestFactoryReset(void)
     return COMMAND_RESULT_STORAGE_UNAVAILABLE;
 }
 
+CommandResult PersistenceManager_RequestCandidateSave(
+    const DeviceConfig *candidate, const DeviceConfig *original,
+    bool allow_cs1237_change, uint32_t expected_revision)
+{
+    const SystemContext *context = SystemContext_Get();
+    (void)allow_cs1237_change;
+    ++s_save_request_count;
+    s_last_save_requested_revision = expected_revision;
+    if ((candidate == NULL) || (original == NULL) || (context == NULL) ||
+        (SystemContext_GetConfigRevision() != expected_revision))
+        return COMMAND_RESULT_INVALID_ARGUMENT;
+    if ((s_save_request_result != COMMAND_RESULT_ACCEPTED) &&
+        (s_save_request_result != COMMAND_RESULT_OK))
+        return s_save_request_result;
+    s_candidate_original = *original;
+    s_candidate_original_runtime = context->runtime;
+    s_candidate_original_revision = expected_revision;
+    s_candidate_original_saved_revision = SystemContext_GetSavedRevision();
+    s_candidate_target_revision = expected_revision + 1U;
+    if (s_candidate_target_revision == 0xFFFFFFFFUL)
+        s_candidate_target_revision = 0U;
+    (void)SystemContext_ReplaceConfig(candidate, true);
+    s_candidate_save_pending = true;
+    if ((s_persistence_status == PERSISTENCE_STATUS_SUCCESS) ||
+        (s_persistence_status == PERSISTENCE_STATUS_NO_CHANGE))
+    {
+        (void)SystemContext_FinalizeSavedRevision(s_candidate_target_revision);
+        s_candidate_save_pending = false;
+    }
+    return s_save_request_result;
+}
+
 PersistenceStatus PersistenceManager_GetStatus(void)
 {
     return s_persistence_status;
@@ -130,6 +169,7 @@ void TestMock_Reset(void)
     s_local_apply_result = COMM_APPLY_RESULT_SUCCESS;
     s_persistence_busy = false;
     s_local_candidate_pending = false;
+    s_candidate_save_pending = false;
 }
 
 void TestMock_SetPersistenceResult(CommandResult request,
@@ -149,7 +189,8 @@ void TestMock_SetCommunicationApplyResult(CommandResult request,
     {
         DeviceConfig updated = SystemContext_Get()->config;
         updated.communication = s_local_candidate;
-        (void)SystemContext_ApplyConfig(&updated, true);
+        (void)SystemContext_ReplaceConfig(&updated,
+            SystemContext_Get()->runtime.config_dirty);
         s_local_candidate_pending = false;
     }
 }
@@ -165,8 +206,22 @@ void TestMock_CompletePersistence(PersistenceStatus status,
     s_persistence_status = status;
     s_persistence_busy = false;
     if (mark_current_saved)
-        (void)SystemContext_MarkRevisionSaved(
-            SystemContext_GetConfigRevision());
+    {
+        if (s_candidate_save_pending)
+            (void)SystemContext_FinalizeSavedRevision(
+                s_candidate_target_revision);
+        else
+            (void)SystemContext_MarkRevisionSaved(
+                SystemContext_GetConfigRevision());
+    }
+    else if (s_candidate_save_pending &&
+             ((status == PERSISTENCE_STATUS_FAILED) ||
+              (status == PERSISTENCE_STATUS_REBOOT_REQUIRED)))
+        (void)SystemContext_RestoreSnapshot(&s_candidate_original,
+            &s_candidate_original_runtime, s_candidate_original_revision,
+            s_candidate_original_saved_revision);
+    if (status != PERSISTENCE_STATUS_SAVING)
+        s_candidate_save_pending = false;
 }
 
 void TestMock_SetPersistenceBusy(bool busy) { s_persistence_busy = busy; }

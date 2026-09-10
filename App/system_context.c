@@ -181,6 +181,39 @@ bool SystemContext_ApplyConfig(const DeviceConfig *config, bool dirty)
   return true;
 }
 
+bool SystemContext_ReplaceConfig(const DeviceConfig *config, bool dirty)
+{
+  if (!s_system_context.initialized || (config == NULL)) return false;
+  s_system_context.config = *config;
+  s_system_context.runtime.config_dirty = dirty;
+  return true;
+}
+
+bool SystemContext_FinalizeSavedRevision(uint32_t revision)
+{
+  if (!s_system_context.initialized || (revision == 0xFFFFFFFFUL)) return false;
+  s_system_context.config_revision = revision;
+  s_system_context.saved_revision = revision;
+  s_system_context.runtime.config_dirty = false;
+  s_system_context.runtime.migration_pending_save = false;
+  s_system_context.storage_has_record = true;
+  return true;
+}
+
+bool SystemContext_RestoreSnapshot(const DeviceConfig *config,
+    const RuntimeState *runtime, uint32_t current_revision,
+    uint32_t saved_revision)
+{
+  if (!s_system_context.initialized || (config == NULL) || (runtime == NULL) ||
+      (current_revision == 0xFFFFFFFFUL) ||
+      (saved_revision == 0xFFFFFFFFUL)) return false;
+  s_system_context.config = *config;
+  s_system_context.runtime = *runtime;
+  s_system_context.config_revision = current_revision;
+  s_system_context.saved_revision = saved_revision;
+  return true;
+}
+
 uint32_t SystemContext_GetConfigRevision(void)
 {
   return s_system_context.config_revision;
@@ -219,6 +252,8 @@ bool SystemContext_MarkRevisionSaved(uint32_t revision)
   s_system_context.storage_has_record = true;
   s_system_context.runtime.config_dirty =
       s_system_context.config_revision != s_system_context.saved_revision;
+  if (!s_system_context.runtime.config_dirty)
+    s_system_context.runtime.migration_pending_save = false;
   return true;
 }
 

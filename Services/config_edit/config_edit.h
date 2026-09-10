@@ -78,5 +78,6 @@ bool ConfigEdit_CommitToRam(DeviceConfig *target);
 void ConfigEdit_Cancel(void);
 ConfigEditState ConfigEdit_GetState(void);
 const DeviceConfig *ConfigEdit_GetWorkingCopy(void);
+bool ConfigEdit_CopyWorking(DeviceConfig *target);
 
 #endif /* CONFIG_EDIT_H */

@@ -136,4 +136,9 @@ bool SystemContext_ApplyConfig(const DeviceConfig *config, bool dirty)
     (void)dirty;
     return (config != NULL) && s_apply_config_result;
 }
+bool SystemContext_ReplaceConfig(const DeviceConfig *config, bool dirty)
+{
+    (void)dirty;
+    return (config != NULL) && s_apply_config_result;
+}
 void FaultManager_Set(FaultCode fault) { (void)fault; }

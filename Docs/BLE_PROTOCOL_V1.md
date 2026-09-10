@@ -136,7 +136,7 @@ unsupported.
 | 6 | 2 | u16 | register_map_version (`0x0104`) |
 | 8 | 4 | u32 | capability bits |
 
-The firmware bytes combine as `(high << 8) | low`, currently `0x050E`.
+The firmware bytes combine as `(high << 8) | low`, currently `0x050F`.
 
 Result values are `OK=0`, `INVALID_COMMAND=1`, `INVALID_ARGUMENT=2`,
 `INVALID_STATE=3`, `NOT_STABLE=4`, `OUT_OF_RANGE=5`, `TARE_ACTIVE=6`,

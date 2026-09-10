@@ -48,7 +48,8 @@ ConfigApplyResult ConfigApplication_Validate(const DeviceConfig *candidate,
 }
 
 static ConfigApplyResult ConfigApplication_ApplyInternal(
-    const DeviceConfig *candidate, bool allow_cs1237_change)
+    const DeviceConfig *candidate, bool allow_cs1237_change,
+    bool advance_revision, bool dirty)
 {
     const SystemContext *context = SystemContext_Get();
     DeviceConfig normalized;
@@ -75,7 +76,8 @@ static ConfigApplyResult ConfigApplication_ApplyInternal(
         (void)DisplayController_SetBrightness(context->config.display.brightness);
         return CONFIG_APPLY_METROLOGY_ERROR;
     }
-    if (!SystemContext_ApplyConfig(&normalized, true))
+    if (!(advance_revision ? SystemContext_ApplyConfig(&normalized, dirty) :
+          SystemContext_ReplaceConfig(&normalized, dirty)))
     {
         bool rollback_ok = MetrologyManager_Reconfigure(&context->config);
         rollback_ok = DisplayController_SetBrightness(
@@ -91,11 +93,18 @@ static ConfigApplyResult ConfigApplication_ApplyInternal(
 
 ConfigApplyResult ConfigApplication_Apply(const DeviceConfig *candidate)
 {
-    return ConfigApplication_ApplyInternal(candidate, false);
+    return ConfigApplication_ApplyInternal(candidate, false, true, true);
 }
 
 ConfigApplyResult ConfigApplication_ApplyFactoryDefaults(
     const DeviceConfig *candidate)
 {
-    return ConfigApplication_ApplyInternal(candidate, true);
+    return ConfigApplication_ApplyInternal(candidate, true, true, true);
+}
+
+ConfigApplyResult ConfigApplication_ApplyTransient(
+    const DeviceConfig *candidate, bool allow_cs1237_change, bool dirty)
+{
+    return ConfigApplication_ApplyInternal(candidate, allow_cs1237_change,
+                                           false, dirty);
 }

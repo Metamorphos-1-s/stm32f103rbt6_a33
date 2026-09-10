@@ -357,7 +357,6 @@ static void App_10msTask(void *context)
   }
   if (MenuController_TakeExitRequest())
   {
-    DisplayController_SetPage(DISPLAY_PAGE_NET);
     (void)SystemContext_SetState(APP_STATE_RUN, BSP_TimeNowMs());
   }
 }
@@ -626,6 +625,7 @@ static void App_RunStateMachine(void)
              UI_MESSAGE_DEFAULT_MS))
         {
           next_state = APP_STATE_MENU;
+          MenuController_AllowCurrentDirtySave();
           (void)MenuController_Enter();
         }
         break;

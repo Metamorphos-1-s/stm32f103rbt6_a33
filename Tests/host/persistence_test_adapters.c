@@ -80,6 +80,15 @@ ConfigApplyResult ConfigApplication_ApplyFactoryDefaults(const DeviceConfig *can
     return s_apply_result;
 }
 
+ConfigApplyResult ConfigApplication_ApplyTransient(
+    const DeviceConfig *candidate, bool allow_cs1237_change, bool dirty)
+{
+    (void)allow_cs1237_change;
+    if ((s_apply_result == CONFIG_APPLY_OK) && (candidate != NULL))
+        (void)SystemContext_ReplaceConfig(candidate, dirty);
+    return s_apply_result;
+}
+
 bool EventQueue_Push(const AppEvent *event) { return event != NULL; }
 bool DisplayCodes_Get(DisplayCode code, char text[6])
 {

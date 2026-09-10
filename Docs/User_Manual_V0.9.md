@@ -8,7 +8,7 @@
 | 适用固件 | `stage5f-ui-tested` |
 | Firmware baseline | `0e10a53` |
 | Git tag | `stage5f-ui-tested` |
-| Modbus Register Map | `0x0103` |
+| Modbus Register Map | `0x0104` |
 | BLE Protocol | V1 |
 | Config Schema | V2 / 344 B |
 | 产品型号 | TBD |
@@ -372,7 +372,7 @@ TARE 将当前毛重保存为皮重，并显示净重。
 - HASH 短按：NET/GROSS 快速切换。
 - FUNCTION 短按：在 NET、GROSS、TARE、BATTERY 页面间循环。
 - 单位切换：进入普通菜单 `UnIt`，FUNCTION 进入，STAR/HASH 选择 kg、g 或 lb，FUNCTION 确认。
-- 单位确认后显示 `rAnonL`，表示已在 RAM 中应用；需要掉电保持时执行 `SAUE`。
+- FUNCTION 短按只确认到当前菜单候选；长按 FUNCTION 成功保存后才正式生效。
 
 单位变化会重新按该单位的 `dP` 和 `dIU` 格式显示。同一物理重量切换单位时数值不同是正常现象。
 
@@ -390,9 +390,9 @@ TARE 将当前毛重保存为皮重，并显示净重。
     ↓ STAR 减小 / HASH 增大
     ↓ FUNCTION 确认，或 TARE 取消
     ↓
-显示 rAnonL：已在 RAM 应用
+返回项目标签，可继续编辑其他项目
     ↓
-需要掉电保持时执行 SAUE
+长按 FUNCTION：统一应用、保存并退出
 ```
 
 ## 7.2 六位数值选位
@@ -424,10 +424,10 @@ Stage 5F 支持全部六位选择。进入数值编辑后，ZERO 每短按一次
 
 ## 7.4 确认、取消与无效参数
 
-- FUNCTION 短按：验证完整配置并提交到 RAM。
+- FUNCTION 短按：确认当前值到本次菜单 candidate，不修改正式 RAM、dirty 或 revision。
 - TARE 短按：编辑时取消当前未确认值并返回菜单列表；列表中按TARE才退出菜单。
   两种情况都不请求Flash保存。
-- FUNCTION 长按：取消当前未确认值，异步保存此前已确认并应用到 RAM 的修改，
+- FUNCTION 长按：取消当前未确认值，统一验证、应用并异步保存此前已确认的 candidate，
   成功显示 `donE` 后退出；无改动显示 `noCHG` 后退出。
 - 显示 `InUALd`：当前值或参数组合不合法，仪表未采用该编辑结果；这不等于仪表损坏。
 - 显示 `UnItHI`：按当前单位/小数位无法表示该质量或量程，应调整 CAP、单位或 dP。
@@ -435,15 +435,10 @@ Stage 5F 支持全部六位选择。进入数值编辑后，ZERO 每短按一次
 
 ## 7.5 Apply 与 SAVE
 
-FUNCTION 确认成功后显示 `rAnonL`，表示参数已经在当前运行中生效。它不表示已经写入非易失存储。
-
-> **重要：需要断电保持的参数可在 `SAUE` 按 FUNCTION，或长按 FUNCTION 保存退出。只有看到 `donE` 或 `noCHG`，才可认为保存流程正常结束。**
-
-`SAUE` 与长按FUNCTION复用异步完成判断，但授权范围不同：`SAUE`可保存进入
-菜单前已有的dirty完整快照；长FUNCTION只保存仍具有本地归属的菜单确认修改。
-该归属及其精确revision在TARE/超时退出和再次进入后仍保留，但任何外部revision
-变化都会永久使旧归属失效并显示`bUSY`。Flash失败显示`ErrSAU`并留在菜单，
-不自动重试。菜单保存的是整体配置快照，不做字段级合并。
+FUNCTION 短按不会显示 `rAnonL`，也不会使正式配置生效。只有长按 FUNCTION
+并看到 `donE` 后，candidate 才同时成为 Active RAM 与 Flash 配置；`noCHG`
+表示没有 candidate 变化。`SAUE` 和 `EHIt` 不再出现在导航中。TARE 或超时
+会丢弃本次 session。任何外部 revision 变化都会显示 `bUSY`；失败不自动重试。
 
 ---
 
@@ -459,7 +454,7 @@ FUNCTION 确认成功后显示 `rAnonL`，表示参数已经在当前运行中�
 普通菜单顺序：
 
 ```text
-UnIt → PrOF → briGHt → trrEt → SAUE → EHIt → UnIt
+UnIt → PrOF → briGHt → trrEt → UnIt
 ```
 
 ## 8.2 普通菜单项目
@@ -470,8 +465,6 @@ UnIt → PrOF → briGHt → trrEt → SAUE → EHIt → UnIt
 | `PrOF` | 称重配置档 | 两个预置档切换 | 在高精度/高速预置档间切换；显示 `APPLY` 后完成运行切换 | 需要 |
 | `briGHt` | 显示亮度 | 1～7循环 | 7 后回到 1；从 1 向下回到 7 | 需要 |
 | `trrEt` | 皮重掉电保持 | 0 / 1 | 0 不恢复皮重；1 允许从已保存记录恢复皮重 | 需要 |
-| `SAUE` | 保存 | 执行 | 将当前需要持久化的配置写入 Flash | 不适用 |
-| `EHIt` | 退出 | 执行 | 返回称重界面 | 不适用 |
 
 当前正式固件的高精度档为 10 Hz / 增益 128，高速档为 40 Hz / 增益 128。
 640 Hz 和 1280 Hz 属于工程驱动能力，不是已验证的用户模式，正式固件不允许配置。
@@ -497,7 +490,7 @@ UnIt → PrOF → briGHt → trrEt → SAUE → EHIt → UnIt
 UnIt → PrOF → CAL → CAP → dIU → dP → FILt → StAb → ZrnG → OL
   → briGHt → trrEt
   → L-En → Lo → Hi → HyS → Src → bIn → bEH → bOK
-  → SAUE → rESEt → EHIt → UnIt
+  → rESEt → UnIt
 ```
 
 **[图片占位：图 9-1 高级菜单树，后续绘制正式流程图]**
@@ -627,7 +620,7 @@ OL 是软件过载判定阈值。达到过载时，重量显示 `OL`，红灯点
 
 1. 在 `donE` 结果页短按 FUNCTION。
 2. 显示 `rAnonL`，表示新标定已应用到 RAM。
-3. 返回菜单后进入 `SAUE` 并短按 FUNCTION。
+3. 返回菜单后长按 FUNCTION，等待 `donE`。
 4. 等待显示 `donE` 或 `noCHG`。
 5. 重新上电后用空载和已知砝码复查保存结果。
 
@@ -747,22 +740,21 @@ HyS 是检重状态回差，不是传感器的计量迟滞。计量迟滞将在 
 
 | 操作 | 当前运行 | 掉电后 |
 |---|---|---|
-| FUNCTION 确认菜单参数 | 立即生效 | 未 SAVE 时可能恢复旧值 |
+| FUNCTION 短按确认菜单参数 | 仅更新 session candidate | 无变化 |
+| FUNCTION 长按并显示 `donE` | candidate 成为 Active | 从新记录恢复 |
 | 标定结果 FUNCTION 应用 | 立即生效 | 未 SAVE 时恢复旧标定 |
-| `SAUE` 成功 | 保持当前值 | 从新记录恢复 |
 | ZERO / RESET ZERO | 立即生效 | 不保持 |
 | TARE / CLEAR TARE，`trrEt=0` | 立即生效 | 不恢复皮重 |
 | TARE / CLEAR TARE，`trrEt=1` 且随后 SAVE | 立即生效 | 恢复已保存皮重状态 |
 
 ## 12.2 执行 SAVE
 
-1. 完成所有参数确认或标定应用。
-2. 进入 `SAUE`。
-3. 短按 FUNCTION。
-4. 保存过程中显示 `SAUE`，不要断电。
-5. 显示 `donE`：新记录保存成功。
-6. 显示 `noCHG`：当前配置与已保存记录无变化。
-7. 显示 `ErrSAU`：保存失败或供电条件不允许，应检查供电后重试。
+1. 在同一菜单 session 内完成所有参数的短按 FUNCTION 确认。
+2. 长按 FUNCTION。
+3. 保存过程中显示 `SAUE`，不要断电。
+4. 显示 `donE`：新记录保存成功并退出。
+5. 显示 `noCHG`：没有 candidate 变化并退出。
+6. 显示 `ErrSAU`：保存失败或供电条件不允许；不会自动重试。
 
 固件使用两个 Flash 配置槽和 CRC/序列记录进行恢复。用户无需选择槽位，也不应直接操作 Flash 地址。
 
@@ -781,7 +773,7 @@ HyS 是检重状态回差，不是传感器的计量迟滞。计量迟滞将在 
 
 ## 13.1 协议与默认值
 
-当前通讯使用 Modbus RTU，Register Map 版本为 `0x0103`。
+当前通讯使用 Modbus RTU，Register Map 版本为 `0x0104`。
 
 | 项目 | 新设备/默认配置 | 说明 |
 |---|---|---|
@@ -814,8 +806,8 @@ HyS 是检重状态回差，不是传感器的计量迟滞。计量迟滞将在 
 | `0002` | 小数位 | 与显示值配合解释 |
 | `0003` | 单位 | 0=kg，1=g，2=lb |
 | `0004-0005` | 状态 | 稳定、过载等 |
-| `000E` | Register Map | 应读到 `0x0103` |
-| `000F` | Firmware | 当前为 `0x050E` |
+| `000E` | Register Map | 应读到 `0x0104` |
+| `000F` | Firmware | 当前为 `0x050F` |
 | `0010-001B` | NET/GROSS/TARE | 有符号 64 位，单位 µg |
 | `0220-023B` | 检重配置和实时状态 | 包含灯、蜂鸣器相位、dirty |
 
@@ -837,7 +829,7 @@ APPLY_RAM 不等于 SAVE。异步命令返回 ACCEPTED 只表示已受理，不�
 
 ## 13.5 通讯测试建议
 
-1. 先用 FC03 读取 `000E`，确认返回 `0x0103`。
+1. 先用 FC03 读取 `000E`，确认返回 `0x0104`。
 2. 读取 `000F`，确认固件值与现场记录一致。
 3. 读取实时重量块，确认 CRC、地址和字序。
 4. 再进行配置写入；写入前保存当前值用于回退。
@@ -1084,7 +1076,7 @@ Stage 5F 已支持六位选位和闪烁。ZERO 依次选择右 1 到右 6；前�
 
 ```text
 长按 FUNCTION
-  UnIt → PrOF → briGHt → trrEt → SAUE → EHIt
+  UnIt → PrOF → briGHt → trrEt
 ```
 
 ## A.2 高级菜单
@@ -1094,7 +1086,7 @@ Stage 5F 已支持六位选位和闪烁。ZERO 依次选择右 1 到右 6；前�
 
 CAP → dIU → dP → FILt → StAb → ZrnG → OL → briGHt → trrEt
  → L-En → Lo → Hi → HyS → Src → bIn → bEH → bOK
- → SAUE → rESEt → EHIt → UnIt → PrOF → CAL → CAP
+ → rESEt → UnIt → PrOF → CAL → CAP
 ```
 
 ## A.3 编辑快捷表
@@ -1107,7 +1099,6 @@ CAP → dIU → dP → FILt → StAb → ZrnG → OL → briGHt → trrEt
 | 取消当前编辑且不保存退出 | TARE 短按 |
 | 选择下一数字位 | ZERO 短按 |
 | 取消未确认值、保存已确认值并退出 | FUNCTION 长按 |
-| 保存 | `SAUE` 页 FUNCTION |
 
 ---
 
@@ -1118,7 +1109,7 @@ CAP → dIU → dP → FILt → StAb → ZrnG → OL → briGHt → trrEt
 | 项目 | 值 |
 |---|---|
 | 协议 | Modbus RTU |
-| Register Map | `0x0103` |
+| Register Map | `0x0104` |
 | 默认链路 | 地址 1，115200，8N1 |
 | 支持功能 | FC03、FC06、FC16 |
 | CRC | CRC-16/MODBUS，初值 FFFF，多项式 A001，低字节先发送 |
@@ -1195,8 +1186,8 @@ CAP → dIU → dP → FILt → StAb → ZrnG → OL → briGHt → trrEt
 | Firmware tag | `stage5f-ui-tested` |
 | Firmware baseline | `0e10a53dd1b89eafc34b8dc3a95964394bc1c01b` |
 | Tag object | `f409849e4a42a121eaefc0e89e5d96df30dcb809` |
-| Firmware reported value | `0x050E` |
-| Modbus map | `0x0103` |
+| Firmware reported value | `0x050F` |
+| Modbus map | `0x0104` |
 | BLE protocol | V1 |
 | Config schema | V2 / 344 B |
 

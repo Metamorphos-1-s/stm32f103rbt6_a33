@@ -27,6 +27,13 @@ static RuntimeState s_factory_runtime;
 #endif
 static uint32_t s_requested_revision;
 static FactoryResetResult s_factory_result;
+static bool s_candidate_save;
+static DeviceConfig s_candidate_original;
+static DeviceConfig s_candidate_target;
+static RuntimeState s_candidate_original_runtime;
+static uint32_t s_candidate_original_revision;
+static uint32_t s_candidate_original_saved_revision;
+static bool s_candidate_allow_cs1237_change;
 
 static void Publish(EventType type, uint32_t arg0, uint32_t arg1)
 {
@@ -50,6 +57,7 @@ bool PersistenceManager_Init(void)
     s_operation = CONFIG_OPERATION_NONE;
     s_requested_revision = 0U;
     s_factory_result = FACTORY_RESET_RESULT_NONE;
+    s_candidate_save = false;
     (void)memset(&s_load_info, 0, sizeof(s_load_info));
     return true;
 }
@@ -151,6 +159,56 @@ CommandResult PersistenceManager_RequestSave(void)
     return Start(CONFIG_OPERATION_SAVE);
 }
 
+CommandResult PersistenceManager_RequestCandidateSave(
+    const DeviceConfig *candidate, const DeviceConfig *original,
+    bool allow_cs1237_change, uint32_t expected_revision)
+{
+#if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS != 0U)
+    (void)candidate; (void)original; (void)allow_cs1237_change;
+    (void)expected_revision;
+    return COMMAND_RESULT_INVALID_STATE;
+#else
+    const SystemContext *context = SystemContext_Get();
+    uint32_t next;
+    if ((candidate == NULL) || (original == NULL) || (context == NULL) ||
+        PersistenceManager_IsBusy() ||
+        (SystemContext_GetConfigRevision() != expected_revision) ||
+        (ConfigApplication_Validate(candidate, allow_cs1237_change) !=
+         CONFIG_APPLY_OK)) return COMMAND_RESULT_INVALID_ARGUMENT;
+    next = expected_revision + 1U;
+    if (next == 0xFFFFFFFFUL) next = 0U;
+    if (!StoragePowerGuard_CanStartFlashOperation())
+        return COMMAND_RESULT_POWER_UNSAFE;
+    s_candidate_original = *original;
+    s_candidate_target = *candidate;
+    s_candidate_original_runtime = context->runtime;
+    s_candidate_original_revision = expected_revision;
+    s_candidate_original_saved_revision = SystemContext_GetSavedRevision();
+    s_candidate_allow_cs1237_change = allow_cs1237_change;
+    s_requested_revision = next;
+    if (!ConfigStore_RequestSave(candidate, &context->runtime, next))
+        return COMMAND_RESULT_INTERNAL_ERROR;
+    if (!DeviceManager_EnterStorageMaintenance())
+    {
+        (void)ConfigStore_CancelPending();
+        return COMMAND_RESULT_INVALID_STATE;
+    }
+    if (ConfigApplication_ApplyTransient(candidate, allow_cs1237_change,
+                                         true) != CONFIG_APPLY_OK)
+    {
+        (void)ConfigStore_CancelPending();
+        (void)DeviceManager_ExitStorageMaintenance();
+        return COMMAND_RESULT_INTERNAL_ERROR;
+    }
+    s_candidate_save = true;
+    s_operation = CONFIG_OPERATION_SAVE;
+    s_status = PERSISTENCE_STATUS_SAVING;
+    Publish(EVENT_CONFIG_SAVE_STARTED, s_requested_revision, 0U);
+    Show(DISPLAY_CODE_SAVE);
+    return COMMAND_RESULT_ACCEPTED;
+#endif
+}
+
 CommandResult PersistenceManager_RequestFactoryReset(void)
 {
     return Start(CONFIG_OPERATION_FACTORY_RESET);
@@ -181,7 +239,17 @@ void PersistenceManager_Process(void)
     maintenance_active = result != CONFIG_STORE_OPERATION_NO_CHANGE;
     if (flash_committed)
     {
-        if ((s_operation == CONFIG_OPERATION_FACTORY_RESET) &&
+        if (s_candidate_save)
+        {
+            const SystemContext *context = SystemContext_Get();
+            runtime_ok = (context != NULL) &&
+                (SystemContext_GetConfigRevision() ==
+                 s_candidate_original_revision) &&
+                (memcmp(&context->config, &s_candidate_target,
+                        sizeof(s_candidate_target)) == 0) &&
+                SystemContext_FinalizeSavedRevision(s_requested_revision);
+        }
+        else if ((s_operation == CONFIG_OPERATION_FACTORY_RESET) &&
             (ConfigApplication_ApplyFactoryDefaults(&s_factory_config) !=
              CONFIG_APPLY_OK))
         {
@@ -209,13 +277,16 @@ void PersistenceManager_Process(void)
     {
         runtime_ok = false;
     }
-    if ((s_operation == CONFIG_OPERATION_FACTORY_RESET) && flash_committed &&
-        !runtime_ok)
+    if (flash_committed && (!runtime_ok ||
+        (result == CONFIG_STORE_OPERATION_COMMITTED_LOCK_ERROR)))
     {
-        s_factory_result = FACTORY_RESET_RESULT_COMMITTED_REBOOT_REQUIRED;
+        if (s_operation == CONFIG_OPERATION_FACTORY_RESET)
+            s_factory_result = FACTORY_RESET_RESULT_COMMITTED_REBOOT_REQUIRED;
         s_status = PERSISTENCE_STATUS_REBOOT_REQUIRED;
         Show(DISPLAY_CODE_SAVE_ERROR);
-        Publish(EVENT_FACTORY_RESET_FAILED, ConfigStore_GetActiveSequence(), 1U);
+        Publish((s_operation == CONFIG_OPERATION_SAVE) ?
+            EVENT_CONFIG_SAVE_FAILED : EVENT_FACTORY_RESET_FAILED,
+            ConfigStore_GetActiveSequence(), 1U);
     }
     else if ((result == CONFIG_STORE_OPERATION_SUCCESS) && runtime_ok)
     {
@@ -239,7 +310,17 @@ void PersistenceManager_Process(void)
         s_status = PERSISTENCE_STATUS_FAILED;
         if (s_operation == CONFIG_OPERATION_FACTORY_RESET)
             s_factory_result = FACTORY_RESET_RESULT_FAILED;
-        if (!flash_committed)
+        if (s_candidate_save && !flash_committed)
+        {
+            bool rollback_ok = ConfigApplication_ApplyTransient(
+                &s_candidate_original, s_candidate_allow_cs1237_change,
+                s_candidate_original_runtime.config_dirty) == CONFIG_APPLY_OK;
+            rollback_ok = SystemContext_RestoreSnapshot(&s_candidate_original,
+                &s_candidate_original_runtime, s_candidate_original_revision,
+                s_candidate_original_saved_revision) && rollback_ok;
+            if (!rollback_ok) FaultManager_Set(FAULT_METROLOGY_CONFIG_INVALID);
+        }
+        else if (!flash_committed)
             (void)SystemContext_SetConfigDirty(true);
         if (result == CONFIG_STORE_OPERATION_POWER_UNSAFE)
             FaultManager_Set(FAULT_CONFIG_SAVE_POWER_INTERRUPTED);
@@ -250,6 +331,7 @@ void PersistenceManager_Process(void)
     }
     ConfigStore_AcknowledgeResult();
     s_operation = CONFIG_OPERATION_NONE;
+    s_candidate_save = false;
     Stage4BStorageDiagnostics_Update();
 }
 

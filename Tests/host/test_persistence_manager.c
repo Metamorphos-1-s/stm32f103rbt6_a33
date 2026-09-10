@@ -234,6 +234,53 @@ static void TestPowerGuardStates(void)
     CHECK(StoragePowerGuard_GetState() == STORAGE_POWER_UNSAFE);
 }
 
+static void TestCandidateSaveAtomicPublishAndRollback(void)
+{
+    DeviceConfig original;
+    DeviceConfig candidate;
+    DeviceConfig loaded;
+    RuntimeState runtime;
+    RuntimeState loaded_runtime;
+    ConfigLoadInfo info;
+
+    SetupStored(&original, &runtime, 21U);
+    candidate = original;
+    candidate.display.brightness = 4U;
+    CHECK(PersistenceManager_RequestCandidateSave(&candidate, &original,
+        true, 21U) == COMMAND_RESULT_ACCEPTED);
+    CHECK(SystemContext_GetConfigRevision() == 21U);
+    CHECK(SystemContext_GetSavedRevision() == 21U);
+    CHECK(SystemContext_Get()->config.display.brightness == 4U);
+    CHECK(SystemContext_Get()->runtime.config_dirty);
+    RunManager();
+    CHECK(SystemContext_GetConfigRevision() == 22U);
+    CHECK(SystemContext_GetSavedRevision() == 22U);
+    CHECK(SystemContext_Get()->config.display.brightness == 4U);
+    CHECK(!SystemContext_Get()->runtime.config_dirty);
+    ConfigStore_Init(FakeFlash_GetBackend());
+    CHECK(ConfigStore_Load(&loaded, &loaded_runtime, &info) ==
+          CONFIG_LOAD_BOTH_VALID);
+    CHECK(loaded.display.brightness == 4U);
+
+    SetupStored(&original, &runtime, 31U);
+    candidate = original;
+    candidate.display.brightness = 5U;
+    CHECK(PersistenceManager_RequestCandidateSave(&candidate, &original,
+        true, 31U) == COMMAND_RESULT_ACCEPTED);
+    FakeFlash_CutPowerAfter(1U);
+    RunManager();
+    CHECK(SystemContext_GetConfigRevision() == 31U);
+    CHECK(SystemContext_GetSavedRevision() == 31U);
+    CHECK(SystemContext_Get()->config.display.brightness ==
+          original.display.brightness);
+    CHECK(!SystemContext_Get()->runtime.config_dirty);
+    FakeFlash_Reboot();
+    ConfigStore_Init(FakeFlash_GetBackend());
+    CHECK(ConfigStore_Load(&loaded, &loaded_runtime, &info) ==
+          CONFIG_LOAD_OK);
+    CHECK(loaded.display.brightness == original.display.brightness);
+}
+
 int main(void)
 {
     TestRevisionDuringSave();
@@ -243,6 +290,7 @@ int main(void)
     TestFactoryResetSemantics();
     TestUnsafeStart();
     TestPowerGuardStates();
+    TestCandidateSaveAtomicPublishAndRollback();
     if (s_failures != 0U)
     {
         (void)printf("Persistence manager tests: %u failure(s)\n", s_failures);

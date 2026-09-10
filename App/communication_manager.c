@@ -240,7 +240,9 @@ static bool CommitCandidate(void)
     updated = context->config;
     s_candidate.pending_apply = false;
     updated.communication = s_candidate;
-    if (!SystemContext_ApplyConfig(&updated, true)) return false;
+    if (!(s_local_apply ? SystemContext_ReplaceConfig(&updated,
+              context->runtime.config_dirty) :
+          SystemContext_ApplyConfig(&updated, true))) return false;
     s_active = s_candidate;
     return s_local_apply ||
         ModbusRegisterModel_CompleteCommunicationApply(&s_active);
@@ -354,7 +356,9 @@ void CommunicationManager_Process(void)
                     {
                         DeviceConfig restored = context->config;
                         restored.communication = s_rollback;
-                        context_restored =
+                        context_restored = s_local_apply ?
+                            SystemContext_ReplaceConfig(&restored,
+                                context->runtime.config_dirty) :
                             SystemContext_ApplyConfig(&restored, true);
                     }
                 }
