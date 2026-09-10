@@ -1,0 +1,5 @@
+# Evidence hashes are calculated from repository bytes and must not depend on
+# the checkout platform's core.autocrlf setting.
+Docs/evidence/*.json text eol=lf
+Results/**/*.json text eol=lf
+*.bin -text

@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "interface": "rs232",
+  "port": "COM5",
+  "firmware": "0x050F",
+  "register_map": "0x0104",
+  "persistent_commands": 0,
+  "apply_commands": 0,
+  "passed": false,
+  "checks": {
+    "fc03": {
+      "passed": true,
+      "count": 100
+    }
+  },
+  "restored": false,
+  "identity": {
+    "display_weight": 49998,
+    "decimals": 2,
+    "active_unit": 1,
+    "status_flags": 31,
+    "register_map_version": 260,
+    "firmware_version": 1295,
+    "net_mass_ug": 499988736,
+    "sample_sequence": 84614,
+    "active_profile": 0,
+    "storage_state": 0,
+    "power_safe": 1,
+    "config_dirty": 0,
+    "schema_version": 2,
+    "active_slot": 1,
+    "storage_sequence": 25,
+    "word_order": "high",
+    "hardware_revision": "UNAVAILABLE_IN_REGISTER_MAP",
+    "battery_voltage": "UNAVAILABLE_IN_REGISTER_MAP",
+    "response_ms": 56.5358
+  },
+  "error": "HardwareTestError: FC06 exception 0x06",
+  "completed_at_epoch": 1789062813
+}

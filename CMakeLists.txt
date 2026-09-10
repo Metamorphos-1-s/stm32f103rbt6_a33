@@ -206,15 +206,26 @@ if(A33_ENABLE_BOARD_DIAGNOSTICS)
     # Keep board diagnostics at -O0 while size-optimizing transport code that
     # the diagnostic image still links but does not need to single-step.
     set_source_files_properties(
+        App/app_main.c
         App/communication_manager.c
+        App/config_application.c
+        App/persistence_manager.c
+        App/system_context.c
         Drivers/serial/modbus_uart2_transport.c
         Drivers/serial/uart3_modbus_transport.c
+        Protocol/command_service/command_service.c
         Protocol/modbus/modbus_register_model.c
         Protocol/modbus/modbus_rtu_framer.c
         Protocol/modbus/modbus_rtu_server.c
         Protocol/modbus/modbus_rtu_transport.c
         Services/ble_command_service/ble_command_service.c
         Services/ble_telemetry_service/ble_telemetry_service.c
+        Services/config_edit/config_edit.c
+        Services/config_store/config_store.c
+        Services/config_store/persistent_codec.c
+        UI/menu_controller/menu_controller.c
+        UI/status_controller/run_key_policy.c
+        UI/status_controller/status_controller.c
         PROPERTIES COMPILE_OPTIONS "-Os")
 else()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE

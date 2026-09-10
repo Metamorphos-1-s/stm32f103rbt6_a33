@@ -5,7 +5,9 @@ build/
 *.log
 Tests/host/out/
 Tests/host/build/
+Tests/host/build_*/
 __pycache__/
 *.py[cod]
 /Results/hardware/hf2_r1_*/
 /Tools/stage5c_hw/reports/
+/Tools/stage5b_hw/reports/20*/

@@ -1,6 +1,17 @@
 # Project stage status
 
-## Keypad, STATUS and battery divider update
+## Stage 5J
+
+Firmware `0x050F`, Register Map `0x0104`, Schema `2` and BLE Protocol `1` are
+the product-candidate contract. Software regression, reproducible evidence
+verification and all four target builds pass. Supplemental RS232 and CH579
+TCP/USART3 function regressions pass with Staging and source ownership restored.
+RS485, mobile BLE and the PC two-SAVE/two-physical-power-cycle qualification
+remain not run in this Stage 5J session. Current status is **STAGE 5J SOFTWARE
+READY; HARDWARE CLOSURE PENDING**. See
+`Docs/STAGE5J_FW050F_PRODUCT_BASELINE.md`.
+
+## Historical keypad, STATUS and battery divider update
 
 Current follow-up firmware value is `0x050F` (5.15); Register Map `0x0104` and
 Schema `2` remain unchanged. Historical validation records through `0x050B`
