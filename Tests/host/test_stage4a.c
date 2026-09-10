@@ -3113,6 +3113,7 @@ static void TestUnifiedCandidateTransactions(void)
 
     Stage4A_InitRuntime(&config, false);
     MenuController_Init();
+    DisplayController_SetPage(DISPLAY_PAGE_GROSS);
     revision = SystemContext_GetConfigRevision();
     CHECK4(MenuController_Enter());
     UnifiedMenuKey(KEY_ID_HASH, KEY_EVENT_SHORT, &now);
@@ -3131,6 +3132,7 @@ static void TestUnifiedCandidateTransactions(void)
     CHECK4(TestMock_GetSaveRequestCount() == 0U);
     UnifiedMenuKey(KEY_ID_TARE, KEY_EVENT_SHORT, &now);
     CHECK4(!MenuController_IsActive());
+    CHECK4(DisplayController_GetPage() == DISPLAY_PAGE_GROSS);
     CHECK4(SystemContext_Get()->config.display.brightness == 3U);
     CHECK4(DisplayModel_Get()->brightness == 3U);
     CHECK4(SystemContext_GetConfigRevision() == revision);

@@ -923,6 +923,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
     {
         DiscardCandidate();
         ExitMenu();
+        return true;
     }
     else if ((event->key == KEY_ID_FUNCTION) &&
              (event->type == KEY_EVENT_SHORT))
