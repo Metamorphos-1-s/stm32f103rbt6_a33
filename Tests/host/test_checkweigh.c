@@ -265,6 +265,50 @@ static void TestHysteresis(void)
     CHECK(result.state == CHECKWEIGH_LOW);
 }
 
+static void TestLimitCheckerExtremeHysteresis(void)
+{
+    AlarmConfig config = Config(INT64_MIN, INT64_MAX, INT64_MAX);
+    LimitChecker checker;
+    CheckweighResult result;
+
+    CHECK(AlarmConfig_Validate(&config));
+    LimitChecker_Init(&checker);
+    (void)ProcessCase(&checker, &config, INT64_MIN, 0, true, false,
+                      false, false);
+    result = ProcessCase(&checker, &config, -1, 0, true, false,
+                         false, false);
+    CHECK(result.state == CHECKWEIGH_OK);
+
+    LimitChecker_Reset(&checker);
+    (void)ProcessCase(&checker, &config, INT64_MAX, 0, true, false,
+                      false, false);
+    result = ProcessCase(&checker, &config, 0, 0, true, false,
+                         false, false);
+    CHECK(result.state == CHECKWEIGH_OK);
+}
+
+static void TestExtremeHysteresisArithmetic(void)
+{
+    AlarmConfig config = Config(INT64_MIN, INT64_MAX, INT64_MAX);
+    LimitChecker checker;
+    CheckweighResult result;
+
+    CHECK(AlarmConfig_Validate(&config));
+    LimitChecker_Init(&checker);
+    (void)ProcessCase(&checker, &config, INT64_MIN, 0, true, false,
+                      false, false);
+    result = ProcessCase(&checker, &config, -1, 0, true, false,
+                         false, false);
+    CHECK(result.state == CHECKWEIGH_OK);
+
+    LimitChecker_Reset(&checker);
+    (void)ProcessCase(&checker, &config, INT64_MAX, 0, true, false,
+                      false, false);
+    result = ProcessCase(&checker, &config, 0, 0, true, false,
+                         false, false);
+    CHECK(result.state == CHECKWEIGH_OK);
+}
+
 static void TestStableAndQualifiedTransitions(void)
 {
     AlarmConfig config = Config(100, 200, 10);
@@ -445,6 +489,7 @@ int main(void)
     TestClassificationChangeDetection();
     TestConfigChangeResetPolicy();
     TestBasicClassificationAndSources();
+    TestLimitCheckerExtremeHysteresis();
     TestHysteresis();
     TestStableAndQualifiedTransitions();
     TestPrioritySuppressionAndReset();

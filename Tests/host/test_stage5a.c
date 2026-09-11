@@ -1,5 +1,7 @@
 #include "calibration_model.h"
+#include "alarm_config_validation.h"
 #include "default_config.h"
+#include "device_config_validator.h"
 #include "key_service.h"
 #include "mass_math.h"
 #include "metrology_config_validator.h"
@@ -38,150 +40,75 @@ static void TestMassAndUnits(void)
     CHECK(UnitConverter_MassToDisplay(INT64_C(1003000000),MASS_UNIT_KG,&kg,&display)&&display.display_count==1005);
 }
 
-#if 0 /* Removed legacy V1/V2 projection tests. */
-static void TestCanonicalAndLegacyBoundary(void)
+static void TestAlarmExtremeValidation(void)
 {
     DeviceConfig config;
-    RuntimeState runtime={0};
-    uint8_t bytes[PERSISTENT_V2_PAYLOAD_SIZE];
-    uint16_t length=0U;
-    DefaultConfig_Load(&config);
-    CHECK(!config.system.startup_auto_zero_enable);
-    config.system.startup_auto_zero_enable=true;
-    config.metrology.capacity=0U;
-    config.metrology.division=0U;
-    config.metrology.decimal_places=0U;
-    config.metrology.filter_mode=FILTER_MODE_COUNT;
-    config.metrology.filter_strength=0xFFU;
-    config.metrology.zero_range=0U;
-    config.metrology.overload_threshold=0U;
-    config.stability.enter_threshold=UINT32_MAX;
-    config.stability.exit_threshold=0U;
-    CHECK(MetrologyConfig_ValidateCanonical(&config.metrology)==METROLOGY_CONFIG_OK);
-    CHECK(PersistentCodec_ValidateConfig(&config));
-    runtime.weight_view=WEIGHT_VIEW_NET;
-    CHECK(PersistentCodec_EncodeV2(&config,&runtime,bytes,sizeof(bytes),&length)==PERSISTENT_CODEC_OK);
-    CHECK(length==PERSISTENT_V2_PAYLOAD_SIZE);
-    CHECK(MetrologyLegacyV1_Validate(&config.metrology,&config.stability)!=METROLOGY_CONFIG_OK);
-    CHECK(MetrologyLegacyProjection_Update(&config.metrology));
-    CHECK(MetrologyLegacyStabilityProjection_Update(&config.metrology,&config.stability));
-    CHECK(MetrologyLegacyV1_Validate(&config.metrology,&config.stability)==METROLOGY_CONFIG_OK);
-}
-
-static void TestUnboundedLegacyProjection(void)
-{
-    DeviceConfig config;
-    DeviceConfig decoded;
-    MetrologyConfig projection_only;
+    DeviceConfig original;
     RuntimeState runtime = {0};
-    RuntimeState decoded_runtime;
-    DisplayWeightValue display_value;
-    int64_t unbounded_count = 0;
-    uint8_t bytes[PERSISTENT_V2_PAYLOAD_SIZE];
-    uint16_t length = 0U;
-
-    DefaultConfig_Load(&config);
-    config.metrology.capacity_ug = INT64_C(1000000000);
-    config.metrology.zero_range_ug = INT64_C(1000000000);
-    config.metrology.overload_threshold_ug = INT64_C(10000000000);
-    config.metrology.auto_zero_tracking_range_ug = INT64_C(1100000000);
-    config.metrology.active_unit = MASS_UNIT_G;
-    config.metrology.unit_display[MASS_UNIT_G].decimal_places = 2U;
-    config.metrology.unit_display[MASS_UNIT_G].division_digit = 1U;
-    CHECK(MetrologyConfig_ValidateCanonical(&config.metrology) ==
-          METROLOGY_CONFIG_OK);
-    CHECK(UnitConverter_MassToDisplay(INT64_C(10000000000), MASS_UNIT_G,
-        &config.metrology.unit_display[MASS_UNIT_G], &display_value));
-    CHECK(display_value.overflow && !display_value.valid);
-    CHECK(UnitConverter_MassToCountUnbounded(INT64_C(10000000000),
-        MASS_UNIT_G, 2U, 1U, &unbounded_count));
-    CHECK(unbounded_count == INT64_C(1000000));
-    CHECK(MetrologyLegacyProjection_Update(&config.metrology));
-    CHECK(config.metrology.capacity == 100000U);
-    CHECK(config.metrology.zero_range == 100000U);
-    CHECK(config.metrology.overload_threshold == 1000000U);
-    CHECK(config.metrology.auto_zero_tracking_range == 110000U);
-
-    projection_only = config.metrology;
-    projection_only.zero_range_ug = INT64_C(10000000000);
-    projection_only.auto_zero_tracking_range_ug = INT64_C(10000000000);
-    CHECK(MetrologyLegacyProjection_Update(&projection_only));
-    CHECK(projection_only.zero_range == 1000000U);
-    CHECK(projection_only.auto_zero_tracking_range == 1000000U);
-
-    projection_only = config.metrology;
-    projection_only.overload_threshold_ug = INT64_C(1100000000);
-    CHECK(MetrologyLegacyProjection_Update(&projection_only));
-    CHECK(projection_only.overload_threshold == 110000U);
-
-    CHECK(CalibrationModel_BuildMass(0, 100000,
-        INT64_C(10000000000), 1U, &config.calibration) ==
-        CALIBRATION_RESULT_OK);
-    CHECK(CalibrationLegacyProjection_Update(&config.calibration,
-        MASS_UNIT_G, &config.metrology.unit_display[MASS_UNIT_G]));
-    CHECK(config.calibration.span_weight == 1000000U);
-    runtime.tare_active = true;
-    runtime.current_tare_ug = INT64_C(10000000000);
-    config.system.tare_power_loss_retention = true;
-    CHECK(RuntimeLegacyProjection_Update(&runtime, MASS_UNIT_G,
-        &config.metrology.unit_display[MASS_UNIT_G]));
-    CHECK(runtime.current_tare == 1000000);
-
-    CHECK(PersistentCodec_EncodeV2(&config, &runtime, bytes, sizeof(bytes),
-        &length) == PERSISTENT_CODEC_OK);
-    CHECK(PersistentCodec_DecodeV2(bytes, length, &decoded,
-        &decoded_runtime) == PERSISTENT_CODEC_OK);
-    CHECK(decoded.metrology.capacity_ug == INT64_C(1000000000));
-    CHECK(decoded.metrology.overload_threshold_ug == INT64_C(10000000000));
-    CHECK(decoded.calibration.span_mass_ug == INT64_C(10000000000));
-    CHECK(decoded_runtime.current_tare_ug == INT64_C(10000000000));
-
-    config.metrology.capacity_ug = INT64_C(10000000000);
-    CHECK(MetrologyConfig_ValidateCanonical(&config.metrology) ==
-          METROLOGY_CONFIG_INVALID_UNIT);
-}
-
-static void TestAlarmLegacyProjection(void)
-{
-    DeviceConfig config;
-    DeviceConfig decoded;
-    RuntimeState runtime = {0};
-    RuntimeState decoded_runtime;
-    uint8_t bytes[PERSISTENT_V2_PAYLOAD_SIZE];
+    uint8_t bytes[PERSISTENT_V3_PAYLOAD_SIZE];
     uint16_t length = 0U;
 
     DefaultConfig_Load(&config);
     config.alarm.limit_function_enable = true;
-    config.alarm.lower_limit_ug = INT64_C(499000000);
-    config.alarm.upper_limit_ug = INT64_C(501000000);
-    config.alarm.hysteresis_ug = INT64_C(200000);
-    config.alarm.lower_limit = 0;
-    config.alarm.upper_limit = 0;
-    config.alarm.hysteresis = 0U;
-    runtime.weight_view = WEIGHT_VIEW_NET;
+    config.alarm.lower_limit_ug = INT64_MIN;
+    config.alarm.upper_limit_ug = INT64_MAX;
+    config.alarm.hysteresis_ug = 0;
+    original = config;
+    CHECK(AlarmConfig_Validate(&config.alarm));
+    CHECK(DeviceConfig_Validate(&config));
+    CHECK(memcmp(&config, &original, sizeof(config)) == 0);
 
-    CHECK(PersistentCodec_EncodeV2(&config, &runtime, bytes, sizeof(bytes),
+    config.alarm.hysteresis_ug = INT64_MAX;
+    CHECK(AlarmConfig_Validate(&config.alarm) ==
+          DeviceConfig_Validate(&config));
+    CHECK(DeviceConfig_Validate(&config));
+    config.alarm.lower_limit_ug = INT64_MIN;
+    config.alarm.upper_limit_ug = INT64_MIN;
+    config.alarm.hysteresis_ug = 0;
+    CHECK(!AlarmConfig_Validate(&config.alarm));
+    CHECK(!DeviceConfig_Validate(&config));
+    config.alarm.lower_limit_ug = INT64_MAX;
+    config.alarm.upper_limit_ug = INT64_MIN;
+    CHECK(!AlarmConfig_Validate(&config.alarm));
+    CHECK(!DeviceConfig_Validate(&config));
+
+    config.alarm.limit_function_enable = false;
+    CHECK(AlarmConfig_Validate(&config.alarm));
+    CHECK(DeviceConfig_Validate(&config));
+    CHECK(PersistentCodec_EncodeV3(&config, &runtime, bytes, sizeof(bytes),
         &length) == PERSISTENT_CODEC_OK);
-    CHECK(length == PERSISTENT_V2_PAYLOAD_SIZE);
-    CHECK(PersistentCodec_DecodeV2(bytes, length, &decoded,
-        &decoded_runtime) == PERSISTENT_CODEC_OK);
-    CHECK(decoded.alarm.lower_limit == 49900);
-    CHECK(decoded.alarm.upper_limit == 50100);
-    CHECK(decoded.alarm.hysteresis == 20U);
-    CHECK(decoded.alarm.lower_limit_ug == INT64_C(499000000));
-    CHECK(decoded.alarm.upper_limit_ug == INT64_C(501000000));
-    CHECK(decoded.alarm.hysteresis_ug == INT64_C(200000));
 
-    config.alarm.lower_limit_ug = INT64_C(-1000000);
-    config.alarm.upper_limit_ug = INT64_C(1000000);
-    config.alarm.hysteresis_ug = INT64_C(200000);
-    CHECK(AlarmLegacyProjection_Update(&config.alarm, MASS_UNIT_G,
-        &config.metrology.unit_display[MASS_UNIT_G]));
-    CHECK(config.alarm.lower_limit == -100);
-    CHECK(config.alarm.upper_limit == 100);
-    CHECK(config.alarm.hysteresis == 20U);
+    config = original;
+    CHECK(AlarmConfig_Validate(&config.alarm));
+    CHECK(DeviceConfig_Validate(&config));
+    CHECK(memcmp(&config, &original, sizeof(config)) == 0);
+    CHECK(PersistentCodec_EncodeV3(&config, &runtime, bytes,
+        sizeof(bytes), &length) == PERSISTENT_CODEC_OK);
+
+    config.alarm.hysteresis_ug = INT64_MAX;
+    CHECK(AlarmConfig_Validate(&config.alarm) == DeviceConfig_Validate(&config));
+    CHECK(DeviceConfig_Validate(&config));
+    CHECK(PersistentCodec_EncodeV3(&config, &runtime, bytes,
+        sizeof(bytes), &length) == PERSISTENT_CODEC_OK);
+
+    config.alarm.lower_limit_ug = INT64_MAX;
+    config.alarm.upper_limit_ug = INT64_MAX;
+    config.alarm.hysteresis_ug = 0;
+    CHECK(!AlarmConfig_Validate(&config.alarm));
+    CHECK(!DeviceConfig_Validate(&config));
+    config.alarm.lower_limit_ug = 1;
+    config.alarm.upper_limit_ug = 0;
+    CHECK(!AlarmConfig_Validate(&config.alarm));
+    CHECK(!DeviceConfig_Validate(&config));
+
+    config.alarm.limit_function_enable = false;
+    config.alarm.lower_limit_ug = INT64_MAX;
+    config.alarm.upper_limit_ug = INT64_MIN;
+    CHECK(AlarmConfig_Validate(&config.alarm));
+    CHECK(DeviceConfig_Validate(&config));
+    CHECK(PersistentCodec_EncodeV3(&config, &runtime, bytes,
+        sizeof(bytes), &length) == PERSISTENT_CODEC_OK);
 }
-#endif
 
 static void TestCodec(void)
 {
@@ -283,87 +210,6 @@ static void TestProductDefaults(void)
     CHECK(MetrologyConfig_ValidateProductHardware(&config.metrology)==
         METROLOGY_CONFIG_INVALID_OVERLOAD);
 }
-
-#if 0 /* Removed legacy development normalization tests. */
-static void TestLegacyDevelopmentNormalization(void)
-{
-    DeviceConfig config;
-    DeviceConfig unchanged;
-    CalibrationConfig calibration;
-    CommunicationConfig communication;
-    RuntimeState runtime={0};
-    uint32_t flags;
-
-    DefaultConfig_Load(&config);
-    config.metrology.capacity_ug=INT64_C(2500000000);
-    config.metrology.overload_threshold_ug=INT64_C(2600000000);
-    config.metrology.zero_range_ug=0;
-    config.metrology.profiles[0].stability_enter_threshold_ug=INT64_C(2000000);
-    config.metrology.profiles[0].stability_exit_threshold_ug=INT64_C(4000000);
-    config.metrology.profiles[0].stability_hold_ms=500U;
-    config.calibration.raw_zero=123;
-    config.calibration.raw_span=456;
-    config.calibration.span_mass_ug=INT64_C(500000000);
-    calibration=config.calibration;
-    communication=config.communication;
-    unchanged=config;
-    flags=DefaultConfig_NormalizeLegacyDevelopment(&config);
-    CHECK(flags==(DEFAULT_CONFIG_NORMALIZED_STABILITY|
-        DEFAULT_CONFIG_NORMALIZED_ZERO_RANGE));
-    CHECK(config.metrology.capacity_ug==INT64_C(2500000000));
-    CHECK(config.metrology.overload_threshold_ug==INT64_C(2600000000));
-    CHECK(config.metrology.zero_range_ug==INT64_C(60000000));
-    CHECK(config.metrology.profiles[0].stability_enter_threshold_ug==INT64_C(50000));
-    CHECK(config.metrology.profiles[0].stability_exit_threshold_ug==INT64_C(100000));
-    CHECK(config.metrology.profiles[0].stability_hold_ms==1000U);
-    CHECK(memcmp(&config.calibration,&calibration,sizeof(calibration))==0);
-    CHECK(memcmp(&config.communication,&communication,sizeof(communication))==0);
-
-    DefaultConfig_Load(&config);
-    config.metrology.overload_threshold_ug=INT64_C(10000000000);
-    calibration=config.calibration;
-    communication=config.communication;
-    flags=DefaultConfig_NormalizeLegacyDevelopment(&config);
-    CHECK(flags==DEFAULT_CONFIG_NORMALIZED_OVERLOAD);
-    CHECK(config.metrology.capacity_ug==INT64_C(3000000000));
-    CHECK(config.metrology.overload_threshold_ug==INT64_C(3000000000));
-    CHECK(memcmp(&config.calibration,&calibration,sizeof(calibration))==0);
-    CHECK(memcmp(&config.communication,&communication,sizeof(communication))==0);
-    CHECK(DefaultConfig_NormalizeLegacyDevelopment(&config)==
-        DEFAULT_CONFIG_NORMALIZED_NONE);
-
-    DefaultConfig_Load(&config);
-    config.metrology.overload_threshold_ug=INT64_C(10000000000);
-    config.metrology.profiles[0].filter_strength=2U;
-    unchanged=config;
-    CHECK(DefaultConfig_NormalizeLegacyDevelopment(&config)==
-        DEFAULT_CONFIG_NORMALIZED_NONE);
-    CHECK(memcmp(&config,&unchanged,sizeof(config))==0);
-
-    DefaultConfig_Load(&config);
-    config.metrology.capacity_ug=INT64_C(2500000000);
-    config.metrology.overload_threshold_ug=INT64_C(2600000000);
-    config.metrology.zero_range_ug=0;
-    config.metrology.profiles[0].stability_enter_threshold_ug=INT64_C(2000000);
-    config.metrology.profiles[0].stability_exit_threshold_ug=INT64_C(4000000);
-    config.metrology.profiles[0].stability_hold_ms=500U;
-    config.metrology.profiles[0].filter_strength=3U;
-    CHECK(DefaultConfig_NormalizeStartup(&config,&runtime)==
-        (DEFAULT_CONFIG_NORMALIZED_STABILITY|
-         DEFAULT_CONFIG_NORMALIZED_ZERO_RANGE));
-    CHECK(runtime.migration_pending_save&&runtime.config_dirty);
-    CHECK(DefaultConfig_GetLastNormalizationFlags()==
-        (DEFAULT_CONFIG_NORMALIZED_STABILITY|
-         DEFAULT_CONFIG_NORMALIZED_ZERO_RANGE));
-
-    config=unchanged;
-    config.metrology.profiles[0].filter_strength=2U;
-    unchanged=config;
-    CHECK(DefaultConfig_NormalizeLegacyDevelopment(&config)==
-        DEFAULT_CONFIG_NORMALIZED_NONE);
-    CHECK(memcmp(&config,&unchanged,sizeof(config))==0);
-}
-#endif
 
 static void TestKeyConflict(void)
 {
@@ -521,11 +367,73 @@ static void TestModbusModel(void)
     CHECK(ModbusRegisterModel_ReadHolding(0x01A1U,1U,words)==MODBUS_REGISTER_OK&&words[0]==1U);
 }
 
+static CommandResult ExecuteMailbox(uint16_t token, uint16_t command)
+{
+    uint16_t request[12] = {0};
+    uint16_t result = COMMAND_RESULT_INTERNAL_ERROR;
+    request[0] = token;
+    request[1] = command;
+    request[11] = MODBUS_EXECUTE_VALUE;
+    CHECK(ModbusRegisterModel_WriteMultiple(0x0040U, 12U, request,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_ReadHolding(0x004DU, 1U, &result) ==
+        MODBUS_REGISTER_OK);
+    return (CommandResult)result;
+}
+
+static void TestModbusAlarmExtremePath(void)
+{
+    static const uint16_t minimum[4] = {0x8000U, 0U, 0U, 0U};
+    static const uint16_t maximum[4] = {0x7FFFU, 0xFFFFU, 0xFFFFU, 0xFFFFU};
+    DeviceConfig active_before_invalid;
+    RuntimeState runtime = {0};
+    uint8_t payload[PERSISTENT_V3_PAYLOAD_SIZE];
+    uint16_t payload_length = 0U;
+    uint32_t revision;
+    bool dirty;
+
+    Stage5A_ModelAdaptersInit();
+    ModbusRegisterModel_Init();
+    CHECK(ModbusRegisterModel_WriteSingle(0x0240U, 1U,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteMultiple(0x0242U, 4U, minimum,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteMultiple(0x0246U, 4U, maximum,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteMultiple(0x024AU, 4U, maximum,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ExecuteMailbox(100U, 10U) == COMMAND_RESULT_OK);
+    CHECK(ExecuteMailbox(101U, 11U) == COMMAND_RESULT_OK);
+    CHECK(Stage5A_ModelContext()->config.alarm.lower_limit_ug == INT64_MIN);
+    CHECK(Stage5A_ModelContext()->config.alarm.upper_limit_ug == INT64_MAX);
+    CHECK(Stage5A_ModelContext()->config.alarm.hysteresis_ug == INT64_MAX);
+    runtime.weight_view = WEIGHT_VIEW_NET;
+    CHECK(PersistentCodec_EncodeV3(&Stage5A_ModelContext()->config, &runtime,
+        payload, sizeof(payload), &payload_length) == PERSISTENT_CODEC_OK);
+
+    active_before_invalid = Stage5A_ModelContext()->config;
+    revision = Stage5A_ModelContext()->config_revision;
+    dirty = Stage5A_ModelContext()->runtime.config_dirty;
+    CHECK(ExecuteMailbox(102U, 9U) == COMMAND_RESULT_OK);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0240U, 1U,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteMultiple(0x0242U, 4U, minimum,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteMultiple(0x0246U, 4U, minimum,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ExecuteMailbox(103U, 10U) == COMMAND_RESULT_INVALID_ARGUMENT);
+    CHECK(ExecuteMailbox(104U, 11U) == COMMAND_RESULT_INVALID_ARGUMENT);
+    CHECK(memcmp(&Stage5A_ModelContext()->config, &active_before_invalid,
+                 sizeof(active_before_invalid)) == 0);
+    CHECK(Stage5A_ModelContext()->config_revision == revision);
+    CHECK(Stage5A_ModelContext()->runtime.config_dirty == dirty);
+}
+
 int main(void)
 {
-    TestMassAndUnits(); TestCodec();
+    TestMassAndUnits(); TestAlarmExtremeValidation(); TestCodec();
     TestReferenceRules(); TestProductDefaults();
-    TestKeyConflict(); TestModbusModel();
+    TestKeyConflict(); TestModbusModel(); TestModbusAlarmExtremePath();
     if(failures==0U) printf("Stage 5A host tests passed.\n");
     return failures==0U?0:1;
 }

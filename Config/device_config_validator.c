@@ -33,8 +33,6 @@ bool DeviceConfig_ValidateCommunication(const CommunicationConfig *config)
 
 bool DeviceConfig_Validate(const DeviceConfig *config)
 {
-    int64_t alarm_span;
-
     if ((config == NULL) ||
         (MetrologyConfig_ValidateCanonical(&config->metrology) !=
          METROLOGY_CONFIG_OK) ||
@@ -60,13 +58,6 @@ bool DeviceConfig_Validate(const DeviceConfig *config)
         return false;
     }
 
-    alarm_span = config->alarm.upper_limit_ug - config->alarm.lower_limit_ug;
-    if (config->alarm.limit_function_enable &&
-        ((alarm_span <= 0) ||
-         ((uint64_t)config->alarm.hysteresis_ug > (uint64_t)alarm_span)))
-    {
-        return false;
-    }
     if (config->battery.low_voltage_alarm_enable &&
         ((config->battery.critical_low_mv == 0U) ||
          (config->battery.low_warning_mv <= config->battery.critical_low_mv) ||

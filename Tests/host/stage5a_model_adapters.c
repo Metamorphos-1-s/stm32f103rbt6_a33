@@ -6,6 +6,7 @@
 #include "config_store.h"
 #include "cs1237.h"
 #include "default_config.h"
+#include "device_config_validator.h"
 #include "fault_manager.h"
 #include "metrology_manager.h"
 #include "persistence_manager.h"
@@ -24,6 +25,8 @@ static StartupAutoZeroSnapshot s_startup_auto_zero;
 static bool s_context_available;
 static bool s_config_owner_valid;
 static CommandSource s_config_owner;
+static DeviceConfig s_staged_config;
+static bool s_staged_config_valid;
 
 void Stage5A_ModelAdaptersInit(void)
 {
@@ -38,6 +41,7 @@ void Stage5A_ModelAdaptersInit(void)
     s_command_count=0U;
     s_context_available=true;
     s_config_owner_valid=false;
+    s_staged_config_valid=false;
     s_config_owner=COMMAND_SOURCE_LOCAL_KEY;
     (void)memset(&s_last_command,0,sizeof(s_last_command));
     (void)memset(&s_alarm_diagnostics,0,sizeof(s_alarm_diagnostics));
@@ -68,15 +72,19 @@ CommandResult CommandService_Execute(const CommandRequest *request,CommandRespon
 {CommandResult result=COMMAND_RESULT_OK;++s_command_count;s_last_command=*request;(void)memset(response,0,sizeof(*response));
     if ((request != NULL) && (request->id == COMMAND_CANCEL_CONFIG_EDIT))
     { if(!s_config_owner_valid||s_config_owner!=request->source)result=COMMAND_RESULT_BUSY;else s_config_owner_valid=false; }
+    else if ((request != NULL) && (request->id == COMMAND_CONFIG_VALIDATE))
+    { result=(s_staged_config_valid&&DeviceConfig_Validate(&s_staged_config))?COMMAND_RESULT_OK:COMMAND_RESULT_INVALID_ARGUMENT; }
+    else if ((request != NULL) && (request->id == COMMAND_COMMIT_CONFIG_EDIT))
+    { if(!s_staged_config_valid||!DeviceConfig_Validate(&s_staged_config))result=COMMAND_RESULT_INVALID_ARGUMENT;else{s_context.config=s_staged_config;++s_context.config_revision;s_context.runtime.config_dirty=true;s_staged_config_valid=false;s_config_owner_valid=false;} }
     response->result=result;return result;}
 bool CommandService_SetStagedConfig(const DeviceConfig *candidate){return candidate!=NULL;}
 bool CommandService_SetStagedConfigForSource(const DeviceConfig *candidate,
-    CommandSource source){if(candidate==NULL)return false;if(s_config_owner_valid&&s_config_owner!=source)return false;s_config_owner=source;s_config_owner_valid=true;return true;}
+    CommandSource source){if(candidate==NULL)return false;if(s_config_owner_valid&&s_config_owner!=source)return false;s_config_owner=source;s_config_owner_valid=true;s_staged_config=*candidate;s_staged_config_valid=true;return true;}
 CommandResult CommandService_ReserveConfigOwner(CommandSource source)
 {if(s_config_owner_valid&&s_config_owner!=source)return COMMAND_RESULT_BUSY;s_config_owner=source;s_config_owner_valid=true;return COMMAND_RESULT_OK;}
-void CommandService_ClearStagedConfig(void){}
+void CommandService_ClearStagedConfig(void){s_staged_config_valid=false;}
 void CommandService_ClearStagedConfigForSource(CommandSource source)
-{if(!s_config_owner_valid||s_config_owner==source)s_config_owner_valid=false;}
+{if(!s_config_owner_valid||s_config_owner==source){s_config_owner_valid=false;s_staged_config_valid=false;}}
 PersistenceStatus PersistenceManager_GetStatus(void)
 {return PERSISTENCE_STATUS_SUCCESS;}
 #if !defined(STAGE5B_HOST_TEST)
