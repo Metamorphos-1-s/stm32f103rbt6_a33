@@ -179,6 +179,11 @@ static void TestStoreAndRecovery(void)
     CHECK(ConfigStore_IsSequenceNewer(100U, 99U));
     CHECK(ConfigStore_IsSequenceNewer(0U, 0xFFFFFFFEUL));
     CHECK(!ConfigStore_IsSequenceNewer(7U, 7U));
+    CHECK(ConfigStore_IsSequenceNewer(0x7FFFFFFFUL, 0U));
+    CHECK(!ConfigStore_IsSequenceNewer(0x80000000UL, 0U));
+    CHECK(!ConfigStore_IsSequenceNewer(0U, 0x80000000UL));
+    CHECK(!ConfigStore_IsSequenceNewer(0xFFFFFFFFUL, 0U));
+    CHECK(!ConfigStore_IsSequenceNewer(0U, 0xFFFFFFFFUL));
 }
 
 static void TestPowerCuts(void)

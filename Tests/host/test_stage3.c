@@ -233,6 +233,10 @@ static void TestZeroTare(void)
            WEIGHT_ACTION_NOT_STABLE);
     CHECK3(ZeroTare_ApplyTare(&state, 5000, true, true, true) ==
            WEIGHT_ACTION_OVERLOAD);
+    CHECK3(ZeroTare_ApplyTare(&state, 0, true, true, false) ==
+           WEIGHT_ACTION_OUT_OF_ZERO_RANGE);
+    CHECK3(ZeroTare_ApplyTare(&state, -1, true, true, false) ==
+           WEIGHT_ACTION_OUT_OF_ZERO_RANGE);
     CHECK3(ZeroTare_ApplyTare(&state, 5000, true, true, false) ==
            WEIGHT_ACTION_OK && state.tare_weight == 5000);
     CHECK3(ZeroTare_ApplyZero(&state, 100000, 100000, 0, 10U, true,

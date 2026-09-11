@@ -98,12 +98,14 @@ static uint32_t NextSequence(uint32_t current)
 
 bool ConfigStore_IsSequenceNewer(uint32_t candidate, uint32_t reference)
 {
+    uint32_t difference;
     if ((candidate == reference) || (candidate == 0xFFFFFFFFUL) ||
         (reference == 0xFFFFFFFFUL))
     {
         return false;
     }
-    return (int32_t)(candidate - reference) > 0;
+    difference = candidate - reference;
+    return (difference != 0U) && (difference < 0x80000000UL);
 }
 
 uint16_t ConfigStore_AlignedProgramLength(uint16_t logical_length)

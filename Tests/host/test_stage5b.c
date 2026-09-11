@@ -2,6 +2,8 @@
 #include "communication_manager.h"
 #include "modbus_crc16.h"
 #include "modbus_register_model.h"
+#include "modbus_command_mailbox.h"
+#include "command_service.h"
 #include "modbus_register_map.h"
 #include "modbus_rtu_server.h"
 #include "modbus_rtu_timing.h"
@@ -12,6 +14,7 @@
 #include "uart2_dma_position.h"
 
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 
 static unsigned failures;
@@ -165,6 +168,35 @@ static void TestCrcAndTiming(void)
     CHECK(timing.t1_5_us == 750U && timing.t3_5_us == 1750U);
     CHECK(!ModbusRtuTiming_Calculate(4800U, COMM_PARITY_NONE,
                                      COMM_STOP_BITS_1, &timing));
+}
+
+static void TestMailboxSigned64Boundaries(void)
+{
+    static const int64_t values[] = {
+        INT64_MIN, INT64_C(-1234567890123), -1, 0, 1, INT64_MAX
+    };
+    uint16_t words[4];
+    uint64_t bits;
+    unsigned index;
+
+    for (index = 0U; index < (sizeof(values) / sizeof(values[0])); ++index)
+    {
+        (void)memcpy(&bits, &values[index], sizeof(bits));
+        ModbusCommandMailbox_Init();
+        CHECK(ModbusCommandMailbox_Write(0x0040U, (uint16_t)(index + 1U),
+            COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+        CHECK(ModbusCommandMailbox_Write(0x0041U, 16U,
+            COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+        words[0] = (uint16_t)(bits >> 48U);
+        words[1] = (uint16_t)(bits >> 32U);
+        words[2] = (uint16_t)(bits >> 16U);
+        words[3] = (uint16_t)bits;
+        for (unsigned word = 0U; word < 4U; ++word)
+            CHECK(ModbusCommandMailbox_Write((uint16_t)(0x0046U + word),
+                words[word], COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+        CHECK(ModbusCommandMailbox_Write(0x004BU, MODBUS_EXECUTE_VALUE,
+            COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    }
 }
 
 static void TestCommunicationManagerStart(void)
@@ -799,6 +831,7 @@ static void TestDualMockTransportRouting(void)
 int main(void)
 {
     TestCrcAndTiming();
+    TestMailboxSigned64Boundaries();
     TestCommunicationManagerStart();
     TestCommunicationManagerLocalApply();
     TestCommunicationManagerDualGates();

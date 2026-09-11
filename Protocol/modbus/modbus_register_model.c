@@ -560,7 +560,7 @@ static ModbusRegisterResult ValidateWriteAddress(uint16_t address,uint16_t value
     if((address>=0x01A1U)&&(address<=0x01A8U))return
         CommunicationValueValid(address,value)?MODBUS_REGISTER_OK:
             MODBUS_REGISTER_ILLEGAL_VALUE;
-    if(((address>=0x0000U)&&(address<=0x003FU))||
+    if((address<=0x003FU)||
        ((address>=0x004CU)&&(address<=0x005FU))||
        ((address>=0x0100U)&&(address<=0x013FU))||
        ((address>=0x017EU)&&(address<=MODBUS_ALARM_ACTIVE_LAST))||

@@ -74,6 +74,7 @@ WeightActionResult ZeroTare_ApplyTareMass(ZeroTareState *state,
     if (!calibration_valid) return WEIGHT_ACTION_CALIBRATION_INVALID;
     if (overload) return WEIGHT_ACTION_OVERLOAD;
     if (!stable) return WEIGHT_ACTION_NOT_STABLE;
+    if (current_gross_ug <= 0) return WEIGHT_ACTION_OUT_OF_ZERO_RANGE;
     state->tare_mass_ug = current_gross_ug;
     state->tare_weight = (current_gross_ug > INT32_MAX) ? INT32_MAX :
                          (current_gross_ug < INT32_MIN) ? INT32_MIN :

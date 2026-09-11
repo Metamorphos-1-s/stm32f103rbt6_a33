@@ -34,6 +34,13 @@ static int32_t Join32(const uint16_t words[2])
     return (int32_t)(((uint32_t)words[0] << 16U) | words[1]);
 }
 
+static int64_t BitsToInt64(uint64_t bits)
+{
+    int64_t value;
+    (void)memcpy(&value, &bits, sizeof(value));
+    return value;
+}
+
 static bool MapCommand(uint16_t id, CommandId *command)
 {
     static const CommandId map[] = {
@@ -79,10 +86,13 @@ static ModbusRegisterResult Execute(CommandSource source)
         request.value0 = Join32(s_mailbox.argument0);
         request.value1 = Join32(s_mailbox.argument1);
         request.flags = s_mailbox.command_flags;
-        request.value64 = ((int64_t)(uint64_t)s_mailbox.argument64[0] << 48U) |
-            ((int64_t)(uint64_t)s_mailbox.argument64[1] << 32U) |
-            ((int64_t)(uint64_t)s_mailbox.argument64[2] << 16U) |
-            s_mailbox.argument64[3];
+        {
+            uint64_t bits = ((uint64_t)s_mailbox.argument64[0] << 48U) |
+                ((uint64_t)s_mailbox.argument64[1] << 32U) |
+                ((uint64_t)s_mailbox.argument64[2] << 16U) |
+                (uint64_t)s_mailbox.argument64[3];
+            request.value64 = BitsToInt64(bits);
+        }
         response.result = CommandService_Execute(&request, &response);
     }
     s_mailbox.response_token = s_mailbox.request_token;
