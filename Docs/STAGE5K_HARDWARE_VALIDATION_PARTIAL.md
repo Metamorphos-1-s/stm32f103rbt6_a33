@@ -21,8 +21,11 @@ valid `1` in RAM.
 
 The first Deferred SAVE returned mailbox `ACCEPTED` (token 251), but the
 diagnostic terminal state became `INVALID_STATE` (`0x01C5-0x01C9 = [7,251,1,0,1]`)
-and `dirty` remained set. The runtime fault mask was `0x00000040`
-(`FAULT_CS1237_DATA_ERROR`). This is a blocking firmware/board state issue for
+and `dirty` remained set. The raw fault words were `[0x0040, 0x0000]`; with
+high-word-first order this is mask `0x00400000`, `FAULT_UI_STATE_ERROR`, not
+`0x00000040`. `FAULT_CS1237_DATA_ERROR` is `0x00000020` and
+`FAULT_CALIBRATION_INVALID` is `0x00000040`. This is a blocking firmware/UI
+state issue for
 persistence validation; no manual power cycle or further write was attempted.
 
 COM3 is identified as the CH579 UART1 log path; COM5 is the confirmed STM32
