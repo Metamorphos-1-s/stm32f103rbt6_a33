@@ -127,6 +127,7 @@ def execute_command(client, token, command, arg0=0, arg1=0, arg64=0,
 def probe_device(client):
     realtime, exchange = client.read(reg.REALTIME_FIRST, 0x20)
     diag, _ = client.read(reg.SAMPLE_SEQUENCE, 0x1B)
+    public_schema, _ = client.read(reg.PUBLIC_SCHEMA_ADDRESS, 1)
     storage, _ = client.read(reg.STORAGE_FIRST, 5)
     word_order = "low" if client.read(reg.ACTIVE_WORD_ORDER, 1)[0][0] else "high"
     result = {
@@ -138,7 +139,8 @@ def probe_device(client):
         "sample_sequence": (diag[0] << 16) | diag[1],
         "active_profile": diag[8], "storage_state": diag[16],
         "power_safe": diag[17], "config_dirty": diag[18],
-        "schema_version": storage[0], "active_slot": storage[1],
+        "schema_version": public_schema[0],
+        "persistent_format": storage[0], "active_slot": storage[1],
         "storage_sequence": (storage[2] << 16) | storage[3],
         "word_order": word_order,
         "hardware_revision": "UNAVAILABLE_IN_REGISTER_MAP",
@@ -150,5 +152,7 @@ def probe_device(client):
     if result["firmware_version"] != reg.FIRMWARE_VERSION:
         raise HardwareTestError("unsupported firmware version 0x%04X" % result["firmware_version"])
     if result["schema_version"] != reg.SCHEMA_VERSION:
-        raise HardwareTestError("unsupported persistent schema %d" % result["schema_version"])
+        raise HardwareTestError("unsupported public schema %d" % result["schema_version"])
+    if result["persistent_format"] != reg.PERSISTENT_FORMAT_VERSION:
+        raise HardwareTestError("unsupported persistent format %d" % result["persistent_format"])
     return result
