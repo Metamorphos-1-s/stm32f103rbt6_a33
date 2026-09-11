@@ -354,7 +354,10 @@ static void App_10msTask(void *context)
     }
     else
     {
-      FaultManager_Set(FAULT_UI_STATE_ERROR);
+      /* A rejected menu calibration start is recoverable UI input; keep the
+         application in its current state so it cannot force DeviceManager
+         into SafeState and block an unrelated persistence request. */
+      App_ShowCommandResult(COMMAND_RESULT_INVALID_STATE, false);
     }
   }
   if (MenuController_TakeExitRequest())
