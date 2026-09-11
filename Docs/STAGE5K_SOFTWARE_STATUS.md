@@ -24,28 +24,29 @@ Stage 5K-B canonical storage is implemented:
 - V1/V2 records are unsupported and never migrated or decoded as V3.
 - A/B slots, CRC32, sequence, commit-last and 2 KiB slot layout remain.
 
-Stage 5K-C includes a shared pure `DeviceConfig` validator and semantic
-configuration comparison based on V3 canonical bytes. Broad legacy projection
-removal and larger register-model / CommandService splits remain follow-up
-work; they are not claimed complete in this status document.
+Stage 5K-C includes a shared pure `DeviceConfig` validator, semantic
+configuration comparison based on V3 canonical bytes, revision and rebuild
+helpers, and removal of the legacy configuration model. The register model
+and command service remain conservative single-entry dispatchers because a
+behavior-changing split was not justified by the current size and dependency
+constraints.
 
 ## Software gate measurements
 
 | Image | Flash text+data | RAM data+bss | ELF SHA-256 |
 | --- | ---: | ---: | --- |
-| Debug | 95,452 B | 19,912 B | `3D3DF57F63F526101228B8196E6089DC5757E6512C9B9A6B7BDF6B707D853BF2` |
-| Release | 82,184 B | 19,880 B | `1FD11414C0CAD4B8472BCD46C26B83A715D847D62192422302C6F1372545664D` |
-| BoardDiagnostics | 119,736 B | 19,784 B | `CE2AB0BBB1CCBC37F745080AAA7588AC966328ADAA755AEFB8E169455E98065B` |
-| USART3 Bringup | 95,152 B | 19,528 B | `942277A766CA7D2DD755DB3040FE1FEE6ECF417DA89D02A6F9DA8A29FFAA28FC` |
+| Debug | 94,140 B | 19,392 B | `36FC04DB647A38BD7728246D8509D0A0F5A11559D8FD3121A5F02007D7CDBD2C` |
+| Release | 80,920 B | 19,352 B | `B213D4B7A8310AE751E4818EBD8EB1DBFA30C24514BA194DE857D990733CA957` |
+| BoardDiagnostics | 117,144 B | 19,264 B | `46FB036329C0AE5C43128881CA213B5F5A076E929F8CBC1940923332EF2D774F` |
+| USART3 Bringup | 93,840 B | 19,008 B | `C55DA68C3010A1158EE5421411090FFF49A982368DE332CD0BC7FB30C5204659` |
 
 Compared with the Stage 5J reference, the active ConfigStore path remains
-smaller despite the validator and diagnostic additions. Historical codec
-source declarations remain to be removed in the follow-up cleanup commit
-after dependent test files are fully retired.
+smaller despite the validator and diagnostic additions. Historical codec and
+projection source have been removed; V1/V2 numeric schema constants remain
+only for explicit unsupported-slot detection.
 
-The eventual product identity recommendation is Firmware `0x0510`; this branch
-does not change the reported firmware value and does not claim client or
-hardware 0x0510 compatibility.
+The product identity is Firmware `0x0510`; PC strict preflight requires a new
+software baseline and hardware validation remains separate.
 
 Current conclusion:
 

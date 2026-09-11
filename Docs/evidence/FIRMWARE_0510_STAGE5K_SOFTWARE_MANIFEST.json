@@ -1,0 +1,18 @@
+{
+  "manifest_schema": 1,
+  "firmware": "0x0510",
+  "register_map": "0x0104",
+  "public_config_schema": 2,
+  "internal_persistent_format": 3,
+  "persistent_v3_payload_bytes": 281,
+  "ble_protocol_version": 1,
+  "verified_commit": "5b4f9c8c297eaefeff74c06488be2c8be077f8f2",
+  "images": [
+    {"name": "Debug", "flash_bytes": 94140, "ram_bytes": 19392, "sha256": "36FC04DB647A38BD7728246D8509D0A0F5A11559D8FD3121A5F02007D7CDBD2C"},
+    {"name": "Release", "flash_bytes": 80920, "ram_bytes": 19352, "sha256": "B213D4B7A8310AE751E4818EBD8EB1DBFA30C24514BA194DE857D990733CA957"},
+    {"name": "BoardDiagnostics", "flash_bytes": 117144, "ram_bytes": 19264, "sha256": "46FB036329C0AE5C43128881CA213B5F5A076E929F8CBC1940923332EF2D774F"},
+    {"name": "Usart3Bringup", "flash_bytes": 93840, "ram_bytes": 19008, "sha256": "C55DA68C3010A1158EE5421411090FFF49A982368DE332CD0BC7FB30C5204659"}
+  ],
+  "software_gates": {"msvc_ctest": "16/16", "stage5b_python": "30/30", "stage5c_python": "12/12", "manifest_images": "4/4"},
+  "portable_ci": "pending"
+}
