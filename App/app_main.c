@@ -19,6 +19,7 @@
 #include "key_service.h"
 #include "menu_controller.h"
 #include "metrology_manager.h"
+#include "modbus_command_mailbox.h"
 #include "modbus_register_model.h"
 #include "project_config.h"
 #include "persistence_manager.h"

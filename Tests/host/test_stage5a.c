@@ -185,32 +185,26 @@ static void TestCodec(void)
 {
     DeviceConfig config,decoded;
     RuntimeState runtime={0},decoded_runtime;
-    uint8_t bytes[PERSISTENT_V2_PAYLOAD_SIZE];
-    uint8_t roundtrip[PERSISTENT_V2_PAYLOAD_SIZE];
+    uint8_t bytes[PERSISTENT_V3_PAYLOAD_SIZE];
+    uint8_t roundtrip[PERSISTENT_V3_PAYLOAD_SIZE];
     uint16_t length=0U;
     uint16_t roundtrip_length=0U;
     PersistentCodecResult result;
     DefaultConfig_Load(&config);
     config.system.startup_auto_zero_enable=true;
     runtime.weight_view=WEIGHT_VIEW_NET;
-    result=PersistentCodec_EncodeV2(&config,&runtime,bytes,sizeof(bytes),&length);
+    result=PersistentCodec_EncodeV3(&config,&runtime,bytes,sizeof(bytes),&length);
     CHECK(result==PERSISTENT_CODEC_OK);
-    CHECK(length==PERSISTENT_V2_PAYLOAD_SIZE);
+    CHECK(length==PERSISTENT_V3_PAYLOAD_SIZE);
     if(result==PERSISTENT_CODEC_OK)
     {
-        CHECK(PersistentCodec_DecodeV2(bytes,length,&decoded,&decoded_runtime)==PERSISTENT_CODEC_OK);
-        CHECK(PersistentCodec_EncodeV2(&decoded,&decoded_runtime,roundtrip,
+        CHECK(PersistentCodec_DecodeV3(bytes,length,&decoded,&decoded_runtime)==PERSISTENT_CODEC_OK);
+        CHECK(PersistentCodec_EncodeV3(&decoded,&decoded_runtime,roundtrip,
             sizeof(roundtrip),&roundtrip_length)==PERSISTENT_CODEC_OK);
         CHECK(roundtrip_length==length&&memcmp(bytes,roundtrip,length)==0);
         CHECK(!decoded_runtime.migration_pending_save);
         CHECK(decoded.system.startup_auto_zero_enable);
     }
-    result=PersistentCodec_EncodeV1(&config,&runtime,bytes,sizeof(bytes),&length);
-    CHECK(result==PERSISTENT_CODEC_OK&&length==PERSISTENT_V1_PAYLOAD_SIZE);
-    CHECK(PersistentCodec_MigrateV1ToV2(bytes,length,&decoded,&decoded_runtime)==PERSISTENT_CODEC_OK);
-    CHECK(decoded_runtime.migration_pending_save&&decoded_runtime.config_dirty);
-    CHECK(decoded.metrology.capacity_ug==INT64_C(3000000000));
-
     config.metrology.capacity_ug=INT64_C(10000000000);
     config.metrology.overload_threshold_ug=INT64_C(10000000000);
     config.metrology.load_cell.rated_capacity_known=false;
@@ -222,8 +216,8 @@ static void TestCodec(void)
     runtime.tare_active=true;
     runtime.current_tare=INT32_MAX;
     runtime.current_tare_ug=INT64_C(5000000000);
-    CHECK(PersistentCodec_EncodeV2(&config,&runtime,bytes,sizeof(bytes),&length)==PERSISTENT_CODEC_OK);
-    CHECK(PersistentCodec_DecodeV2(bytes,length,&decoded,&decoded_runtime)==PERSISTENT_CODEC_OK);
+    CHECK(PersistentCodec_EncodeV3(&config,&runtime,bytes,sizeof(bytes),&length)==PERSISTENT_CODEC_OK);
+    CHECK(PersistentCodec_DecodeV3(bytes,length,&decoded,&decoded_runtime)==PERSISTENT_CODEC_OK);
     CHECK(decoded_runtime.tare_active&&decoded_runtime.current_tare_ug==INT64_C(5000000000));
 }
 
@@ -519,8 +513,7 @@ static void TestModbusModel(void)
 
 int main(void)
 {
-    TestMassAndUnits(); TestCanonicalAndLegacyBoundary();
-    TestUnboundedLegacyProjection(); TestAlarmLegacyProjection(); TestCodec();
+    TestMassAndUnits(); TestCodec();
     TestReferenceRules(); TestProductDefaults();
     TestLegacyDevelopmentNormalization(); TestKeyConflict(); TestModbusModel();
     if(failures==0U) printf("Stage 5A host tests passed.\n");

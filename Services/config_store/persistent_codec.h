@@ -23,6 +23,12 @@ PersistentCodecResult PersistentCodec_EncodeV1(
 PersistentCodecResult PersistentCodec_EncodeV2(
     const DeviceConfig *config, const RuntimeState *runtime,
     uint8_t *buffer, uint16_t capacity, uint16_t *encoded_length);
+PersistentCodecResult PersistentCodec_EncodeV3(
+    const DeviceConfig *config, const RuntimeState *runtime,
+    uint8_t *buffer, uint16_t capacity, uint16_t *encoded_length);
+PersistentCodecResult PersistentCodec_DecodeV3(
+    const uint8_t *buffer, uint16_t length,
+    DeviceConfig *config, RuntimeState *runtime);
 PersistentCodecResult PersistentCodec_DecodeV2(
     const uint8_t *buffer, uint16_t length,
     DeviceConfig *config, RuntimeState *runtime);

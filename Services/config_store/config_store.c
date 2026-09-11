@@ -162,16 +162,21 @@ static SlotStatus ReadSlot(uint32_t address, SlotRecord *record,
     if (ReadU32(commit) != CONFIG_STORE_COMMIT_MARKER) return SLOT_EMPTY;
     io = s_backend->read(address, header, sizeof(header));
     if (io != FLASH_BACKEND_OK) return SLOT_IO_ERROR;
-    if ((ReadU32(header) != CONFIG_STORE_MAGIC) ||
-        (ReadU16(header + 4U) != CONFIG_STORE_FORMAT_VERSION) ||
-        (ReadU16(header + 8U) != CONFIG_STORE_HEADER_SIZE) ||
+    if (ReadU32(header) != CONFIG_STORE_MAGIC)
+    {
+        return SLOT_CORRUPT;
+    }
+    if (ReadU16(header + 4U) != CONFIG_STORE_FORMAT_VERSION)
+    {
+        return SLOT_UNSUPPORTED;
+    }
+    if ((ReadU16(header + 8U) != CONFIG_STORE_HEADER_SIZE) ||
         (ReadU32(header + 24U) != 0U) || (ReadU32(header + 28U) != 0U))
     {
         return SLOT_CORRUPT;
     }
     record->schema = ReadU16(header + 6U);
-    if ((record->schema != CONFIG_STORE_SCHEMA_V1) &&
-        (record->schema != CONFIG_STORE_SCHEMA_V2))
+    if (record->schema != CONFIG_STORE_SCHEMA_V3)
     {
         return SLOT_UNSUPPORTED;
     }
@@ -179,10 +184,7 @@ static SlotStatus ReadSlot(uint32_t address, SlotRecord *record,
     record->sequence = ReadU32(header + 12U);
     record->flags = ReadU32(header + 16U);
     record->payload_length = payload_length;
-    if ((((record->schema == CONFIG_STORE_SCHEMA_V1) &&
-          (payload_length != PERSISTENT_V1_PAYLOAD_SIZE)) ||
-         ((record->schema == CONFIG_STORE_SCHEMA_V2) &&
-          (payload_length != PERSISTENT_V2_PAYLOAD_SIZE))) ||
+    if ((payload_length != PERSISTENT_V3_PAYLOAD_SIZE) ||
         ((uint32_t)CONFIG_STORE_HEADER_SIZE + payload_length > CONFIG_COMMIT_OFFSET) ||
         (record->sequence == 0xFFFFFFFFUL))
     {
@@ -212,7 +214,7 @@ static SlotStatus ReadSlot(uint32_t address, SlotRecord *record,
         ++s_statistics.crc_error_count;
         return SLOT_CORRUPT;
     }
-    codec = PersistentCodec_Decode(record->schema, payload_out,
+    codec = PersistentCodec_DecodeV3(payload_out,
                                    payload_length, &record->config,
                                    &record->runtime);
     if (codec != PERSISTENT_CODEC_OK) return SLOT_VALIDATION_ERROR;
@@ -315,11 +317,11 @@ static bool Request(const DeviceConfig *config, const RuntimeState *runtime,
         return false;
     }
     ++s_statistics.save_request_count;
-    codec = PersistentCodec_EncodeV2(config, runtime,
+    codec = PersistentCodec_EncodeV3(config, runtime,
         s_body + CONFIG_STORE_HEADER_SIZE, CONFIG_STORE_PAYLOAD_BUFFER_SIZE,
         &s_payload_length);
     if ((codec != PERSISTENT_CODEC_OK) ||
-        (s_payload_length != PERSISTENT_V2_PAYLOAD_SIZE))
+        (s_payload_length != PERSISTENT_V3_PAYLOAD_SIZE))
     {
         s_result = CONFIG_STORE_OPERATION_INVALID;
         s_last_error = (uint32_t)codec;
@@ -342,8 +344,8 @@ static bool Request(const DeviceConfig *config, const RuntimeState *runtime,
     s_record_sequence = (s_active_slot == CONFIG_STORE_SLOT_NONE) ? 1U : NextSequence(s_active_sequence);
     (void)memset(s_body, 0, CONFIG_STORE_HEADER_SIZE);
     WriteU32(s_body, CONFIG_STORE_MAGIC);
-    WriteU16(s_body + 4U, CONFIG_STORE_FORMAT_VERSION);
-    WriteU16(s_body + 6U, CONFIG_STORE_SCHEMA_V2);
+    WriteU16(s_body + 4U, CONFIG_STORE_FORMAT_V3);
+    WriteU16(s_body + 6U, CONFIG_STORE_SCHEMA_V3);
     WriteU16(s_body + 8U, CONFIG_STORE_HEADER_SIZE);
     WriteU16(s_body + 10U, s_payload_length);
     WriteU32(s_body + 12U, s_record_sequence);

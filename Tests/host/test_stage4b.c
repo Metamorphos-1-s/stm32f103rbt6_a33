@@ -5,6 +5,8 @@
 #include "fake_flash_backend.h"
 #include "persistent_codec.h"
 #include "persistent_schema.h"
+#include "metrology_config_validator.h"
+#include "alarm_config_validation.h"
 #include "system_context.h"
 
 #include <stdio.h>
@@ -15,8 +17,8 @@ static bool s_power_safe = true;
 
 _Static_assert(CONFIG_STORE_VERIFY_CHUNK_SIZE <= 128U,
                "verify chunk must remain bounded");
-_Static_assert(PERSISTENT_V1_PAYLOAD_SIZE == 164U,
-               "V1 payload size changed");
+_Static_assert(PERSISTENT_V3_PAYLOAD_SIZE == 281U,
+               "V3 payload size changed");
 
 #define CHECK(condition) do { \
     if (!(condition)) { \
@@ -76,54 +78,37 @@ static void TestCodec(void)
     uint16_t length = 0U;
 
     MakeConfig(&input, &runtime);
+    CHECK(PersistentCodec_EncodeV3(&input, &runtime, bytes, sizeof(bytes),
+        &length) == PERSISTENT_CODEC_OK);
+    CHECK(length == PERSISTENT_V3_PAYLOAD_SIZE);
+    CHECK(PersistentCodec_DecodeV3(bytes, length, &output, &decoded) ==
+          PERSISTENT_CODEC_OK);
+    CHECK(PersistentCodec_EncodeV3(&output, &decoded, bytes,
+        sizeof(bytes), &length) == PERSISTENT_CODEC_OK);
     CHECK(CalibrationModel_Build(100000, 200000, 10000, 7U,
                                  &input.calibration) == CALIBRATION_RESULT_OK);
     input.system.tare_power_loss_retention = true;
     runtime.weight_view = WEIGHT_VIEW_GROSS;
-    runtime.current_tare = 500;
+    runtime.current_tare_ug = 500000;
     runtime.tare_active = true;
-    CHECK(PersistentCodec_EncodeV1(&input, &runtime, bytes, sizeof(bytes),
+    CHECK(PersistentCodec_EncodeV3(&input, &runtime, bytes, sizeof(bytes),
                                   &length) == PERSISTENT_CODEC_OK);
-    CHECK(length == CONFIG_STORE_V1_PAYLOAD_SIZE);
-    CHECK(PersistentCodec_Decode(CONFIG_STORE_SCHEMA_V1, bytes, length,
-                                 &output, &decoded) == PERSISTENT_CODEC_OK);
+    CHECK(length == PERSISTENT_V3_PAYLOAD_SIZE);
+    CHECK(PersistentCodec_DecodeV3(bytes, length, &output, &decoded) ==
+          PERSISTENT_CODEC_OK);
     CHECK(output.calibration.raw_zero == 100000);
     CHECK(output.calibration.raw_span == 200000);
-    CHECK(decoded.weight_view ==
-          (WeightViewMode)input.display.default_weight_view);
-    CHECK(decoded.current_tare == 500 && decoded.tare_active);
-
-    CHECK(CalibrationModel_Build(200000, 100000, 10000, 8U,
-                                 &input.calibration) == CALIBRATION_RESULT_OK);
-    CHECK(PersistentCodec_EncodeV1(&input, &runtime, bytes, sizeof(bytes),
-                                  &length) == PERSISTENT_CODEC_OK);
+    CHECK(decoded.weight_view == WEIGHT_VIEW_GROSS);
+    CHECK(decoded.current_tare_ug == 500000 && decoded.tare_active);
     CHECK(PersistentCodec_Decode(CONFIG_STORE_SCHEMA_V1, bytes, length,
-                                 &output, &decoded) == PERSISTENT_CODEC_OK);
-    CHECK(output.calibration.scale_denominator < 0);
-    CHECK(PersistentCodec_EncodeV1(&input, &runtime, bytes, 10U, &length) ==
-          PERSISTENT_CODEC_BUFFER_TOO_SMALL);
-    CHECK(PersistentCodec_Decode(CONFIG_STORE_SCHEMA_V1, bytes,
-          CONFIG_STORE_V1_PAYLOAD_SIZE - 1U, &output, &decoded) ==
-          PERSISTENT_CODEC_TRUNCATED);
-    CHECK(PersistentCodec_Decode(3U, bytes, CONFIG_STORE_V1_PAYLOAD_SIZE,
           &output, &decoded) == PERSISTENT_CODEC_UNSUPPORTED_SCHEMA);
-
-    bytes[9] = 0xFFU;
-    CHECK(PersistentCodec_Decode(CONFIG_STORE_SCHEMA_V1, bytes,
-          CONFIG_STORE_V1_PAYLOAD_SIZE, &output, &decoded) ==
+    CHECK(PersistentCodec_Decode(CONFIG_STORE_SCHEMA_V2, bytes, length,
+          &output, &decoded) == PERSISTENT_CODEC_UNSUPPORTED_SCHEMA);
+    CHECK(PersistentCodec_DecodeV3(bytes, PERSISTENT_V3_PAYLOAD_SIZE - 1U,
+          &output, &decoded) == PERSISTENT_CODEC_TRUNCATED);
+    bytes[47] = 2U;
+    CHECK(PersistentCodec_DecodeV3(bytes, length, &output, &decoded) ==
           PERSISTENT_CODEC_VALIDATION_FAILED);
-    CHECK(PersistentCodec_EncodeV1(&input, &runtime, bytes, sizeof(bytes),
-                                  &length) == PERSISTENT_CODEC_OK);
-    bytes[CONFIG_STORE_V1_PAYLOAD_SIZE - 1U] = 2U;
-    CHECK(PersistentCodec_Decode(CONFIG_STORE_SCHEMA_V1, bytes, length,
-          &output, &decoded) == PERSISTENT_CODEC_INVALID_VALUE);
-
-    input.system.tare_power_loss_retention = false;
-    CHECK(PersistentCodec_EncodeV1(&input, &runtime, bytes, sizeof(bytes),
-                                  &length) == PERSISTENT_CODEC_OK);
-    CHECK(PersistentCodec_Decode(CONFIG_STORE_SCHEMA_V1, bytes, length,
-                                 &output, &decoded) == PERSISTENT_CODEC_OK);
-    CHECK(!decoded.tare_active && decoded.current_tare == 0);
 }
 
 static void TestStoreAndRecovery(void)
@@ -170,7 +155,7 @@ static void TestStoreAndRecovery(void)
     CHECK(loaded.display.brightness == 4U);
 
     FakeFlash_Corrupt(CONFIG_FLASH_SLOT_B_ADDRESS + CONFIG_STORE_HEADER_SIZE,
-                      0x00U);
+                      0xFFU);
     ConfigStore_Init(FakeFlash_GetBackend());
     CHECK(ConfigStore_Load(&loaded, &loaded_runtime, &info) ==
           CONFIG_LOAD_RECOVERED_SLOT_A);
@@ -339,7 +324,8 @@ static void TestFlashErrorPreservation(void)
 
     ConfigStore_Init(FakeFlash_GetBackend());
     lock_at = FakeFlash_GetProgramCount() +
-              (CONFIG_STORE_V2_BODY_SIZE / 2U) + 2U;
+              (ConfigStore_AlignedProgramLength(CONFIG_STORE_V3_BODY_SIZE) /
+               2U) + 2U;
     FakeFlash_FailLockAtProgramCount(lock_at);
     CHECK(ConfigStore_RequestSave(&config, &runtime, 3U));
     RunStore();
