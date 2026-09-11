@@ -1,0 +1,14 @@
+{
+  "duration_s": 23.545999999999992,
+  "frames_received": 106,
+  "fast_frames": 76,
+  "slow_frames": 15,
+  "checkweigh_frames": 15,
+  "crc_errors": 0,
+  "sequence_gaps": 0,
+  "duplicates": 0,
+  "parser_resync": 0,
+  "timestamp_anomalies": 0,
+  "disconnects": 0,
+  "partial_bytes": 0
+}

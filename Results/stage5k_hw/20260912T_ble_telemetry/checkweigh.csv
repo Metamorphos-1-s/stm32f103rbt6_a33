@@ -1,0 +1,16 @@
+frame_sequence,device_timestamp_ms,message_type,checkweigh_state,limit_enabled,stable,alarm_active,green_active,yellow_active,red_active,internal_buzzer_active,external_buzzer_active,weight_source,reserved,config_revision,host_timestamp
+25206,3601009,3,0,False,True,False,False,False,False,False,False,0,0,3,1789155874.750142
+25213,3602009,3,0,False,True,False,False,False,False,False,False,0,0,3,1789155875.7554648
+25220,3603009,3,0,False,True,False,False,False,False,False,False,0,0,3,1789155876.7604253
+25227,3604009,3,0,False,True,False,False,False,False,False,False,0,0,3,1789155877.78079
+25234,3605009,3,0,False,True,False,False,False,False,False,False,0,0,3,1789155878.7552402
+25241,3606009,3,0,False,True,False,False,False,False,False,False,0,0,3,1789155879.7602785
+25248,3607009,3,0,False,True,False,False,False,False,False,False,0,0,3,1789155880.7503514
+25255,3608009,3,0,False,True,False,False,False,False,False,False,0,0,3,1789155881.755349
+25262,3609009,3,0,False,True,False,False,False,False,False,False,0,0,3,1789155882.760101
+25269,3610009,3,0,False,True,False,False,False,False,False,False,0,0,3,1789155883.7502875
+25276,3611009,3,0,False,True,False,False,False,False,False,False,0,0,3,1789155884.7693484
+25283,3612009,3,0,False,True,False,False,False,False,False,False,0,0,3,1789155885.7898805
+25290,3613009,3,0,False,True,False,False,False,False,False,False,0,0,3,1789155886.7648056
+25297,3614009,3,0,False,True,False,False,False,False,False,False,0,0,3,1789155887.7549627
+25304,3615009,3,0,False,True,False,False,False,False,False,False,0,0,3,1789155888.7602122
