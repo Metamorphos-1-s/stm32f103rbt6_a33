@@ -20,9 +20,6 @@ typedef enum
     CALIBRATION_RESULT_INCONSISTENT
 } CalibrationResult;
 
-CalibrationResult CalibrationModel_Build(int32_t raw_zero, int32_t raw_span,
-    WeightValue span_weight, uint32_t calibration_sequence,
-    CalibrationConfig *output);
 CalibrationResult CalibrationModel_BuildMass(int32_t raw_zero,
     int32_t raw_span, MassValueUg span_mass_ug,
     uint32_t calibration_sequence, CalibrationConfig *output);

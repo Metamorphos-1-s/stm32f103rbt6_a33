@@ -4,7 +4,6 @@
 #include "display_conditioner.h"
 #include "fault_manager.h"
 #include "metrology_config_validator.h"
-#include "metrology_legacy_projection.h"
 #include "system_context.h"
 #include "unit_converter.h"
 #include "weight_engine.h"
@@ -289,12 +288,7 @@ bool MetrologyManager_SetDisplayUnit(MassUnit unit)
     candidate = context->config;
     candidate.metrology.active_unit = unit;
     if (MetrologyConfig_ValidateCanonical(&candidate.metrology) !=
-        METROLOGY_CONFIG_OK ||
-        !MetrologyLegacyProjection_Update(&candidate.metrology) ||
-        !MetrologyLegacyStabilityProjection_Update(&candidate.metrology,
-                                                    &candidate.stability) ||
-        !CalibrationLegacyProjection_Update(&candidate.calibration, unit,
-            &candidate.metrology.unit_display[unit])) return false;
+        METROLOGY_CONFIG_OK) return false;
     previous_display_config = s_engine.metrology;
     if (!WeightEngine_UpdateDisplayConfig(&s_engine,
                                           &candidate.metrology)) return false;
@@ -420,7 +414,14 @@ bool MetrologyManager_ReconfigureFilter(FilterMode mode, uint8_t strength)
     return true;
 }
 
-bool MetrologyManager_Reconfigure(const DeviceConfig *config)
+typedef enum
+{
+    METROLOGY_REBUILD_KEEP_RAW = 0,
+    METROLOGY_REBUILD_REPLAY_RAW
+} MetrologyRebuildMode;
+
+static bool MetrologyManager_RebuildEngine(const DeviceConfig *config,
+                                           MetrologyRebuildMode mode)
 {
     WeightEngine replacement;
     RawMeasurementSample sample;
@@ -448,7 +449,7 @@ bool MetrologyManager_Reconfigure(const DeviceConfig *config)
         return false;
     }
     replacement.zero_tare.zero_offset_raw = zero_offset;
-    if (s_engine.has_raw_sample)
+    if ((mode == METROLOGY_REBUILD_REPLAY_RAW) && s_engine.has_raw_sample)
     {
         sample.raw_value = s_engine.snapshot.raw_value;
         sample.timestamp_ms = s_engine.snapshot.sample_timestamp_ms;
@@ -466,39 +467,15 @@ bool MetrologyManager_Reconfigure(const DeviceConfig *config)
     return true;
 }
 
+bool MetrologyManager_Reconfigure(const DeviceConfig *config)
+{
+    return MetrologyManager_RebuildEngine(config,
+        METROLOGY_REBUILD_REPLAY_RAW);
+}
+
 bool MetrologyManager_RestartAfterStorage(const DeviceConfig *config)
 {
-    WeightEngine replacement;
-    bool calibration_changed;
-    bool restore_tare;
-    int32_t zero_offset;
-
-    if (!s_initialized || (config == NULL) ||
-        (MetrologyConfig_ValidateCanonical(&config->metrology) !=
-         METROLOGY_CONFIG_OK) ||
-        (config->calibration.calibration_valid &&
-         (CalibrationModel_Validate(&config->calibration) !=
-          CALIBRATION_RESULT_OK)))
-    {
-        return false;
-    }
-    calibration_changed = MetrologyManager_CalibrationChanged(
-        &config->calibration, &s_engine.calibration);
-    restore_tare = !calibration_changed && s_engine.zero_tare.tare_active;
-    zero_offset = calibration_changed ? 0 : s_engine.zero_tare.zero_offset_raw;
-    if (!WeightEngine_InitMass(&replacement, &config->metrology,
-            &config->calibration, &config->stability,
-            restore_tare ? s_engine.zero_tare.tare_mass_ug : 0, restore_tare))
-    {
-        return false;
-    }
-    replacement.zero_tare.zero_offset_raw = zero_offset;
-    s_engine = replacement;
-    s_last_published_sequence = 0U;
-    s_last_published_stable = false;
-    MetrologyManager_SyncTare(false);
-    MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
-    return true;
+    return MetrologyManager_RebuildEngine(config, METROLOGY_REBUILD_KEEP_RAW);
 }
 
 uint32_t MetrologyManager_GetRejectedSampleCount(void)

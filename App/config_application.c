@@ -6,7 +6,6 @@
 #include "display_controller.h"
 #include "fault_manager.h"
 #include "metrology_config_validator.h"
-#include "metrology_legacy_projection.h"
 #include "metrology_manager.h"
 #include "system_context.h"
 
@@ -52,15 +51,6 @@ static ConfigApplyResult ConfigApplication_ApplyInternal(
 
     if (validation != CONFIG_APPLY_OK) return validation;
     normalized = *candidate;
-    if (!MetrologyLegacyProjection_Update(&normalized.metrology) ||
-        !MetrologyLegacyStabilityProjection_Update(&normalized.metrology,
-                                                    &normalized.stability) ||
-        !CalibrationLegacyProjection_Update(&normalized.calibration,
-            normalized.metrology.active_unit,
-            &normalized.metrology.unit_display[normalized.metrology.active_unit]))
-    {
-        return CONFIG_APPLY_INVALID;
-    }
     if (!DisplayController_SetBrightness(normalized.display.brightness))
     {
         return CONFIG_APPLY_DISPLAY_ERROR;

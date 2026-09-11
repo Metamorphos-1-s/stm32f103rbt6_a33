@@ -55,6 +55,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     App/measurement_bridge.c
     App/metrology_manager.c
     App/persistence_manager.c
+    App/revision_helper.c
     App/self_test_controller.c
     App/startup_auto_zero_controller.c
     App/system_context.c
@@ -86,7 +87,6 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Domain/limit_checker/limit_checker.c
     Domain/measurement/metrology_config_validator.c
     Domain/measurement/display_conditioner.c
-    Domain/measurement/metrology_legacy_projection.c
     Domain/measurement/mass_math.c
     Domain/measurement/metrology_standard_validator.c
     Domain/measurement/raw_measurement.c

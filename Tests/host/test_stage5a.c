@@ -3,10 +3,10 @@
 #include "key_service.h"
 #include "mass_math.h"
 #include "metrology_config_validator.h"
-#include "metrology_legacy_projection.h"
 #include "metrology_standard_validator.h"
 #include "persistent_codec.h"
 #include "persistent_schema.h"
+#include "project_config.h"
 #include "unit_converter.h"
 #include "modbus_register_model.h"
 #include "modbus_register_map.h"
@@ -38,6 +38,7 @@ static void TestMassAndUnits(void)
     CHECK(UnitConverter_MassToDisplay(INT64_C(1003000000),MASS_UNIT_KG,&kg,&display)&&display.display_count==1005);
 }
 
+#if 0 /* Removed legacy V1/V2 projection tests. */
 static void TestCanonicalAndLegacyBoundary(void)
 {
     DeviceConfig config;
@@ -180,6 +181,7 @@ static void TestAlarmLegacyProjection(void)
     CHECK(config.alarm.upper_limit == 100);
     CHECK(config.alarm.hysteresis == 20U);
 }
+#endif
 
 static void TestCodec(void)
 {
@@ -202,7 +204,7 @@ static void TestCodec(void)
         CHECK(PersistentCodec_EncodeV3(&decoded,&decoded_runtime,roundtrip,
             sizeof(roundtrip),&roundtrip_length)==PERSISTENT_CODEC_OK);
         CHECK(roundtrip_length==length&&memcmp(bytes,roundtrip,length)==0);
-        CHECK(!decoded_runtime.migration_pending_save);
+        CHECK(!decoded_runtime.config_dirty);
         CHECK(decoded.system.startup_auto_zero_enable);
     }
     config.metrology.capacity_ug=INT64_C(10000000000);
@@ -282,6 +284,7 @@ static void TestProductDefaults(void)
         METROLOGY_CONFIG_INVALID_OVERLOAD);
 }
 
+#if 0 /* Removed legacy development normalization tests. */
 static void TestLegacyDevelopmentNormalization(void)
 {
     DeviceConfig config;
@@ -360,6 +363,7 @@ static void TestLegacyDevelopmentNormalization(void)
         DEFAULT_CONFIG_NORMALIZED_NONE);
     CHECK(memcmp(&config,&unchanged,sizeof(config))==0);
 }
+#endif
 
 static void TestKeyConflict(void)
 {
@@ -381,6 +385,12 @@ static void TestModbusModel(void)
     uint16_t drift_words[30];
     uint16_t request[]={1U,1U,0U,0U,0U,0U,0U,0U,0U,0U,0U,0xA55AU};
     Stage5A_ModelAdaptersInit();
+    CHECK(ModbusRegisterModel_ReadHolding(0x013EU, 1U, words) ==
+          MODBUS_REGISTER_OK && words[0] == DEVICE_CONFIG_SCHEMA_VERSION);
+    CHECK(ModbusRegisterModel_ReadHolding(0x01C0U, 1U, words) ==
+          MODBUS_REGISTER_OK && words[0] == CONFIG_STORE_SCHEMA_V3);
+    CHECK(ModbusRegisterModel_ReadHolding(0x000FU, 1U, words) ==
+          MODBUS_REGISTER_OK && words[0] == FW_RELEASE_VERSION);
     Stage5A_ModelSnapshot()->net_mass_ug=INT64_C(0x1122334455667788);
     Stage5A_ModelDisplayCondition()->state=DISPLAY_CONDITION_LOCKED;
     Stage5A_ModelDisplayCondition()->locked=true;
@@ -515,7 +525,7 @@ int main(void)
 {
     TestMassAndUnits(); TestCodec();
     TestReferenceRules(); TestProductDefaults();
-    TestLegacyDevelopmentNormalization(); TestKeyConflict(); TestModbusModel();
+    TestKeyConflict(); TestModbusModel();
     if(failures==0U) printf("Stage 5A host tests passed.\n");
     return failures==0U?0:1;
 }

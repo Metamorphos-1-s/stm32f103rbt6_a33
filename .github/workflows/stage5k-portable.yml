@@ -1,0 +1,44 @@
+name: Stage 5K portable host gate
+
+on:
+  push:
+    branches:
+      - stage5k-fw0510-correctness-refactor
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  host:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: gcc
+            compiler: gcc
+            cflags: ""
+          - name: clang
+            compiler: clang
+            cflags: ""
+          - name: ubsan
+            compiler: gcc
+            cflags: "-fsanitize=undefined -fno-sanitize-recover=undefined"
+    runs-on: ubuntu-latest
+    name: ${{ matrix.name }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tool versions
+        run: |
+          cmake --version
+          ninja --version
+          ${{ matrix.compiler }} --version
+      - name: Configure
+        env:
+          CC: ${{ matrix.compiler }}
+          CFLAGS: "-std=c11 -Wall -Wextra -Werror ${{ matrix.cflags }}"
+        run: cmake -S Tests/host -B build/stage5k-${{ matrix.name }} -G Ninja
+      - name: Build
+        run: cmake --build build/stage5k-${{ matrix.name }} --parallel
+      - name: Test
+        run: ctest --test-dir build/stage5k-${{ matrix.name }} --output-on-failure

@@ -1,4 +1,5 @@
 #include "menu_controller.h"
+#include "revision_helper.h"
 #include "persistent_codec.h"
 
 #include "bsp_time.h"
@@ -231,12 +232,6 @@ static void DiscardCandidate(void)
     s_candidate_changed = false;
 }
 
-static uint32_t NextRevision(uint32_t revision)
-{
-    uint32_t next = revision + 1U;
-    return next == 0xFFFFFFFFUL ? 0U : next;
-}
-
 static void RequestSave(uint32_t now_ms)
 {
     CommandResult result;
@@ -300,7 +295,7 @@ static void RequestSave(uint32_t now_ms)
                  DISPLAY_CODE_SAVE_ERROR);
         return;
     }
-    s_save_revision = NextRevision(s_expected_revision);
+    s_save_revision = Revision_Next(s_expected_revision);
     s_save_started_ms = now_ms;
     s_save_waiting = true;
     s_exit_after_save = true;
@@ -742,12 +737,7 @@ bool MenuController_Enter(void)
     s_active = true; s_editing = false; s_factory_confirmation = false;
     s_item = MENU_ITEM_UNIT; s_advanced = false; ClearSequence();
     s_expected_revision = SystemContext_GetConfigRevision();
-    if (context->runtime.migration_pending_save)
-    {
-        s_existing_dirty_owned = true;
-        s_existing_dirty_revision = s_expected_revision;
-    }
-    else if (s_existing_dirty_owned &&
+    if (s_existing_dirty_owned &&
              (s_existing_dirty_revision != s_expected_revision))
         s_existing_dirty_owned = false;
     s_entry_ownership_allowed =

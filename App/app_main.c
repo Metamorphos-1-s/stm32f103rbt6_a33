@@ -148,7 +148,6 @@ bool App_Init(void)
     }
   }
   load_info = PersistenceManager_GetLoadInfo();
-  (void)DefaultConfig_NormalizeStartup(&config, &runtime);
 
   now_ms = BSP_TimeNowMs();
   if (!SystemContext_InitRestored(&config, &runtime,

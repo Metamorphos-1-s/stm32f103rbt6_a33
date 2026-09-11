@@ -1,4 +1,5 @@
 #include "status_controller.h"
+#include "revision_helper.h"
 #include "persistent_codec.h"
 
 #include "battery_adc.h"
@@ -53,12 +54,6 @@ static bool IsRunPage(DisplayPage page)
     return (page == DISPLAY_PAGE_NET) || (page == DISPLAY_PAGE_GROSS) ||
         (page == DISPLAY_PAGE_TARE) || (page == DISPLAY_PAGE_BATTERY);
 }
-static uint32_t NextRevision(uint32_t revision)
-{
-    uint32_t next = revision + 1U;
-    return next == 0xFFFFFFFFUL ? 0U : next;
-}
-
 static void Show(const char text[6])
 {
     if (!s_suppress_display)
@@ -367,7 +362,7 @@ void StatusController_Process10ms(void)
             { ShowMessage(" bUSY ", STATUS_MODE_LIST, now); return; }
             s_applied = true;
             s_applied_candidate = s_candidate;
-            s_applied_revision = NextRevision(s_original_revision);
+            s_applied_revision = Revision_Next(s_original_revision);
             RequestSaveOnly(now);
         }
         else if (result == COMM_APPLY_RESULT_FAILED)

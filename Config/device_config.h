@@ -7,19 +7,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef MassUnit WeightUnit;
-#define WEIGHT_UNIT_KG MASS_UNIT_KG
-#define WEIGHT_UNIT_G MASS_UNIT_G
-#define WEIGHT_UNIT_LB MASS_UNIT_LB
-#define WEIGHT_UNIT_COUNT MASS_UNIT_COUNT
-
-typedef enum
-{
-    SAMPLE_MODE_NORMAL = 0,
-    SAMPLE_MODE_LOW_NOISE,
-    SAMPLE_MODE_COUNT
-} SampleMode;
-
 typedef enum
 {
     DEVICE_CS1237_GAIN_1 = 0,
@@ -143,27 +130,12 @@ typedef struct
     LoadCellMetadata load_cell;
     WeighingProfileConfig profiles[WEIGHING_PROFILE_COUNT];
     WeighingProfileId active_profile;
-    /* Legacy V1 fields retained only for migration compatibility. */
-    uint32_t capacity;
-    uint32_t division;
-    uint8_t decimal_places;
-    WeightUnit unit;
-    SampleMode sample_mode;
-    Cs1237Gain cs1237_gain;
-    Cs1237DataRate cs1237_data_rate;
-    FilterMode filter_mode;
-    uint8_t filter_strength;
-    uint32_t zero_range;
-    uint32_t overload_threshold;
-    bool auto_zero_tracking_enable;
-    uint32_t auto_zero_tracking_range;
 } MetrologyConfig;
 
 typedef struct
 {
     int32_t raw_zero;
     int32_t raw_span;
-    uint32_t span_weight;
     int32_t scale_numerator;
     int32_t scale_denominator;
     uint32_t calibration_sequence;

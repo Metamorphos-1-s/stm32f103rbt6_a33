@@ -1,7 +1,7 @@
 """Stage 5B register constants. PDU addresses are zero based."""
 
 REGISTER_MAP_VERSION = 0x0104
-FIRMWARE_VERSION = 0x050F
+FIRMWARE_VERSION = 0x0510
 SCHEMA_VERSION = 2
 EXECUTE_VALUE = 0xA55A
 

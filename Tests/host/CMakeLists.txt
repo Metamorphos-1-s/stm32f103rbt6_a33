@@ -16,6 +16,7 @@ add_executable(stage4a_host_tests
     ../../App/metrology_manager.c
     ../../App/self_test_controller.c
     ../../App/system_context.c
+    ../../App/revision_helper.c
     ../../App/weighing_profile_manager.c
     ../../Config/alarm_config_validation.c
     ../../Config/device_config_validator.c
@@ -28,7 +29,6 @@ add_executable(stage4a_host_tests
     ../../Domain/filter/weight_filter.c
     ../../Domain/measurement/metrology_config_validator.c
     ../../Domain/measurement/display_conditioner.c
-    ../../Domain/measurement/metrology_legacy_projection.c
     ../../Domain/measurement/mass_math.c
     ../../Domain/measurement/metrology_standard_validator.c
     ../../Domain/measurement/raw_measurement.c
@@ -144,12 +144,12 @@ add_executable(stage4b_storage_tests
     test_stage4b.c
     fake_flash_backend.c
     ../../App/system_context.c
+    ../../App/revision_helper.c
     ../../Config/alarm_config_validation.c
     ../../Config/device_config_validator.c
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/metrology_config_validator.c
-    ../../Domain/measurement/metrology_legacy_projection.c
     ../../Domain/measurement/mass_math.c
     ../../Domain/measurement/metrology_standard_validator.c
     ../../Domain/measurement/unit_converter.c
@@ -176,12 +176,12 @@ add_executable(stage4br_persistence_tests
     fake_flash_backend.c
     ../../App/persistence_manager.c
     ../../App/system_context.c
+    ../../App/revision_helper.c
     ../../Config/alarm_config_validation.c
     ../../Config/device_config_validator.c
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/metrology_config_validator.c
-    ../../Domain/measurement/metrology_legacy_projection.c
     ../../Domain/measurement/mass_math.c
     ../../Domain/measurement/metrology_standard_validator.c
     ../../Domain/measurement/unit_converter.c
@@ -217,7 +217,6 @@ add_executable(stage5a_host_tests
     ../../Domain/measurement/mass_math.c
     ../../Domain/measurement/runtime_drift_compensator.c
     ../../Domain/measurement/metrology_config_validator.c
-    ../../Domain/measurement/metrology_legacy_projection.c
     ../../Domain/measurement/metrology_standard_validator.c
     ../../Domain/measurement/unit_converter.c
     ../../Domain/measurement/weight_math.c
@@ -255,7 +254,6 @@ add_executable(stage5b_host_tests
     ../../Domain/measurement/mass_math.c
     ../../Domain/measurement/runtime_drift_compensator.c
     ../../Domain/measurement/metrology_config_validator.c
-    ../../Domain/measurement/metrology_legacy_projection.c
     ../../Domain/measurement/metrology_standard_validator.c
     ../../Domain/measurement/unit_converter.c
     ../../Domain/measurement/weight_math.c
@@ -352,7 +350,6 @@ add_executable(stage5e_config_edit_no_menu_tests
     ../../Services/config_edit/config_edit.c
     ../../Config/device_config_validator.c
     ../../Config/default_config.c
-    ../../Domain/measurement/metrology_legacy_projection.c
     ../../Domain/measurement/unit_converter.c
     ../../Domain/measurement/mass_math.c)
 target_compile_definitions(stage5e_config_edit_no_menu_tests PRIVATE

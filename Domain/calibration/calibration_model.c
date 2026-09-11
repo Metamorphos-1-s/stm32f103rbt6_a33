@@ -31,20 +31,6 @@ CalibrationResult CalibrationModel_BuildMass(int32_t raw_zero,
     return CALIBRATION_RESULT_OK;
 }
 
-CalibrationResult CalibrationModel_Build(int32_t raw_zero, int32_t raw_span,
-    WeightValue span_weight, uint32_t calibration_sequence,
-    CalibrationConfig *output)
-{
-    CalibrationResult result = CalibrationModel_BuildMass(
-        raw_zero, raw_span, span_weight, calibration_sequence, output);
-    if (result == CALIBRATION_RESULT_OK)
-    {
-        output->span_weight = (uint32_t)span_weight;
-        output->scale_numerator = span_weight;
-    }
-    return result;
-}
-
 CalibrationResult CalibrationModel_Validate(
     const CalibrationConfig *calibration)
 {

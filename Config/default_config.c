@@ -3,7 +3,6 @@
 #include <string.h>
 
 #include "project_config.h"
-#include "metrology_legacy_projection.h"
 
 #define TARGET_SENSOR_CAPACITY_UG ((MassValueUg)A33_SENSOR_RATED_CAPACITY_UG)
 #define LEGACY_DEVELOPMENT_OVERLOAD_UG INT64_C(10000000000)
@@ -11,8 +10,6 @@
 #define HIGH_PRECISION_ENTER_UG INT64_C(50000)
 #define HIGH_PRECISION_EXIT_UG INT64_C(100000)
 #define HIGH_PRECISION_HOLD_MS 1000U
-
-static uint32_t s_last_normalization_flags;
 
 void DefaultConfig_Load(DeviceConfig *config)
 {
@@ -53,18 +50,6 @@ void DefaultConfig_Load(DeviceConfig *config)
         INT64_C(2000000), INT64_C(4000000), 500U};
     config->metrology.load_cell.rated_capacity_known = true;
     config->metrology.load_cell.rated_capacity_ug = TARGET_SENSOR_CAPACITY_UG;
-    config->metrology.capacity = 300000U;
-    config->metrology.division = 1U;
-    config->metrology.decimal_places = 2U;
-    config->metrology.unit = WEIGHT_UNIT_G;
-    config->metrology.sample_mode = SAMPLE_MODE_NORMAL;
-    config->metrology.cs1237_gain = DEVICE_CS1237_GAIN_128;
-    config->metrology.cs1237_data_rate = DEVICE_CS1237_DATA_RATE_10_HZ;
-    config->metrology.filter_mode = FILTER_MODE_MEDIAN3_IIR;
-    config->metrology.filter_strength = 3U;
-    config->metrology.zero_range = 6000U;
-    config->metrology.overload_threshold = 300000U;
-
     config->calibration.scale_denominator = 1;
     config->calibration.calibration_valid = false;
 
@@ -103,104 +88,4 @@ void DefaultConfig_Load(DeviceConfig *config)
     config->system.tare_power_loss_retention = false;
     config->system.watchdog_enable = (PROJECT_ENABLE_IWDG != 0U);
     config->system.startup_auto_zero_enable = false;
-}
-
-uint32_t DefaultConfig_NormalizeLegacyDevelopment(DeviceConfig *config)
-{
-    DeviceConfig candidate;
-    WeighingProfileConfig *profile;
-    bool legacy_profile;
-    bool hf1_profile;
-    uint32_t flags = DEFAULT_CONFIG_NORMALIZED_NONE;
-
-    if (config == NULL)
-    {
-        return flags;
-    }
-    candidate = *config;
-    if ((candidate.battery.divider_top_ohm == 30000U) &&
-        (candidate.battery.divider_bottom_ohm == 10000U))
-    {
-        candidate.battery.divider_top_ohm = BATTERY_DIVIDER_TOP_OHM;
-        candidate.battery.divider_bottom_ohm = BATTERY_DIVIDER_BOTTOM_OHM;
-        flags |= DEFAULT_CONFIG_NORMALIZED_BATTERY_DIVIDER;
-    }
-    if (config->metrology.compliance_mode != METROLOGY_COMPLIANCE_GENERAL)
-    {
-        if (flags != DEFAULT_CONFIG_NORMALIZED_NONE) *config = candidate;
-        return flags;
-    }
-    profile = &candidate.metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION];
-    legacy_profile =
-        (profile->sample_rate == DEVICE_CS1237_DATA_RATE_10_HZ) &&
-        (profile->gain == DEVICE_CS1237_GAIN_128) &&
-        (profile->filter_mode == FILTER_MODE_MEDIAN3_IIR) &&
-        (profile->filter_strength == 3U) &&
-        (profile->stability_window == 8U) &&
-        (profile->stability_enter_threshold_ug == INT64_C(2000000)) &&
-        (profile->stability_exit_threshold_ug == INT64_C(4000000)) &&
-        (profile->stability_hold_ms == 500U);
-    hf1_profile =
-        (profile->sample_rate == DEVICE_CS1237_DATA_RATE_10_HZ) &&
-        (profile->gain == DEVICE_CS1237_GAIN_128) &&
-        (profile->filter_mode == FILTER_MODE_MEDIAN3_IIR) &&
-        (profile->filter_strength == 3U) &&
-        (profile->stability_window == 8U) &&
-        (profile->stability_enter_threshold_ug == HIGH_PRECISION_ENTER_UG) &&
-        (profile->stability_exit_threshold_ug == HIGH_PRECISION_EXIT_UG) &&
-        (profile->stability_hold_ms == HIGH_PRECISION_HOLD_MS);
-    if ((legacy_profile || hf1_profile) &&
-        (candidate.metrology.capacity_ug == TARGET_SENSOR_CAPACITY_UG) &&
-        (candidate.metrology.overload_threshold_ug ==
-         LEGACY_DEVELOPMENT_OVERLOAD_UG))
-    {
-        candidate.metrology.overload_threshold_ug = TARGET_SENSOR_CAPACITY_UG;
-        flags |= DEFAULT_CONFIG_NORMALIZED_OVERLOAD;
-    }
-    if (legacy_profile)
-    {
-        profile->stability_enter_threshold_ug = HIGH_PRECISION_ENTER_UG;
-        profile->stability_exit_threshold_ug = HIGH_PRECISION_EXIT_UG;
-        profile->stability_hold_ms = HIGH_PRECISION_HOLD_MS;
-        flags |= DEFAULT_CONFIG_NORMALIZED_STABILITY;
-        if (candidate.metrology.zero_range_ug == 0)
-        {
-            candidate.metrology.zero_range_ug = GENERAL_ZERO_RANGE_UG;
-            flags |= DEFAULT_CONFIG_NORMALIZED_ZERO_RANGE;
-        }
-    }
-    if (flags == DEFAULT_CONFIG_NORMALIZED_NONE) return flags;
-    if (!MetrologyLegacyProjection_Update(&candidate.metrology) ||
-        !MetrologyLegacyStabilityProjection_Update(&candidate.metrology,
-                                                    &candidate.stability))
-    {
-        return DEFAULT_CONFIG_NORMALIZED_NONE;
-    }
-    *config = candidate;
-    return flags;
-}
-
-uint32_t DefaultConfig_NormalizeStartup(DeviceConfig *config,
-    RuntimeState *runtime)
-{
-    uint32_t flags;
-
-    if (runtime == NULL)
-    {
-        s_last_normalization_flags = DEFAULT_CONFIG_NORMALIZED_NONE;
-        return s_last_normalization_flags;
-    }
-    flags = DefaultConfig_NormalizeLegacyDevelopment(config);
-    if (flags != DEFAULT_CONFIG_NORMALIZED_NONE)
-    {
-        runtime->migration_pending_save = true;
-        runtime->config_dirty = true;
-    }
-    s_last_normalization_flags = flags;
-    return flags;
-}
-
-uint32_t DefaultConfig_GetLastNormalizationFlags(void)
-{
-    return s_last_normalization_flags;
 }

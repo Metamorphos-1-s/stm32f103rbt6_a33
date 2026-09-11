@@ -1,4 +1,5 @@
 #include "persistence_manager.h"
+#include "revision_helper.h"
 
 #include "bsp_time.h"
 #include "config_application.h"
@@ -176,8 +177,7 @@ CommandResult PersistenceManager_RequestCandidateSave(
         (SystemContext_GetConfigRevision() != expected_revision) ||
         (ConfigApplication_Validate(candidate, allow_cs1237_change) !=
          CONFIG_APPLY_OK)) return COMMAND_RESULT_INVALID_ARGUMENT;
-    next = expected_revision + 1U;
-    if (next == 0xFFFFFFFFUL) next = 0U;
+    next = Revision_Next(expected_revision);
     if (!StoragePowerGuard_CanStartFlashOperation())
         return COMMAND_RESULT_POWER_UNSAFE;
     s_candidate_original = *original;

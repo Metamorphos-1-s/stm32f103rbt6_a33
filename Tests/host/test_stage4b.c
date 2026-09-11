@@ -8,6 +8,7 @@
 #include "metrology_config_validator.h"
 #include "alarm_config_validation.h"
 #include "system_context.h"
+#include "revision_helper.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -85,7 +86,7 @@ static void TestCodec(void)
           PERSISTENT_CODEC_OK);
     CHECK(PersistentCodec_EncodeV3(&output, &decoded, bytes,
         sizeof(bytes), &length) == PERSISTENT_CODEC_OK);
-    CHECK(CalibrationModel_Build(100000, 200000, 10000, 7U,
+    CHECK(CalibrationModel_BuildMass(100000, 200000, 10000, 7U,
                                  &input.calibration) == CALIBRATION_RESULT_OK);
     input.system.tare_power_loss_retention = true;
     runtime.weight_view = WEIGHT_VIEW_GROSS;
@@ -214,6 +215,11 @@ static void TestPowerCuts(void)
 
 static void TestRevision(void)
 {
+    CHECK(Revision_Next(0U) == 1U);
+    CHECK(Revision_Next(0xFFFFFFFEUL) == 0U);
+    CHECK(Revision_Next(0xFFFFFFFFUL) == 0U);
+    CHECK(Revision_IsValid(0U));
+    CHECK(!Revision_IsValid(0xFFFFFFFFUL));
     DeviceConfig config;
     RuntimeState runtime;
     MakeConfig(&config, &runtime);

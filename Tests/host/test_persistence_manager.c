@@ -173,7 +173,7 @@ static void TestFactoryResetSemantics(void)
     changed.calibration.calibration_valid = true;
     changed.calibration.raw_zero = 1;
     changed.calibration.raw_span = 2;
-    changed.calibration.span_weight = 1U;
+    changed.calibration.span_mass_ug = 1U;
     changed.calibration.scale_numerator = 1;
     changed.calibration.scale_denominator = 1;
     changed.calibration.calibration_sequence = 1U;

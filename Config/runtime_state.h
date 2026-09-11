@@ -21,7 +21,6 @@ typedef struct
     bool tare_active;
     bool config_dirty;
     uint32_t boot_count;
-    bool migration_pending_save;
 } RuntimeState;
 
 #endif

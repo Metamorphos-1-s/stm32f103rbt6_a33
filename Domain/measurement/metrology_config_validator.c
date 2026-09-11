@@ -106,28 +106,6 @@ MetrologyConfigResult MetrologyConfig_ValidateProductHardware(
     return METROLOGY_CONFIG_OK;
 }
 
-MetrologyConfigResult MetrologyLegacyV1_Validate(
-    const MetrologyConfig *metrology, const StabilityConfig *stability)
-{
-    if ((metrology == NULL) || (stability == NULL)) return METROLOGY_CONFIG_NULL;
-    if ((metrology->capacity == 0U) || (metrology->capacity > INT32_MAX))
-        return METROLOGY_CONFIG_INVALID_CAPACITY;
-    if ((metrology->division == 0U) ||
-        (metrology->division > metrology->capacity))
-        return METROLOGY_CONFIG_INVALID_DIVISION;
-    if ((uint32_t)metrology->unit >= MASS_UNIT_COUNT)
-        return METROLOGY_CONFIG_INVALID_UNIT;
-    if (!FilterValid(metrology->filter_mode, metrology->filter_strength))
-        return METROLOGY_CONFIG_INVALID_FILTER;
-    if ((stability->window_size < 2U) ||
-        (stability->window_size > STABILITY_MAX_WINDOW) ||
-        (stability->enter_threshold > stability->exit_threshold) ||
-        (stability->stable_hold_ms < 10U) ||
-        (stability->stable_hold_ms > 10000U))
-        return METROLOGY_CONFIG_INVALID_STABILITY;
-    return METROLOGY_CONFIG_OK;
-}
-
 MetrologyConfigResult MetrologyConfig_Validate(
     const MetrologyConfig *metrology, const StabilityConfig *stability)
 {

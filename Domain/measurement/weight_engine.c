@@ -64,9 +64,6 @@ bool WeightEngine_UpdateDisplayConfig(WeightEngine *engine,
     display_config.enabled_unit_mask = metrology->enabled_unit_mask;
     (void)memcpy(display_config.unit_display, metrology->unit_display,
                  sizeof(display_config.unit_display));
-    display_config.unit = metrology->unit;
-    display_config.decimal_places = metrology->decimal_places;
-    display_config.division = metrology->division;
     snapshot = engine->snapshot;
     if (!ConvertCompatibility(snapshot.gross_mass_ug, &display_config,
                               &snapshot.gross_unrounded) ||
@@ -80,9 +77,6 @@ bool WeightEngine_UpdateDisplayConfig(WeightEngine *engine,
     engine->metrology.enabled_unit_mask = display_config.enabled_unit_mask;
     (void)memcpy(engine->metrology.unit_display, display_config.unit_display,
                  sizeof(engine->metrology.unit_display));
-    engine->metrology.unit = display_config.unit;
-    engine->metrology.decimal_places = display_config.decimal_places;
-    engine->metrology.division = display_config.division;
     engine->snapshot = snapshot;
     return true;
 }
@@ -221,30 +215,11 @@ bool WeightEngine_Init(WeightEngine *engine,
     const StabilityConfig *stability, WeightValue restored_tare,
     bool restore_tare)
 {
-    MetrologyConfig compatible;
-    CalibrationConfig compatible_calibration;
     if ((metrology == NULL) || (calibration == NULL) || (stability == NULL))
         return false;
-    compatible = *metrology;
-    compatible.zero_range_ug = metrology->zero_range;
-    compatible.profiles[compatible.active_profile].filter_mode =
-        metrology->filter_mode;
-    compatible.profiles[compatible.active_profile].filter_strength =
-        metrology->filter_strength;
-    compatible.profiles[compatible.active_profile].stability_window =
-        (uint8_t)stability->window_size;
-    compatible.profiles[compatible.active_profile].stability_enter_threshold_ug =
-        stability->enter_threshold;
-    compatible.profiles[compatible.active_profile].stability_exit_threshold_ug =
-        stability->exit_threshold;
-    compatible.profiles[compatible.active_profile].stability_hold_ms =
-        stability->stable_hold_ms;
-    compatible_calibration = *calibration;
-    compatible_calibration.span_mass_ug = calibration->span_weight;
-    if (!WeightEngine_InitMass(engine, &compatible, &compatible_calibration,
+    if (!WeightEngine_InitMass(engine, metrology, calibration,
                                stability, restored_tare, restore_tare))
         return false;
-    engine->metrology.overload_threshold_ug = metrology->overload_threshold;
     return true;
 }
 

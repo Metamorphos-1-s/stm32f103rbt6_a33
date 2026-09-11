@@ -81,7 +81,8 @@ static bool DecodeStaging(const DeviceConfig *active,DeviceConfig *candidate)
     candidate->metrology.verification_interval_e_ug=(MassValueUg)Join64(&s_staging[8],order);
     candidate->metrology.initial_zero_range_permille=s_staging[12];
     candidate->metrology.semi_auto_zero_range_permille=s_staging[13];
-    candidate->metrology.auto_zero_tracking_enable=s_staging[14]!=0U;
+    candidate->metrology.auto_zero_tracking_range_ug=
+        (s_staging[14] != 0U) ? candidate->metrology.auto_zero_tracking_range_ug : 0;
     candidate->system.tare_power_loss_retention=s_staging[15]!=0U;
     candidate->system.startup_auto_zero_enable=s_staging[60]!=0U;
     for(p=0U;p<MASS_UNIT_COUNT;++p)
@@ -122,9 +123,6 @@ static bool DecodeStaging(const DeviceConfig *active,DeviceConfig *candidate)
     candidate->alarm.external_buzzer_enable=s_alarm_staging[15]!=0U;
     candidate->alarm.qualified_beep_enable=s_alarm_staging[16]!=0U;
     if ((uint32_t)candidate->metrology.active_unit>=MASS_UNIT_COUNT)return false;
-    candidate->metrology.unit=candidate->metrology.active_unit;
-    candidate->metrology.decimal_places=candidate->metrology.unit_display[candidate->metrology.active_unit].decimal_places;
-    candidate->metrology.division=candidate->metrology.unit_display[candidate->metrology.active_unit].division_digit;
     return true;
 }
 
@@ -179,7 +177,7 @@ static ModbusRegisterResult ReadActive(uint16_t address,
         case 0x0103U:*value=(uint16_t)config->communication.word_order; break;
         case 0x010CU:*value=m->initial_zero_range_permille; break;
         case 0x010DU:*value=m->semi_auto_zero_range_permille; break;
-        case 0x010EU:*value=m->auto_zero_tracking_enable ? 1U:0U; break;
+        case 0x010EU:*value=(m->auto_zero_tracking_range_ug > 0) ? 1U:0U; break;
         case 0x010FU:*value=config->system.tare_power_loss_retention?1U:0U; break;
         case 0x0110U: case 0x0112U: case 0x0114U:
             *value=m->unit_display[(address-0x0110U)/2U].decimal_places; break;
@@ -203,7 +201,7 @@ static ModbusRegisterResult ReadActive(uint16_t address,
         case 0x0125U: case 0x0133U:
             *value=(uint16_t)m->profiles[(address==0x0125U)?0:1].stability_hold_ms; break;
         case 0x013CU:*value=config->system.startup_auto_zero_enable?1U:0U; break;
-        case 0x013EU:*value=CONFIG_STORE_SCHEMA_V3; break;
+        case 0x013EU:*value=DEVICE_CONFIG_SCHEMA_VERSION; break;
         case 0x013FU:*value=(uint16_t)MetrologyConfig_Validate(m,&config->stability); break;
         default:
             if ((address>=0x0104U)&&(address<=0x0107U))

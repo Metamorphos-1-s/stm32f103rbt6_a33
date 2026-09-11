@@ -467,8 +467,9 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             }
             else
             {
-                response->value0 = (int32_t)context->config.metrology.capacity;
-                response->value1 = (int32_t)context->config.metrology.division;
+                response->value0 = (int32_t)context->config.metrology.capacity_ug;
+                response->value1 = (int32_t)context->config.metrology.unit_display[
+                    context->config.metrology.active_unit].division_digit;
                 response->status_flags = context->runtime.config_dirty ? 1U : 0U;
                 result = COMMAND_RESULT_OK;
             }

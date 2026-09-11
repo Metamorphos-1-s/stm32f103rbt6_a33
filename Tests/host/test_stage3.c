@@ -145,7 +145,7 @@ static void TestCalibration(void)
     CalibrationConfig calibration;
     WeightValue weight;
 
-    CHECK3(CalibrationModel_Build(100000, 1100000, 10000, 7U,
+    CHECK3(CalibrationModel_BuildMass(100000, 1100000, 10000, 7U,
                                   &calibration) == CALIBRATION_RESULT_OK);
     CHECK3(calibration.calibration_valid);
     CHECK3(calibration.calibration_sequence == 7U);
@@ -159,24 +159,24 @@ static void TestCalibration(void)
     CHECK3(CalibrationModel_Convert(&calibration, 200000, 100000, &weight) ==
            CALIBRATION_RESULT_OK && weight == 0);
 
-    CHECK3(CalibrationModel_Build(1100000, 100000, 10000, 8U,
+    CHECK3(CalibrationModel_BuildMass(1100000, 100000, 10000, 8U,
                                   &calibration) == CALIBRATION_RESULT_OK);
     CHECK3(calibration.scale_denominator < 0);
     CHECK3(CalibrationModel_Convert(&calibration, 600000, 0, &weight) ==
            CALIBRATION_RESULT_OK && weight == 5000);
-    CHECK3(CalibrationModel_Build(1, 1, 100, 0U, &calibration) ==
+    CHECK3(CalibrationModel_BuildMass(1, 1, 100, 0U, &calibration) ==
            CALIBRATION_RESULT_INVALID_SPAN);
-    CHECK3(CalibrationModel_Build(1, 1001, 100, 0U, &calibration) ==
+    CHECK3(CalibrationModel_BuildMass(1, 1001, 100, 0U, &calibration) ==
            CALIBRATION_RESULT_SPAN_TOO_SMALL);
-    CHECK3(CalibrationModel_Build(1, 2000, 0, 0U, &calibration) ==
+    CHECK3(CalibrationModel_BuildMass(1, 2000, 0, 0U, &calibration) ==
            CALIBRATION_RESULT_INVALID_WEIGHT);
 
-    CHECK3(CalibrationModel_Build(100000, 1100000, 10000, 1U,
+    CHECK3(CalibrationModel_BuildMass(100000, 1100000, 10000, 1U,
                                   &calibration) == CALIBRATION_RESULT_OK);
     ++calibration.scale_denominator;
     CHECK3(CalibrationModel_Validate(&calibration) ==
            CALIBRATION_RESULT_INCONSISTENT);
-    CHECK3(CalibrationModel_Build(-2000000000, -1999998000, INT32_MAX, 1U,
+    CHECK3(CalibrationModel_BuildMass(-2000000000, -1999998000, INT32_MAX, 1U,
                                   &calibration) == CALIBRATION_RESULT_OK);
     CHECK3(CalibrationModel_Convert(&calibration, 2000000000, 0, &weight) ==
            CALIBRATION_RESULT_OVERFLOW);

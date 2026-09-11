@@ -1,5 +1,6 @@
 #include "system_context.h"
 #include "persistent_codec.h"
+#include "revision_helper.h"
 
 #include <stddef.h>
 #include <limits.h>
@@ -41,20 +42,9 @@ bool SystemContext_InitRestored(const DeviceConfig *config,
     s_system_context.runtime.weight_view =
         (WeightViewMode)s_system_context.config.display.default_weight_view;
   }
-  if (s_system_context.runtime.migration_pending_save)
-  {
-    uint32_t next = stored_revision + 1U;
-    if (next == 0xFFFFFFFFUL) next = 0U;
-    s_system_context.config_revision = next;
-    s_system_context.saved_revision = stored_revision;
-    s_system_context.runtime.config_dirty = true;
-  }
-  else
-  {
-    s_system_context.runtime.config_dirty = false;
-    s_system_context.config_revision = stored_revision;
-    s_system_context.saved_revision = stored_revision;
-  }
+  s_system_context.runtime.config_dirty = false;
+  s_system_context.config_revision = stored_revision;
+  s_system_context.saved_revision = stored_revision;
   s_system_context.runtime.boot_count += 1U;
   s_system_context.state = APP_STATE_BOOT;
   s_system_context.state_enter_time_ms = now_ms;
@@ -192,11 +182,10 @@ bool SystemContext_ReplaceConfig(const DeviceConfig *config, bool dirty)
 
 bool SystemContext_FinalizeSavedRevision(uint32_t revision)
 {
-  if (!s_system_context.initialized || (revision == 0xFFFFFFFFUL)) return false;
+  if (!s_system_context.initialized || !Revision_IsValid(revision)) return false;
   s_system_context.config_revision = revision;
   s_system_context.saved_revision = revision;
   s_system_context.runtime.config_dirty = false;
-  s_system_context.runtime.migration_pending_save = false;
   s_system_context.storage_has_record = true;
   return true;
 }
@@ -232,11 +221,7 @@ bool SystemContext_MarkConfigChanged(void)
   {
     return false;
   }
-  next = s_system_context.config_revision + 1U;
-  if (next == 0xFFFFFFFFUL)
-  {
-    next = 0U;
-  }
+  next = Revision_Next(s_system_context.config_revision);
   s_system_context.config_revision = next;
   s_system_context.runtime.config_dirty =
       next != s_system_context.saved_revision;
@@ -245,7 +230,7 @@ bool SystemContext_MarkConfigChanged(void)
 
 bool SystemContext_MarkRevisionSaved(uint32_t revision)
 {
-  if (!s_system_context.initialized || (revision == 0xFFFFFFFFUL))
+  if (!s_system_context.initialized || !Revision_IsValid(revision))
   {
     return false;
   }
@@ -253,8 +238,6 @@ bool SystemContext_MarkRevisionSaved(uint32_t revision)
   s_system_context.storage_has_record = true;
   s_system_context.runtime.config_dirty =
       s_system_context.config_revision != s_system_context.saved_revision;
-  if (!s_system_context.runtime.config_dirty)
-    s_system_context.runtime.migration_pending_save = false;
   return true;
 }
 

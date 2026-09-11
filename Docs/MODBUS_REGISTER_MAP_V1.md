@@ -22,11 +22,22 @@ Addresses are zero-based PDU addresses. PLC notation is 40001 plus the PDU addre
 
 The persistence block keeps its historical fields at `01C0-01C4`. The
 following previously reserved read-only words expose deferred SAVE completion
-without changing any existing address: `01C5` is the firmware save-result
-enum, `01C6` is the originating mailbox request token (zero for non-mailbox
-requests), `01C7` is the command source enum, and `01C8-01C9` is the associated
-active configuration revision. The result remains readable after completion
-until the next SAVE request or reboot.
+from Firmware `0x0510` onward without changing any existing address:
+
+| Address | Type | Meaning |
+|---|---|---|
+| `01C5` | u16 enum | `0 IDLE`, `1 PENDING`, `2 SUCCESS`, `3 NO_CHANGE`, `4 FAILED`, `5 POWER_UNSAFE`, `6 BUSY`, `7 INVALID_STATE`, `8 INTERNAL_ERROR` |
+| `01C6` | u16 | originating mailbox request token; zero for non-mailbox requests |
+| `01C7` | u16 enum | `CommandSource` that accepted SAVE |
+| `01C8-01C9` | u32 | active configuration revision associated with SAVE, in configured word order |
+
+An accepted Modbus SAVE first reports `PENDING`; the terminal result is
+latched and reads are non-consuming. A new valid SAVE clears the previous
+token/source/revision and starts a new `PENDING` record. Requests rejected as
+busy, power-unsafe, or invalid do not overwrite an in-flight request. Clients
+bind the terminal result to the original mailbox response by matching token
+and revision. The result remains readable until the next valid SAVE or reboot;
+old clients may ignore these reserved addresses.
 
 - `0000-0001` conditioned current-panel display int32; `0002` decimals; `0003` unit.
 - `0004-0005` status; `0006-000B` net/gross/tare display int32.
