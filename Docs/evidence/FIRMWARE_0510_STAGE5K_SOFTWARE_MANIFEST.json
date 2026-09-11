@@ -6,7 +6,7 @@
   "internal_persistent_format": 3,
   "persistent_v3_payload_bytes": 281,
   "ble_protocol_version": 1,
-  "verified_commit": "5b4f9c8c297eaefeff74c06488be2c8be077f8f2",
+  "verified_commit": "1e7f9912d9376a5c93d3989a2621839f6e273e28",
   "images": [
     {"name": "Debug", "flash_bytes": 94140, "ram_bytes": 19392, "sha256": "36FC04DB647A38BD7728246D8509D0A0F5A11559D8FD3121A5F02007D7CDBD2C"},
     {"name": "Release", "flash_bytes": 80920, "ram_bytes": 19352, "sha256": "B213D4B7A8310AE751E4818EBD8EB1DBFA30C24514BA194DE857D990733CA957"},
@@ -14,5 +14,5 @@
     {"name": "Usart3Bringup", "flash_bytes": 93840, "ram_bytes": 19008, "sha256": "C55DA68C3010A1158EE5421411090FFF49A982368DE332CD0BC7FB30C5204659"}
   ],
   "software_gates": {"msvc_ctest": "16/16", "stage5b_python": "30/30", "stage5c_python": "12/12", "manifest_images": "4/4"},
-  "portable_ci": "pending"
+  "portable_ci": {"workflow": "Stage 5K portable host gate", "run_id": 34592586554, "commit": "1e7f9912d9376a5c93d3989a2621839f6e273e28", "result": "success", "url": "https://github.com/Metamorphos-1-s/stm32f103rbt6_a33/actions/runs/34592586554"}
 }

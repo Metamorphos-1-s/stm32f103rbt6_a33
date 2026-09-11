@@ -4,7 +4,7 @@ Branch: `stage5k-fw0510-correctness-refactor`
 
 The audited baseline was `08eda9a9504a59eca9238527ee5d8952ffc235a5`.
 The implementation closeout commit is
-`5b4f9c8c297eaefeff74c06488be2c8be077f8f2`. The branch is not merged to
+`1e7f9912d9376a5c93d3989a2621839f6e273e28`. The branch is not merged to
 `main`, tagged, or force-updated.
 
 Identity is explicit: Firmware `0x0510`, Modbus Map `0x0104`, public
@@ -47,3 +47,5 @@ regression, CH579 board regression, physical power-cycle tests, and the final
 clients may later consume the SAVE diagnostics. The CH579 transparent gateway
 core does not require a protocol change. Stage 5J hardware evidence is not
 reused as Stage 5K/0x0510 hardware closure.
+GitHub Actions workflow `Stage 5K portable host gate` run `34592586554`
+completed successfully for this commit: https://github.com/Metamorphos-1-s/stm32f103rbt6_a33/actions/runs/34592586554
