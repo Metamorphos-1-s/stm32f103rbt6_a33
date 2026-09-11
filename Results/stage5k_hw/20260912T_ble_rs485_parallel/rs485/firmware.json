@@ -1,0 +1,4 @@
+{
+  "sha": "95cd130326b0f770bf3facdf3bd4d95e3c8bf8e2",
+  "status": "M Tools/stage5b_hw/__pycache__/hw_common.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/modbus_crc.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/modbus_frame.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/register_map.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/register_map_check.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/report_writer.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/serial_transport.cpython-38.pyc\n?? Results/stage5k_hw/20260912T_ble_rs485_parallel/"
+}

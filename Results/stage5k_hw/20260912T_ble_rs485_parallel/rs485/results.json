@@ -1,0 +1,44 @@
+[
+  {
+    "name": "probe",
+    "status": "PASS",
+    "detail": "identity and CRC validated",
+    "data": {
+      "display_weight": 50008,
+      "decimals": 2,
+      "active_unit": 1,
+      "status_flags": 31,
+      "register_map_version": 260,
+      "firmware_version": 1296,
+      "net_mass_ug": 500045059,
+      "sample_sequence": 38763,
+      "active_profile": 0,
+      "storage_state": 0,
+      "power_safe": 1,
+      "config_dirty": 0,
+      "schema_version": 2,
+      "persistent_format": 3,
+      "active_slot": 1,
+      "storage_sequence": 3,
+      "word_order": "high",
+      "hardware_revision": "UNAVAILABLE_IN_REGISTER_MAP",
+      "battery_voltage": "UNAVAILABLE_IN_REGISTER_MAP",
+      "response_ms": 53.976
+    }
+  },
+  {
+    "name": "repeated FC03",
+    "status": "PASS",
+    "detail": "60 reads"
+  },
+  {
+    "name": "protocol error suite",
+    "status": "SKIPPED",
+    "detail": "use --include-errors --allow-write to enable malformed FC06/FC16 cases"
+  },
+  {
+    "name": "RS485 electrical timing",
+    "status": "REQUIRES LOGIC ANALYZER",
+    "detail": "DE release, t1.5/t3.5 and A/B signal integrity are not measured"
+  }
+]

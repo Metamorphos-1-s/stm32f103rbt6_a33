@@ -1,0 +1,64 @@
+{
+  "address": "C8:46:82:00:83:24",
+  "duration_s": 33.141,
+  "elapsed_s": 33.844,
+  "notifications": 150,
+  "notification_bytes": 11720,
+  "frames_received": 211,
+  "fast_frames": 151,
+  "slow_frames": 30,
+  "checkweigh_frames": 30,
+  "crc_errors": 0,
+  "sequence_gaps": 0,
+  "duplicates": 0,
+  "parser_resync": 0,
+  "timestamp_anomalies": 0,
+  "disconnects": 0,
+  "partial_bytes": 0,
+  "command_rounds": 6,
+  "command_success": 6,
+  "commands": [
+    {
+      "index": 1,
+      "name": "device-info",
+      "transaction_id": 50018,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 2,
+      "name": "get-config",
+      "transaction_id": 50019,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 3,
+      "name": "cal-status",
+      "transaction_id": 50020,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 4,
+      "name": "device-info",
+      "transaction_id": 50021,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 5,
+      "name": "get-config",
+      "transaction_id": 50022,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 6,
+      "name": "cal-status",
+      "transaction_id": 50023,
+      "ok": true,
+      "result": 0
+    }
+  ]
+}
