@@ -1,22 +1,26 @@
 # Stage 5K Deferred SAVE blocker root-cause status
 
-The failed hardware SAVE returned mailbox `ACCEPTED` (token 251), then Deferred
-SAVE terminal `INVALID_STATE` with dirty state unchanged. The raw Modbus fault
-words at `0x0039-0x003A` were `[0x0040, 0x0000]`. Configured high-word-first
-decoding yields mask `0x00400000`, which `FaultManager_Bit()` maps to
-`FAULT_UI_STATE_ERROR` (fault code 23). The earlier report's
-`FAULT_CS1237_DATA_ERROR` label was incorrect: CS1237 data error is `0x20`,
-while calibration invalid is `0x40`.
+The original failed SAVE returned mailbox `ACCEPTED` (token 251), then Deferred
+SAVE terminal `INVALID_STATE`. Its raw fault words `[0x0040, 0x0000]` decode in
+high-word-first order as `0x00400000`, `FAULT_UI_STATE_ERROR` (fault code 23),
+not `FAULT_CS1237_DATA_ERROR`. The latter is `0x00000020`; calibration invalid
+is `0x00000040`.
 
-Production source has no `FaultManager_Set(FAULT_CALIBRATION_INVALID)` call.
-The only setter for `FAULT_UI_STATE_ERROR` is the App_Main branch where a menu
-calibration request is present but `CalibrationController_Begin()` fails. This
-supports the causal chain UI state error -> App fault/safe state -> failed
-storage-maintenance entry -> Deferred SAVE `INVALID_STATE`, but the original
-menu/key trigger was not captured. No production SAVE or fault-clearing behavior
-was changed. A bounded fault-setter trace or SWD watchpoint is required before
-choosing a behavioral fix.
+Static source has one production setter for `FAULT_UI_STATE_ERROR`: the
+`App_Main` branch where a menu calibration request exists but
+`CalibrationController_Begin()` fails. The hotfix retains the user-facing
+invalid-state result but no longer escalates this recoverable UI failure into a
+global Fault/SafeState that can disable storage maintenance. After flashing the
+hotfix, the post-reset fault mask was zero, confirming the stale UI fault was
+not present at boot.
 
-Reproducible mask decoding is in `Tools/stage5k_hw/fault_mask.py`. Until the
-first fault write and a targeted successful SAVE are captured, status remains
-`STAGE 5K SAVE BLOCKER ROOT CAUSE UNCONFIRMED`.
+The targeted revalidation then exposed a second unresolved issue: a fresh
+Modbus calibration session successfully began, accepted 500 g, and captured
+empty zero, but `CAPTURE_CALIBRATION_SPAN` repeatedly returned
+`INVALID_STATE` instead of reaching `LOAD_READY`. No commit, SAVE, or power
+cycle was attempted after that failure. The session-state transition or its
+runtime reset is therefore not yet proven, and the hardware closure remains
+blocked. Evidence is in
+`Results/stage5k_hw/20260912T_stage5k_hotfix_preflash/targeted_revalidation.json`.
+
+Status: `STAGE 5K SAVE BLOCKER ROOT CAUSE UNCONFIRMED`.

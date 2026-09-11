@@ -1,0 +1,21 @@
+{
+  "run_id": "20260912T_stage5k_hotfix_targeted_revalidation",
+  "firmware_commit": "897fd4cc10908a23126c14894ffc9f79e737ad5d",
+  "release_elf_sha256": "993E1030DF73AF6E827309D7760D209DAF90AE6BDC22721FAA649C90CA044D97",
+  "st_link_device_id": "0x410",
+  "serial": "COM5",
+  "identity": {"firmware": "0x0510", "map": "0x0104", "public_schema": 2, "persistent_format": 3},
+  "preflash_slots": {"path": "preflash_config_slots.bin", "length": 4096, "sha256": "4BCDE2EB7482D29D2AD5153FC1166BBFA1DC651B95F62314F1B50019587F1867"},
+  "post_reset_fault_mask_words": [0, 0],
+  "calibration": {
+    "begin": "OK(session=2)",
+    "set_span_mass": "OK(500000000 ug)",
+    "capture_zero_empty": "OK",
+    "capture_span_attempts": ["INVALID_STATE", "INVALID_STATE", "INVALID_STATE", "INVALID_STATE", "INVALID_STATE", "INVALID_STATE", "INVALID_STATE", "INVALID_STATE", "INVALID_STATE"],
+    "commit": "NOT_EXECUTED",
+    "status": "BLOCKED"
+  },
+  "save": "NOT_EXECUTED",
+  "manual_power_cycle": "NOT_EXECUTED",
+  "conclusion": "Hotfix removed the observed UI fault escalation after reset, but calibration session did not reach LOAD_READY; root cause remains unconfirmed."
+}
