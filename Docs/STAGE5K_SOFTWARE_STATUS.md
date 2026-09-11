@@ -32,13 +32,13 @@ this status document.
 
 | Image | Flash text+data | RAM data+bss | ELF SHA-256 |
 | --- | ---: | ---: | --- |
-| Debug | 95,192 B | 19,900 B | `77A9772F...46A245` |
-| Release | 81,892 B | 19,868 B | `998AA40B...0EBCFD` |
-| BoardDiagnostics | 118,400 B | 19,772 B | `C4F8F953...EE426E` |
-| USART3 Bringup | 94,892 B | 19,516 B | `66271065...D29C93C` |
+| Debug | 95,320 B | 19,900 B | `79C34006...44C839` |
+| Release | 82,012 B | 19,868 B | `906ECBB3...5A7586` |
+| BoardDiagnostics | 119,396 B | 19,772 B | `82E158A2...FA5784` |
+| USART3 Bringup | 95,020 B | 19,516 B | `8054E753...47E90A` |
 
-Compared with the Stage 5J reference, Release Flash decreased by 1,148 bytes
-and BoardDiagnostics Flash decreased by 4,504 bytes. The decrease is primarily
+Compared with the Stage 5J reference, Release Flash decreased by 1,028 bytes
+and BoardDiagnostics Flash decreased by 800 bytes. The decrease is primarily
 the canonical codec and removal of the V1/V2 codec from the active ConfigStore
 path; the legacy source declarations remain to be removed in the follow-up
 cleanup commit after dependent test files are fully retired.
