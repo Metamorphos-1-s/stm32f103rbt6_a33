@@ -30,4 +30,6 @@ USART2 path. CH579 TCP `192.168.1.100:502` was reachable and raw port 5000 was
 closed, but the full 0x0510 transparent regression was not run after the SAVE
 failure.
 
-Conclusion for this run: `STAGE 5K SOFTWARE READY; HARDWARE VALIDATION PARTIAL`.
+Conclusion for this run: `STAGE 5K HARDWARE VALIDATION BLOCKED` until the
+Deferred SAVE `INVALID_STATE` condition and the active CS1237 fault are
+diagnosed and cleared.

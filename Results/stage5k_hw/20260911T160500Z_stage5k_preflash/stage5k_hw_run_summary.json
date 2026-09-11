@@ -26,6 +26,7 @@
   "identity_after_flash": {"firmware": "0x0510", "map": "0x0104", "public_schema": 2, "persistent_format": 3},
   "calibration": {"method": "Modbus command workflow", "span_mass_ug": 500000000, "calibration_sequence": 1, "raw_zero_words": [65535, 21532], "raw_span_words": [65528, 36397], "calibration_valid": true, "status": "RAM_APPLIED"},
   "deferred_save": {"mailbox_token": 251, "mailbox_result": "ACCEPTED", "diagnostic_result": "INVALID_STATE", "diagnostic_words": [7, 251, 1, 0, 1], "dirty": true, "fault_mask": "0x00000040", "status": "BLOCKED"},
+  "st_link_log": {"path": "post_first_boot_stlink.log", "length": 999, "sha256": "5CB25D27D1A198259027F2DA8728ECA9E37E0D66E596964A75771338DBBCAC1E"},
   "gates": {"v2_safe_rejection": "PASS", "flash_preservation": "PASS", "identity": "PASS", "calibration_ram": "PASS", "deferred_save_terminal_success": "FAIL"},
   "not_run": ["two manual power cycles", "RS232 full regression", "RS485 regression", "CH579 transparent regression against 0x0510", "BLE phone regression", "600 second concurrency"],
   "failure_classification": "STM32 persistence/runtime state gate or board peripheral state; requires diagnosis before any power-cycle test"
