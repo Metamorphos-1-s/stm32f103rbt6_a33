@@ -38,8 +38,8 @@ Local gates passed: MSVC CTest `16/16`, Stage 5B Python `30/30`, Stage 5C
 Python `12/12`, register-map consistency, four ARM builds, and software
 manifest `4/4`. BoardDiagnostics remains below the 124 KiB application limit.
 The new `.github/workflows/stage5k-portable.yml` runs GCC, Clang, and GCC
-UBSan on Ubuntu with strict warnings; those host toolchains are not installed
-locally.
+UBSan on Ubuntu with strict warnings. Run `34592586554` completed successfully
+for implementation commit `1e7f9912d9376a5c93d3989a2621839f6e273e28`.
 
 Not executed: firmware flashing, RS232/RS485 field regression, BLE phone
 regression, CH579 board regression, physical power-cycle tests, and the final
@@ -48,4 +48,7 @@ clients may later consume the SAVE diagnostics. The CH579 transparent gateway
 core does not require a protocol change. Stage 5J hardware evidence is not
 reused as Stage 5K/0x0510 hardware closure.
 GitHub Actions workflow `Stage 5K portable host gate` run `34592586554`
-completed successfully for this commit: https://github.com/Metamorphos-1-s/stm32f103rbt6_a33/actions/runs/34592586554
+completed successfully for implementation commit `1e7f9912d9376a5c93d3989a2621839f6e273e28`:
+https://github.com/Metamorphos-1-s/stm32f103rbt6_a33/actions/runs/34592586554
+
+Final status: `STAGE 5K SOFTWARE READY; HARDWARE VALIDATION PENDING`.

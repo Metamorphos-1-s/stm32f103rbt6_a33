@@ -51,5 +51,5 @@ software baseline and hardware validation remains separate.
 Current conclusion:
 
 ```text
-STAGE 5K IMPLEMENTATION COMPLETE; PORTABLE HOST VERIFICATION PENDING
+STAGE 5K SOFTWARE READY; HARDWARE VALIDATION PENDING
 ```
