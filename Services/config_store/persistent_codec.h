@@ -42,5 +42,11 @@ PersistentCodecResult PersistentCodec_Migrate(
     uint16_t source_schema, const uint8_t *source, uint16_t source_length,
     DeviceConfig *config, RuntimeState *runtime);
 bool PersistentCodec_ValidateConfig(const DeviceConfig *config);
+bool PersistentCodec_ConfigEqual(const DeviceConfig *left,
+                                 const RuntimeState *left_runtime,
+                                 const DeviceConfig *right,
+                                 const RuntimeState *right_runtime);
+bool PersistentCodec_DeviceConfigEqual(const DeviceConfig *left,
+                                       const DeviceConfig *right);
 
 #endif /* PERSISTENT_CODEC_H */

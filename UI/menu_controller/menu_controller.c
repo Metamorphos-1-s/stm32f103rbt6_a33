@@ -1,4 +1,5 @@
 #include "menu_controller.h"
+#include "persistent_codec.h"
 
 #include "bsp_time.h"
 #include "command_service.h"
@@ -895,8 +896,8 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
             if (SubmitEditValue())
             {
                 s_editing = false;
-                s_candidate_changed = memcmp(&s_candidate_config,
-                    &s_original_config, sizeof(s_candidate_config)) != 0;
+                s_candidate_changed = !PersistentCodec_DeviceConfigEqual(
+                    &s_candidate_config, &s_original_config);
                 Render();
                 return true;
             }

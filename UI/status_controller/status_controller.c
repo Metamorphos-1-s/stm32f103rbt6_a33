@@ -1,4 +1,5 @@
 #include "status_controller.h"
+#include "persistent_codec.h"
 
 #include "battery_adc.h"
 #include "bsp_time.h"
@@ -223,8 +224,8 @@ static bool PublishedCandidateIsCurrent(void)
     return (context != NULL) &&
         (SystemContext_GetConfigRevision() == s_applied_revision) &&
         (SystemContext_GetSavedRevision() == s_applied_revision) &&
-        (memcmp(&context->config, &s_candidate_config,
-                sizeof(s_candidate_config)) == 0);
+        PersistentCodec_DeviceConfigEqual(&context->config,
+            &s_candidate_config);
 }
 
 static void RequestSaveOnly(uint32_t now_ms)

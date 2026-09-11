@@ -1,5 +1,15 @@
 # Project stage status
 
+## Stage 5K
+
+The 5K branch adds Mailbox/sequence/TARE correctness fixes, unified ownership
+leases and atomic CONFIG_CANCEL, observable deferred SAVE outcomes, canonical
+internal Persistent Format V3 (281-byte payload), unsupported old-format
+recovery, and V3-based semantic config comparisons. Host 16/16, Stage 5B
+30/30, Stage 5C 12/12 and Debug/Release/BoardDiagnostics/USART3 builds pass.
+GCC/Clang host and UBSan are not available in the current Windows environment.
+No hardware validation was run. See `Docs/STAGE5K_SOFTWARE_STATUS.md`.
+
 ## Stage 5J
 
 Firmware `0x050F`, Register Map `0x0104`, Schema `2` and BLE Protocol `1` are

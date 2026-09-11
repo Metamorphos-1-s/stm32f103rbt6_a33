@@ -14,7 +14,7 @@ HEADER_SIZE = 32
 CRC_OFFSET = 20
 COMMIT_OFFSET = 2044
 COMMIT_MARKER = 0x434F4D54
-PAYLOAD_LENGTHS = {1: 164, 2: 344}
+PAYLOAD_LENGTHS = {1: 164, 2: 344, 3: 281}
 
 
 def decode_v1_prefix(payload):
@@ -50,6 +50,27 @@ def decode_v1_prefix(payload):
     }
 
 
+def decode_v3(payload):
+    """Decode the stable diagnostic subset of canonical V3."""
+    if len(payload) < PAYLOAD_LENGTHS[3]:
+        raise ValueError("persistent V3 payload is truncated")
+    return {
+        "communication": {
+            "baud_rate": struct.unpack_from("<I", payload, 176)[0],
+            "parity": payload[180], "stop_bits": payload[181],
+            "modbus_address": payload[182], "protocol_mode": payload[183],
+            "word_order": payload[193],
+        },
+        "display": {"brightness": payload[236]},
+        "system": {"tare_power_loss_retention": bool(payload[267]),
+                    "watchdog_enable": bool(payload[268]),
+                    "startup_auto_zero_enable": bool(payload[269])},
+        "runtime": {"weight_view": payload[270],
+                     "current_tare_ug": struct.unpack_from("<q", payload, 271)[0],
+                     "tare_active": bool(payload[279])},
+    }
+
+
 def sequence_newer(candidate, reference):
     if candidate == reference or candidate == 0xFFFFFFFF or reference == 0xFFFFFFFF:
         return False
@@ -79,7 +100,8 @@ def parse_slot(data, name="?"):
     payload = data[HEADER_SIZE:HEADER_SIZE + payload_length]
     return {"slot": name, "slot_sha256": hashlib.sha256(data).hexdigest().upper(),
             "payload_sha256": hashlib.sha256(payload).hexdigest().upper(),
-            "persistent": decode_v1_prefix(payload) if supported else None,
+            "persistent": (decode_v3(payload) if schema == 3 else
+                           decode_v1_prefix(payload)) if supported else None,
             "magic": "0x%08X" % magic,
             "record_format_version": format_version,
             "payload_schema_version": schema, "header_size": header_size,

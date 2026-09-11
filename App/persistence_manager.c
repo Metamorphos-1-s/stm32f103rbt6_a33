@@ -10,6 +10,7 @@
 #include "fault_manager.h"
 #include "metrology_manager.h"
 #include "project_config.h"
+#include "persistent_codec.h"
 #include "system_context.h"
 #include "stage4b_storage_diagnostics.h"
 #include "storage_power_guard.h"
@@ -245,8 +246,8 @@ void PersistenceManager_Process(void)
             runtime_ok = (context != NULL) &&
                 (SystemContext_GetConfigRevision() ==
                  s_candidate_original_revision) &&
-                (memcmp(&context->config, &s_candidate_target,
-                        sizeof(s_candidate_target)) == 0) &&
+                PersistentCodec_DeviceConfigEqual(&context->config,
+                        &s_candidate_target) &&
                 SystemContext_FinalizeSavedRevision(s_requested_revision);
         }
         else if ((s_operation == CONFIG_OPERATION_FACTORY_RESET) &&

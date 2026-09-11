@@ -44,6 +44,7 @@ add_executable(stage4a_host_tests
     ../../Drivers/tm1628/tm1628_board_map.c
     ../../Drivers/w02/w02_pwrkey.c
     ../../Protocol/command_service/command_service.c
+    ../../Services/config_store/persistent_codec.c
     ../../Services/config_edit/config_edit.c
     ../../Services/fault_manager/fault_manager.c
     ../../UI/display_controller.c

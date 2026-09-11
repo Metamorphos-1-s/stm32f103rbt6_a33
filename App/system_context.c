@@ -1,4 +1,5 @@
 #include "system_context.h"
+#include "persistent_codec.h"
 
 #include <stddef.h>
 #include <limits.h>
@@ -165,7 +166,7 @@ bool SystemContext_ApplyConfig(const DeviceConfig *config, bool dirty)
   {
     return false;
   }
-  if (memcmp(&s_system_context.config, config, sizeof(*config)) != 0)
+  if (!PersistentCodec_DeviceConfigEqual(&s_system_context.config, config))
   {
     s_system_context.config = *config;
     if (dirty)

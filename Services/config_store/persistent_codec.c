@@ -130,7 +130,6 @@ static bool PersistentCodec_ValidateCommon(const DeviceConfig *config)
          (config->communication.output_period_ms == 0U)) ||
         (config->bluetooth.uart_baud_rate == 0U) ||
         (config->bluetooth.protocol_version == 0U) ||
-        (config->alarm.lower_limit > config->alarm.upper_limit) ||
         (config->display.brightness > 7U) ||
         (config->display.default_weight_view >= (uint8_t)WEIGHT_VIEW_COUNT) ||
         (config->battery.divider_top_ohm == 0U) ||
@@ -138,8 +137,8 @@ static bool PersistentCodec_ValidateCommon(const DeviceConfig *config)
     {
         return false;
     }
-    alarm_span = (int64_t)config->alarm.upper_limit -
-                 (int64_t)config->alarm.lower_limit;
+    alarm_span = config->alarm.upper_limit_ug -
+                 config->alarm.lower_limit_ug;
     if (config->alarm.limit_function_enable &&
         ((alarm_span <= 0) ||
          ((uint64_t)config->alarm.hysteresis > (uint64_t)alarm_span)))
@@ -426,6 +425,36 @@ PersistentCodecResult PersistentCodec_DecodeV3(
         return r.failed ? PERSISTENT_CODEC_TRUNCATED :
             PERSISTENT_CODEC_VALIDATION_FAILED;
     return PERSISTENT_CODEC_OK;
+}
+
+bool PersistentCodec_ConfigEqual(const DeviceConfig *left,
+                                 const RuntimeState *left_runtime,
+                                 const DeviceConfig *right,
+                                 const RuntimeState *right_runtime)
+{
+    uint8_t left_bytes[PERSISTENT_V3_PAYLOAD_SIZE];
+    uint8_t right_bytes[PERSISTENT_V3_PAYLOAD_SIZE];
+    uint16_t left_length = 0U;
+    uint16_t right_length = 0U;
+
+    if ((PersistentCodec_EncodeV3(left, left_runtime, left_bytes,
+                                  sizeof(left_bytes), &left_length) !=
+         PERSISTENT_CODEC_OK) ||
+        (PersistentCodec_EncodeV3(right, right_runtime, right_bytes,
+                                  sizeof(right_bytes), &right_length) !=
+         PERSISTENT_CODEC_OK) || (left_length != right_length))
+    {
+        return false;
+    }
+    return memcmp(left_bytes, right_bytes, left_length) == 0;
+}
+
+bool PersistentCodec_DeviceConfigEqual(const DeviceConfig *left,
+                                       const DeviceConfig *right)
+{
+    RuntimeState empty_left = {0};
+    RuntimeState empty_right = {0};
+    return PersistentCodec_ConfigEqual(left, &empty_left, right, &empty_right);
 }
 
 PersistentCodecResult PersistentCodec_EncodeV1(
