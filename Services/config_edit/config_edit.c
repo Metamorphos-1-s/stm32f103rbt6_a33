@@ -1,5 +1,7 @@
 #include "config_edit.h"
 
+#include "device_config_validator.h"
+
 #include "alarm_config_validation.h"
 #include "project_config.h"
 #include "calibration_model.h"
@@ -205,13 +207,9 @@ bool ConfigEdit_Validate(void)
     {
         return false;
     }
-    valid = (MetrologyConfig_ValidateProductHardware(&s_working.metrology) ==
-             METROLOGY_CONFIG_OK) &&
-            AlarmConfig_Validate(&s_working.alarm) &&
-            (s_working.display.brightness <= 7U) &&
-            (!s_working.calibration.calibration_valid ||
-             (CalibrationModel_Validate(&s_working.calibration) ==
-              CALIBRATION_RESULT_OK));
+    valid = DeviceConfig_Validate(&s_working) &&
+            (MetrologyConfig_ValidateProductHardware(&s_working.metrology) ==
+             METROLOGY_CONFIG_OK);
     s_state = valid ? CONFIG_EDIT_VALIDATED : CONFIG_EDIT_ERROR;
     return valid;
 }

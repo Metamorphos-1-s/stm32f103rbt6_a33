@@ -18,6 +18,7 @@ add_executable(stage4a_host_tests
     ../../App/system_context.c
     ../../App/weighing_profile_manager.c
     ../../Config/alarm_config_validation.c
+    ../../Config/device_config_validator.c
     ../../Config/default_config.c
     ../../Diagnostics/stage2b_board_diagnostics.c
     ../../Diagnostics/stage2b_display_font.c
@@ -144,6 +145,7 @@ add_executable(stage4b_storage_tests
     fake_flash_backend.c
     ../../App/system_context.c
     ../../Config/alarm_config_validation.c
+    ../../Config/device_config_validator.c
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/metrology_config_validator.c
@@ -175,6 +177,7 @@ add_executable(stage4br_persistence_tests
     ../../App/persistence_manager.c
     ../../App/system_context.c
     ../../Config/alarm_config_validation.c
+    ../../Config/device_config_validator.c
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/metrology_config_validator.c
@@ -208,6 +211,7 @@ add_executable(stage5a_host_tests
     test_stage5a.c
     stage5a_model_adapters.c
     ../../Config/alarm_config_validation.c
+    ../../Config/device_config_validator.c
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/mass_math.c
@@ -244,6 +248,8 @@ add_executable(stage5b_host_tests
     stage5a_model_adapters.c
     stage5b_transport_adapters.c
     ../../App/communication_manager.c
+    ../../Config/alarm_config_validation.c
+    ../../Config/device_config_validator.c
     ../../Config/default_config.c
     ../../Domain/calibration/calibration_model.c
     ../../Domain/measurement/mass_math.c
@@ -277,6 +283,7 @@ target_include_directories(stage5b_host_tests PRIVATE
     ../../Services/storage_power_guard ../../Services/alarm_output_manager
     ../../Domain/limit_checker ../../UI/key_service)
 target_compile_definitions(stage5b_host_tests PRIVATE
+    STAGE5B_HOST_TEST=1
     A33_ENABLE_STAGE5I_USART3_BRINGUP=0
     ENABLE_STAGE2B_BOARD_DIAGNOSTICS=0)
 if(MSVC)
@@ -342,7 +349,12 @@ add_test(NAME stage5c_ble_command_protocol_logic
 
 add_executable(stage5e_config_edit_no_menu_tests
     test_config_edit_no_menu.c
-    ../../Services/config_edit/config_edit.c)
+    ../../Services/config_edit/config_edit.c
+    ../../Config/device_config_validator.c
+    ../../Config/default_config.c
+    ../../Domain/measurement/metrology_legacy_projection.c
+    ../../Domain/measurement/unit_converter.c
+    ../../Domain/measurement/mass_math.c)
 target_compile_definitions(stage5e_config_edit_no_menu_tests PRIVATE
     ENABLE_STAGE5E_A3_LOCAL_MENU=0)
 target_include_directories(stage5e_config_edit_no_menu_tests PRIVATE

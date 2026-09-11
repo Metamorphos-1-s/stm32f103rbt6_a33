@@ -70,6 +70,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     BSP/bsp_uart_dma.c
     BSP/bsp_uart3_dma.c
     Config/alarm_config_validation.c
+    Config/device_config_validator.c
     Config/default_config.c
     Diagnostics/stage2a_driver_diagnostics.c
     Diagnostics/stage2b_board_diagnostics.c

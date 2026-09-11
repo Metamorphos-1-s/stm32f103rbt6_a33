@@ -2,6 +2,7 @@
 
 #include "alarm_config_validation.h"
 #include "calibration_model.h"
+#include "device_config_validator.h"
 #include "display_controller.h"
 #include "fault_manager.h"
 #include "metrology_config_validator.h"
@@ -17,16 +18,9 @@ ConfigApplyResult ConfigApplication_Validate(const DeviceConfig *candidate,
     const SystemContext *context = SystemContext_Get();
 
     if ((candidate == NULL) || (context == NULL) ||
+        !DeviceConfig_Validate(candidate) ||
         (MetrologyConfig_ValidateProductHardware(&candidate->metrology) !=
          METROLOGY_CONFIG_OK) ||
-        !AlarmConfig_Validate(&candidate->alarm) ||
-        (candidate->display.brightness > 7U) ||
-        (candidate->calibration.calibration_valid &&
-         (CalibrationModel_Validate(&candidate->calibration) !=
-          CALIBRATION_RESULT_OK)) ||
-        (candidate->calibration.calibration_valid &&
-         (candidate->calibration.span_mass_ug >
-          candidate->metrology.capacity_ug)) ||
         (context->runtime.tare_active &&
          ((context->runtime.current_tare_ug < 0) ||
           (context->runtime.current_tare_ug >

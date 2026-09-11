@@ -2,6 +2,10 @@
 
 ## Stage 5K
 
+The current software pass is implementation-complete for the audited changes;
+portable GCC/UBSan verification, historical-code deletion, and hardware
+validation remain pending.
+
 The 5K branch adds Mailbox/sequence/TARE correctness fixes, unified ownership
 leases and atomic CONFIG_CANCEL, observable deferred SAVE outcomes, canonical
 internal Persistent Format V3 (281-byte payload), unsupported old-format

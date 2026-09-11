@@ -54,7 +54,12 @@ CommandResult CommunicationManager_RequestLocalApply(
     const CommunicationConfig *candidate);
 CommunicationApplyResult CommunicationManager_GetApplyResult(void);
 CommandResult CommunicationManager_RequestDeferredSave(void);
+void CommunicationManager_BindDeferredSaveToken(CommandSource source,
+    uint16_t request_token);
 CommunicationSaveResult CommunicationManager_GetSaveResult(void);
+uint16_t CommunicationManager_GetSaveToken(void);
+CommandSource CommunicationManager_GetSaveSource(void);
+uint32_t CommunicationManager_GetSaveRevision(void);
 CommunicationManagerState CommunicationManager_GetState(void);
 const CommunicationConfig *CommunicationManager_GetActiveConfig(void);
 const ModbusRtuFramer *CommunicationManager_GetFramer(uint8_t port);

@@ -3,6 +3,7 @@
 #include "alarm_config_validation.h"
 #include "calibration_model.h"
 #include "default_config.h"
+#include "device_config_validator.h"
 #include "metrology_config_validator.h"
 #include "metrology_legacy_projection.h"
 #include "persistent_schema.h"
@@ -112,59 +113,9 @@ static bool GetReserved(CodecReader *reader, uint8_t count)
     return !reader->failed;
 }
 
-static bool PersistentCodec_ValidateCommon(const DeviceConfig *config)
-{
-    int64_t alarm_span;
-
-    if ((config == NULL) ||
-        (config->communication.baud_rate == 0U) ||
-        ((uint32_t)config->communication.parity >= COMM_PARITY_COUNT) ||
-        ((uint32_t)config->communication.stop_bits >= COMM_STOP_BITS_COUNT) ||
-        (config->communication.modbus_address == 0U) ||
-        (config->communication.modbus_address > 247U) ||
-        ((uint32_t)config->communication.protocol_mode >= PROTOCOL_MODE_COUNT) ||
-        ((uint32_t)config->communication.output_policy >= OUTPUT_POLICY_COUNT) ||
-        ((uint32_t)config->communication.word_order >= MODBUS_WORD_ORDER_COUNT) ||
-        (config->communication.recommended_poll_interval_ms == 0U) ||
-        ((config->communication.output_policy == OUTPUT_POLICY_PERIODIC) &&
-         (config->communication.output_period_ms == 0U)) ||
-        (config->bluetooth.uart_baud_rate == 0U) ||
-        (config->bluetooth.protocol_version == 0U) ||
-        (config->display.brightness > 7U) ||
-        (config->display.default_weight_view >= (uint8_t)WEIGHT_VIEW_COUNT) ||
-        (config->battery.divider_top_ohm == 0U) ||
-        (config->battery.divider_bottom_ohm == 0U))
-    {
-        return false;
-    }
-    alarm_span = config->alarm.upper_limit_ug -
-                 config->alarm.lower_limit_ug;
-    if (config->alarm.limit_function_enable &&
-        ((alarm_span <= 0) ||
-         ((uint64_t)config->alarm.hysteresis > (uint64_t)alarm_span)))
-    {
-        return false;
-    }
-    if (config->battery.low_voltage_alarm_enable &&
-        ((config->battery.critical_low_mv == 0U) ||
-         (config->battery.low_warning_mv <=
-          config->battery.critical_low_mv) ||
-         (config->battery.recovery_mv < config->battery.low_warning_mv)))
-    {
-        return false;
-    }
-    return true;
-}
-
 bool PersistentCodec_ValidateConfig(const DeviceConfig *config)
 {
-    return PersistentCodec_ValidateCommon(config) &&
-        AlarmConfig_Validate(&config->alarm) &&
-        (MetrologyConfig_ValidateCanonical(&config->metrology) ==
-         METROLOGY_CONFIG_OK) &&
-        (!config->calibration.calibration_valid ||
-         (CalibrationModel_Validate(&config->calibration) ==
-          CALIBRATION_RESULT_OK));
+    return DeviceConfig_Validate(config);
 }
 
 static void PutI32Canonical(CodecWriter *writer, int32_t value)
@@ -750,7 +701,7 @@ static PersistentCodecResult DecodeV1Payload(
 
     if (r.failed) return PERSISTENT_CODEC_TRUNCATED;
     if (!valid || (r.position != length)) return PERSISTENT_CODEC_INVALID_VALUE;
-    if (!PersistentCodec_ValidateCommon(config) ||
+    if (!DeviceConfig_Validate(config) ||
         ((uint32_t)runtime->weight_view >= WEIGHT_VIEW_COUNT))
         return PERSISTENT_CODEC_VALIDATION_FAILED;
 

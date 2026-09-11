@@ -20,6 +20,14 @@ Addresses are zero-based PDU addresses. PLC notation is 40001 plus the PDU addre
 
 ## Realtime block
 
+The persistence block keeps its historical fields at `01C0-01C4`. The
+following previously reserved read-only words expose deferred SAVE completion
+without changing any existing address: `01C5` is the firmware save-result
+enum, `01C6` is the originating mailbox request token (zero for non-mailbox
+requests), `01C7` is the command source enum, and `01C8-01C9` is the associated
+active configuration revision. The result remains readable after completion
+until the next SAVE request or reboot.
+
 - `0000-0001` conditioned current-panel display int32; `0002` decimals; `0003` unit.
 - `0004-0005` status; `0006-000B` net/gross/tare display int32.
 - `000C` division; `000D` page; `000E=0104` map version; `000F` firmware value.

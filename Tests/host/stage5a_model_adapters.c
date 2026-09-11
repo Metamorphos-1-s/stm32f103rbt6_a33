@@ -2,6 +2,7 @@
 
 #include "app_main.h"
 #include "command_service.h"
+#include "communication_manager.h"
 #include "config_store.h"
 #include "cs1237.h"
 #include "default_config.h"
@@ -78,6 +79,17 @@ void CommandService_ClearStagedConfigForSource(CommandSource source)
 {if(!s_config_owner_valid||s_config_owner==source)s_config_owner_valid=false;}
 PersistenceStatus PersistenceManager_GetStatus(void)
 {return PERSISTENCE_STATUS_SUCCESS;}
+#if !defined(STAGE5B_HOST_TEST)
+void CommunicationManager_BindDeferredSaveToken(CommandSource source,
+                                                uint16_t request_token)
+{ (void)source; (void)request_token; }
+CommunicationSaveResult CommunicationManager_GetSaveResult(void)
+{ return COMM_SAVE_RESULT_IDLE; }
+uint16_t CommunicationManager_GetSaveToken(void) { return 0U; }
+CommandSource CommunicationManager_GetSaveSource(void)
+{ return COMMAND_SOURCE_DIAGNOSTIC; }
+uint32_t CommunicationManager_GetSaveRevision(void) { return 0U; }
+#endif
 CS1237_State CS1237_GetState(void){return CS1237_STATE_RUNNING;}
 uint16_t CS1237_GetBufferedSampleCount(void){return 0U;}
 uint32_t CS1237_GetBufferOverrunCount(void){return 0U;}

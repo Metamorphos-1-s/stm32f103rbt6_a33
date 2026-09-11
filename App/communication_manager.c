@@ -1,6 +1,7 @@
 #include "communication_manager.h"
 
 #include "fault_manager.h"
+#include "device_config_validator.h"
 #include "modbus_register_model.h"
 #include "modbus_rtu_framer.h"
 #include "modbus_rtu_server.h"
@@ -41,6 +42,9 @@ static CommunicationApplyResult s_apply_result;
 static bool s_local_apply;
 static CommunicationSaveResult s_save_result;
 static bool s_save_persistence_started;
+static uint16_t s_save_token;
+static CommandSource s_save_source;
+static uint32_t s_save_revision;
 
 static BspUart2Config ToUartConfig(const CommunicationConfig *config)
 {
@@ -54,12 +58,7 @@ static BspUart2Config ToUartConfig(const CommunicationConfig *config)
 bool CommunicationManager_IsConfigValid(const CommunicationConfig *config)
 {
     ModbusRtuTiming timing;
-    return (config != NULL) && (config->modbus_address >= 1U) &&
-        (config->modbus_address <= 247U) &&
-        (config->protocol_mode < PROTOCOL_MODE_COUNT) &&
-        (config->word_order < MODBUS_WORD_ORDER_COUNT) &&
-        (config->response_delay_ms <= 1000U) &&
-        (config->broadcast_write_policy == 0U) &&
+    return DeviceConfig_ValidateCommunication(config) &&
         ModbusRtuTiming_Calculate(config->baud_rate, config->parity,
             config->stop_bits, &timing);
 }
@@ -172,6 +171,9 @@ bool CommunicationManager_Init(const CommunicationConfig *config)
     s_local_apply = false;
     s_save_result = COMM_SAVE_RESULT_IDLE;
     s_save_persistence_started = false;
+    s_save_token = 0U;
+    s_save_source = COMMAND_SOURCE_DIAGNOSTIC;
+    s_save_revision = 0U;
     if (config->protocol_mode != PROTOCOL_MODE_MODBUS_RTU)
     {
         s_state = COMM_STATE_DISABLED;
@@ -234,8 +236,24 @@ CommandResult CommunicationManager_RequestDeferredSave(void)
     s_save_deferred = true;
     s_save_result = COMM_SAVE_RESULT_PENDING;
     s_save_persistence_started = false;
+    s_save_token = 0U;
+    s_save_source = COMMAND_SOURCE_DIAGNOSTIC;
+    {
+        const SystemContext *context = SystemContext_Get();
+        s_save_revision = (context != NULL) ? context->config_revision : 0U;
+    }
     return COMMAND_RESULT_ACCEPTED;
 #endif
+}
+
+void CommunicationManager_BindDeferredSaveToken(CommandSource source,
+                                                uint16_t request_token)
+{
+    if ((request_token != 0U) && (s_save_result == COMM_SAVE_RESULT_PENDING))
+    {
+        s_save_source = source;
+        s_save_token = request_token;
+    }
 }
 
 static bool CommitCandidate(void)
@@ -439,6 +457,18 @@ CommunicationApplyResult CommunicationManager_GetApplyResult(void)
 CommunicationSaveResult CommunicationManager_GetSaveResult(void)
 {
     return s_save_result;
+}
+
+uint16_t CommunicationManager_GetSaveToken(void) { return s_save_token; }
+
+CommandSource CommunicationManager_GetSaveSource(void)
+{
+    return s_save_source;
+}
+
+uint32_t CommunicationManager_GetSaveRevision(void)
+{
+    return s_save_revision;
 }
 
 const CommunicationConfig *CommunicationManager_GetActiveConfig(void)

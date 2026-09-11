@@ -1,6 +1,7 @@
 #include "alarm_config_validation.h"
 #include "calibration_model.h"
 #include "config_edit.h"
+#include "default_config.h"
 #include "metrology_config_validator.h"
 
 #include <assert.h>
@@ -9,6 +10,12 @@
 #include <string.h>
 
 MetrologyConfigResult MetrologyConfig_ValidateProductHardware(
+    const MetrologyConfig *metrology)
+{
+    return (metrology != NULL) ? METROLOGY_CONFIG_OK : METROLOGY_CONFIG_NULL;
+}
+
+MetrologyConfigResult MetrologyConfig_ValidateCanonical(
     const MetrologyConfig *metrology)
 {
     return (metrology != NULL) ? METROLOGY_CONFIG_OK : METROLOGY_CONFIG_NULL;
@@ -31,6 +38,7 @@ int main(void)
     DeviceConfig config;
     DeviceConfig applied;
     (void)memset(&config,0,sizeof(config));
+    DefaultConfig_Load(&config);
     assert(ENABLE_STAGE5E_A3_LOCAL_MENU==0U);
     assert(CONFIG_FIELD_COUNT>CONFIG_FIELD_LIMIT_ENABLE);
     assert(CONFIG_MASS_FIELD_COUNT>CONFIG_MASS_FIELD_ALARM_LOWER_LIMIT);

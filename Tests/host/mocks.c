@@ -90,6 +90,27 @@ CommandResult CommunicationManager_RequestDeferredSave(void)
     return COMMAND_RESULT_STORAGE_UNAVAILABLE;
 }
 
+void CommunicationManager_BindDeferredSaveToken(CommandSource source,
+                                                uint16_t request_token)
+{
+    (void)source;
+    (void)request_token;
+}
+
+CommunicationSaveResult CommunicationManager_GetSaveResult(void)
+{
+    return COMM_SAVE_RESULT_IDLE;
+}
+
+uint16_t CommunicationManager_GetSaveToken(void) { return 0U; }
+
+CommandSource CommunicationManager_GetSaveSource(void)
+{
+    return COMMAND_SOURCE_DIAGNOSTIC;
+}
+
+uint32_t CommunicationManager_GetSaveRevision(void) { return 0U; }
+
 bool PersistenceManager_IsBusy(void)
 {
     return s_persistence_busy;

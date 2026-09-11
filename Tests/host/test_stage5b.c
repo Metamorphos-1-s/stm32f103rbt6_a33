@@ -328,6 +328,15 @@ static void TestCommunicationManagerDualGates(void)
     Stage5B_SetPersistenceBusy(false);
     CommunicationManager_Process();
     CHECK(CommunicationManager_GetState() == COMM_STATE_RUNNING);
+    CommunicationManager_Process();
+    {
+        uint16_t save_diag[5] = {0};
+        CHECK(CommunicationManager_GetSaveResult() == COMM_SAVE_RESULT_FAILED);
+        CHECK(ModbusRegisterModel_ReadHolding(0x01C5U, 5U, save_diag) ==
+              MODBUS_REGISTER_OK);
+        CHECK(save_diag[0] == COMM_SAVE_RESULT_FAILED);
+        CHECK(save_diag[1] == 0U);
+    }
     Stage5B_SetPersistenceSaveResult(COMMAND_RESULT_ACCEPTED);
     CHECK(ModbusRegisterModel_WriteSingle(0x01A1U, 9U,
         COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_OK);

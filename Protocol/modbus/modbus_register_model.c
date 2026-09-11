@@ -14,6 +14,7 @@
 #include "persistent_schema.h"
 #include "project_config.h"
 #include "storage_power_guard.h"
+#include "communication_manager.h"
 #include "system_context.h"
 #include "unit_converter.h"
 
@@ -202,7 +203,7 @@ static ModbusRegisterResult ReadActive(uint16_t address,
         case 0x0125U: case 0x0133U:
             *value=(uint16_t)m->profiles[(address==0x0125U)?0:1].stability_hold_ms; break;
         case 0x013CU:*value=config->system.startup_auto_zero_enable?1U:0U; break;
-        case 0x013EU:*value=CONFIG_STORE_SCHEMA_V2; break;
+        case 0x013EU:*value=CONFIG_STORE_SCHEMA_V3; break;
         case 0x013FU:*value=(uint16_t)MetrologyConfig_Validate(m,&config->stability); break;
         default:
             if ((address>=0x0104U)&&(address<=0x0107U))
@@ -364,10 +365,16 @@ static ModbusRegisterResult ReadOne(uint16_t address,
     }
     if ((address>=0x01C0U)&&(address<=0x01DFU))
     {
-        if(address==0x01C0U)*value=CONFIG_STORE_SCHEMA_V2;
+        if(address==0x01C0U)*value=CONFIG_STORE_SCHEMA_V3;
         else if(address==0x01C1U)*value=ConfigStore_GetActiveSlot();
         else if(address>=0x01C2U&&address<=0x01C3U)*value=Word32(ConfigStore_GetActiveSequence(),(uint8_t)(address-0x01C2U),order);
         else if(address==0x01C4U)*value=(uint16_t)ConfigStore_GetState();
+        else if(address==MODBUS_SAVE_RESULT)*value=(uint16_t)CommunicationManager_GetSaveResult();
+        else if(address==MODBUS_SAVE_TOKEN)*value=CommunicationManager_GetSaveToken();
+        else if(address==MODBUS_SAVE_SOURCE)*value=(uint16_t)CommunicationManager_GetSaveSource();
+        else if(address>=MODBUS_SAVE_REVISION_FIRST&&address<=MODBUS_SAVE_REVISION_LAST)
+            *value=Word32(CommunicationManager_GetSaveRevision(),
+                (uint8_t)(address-MODBUS_SAVE_REVISION_FIRST),order);
         return MODBUS_REGISTER_OK;
     }
     if ((address>=MODBUS_DISPLAY_CONDITION_FIRST)&&

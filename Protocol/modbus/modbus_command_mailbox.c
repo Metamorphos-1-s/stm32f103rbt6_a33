@@ -1,6 +1,7 @@
 #include "modbus_command_mailbox.h"
 
 #include "command_service.h"
+#include "communication_manager.h"
 #include "modbus_register_map.h"
 #include "project_config.h"
 
@@ -97,6 +98,12 @@ static ModbusRegisterResult Execute(CommandSource source)
             request.value64 = BitsToInt64(bits);
         }
         response.result = CommandService_Execute(&request, &response);
+        if ((command == COMMAND_REQUEST_CONFIG_SAVE) &&
+            (response.result == COMMAND_RESULT_ACCEPTED))
+        {
+            CommunicationManager_BindDeferredSaveToken(
+                source, s_mailbox.request_token);
+        }
     }
     s_mailbox.response_token = s_mailbox.request_token;
     s_mailbox.command_result = (uint16_t)response.result;
