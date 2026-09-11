@@ -35,15 +35,21 @@ constraints.
 
 | Image | Flash text+data | RAM data+bss | ELF SHA-256 |
 | --- | ---: | ---: | --- |
-| Debug | 94,140 B | 19,392 B | `36FC04DB647A38BD7728246D8509D0A0F5A11559D8FD3121A5F02007D7CDBD2C` |
-| Release | 80,920 B | 19,352 B | `B213D4B7A8310AE751E4818EBD8EB1DBFA30C24514BA194DE857D990733CA957` |
-| BoardDiagnostics | 117,144 B | 19,264 B | `46FB036329C0AE5C43128881CA213B5F5A076E929F8CBC1940923332EF2D774F` |
-| USART3 Bringup | 93,840 B | 19,008 B | `C55DA68C3010A1158EE5421411090FFF49A982368DE332CD0BC7FB30C5204659` |
+| Debug | 94,084 B | 19,392 B | `1FDE18BCD0E15CC5CAC87132DBB17A8E4310A18333E109DE9D398B581D00FCAD` |
+| Release | 80,880 B | 19,352 B | `A82F89F0FE12480078D125BB8BEE581439A1CEFE1A77319EACFB7E4FEA396E2D` |
+| BoardDiagnostics | 117,072 B | 19,264 B | `F4C58E9F792CA8E6455E5F54598534A633A6CF20AF7C20510A44D6CC921102D7` |
+| USART3 Bringup | 93,784 B | 19,008 B | `087D2522C0C7FDC4FB0DE52D34C8EDB7B073CD7DD2ADF97399645CDB620AED24` |
 
 Compared with the Stage 5J reference, the active ConfigStore path remains
 smaller despite the validator and diagnostic additions. Historical codec and
 projection source have been removed; V1/V2 numeric schema constants remain
 only for explicit unsupported-slot detection.
+
+The final alarm validation audit removed a duplicate signed subtraction that
+overflowed for `INT64_MIN..INT64_MAX`. Extreme enabled/disabled alarm,
+hysteresis, Modbus staging/APPLY, V3 encode, and LimitChecker arithmetic now
+run in the host suite. Portable run `34610805291` passed GCC, Clang, and UBSan
+for implementation commit `6d92b1efa39b9c9b2d6fdf950d0f3fbb6cfbb4fe`.
 
 The product identity is Firmware `0x0510`; PC strict preflight requires a new
 software baseline and hardware validation remains separate.

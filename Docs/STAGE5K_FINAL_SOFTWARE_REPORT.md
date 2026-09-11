@@ -51,4 +51,27 @@ GitHub Actions workflow `Stage 5K portable host gate` run `34592586554`
 completed successfully for implementation commit `1e7f9912d9376a5c93d3989a2621839f6e273e28`:
 https://github.com/Metamorphos-1-s/stm32f103rbt6_a33/actions/runs/34592586554
 
+The final UB audit found that `DeviceConfig_Validate` repeated alarm span
+validation using signed subtraction. `INT64_MAX - INT64_MIN` overflowed before
+the result could be checked. The duplicate calculation was removed so
+`AlarmConfig_Validate` is the single alarm validator and retains its safe
+unsigned span calculation. Host tests now execute enabled full-range alarms,
+maximum legal hysteresis, equal/reversed thresholds, disabled extreme values,
+Modbus staging VALIDATE/APPLY with unchanged-state failure checks, V3 encode,
+and both LimitChecker hysteresis arithmetic branches. Disabled alarms retain
+the existing policy that threshold ordering is ignored while other enum and
+nonnegative-hysteresis rules still apply.
+
+The disabled V1/V2 test blocks were physically deleted from
+`Tests/host/test_stage5a.c`. Unused V1/V2 payload and body-size macros were
+removed; only V1/V2 schema identifiers remain for explicit rejection.
+
+Implementation commits are `a3e9c5e2e89416a8a2b3374d890380ae3c634fae`
+and its GCC cleanup `6d92b1efa39b9c9b2d6fdf950d0f3fbb6cfbb4fe`.
+Portable run `34610805291` passed GCC, Clang, and UBSan for the latter commit:
+https://github.com/Metamorphos-1-s/stm32f103rbt6_a33/actions/runs/34610805291
+The earlier successful run `34592586554` remains historical evidence; failed
+run `34610447015` exposed and rejected a duplicate unused test helper before
+tests ran.
+
 Final status: `STAGE 5K SOFTWARE READY; HARDWARE VALIDATION PENDING`.
