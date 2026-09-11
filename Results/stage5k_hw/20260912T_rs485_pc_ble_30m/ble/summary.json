@@ -1,0 +1,442 @@
+{
+  "address": "C8:46:82:00:83:24",
+  "duration_s": 1803.157,
+  "elapsed_s": 1804.797,
+  "notifications": 7702,
+  "notification_bytes": 679402,
+  "frames_received": 12604,
+  "fast_frames": 9003,
+  "slow_frames": 1800,
+  "checkweigh_frames": 1801,
+  "crc_errors": 0,
+  "sequence_gaps": 1,
+  "duplicates": 0,
+  "parser_resync": 72,
+  "timestamp_anomalies": 0,
+  "disconnects": 0,
+  "partial_bytes": 0,
+  "command_rounds": 60,
+  "command_success": 60,
+  "commands": [
+    {
+      "index": 1,
+      "name": "device-info",
+      "transaction_id": 13915,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 2,
+      "name": "get-config",
+      "transaction_id": 13916,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 3,
+      "name": "cal-status",
+      "transaction_id": 13917,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 4,
+      "name": "device-info",
+      "transaction_id": 13918,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 5,
+      "name": "get-config",
+      "transaction_id": 13919,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 6,
+      "name": "cal-status",
+      "transaction_id": 13920,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 7,
+      "name": "device-info",
+      "transaction_id": 13921,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 8,
+      "name": "get-config",
+      "transaction_id": 13922,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 9,
+      "name": "cal-status",
+      "transaction_id": 13923,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 10,
+      "name": "device-info",
+      "transaction_id": 13924,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 11,
+      "name": "get-config",
+      "transaction_id": 13925,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 12,
+      "name": "cal-status",
+      "transaction_id": 13926,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 13,
+      "name": "device-info",
+      "transaction_id": 13927,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 14,
+      "name": "get-config",
+      "transaction_id": 13928,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 15,
+      "name": "cal-status",
+      "transaction_id": 13929,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 16,
+      "name": "device-info",
+      "transaction_id": 13930,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 17,
+      "name": "get-config",
+      "transaction_id": 13931,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 18,
+      "name": "cal-status",
+      "transaction_id": 13932,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 19,
+      "name": "device-info",
+      "transaction_id": 13933,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 20,
+      "name": "get-config",
+      "transaction_id": 13934,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 21,
+      "name": "cal-status",
+      "transaction_id": 13935,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 22,
+      "name": "device-info",
+      "transaction_id": 13936,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 23,
+      "name": "get-config",
+      "transaction_id": 13937,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 24,
+      "name": "cal-status",
+      "transaction_id": 13938,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 25,
+      "name": "device-info",
+      "transaction_id": 13939,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 26,
+      "name": "get-config",
+      "transaction_id": 13940,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 27,
+      "name": "cal-status",
+      "transaction_id": 13941,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 28,
+      "name": "device-info",
+      "transaction_id": 13942,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 29,
+      "name": "get-config",
+      "transaction_id": 13943,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 30,
+      "name": "cal-status",
+      "transaction_id": 13944,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 31,
+      "name": "device-info",
+      "transaction_id": 13945,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 32,
+      "name": "get-config",
+      "transaction_id": 13946,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 33,
+      "name": "cal-status",
+      "transaction_id": 13947,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 34,
+      "name": "device-info",
+      "transaction_id": 13948,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 35,
+      "name": "get-config",
+      "transaction_id": 13949,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 36,
+      "name": "cal-status",
+      "transaction_id": 13950,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 37,
+      "name": "device-info",
+      "transaction_id": 13951,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 38,
+      "name": "get-config",
+      "transaction_id": 13952,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 39,
+      "name": "cal-status",
+      "transaction_id": 13953,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 40,
+      "name": "device-info",
+      "transaction_id": 13954,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 41,
+      "name": "get-config",
+      "transaction_id": 13955,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 42,
+      "name": "cal-status",
+      "transaction_id": 13956,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 43,
+      "name": "device-info",
+      "transaction_id": 13957,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 44,
+      "name": "get-config",
+      "transaction_id": 13958,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 45,
+      "name": "cal-status",
+      "transaction_id": 13959,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 46,
+      "name": "device-info",
+      "transaction_id": 13960,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 47,
+      "name": "get-config",
+      "transaction_id": 13961,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 48,
+      "name": "cal-status",
+      "transaction_id": 13962,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 49,
+      "name": "device-info",
+      "transaction_id": 13963,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 50,
+      "name": "get-config",
+      "transaction_id": 13964,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 51,
+      "name": "cal-status",
+      "transaction_id": 13965,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 52,
+      "name": "device-info",
+      "transaction_id": 13966,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 53,
+      "name": "get-config",
+      "transaction_id": 13967,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 54,
+      "name": "cal-status",
+      "transaction_id": 13968,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 55,
+      "name": "device-info",
+      "transaction_id": 13969,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 56,
+      "name": "get-config",
+      "transaction_id": 13970,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 57,
+      "name": "cal-status",
+      "transaction_id": 13971,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 58,
+      "name": "device-info",
+      "transaction_id": 13972,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 59,
+      "name": "get-config",
+      "transaction_id": 13973,
+      "ok": true,
+      "result": 0
+    },
+    {
+      "index": 60,
+      "name": "cal-status",
+      "transaction_id": 13974,
+      "ok": true,
+      "result": 0
+    }
+  ]
+}

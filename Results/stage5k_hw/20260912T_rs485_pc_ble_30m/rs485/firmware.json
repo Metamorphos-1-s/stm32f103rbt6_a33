@@ -1,0 +1,4 @@
+{
+  "sha": "f2aa1a86ff3e992cf7371a1f4796b42299626175",
+  "status": "M Tools/stage5b_hw/__pycache__/hw_common.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/modbus_crc.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/modbus_frame.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/register_map.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/register_map_check.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/report_writer.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/serial_transport.cpython-38.pyc"
+}
