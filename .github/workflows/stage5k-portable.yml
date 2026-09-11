@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - stage5k-fw0510-correctness-refactor
+      - stage5k-fw0510-save-blocker-hotfix
   workflow_dispatch:
 
 permissions:
@@ -24,6 +25,9 @@ jobs:
           - name: ubsan
             compiler: gcc
             cflags: "-fsanitize=undefined -fno-sanitize-recover=undefined"
+          - name: asan
+            compiler: gcc
+            cflags: "-fsanitize=address -fno-omit-frame-pointer"
     runs-on: ubuntu-latest
     name: ${{ matrix.name }}
     steps:
