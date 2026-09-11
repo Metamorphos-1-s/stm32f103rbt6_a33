@@ -27,4 +27,4 @@ W02 was identified as `W02_008324` at `C8:46:82:00:83:24` with the expected FFE0
 - The gap is treated as a real BLE delivery/parser incident, not as a recoverable pass condition. TCP 30-minute and phone 600-second gates were not started after this failed formal run.
 - Client software tests remain green (PC 305/305, WeChat 38/38, 73 register definitions non-overlapping), but the client contract is still the historical `0x050F` baseline and therefore does not satisfy the required `0x0510` contract gate.
 
-Final status remains: `STAGE 5K SAVE BLOCKER CLOSED; FULL HARDWARE VALIDATION PENDING`.
+Final status: `STAGE 5K HARDWARE VALIDATION BLOCKED` due to the confirmed BLE telemetry gap in the formal 30-minute PC-Central run. The earlier SAVE blocker remains closed.
