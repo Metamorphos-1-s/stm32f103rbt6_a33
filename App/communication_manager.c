@@ -335,6 +335,12 @@ void CommunicationManager_Process(void)
                     s_save_deferred = false;
                     s_save_persistence_started = true;
                 }
+                else if (save_result == COMMAND_RESULT_OK)
+                {
+                    s_save_deferred = false;
+                    s_save_persistence_started = false;
+                    s_save_result = COMM_SAVE_RESULT_NO_CHANGE;
+                }
                 else
                 {
                     s_save_deferred = false;

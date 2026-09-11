@@ -337,6 +337,10 @@ static void TestCommunicationManagerDualGates(void)
         CHECK(save_diag[0] == COMM_SAVE_RESULT_FAILED);
         CHECK(save_diag[1] == 0U);
     }
+    Stage5B_SetPersistenceSaveResult(COMMAND_RESULT_OK);
+    CHECK(CommunicationManager_RequestDeferredSave() == COMMAND_RESULT_ACCEPTED);
+    CommunicationManager_Process();
+    CHECK(CommunicationManager_GetSaveResult() == COMM_SAVE_RESULT_NO_CHANGE);
     Stage5B_SetPersistenceSaveResult(COMMAND_RESULT_ACCEPTED);
     CHECK(ModbusRegisterModel_WriteSingle(0x01A1U, 9U,
         COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_OK);
