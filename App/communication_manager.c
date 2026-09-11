@@ -39,6 +39,8 @@ static uint32_t s_uart2_first_count;
 static uint32_t s_uart3_first_count;
 static CommunicationApplyResult s_apply_result;
 static bool s_local_apply;
+static CommunicationSaveResult s_save_result;
+static bool s_save_persistence_started;
 
 static BspUart2Config ToUartConfig(const CommunicationConfig *config)
 {
@@ -168,6 +170,8 @@ bool CommunicationManager_Init(const CommunicationConfig *config)
     s_uart3_first_count = 0U;
     s_apply_result = COMM_APPLY_RESULT_IDLE;
     s_local_apply = false;
+    s_save_result = COMM_SAVE_RESULT_IDLE;
+    s_save_persistence_started = false;
     if (config->protocol_mode != PROTOCOL_MODE_MODBUS_RTU)
     {
         s_state = COMM_STATE_DISABLED;
@@ -228,6 +232,8 @@ CommandResult CommunicationManager_RequestDeferredSave(void)
     if (!StoragePowerGuard_CanContinueFlashOperation())
         return COMMAND_RESULT_POWER_UNSAFE;
     s_save_deferred = true;
+    s_save_result = COMM_SAVE_RESULT_PENDING;
+    s_save_persistence_started = false;
     return COMMAND_RESULT_ACCEPTED;
 #endif
 }
@@ -305,8 +311,34 @@ void CommunicationManager_Process(void)
             else if (s_apply_requested) s_state = COMM_STATE_APPLY_PENDING;
             else if (s_save_deferred)
             {
-                s_save_deferred = false;
-                (void)PersistenceManager_RequestSave();
+                CommandResult save_result = PersistenceManager_RequestSave();
+                if (save_result == COMMAND_RESULT_ACCEPTED)
+                {
+                    s_save_deferred = false;
+                    s_save_persistence_started = true;
+                }
+                else
+                {
+                    s_save_deferred = false;
+                    s_save_persistence_started = false;
+                    s_save_result = (save_result == COMMAND_RESULT_POWER_UNSAFE) ?
+                        COMM_SAVE_RESULT_POWER_UNSAFE :
+                        (save_result == COMMAND_RESULT_BUSY) ?
+                        COMM_SAVE_RESULT_BUSY :
+                        (save_result == COMMAND_RESULT_INVALID_STATE) ?
+                        COMM_SAVE_RESULT_INVALID_STATE :
+                        COMM_SAVE_RESULT_FAILED;
+                }
+            }
+            else if (s_save_persistence_started &&
+                     !PersistenceManager_IsBusy())
+            {
+                PersistenceStatus status = PersistenceManager_GetStatus();
+                s_save_persistence_started = false;
+                s_save_result = (status == PERSISTENCE_STATUS_SUCCESS) ?
+                    COMM_SAVE_RESULT_SUCCESS :
+                    (status == PERSISTENCE_STATUS_NO_CHANGE) ?
+                    COMM_SAVE_RESULT_NO_CHANGE : COMM_SAVE_RESULT_FAILED;
             }
             break;
         case COMM_STATE_RESPONSE_ACTIVE:
@@ -402,6 +434,11 @@ CommunicationManagerState CommunicationManager_GetState(void)
 CommunicationApplyResult CommunicationManager_GetApplyResult(void)
 {
     return s_apply_result;
+}
+
+CommunicationSaveResult CommunicationManager_GetSaveResult(void)
+{
+    return s_save_result;
 }
 
 const CommunicationConfig *CommunicationManager_GetActiveConfig(void)

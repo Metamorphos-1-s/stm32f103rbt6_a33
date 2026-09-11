@@ -33,6 +33,19 @@ typedef enum
     COMM_APPLY_RESULT_FAILED
 } CommunicationApplyResult;
 
+typedef enum
+{
+    COMM_SAVE_RESULT_IDLE = 0,
+    COMM_SAVE_RESULT_PENDING,
+    COMM_SAVE_RESULT_SUCCESS,
+    COMM_SAVE_RESULT_NO_CHANGE,
+    COMM_SAVE_RESULT_FAILED,
+    COMM_SAVE_RESULT_POWER_UNSAFE,
+    COMM_SAVE_RESULT_BUSY,
+    COMM_SAVE_RESULT_INVALID_STATE,
+    COMM_SAVE_RESULT_INTERNAL_ERROR
+} CommunicationSaveResult;
+
 bool CommunicationManager_Init(const CommunicationConfig *config);
 void CommunicationManager_Process(void);
 CommandResult CommunicationManager_RequestApply(void);
@@ -41,6 +54,7 @@ CommandResult CommunicationManager_RequestLocalApply(
     const CommunicationConfig *candidate);
 CommunicationApplyResult CommunicationManager_GetApplyResult(void);
 CommandResult CommunicationManager_RequestDeferredSave(void);
+CommunicationSaveResult CommunicationManager_GetSaveResult(void);
 CommunicationManagerState CommunicationManager_GetState(void);
 const CommunicationConfig *CommunicationManager_GetActiveConfig(void);
 const ModbusRtuFramer *CommunicationManager_GetFramer(uint8_t port);

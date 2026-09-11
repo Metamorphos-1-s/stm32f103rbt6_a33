@@ -7,6 +7,7 @@
 #include "default_config.h"
 #include "fault_manager.h"
 #include "metrology_manager.h"
+#include "persistence_manager.h"
 #include "storage_power_guard.h"
 
 #include <string.h>
@@ -75,6 +76,8 @@ CommandResult CommandService_ReserveConfigOwner(CommandSource source)
 void CommandService_ClearStagedConfig(void){}
 void CommandService_ClearStagedConfigForSource(CommandSource source)
 {if(!s_config_owner_valid||s_config_owner==source)s_config_owner_valid=false;}
+PersistenceStatus PersistenceManager_GetStatus(void)
+{return PERSISTENCE_STATUS_SUCCESS;}
 CS1237_State CS1237_GetState(void){return CS1237_STATE_RUNNING;}
 uint16_t CS1237_GetBufferedSampleCount(void){return 0U;}
 uint32_t CS1237_GetBufferOverrunCount(void){return 0U;}
