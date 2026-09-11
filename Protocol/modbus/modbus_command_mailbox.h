@@ -7,6 +7,7 @@
 #include <stdint.h>
 
 void ModbusCommandMailbox_Init(void);
+void ModbusCommandMailbox_Process(uint32_t now_ms);
 ModbusRegisterResult ModbusCommandMailbox_Read(uint16_t address,
                                                 uint16_t *value);
 ModbusRegisterResult ModbusCommandMailbox_Write(uint16_t address,

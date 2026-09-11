@@ -649,6 +649,7 @@ static void TestDualPortInstances(void)
     uint8_t damaged[8];
     uint16_t length2;
     uint16_t length3;
+    uint16_t staging_word[1];
     uint16_t index;
     bool respond2;
     bool respond3;
@@ -708,6 +709,31 @@ static void TestDualPortInstances(void)
     CHECK(ModbusRegisterModel_WriteSingle(0x004BU, MODBUS_EXECUTE_VALUE,
         COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
     CHECK(ModbusRegisterModel_WriteSingle(0x0040U, 43U,
+        COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteSingle(0x004BU, MODBUS_EXECUTE_VALUE,
+        COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_OK);
+
+    /* A failed cross-port staging attempt must not alter A's candidate, and
+       the owning port must be able to cancel atomically. */
+    CHECK(ModbusRegisterModel_WriteSingle(0x0156U, 4U,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0156U, 5U,
+        COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_BUSY);
+    CHECK(ModbusRegisterModel_ReadHolding(0x0156U, 1U, staging_word) ==
+        MODBUS_REGISTER_OK && staging_word[0] == 4U);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0040U, 44U,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0041U, 12U,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteSingle(0x004BU, MODBUS_EXECUTE_VALUE,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_ReadHolding(0x0156U, 1U, staging_word) ==
+        MODBUS_REGISTER_OK && staging_word[0] == 3U);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0156U, 5U,
+        COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0040U, 45U,
+        COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_WriteSingle(0x0041U, 12U,
         COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_OK);
     CHECK(ModbusRegisterModel_WriteSingle(0x004BU, MODBUS_EXECUTE_VALUE,
         COMMAND_SOURCE_MODBUS_USART3) == MODBUS_REGISTER_OK);

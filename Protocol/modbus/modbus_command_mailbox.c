@@ -2,6 +2,7 @@
 
 #include "command_service.h"
 #include "modbus_register_map.h"
+#include "project_config.h"
 
 #include <stdbool.h>
 #include <string.h>
@@ -25,9 +26,11 @@ typedef struct
     uint32_t busy_reject_count;
     bool owner_valid;
     bool have_response;
+    uint32_t owner_last_activity_ms;
 } Mailbox;
 
 static Mailbox s_mailbox;
+static uint32_t s_now_ms;
 
 static int32_t Join32(const uint16_t words[2])
 {
@@ -109,6 +112,17 @@ static ModbusRegisterResult Execute(CommandSource source)
 
 void ModbusCommandMailbox_Init(void) { (void)memset(&s_mailbox, 0, sizeof(s_mailbox)); }
 
+void ModbusCommandMailbox_Process(uint32_t now_ms)
+{
+    s_now_ms = now_ms;
+    if (s_mailbox.owner_valid &&
+        ((uint32_t)(now_ms - s_mailbox.owner_last_activity_ms) >=
+         MAILBOX_OWNER_LEASE_MS))
+    {
+        s_mailbox.owner_valid = false;
+    }
+}
+
 ModbusRegisterResult ModbusCommandMailbox_Read(uint16_t address, uint16_t *value)
 {
     if ((value == NULL) || (address < MODBUS_MAILBOX_FIRST) ||
@@ -152,6 +166,7 @@ ModbusRegisterResult ModbusCommandMailbox_Write(uint16_t address,
     }
     s_mailbox.owner = source;
     s_mailbox.owner_valid = true;
+    s_mailbox.owner_last_activity_ms = s_now_ms;
     switch (address)
     {
         case 0x0040U: s_mailbox.request_token=value; break;

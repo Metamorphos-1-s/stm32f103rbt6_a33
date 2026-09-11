@@ -333,6 +333,7 @@ static void App_10msTask(void *context)
   MenuController_Process10ms();
   StatusController_Process10ms();
   CommandService_Process(BSP_TimeNowMs());
+  ModbusCommandMailbox_Process(BSP_TimeNowMs());
   CalibrationController_Process10ms();
 
   if (MenuController_TakeCalibrationRequest())

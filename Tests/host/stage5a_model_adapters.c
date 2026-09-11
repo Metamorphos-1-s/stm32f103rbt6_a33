@@ -20,6 +20,8 @@ static CommandRequest s_last_command;
 static AlarmOutputDiagnostics s_alarm_diagnostics;
 static StartupAutoZeroSnapshot s_startup_auto_zero;
 static bool s_context_available;
+static bool s_config_owner_valid;
+static CommandSource s_config_owner;
 
 void Stage5A_ModelAdaptersInit(void)
 {
@@ -33,6 +35,8 @@ void Stage5A_ModelAdaptersInit(void)
     s_snapshot.status_flags=WEIGHT_STATUS_WEIGHT_VALID;
     s_command_count=0U;
     s_context_available=true;
+    s_config_owner_valid=false;
+    s_config_owner=COMMAND_SOURCE_LOCAL_KEY;
     (void)memset(&s_last_command,0,sizeof(s_last_command));
     (void)memset(&s_alarm_diagnostics,0,sizeof(s_alarm_diagnostics));
     (void)memset(&s_startup_auto_zero,0,sizeof(s_startup_auto_zero));
@@ -59,15 +63,18 @@ const DisplayConditionSnapshot *MetrologyManager_GetDisplayConditionSnapshot(voi
 const RuntimeDriftSnapshot *MetrologyManager_GetRuntimeDriftSnapshot(void)
 {return &s_runtime_drift;}
 CommandResult CommandService_Execute(const CommandRequest *request,CommandResponse *response)
-{++s_command_count;s_last_command=*request;(void)memset(response,0,sizeof(*response));response->result=COMMAND_RESULT_OK;return COMMAND_RESULT_OK;}
+{CommandResult result=COMMAND_RESULT_OK;++s_command_count;s_last_command=*request;(void)memset(response,0,sizeof(*response));
+    if ((request != NULL) && (request->id == COMMAND_CANCEL_CONFIG_EDIT))
+    { if(!s_config_owner_valid||s_config_owner!=request->source)result=COMMAND_RESULT_BUSY;else s_config_owner_valid=false; }
+    response->result=result;return result;}
 bool CommandService_SetStagedConfig(const DeviceConfig *candidate){return candidate!=NULL;}
 bool CommandService_SetStagedConfigForSource(const DeviceConfig *candidate,
-    CommandSource source){(void)source;return candidate!=NULL;}
+    CommandSource source){if(candidate==NULL)return false;if(s_config_owner_valid&&s_config_owner!=source)return false;s_config_owner=source;s_config_owner_valid=true;return true;}
 CommandResult CommandService_ReserveConfigOwner(CommandSource source)
-{(void)source;return COMMAND_RESULT_OK;}
+{if(s_config_owner_valid&&s_config_owner!=source)return COMMAND_RESULT_BUSY;s_config_owner=source;s_config_owner_valid=true;return COMMAND_RESULT_OK;}
 void CommandService_ClearStagedConfig(void){}
 void CommandService_ClearStagedConfigForSource(CommandSource source)
-{(void)source;}
+{if(!s_config_owner_valid||s_config_owner==source)s_config_owner_valid=false;}
 CS1237_State CS1237_GetState(void){return CS1237_STATE_RUNNING;}
 uint16_t CS1237_GetBufferedSampleCount(void){return 0U;}
 uint32_t CS1237_GetBufferOverrunCount(void){return 0U;}

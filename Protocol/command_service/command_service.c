@@ -48,6 +48,7 @@ static DeviceConfig s_staged_config;
 static bool s_staged_config_valid;
 static bool s_config_owner_valid;
 static CommandSource s_config_owner;
+static uint32_t s_config_owner_last_activity_ms;
 static uint32_t s_now_ms;
 
 static void CommandService_ClearConfigOwner(void);
@@ -212,6 +213,7 @@ void CommandService_Init(void)
     s_staged_config_valid = false;
     s_config_owner_valid = false;
     s_config_owner = COMMAND_SOURCE_LOCAL_KEY;
+    s_config_owner_last_activity_ms = 0U;
     s_calibration.state = CAL_WORKFLOW_IDLE;
     s_calibration.owner = CAL_OWNER_NONE;
     s_calibration.last_result = COMMAND_RESULT_OK;
@@ -224,6 +226,14 @@ void CommandService_Process(uint32_t now_ms)
     bool stable;
 
     s_now_ms = now_ms;
+    if (s_config_owner_valid &&
+        ((uint32_t)(now_ms - s_config_owner_last_activity_ms) >=
+         CONFIG_OWNER_LEASE_MS))
+    {
+        ConfigEdit_Cancel();
+        s_staged_config_valid = false;
+        CommandService_ClearConfigOwner();
+    }
     if (!s_calibration.active) return;
     if ((uint32_t)(now_ms - s_calibration.last_activity_ms) >=
         CALIBRATION_SESSION_TIMEOUT_MS)
@@ -265,8 +275,9 @@ void CommandService_Process(uint32_t now_ms)
 static CommandResult CommandService_RequireConfigOwner(CommandSource source)
 {
     if (!s_config_owner_valid) return COMMAND_RESULT_INVALID_STATE;
-    return (s_config_owner == source) ? COMMAND_RESULT_OK :
-                                       COMMAND_RESULT_BUSY;
+    if (s_config_owner != source) return COMMAND_RESULT_BUSY;
+    s_config_owner_last_activity_ms = s_now_ms;
+    return COMMAND_RESULT_OK;
 }
 
 static void CommandService_ClearConfigOwner(void)
@@ -473,6 +484,7 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             {
                 s_config_owner = request->source;
                 s_config_owner_valid = true;
+                s_config_owner_last_activity_ms = s_now_ms;
                 result = COMMAND_RESULT_OK;
             }
             else
@@ -912,8 +924,9 @@ bool CommandService_SetStagedConfigForSource(const DeviceConfig *candidate,
         return false;
     s_staged_config = *candidate;
     s_staged_config_valid = true;
-    s_config_owner = source;
-    s_config_owner_valid = true;
+        s_config_owner = source;
+        s_config_owner_valid = true;
+        s_config_owner_last_activity_ms = s_now_ms;
     return true;
 }
 
@@ -930,6 +943,7 @@ CommandResult CommandService_ReserveConfigOwner(CommandSource source)
         return COMMAND_RESULT_BUSY;
     s_config_owner = source;
     s_config_owner_valid = true;
+    s_config_owner_last_activity_ms = s_now_ms;
     return COMMAND_RESULT_OK;
 }
 

@@ -617,16 +617,29 @@ static ModbusRegisterResult WriteOne(uint16_t address,uint16_t value,
             context=SystemContext_Get();
             if((context==NULL)||(ModbusCommandMailbox_Read(0x0041U,&command_id)!=MODBUS_REGISTER_OK))
                 return MODBUS_REGISTER_DEVICE_FAILURE;
-            if(command_id==9U){RefreshStaging(&context->config);CommandService_ClearStagedConfigForSource(source);}
+            if(command_id==9U)
+            {
+                if (CommandService_ReserveConfigOwner(source) !=
+                    COMMAND_RESULT_OK)
+                    return MODBUS_REGISTER_BUSY;
+                RefreshStaging(&context->config);
+                CommandService_ClearStagedConfigForSource(source);
+            }
             else if((command_id==10U)||(command_id==11U))
             {
                 if(!DecodeStaging(&context->config,&candidate)||
                    !CommandService_SetStagedConfigForSource(&candidate,source))return MODBUS_REGISTER_BUSY;
             }
-            else if(command_id==12U)CommandService_ClearStagedConfigForSource(source);
             result=ModbusCommandMailbox_Write(address,value,source);
             if(command_id==10U)s_staging_validation=ModbusCommandMailbox_GetLastResult();
             if((command_id==11U)&&(ModbusCommandMailbox_GetLastResult()==COMMAND_RESULT_OK))s_staging_dirty=false;
+            if((command_id==12U)&&(result==MODBUS_REGISTER_OK))
+            {
+                RefreshStaging(&context->config);
+                s_staging_validation=0U;
+                s_staging_dirty=false;
+                CommandService_ClearStagedConfigForSource(source);
+            }
             return result;
         }
         return ModbusCommandMailbox_Write(address,value,source);
