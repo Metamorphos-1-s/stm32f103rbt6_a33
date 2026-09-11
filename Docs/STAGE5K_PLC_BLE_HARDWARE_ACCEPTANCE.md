@@ -19,5 +19,4 @@ The PLC is the sole write controller. BLE/phone may run as a read-only parallel 
 
 ## BLE status
 
-The W02 was powered with the phone disconnected, but the Windows BLE scan did not expose a uniquely identifiable W02 advertisement or the expected service. No guessed-address connection was attempted. BLE acceptance remains pending until the W02 name/address (or an advertising scan result) is confirmed.
-
+W02 was identified as `W02_008324` at `C8:46:82:00:83:24` with the expected FFE0 service. A read-only 15-second telemetry window received 106 frames (fast 76, slow 15, checkweigh 15), with zero CRC errors, sequence gaps, duplicates, parser resyncs, timestamp anomalies, partial bytes, or disconnects. The raw CSV and summary are in `Results/stage5k_hw/20260912T_ble_telemetry/`.
