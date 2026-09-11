@@ -23,4 +23,13 @@ runtime reset is therefore not yet proven, and the hardware closure remains
 blocked. Evidence is in
 `Results/stage5k_hw/20260912T_stage5k_hotfix_preflash/targeted_revalidation.json`.
 
-Status: `STAGE 5K SAVE BLOCKER ROOT CAUSE UNCONFIRMED`.
+The minimum production fix was to map `PersistenceManager_RequestSave()`'s
+`COMMAND_RESULT_OK` (the no-change terminal) to Deferred SAVE
+`COMM_SAVE_RESULT_NO_CHANGE` instead of `FAILED`. After rebuilding and
+flashing, a no-change SAVE returned result `3` with token/source/revision
+`450/Modbus/1`; a real brightness `3->4` SAVE returned `SUCCESS` with
+`503/Modbus/2`, and a second `4->3` SAVE returned `SUCCESS` with
+`603/Modbus/3`. Both physical power-cycle recoveries passed. The SAVE blocker
+is therefore closed; the remaining full hardware gates are tracked separately.
+
+Status: `STAGE 5K SAVE BLOCKER CLOSED; FULL HARDWARE VALIDATION PENDING`.

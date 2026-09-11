@@ -9,7 +9,9 @@ from pathlib import Path
 
 SLOT_SIZE = 2048
 MAGIC = 0x41333343
-FORMAT_VERSION = 1
+# Current ConfigStore header format. Historical V1/V2 records used format 1
+# and are intentionally rejected by the firmware rather than decoded as V3.
+FORMAT_VERSION = 3
 HEADER_SIZE = 32
 CRC_OFFSET = 20
 COMMIT_OFFSET = 2044

@@ -1,0 +1,17 @@
+{
+  "run_id": "20260912T_stage5k_final_two_save_recovery",
+  "firmware_commit": "785ce21e181fcf00aa371290facec6b7a14e484e",
+  "release_elf_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "identity": {"firmware": "0x0510", "map": "0x0104", "public_schema": 2, "persistent_format": 3},
+  "calibration": {"valid": true, "span_mass_ug": 500000000, "sequence": 1, "post_reboot_display_grams": 500.05},
+  "save_cycles": [
+    {"change": "brightness 3->4", "mailbox_token": 503, "result": "SUCCESS", "revision": 2, "slot": "B", "sequence": 2, "power_cycle": "PASS"},
+    {"change": "brightness 4->3", "mailbox_token": 603, "result": "SUCCESS", "revision": 3, "slot": "A", "sequence": 3, "power_cycle": "PASS"}
+  ],
+  "final": {"brightness": 3, "dirty": false, "current_revision": 3, "saved_revision": 3, "active_slot": "A", "active_sequence": 3, "fault_mask": 0},
+  "v3_slots": {"path": "post_second_power_cycle_slots.bin", "length": 4096, "sha256": "24693B8C8A14087C097EF2AB30E50AF44053DB20CDD4CDAA9D5D63E5FDEB4840", "slot_a_sha256": "C03FDCA1C409EA12E1A29545299CF634CA9F2CB329A587BDB5BD2663E5B94678", "slot_b_sha256": "91264340EE4EB213C915CA693E2DCA030DD849F1B98C5CC6EF4AF3CF17B50924", "parser": "Format 3 / Schema 3 / payload 281 / CRC valid / commit valid"},
+  "rs232_fc03": {"port": "COM5", "requests": 100, "success": 100, "timeouts": 0, "bad_frames": 0, "max_ms": 32.394, "avg_ms": 30.033},
+  "ch579_regression": {"endpoint": "192.168.1.100:502", "run": "PASS", "identity": "0x0510/0x0104/public-2/persistent-3", "fc03_active_registers": 64, "rs232_requests": 100, "raw_port_5000_closed": true},
+  "not_run": ["RS485 physical path", "BLE phone regression", "600 second concurrency"],
+  "status": "SAVE BLOCKER CLOSED; FULL HARDWARE VALIDATION PENDING"
+}
