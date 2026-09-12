@@ -30,3 +30,7 @@ W02 was identified as `W02_008324` at `C8:46:82:00:83:24` with the expected FFE0
 Acceptance criteria were revised by user decision on 2026-09-12. The immutable original run remains a V1 failure, while the independent V2 reevaluation passes with a 0.007933% missing rate and one maximum consecutive missing frame. See `Docs/STAGE5K_BLE_ACCEPTANCE_CRITERIA_CHANGE.md` and `acceptance_v2_reevaluation.json` beside the original run.
 
 Final status: `STAGE 5K SAVE BLOCKER CLOSED; FULL HARDWARE VALIDATION PENDING`.
+
+### TCP + PC BLE 30-minute V2 gate
+
+The independent `20260912T165200_tcp_pc_ble_30m` run passed Acceptance V2. TCP completed 17,269/17,269 FC03 requests with zero bad responses, unrecovered timeouts, TID errors, or MBAP errors; 62 connection resets recovered within the bounded retry. TCP port 5000 remained closed. BLE completed 60/60 read-only refreshes and received 12,599 frames. Two isolated single-frame losses produced a 0.015872% missing rate, maximum consecutive missing one, with zero CRC errors, out-of-order frames, disconnects, or unrecovered parser errors. Zero-gap is not claimed.

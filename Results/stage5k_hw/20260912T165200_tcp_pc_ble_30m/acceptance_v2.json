@@ -1,0 +1,38 @@
+{
+  "run_id": "20260912T165200_tcp_pc_ble_30m",
+  "gate": "BLE monitoring acceptance V2",
+  "result": "PASS",
+  "zero_gap_claimed": false,
+  "tcp": {
+    "duration_s": 1800.048,
+    "requests": 17269,
+    "successes": 17269,
+    "recoverable_reconnects": 62,
+    "bad_responses": 0,
+    "unrecovered_timeouts": 0,
+    "transaction_id_errors": 0,
+    "mbap_errors": 0,
+    "port_5000_closed": true
+  },
+  "ble": {
+    "duration_s": 1803.188,
+    "frames_received": 12599,
+    "expected_frames": 12601,
+    "gap_events": 2,
+    "missing_frames": 2,
+    "missing_rate_percent": 0.0158717562,
+    "maximum_consecutive_missing": 1,
+    "crc_errors": 0,
+    "duplicates": 0,
+    "out_of_order": 0,
+    "parser_resync_bytes": 110,
+    "unrecovered_parser_errors": 0,
+    "disconnects": 0,
+    "refresh_attempts": 60,
+    "refresh_successes": 60,
+    "refresh_success_rate_percent": 100.0,
+    "missing_transitions": ["10170 -> 10172", "10226 -> 10228"]
+  },
+  "configuration_state_pollution": 0,
+  "statement": "TCP PLC + PC BLE MONITORING: PASS; ZERO-GAP NOT CLAIMED"
+}
