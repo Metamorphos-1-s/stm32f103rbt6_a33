@@ -1,0 +1,52 @@
+{
+  "run_id": "20260912T_rs485_pc_ble_30m",
+  "original_gate_version": "BLE acceptance V1 zero-gap",
+  "original_conclusion": "FAIL",
+  "new_gate_version": "BLE monitoring acceptance V2",
+  "user_decision_date": "2026-09-12",
+  "original_evidence_modified": false,
+  "original_files": [
+    {"path":"ble/notifications.jsonl","length":1644392,"sha256":"C9AA0554E84A92BAE01DF2ACF89E74CB979B3E342ACAF3E3181F30C6937A2F8E"},
+    {"path":"ble/summary.json","length":8543,"sha256":"40B6FDD564EE3CD322BC2DE6B19DF1B764576D12970D4FBA145C9F9FDA8413FD"},
+    {"path":"rs485_soak.csv","length":2279597,"sha256":"8DBFF671350282863824D2E3B798C8C593827F69659D0E634ABF0C0EC556962F"},
+    {"path":"rs485/raw_frames.log","length":7243677,"sha256":"CE6B5FEAD962F58716236BAE410E758BC7C5F64FC34C9FFA442CDA2EB95A3EF1"},
+    {"path":"rs485/results.json","length":803,"sha256":"E3497F8F48872BE2D916C7F313551AE68B93ABC6B14BB696E37922C42994908F"}
+  ],
+  "ble": {
+    "received_frames": 12604,
+    "expected_frames": 12605,
+    "gap_events": 1,
+    "missing_frames": 1,
+    "missing_sequence": 34564,
+    "observed_transition": "34563 -> 34565",
+    "missing_rate_percent": 0.00793336,
+    "maximum_consecutive_missing": 1,
+    "crc_errors": 0,
+    "out_of_order": 0,
+    "duplicates": 0,
+    "disconnects": 0,
+    "refresh_attempts": 60,
+    "refresh_successes": 60,
+    "refresh_success_rate_percent": 100.0,
+    "parser_resync_bytes": 72,
+    "parser_resync_events": 1,
+    "unrecovered_parser_errors": 0,
+    "resync_analysis": "One 73-byte SLOW frame was delivered without its leading A5 sync byte. The remaining 72 bytes were discarded and parsing recovered at the next A55A sync."
+  },
+  "plc": {
+    "interface": "RS485 Modbus RTU COM5",
+    "requests": 6801,
+    "successes": 6801,
+    "timeouts": 0,
+    "crc_errors": 0,
+    "exceptions": 0,
+    "communication_failures": 0
+  },
+  "configuration_state_pollution": 0,
+  "new_conclusion": "PASS",
+  "statements": [
+    "RS485 PLC + PC BLE MONITORING: PASS",
+    "BLE MONITORING ACCEPTANCE V2: PASS",
+    "ZERO-GAP NOT CLAIMED"
+  ]
+}
