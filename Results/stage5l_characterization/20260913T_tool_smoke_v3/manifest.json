@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "run_id": "20260913T_tool_smoke_v3",
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 15539,
+      "sha256": "446084764CAFB4C9C0262049AB2B54274F3A9D995621225ED20DEF3941ABC1E2"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 185,
+      "sha256": "01F8053B0B3E03C0E0952D2E250C1BD9EAFE37743DB66B01201E5C181B2CBB23"
+    },
+    {
+      "path": "environment.json",
+      "length": 706,
+      "sha256": "0381C71213164EC30648ADC69ADDF4A433D5CBB736CC4422006939BF6CA443DE"
+    },
+    {
+      "path": "summary.json",
+      "length": 1307,
+      "sha256": "937CB14B5FB166DBA8DB7A88316EFD55F018C28461318F5C594BEBFC2B59DBCA"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1311,
+      "sha256": "BD3BCF2DCE7464CDD38BF11B83936BE1DB1436DE9F744AEAFB74771BA2077887"
+    }
+  ]
+}
