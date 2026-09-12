@@ -34,3 +34,9 @@ Final status: `STAGE 5K SAVE BLOCKER CLOSED; FULL HARDWARE VALIDATION PENDING`.
 ### TCP + PC BLE 30-minute V2 gate
 
 The independent `20260912T165200_tcp_pc_ble_30m` run passed Acceptance V2. TCP completed 17,269/17,269 FC03 requests with zero bad responses, unrecovered timeouts, TID errors, or MBAP errors; 62 connection resets recovered within the bounded retry. TCP port 5000 remained closed. BLE completed 60/60 read-only refreshes and received 12,599 frames. Two isolated single-frame losses produced a 0.015872% missing rate, maximum consecutive missing one, with zero CRC errors, out-of-order frames, disconnects, or unrecovered parser errors. Zero-gap is not claimed.
+
+## Scoped closure
+
+Mobile WeChat hardware testing is deferred as documented in `Docs/STAGE5K_MOBILE_ACCEPTANCE_DEFERRAL.md`. The final read-only freeze is `20260913T_stage5k_final_freeze`. Two user-authorized restore saves after the original qualification advanced revision from 3 to 7 and the slot sequences from A/B 3/2 to 7/6. The Active canonical SHA-256 returned exactly to `91D346E87BD112EFAC3B513A8CAFBBDDE9642069A15280DB7565374378BA43E1`; both V3 slots have valid CRC and commit markers.
+
+`STAGE 5K CORE HARDWARE VALIDATED; MOBILE WECHAT HARDWARE ACCEPTANCE DEFERRED`

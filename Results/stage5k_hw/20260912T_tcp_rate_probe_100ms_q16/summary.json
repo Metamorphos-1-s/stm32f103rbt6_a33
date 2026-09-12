@@ -1,0 +1,15 @@
+{
+  "host": "192.168.1.100",
+  "port": 502,
+  "duration_s": 2.668,
+  "interval_ms": 100,
+  "requests": 18,
+  "successes": 17,
+  "bad_responses": 1,
+  "timeouts": 0,
+  "transaction_id_errors": 0,
+  "mbap_errors": 0,
+  "tcp_5000": "checked_separately",
+  "latency_min_ms": 8.465766906738281,
+  "latency_max_ms": 950.7825374603271
+}

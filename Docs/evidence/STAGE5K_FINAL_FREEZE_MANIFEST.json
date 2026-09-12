@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "run_id": "20260913T_stage5k_final_freeze",
+  "stm32_head_before_close": "a1ac90881d42ed4f4621507463632559456fc236",
+  "firmware_identity": {"firmware":"0x0510","map":"0x0104","public_schema":2,"persistent_format":3,"ble_protocol":1},
+  "active_canonical_sha256": "91D346E87BD112EFAC3B513A8CAFBBDDE9642069A15280DB7565374378BA43E1",
+  "persistent_state": {"revision":7,"saved_revision":7,"active_slot":"A","slot_a_sequence":7,"slot_b_sequence":6,"dirty":0,"fault_mask":"0x00000000"},
+  "files": [
+    {"path":"Results/stage5k_hw/20260913T_stage5k_final_freeze/slots/config_region.bin","length":4096,"sha256":"D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86"},
+    {"path":"Results/stage5k_hw/20260913T_stage5k_final_freeze/slots/slot_a.bin","length":2048,"sha256":"412BCED9DA8923381B0FDE954A2ECD1A2B0D8E28EC574539B2A723ADE86895F0"},
+    {"path":"Results/stage5k_hw/20260913T_stage5k_final_freeze/slots/slot_b.bin","length":2048,"sha256":"5C3B5EBD6EFC91622DC97EC61D5ABD2ED847383162BBE489F8526B89F6C63BB1"}
+  ],
+  "scope_status": "STAGE 5K CORE HARDWARE VALIDATED; MOBILE WECHAT HARDWARE ACCEPTANCE DEFERRED",
+  "prohibited_claims": ["MOBILE WECHAT HARDWARE VALIDATED","BLE ZERO-GAP VERIFIED","FULL END-USER MOBILE ACCEPTANCE COMPLETE"]
+}

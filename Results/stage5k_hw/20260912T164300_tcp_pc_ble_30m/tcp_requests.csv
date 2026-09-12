@@ -1,0 +1,2 @@
+utc,transaction_id,address,quantity,ok,recovered,latency_ms,error
+2026-09-12T08:42:56Z,1,32,2,0,1,37.127,"ConnectionResetError(10054, '远程主机强迫关闭了一个现有的连接。', None, 10054, None)"
