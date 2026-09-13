@@ -1,0 +1,13 @@
+{
+  "baseline_g": 499.958465516129,
+  "plateau_g": -0.06582675641025641,
+  "unload_detect_s": 76.415,
+  "t10_s": 76.522,
+  "t90_s": 78.15,
+  "fall_10_90_s": 1.6280000000000001,
+  "first_sustained_stable_s": 84.637,
+  "raw_t90_s": 76.415,
+  "filtered_t90_s": 78.15,
+  "display_t90_s": 78.15,
+  "records": 1040
+}

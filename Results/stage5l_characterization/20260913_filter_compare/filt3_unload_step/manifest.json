@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "run_id": "filt3_unload_step",
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 180710,
+      "sha256": "C1DF3841694B805EEA5CDF8A94BA170CA33366B7CB90AD426903BBE9D866D375"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 174,
+      "sha256": "DB9C16DDE6FE70025780C485298CF2813897EC1D1532436A3D10CB77EA32EA05"
+    },
+    {
+      "path": "environment.json",
+      "length": 700,
+      "sha256": "51DCC52DD0B8FA0D34FD22BBA9E8C5301AC8103E0835429243EAD94C749D2C48"
+    },
+    {
+      "path": "summary.json",
+      "length": 1300,
+      "sha256": "B28144029A616CE87AAC9CC08BA5A0281A2A7D93F6115EF7C23EF500F3AF65A0"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1463,
+      "sha256": "B535F8B97C70B8A9DEDCC7C326BCFA5E30F8D8E2533AEA485C84DF91C17C99B7"
+    }
+  ]
+}

@@ -78,3 +78,12 @@ Run group `20260913_load_cycles` contains ten 60-second stable-load segments and
 - Cycle 1 to cycle 10 empty shift: -0.060681 g.
 
 The common downward trend in loaded and empty endpoints, together with raw and filtered ADC movement in the same direction, is evidence of analog-chain/mechanical/thermal drift rather than a display-only effect. The available data cannot uniquely separate load-cell creep, mounting stress, mechanical recovery, reference drift, and temperature. No automatic correction is applied.
+
+## L6 baseline filter-3 step
+
+Run group `20260913_filter_compare` first captured the production filter mode 3 / strength 3 response. Operator reaction delay is visible before each edge and excluded by detecting the 2% response crossing.
+
+- Load: filtered/net/display 10-90% rise time 1.669 s. First sustained stable state was 8.278 s after the detected edge.
+- Unload: filtered/net/display 10-90% fall time 1.628 s. First sustained stable state was 8.222 s after the detected edge.
+
+The raw ADC step is effectively immediate at 10 Hz, while the mode-3 filter contributes approximately 1.6-1.7 seconds to the 90% response. The remaining time before stable assertion is dominated by stability-window and hold behavior. Other filter modes require the dedicated SWD-only RAM override; no persistent configuration transaction is used.
