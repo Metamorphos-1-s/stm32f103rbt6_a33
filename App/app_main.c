@@ -39,6 +39,9 @@
 #include "ble_command_service.h"
 #include "stage5c_ble_diagnostics.h"
 #include "stage5i_usart3_diagnostics.h"
+#if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
+#include "stage5l_measurement_diagnostics.h"
+#endif
 #if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
 #include "alarm_output_manager.h"
 #include "alarm_config_validation.h"
@@ -157,6 +160,9 @@ bool App_Init(void)
     return false;
   }
   (void)MetrologyManager_Init(&config, &SystemContext_Get()->runtime);
+#if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
+  Stage5LMeasurementDiagnostics_Init();
+#endif
   (void)StartupAutoZeroController_Init(&s_startup_auto_zero,
       config.system.startup_auto_zero_enable,
       config.system.tare_power_loss_retention && runtime.tare_active,
@@ -220,6 +226,9 @@ void App_Run(void)
 
   DeviceManager_ProcessFast();
   WeighingProfileManager_Process();
+#if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
+  Stage5LMeasurementDiagnostics_Process();
+#endif
   if (!DeviceManager_IsInStorageMaintenance())
   {
     (void)MeasurementBridge_Process(

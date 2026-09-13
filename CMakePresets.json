@@ -42,6 +42,15 @@
                 "A33_DEBUG_OPTIMIZATION": "-Og",
                 "A33_ENABLE_STAGE5I_USART3_BRINGUP": "ON"
             }
+        },
+        {
+            "name": "Stage5LDiagnostics",
+            "inherits": "default",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "A33_DEBUG_OPTIMIZATION": "-Og",
+                "A33_ENABLE_STAGE5L_DIAGNOSTICS": "ON"
+            }
         }
     ],
     "buildPresets": [
@@ -60,6 +69,10 @@
         {
             "name": "Usart3Bringup",
             "configurePreset": "Usart3Bringup"
+        },
+        {
+            "name": "Stage5LDiagnostics",
+            "configurePreset": "Stage5LDiagnostics"
         }
     ]
 }

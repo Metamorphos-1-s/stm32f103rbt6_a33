@@ -10,3 +10,8 @@ python Tools/stage5l_measurement/stage5l_capture.py validate-manifest --input Re
 
 Capture aliases are `capture-step`, `capture-creep`, `capture-zero-return`, `capture-slow-ramp`, and `capture-rate-compare`. They differ only in the recorded test kind; physical events are explicit `--start-event` and `--end-event` labels. The tool never implements FC06, FC16, mailbox, SAVE, calibration, or Flash operations.
 
+The optional `Stage5LDiagnostics` firmware preset exposes the RAM symbol
+`g_stage5l_measurement_control` for SWD-only filter overrides. It does not add
+Modbus registers. `Release` defines the feature off and retains the qualified
+ELF hash. A restore command reloads the active persistent profile's filter and
+restores the pre-override dirty bit before the production image is reflashed.

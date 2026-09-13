@@ -30,6 +30,8 @@ message("Build type: " ${CMAKE_BUILD_TYPE})
 option(A33_ENABLE_BOARD_DIAGNOSTICS "Enable Stage 2B board diagnostics" OFF)
 option(A33_ENABLE_STAGE5I_USART3_BRINGUP
     "Enable Stage 5I-A USART3 raw bring-up diagnostics" OFF)
+option(A33_ENABLE_STAGE5L_DIAGNOSTICS
+    "Enable Stage 5L SWD-only measurement overrides" OFF)
 
 # Enable CMake support for ASM and C languages
 enable_language(C ASM)
@@ -145,6 +147,11 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     UI/status_controller/run_key_policy.c
 )
 
+if(A33_ENABLE_STAGE5L_DIAGNOSTICS)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        Diagnostics/stage5l_measurement_diagnostics.c)
+endif()
+
 if(NOT A33_ENABLE_BOARD_DIAGNOSTICS)
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         Services/alarm_output_manager/alarm_output_manager.c)
@@ -198,6 +205,14 @@ if(A33_ENABLE_STAGE5I_USART3_BRINGUP)
 else()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
         A33_ENABLE_STAGE5I_USART3_BRINGUP=0)
+endif()
+
+if(A33_ENABLE_STAGE5L_DIAGNOSTICS)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5L_DIAGNOSTICS=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5L_DIAGNOSTICS=0)
 endif()
 
 if(A33_ENABLE_BOARD_DIAGNOSTICS)

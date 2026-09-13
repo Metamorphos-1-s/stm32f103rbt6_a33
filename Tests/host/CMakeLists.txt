@@ -102,6 +102,23 @@ endif()
 enable_testing()
 add_test(NAME stage4a_host_logic COMMAND stage4a_host_tests)
 
+add_executable(stage5l_measurement_diagnostics_tests
+    test_stage5l_measurement_diagnostics.c
+    ../../Diagnostics/stage5l_measurement_diagnostics.c)
+target_compile_definitions(stage5l_measurement_diagnostics_tests PRIVATE
+    A33_ENABLE_STAGE5L_DIAGNOSTICS=1)
+target_include_directories(stage5l_measurement_diagnostics_tests PRIVATE
+    ../../App ../../Config ../../Diagnostics ../../Domain/measurement
+    ../../Services/fault_manager)
+if(MSVC)
+    target_compile_options(stage5l_measurement_diagnostics_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5l_measurement_diagnostics_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5l_measurement_diagnostics
+    COMMAND stage5l_measurement_diagnostics_tests)
+
 add_executable(display_conditioner_tests
     test_display_conditioner.c
     ../../Domain/measurement/display_conditioner.c)
