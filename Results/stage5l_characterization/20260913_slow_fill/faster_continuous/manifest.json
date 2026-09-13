@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "run_id": "faster_continuous",
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 372796,
+      "sha256": "0ED86705AA1854D97D7C8B9DD671C2BC6D9CFB327231FBC5A978D55471A9D454"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 177,
+      "sha256": "3D8601AC717AEC3617E77015A5FD2985AFE3A84946848446E37BFD2AF2ADF23B"
+    },
+    {
+      "path": "environment.json",
+      "length": 701,
+      "sha256": "B0B0419105BA0E1EF381C82B7FBF0702A60A35205961A715A7BFD0CD0382BF20"
+    },
+    {
+      "path": "summary.json",
+      "length": 1346,
+      "sha256": "A47C377708D6F33E92BC8E287E5EDF339CFA4C779776FF37C2B3D84693D383FF"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1452,
+      "sha256": "13BC572A6F90F434BCD46ACEE7B28BF8D8DBAEFBA9D6E5EF89CBF549B2BE67FF"
+    }
+  ]
+}

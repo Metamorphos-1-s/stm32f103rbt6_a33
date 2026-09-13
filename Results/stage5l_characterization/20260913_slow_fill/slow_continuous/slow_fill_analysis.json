@@ -1,0 +1,13 @@
+{
+  "operator_window_estimated": true,
+  "fill_start_s_estimate": 10,
+  "fill_stop_s_estimate": 70,
+  "start_net_g": 427.3641973,
+  "end_net_g": 428.6747429,
+  "linear_rate_g_s_estimate": 0.022316232886317285,
+  "monotonic_non_decreasing_ratio": 1.0,
+  "stable_ratio_during_fill": 1.0,
+  "raw_slope_counts_s": -20.6391700055661,
+  "filtered_slope_counts_s": -19.81061164173965,
+  "records_during_fill": 518
+}

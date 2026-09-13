@@ -1,0 +1,13 @@
+{
+  "run_id": "faster_continuous",
+  "window_source": "change-point inspection of raw time series; not an external precision trigger",
+  "detected_window_s": [20, 120],
+  "start_net_g": 427.5426317,
+  "end_net_g": 451.3505356,
+  "linear_rate_g_s": 0.2711087885,
+  "stable_ratio": 0.2392566783,
+  "monotonic_non_decreasing_ratio": 1.0,
+  "raw_rate_counts_s": -241.5162487,
+  "filtered_rate_counts_s": -240.6692363,
+  "records": 861
+}

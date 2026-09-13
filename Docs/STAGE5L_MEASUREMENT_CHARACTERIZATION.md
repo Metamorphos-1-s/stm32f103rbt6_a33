@@ -100,3 +100,13 @@ The SWD-only diagnostic image SHA-256 was `F2E9D96F5F117A50E291874A10662B9910B65
 Mode 3 has the best observed steady noise but the slowest response. Mode 1 is the fastest tested mode that retained 100% empty stability in its 60-second window. Mode 2 provides an intermediate noise/settling tradeoff. These are design inputs, not a production-setting change. The first mode-2 load run was retained as incomplete because the physical edge occurred at the final sample; `filt2_load_step_retry` is the valid comparison run.
 
 After restore, the production image reported filter 3/3, Active SHA-256 `91D346E87BD112EFAC3B513A8CAFBBDDE9642069A15280DB7565374378BA43E1`, revision 7/7, dirty 0, Slot sequence 7, fault 0, and mailbox idle.
+
+## L7 continuous slow fill
+
+Run group `20260913_slow_fill` contains two manually controlled continuous additions. Assistant-message timing was not sufficiently aligned with the actual motion, so the reported active windows are inferred from change points in the raw series and are not precise flow calibration.
+
+- Slower run: detected 40-130 s, 427.3755 to 431.7343 g, linear rate approximately 0.04663 g/s, stable ratio 80%, monotonic non-decreasing observation ratio 100%.
+- Faster run: detected 20-120 s, 427.5426 to 451.3505 g, linear rate approximately 0.27111 g/s, stable ratio 23.93%, monotonic non-decreasing observation ratio 100%.
+- Raw and filtered slopes have the same sign and similar magnitude in both runs. Runtime drift did not swallow the continuous increase.
+
+Faster addition suppresses the stable state more reliably, but the slower real addition remains stable for most of its active window. Weight rate alone cannot reliably distinguish extremely slow real material addition from temperature or analog-chain drift in all conditions. A future PLC or digital input should provide `FILL_ACTIVE` / `PROCESS_ACTIVE` state so zero tracking and drift learning can be inhibited during known process motion.

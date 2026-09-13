@@ -1,0 +1,14 @@
+{
+  "run_id": "faster_continuous",
+  "timing_source": "assistant notification wall-clock; approximate",
+  "events": [
+    {
+      "event": "SLOW_FILL_START",
+      "elapsed_s_estimate": 10
+    },
+    {
+      "event": "SLOW_FILL_STOP",
+      "elapsed_s_estimate": 70
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "run_id": "slow_continuous",
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 372299,
+      "sha256": "7A6219386F71081C44AE5931933DF387848E10D1E3878341ADBFA2A451D48FCE"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 173,
+      "sha256": "A0768F3D40958FC3D2E12CB998D46DAC242FEA4819978C1B8B6B95BBE5B01AB2"
+    },
+    {
+      "path": "environment.json",
+      "length": 699,
+      "sha256": "E830ECB584775532F516D28EB3BEBDBF26D33EF6AF6E4EA1E4CBB7AACCFA876B"
+    },
+    {
+      "path": "summary.json",
+      "length": 1344,
+      "sha256": "F11CC7E5358E7F577D2E10FA8D7CEED2CFA068D267E8625CCCE84857C6582B14"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1450,
+      "sha256": "F0DB1379DCA0A457AB8B5548BCE8F7F601A97919544A0B1885183F856F0D6B2B"
+    }
+  ]
+}
