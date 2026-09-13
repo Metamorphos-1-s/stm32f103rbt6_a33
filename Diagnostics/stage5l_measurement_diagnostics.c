@@ -1,12 +1,17 @@
 #include "stage5l_measurement_diagnostics.h"
 
+#include "cs1237.h"
 #include "metrology_manager.h"
 #include "system_context.h"
+#include "weighing_profile_manager.h"
 
 #include <stdbool.h>
 #include <stddef.h>
 
 volatile Stage5LMeasurementDiagnosticControl g_stage5l_measurement_control;
+static uint32_t s_pending_sequence;
+static bool s_rate_switch_pending;
+static bool s_rate_restore_pending;
 
 static bool ActiveFilter(uint32_t *mode, uint32_t *strength)
 {
@@ -41,6 +46,14 @@ void Stage5LMeasurementDiagnostics_Init(void)
         g_stage5l_measurement_control.effective_mode = mode;
         g_stage5l_measurement_control.effective_strength = strength;
     }
+    g_stage5l_measurement_control.requested_rate = 0U;
+    g_stage5l_measurement_control.effective_rate =
+        (context != NULL) ? context->config.metrology.profiles[
+            context->config.metrology.active_profile].sample_rate : 0U;
+    g_stage5l_measurement_control.rate_override_active = 0U;
+    s_pending_sequence = 0U;
+    s_rate_switch_pending = false;
+    s_rate_restore_pending = false;
 }
 
 void Stage5LMeasurementDiagnostics_Process(void)
@@ -49,6 +62,29 @@ void Stage5LMeasurementDiagnostics_Process(void)
     uint32_t mode, strength;
     const SystemContext *context;
     bool dirty;
+    CS1237_Config adc_config;
+    if (s_rate_switch_pending) {
+        CS1237_State state = CS1237_GetState();
+        if (state == CS1237_STATE_RUNNING) {
+            g_stage5l_measurement_control.status = s_rate_restore_pending ?
+                STAGE5L_DIAGNOSTIC_STATUS_RESTORED :
+                STAGE5L_DIAGNOSTIC_STATUS_APPLIED;
+            g_stage5l_measurement_control.rate_override_active =
+                s_rate_restore_pending ? 0U : 1U;
+            g_stage5l_measurement_control.applied_sequence =
+                s_pending_sequence;
+            s_rate_switch_pending = false;
+            s_rate_restore_pending = false;
+        } else if (state == CS1237_STATE_ERROR) {
+            g_stage5l_measurement_control.status =
+                STAGE5L_DIAGNOSTIC_STATUS_FAILED;
+            g_stage5l_measurement_control.applied_sequence =
+                s_pending_sequence;
+            s_rate_switch_pending = false;
+            s_rate_restore_pending = false;
+        }
+        return;
+    }
     if (request == g_stage5l_measurement_control.applied_sequence) return;
     context = SystemContext_Get();
     if (context == NULL) {
@@ -96,9 +132,47 @@ void Stage5LMeasurementDiagnostics_Process(void)
             g_stage5l_measurement_control.status =
                 STAGE5L_DIAGNOSTIC_STATUS_FAILED;
         }
+    } else if ((g_stage5l_measurement_control.command ==
+                STAGE5L_DIAGNOSTIC_COMMAND_APPLY_RATE) ||
+               (g_stage5l_measurement_control.command ==
+                STAGE5L_DIAGNOSTIC_COMMAND_RESTORE_RATE)) {
+        const WeighingProfileConfig *profile =
+            &context->config.metrology.profiles[
+                context->config.metrology.active_profile];
+        bool restore = g_stage5l_measurement_control.command ==
+            STAGE5L_DIAGNOSTIC_COMMAND_RESTORE_RATE;
+        uint32_t rate = restore ? (uint32_t)profile->sample_rate :
+            g_stage5l_measurement_control.requested_rate;
+        if (g_stage5l_measurement_control.override_active ||
+            WeighingProfileManager_IsBusy() ||
+            (rate > DEVICE_CS1237_DATA_RATE_40_HZ)) {
+            g_stage5l_measurement_control.status =
+                STAGE5L_DIAGNOSTIC_STATUS_INVALID;
+        } else {
+            adc_config.rate = (CS1237_DataRate)rate;
+            adc_config.gain = (CS1237_Gain)profile->gain;
+            adc_config.channel = CS1237_CHANNEL_A;
+            adc_config.reference_output_enabled = true;
+            if (CS1237_WriteConfig(&adc_config)) {
+                g_stage5l_measurement_control.effective_rate = rate;
+                g_stage5l_measurement_control.status =
+                    STAGE5L_DIAGNOSTIC_STATUS_PENDING;
+                s_pending_sequence = request;
+                s_rate_switch_pending = true;
+                s_rate_restore_pending = restore;
+                return;
+            }
+            g_stage5l_measurement_control.status =
+                STAGE5L_DIAGNOSTIC_STATUS_FAILED;
+        }
     } else {
         g_stage5l_measurement_control.status =
             STAGE5L_DIAGNOSTIC_STATUS_INVALID;
     }
     g_stage5l_measurement_control.applied_sequence = request;
+}
+
+bool Stage5LMeasurementDiagnostics_IsRateSwitchBusy(void)
+{
+    return s_rate_switch_pending;
 }

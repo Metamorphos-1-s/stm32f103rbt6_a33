@@ -22,9 +22,9 @@ def sha(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest().upper(
 def atomic_json(path, value):
     p=Path(path); tmp=p.with_suffix(p.suffix+".tmp"); tmp.write_text(json.dumps(value,indent=2)+"\n",encoding="utf-8"); tmp.replace(p)
 
-def decode(primary, display, drift, host_utc, host_ns, filter_mode, filter_strength):
+def decode(primary, display, drift, host_utc, host_ns, filter_mode, filter_strength, sample_rate):
     flags=primary[4]|(primary[5]<<16); decimals=primary[2]
-    return {"utc":host_utc,"host_monotonic_ns":host_ns,"mcu_uptime_ms":u32(primary[0x22:0x24]),"sample_sequence":u32(primary[0x20:0x22]),"raw_adc":i32(primary[0x1c:0x1e]),"filtered_raw":i32(primary[0x1e:0x20]),"raw_calibrated_mass_ug":"","uncompensated_gross_ug":i64(drift[8:12]),"filtered_mass_ug":i64(primary[0x14:0x18]),"pre_display_mass_ug":i64(primary[0x10:0x14]) if primary[0x0d]==0 else i64(primary[0x14:0x18]),"conditioned_display_mass_ug":i64(display[2:6]),"display_count":i32(primary[0:2]),"display_decimals":decimals,"gross_ug":i64(primary[0x14:0x18]),"net_ug":i64(primary[0x10:0x14]),"tare_ug":i64(primary[0x18:0x1c]),"stable":1 if flags&(1<<4) else 0,"zero":1 if flags&(1<<5) else 0,"overload":1 if flags&(1<<7) else 0,"zero_offset_raw":"","runtime_drift_offset_ug":i64(drift[4:8]),"filter_mode":filter_mode,"filter_strength":filter_strength,"sample_rate":primary[0x29],"gain":primary[0x2a],"cs1237_state":primary[0x2b],"buffered_samples":primary[0x2c],"overrun_count":u32(primary[0x2d:0x2f]),"stability_spread_ug":i64(primary[0x24:0x28]),"battery_voltage_mv":"","fault_mask":u32(primary[0x39:0x3b]),"display_condition_state":display[0],"display_locked":display[1],"event_label":""}
+    return {"utc":host_utc,"host_monotonic_ns":host_ns,"mcu_uptime_ms":u32(primary[0x22:0x24]),"sample_sequence":u32(primary[0x20:0x22]),"raw_adc":i32(primary[0x1c:0x1e]),"filtered_raw":i32(primary[0x1e:0x20]),"raw_calibrated_mass_ug":"","uncompensated_gross_ug":i64(drift[8:12]),"filtered_mass_ug":i64(primary[0x14:0x18]),"pre_display_mass_ug":i64(primary[0x10:0x14]) if primary[0x0d]==0 else i64(primary[0x14:0x18]),"conditioned_display_mass_ug":i64(display[2:6]),"display_count":i32(primary[0:2]),"display_decimals":decimals,"gross_ug":i64(primary[0x14:0x18]),"net_ug":i64(primary[0x10:0x14]),"tare_ug":i64(primary[0x18:0x1c]),"stable":1 if flags&(1<<4) else 0,"zero":1 if flags&(1<<5) else 0,"overload":1 if flags&(1<<7) else 0,"zero_offset_raw":"","runtime_drift_offset_ug":i64(drift[4:8]),"filter_mode":filter_mode,"filter_strength":filter_strength,"sample_rate":sample_rate,"gain":primary[0x2a],"cs1237_state":primary[0x2b],"buffered_samples":primary[0x2c],"overrun_count":u32(primary[0x2d:0x2f]),"stability_spread_ug":i64(primary[0x24:0x28]),"battery_voltage_mv":"","fault_mask":u32(primary[0x39:0x3b]),"display_condition_state":display[0],"display_locked":display[1],"event_label":""}
 
 def capture(args):
     out=Path(args.output); out.mkdir(parents=True,exist_ok=False); run_id=out.name; tool=Path(__file__).resolve()
@@ -34,11 +34,15 @@ def capture(args):
     try:
         identity=c.read(14,2)[0]; schema=c.read(0x13e,1)[0][0]; fmt=c.read(0x1c0,1)[0][0]; active=[]
         for a in range(0x100,0x140,16): active+=c.read(a,16)[0]
-        calibration=c.read(0x190,10)[0]; profile=active[31]; base=32 if profile==0 else 46; filter_mode=active[base+2]; filter_strength=active[base+3]; override=None
+        calibration=c.read(0x190,10)[0]; profile=active[31]; base=32 if profile==0 else 46; filter_mode=active[base+2]; filter_strength=active[base+3]; sample_rate=active[base]; override=None; rate_override=None
         if args.override_evidence:
             override_path=Path(args.override_evidence);override=json.loads(override_path.read_text(encoding='utf-8'));control=override.get('after',{})
             if override.get('action')!='apply' or control.get('status')!=1 or control.get('override_active')!=1: raise RuntimeError('invalid active override evidence')
             filter_mode=control['effective_mode'];filter_strength=control['effective_strength']
+        if args.rate_override_evidence:
+            rate_path=Path(args.rate_override_evidence);rate_override=json.loads(rate_path.read_text(encoding='utf-8'));control=rate_override.get('after',{})
+            if rate_override.get('action')!='apply-rate' or control.get('status')!=1 or control.get('rate_override_active')!=1:raise RuntimeError('invalid active rate override evidence')
+            sample_rate=control['effective_rate']
         if identity!=[0x0104,0x0510] or schema!=2 or fmt!=3: raise RuntimeError("device identity mismatch")
         with events.open("w",encoding="utf-8") as ef:
             ef.write(json.dumps({"utc":time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),"event":args.start_event,"run_id":run_id})+"\n")
@@ -54,7 +58,7 @@ def capture(args):
                 last_seq=seq
                 if cycle>=next_aux:
                     display=c.read(0x1e0,17)[0]; drift=c.read(0x200,30)[0]; next_aux=cycle+args.aux_interval_s
-                row=decode(primary,display,drift,time.strftime('%Y-%m-%dT%H:%M:%S',time.gmtime())+f'.{int(time.time()%1*1000):03d}Z',time.monotonic_ns(),filter_mode,filter_strength)
+                row=decode(primary,display,drift,time.strftime('%Y-%m-%dT%H:%M:%S',time.gmtime())+f'.{int(time.time()%1*1000):03d}Z',time.monotonic_ns(),filter_mode,filter_strength,sample_rate)
                 if writer is None: fields=list(row); writer=csv.DictWriter(sf,fieldnames=fields); writer.writeheader()
                 writer.writerow(row); sf.flush(); rows+=1
                 delay=args.poll_interval_s-(time.monotonic()-cycle)
@@ -63,7 +67,7 @@ def capture(args):
     finally: tr.close()
     end=time.time(); head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(); elf=ROOT/'build'/'Release'/'stm32f103rbt6_a33.elf'
     env={"run_id":run_id,"repository_head":head,"python":sys.version,"platform":platform.platform(),"tool_path":str(tool.relative_to(ROOT)).replace('\\','/'),"tool_length":tool.stat().st_size,"tool_sha256":sha(tool),"firmware_elf_path":str(elf.relative_to(ROOT)).replace('\\','/') if elf.exists() else None,"firmware_elf_length":elf.stat().st_size if elf.exists() else None,"firmware_elf_sha256":sha(elf) if elf.exists() else None,"port":args.port,"baud":args.baud,"parity":args.parity,"stopbits":args.stopbits,"slave":args.slave}
-    summary={"run_id":run_id,"test_kind":args.command,"started_utc":time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime(start)),"ended_utc":time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime(end)),"duration_s":end-start,"records":rows,"host_duplicate_polls":duplicates,"host_observation_missing_sequences":observed_gaps,"device_identity":{"firmware":"0x0510","map":"0x0104","public_schema":2,"persistent_format":3},"capacity_ug":i64(active[4:8]),"calibration":{"raw_zero":i32(calibration[0:2]),"raw_span":i32(calibration[2:4]),"span_mass_ug":i64(calibration[4:8]),"sequence":u32(calibration[8:10])},"active_profile":profile,"filter_mode":filter_mode,"filter_strength":filter_strength,"diagnostic_override_evidence":None if override is None else {"path":args.override_evidence,"sha256":sha(args.override_evidence),"control":override['after']},"active_config":active,"writes":0,"flash_operations":0,"result":"EVIDENCE_ONLY"}
+    summary={"run_id":run_id,"test_kind":args.command,"started_utc":time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime(start)),"ended_utc":time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime(end)),"duration_s":end-start,"records":rows,"host_duplicate_polls":duplicates,"host_observation_missing_sequences":observed_gaps,"device_identity":{"firmware":"0x0510","map":"0x0104","public_schema":2,"persistent_format":3},"capacity_ug":i64(active[4:8]),"calibration":{"raw_zero":i32(calibration[0:2]),"raw_span":i32(calibration[2:4]),"span_mass_ug":i64(calibration[4:8]),"sequence":u32(calibration[8:10])},"active_profile":profile,"filter_mode":filter_mode,"filter_strength":filter_strength,"sample_rate":sample_rate,"diagnostic_override_evidence":None if override is None else {"path":args.override_evidence,"sha256":sha(args.override_evidence),"control":override['after']},"diagnostic_rate_evidence":None if rate_override is None else {"path":args.rate_override_evidence,"sha256":sha(args.rate_override_evidence),"control":rate_override['after']},"active_config":active,"writes":0,"flash_operations":0,"result":"EVIDENCE_ONLY"}
     atomic_json(out/"environment.json",env); atomic_json(out/"summary.json",summary); analyze_dir(out); build_manifest(out); return 0
 
 def slope(values,times):
@@ -100,7 +104,7 @@ def validate(out):
 def parser():
     p=argparse.ArgumentParser(); sub=p.add_subparsers(dest="command",required=True)
     for name in ("capture-baseline","capture-step","capture-creep","capture-zero-return","capture-slow-ramp","capture-rate-compare"):
-        s=sub.add_parser(name); s.add_argument('--port',required=True); s.add_argument('--duration-s',type=float,required=True); s.add_argument('--output',required=True); s.add_argument('--baud',type=int,default=115200); s.add_argument('--parity',default='N'); s.add_argument('--stopbits',type=int,default=1); s.add_argument('--slave',type=int,default=1); s.add_argument('--timeout-ms',type=int,default=300); s.add_argument('--poll-interval-s',type=float,default=0.0); s.add_argument('--aux-interval-s',type=float,default=1.0); s.add_argument('--override-evidence'); s.add_argument('--start-event',choices=sorted(EVENTS),default='EMPTY'); s.add_argument('--end-event',choices=sorted(EVENTS),default='TEST_END')
+        s=sub.add_parser(name); s.add_argument('--port',required=True); s.add_argument('--duration-s',type=float,required=True); s.add_argument('--output',required=True); s.add_argument('--baud',type=int,default=115200); s.add_argument('--parity',default='N'); s.add_argument('--stopbits',type=int,default=1); s.add_argument('--slave',type=int,default=1); s.add_argument('--timeout-ms',type=int,default=300); s.add_argument('--poll-interval-s',type=float,default=0.0); s.add_argument('--aux-interval-s',type=float,default=1.0); s.add_argument('--override-evidence'); s.add_argument('--rate-override-evidence'); s.add_argument('--start-event',choices=sorted(EVENTS),default='EMPTY'); s.add_argument('--end-event',choices=sorted(EVENTS),default='TEST_END')
     s=sub.add_parser('analyze'); s.add_argument('--input',required=True)
     s=sub.add_parser('validate-manifest'); s.add_argument('--input',required=True); return p
 def main():

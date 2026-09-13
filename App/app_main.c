@@ -229,7 +229,11 @@ void App_Run(void)
 #if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
   Stage5LMeasurementDiagnostics_Process();
 #endif
-  if (!DeviceManager_IsInStorageMaintenance())
+  if (!DeviceManager_IsInStorageMaintenance()
+#if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
+      && !Stage5LMeasurementDiagnostics_IsRateSwitchBusy()
+#endif
+      )
   {
     (void)MeasurementBridge_Process(
         MEASUREMENT_BRIDGE_MAX_SAMPLES_PER_RUN);
