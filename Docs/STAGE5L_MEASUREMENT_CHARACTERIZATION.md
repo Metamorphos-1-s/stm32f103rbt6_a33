@@ -123,3 +123,24 @@ The SWD-only diagnostics v2 image requested 40 Hz, waited for the CS1237 driver 
 The RAM rate override was restored and the qualified product Release was reflashed. The product then measured 9.981 Hz with no overrun or fault, but its empty raw mean remained near -41,399 counts rather than the prior approximately -44,000-count baseline, corresponding to about -2.92 g. A software reset and 10 Hz reconfiguration did not restore the analog baseline. A physical cold power cycle is required before more characterization.
 
 Current status: `STAGE 5L MEASUREMENT CHARACTERIZATION BLOCKED` pending cold-power recovery evidence. This is not yet attributed uniquely to the CS1237, load cell, reference, wiring, or diagnostic switching sequence.
+
+### Cold-power recovery result
+
+Run `20260913T_cold_start_empty_60m` captured 31,439 records for 3,600.043 seconds after a real power-off interval. Device overrun and fault mask remained zero, but the original empty baseline did not recover:
+
+- 0-5 min raw mean -42,180 counts; net mean -2.038 g.
+- 5-10 min raw mean -42,389 counts; net mean -1.803 g.
+- 10-20 min raw mean -42,598 counts; net mean -1.567 g.
+- 20-30 min raw mean -42,780 counts; net mean -1.363 g.
+- 30-60 min raw mean -42,997 counts; net mean -1.118 g.
+- Whole-hour raw slope -923 counts/hour; net slope +1.040 g/hour.
+
+The direction is toward the earlier approximately -44,000-count empty baseline, but recovery is incomplete after one hour. This can be analog settling, load-cell/mechanical stress recovery, reference/excitation behavior, or a side effect of the rate-switch sequence; the available signals cannot isolate those causes. The Stage 5L algorithm baseline is therefore not trustworthy enough to authorize adaptive-filter implementation.
+
+## Remaining physical work
+
+- Repeat cold start on an undisturbed platform without first switching data rate.
+- Independently measure excitation/reference voltage and load-cell output during 10/40 Hz switching.
+- Verify CS1237 DRDY periods and configuration bits with a logic analyzer.
+- Determine why requested 40 Hz produced only 16.496 processed samples/s and one near-full-scale raw excursion.
+- Repeat 40 Hz only after the above cause is understood. Do not test 640/1280 Hz.

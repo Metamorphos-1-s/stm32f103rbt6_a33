@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "stage5l_start_head": "61ab01330c19ec2f01f7af0f3723ce055ce931a8",
+  "evidence_head_before_final_report": "51a37b7116f53f18b5ce0846bab67d6e0d92ec8a",
+  "status": "STAGE 5L MEASUREMENT CHARACTERIZATION BLOCKED",
+  "reason": "40 Hz did not meet rate/raw validity gates and the original 10 Hz empty raw baseline did not recover after a one-hour cold-power run",
+  "formal_evidence": [
+    {"path":"Results/stage5l_characterization/20260912T192400Z_empty_10m/manifest.json","length":860,"sha256":"B91508626285C92610B7DDDF7F986937FC2E75542808A28B166C30137DA8F751"},
+    {"path":"Results/stage5l_characterization/20260912T193600Z_empty_hot_60m/manifest.json","length":865,"sha256":"3B3E13D9B036F5DE8E253ECDB09C9C614C4EC08A51A80EDD5D2A38D23A9FBDEE"},
+    {"path":"Results/stage5l_characterization/20260913T064617Z_creep_500g_30m/manifest.json","length":866,"sha256":"3611A8EFDCEA7C682FD94AC7009519AE81A1E3EE9F95276A07D551A609498552"},
+    {"path":"Results/stage5l_characterization/20260913T072000Z_zero_return_15m/manifest.json","length":867,"sha256":"6BA623CCCA9094A888017F9C4D6C3493B2407B1645975A4ED42514E3C1173CB2"},
+    {"path":"Results/stage5l_characterization/20260913_load_cycles/cycles_analysis.json","length":5110,"sha256":"C3622402AD416409C1AEF289DA20AE347FA537B8CB3FF0B67F545E1E86BE5548"},
+    {"path":"Results/stage5l_characterization/20260913_filter_compare/filter_comparison.json","length":1972,"sha256":"442C4F547A9BE36C0A5C3D339D9B8EEC5FB4FE7D6DA8D8A08E818F3819767791"},
+    {"path":"Results/stage5l_characterization/20260913_slow_fill/slow_continuous/detected_fill_analysis.json","length":420,"sha256":"E19998A95FBFBA11FE82F4DA67ABDABF646F49E86472408B19F8CAF5BEC731A6"},
+    {"path":"Results/stage5l_characterization/20260913_slow_fill/faster_continuous/detected_fill_analysis.json","length":433,"sha256":"4F58E38BBE22B667E7D057C23BCFB2384C851801703A5B4F2E7CBA358AAC53A8"},
+    {"path":"Results/stage5l_characterization/20260913_rate_40hz/rate_analysis.json","length":1308,"sha256":"666524F615D4D12265379E76C209FE3E1C732E5CEABD1F56B55DF31A45EF37D2"},
+    {"path":"Results/stage5l_characterization/20260913T_cold_start_empty_60m/manifest.json","length":865,"sha256":"78D628D1480A73E3E946876E2FDC1D3655542E4955AA01531858348BD709CB32"}
+  ],
+  "completed_physical_tests": ["10-minute empty baseline","60-minute hot empty baseline","30-minute 500 g creep","15-minute zero return","10 load/unload cycles","filter modes 0/1/2/3 noise and step comparison","two manual continuous-fill rates","40 Hz empty failure capture","60-minute cold-power recovery"],
+  "not_completed": ["valid 40 Hz load/unload comparison","640/1280 Hz (not authorized)","precise externally triggered fill-rate calibration","independent excitation/reference/load-cell voltage capture"],
+  "software_gates": {"python_unittest":"4/4 PASS","msvc_host_ctest":"17/17 PASS","debug_build":"PASS","release_build":"PASS","board_diagnostics_build":"PASS","stage5l_diagnostics_build":"PASS","release_diagnostic_symbols":"NONE","clang":"UNAVAILABLE","asan":"UNAVAILABLE","ubsan":"UNAVAILABLE"},
+  "git_actions": {"merge":false,"tag":false,"pull_request":false,"force_push":false}
+}
