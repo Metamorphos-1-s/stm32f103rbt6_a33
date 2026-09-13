@@ -1,0 +1,52 @@
+{
+  "records": 15547,
+  "raw_adc": {
+    "mean": -487973.82388885313,
+    "stddev": 16.19457374156919,
+    "peak_to_peak": 124.0,
+    "linear_drift_per_hour": -14.691366269385101
+  },
+  "filtered_raw": {
+    "mean": -487973.87849745934,
+    "stddev": 12.882080391807246,
+    "peak_to_peak": 86.0,
+    "linear_drift_per_hour": -14.749015405964695
+  },
+  "uncompensated_gross_ug": {
+    "mean": 500075527.111983,
+    "stddev": 14434.768294760457,
+    "peak_to_peak": 93498.0,
+    "linear_drift_per_hour": 16371.615951613363
+  },
+  "gross_ug": {
+    "mean": 500075337.20717824,
+    "stddev": 14511.372953977669,
+    "peak_to_peak": 96877.0,
+    "linear_drift_per_hour": 16614.490385195873
+  },
+  "net_ug": {
+    "mean": 500075337.20717824,
+    "stddev": 14511.372953977669,
+    "peak_to_peak": 96877.0,
+    "linear_drift_per_hour": 16614.490385195873
+  },
+  "conditioned_display_mass_ug": {
+    "mean": 500053177.5181064,
+    "stddev": 20218.34249452237,
+    "peak_to_peak": 81107.0,
+    "linear_drift_per_hour": 60489.76035957521
+  },
+  "display_count": {
+    "mean": 50005.47050877983,
+    "stddev": 1.9888611839770212,
+    "peak_to_peak": 8.0,
+    "linear_drift_per_hour": 5.934281107444499
+  },
+  "stable_ratio": 1.0,
+  "device_overrun_delta": 0,
+  "multi_scale_mean_difference": {
+    "1s": 14327.849090206117,
+    "10s": 13683.957294809894,
+    "60s": 13185.324484665509
+  }
+}

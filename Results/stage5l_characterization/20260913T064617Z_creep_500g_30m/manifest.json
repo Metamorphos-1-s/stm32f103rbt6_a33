@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "run_id": "20260913T064617Z_creep_500g_30m",
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 2814872,
+      "sha256": "3F40980B94DF3DDCEE4FD956C403BEF6FFC220274B2389FF38CDBE2E7575C115"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 201,
+      "sha256": "A76BC337758A53F7D801FA1D584A9EFBD052D9D9B5E33693EE842EC525E5C38F"
+    },
+    {
+      "path": "environment.json",
+      "length": 714,
+      "sha256": "8372A0847608EC92BC115E1FBF458302FD8DA79D4CBE5A38C4DC56A680944BB1"
+    },
+    {
+      "path": "summary.json",
+      "length": 1317,
+      "sha256": "4340FBA12CE5025A3F6C653A74E986A2EB780A6CAA4CE302D863B47FA1A5A5AD"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1432,
+      "sha256": "346C228BB2AD5A98BBF8571A6E46CC6265B7448BD5BAA1D3970575EF15BBBC59"
+    }
+  ]
+}

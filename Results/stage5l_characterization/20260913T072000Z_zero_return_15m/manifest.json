@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "run_id": "20260913T072000Z_zero_return_15m",
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 1215287,
+      "sha256": "B4D410ADDEC07CDD4E815E3D60AEB1105C274B89CD7EE5F1544F86EEB7480555"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 204,
+      "sha256": "BC6EFEA0D11380A5B04ED26712BFC7E00F6894925730239215BECD621A85363A"
+    },
+    {
+      "path": "environment.json",
+      "length": 715,
+      "sha256": "DABF5EEF422B20F117375B488145F40AB6BD2CB8D60DD506E3C6B2308C428E7F"
+    },
+    {
+      "path": "summary.json",
+      "length": 1322,
+      "sha256": "359FD045A886766BD6C91EFBAD7DC5B8A9094175C6154903F4214BD815DE3A3B"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1440,
+      "sha256": "98635405D62DF392D6A6DB29D6B49D36D3B4412DA0ED31EE9E7DE201488FA681"
+    }
+  ]
+}

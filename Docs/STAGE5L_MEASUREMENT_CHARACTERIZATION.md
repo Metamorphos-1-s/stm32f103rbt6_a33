@@ -43,3 +43,25 @@ Segment slopes vary substantially over short windows, including raw +74.4 counts
 
 Battery voltage and internal zero-offset raw are not exposed by Map `0x0104`. Calibrated unfiltered mass is not retained in the production snapshot. These fields remain blank rather than being invented. Cold-start drift, 500 g creep, zero return, repeated cycles, filter comparison, slow fill, and 40 Hz exploration remain pending.
 
+## L3 500 g constant-load creep
+
+Run `20260913T064617Z_creep_500g_30m` captured 15,547 records over 1,800.097 seconds after the operator reported the load stable. Device overrun was zero and stability was 100%. Because acquisition began after stabilization, this run does not support load-step t10/t90 claims.
+
+- Net mass at 1/5/10/20/30 minutes: 500.0454 / 500.0814 / 500.0829 / 500.0839 / 500.0656 g.
+- Whole-window net mean 500.0753 g, standard deviation 0.0145 g, peak-to-peak 0.0969 g, linear drift +0.0166 g/hour.
+- Raw and filtered-raw slopes were both approximately -14.7 counts/hour.
+- Final display changed from 499.98 g near one minute to 500.06 g by five minutes and then remained there.
+
+## L4 unload and zero return
+
+Run `20260913T072000Z_zero_return_15m` captured 7,878 records over 900.039 seconds. Device overrun was zero and stability was 100%. The operator confirmation occurred after physical removal, so the real unload edge precedes the first record by an unknown human-response delay.
+
+| Time after capture start | Raw ADC | Filtered raw | Net | Final display |
+|---|---:|---:|---:|---:|
+| immediate | -44,066.9 | -44,067.5 | +0.0242 g | +0.02 g |
+| 1 min | -44,066.1 | -44,064.3 | +0.0206 g | +0.02 g |
+| 5 min | -44,031.8 | -44,031.9 | -0.0159 g | +0.02 g |
+| 10 min | -44,004.7 | -44,005.0 | -0.0462 g | +0.02 g |
+| 15 min | -44,004.4 | -44,003.8 | -0.0476 g | -0.05 g |
+
+Raw and filtered raw return together; there is no evidence of an independently retained filter tail in this interval. The slow raw movement instead implicates the analog measurement chain, load-cell/mechanical recovery, thermal movement, or mounting stress. Without a synchronous reference measurement it is classified only as analog measurement-chain return. The display conditioner independently held +0.02 g before releasing to -0.05 g.
