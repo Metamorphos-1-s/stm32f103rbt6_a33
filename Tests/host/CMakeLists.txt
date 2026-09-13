@@ -109,8 +109,8 @@ target_compile_definitions(stage5l_measurement_diagnostics_tests PRIVATE
     A33_ENABLE_STAGE5L_DIAGNOSTICS=1)
 target_include_directories(stage5l_measurement_diagnostics_tests PRIVATE
     ../../App ../../Config ../../Diagnostics ../../Domain/measurement
-    ../../Drivers/cs1237 ../../Protocol/command_service
-    ../../Services/fault_manager)
+    ../../BSP ../../Drivers/cs1237 ../../Protocol/command_service
+    ../../Services/event_queue ../../Services/fault_manager)
 if(MSVC)
     target_compile_options(stage5l_measurement_diagnostics_tests PRIVATE /W4 /WX)
 else()

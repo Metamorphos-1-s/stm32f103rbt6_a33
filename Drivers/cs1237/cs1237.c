@@ -27,6 +27,9 @@ static uint16_t s_count;
 static uint32_t s_sample_count;
 static uint32_t s_buffer_overrun_count;
 static uint32_t s_read_error_count;
+#if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
+static uint32_t s_settling_discard_count;
+#endif
 static uint32_t s_state_enter_ms;
 static uint8_t s_settling_samples;
 static uint8_t s_last_config_register;
@@ -55,6 +58,9 @@ bool CS1237_Init(const CS1237_Config *config)
     s_sample_count = 0U;
     s_buffer_overrun_count = 0U;
     s_read_error_count = 0U;
+#if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
+    s_settling_discard_count = 0U;
+#endif
     s_last_config_register = 0U;
     s_last_config_valid = false;
     s_config_phase = CS1237_CONFIG_PHASE_WRITE;
@@ -144,6 +150,9 @@ void CS1237_Process(void)
 
     if (s_state == CS1237_STATE_SETTLING)
     {
+#if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
+        ++s_settling_discard_count;
+#endif
         if (s_settling_samples > 0U)
         {
             --s_settling_samples;
@@ -204,6 +213,13 @@ uint32_t CS1237_GetReadErrorCount(void)
 {
     return s_read_error_count;
 }
+
+#if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
+uint32_t CS1237_GetSettlingDiscardCount(void)
+{
+    return s_settling_discard_count;
+}
+#endif
 
 CS1237_State CS1237_GetState(void)
 {

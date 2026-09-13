@@ -237,6 +237,9 @@ void App_Run(void)
   {
     (void)MeasurementBridge_Process(
         MEASUREMENT_BRIDGE_MAX_SAMPLES_PER_RUN);
+#if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
+    Stage5LMeasurementDiagnostics_ObserveBridgeService();
+#endif
   }
   DeviceManager_ObserveCs1237Consumption(
       MeasurementBridge_GetConsumedCount(),

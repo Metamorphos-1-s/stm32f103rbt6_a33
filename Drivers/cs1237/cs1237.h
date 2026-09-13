@@ -14,6 +14,9 @@ uint16_t CS1237_GetBufferedSampleCount(void);
 uint32_t CS1237_GetSampleCount(void);
 uint32_t CS1237_GetBufferOverrunCount(void);
 uint32_t CS1237_GetReadErrorCount(void);
+#if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
+uint32_t CS1237_GetSettlingDiscardCount(void);
+#endif
 CS1237_State CS1237_GetState(void);
 
 bool CS1237_WriteConfig(const CS1237_Config *config);
