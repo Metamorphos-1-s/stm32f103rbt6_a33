@@ -65,3 +65,16 @@ Run `20260913T072000Z_zero_return_15m` captured 7,878 records over 900.039 secon
 | 15 min | -44,004.4 | -44,003.8 | -0.0476 g | -0.05 g |
 
 Raw and filtered raw return together; there is no evidence of an independently retained filter tail in this interval. The slow raw movement instead implicates the analog measurement chain, load-cell/mechanical recovery, thermal movement, or mounting stress. Without a synchronous reference measurement it is classified only as analog measurement-chain return. The display conditioner independently held +0.02 g before releasing to -0.05 g.
+
+## L5 ten load/unload cycles
+
+Run group `20260913_load_cycles` contains ten 60-second stable-load segments and ten 60-second stable-empty segments. Every segment passed its Manifest, reported 100% stable samples and zero device overruns. Physical transitions occurred before operator confirmation, so these segments measure stable repeatability and directional return, not t10/t90 or exact settling time.
+
+- Loaded mean across cycles: 499.982921 g.
+- Loaded between-cycle standard deviation: 0.015286 g; range: 0.054895 g.
+- Empty mean across cycles: -0.042361 g.
+- Empty between-cycle standard deviation: 0.021453 g; range: 0.068314 g.
+- Cycle 1 to cycle 10 loaded shift: -0.047106 g.
+- Cycle 1 to cycle 10 empty shift: -0.060681 g.
+
+The common downward trend in loaded and empty endpoints, together with raw and filtered ADC movement in the same direction, is evidence of analog-chain/mechanical/thermal drift rather than a display-only effect. The available data cannot uniquely separate load-cell creep, mounting stress, mechanical recovery, reference drift, and temperature. No automatic correction is applied.

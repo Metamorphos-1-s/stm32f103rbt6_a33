@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "run_id": "cycle10_empty",
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 83103,
+      "sha256": "47133C8B6C5F9AD5ABD7BA5F83333E2C63A697E410464A190269DB2FE086A784"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 165,
+      "sha256": "E2960E3B0BDDB55CFAB6D3F660DB23EA5534AEEA5F02D36EF9B3DBD312A58C4D"
+    },
+    {
+      "path": "environment.json",
+      "length": 696,
+      "sha256": "02891FA59A791BC519D6B0CD043E10D007DFC9DBDC4E0E6B013316BFACFB8AED"
+    },
+    {
+      "path": "summary.json",
+      "length": 1299,
+      "sha256": "A2C4B62382548E2AFD76ADC6BA7F3057979D0938249758CD8B813E13335E6960"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1319,
+      "sha256": "8933DA5E187E747768951FAE19ACBCF3ACCB12C831B3FEC8A166FDB39CF4AF4E"
+    }
+  ]
+}
