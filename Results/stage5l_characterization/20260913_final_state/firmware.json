@@ -1,0 +1,4 @@
+{
+  "sha": "51a37b7116f53f18b5ce0846bab67d6e0d92ec8a",
+  "status": "M Docs/STAGE5L_MEASUREMENT_CHARACTERIZATION.md\n M Tools/stage5b_hw/__pycache__/hw_common.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/modbus_crc.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/modbus_frame.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/register_map.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/register_map_check.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/report_writer.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/serial_transport.cpython-38.pyc\n?? Docs/STAGE5M_ADAPTIVE_FILTER_REQUIREMENTS.md\n?? Docs/STAGE5N_CHECKWEIGH_ALARM_REQUIREMENTS.md\n?? Docs/STAGE5O_CONVEYOR_WEIGHING_REQUIREMENTS.md\n?? Results/stage5l_characterization/20260913T_cold_start_empty_60m/"
+}

@@ -1,0 +1,96 @@
+{
+  "source": "config_region.bin",
+  "slots": [
+    {
+      "slot": "A",
+      "slot_sha256": "412BCED9DA8923381B0FDE954A2ECD1A2B0D8E28EC574539B2A723ADE86895F0",
+      "payload_sha256": "80CFDF2E53E83229AC6FB2CBA8B1900CBA3BF6C6414A011F92F2C957A0710235",
+      "persistent": {
+        "communication": {
+          "baud_rate": 115200,
+          "parity": 0,
+          "stop_bits": 0,
+          "modbus_address": 1,
+          "protocol_mode": 1,
+          "word_order": 0
+        },
+        "display": {
+          "brightness": 3
+        },
+        "system": {
+          "tare_power_loss_retention": false,
+          "watchdog_enable": false,
+          "startup_auto_zero_enable": false
+        },
+        "runtime": {
+          "weight_view": 0,
+          "current_tare_ug": 0,
+          "tare_active": false
+        }
+      },
+      "magic": "0x41333343",
+      "record_format_version": 3,
+      "payload_schema_version": 3,
+      "header_size": 32,
+      "payload_length": 281,
+      "sequence": 7,
+      "record_flags": "0x00000000",
+      "stored_crc32": "0xFA06E655",
+      "calculated_crc32": "0xFA06E655",
+      "crc_valid": true,
+      "commit_marker": "0x434F4D54",
+      "committed": true,
+      "supported": true,
+      "valid": true
+    },
+    {
+      "slot": "B",
+      "slot_sha256": "5C3B5EBD6EFC91622DC97EC61D5ABD2ED847383162BBE489F8526B89F6C63BB1",
+      "payload_sha256": "31C6076157512FE8C07E3DD38F0354AC4BC741BD64E9709A57BF201385ACC290",
+      "persistent": {
+        "communication": {
+          "baud_rate": 115200,
+          "parity": 0,
+          "stop_bits": 0,
+          "modbus_address": 1,
+          "protocol_mode": 1,
+          "word_order": 0
+        },
+        "display": {
+          "brightness": 3
+        },
+        "system": {
+          "tare_power_loss_retention": false,
+          "watchdog_enable": false,
+          "startup_auto_zero_enable": false
+        },
+        "runtime": {
+          "weight_view": 0,
+          "current_tare_ug": 0,
+          "tare_active": false
+        }
+      },
+      "magic": "0x41333343",
+      "record_format_version": 3,
+      "payload_schema_version": 3,
+      "header_size": 32,
+      "payload_length": 281,
+      "sequence": 6,
+      "record_flags": "0x00000000",
+      "stored_crc32": "0xF97D2197",
+      "calculated_crc32": "0xF97D2197",
+      "crc_valid": true,
+      "commit_marker": "0x434F4D54",
+      "committed": true,
+      "supported": true,
+      "valid": true
+    }
+  ],
+  "active_slot": "A",
+  "modbus_comparison": {
+    "active_slot": "A",
+    "sequence": 7,
+    "active_slot_matches": true,
+    "sequence_matches": true
+  }
+}
