@@ -1,0 +1,20 @@
+{
+  "sequence_delta": 1975,
+  "mcu_timestamp_delta_ms": 119723,
+  "processed_rate_hz": 16.496412552308247,
+  "host_records": 917,
+  "host_coverage_ratio": 0.46379746835443036,
+  "maximum_sequence_jump": 6,
+  "raw_min": -7864384,
+  "raw_max": -80,
+  "raw_peak_to_peak": 7864304,
+  "raw_median": -41008,
+  "raw_mad": 60,
+  "near_rail_events": 1,
+  "single_sample_jump_events": 2,
+  "read_error_delta": 0,
+  "fifo_overrun_delta": 0,
+  "driver_sample_delta": null,
+  "driver_minus_processed": null,
+  "drdy_minus_driver": null
+}
