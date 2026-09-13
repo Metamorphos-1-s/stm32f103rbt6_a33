@@ -14,7 +14,8 @@ def classify(data,length,sha):
     matches=[name for name,value in eol_variants(data).items() if len(value)==length and digest(value)==sha]
     return matches[0] if matches else "non_eol_difference"
 def git_bytes(revision,path):
-    return subprocess.check_output(["git","show",revision+":"+str(path).replace("\\","/")])
+    prefix=":" if revision=="INDEX" else revision+":"
+    return subprocess.check_output(["git","show",prefix+str(path).replace("\\","/")])
 def audit_run(manifest_path,revision=None):
     read=lambda p:git_bytes(revision,p) if revision else p.read_bytes()
     manifest=json.loads(read(manifest_path).decode("utf-8"));items=[];valid=True
@@ -35,17 +36,18 @@ def audit_tree(root,write_v2=False,revision=None):
         if write_v2:(path.parent/"repository_manifest_v2.json").write_bytes(canonical_json(build_v2(run)))
     non_eol=[(r["run_id"],f["path"]) for r in runs for f in r["files"] if f["classification"]=="non_eol_difference"]
     return {"schema_version":1,"root":str(root).replace("\\","/"),"git_revision":revision,"manifest_count":len(runs),"exact_pass_count":sum(r["historical_manifest_valid_against_git_bytes"] for r in runs),"exact_fail_count":sum(not r["historical_manifest_valid_against_git_bytes"] for r in runs),"non_eol_differences":non_eol,"runs":runs}
-def validate_v2(root):
+def validate_v2(root,revision=None):
     files=list(Path(root).rglob("repository_manifest_v2.json"))
     for path in files:
-        m=json.loads(path.read_bytes().decode("utf-8"))
+        read=lambda p:git_bytes(revision,p) if revision else p.read_bytes()
+        m=json.loads(read(path).decode("utf-8"))
         for item in m["files"]:
-            data=(path.parent/item["path"]).read_bytes()
+            data=read(path.parent/item["path"])
             if len(data)!=item["length"] or digest(data)!=item["sha256"]:raise ValueError(str(path)+":"+item["path"])
     print("REPOSITORY_MANIFEST_V2 PASS",len(files));return len(files)
 def main():
     p=argparse.ArgumentParser();p.add_argument("command",choices=("audit","build-v2","validate-v2"));p.add_argument("--root",required=True);p.add_argument("--output");p.add_argument("--git-revision");a=p.parse_args()
-    if a.command=="validate-v2":validate_v2(a.root);return 0
+    if a.command=="validate-v2":validate_v2(a.root,a.git_revision);return 0
     result=audit_tree(a.root,a.command=="build-v2",a.git_revision)
     if result["non_eol_differences"]:raise RuntimeError("non-EOL differences: "+repr(result["non_eol_differences"]))
     data=canonical_json(result)

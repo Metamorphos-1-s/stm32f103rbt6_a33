@@ -1,0 +1,36 @@
+{
+  "schema_version": 2,
+  "run_id": "faster_continuous",
+  "classification": "RECOVERED ENGINEERING EVIDENCE",
+  "historical_capture_manifest_status": "HISTORICAL CAPTURE MANIFEST; INVALID AGAINST CURRENT GIT BYTES DUE TO EOL NORMALIZATION",
+  "hardware_capture_rerun": false,
+  "measurement_values_modified": false,
+  "repository_byte_repair_layer": true,
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 370723,
+      "sha256": "408903E141F6A82F8C67FD28035CE965605294810BFFD90C01749EBD1252BB02"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 175,
+      "sha256": "085777617BD237521643880530B7093AC4507311884ADC3E62B25C867A9686EC"
+    },
+    {
+      "path": "environment.json",
+      "length": 684,
+      "sha256": "3B07516E28D2449BC7ED78C78133F1975D9CFE8929329DA47D0ECF9D9A38604D"
+    },
+    {
+      "path": "summary.json",
+      "length": 1250,
+      "sha256": "64A352874F19A8CA16A12138F9F1D212FF8F62863AF79CAF29DF454108A5A4B0"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1400,
+      "sha256": "BEA7A6541FB8F07183122C40C425D0A93111995A942D3EB9C896BC5C7B305349"
+    }
+  ]
+}

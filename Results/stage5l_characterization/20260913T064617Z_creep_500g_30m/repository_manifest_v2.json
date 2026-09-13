@@ -1,0 +1,36 @@
+{
+  "schema_version": 2,
+  "run_id": "20260913T064617Z_creep_500g_30m",
+  "classification": "RECOVERED ENGINEERING EVIDENCE",
+  "historical_capture_manifest_status": "HISTORICAL CAPTURE MANIFEST; INVALID AGAINST CURRENT GIT BYTES DUE TO EOL NORMALIZATION",
+  "hardware_capture_rerun": false,
+  "measurement_values_modified": false,
+  "repository_byte_repair_layer": true,
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 2799324,
+      "sha256": "4C4FE7B54308CE55AD771C271770415760652DF9E2A9F554153E1DA1F39CF130"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 199,
+      "sha256": "FB24A08EA4B5A50BD52D0AB2A510009B85CB0258BA1A8C6787934F4313DF4893"
+    },
+    {
+      "path": "environment.json",
+      "length": 697,
+      "sha256": "443A7C846494F3B50EDA9F6AA2F60C52371E3DF449C38AC9C762E1B2F587692B"
+    },
+    {
+      "path": "summary.json",
+      "length": 1222,
+      "sha256": "3BB794F4FA22D312C66F1B42A3180D068DBD74D4D9BF08E9FDCA6A84D8626E47"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1380,
+      "sha256": "E01D6DF6976DB42E39531D7D39A6AEA14896BAC246AEE8414D5DC0623C6BB3C5"
+    }
+  ]
+}
