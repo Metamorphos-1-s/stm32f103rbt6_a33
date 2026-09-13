@@ -20,7 +20,10 @@ def sequence_gap(previous, current):
     return gap if gap<0x80000000 else 0
 def sha(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest().upper()
 def atomic_json(path, value):
-    p=Path(path); tmp=p.with_suffix(p.suffix+".tmp"); tmp.write_text(json.dumps(value,indent=2)+"\n",encoding="utf-8"); tmp.replace(p)
+    p=Path(path); tmp=p.with_suffix(p.suffix+".tmp"); tmp.write_bytes((json.dumps(value,indent=2)+"\n").encode("utf-8")); tmp.replace(p)
+def append_jsonl(path, value):
+    with Path(path).open("ab") as stream:
+        stream.write((json.dumps(value,separators=(",",":"))+"\n").encode("utf-8"))
 
 def decode(primary, display, drift, host_utc, host_ns, filter_mode, filter_strength, sample_rate):
     flags=primary[4]|(primary[5]<<16); decimals=primary[2]
@@ -44,8 +47,7 @@ def capture(args):
             if rate_override.get('action')!='apply-rate' or control.get('status')!=1 or control.get('rate_override_active')!=1:raise RuntimeError('invalid active rate override evidence')
             sample_rate=control['effective_rate']
         if identity!=[0x0104,0x0510] or schema!=2 or fmt!=3: raise RuntimeError("device identity mismatch")
-        with events.open("w",encoding="utf-8") as ef:
-            ef.write(json.dumps({"utc":time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),"event":args.start_event,"run_id":run_id})+"\n")
+        append_jsonl(events,{"utc":time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),"event":args.start_event,"run_id":run_id})
         with samples.open("w",newline="",encoding="utf-8") as sf:
             writer=None; next_aux=0
             while time.time()-start < args.duration_s:
@@ -59,11 +61,11 @@ def capture(args):
                 if cycle>=next_aux:
                     display=c.read(0x1e0,17)[0]; drift=c.read(0x200,30)[0]; next_aux=cycle+args.aux_interval_s
                 row=decode(primary,display,drift,time.strftime('%Y-%m-%dT%H:%M:%S',time.gmtime())+f'.{int(time.time()%1*1000):03d}Z',time.monotonic_ns(),filter_mode,filter_strength,sample_rate)
-                if writer is None: fields=list(row); writer=csv.DictWriter(sf,fieldnames=fields); writer.writeheader()
+                if writer is None: fields=list(row); writer=csv.DictWriter(sf,fieldnames=fields,lineterminator="\n"); writer.writeheader()
                 writer.writerow(row); sf.flush(); rows+=1
                 delay=args.poll_interval_s-(time.monotonic()-cycle)
                 if delay>0: time.sleep(delay)
-        with events.open("a",encoding="utf-8") as ef: ef.write(json.dumps({"utc":time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),"event":args.end_event,"run_id":run_id})+"\n")
+        append_jsonl(events,{"utc":time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),"event":args.end_event,"run_id":run_id})
     finally: tr.close()
     end=time.time(); head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(); elf=ROOT/'build'/'Release'/'stm32f103rbt6_a33.elf'
     env={"run_id":run_id,"repository_head":head,"python":sys.version,"platform":platform.platform(),"tool_path":str(tool.relative_to(ROOT)).replace('\\','/'),"tool_length":tool.stat().st_size,"tool_sha256":sha(tool),"firmware_elf_path":str(elf.relative_to(ROOT)).replace('\\','/') if elf.exists() else None,"firmware_elf_length":elf.stat().st_size if elf.exists() else None,"firmware_elf_sha256":sha(elf) if elf.exists() else None,"port":args.port,"baud":args.baud,"parity":args.parity,"stopbits":args.stopbits,"slave":args.slave}

@@ -33,5 +33,5 @@ def main():
     expected_status=2 if a.restore else 1
     if after['applied_sequence']!=seq or after['status']!=expected_status or (not a.restore and (after['override_active']!=1 or after['effective_mode']!=mode or after['effective_strength']!=strength)) or (a.restore and after['override_active']!=0): raise RuntimeError('diagnostic request failed')
     result={'utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'action':'restore' if a.restore else 'apply','elf':str(Path(a.elf)),'elf_length':Path(a.elf).stat().st_size,'elf_sha256':sha(a.elf),'control_address':f'0x{base:08X}','before':before,'after':after}
-    Path(a.output).parent.mkdir(parents=True,exist_ok=True);Path(a.output).write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8');print(json.dumps(result));return 0
+    Path(a.output).parent.mkdir(parents=True,exist_ok=True);Path(a.output).write_bytes((json.dumps(result,indent=2)+'\n').encode('utf-8'));print(json.dumps(result));return 0
 if __name__=='__main__':raise SystemExit(main())

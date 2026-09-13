@@ -1,6 +1,7 @@
 import csv, json, tempfile, unittest
 from pathlib import Path
 import stage5l_capture as s
+import evidence_portability as ep
 
 class Tests(unittest.TestCase):
     def test_word_decoders_and_wrap(self):
@@ -23,4 +24,14 @@ class Tests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             p=Path(d);(p/'samples.csv').write_text('raw_adc\n1\n',encoding='utf-8')
             with self.assertRaises((KeyError,ValueError)): s.analyze_dir(p)
+    def test_writers_are_utf8_lf_with_final_newline(self):
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d)/'x.json';s.atomic_json(p,{'x':1});self.assertTrue(p.read_bytes().endswith(b'\n'));self.assertNotIn(b'\r\n',p.read_bytes())
+            q=Path(d)/'x.jsonl';s.append_jsonl(q,{'x':1});self.assertEqual(q.read_bytes(),b'{"x":1}\n')
+    def test_eol_classification(self):
+        lf=b'a,b\n1,2\n';crlf=lf.replace(b'\n',b'\r\n')
+        self.assertEqual('git_bytes',ep.classify(lf,len(lf),ep.digest(lf)))
+        self.assertEqual('crlf',ep.classify(lf,len(crlf),ep.digest(crlf)))
+        self.assertEqual('crlf_no_final_newline',ep.classify(lf,len(crlf)-2,ep.digest(crlf[:-2])))
+        self.assertEqual('non_eol_difference',ep.classify(lf,3,ep.digest(b'xyz')))
 if __name__=='__main__': unittest.main()
