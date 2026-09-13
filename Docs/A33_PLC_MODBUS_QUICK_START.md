@@ -13,6 +13,11 @@
 - PDU addresses are zero based. PLC `40001` notation is `40001 + PDU address`.
 - Firmware `0x0510`, register map `0x0104`, public configuration schema `2`.
 
+Current rate boundary: Profile 0 / 10 Hz is the only allowed product path.
+Profile 1 / 40 Hz is diagnostic-only pending Stage 5L-R root-cause closure and
+must not be selected by a PLC. 640/1280 Hz remain prohibited. This containment
+does not change Map `0x0104` or the frozen `0x0510` device behavior.
+
 Multi-register values use the configured word order. Read `0x0103` first:
 `0` is high-word-first and `1` is low-word-first. Signed 32/64-bit values are
 two's-complement bit patterns.

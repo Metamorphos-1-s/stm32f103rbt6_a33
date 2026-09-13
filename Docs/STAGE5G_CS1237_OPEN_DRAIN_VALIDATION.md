@@ -2,10 +2,10 @@
 
 ## Status
 
-Stage 5G is **COMPLETE WITH KNOWN LIMITATION** on branch
+Stage 5G was historically marked **COMPLETE WITH KNOWN LIMITATION** on branch
 `stage5g-cs1237-open-drain` from the
 Stage 5F baseline `0e10a53dd1b89eafc34b8dc3a95964394bc1c01b`. The GPIO change
-is functional commit `c3d1f10`. Both PCB revisions pass the qualified 10/40 Hz
+is functional commit `c3d1f10`. Both PCB revisions passed the then-qualified 10/40 Hz
 configuration matrix and independent 30-minute 10 Hz sampling runs. Release
 containment commit `725ab8a` rejects unqualified 640/1280 Hz product profiles
 while BoardDiagnostics retains those driver modes for engineering work. The
@@ -472,7 +472,9 @@ rise-time margin from application scheduling.
 
 Current impact:
 
-- The qualified 10 Hz and 40 Hz production profiles are unaffected.
+- Stage 5L-R correction: only 10 Hz remains a qualified product profile. The
+  former 40 Hz qualification is suspended after measured processed rate
+  16.496 Hz, a near-rail raw event, and failed 10 Hz baseline recovery.
 - Release product validation rejects 640 Hz and 1280 Hz profiles.
 - BoardDiagnostics retains the modes for future engineering requalification.
 - Stage 5H startup auto-zero development is unaffected.

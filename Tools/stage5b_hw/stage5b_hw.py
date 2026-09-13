@@ -35,6 +35,8 @@ def add_common(parser, serial=True):
     parser.add_argument("--yes", action="store_true")
     for name in ("write", "actions", "flash", "comm-change", "factory-reset", "calibration"):
         parser.add_argument("--allow-" + name, action="store_true", default=None)
+    parser.add_argument("--allow-engineering-40hz", action="store_true",
+                        default=False)
     parser.add_argument("--dangerous-power-loss-test", action="store_true", default=None)
 
 
@@ -282,6 +284,15 @@ def run_serial(args, report):
             authorize(args, "protocol_writes", "allow_write", "non-persistent malformed FC06/FC16 regression", "PROTOCOL_ERRORS")
             return test_protocol_errors.run(client, report)
         if args.command == "commands":
+            if args.name == "SWITCH_WEIGHING_PROFILE":
+                from rate_policy import require_profile_authorization
+                require_profile_authorization(args.arg0,
+                    args.allow_engineering_40hz)
+                if args.arg0 == 1:
+                    authorize(args, "engineering_40hz",
+                              "allow_engineering_40hz",
+                              "diagnostic-only Profile 1 / 40 Hz switch",
+                              "ENGINEERING_40HZ")
             authorize(args, "mailbox_write", "allow_write", "mailbox command %s" % args.name, "MAILBOX_WRITE")
             if args.name != "NOP": authorize(args, "actions", "allow_actions", "runtime action %s" % args.name, "RUN_ACTION")
             if "FACTORY" in args.name: authorize(args, "factory_reset", "allow_factory_reset", "factory reset", "FACTORY_RESET")

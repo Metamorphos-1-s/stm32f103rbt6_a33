@@ -1,6 +1,6 @@
 # Stage 5L Measurement Characterization
 
-Status: hardware data collection in progress. Production measurement algorithms are unchanged.
+Status: blocked by the 40 Hz rate/raw anomaly and incomplete 10 Hz baseline recovery. Production measurement algorithms are unchanged.
 
 ## Frozen baseline
 
@@ -41,7 +41,7 @@ Segment slopes vary substantially over short windows, including raw +74.4 counts
 
 ## Current limits
 
-Battery voltage and internal zero-offset raw are not exposed by Map `0x0104`. Calibrated unfiltered mass is not retained in the production snapshot. These fields remain blank rather than being invented. Cold-start drift, 500 g creep, zero return, repeated cycles, filter comparison, slow fill, and 40 Hz exploration remain pending.
+Battery voltage and internal zero-offset raw are not exposed by Map `0x0104`. Calibrated unfiltered mass is not retained in the production snapshot. These fields remain blank rather than being invented. The listed cold/hot drift, 500 g creep, zero return, repeated cycles, filter comparison and slow-fill runs are complete; valid 40 Hz requalification remains pending.
 
 ## L3 500 g constant-load creep
 

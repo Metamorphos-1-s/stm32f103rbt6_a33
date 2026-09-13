@@ -1,0 +1,242 @@
+{
+  "schema_version": 2,
+  "classification": "RECOVERED ENGINEERING EVIDENCE",
+  "source_stage5l_head": "4ec6415fa6f017d77d319d95a0fe729e7ca3658a",
+  "repository_manifest_commit": "bba48dfdfb0649b8cafe5f6788854ddd9d034b35",
+  "historical_run_manifest_result": {
+    "count": 44,
+    "pass": 0,
+    "fail": 44,
+    "bound_files": 220,
+    "eol_only_mismatches": 220,
+    "non_eol_differences": 0
+  },
+  "repository_manifest_v2_result": {
+    "count": 44,
+    "git_blob_validation": "PASS"
+  },
+  "hardware_capture_rerun": false,
+  "measurement_values_modified": false,
+  "entries": [
+    {
+      "path": "Results/stage5l_characterization/20260912T192400Z_empty_10m/repository_manifest_v2.json",
+      "length": 1129,
+      "sha256": "50E2D44B2E698D8615ADDE9C2EC80526A0D81AC04202D83CCA9CCAFF285270D7"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260912T193600Z_empty_hot_60m/repository_manifest_v2.json",
+      "length": 1134,
+      "sha256": "3B3D48ABEE42D8CE6FF972A7FE192F317161CF653730E1ADEC2F1FCC2656BACC"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913T064617Z_creep_500g_30m/repository_manifest_v2.json",
+      "length": 1135,
+      "sha256": "34C5D6A9C9115DC398045BA68DDFFA62054A65AC7D3AA2C6CED847A1ABA59C59"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913T072000Z_zero_return_15m/repository_manifest_v2.json",
+      "length": 1136,
+      "sha256": "45C2B9570E37E3D51E378FFA005B47561C7D47429EE347B3E2FDD134791403FC"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913T_cold_start_empty_60m/repository_manifest_v2.json",
+      "length": 1134,
+      "sha256": "F22A8E5574F7F18B81D287135F085467BBBCB2F4A159166AD0F6B298068AB94C"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913T_tool_smoke_v2/repository_manifest_v2.json",
+      "length": 1125,
+      "sha256": "C22FDA7D980BF3525A1538C373BBD836B0413AAD45E2A98FCC41204ED03D391D"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913T_tool_smoke_v3/repository_manifest_v2.json",
+      "length": 1125,
+      "sha256": "A1C0359250E152D441C82A3FC98C9B458C2D3318E695006CE2F09707824BE53E"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt0_empty/repository_manifest_v2.json",
+      "length": 1113,
+      "sha256": "62DC9FA62F0300111A0AD9F943FA9F3BF8D918BAC07ABF55ADF83D0622413607"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt0_load_step/repository_manifest_v2.json",
+      "length": 1118,
+      "sha256": "E8A21984473B0739D767F2018DDCEB839111FF8E6C0A494A08433575756109F9"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt0_unload_step/repository_manifest_v2.json",
+      "length": 1120,
+      "sha256": "A45DC8F7DBF12D75F3FD69643688E33830B07C31B40932FD1D70FA6E3100E45D"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt1_empty/repository_manifest_v2.json",
+      "length": 1113,
+      "sha256": "5C46A80CCEFF48D49700A1EB47DF4112668588B7F64B5058AA818C383222F7FD"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt1_load_step/repository_manifest_v2.json",
+      "length": 1118,
+      "sha256": "BD47C022E6ACA27FE92FA08486A7171E9056C4EF814FE0DC424EDE1FA798A770"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt1_unload_step/repository_manifest_v2.json",
+      "length": 1120,
+      "sha256": "D8756C6B9B80268EA5894A3F07CB2CFEE7C8A816CFB0AE75A6E9818D69580E80"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt2_empty/repository_manifest_v2.json",
+      "length": 1113,
+      "sha256": "21635E2357EE7C587638C122BEAB642171753569EF8C2A0B86E6DBD1F36B0CCB"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt2_load_step/repository_manifest_v2.json",
+      "length": 1118,
+      "sha256": "A1167455CDEEE6FFF3CF3B2D31C0405D778D59FDC01ACE724A506AAA37F3A0E1"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt2_load_step_retry/repository_manifest_v2.json",
+      "length": 1124,
+      "sha256": "46AE131793298199D80E5F1EDA8D534F651E8C2D67560EA018AA6A07EDD0342D"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt2_unload_step/repository_manifest_v2.json",
+      "length": 1120,
+      "sha256": "27B8AA97D1EEF80409E55EA3E4F9D281F0DC3C03DF8261E01A60C21440187682"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt3_empty_60s/repository_manifest_v2.json",
+      "length": 1117,
+      "sha256": "64F634206E7D8284BB02879A585C386BA5959AE3D2F3CA5E2B3C8C82412CA8FA"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt3_load_step/repository_manifest_v2.json",
+      "length": 1118,
+      "sha256": "096BC027460F9AE013923FA1C995BB23C8BDAE6AAF96A3689EB6AB63802AB549"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt3_unload_step/repository_manifest_v2.json",
+      "length": 1120,
+      "sha256": "8C89CC53F4D45A7258755BA988204B262931B91C157592D1419BF9C807CAC0C9"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle01_empty/repository_manifest_v2.json",
+      "length": 1115,
+      "sha256": "47C59668392935E092943F0B91A825ED0EC69CEBEE475EE62190A31E6CB786FA"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle01_loaded/repository_manifest_v2.json",
+      "length": 1116,
+      "sha256": "221558EBF3551A7E07DBFB1DCEDF703CC40E29C92A478326D5410C5C9F3B93D3"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle02_empty/repository_manifest_v2.json",
+      "length": 1115,
+      "sha256": "1F9B772FD9E9CB61BBA6E40839DCC4B5FAA1F737808CE5A42E4D1388C0468C74"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle02_loaded/repository_manifest_v2.json",
+      "length": 1116,
+      "sha256": "ADBDE81175BABC6B20265EBC661B8C86895C80A870A3B7AF2A58A5965B7FD0A3"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle03_empty/repository_manifest_v2.json",
+      "length": 1115,
+      "sha256": "1D9F97C4646F91A92581DB77BA4867DACF0E765490C490B523FB94C7C686CA85"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle03_loaded/repository_manifest_v2.json",
+      "length": 1116,
+      "sha256": "D5B00999DD0D3B2A4B77646307C12938F9047F614E2A5449824BD2E468FC1F13"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle04_empty/repository_manifest_v2.json",
+      "length": 1115,
+      "sha256": "E62C913FAE46CBFA1EDD5E35B676A6EF4219FD83D7249239C14A25705F4E41E8"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle04_loaded/repository_manifest_v2.json",
+      "length": 1116,
+      "sha256": "47E0EABEEC34F42B43D197BD3AA20EA8D497180287AAFAA47F2CA8523B23FC53"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle05_empty/repository_manifest_v2.json",
+      "length": 1115,
+      "sha256": "81913091C6902A8C43218E948F083138F91FACCB4F4D26B17B3AF6FAB6DEFC3A"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle05_loaded/repository_manifest_v2.json",
+      "length": 1116,
+      "sha256": "D010DBCE1283BB1980FDEDDAE8091075601994DB34CC1AD2E5CAFD279AC514FE"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle06_empty/repository_manifest_v2.json",
+      "length": 1115,
+      "sha256": "6C198D19A8EBEC8A9369EE630E3C9C7890C76A32156156E5463E29EE142604F1"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle06_loaded/repository_manifest_v2.json",
+      "length": 1116,
+      "sha256": "CE91A2FE5AC344187C119D43E4D225BF3981B8BAC671FB6176E0649B15E3B2BD"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle07_empty/repository_manifest_v2.json",
+      "length": 1115,
+      "sha256": "D51CFEC0746BC45FBE88BE2BA2AB40B12D68B91C8E38B719E107CEC68D72AABF"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle07_loaded/repository_manifest_v2.json",
+      "length": 1116,
+      "sha256": "C4EF7B56B58BA7766FF6A7542DDD9AF673FAA1F29259C6B07DB42D8237679E7F"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle08_empty/repository_manifest_v2.json",
+      "length": 1115,
+      "sha256": "43F3FECC5C12465090A07A2D7F8501888946EFDF292893F3EB1A919AE808C74E"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle08_loaded/repository_manifest_v2.json",
+      "length": 1116,
+      "sha256": "62C446EF9FD9D96F6F850E564C4F7B1F8FB64346067D0BDA6E1DD9A6925C2D89"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle09_empty/repository_manifest_v2.json",
+      "length": 1115,
+      "sha256": "D12A3D260FAD22813A3FD3298927CA6AC85F775FED73BA868370CA469767CC6C"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle09_loaded/repository_manifest_v2.json",
+      "length": 1116,
+      "sha256": "9A474C67685C3709FDFFD6112F2EA4542D1EEA010CC557903F30A2A03395443B"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle10_empty/repository_manifest_v2.json",
+      "length": 1115,
+      "sha256": "C9B9D81D7E1B83A7F8A5F39D666CA568923B2E6E6046A4B7E719DAE853F05BDA"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle10_loaded/repository_manifest_v2.json",
+      "length": 1116,
+      "sha256": "3760927C421F0282BEE4ED0D5433DB024475631A767F68E6C69A3BECBF6E14E5"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_rate_40hz/empty_120s/repository_manifest_v2.json",
+      "length": 1113,
+      "sha256": "3675DCB8FB3AC948235CD3DDC8BB1508ECF50857FB50329FF64DAD536AABCC1D"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_rate_40hz/post_restore_10hz/repository_manifest_v2.json",
+      "length": 1119,
+      "sha256": "5737A8FB1C94E627745AC900029DB043B5515FBC721E6712F3D8C8CD2A44F39B"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_slow_fill/faster_continuous/repository_manifest_v2.json",
+      "length": 1120,
+      "sha256": "16965D056A0B031140C68612480822E86664B4F514EE995FC306B8792745136E"
+    },
+    {
+      "path": "Results/stage5l_characterization/20260913_slow_fill/slow_continuous/repository_manifest_v2.json",
+      "length": 1118,
+      "sha256": "2C910BEAA44A5A6C182095A45B0270E2F96C7089F4D310B7C295A08252255A58"
+    }
+  ]
+}
