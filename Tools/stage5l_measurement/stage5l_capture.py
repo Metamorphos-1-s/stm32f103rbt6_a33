@@ -34,7 +34,11 @@ def capture(args):
     try:
         identity=c.read(14,2)[0]; schema=c.read(0x13e,1)[0][0]; fmt=c.read(0x1c0,1)[0][0]; active=[]
         for a in range(0x100,0x140,16): active+=c.read(a,16)[0]
-        calibration=c.read(0x190,10)[0]; profile=active[31]; base=32 if profile==0 else 46; filter_mode=active[base+2]; filter_strength=active[base+3]
+        calibration=c.read(0x190,10)[0]; profile=active[31]; base=32 if profile==0 else 46; filter_mode=active[base+2]; filter_strength=active[base+3]; override=None
+        if args.override_evidence:
+            override_path=Path(args.override_evidence);override=json.loads(override_path.read_text(encoding='utf-8'));control=override.get('after',{})
+            if override.get('action')!='apply' or control.get('status')!=1 or control.get('override_active')!=1: raise RuntimeError('invalid active override evidence')
+            filter_mode=control['effective_mode'];filter_strength=control['effective_strength']
         if identity!=[0x0104,0x0510] or schema!=2 or fmt!=3: raise RuntimeError("device identity mismatch")
         with events.open("w",encoding="utf-8") as ef:
             ef.write(json.dumps({"utc":time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),"event":args.start_event,"run_id":run_id})+"\n")
@@ -59,7 +63,7 @@ def capture(args):
     finally: tr.close()
     end=time.time(); head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(); elf=ROOT/'build'/'Release'/'stm32f103rbt6_a33.elf'
     env={"run_id":run_id,"repository_head":head,"python":sys.version,"platform":platform.platform(),"tool_path":str(tool.relative_to(ROOT)).replace('\\','/'),"tool_length":tool.stat().st_size,"tool_sha256":sha(tool),"firmware_elf_path":str(elf.relative_to(ROOT)).replace('\\','/') if elf.exists() else None,"firmware_elf_length":elf.stat().st_size if elf.exists() else None,"firmware_elf_sha256":sha(elf) if elf.exists() else None,"port":args.port,"baud":args.baud,"parity":args.parity,"stopbits":args.stopbits,"slave":args.slave}
-    summary={"run_id":run_id,"test_kind":args.command,"started_utc":time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime(start)),"ended_utc":time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime(end)),"duration_s":end-start,"records":rows,"host_duplicate_polls":duplicates,"host_observation_missing_sequences":observed_gaps,"device_identity":{"firmware":"0x0510","map":"0x0104","public_schema":2,"persistent_format":3},"capacity_ug":i64(active[4:8]),"calibration":{"raw_zero":i32(calibration[0:2]),"raw_span":i32(calibration[2:4]),"span_mass_ug":i64(calibration[4:8]),"sequence":u32(calibration[8:10])},"active_profile":profile,"filter_mode":filter_mode,"filter_strength":filter_strength,"active_config":active,"writes":0,"flash_operations":0,"result":"EVIDENCE_ONLY"}
+    summary={"run_id":run_id,"test_kind":args.command,"started_utc":time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime(start)),"ended_utc":time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime(end)),"duration_s":end-start,"records":rows,"host_duplicate_polls":duplicates,"host_observation_missing_sequences":observed_gaps,"device_identity":{"firmware":"0x0510","map":"0x0104","public_schema":2,"persistent_format":3},"capacity_ug":i64(active[4:8]),"calibration":{"raw_zero":i32(calibration[0:2]),"raw_span":i32(calibration[2:4]),"span_mass_ug":i64(calibration[4:8]),"sequence":u32(calibration[8:10])},"active_profile":profile,"filter_mode":filter_mode,"filter_strength":filter_strength,"diagnostic_override_evidence":None if override is None else {"path":args.override_evidence,"sha256":sha(args.override_evidence),"control":override['after']},"active_config":active,"writes":0,"flash_operations":0,"result":"EVIDENCE_ONLY"}
     atomic_json(out/"environment.json",env); atomic_json(out/"summary.json",summary); analyze_dir(out); build_manifest(out); return 0
 
 def slope(values,times):
@@ -96,7 +100,7 @@ def validate(out):
 def parser():
     p=argparse.ArgumentParser(); sub=p.add_subparsers(dest="command",required=True)
     for name in ("capture-baseline","capture-step","capture-creep","capture-zero-return","capture-slow-ramp","capture-rate-compare"):
-        s=sub.add_parser(name); s.add_argument('--port',required=True); s.add_argument('--duration-s',type=float,required=True); s.add_argument('--output',required=True); s.add_argument('--baud',type=int,default=115200); s.add_argument('--parity',default='N'); s.add_argument('--stopbits',type=int,default=1); s.add_argument('--slave',type=int,default=1); s.add_argument('--timeout-ms',type=int,default=300); s.add_argument('--poll-interval-s',type=float,default=0.0); s.add_argument('--aux-interval-s',type=float,default=1.0); s.add_argument('--start-event',choices=sorted(EVENTS),default='EMPTY'); s.add_argument('--end-event',choices=sorted(EVENTS),default='TEST_END')
+        s=sub.add_parser(name); s.add_argument('--port',required=True); s.add_argument('--duration-s',type=float,required=True); s.add_argument('--output',required=True); s.add_argument('--baud',type=int,default=115200); s.add_argument('--parity',default='N'); s.add_argument('--stopbits',type=int,default=1); s.add_argument('--slave',type=int,default=1); s.add_argument('--timeout-ms',type=int,default=300); s.add_argument('--poll-interval-s',type=float,default=0.0); s.add_argument('--aux-interval-s',type=float,default=1.0); s.add_argument('--override-evidence'); s.add_argument('--start-event',choices=sorted(EVENTS),default='EMPTY'); s.add_argument('--end-event',choices=sorted(EVENTS),default='TEST_END')
     s=sub.add_parser('analyze'); s.add_argument('--input',required=True)
     s=sub.add_parser('validate-manifest'); s.add_argument('--input',required=True); return p
 def main():
