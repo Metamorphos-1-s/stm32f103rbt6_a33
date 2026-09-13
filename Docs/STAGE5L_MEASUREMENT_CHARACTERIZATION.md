@@ -110,3 +110,16 @@ Run group `20260913_slow_fill` contains two manually controlled continuous addit
 - Raw and filtered slopes have the same sign and similar magnitude in both runs. Runtime drift did not swallow the continuous increase.
 
 Faster addition suppresses the stable state more reliably, but the slower real addition remains stable for most of its active window. Weight rate alone cannot reliably distinguish extremely slow real material addition from temperature or analog-chain drift in all conditions. A future PLC or digital input should provide `FILL_ACTIVE` / `PROCESS_ACTIVE` state so zero tracking and drift learning can be inhibited during known process motion.
+
+## L8 40 Hz exploration
+
+The SWD-only diagnostics v2 image requested 40 Hz, waited for the CS1237 driver to report RUNNING after its settling samples, and left Active configuration/revision/Flash unchanged. The 120-second empty run failed the diagnostic gate:
+
+- Observed processed sequence rate was only 16.496 Hz, not 40 Hz.
+- Device overrun remained zero and fault mask remained zero.
+- One raw sample reached -7,864,384 counts while the maximum was -80 counts, producing a 7,864,304-count span.
+- The 10 Hz calibration produced a multi-gram false weight, so no 40 Hz weight-accuracy equivalence is claimed and no loaded 40 Hz test was attempted.
+
+The RAM rate override was restored and the qualified product Release was reflashed. The product then measured 9.981 Hz with no overrun or fault, but its empty raw mean remained near -41,399 counts rather than the prior approximately -44,000-count baseline, corresponding to about -2.92 g. A software reset and 10 Hz reconfiguration did not restore the analog baseline. A physical cold power cycle is required before more characterization.
+
+Current status: `STAGE 5L MEASUREMENT CHARACTERIZATION BLOCKED` pending cold-power recovery evidence. This is not yet attributed uniquely to the CS1237, load cell, reference, wiring, or diagnostic switching sequence.

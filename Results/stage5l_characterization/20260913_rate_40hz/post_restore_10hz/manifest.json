@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "run_id": "post_restore_10hz",
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 43645,
+      "sha256": "7120846970BD1387BEB6CD9E07A0747BEBFCAB9056357C2086D5F4537C5C100D"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 167,
+      "sha256": "AC138AE975ED7014E24E3F9B56F07C6354BAAAC83CE6176CFCFCC22AD95893B9"
+    },
+    {
+      "path": "environment.json",
+      "length": 701,
+      "sha256": "D3E98763E3A52A2CAA7CE7F66597070DDCC12AC7EAB966760897565A9058B6D3"
+    },
+    {
+      "path": "summary.json",
+      "length": 1404,
+      "sha256": "86A0C6366E103BBEA47A44AFE7699657DD4B5A9664B4E0F7AF4BF491EA17324E"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1412,
+      "sha256": "528E56A836FC914B8679D991A844365F7EDDAEC2671C66FB688F225153A0B0FA"
+    }
+  ]
+}
