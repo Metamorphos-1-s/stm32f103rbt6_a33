@@ -1,0 +1,36 @@
+{
+  "utc": "2026-09-13T09:28:01Z",
+  "action": "apply",
+  "elf": "build\\Stage5LDiagnostics\\stm32f103rbt6_a33.elf",
+  "elf_length": 1917484,
+  "elf_sha256": "F2E9D96F5F117A50E291874A10662B9910B6558D9206D0646A23B0A294185EB1",
+  "control_address": "0x200047BC",
+  "before": {
+    "magic": 894190663,
+    "version": 1,
+    "request_sequence": 4,
+    "applied_sequence": 4,
+    "command": 1,
+    "requested_mode": 1,
+    "requested_strength": 2,
+    "status": 1,
+    "override_active": 1,
+    "effective_mode": 1,
+    "effective_strength": 2,
+    "preserved_dirty": 0
+  },
+  "after": {
+    "magic": 894190663,
+    "version": 1,
+    "request_sequence": 5,
+    "applied_sequence": 5,
+    "command": 1,
+    "requested_mode": 2,
+    "requested_strength": 1,
+    "status": 1,
+    "override_active": 1,
+    "effective_mode": 2,
+    "effective_strength": 1,
+    "preserved_dirty": 0
+  }
+}

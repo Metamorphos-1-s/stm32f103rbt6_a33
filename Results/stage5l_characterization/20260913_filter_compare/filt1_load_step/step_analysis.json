@@ -1,0 +1,8 @@
+{
+  "baseline_g": -0.05081674074074074,
+  "plateau_g": 499.99739607971014,
+  "load_detect_s": 57.798,
+  "rise_10_90_s": 0.4409999999999954,
+  "stable_after_edge_s": 2.314,
+  "records": 922
+}

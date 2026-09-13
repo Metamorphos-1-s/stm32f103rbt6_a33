@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "run_id": "filt1_empty",
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 73170,
+      "sha256": "E0BB24B63BB538B6B91DAB2278EB7A6A5B1B2AA0212A2EA54B0832E6607541EA"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 155,
+      "sha256": "474AB670886B80A3EB0DB0A23E354ED364971223251D7918E54AD4C2B0FA611C"
+    },
+    {
+      "path": "environment.json",
+      "length": 695,
+      "sha256": "FE0BBB1C9FB12D02294D48003A13A228C8F19823E9EFE53662F276C3FB73FD71"
+    },
+    {
+      "path": "summary.json",
+      "length": 1868,
+      "sha256": "FED273A1FF8D9CEE479E2E63902FD6425117B05F394400AB0874C424E1B24DFB"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1328,
+      "sha256": "AA55E0FE8263A7A2BD5287018B161E7AB199B02972D14966EE5D83EE13AFEACC"
+    }
+  ]
+}

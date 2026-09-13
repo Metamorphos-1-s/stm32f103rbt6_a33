@@ -87,3 +87,16 @@ Run group `20260913_filter_compare` first captured the production filter mode 3 
 - Unload: filtered/net/display 10-90% fall time 1.628 s. First sustained stable state was 8.222 s after the detected edge.
 
 The raw ADC step is effectively immediate at 10 Hz, while the mode-3 filter contributes approximately 1.6-1.7 seconds to the 90% response. The remaining time before stable assertion is dominated by stability-window and hold behavior. Other filter modes require the dedicated SWD-only RAM override; no persistent configuration transaction is used.
+
+The SWD-only diagnostic image SHA-256 was `F2E9D96F5F117A50E291874A10662B9910B6558D9206D0646A23B0A294185EB1`. Its RAM control block was applied and restored with explicit evidence. The qualified product Release SHA-256 remained `82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486` and was reflashed after comparison.
+
+| Filter mode / strength | Filtered raw stddev | Net stddev | Empty stable | Load 10-90% | Load stable | Unload 10-90% | Unload stable |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 0 / 0, none | 11.304 counts | 0.01273 g | 98.05% | 0.301 s | 2.104 s | 0.229 s | 2.306 s |
+| 1 / 2, average | 9.854 counts | 0.01110 g | 100% | 0.441 s | 2.314 s | 0.224 s | 2.076 s |
+| 2 / 1, IIR | 8.243 counts | 0.00929 g | 100% | 0.359 s | 3.385 s | 0.301 s | 3.114 s |
+| 3 / 3, median+IIR | 4.829 counts | 0.00544 g | 100% | 1.669 s | 8.278 s | 1.628 s | 8.222 s |
+
+Mode 3 has the best observed steady noise but the slowest response. Mode 1 is the fastest tested mode that retained 100% empty stability in its 60-second window. Mode 2 provides an intermediate noise/settling tradeoff. These are design inputs, not a production-setting change. The first mode-2 load run was retained as incomplete because the physical edge occurred at the final sample; `filt2_load_step_retry` is the valid comparison run.
+
+After restore, the production image reported filter 3/3, Active SHA-256 `91D346E87BD112EFAC3B513A8CAFBBDDE9642069A15280DB7565374378BA43E1`, revision 7/7, dirty 0, Slot sequence 7, fault 0, and mailbox idle.

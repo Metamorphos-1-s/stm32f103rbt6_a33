@@ -1,0 +1,17 @@
+{
+  "run_id": "filt1_load_step",
+  "repository_head": "9e2636cef5448682934f64788fd3166c5ed0f267",
+  "python": "3.8.10 (tags/v3.8.10:3d8993a, May  3 2021, 11:48:03) [MSC v.1928 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "tool_path": "Tools/stage5l_measurement/stage5l_capture.py",
+  "tool_length": 10583,
+  "tool_sha256": "6526B163A87638816CCB66BE8CE548479396A4E4448C6536F922D1929BB2C78E",
+  "firmware_elf_path": "build/Release/stm32f103rbt6_a33.elf",
+  "firmware_elf_length": 172200,
+  "firmware_elf_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "port": "COM5",
+  "baud": 115200,
+  "parity": "N",
+  "stopbits": 1,
+  "slave": 1
+}
