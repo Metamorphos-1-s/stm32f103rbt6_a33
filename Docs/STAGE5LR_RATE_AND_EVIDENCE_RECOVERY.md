@@ -53,3 +53,12 @@ Profile 0 / 10 Hz is the only currently allowed product path. Profile 1 / 40 Hz 
 
 No Stage 5M/5N/5O production algorithm is implemented.
 
+## Hardware G1 progress
+
+Cold-start control 1 is preserved under `Results/stage5lr_hardware/20260914_control1_10hz_cold_60m`. Its capture Manifest passes and binds 31,353 records over 3,600.11 seconds. No 40 Hz switch or device write occurred; environment temperature is explicitly `UNMEASURED`.
+
+The measured 10 Hz processed rate is 9.98220 samples/s. Across the required 0-5, 5-10, 10-20, 20-30 and 30-60 minute windows, rates are 9.98260, 9.98293, 9.98243, 9.98273 and 9.98175 samples/s. Whole-run raw mean/stddev/peak-to-peak are -43,781.45 / 15.23 / 118 counts, with raw first/last -43,795 / -43,780 and a fitted drift of -20.91 counts/hour. Stable ratio is 100%; overrun delta and mapped fault observations are zero; the display remains -22 counts.
+
+The post-run read-only probe confirms Firmware 0x0510, Map 0x0104, Schema 2, Persistent Format 3, Profile 0, storage sequence 7 and `dirty=0`. The supplemental environment and segment record is `Results/stage5lr_hardware/20260914_control1_supplement.json`.
+
+One cold start is insufficient to establish repeatability. A second no-switch 10 Hz cold-start run remains required before the product-path conclusion can be strengthened. DRDY/SCLK and synchronized diagnostic evidence remain unavailable, so 40 Hz root cause is still pending.

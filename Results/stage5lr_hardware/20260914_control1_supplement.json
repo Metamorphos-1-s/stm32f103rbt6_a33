@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "run_id": "20260914_control1_10hz_cold_60m",
+  "classification": "STAGE5LR_G1_COLD_START_CONTROL",
+  "source_manifest": {
+    "path": "20260914_control1_10hz_cold_60m/manifest.json",
+    "sha256": "B797631DAB64131D2B4E50CFAB63065784196325C8A6A5161EC3588F4CD0D63D",
+    "validation": "PASS"
+  },
+  "physical_action": {
+    "power_cycle": "USER_REPORTED_COLD_START",
+    "power_off_duration": "NOT_INDEPENDENTLY_MEASURED",
+    "platform": "EMPTY_AND_UNDISTURBED_DURING_CAPTURE",
+    "environment_temperature": "UNMEASURED"
+  },
+  "controls": {
+    "active_profile": 0,
+    "requested_sample_rate": "10_HZ_PRODUCT_PATH",
+    "rate_switches": 0,
+    "zero_operations": 0,
+    "tare_operations": 0,
+    "save_operations": 0,
+    "calibration_operations": 0,
+    "configuration_writes": 0,
+    "flash_operations": 0
+  },
+  "whole_run": {
+    "duration_s": 3600.110733270645,
+    "host_records": 31353,
+    "sequence_delta": 35937,
+    "mcu_uptime_delta_ms": 3600109,
+    "processed_rate_hz": 9.982197761234453,
+    "maximum_sequence_jump": 2,
+    "raw_first": -43795,
+    "raw_last": -43780,
+    "raw_mean": -43781.44560329155,
+    "raw_stddev": 15.233725362792182,
+    "raw_peak_to_peak": 118,
+    "raw_linear_drift_per_hour": -20.90764938001637,
+    "filtered_raw_linear_drift_per_hour": -20.92095171092095,
+    "display_count_first": -22,
+    "display_count_last": -22,
+    "stable_ratio": 1.0,
+    "device_overrun_delta": 0,
+    "fault_nonzero_records": 0
+  },
+  "segments": [
+    {
+      "window_min": "0-5",
+      "records": 2612,
+      "processed_rate_hz": 9.982595474823453,
+      "raw_mean": -43778.06929555896,
+      "raw_stddev": 12.56624799336972,
+      "raw_peak_to_peak": 84,
+      "raw_linear_drift_per_hour": 239.12376967274508,
+      "stable_ratio": 1.0,
+      "overrun_delta": 0,
+      "fault_nonzero_records": 0
+    },
+    {
+      "window_min": "5-10",
+      "records": 2613,
+      "processed_rate_hz": 9.98292832564219,
+      "raw_mean": -43766.66858017604,
+      "raw_stddev": 11.7005792790751,
+      "raw_peak_to_peak": 84,
+      "raw_linear_drift_per_hour": 46.65117687881513,
+      "stable_ratio": 1.0,
+      "overrun_delta": 0,
+      "fault_nonzero_records": 0
+    },
+    {
+      "window_min": "10-20",
+      "records": 5225,
+      "processed_rate_hz": 9.982429057737383,
+      "raw_mean": -43766.357894736844,
+      "raw_stddev": 11.711808434733134,
+      "raw_peak_to_peak": 95,
+      "raw_linear_drift_per_hour": -29.25691289541994,
+      "stable_ratio": 1.0,
+      "overrun_delta": 0,
+      "fault_nonzero_records": 0
+    },
+    {
+      "window_min": "20-30",
+      "records": 5223,
+      "processed_rate_hz": 9.982728612487413,
+      "raw_mean": -43786.16523071032,
+      "raw_stddev": 12.793252860886765,
+      "raw_peak_to_peak": 94,
+      "raw_linear_drift_per_hour": -124.87599612909862,
+      "stable_ratio": 1.0,
+      "overrun_delta": 0,
+      "fault_nonzero_records": 0
+    },
+    {
+      "window_min": "30-60",
+      "records": 15680,
+      "processed_rate_hz": 9.98175086176486,
+      "raw_mean": -43787.92608418367,
+      "raw_stddev": 12.29329949494866,
+      "raw_peak_to_peak": 97,
+      "raw_linear_drift_per_hour": 25.65654549156847,
+      "stable_ratio": 1.0,
+      "overrun_delta": 0,
+      "fault_nonzero_records": 0
+    }
+  ],
+  "post_capture_probe": {
+    "path": "20260914_control1_post_probe.json",
+    "sha256": "DA3ED5B6B75D95C2D9B2382F6E122661E0172E5A96F2AECA80C77F7B58C1D0D9",
+    "active_profile": 0,
+    "config_dirty": 0,
+    "storage_sequence": 7,
+    "fault": 0
+  },
+  "interpretation": "The first no-rate-switch 10 Hz cold-start control completed without device overrun, mapped fault, configuration write, or display-count drift. Early thermal movement is visible and a second cold-start control is required before declaring a repeatable envelope. This run does not provide DRDY or 40 Hz root-cause evidence."
+}

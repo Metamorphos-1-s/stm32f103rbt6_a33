@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "run_id": "20260914_control1_10hz_cold_60m",
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 5062213,
+      "sha256": "6972E095AD45699566EA7CB7504D040638464BFD7709CFEFCFF18F88EDA10ADD"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 186,
+      "sha256": "9C98BB4FB38BB48FE64E1E7002CF0270D5928D53DA3E92B915EFADAA89678B1C"
+    },
+    {
+      "path": "environment.json",
+      "length": 698,
+      "sha256": "7C99A0C4E08C3833307BB3686A81AB0B9E1099C878150EE9758145B007D938FF"
+    },
+    {
+      "path": "summary.json",
+      "length": 1320,
+      "sha256": "C620311F46B7F1DC36904165E0B91420C023B9DF500CB941FF5D5F93A1B085D0"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1295,
+      "sha256": "B4F33F9DB0A4B2876CE3423AAA8697BB9BB3C193CD05D031CB6AB673282FECD9"
+    }
+  ]
+}
