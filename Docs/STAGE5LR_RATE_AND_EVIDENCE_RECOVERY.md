@@ -64,3 +64,29 @@ The post-run read-only probe confirms Firmware 0x0510, Map 0x0104, Schema 2, Per
 Cold-start control 2 is preserved under `Results/stage5lr_hardware/20260914_control2_10hz_cold_60m`; its capture Manifest also passes. It contains 31,471 records over 3,600.12 seconds and measures 9.98241 processed samples/s, with zero overrun and no mapped fault. Whole-run raw first/last are -43,813 / -43,892 and the fitted drift is -149.21 counts/hour. The 30-60 minute raw mean is -43,871.19, 83.26 counts below control 1; the corresponding net-mass means differ by 0.093795 g. A short non-near-rail raw excursion around 1,611 seconds has a maximum adjacent jump of 92 counts.
 
 The required two controls are complete, but their late-run baseline and fitted drift are materially different. Temperature was unmeasured in both. The comparison is `Results/stage5lr_hardware/20260914_g1_cold_start_comparison.json`; it explicitly rejects a repeatable cold-start envelope and algorithm compensation readiness. DRDY/SCLK and synchronized diagnostic evidence remain unavailable, so 40 Hz root cause is still pending and no new 40 Hz switch is authorized.
+
+## Repository closeout
+
+| Repository | Start HEAD | Final implementation/evidence HEAD | State |
+| --- | --- | --- | --- |
+| STM32 | `4ec6415fa6f017d77d319d95a0fe729e7ca3658a` | `d9862bd873b44122b54af258f965a96c921d5929` | local/remote equal; clean before report closeout |
+| PC/WeChat client | `c8b8f585203ea94ab4f0778713ef28582ad39ccc` | `c4e4906f0a47a427793df6cfcb414756ac7984cc` | local/remote equal; clean |
+| CH579 | `eb888925e4fcc9dcd9bf89e8cc42e5b28679e520` | `eb888925e4fcc9dcd9bf89e8cc42e5b28679e520` | audit only; local/remote equal; clean |
+
+The STM32 branch-tip commit containing this report follows the evidence HEAD above and is recorded in the external handoff because a Git commit cannot embed its own hash. Stage 5L-R commits and responsibilities are:
+
+- `0656a5276d75b1e918f0c4a60b7077dc941f4887`: portable Stage 5L evidence writers, attributes and tests.
+- `bba48dfdfb0649b8cafe5f6788854ddd9d034b35`: 44 repository-byte Manifest V2 records.
+- `6ac05c7aab0edbb474faeff5db08d78804452c0d`: bounded rate-switch and raw-anomaly diagnostics.
+- `ed5bdab86727f52618d72a29efc8c29162ef0be9`: formal rate analysis and regression tests.
+- `b76cdc9905b7bb54c1240df656fad35f93d1c74e`: temporary 40 Hz containment and root-cause status.
+- `dde430ff7569f5c4d5f09368ee61b7370d74602d`: first 10 Hz cold-start control.
+- `d9862bd873b44122b54af258f965a96c921d5929`: second 10 Hz control and two-run comparison.
+
+Client commits are `888688c5ced869811ed6e6d8ff41ee0c62e85410` for EOL, baseline and register-contract portability, `d8fed152e5d41e6eb5201a7de63d705d2a9c1224` for evidence provenance, and `c4e4906f0a47a427793df6cfcb414756ac7984cc` for the 40 Hz client boundary. CH579 required no source or evidence change.
+
+Final hardware state observed by read-only probe is Firmware 0x0510, Map 0x0104, Schema 2, Persistent Format 3, Profile 0, `dirty=0`, storage sequence 7, active slot 1 and mapped fault 0. The two capture summaries contain the same active configuration and calibration (`raw_zero=-43989`, `raw_span=-487850`, `span_mass=500 g`, sequence 1). No firmware was flashed in Stage 5L-R. The user performed two physical cold starts for G1; their off-time and temperature were not independently instrumented. No 40 Hz switch was performed in G1.
+
+G2 synchronized DRDY/SCLK/SWD evidence, G3 analog rail measurements, G4 post-40 Hz recovery and G5 requalification remain unperformed. The earlier near-rail raw event therefore remains unexplained. Clang strict, ASan and UBSan remain `UNAVAILABLE`, not PASS. No merge, tag or pull request was created, and no history was rewritten.
+
+Final allowed conclusion: `STAGE 5L-R EVIDENCE REPAIRED; 40 HZ ROOT CAUSE PENDING`.
