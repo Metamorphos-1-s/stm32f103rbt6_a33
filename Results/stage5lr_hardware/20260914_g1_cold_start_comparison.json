@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "classification": "STAGE5LR_G1_TWO_RUN_COMPARISON",
+  "temperature": "UNMEASURED_BOTH_RUNS",
+  "rate_switches": 0,
+  "control1": {
+    "run_id": "20260914_control1_10hz_cold_60m",
+    "processed_rate_hz": 9.982197761234453,
+    "raw_first": -43795,
+    "raw_last": -43780,
+    "raw_linear_drift_per_hour": -20.90764938001637,
+    "raw_30_60_min_mean": -43787.92608418367,
+    "net_30_60_min_mean_ug": -226514.40631377551,
+    "overrun_delta": 0,
+    "fault_nonzero_records": 0
+  },
+  "control2": {
+    "run_id": "20260914_control2_10hz_cold_60m",
+    "processed_rate_hz": 9.982414040323542,
+    "raw_first": -43813,
+    "raw_last": -43892,
+    "raw_linear_drift_per_hour": -149.20992758529025,
+    "raw_30_60_min_mean": -43871.18956444557,
+    "net_30_60_min_mean_ug": -132719.3722817473,
+    "overrun_delta": 0,
+    "fault_nonzero_records": 0
+  },
+  "differences_control2_minus_control1": {
+    "processed_rate_hz": 0.000216279089089,
+    "raw_first": -18,
+    "raw_last": -112,
+    "raw_linear_drift_per_hour": -128.30227820527388,
+    "raw_30_60_min_mean": -83.26348026189953,
+    "net_30_60_min_mean_ug": 93795.03403202822
+  },
+  "decision": {
+    "repeatable_cold_start_envelope": false,
+    "algorithm_compensation_allowed": false,
+    "new_40hz_test_allowed_without_instrumentation": false,
+    "reason": "The two no-switch controls have materially different late-run baseline and drift behavior. Temperature was not measured, and the second run contains an unexplained short raw excursion."
+  }
+}

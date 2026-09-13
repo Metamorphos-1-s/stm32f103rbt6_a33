@@ -7,6 +7,10 @@
     "sha256": "B797631DAB64131D2B4E50CFAB63065784196325C8A6A5161EC3588F4CD0D63D",
     "validation": "PASS"
   },
+  "rate_analysis": {
+    "path": "20260914_control1_rate_analysis.json",
+    "sha256": "83BA89D9CBFED4B59A06FB9512F0AC8E2173A6B52F33B80DE4CD405AE27E55F0"
+  },
   "physical_action": {
     "power_cycle": "USER_REPORTED_COLD_START",
     "power_off_duration": "NOT_INDEPENDENTLY_MEASURED",

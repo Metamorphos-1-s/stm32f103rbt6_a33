@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "run_id": "20260914_control2_10hz_cold_60m",
+  "classification": "STAGE5LR_G1_COLD_START_CONTROL",
+  "source_manifest": {
+    "path": "20260914_control2_10hz_cold_60m/manifest.json",
+    "sha256": "E0F062250669C2DF2F2FD5730CBAFB2DB96EA645A2DB993E9A5210AE740928A2",
+    "validation": "PASS"
+  },
+  "rate_analysis": {
+    "path": "20260914_control2_rate_analysis.json",
+    "sha256": "DC5185035BBDA5D92C4CD7F402CA6C3400C194C1D7597D5A44811E1968AA2DCB"
+  },
+  "physical_action": {
+    "power_cycle": "USER_REPORTED_COLD_START",
+    "power_off_duration": "NOT_INDEPENDENTLY_MEASURED",
+    "platform": "EMPTY_AND_UNDISTURBED_DURING_CAPTURE",
+    "environment_temperature": "UNMEASURED"
+  },
+  "controls": {
+    "active_profile": 0,
+    "requested_sample_rate": "10_HZ_PRODUCT_PATH",
+    "rate_switches": 0,
+    "zero_operations": 0,
+    "tare_operations": 0,
+    "save_operations": 0,
+    "calibration_operations": 0,
+    "configuration_writes": 0,
+    "flash_operations": 0
+  },
+  "whole_run": {
+    "duration_s": 3600.118860244751,
+    "host_records": 31471,
+    "sequence_delta": 35937,
+    "mcu_uptime_delta_ms": 3600031,
+    "processed_rate_hz": 9.982414040323542,
+    "maximum_sequence_jump": 3,
+    "raw_first": -43813,
+    "raw_last": -43892,
+    "raw_mean": -43829.007403641444,
+    "raw_stddev": 48.463614304349406,
+    "raw_peak_to_peak": 334,
+    "raw_linear_drift_per_hour": -149.20992758529025,
+    "filtered_raw_linear_drift_per_hour": -149.19071729102183,
+    "display_count_first": -17,
+    "display_count_last": -16,
+    "stable_ratio": 1.0,
+    "device_overrun_delta": 0,
+    "fault_nonzero_records": 0
+  },
+  "segments": [
+    {
+      "window_min": "0-5",
+      "records": 2617,
+      "processed_rate_hz": 9.982795182651142,
+      "raw_mean": -43790.49675200611,
+      "raw_stddev": 12.96281125000545,
+      "raw_peak_to_peak": 85,
+      "raw_linear_drift_per_hour": 258.98712496735544,
+      "display_min": -17,
+      "display_max": -17,
+      "stable_ratio": 1.0,
+      "overrun_delta": 0,
+      "fault_nonzero_records": 0
+    },
+    {
+      "window_min": "5-10",
+      "records": 2616,
+      "processed_rate_hz": 9.982229364558085,
+      "raw_mean": -43783.12232415902,
+      "raw_stddev": 11.361095296731039,
+      "raw_peak_to_peak": 81,
+      "raw_linear_drift_per_hour": -43.56913473279702,
+      "display_min": -25,
+      "display_max": -17,
+      "stable_ratio": 1.0,
+      "overrun_delta": 0,
+      "fault_nonzero_records": 0
+    },
+    {
+      "window_min": "10-20",
+      "records": 5228,
+      "processed_rate_hz": 9.98269821214859,
+      "raw_mean": -43785.017788829384,
+      "raw_stddev": 12.08672868314339,
+      "raw_peak_to_peak": 112,
+      "raw_linear_drift_per_hour": -54.74557539176064,
+      "display_min": -25,
+      "display_max": -25,
+      "stable_ratio": 1.0,
+      "overrun_delta": 0,
+      "fault_nonzero_records": 0
+    },
+    {
+      "window_min": "20-30",
+      "records": 5237,
+      "processed_rate_hz": 9.982595474823453,
+      "raw_mean": -43788.04048119152,
+      "raw_stddev": 12.549808482665178,
+      "raw_peak_to_peak": 243,
+      "raw_linear_drift_per_hour": -5.800725936969748,
+      "display_min": -25,
+      "display_max": -25,
+      "stable_ratio": 1.0,
+      "overrun_delta": 0,
+      "fault_nonzero_records": 0
+    },
+    {
+      "window_min": "30-60",
+      "records": 15773,
+      "processed_rate_hz": 9.982305408100624,
+      "raw_mean": -43871.18956444557,
+      "raw_stddev": 31.033213967155962,
+      "raw_peak_to_peak": 178,
+      "raw_linear_drift_per_hour": -176.54060040353002,
+      "display_min": -25,
+      "display_max": -16,
+      "stable_ratio": 1.0,
+      "overrun_delta": 0,
+      "fault_nonzero_records": 0
+    }
+  ],
+  "transient": {
+    "elapsed_s": 1611.458,
+    "maximum_adjacent_raw_jump": 92,
+    "classification": "NON_NEAR_RAIL_SHORT_RAW_EXCURSION",
+    "near_rail_events": 0
+  },
+  "post_capture_probe": {
+    "path": "20260914_control2_post_probe.json",
+    "sha256": "D69C117786E6B6A9C319615A8A817E46D199EA321FA30066BB5C4473BCC7A649",
+    "active_profile": 0,
+    "config_dirty": 0,
+    "storage_sequence": 7,
+    "fault": 0
+  },
+  "interpretation": "The second no-rate-switch 10 Hz cold-start control completed without device overrun, mapped fault, configuration write, or Flash operation. A short non-near-rail excursion occurs near 26 minutes 51 seconds, followed by a sustained baseline movement during the 30-60 minute window. The result differs materially from control 1 and prevents declaration of a repeatable cold-start envelope or algorithm compensation readiness."
+}
