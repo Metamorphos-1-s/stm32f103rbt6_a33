@@ -1,0 +1,58 @@
+{
+  "rows": [
+    {
+      "algorithm": "filt0",
+      "static_noise_g": 0.012733310026655602,
+      "load_10_90_s": 0.30100000000000016,
+      "stable_time_s": 2.104,
+      "slow_false_stable": null,
+      "ram_bytes": null,
+      "classification": "hardware baseline"
+    },
+    {
+      "algorithm": "filt1",
+      "static_noise_g": 0.011100043056154162,
+      "load_10_90_s": 0.4409999999999954,
+      "stable_time_s": 2.314,
+      "slow_false_stable": null,
+      "ram_bytes": null,
+      "classification": "hardware baseline"
+    },
+    {
+      "algorithm": "filt2",
+      "static_noise_g": 0.009285415620807813,
+      "load_10_90_s": 0.359,
+      "stable_time_s": 3.3850000000000007,
+      "slow_false_stable": null,
+      "ram_bytes": null,
+      "classification": "hardware baseline"
+    },
+    {
+      "algorithm": "filt3",
+      "static_noise_g": 0.005439464823540295,
+      "load_10_90_s": 1.6690000000000005,
+      "stable_time_s": 8.277999999999999,
+      "slow_false_stable": null,
+      "ram_bytes": null,
+      "classification": "hardware baseline"
+    },
+    {
+      "algorithm": "dual_iir",
+      "static_noise_g": 0.005139216030316069,
+      "load_10_90_s": 0.319,
+      "stable_time_s": null,
+      "slow_false_stable": 0.0,
+      "ram_bytes": 272,
+      "classification": "offline replay"
+    },
+    {
+      "algorithm": "robust_dual_iir",
+      "static_noise_g": 0.005139216030316069,
+      "load_10_90_s": 0.319,
+      "stable_time_s": null,
+      "slow_false_stable": 0.0,
+      "ram_bytes": 272,
+      "classification": "offline replay"
+    }
+  ]
+}

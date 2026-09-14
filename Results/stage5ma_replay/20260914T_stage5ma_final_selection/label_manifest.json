@@ -1,0 +1,233 @@
+{
+  "schema_version": 1,
+  "labels": [
+    {
+      "dataset": "filt0_empty",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "filt0_load",
+      "label": "LOAD_STEP",
+      "source": "hardware event/run semantics",
+      "confidence": "MEDIUM"
+    },
+    {
+      "dataset": "filt0_unload",
+      "label": "UNLOAD_STEP",
+      "source": "hardware event/run semantics",
+      "confidence": "MEDIUM"
+    },
+    {
+      "dataset": "filt1_empty",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "filt1_load",
+      "label": "LOAD_STEP",
+      "source": "hardware event/run semantics",
+      "confidence": "MEDIUM"
+    },
+    {
+      "dataset": "filt1_unload",
+      "label": "UNLOAD_STEP",
+      "source": "hardware event/run semantics",
+      "confidence": "MEDIUM"
+    },
+    {
+      "dataset": "filt2_empty",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "filt2_load",
+      "label": "LOAD_STEP",
+      "source": "hardware event/run semantics",
+      "confidence": "MEDIUM"
+    },
+    {
+      "dataset": "filt2_unload",
+      "label": "UNLOAD_STEP",
+      "source": "hardware event/run semantics",
+      "confidence": "MEDIUM"
+    },
+    {
+      "dataset": "filt3_empty",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "filt3_load",
+      "label": "LOAD_STEP",
+      "source": "hardware event/run semantics",
+      "confidence": "MEDIUM"
+    },
+    {
+      "dataset": "filt3_unload",
+      "label": "UNLOAD_STEP",
+      "source": "hardware event/run semantics",
+      "confidence": "MEDIUM"
+    },
+    {
+      "dataset": "slow_fill",
+      "label": "SLOW_LOAD",
+      "source": "hardware event/run semantics",
+      "confidence": "MEDIUM"
+    },
+    {
+      "dataset": "faster_fill",
+      "label": "SLOW_LOAD",
+      "source": "hardware event/run semantics",
+      "confidence": "MEDIUM"
+    },
+    {
+      "dataset": "creep_500g",
+      "label": "LOADED_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "hot_empty",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cold_control1",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cold_control2",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle01_loaded",
+      "label": "LOADED_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle01_empty",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle02_loaded",
+      "label": "LOADED_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle02_empty",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle03_loaded",
+      "label": "LOADED_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle03_empty",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle04_loaded",
+      "label": "LOADED_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle04_empty",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle05_loaded",
+      "label": "LOADED_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle05_empty",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle06_loaded",
+      "label": "LOADED_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle06_empty",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle07_loaded",
+      "label": "LOADED_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle07_empty",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle08_loaded",
+      "label": "LOADED_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle08_empty",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle09_loaded",
+      "label": "LOADED_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle09_empty",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle10_loaded",
+      "label": "LOADED_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    },
+    {
+      "dataset": "cycle10_empty",
+      "label": "EMPTY_STATIC",
+      "source": "hardware event/run semantics",
+      "confidence": "HIGH"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "version": "stage5ma-replay-v1",
+  "selected_candidate": "robust_dual_iir",
+  "parameters": {
+    "fast_shift": 1,
+    "slow_shift": 3,
+    "blend_shift": 2,
+    "transient_threshold_ug": 200000,
+    "quiet_range_ug": 60000,
+    "slow_trend_ug": 30000,
+    "disturbance_threshold_ug": 1000000,
+    "settling_min_ms": 600,
+    "static_hold_ms": 1500
+  },
+  "automatic_zero_compensation": false,
+  "input_gap_policy": "observe and SETTLING; never interpolate"
+}

@@ -1,0 +1,17 @@
+{
+  "selected_candidate": null,
+  "closest_candidate": "robust_dual_iir",
+  "passed_targets": {
+    "static_noise_g": {"actual": 0.0054435719148877015, "maximum": 0.0068},
+    "load_10_90_s": {"actual": 0.319, "maximum": 0.6},
+    "python_c_mismatch": {"actual": 0, "maximum": 0}
+  },
+  "failed_targets": {
+    "stable_time_s": {"actual": 5.573, "maximum": 3.0},
+    "slow_false_stable_ratio": {"actual": 0.24564796905222436, "maximum": 0.1},
+    "static_false_positive_ratio": {"actual": 0.015296367112810707, "maximum": 0.01}
+  },
+  "requirements_relaxed": false,
+  "stage5mb_authorized": false,
+  "result": "NO_ACCEPTABLE_CANDIDATE"
+}

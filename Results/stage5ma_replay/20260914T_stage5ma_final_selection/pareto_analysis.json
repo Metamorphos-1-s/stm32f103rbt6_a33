@@ -1,0 +1,8 @@
+{
+  "lowest_noise": "filt3 hardware baseline",
+  "fastest_response": "filt0 hardware baseline",
+  "best_slow_change_identification": "robust_dual_iir",
+  "lowest_resource": "filt0",
+  "recommended": null,
+  "holdout_targets_passed": false
+}

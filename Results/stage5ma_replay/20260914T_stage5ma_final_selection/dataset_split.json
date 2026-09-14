@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "split_unit": "complete run",
+  "random_sample_split": false,
+  "development": [
+    "filt0_empty",
+    "filt0_load",
+    "filt0_unload",
+    "filt2_empty",
+    "filt2_load",
+    "filt2_unload",
+    "slow_fill",
+    "cold_control1",
+    "cycle01_loaded",
+    "cycle01_empty",
+    "cycle02_loaded",
+    "cycle02_empty",
+    "cycle03_loaded",
+    "cycle03_empty",
+    "cycle04_loaded",
+    "cycle04_empty",
+    "cycle05_loaded",
+    "cycle05_empty",
+    "cycle06_loaded",
+    "cycle06_empty"
+  ],
+  "holdout": [
+    "filt1_empty",
+    "filt1_load",
+    "filt1_unload",
+    "filt3_empty",
+    "filt3_load",
+    "filt3_unload",
+    "faster_fill",
+    "creep_500g",
+    "cold_control2",
+    "cycle07_loaded",
+    "cycle07_empty",
+    "cycle08_loaded",
+    "cycle08_empty",
+    "cycle09_loaded",
+    "cycle09_empty",
+    "cycle10_loaded",
+    "cycle10_empty"
+  ],
+  "regression": [
+    "hot_empty"
+  ]
+}

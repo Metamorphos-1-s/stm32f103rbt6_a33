@@ -1,0 +1,7 @@
+algorithm,static_noise_g,load_10_90_s,stable_time_s,slow_false_stable,ram_bytes,classification
+filt0,0.012733310026655602,0.30100000000000016,2.104,,,hardware baseline
+filt1,0.011100043056154162,0.4409999999999954,2.314,,,hardware baseline
+filt2,0.009285415620807813,0.359,3.3850000000000007,,,hardware baseline
+filt3,0.005439464823540295,1.6690000000000005,8.277999999999999,,,hardware baseline
+dual_iir,0.005139216030316069,0.319,,0.0,272,offline replay
+robust_dual_iir,0.005139216030316069,0.319,,0.0,272,offline replay

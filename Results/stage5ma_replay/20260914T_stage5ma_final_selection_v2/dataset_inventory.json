@@ -1,0 +1,1449 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "id": "filt0_empty",
+      "run_id": "filt0_empty",
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt0_empty/samples.csv",
+      "git_blob_sha256": "983D4874F3FC5E4AECF3C61FDFDBF010169A34DCB7819FA26965BE84802E1248",
+      "split": "development",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 0,
+        "strength": 0
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.03044939041138,
+      "records": 462,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 135,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "filt0_load",
+      "run_id": "filt0_load_step",
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt0_load_step/samples.csv",
+      "git_blob_sha256": "A9EB3EC77E71FC5F87B3D0D050AAF5BD426D51E63D6090F8F9F3C824CC51AA38",
+      "split": "development",
+      "label": "LOAD_STEP",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 0,
+        "strength": 0
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 120.01003217697144,
+      "records": 919,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 276,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "LOAD_STEP",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "filt0_unload",
+      "run_id": "filt0_unload_step",
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt0_unload_step/samples.csv",
+      "git_blob_sha256": "9F1E1796897056515DBFDFDE17199E13F4C6C45003B25CD9E2569EE69F30F415",
+      "split": "development",
+      "label": "UNLOAD_STEP",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 0,
+        "strength": 0
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 120.04075050354004,
+      "records": 927,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 269,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "UNLOAD_STEP",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "filt1_empty",
+      "run_id": "filt1_empty",
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt1_empty/samples.csv",
+      "git_blob_sha256": "1E02F0C45E60DBA79A4EA03D1AF9E50D59BA9DE7CC971760A5A240D6A32416AC",
+      "split": "holdout",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 1,
+        "strength": 2
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.081695795059204,
+      "records": 463,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 135,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "filt1_load",
+      "run_id": "filt1_load_step",
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt1_load_step/samples.csv",
+      "git_blob_sha256": "5CF67EDE906ABF09BFC930F78D7F96B7DA3B36E5343011BB757FCED96C6E7175",
+      "split": "holdout",
+      "label": "LOAD_STEP",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 1,
+        "strength": 2
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 120.12125849723816,
+      "records": 922,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 275,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "LOAD_STEP",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "filt1_unload",
+      "run_id": "filt1_unload_step",
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt1_unload_step/samples.csv",
+      "git_blob_sha256": "90DD484B4FEA956767C9CFBB61A21970D7C2CEDA035E1389A6D56B0BC913F2FE",
+      "split": "holdout",
+      "label": "UNLOAD_STEP",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 1,
+        "strength": 2
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 120.10993576049805,
+      "records": 928,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 268,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "UNLOAD_STEP",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "filt2_empty",
+      "run_id": "filt2_empty",
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt2_empty/samples.csv",
+      "git_blob_sha256": "277CCA911C31BCACBC075ECC7080EF17BDE75A9F6AD822B8F6D7E1C4547B7157",
+      "split": "development",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 2,
+        "strength": 1
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.02041482925415,
+      "records": 463,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 134,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "filt2_load",
+      "run_id": "filt2_load_step_retry",
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt2_load_step_retry/samples.csv",
+      "git_blob_sha256": "BB3FE089460A9C58E4D9DA16B92C63B54F39D19B134A818B3BBA5612B802287B",
+      "split": "development",
+      "label": "LOAD_STEP",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 2,
+        "strength": 1
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 300.0287127494812,
+      "records": 2297,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 694,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "LOAD_STEP",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "filt2_unload",
+      "run_id": "filt2_unload_step",
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt2_unload_step/samples.csv",
+      "git_blob_sha256": "2A7619879CABB5AA15A227C933026A4490B541B5222D3FDFCAC0C69C471CAB0A",
+      "split": "development",
+      "label": "UNLOAD_STEP",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 2,
+        "strength": 1
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 180.01557540893555,
+      "records": 1391,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 404,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "UNLOAD_STEP",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "filt3_empty",
+      "run_id": "filt3_empty_60s",
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt3_empty_60s/samples.csv",
+      "git_blob_sha256": "9F3369F1EECD54BA07138F28BCE4E4EFEB9608EEB7E9408436B43B1184E0B083",
+      "split": "holdout",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.06209635734558,
+      "records": 523,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 74,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "filt3_load",
+      "run_id": "filt3_load_step",
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt3_load_step/samples.csv",
+      "git_blob_sha256": "F1C951FAB0A9DA680469B9178742D187BE3E58F93B1F0CB91F17165B9AD3CF14",
+      "split": "holdout",
+      "label": "LOAD_STEP",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 120.00430583953857,
+      "records": 1037,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 159,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "LOAD_STEP",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "filt3_unload",
+      "run_id": "filt3_unload_step",
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt3_unload_step/samples.csv",
+      "git_blob_sha256": "7099D36175148F94406A57426B46AD661BDFFD195BBA1A3CB75FAE7F7B97A26B",
+      "split": "holdout",
+      "label": "UNLOAD_STEP",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 120.07791519165039,
+      "records": 1040,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 156,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "UNLOAD_STEP",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "slow_fill",
+      "run_id": "slow_continuous",
+      "path": "Results/stage5l_characterization/20260913_slow_fill/slow_continuous/samples.csv",
+      "git_blob_sha256": "10313D8EA15FC3BCC4FACE71410957B3154870086502960FA46FF0841DD4B8D0",
+      "split": "development",
+      "label": "SLOW_LOAD",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 240.02390027046204,
+      "records": 2073,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 321,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "SLOW_LOAD",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "faster_fill",
+      "run_id": "faster_continuous",
+      "path": "Results/stage5l_characterization/20260913_slow_fill/faster_continuous/samples.csv",
+      "git_blob_sha256": "408903E141F6A82F8C67FD28035CE965605294810BFFD90C01749EBD1252BB02",
+      "split": "holdout",
+      "label": "SLOW_LOAD",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 240.02206754684448,
+      "records": 2072,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 322,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "SLOW_LOAD",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "creep_500g",
+      "run_id": "20260913T064617Z_creep_500g_30m",
+      "path": "Results/stage5l_characterization/20260913T064617Z_creep_500g_30m/samples.csv",
+      "git_blob_sha256": "4C4FE7B54308CE55AD771C271770415760652DF9E2A9F554153E1DA1F39CF130",
+      "split": "holdout",
+      "label": "LOADED_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 1800.0967636108398,
+      "records": 15547,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 2418,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "LOADED_STATIC",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "hot_empty",
+      "run_id": "20260912T193600Z_empty_hot_60m",
+      "path": "Results/stage5l_characterization/20260912T193600Z_empty_hot_60m/samples.csv",
+      "git_blob_sha256": "2C8F53A707CC4ADAD2D66DCC2BAA6137F94874B6B343F80EAC47C4CA20ED8D4F",
+      "split": "regression",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 3600.009761571884,
+      "records": 31588,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 4351,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cold_control1",
+      "run_id": "20260914_control1_10hz_cold_60m",
+      "path": "Results/stage5lr_hardware/20260914_control1_10hz_cold_60m/samples.csv",
+      "git_blob_sha256": "6972E095AD45699566EA7CB7504D040638464BFD7709CFEFCFF18F88EDA10ADD",
+      "split": "development",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 3600.110733270645,
+      "records": 31353,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 4585,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cold_control2",
+      "run_id": "20260914_control2_10hz_cold_60m",
+      "path": "Results/stage5lr_hardware/20260914_control2_10hz_cold_60m/samples.csv",
+      "git_blob_sha256": "65040B4F5C98789E2073C1D56EB40B6DAA693F6E378AA41CF460812ABC94CB79",
+      "split": "holdout",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 3600.118860244751,
+      "records": 31471,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 4467,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle01_loaded",
+      "run_id": "cycle01_loaded",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle01_loaded/samples.csv",
+      "git_blob_sha256": "14CD0D903D490034CC5AE0FD64833391B939134C43CCBBD12CAA1CAE3F3F9378",
+      "split": "development",
+      "label": "LOADED_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.10506510734558,
+      "records": 518,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 81,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "LOADED_STATIC",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle01_empty",
+      "run_id": "cycle01_empty",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle01_empty/samples.csv",
+      "git_blob_sha256": "79441495D27478827C78B153F42C34F3342A4A2E5544C3FCC5E0711D55D0B5B0",
+      "split": "development",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.053759813308716,
+      "records": 524,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 73,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle02_loaded",
+      "run_id": "cycle02_loaded",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle02_loaded/samples.csv",
+      "git_blob_sha256": "DD1EBD301975AB00E84CF6A91C559B7926D7CC0B90073F5252128BA579A9B8E8",
+      "split": "development",
+      "label": "LOADED_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.095998764038086,
+      "records": 518,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 80,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "LOADED_STATIC",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle02_empty",
+      "run_id": "cycle02_empty",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle02_empty/samples.csv",
+      "git_blob_sha256": "F377CDF8714BEC6B3D1BFE4DEB7807F64F9DB68F3BED553F8830F4C4105B21EB",
+      "split": "development",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.08872413635254,
+      "records": 524,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 74,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle03_loaded",
+      "run_id": "cycle03_loaded",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle03_loaded/samples.csv",
+      "git_blob_sha256": "D20BEBFE57CBCD069D0880B173E3B29597968BE83AC0DFEA80E276B4D80FEBA5",
+      "split": "development",
+      "label": "LOADED_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.05072355270386,
+      "records": 517,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 80,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "LOADED_STATIC",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle03_empty",
+      "run_id": "cycle03_empty",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle03_empty/samples.csv",
+      "git_blob_sha256": "3C6BA4C1AD75C499F4966F1CB887EBBEC95F1A262E8056CD3ACC3CDAE8643CF3",
+      "split": "development",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.05392265319824,
+      "records": 524,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 74,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle04_loaded",
+      "run_id": "cycle04_loaded",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle04_loaded/samples.csv",
+      "git_blob_sha256": "1D579C54758A08C1C5C8556C4E73B14B946B60C1CDDA628030A6DEEC7F3C400D",
+      "split": "development",
+      "label": "LOADED_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.04827404022217,
+      "records": 517,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 81,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "LOADED_STATIC",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle04_empty",
+      "run_id": "cycle04_empty",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle04_empty/samples.csv",
+      "git_blob_sha256": "4181FB6E4A6CAB46312E40D63C6CED28832874616EB615A656D9CCBF5BA11CDB",
+      "split": "development",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.035428047180176,
+      "records": 523,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 73,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle05_loaded",
+      "run_id": "cycle05_loaded",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle05_loaded/samples.csv",
+      "git_blob_sha256": "738E5829981ECB6962CA8DCB98AC67C032159158FCAA52EBAAB4AA0E9ADFE14A",
+      "split": "development",
+      "label": "LOADED_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.08614778518677,
+      "records": 518,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 80,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "LOADED_STATIC",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle05_empty",
+      "run_id": "cycle05_empty",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle05_empty/samples.csv",
+      "git_blob_sha256": "25B67B0DB07A027177A54D2C716AF47E4298D9198F39A58DFFF2282A30009767",
+      "split": "development",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.01139545440674,
+      "records": 523,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 73,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle06_loaded",
+      "run_id": "cycle06_loaded",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle06_loaded/samples.csv",
+      "git_blob_sha256": "925193363DD144D4DA1BF862BD595216D6D3E8161C5B58290CC4D305046E293F",
+      "split": "development",
+      "label": "LOADED_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.06248235702515,
+      "records": 517,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 81,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "LOADED_STATIC",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle06_empty",
+      "run_id": "cycle06_empty",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle06_empty/samples.csv",
+      "git_blob_sha256": "B67A70283F1B448275C21AA2B00913CD06C0C02D0CA3D4799AB172E6C7BB0F2E",
+      "split": "development",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.068673610687256,
+      "records": 523,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 74,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": true,
+      "suitable_for_holdout": false,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle07_loaded",
+      "run_id": "cycle07_loaded",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle07_loaded/samples.csv",
+      "git_blob_sha256": "601D79724428D067ED3BA58E4AFF01A9B6FBFF8F4010AB14C13B44E1F16C20AE",
+      "split": "holdout",
+      "label": "LOADED_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.082719802856445,
+      "records": 517,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 81,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "LOADED_STATIC",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle07_empty",
+      "run_id": "cycle07_empty",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle07_empty/samples.csv",
+      "git_blob_sha256": "D4F5BB838657B94915DDEF9FE252E6FE98B7902EE362D0E187689785DDD576B1",
+      "split": "holdout",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.10713315010071,
+      "records": 524,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 74,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle08_loaded",
+      "run_id": "cycle08_loaded",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle08_loaded/samples.csv",
+      "git_blob_sha256": "6CB83A8109D1B1CAA9EC5EAE40235EFD51445B221BD876CAD9E470ADCE6E095E",
+      "split": "holdout",
+      "label": "LOADED_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.08675980567932,
+      "records": 517,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 81,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "LOADED_STATIC",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle08_empty",
+      "run_id": "cycle08_empty",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle08_empty/samples.csv",
+      "git_blob_sha256": "CA42F6D85C29D640BC90EB9C85FC945A05E66B1ADFF14B89C2078BD09647F5D8",
+      "split": "holdout",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.11236095428467,
+      "records": 523,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 74,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle09_loaded",
+      "run_id": "cycle09_loaded",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle09_loaded/samples.csv",
+      "git_blob_sha256": "816D678D5D4DC0AE3C308C56C68B63AF6A9B3ACE8CB6A8D21BC6EA3970864125",
+      "split": "holdout",
+      "label": "LOADED_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.10284757614136,
+      "records": 518,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 80,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "LOADED_STATIC",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle09_empty",
+      "run_id": "cycle09_empty",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle09_empty/samples.csv",
+      "git_blob_sha256": "92358E024FC71EF7F52AA7E1AD602F38F12640ADDCB1EE5224FA0D736E0A9385",
+      "split": "holdout",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.122769355773926,
+      "records": 523,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 74,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle10_loaded",
+      "run_id": "cycle10_loaded",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle10_loaded/samples.csv",
+      "git_blob_sha256": "F53A8CE630D107F1AEF8DF75052A70B502A22FF4C2617D25F43AD062A8470040",
+      "split": "holdout",
+      "label": "LOADED_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.07808709144592,
+      "records": 518,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 80,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "LOADED_STATIC",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    },
+    {
+      "id": "cycle10_empty",
+      "run_id": "cycle10_empty",
+      "path": "Results/stage5l_characterization/20260913_load_cycles/cycle10_empty/samples.csv",
+      "git_blob_sha256": "85F00CFA91EE74365168B8E4E9EABEC414FDFCD42D99F4A5FE73ADAE53014D3A",
+      "split": "holdout",
+      "label": "EMPTY_STATIC",
+      "firmware": {
+        "firmware": "0x0510",
+        "map": "0x0104",
+        "public_schema": 2,
+        "persistent_format": 3
+      },
+      "profile": 0,
+      "filter": {
+        "mode": 3,
+        "strength": 3
+      },
+      "calibration": {
+        "raw_zero": -43989,
+        "raw_span": -487850,
+        "span_mass_ug": 500000000,
+        "sequence": 1
+      },
+      "duration_s": 60.1707808971405,
+      "records": 523,
+      "raw_complete_for_host_records": true,
+      "all_device_samples_captured": false,
+      "missing_device_sequences": 75,
+      "timestamp_complete": true,
+      "sequence_complete": true,
+      "physical_label": "EMPTY_STATIC",
+      "suitable_for_tuning": false,
+      "suitable_for_holdout": true,
+      "limitations": [
+        "Host FC03 polling omits device samples; no interpolation permitted"
+      ]
+    }
+  ]
+}

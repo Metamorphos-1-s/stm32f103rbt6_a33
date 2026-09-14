@@ -1,0 +1,23 @@
+{
+  "candidate": "robust_dual_iir_reference",
+  "state_bytes": 256,
+  "dynamic_allocation": false,
+  "bounded_history_samples": 16,
+  "per_sample_worst_case": {
+    "median_comparisons": 3,
+    "history_range_comparisons": 30,
+    "fixed_point_updates": 3,
+    "variable_length_loops": false,
+    "int64_divisions": 0
+  },
+  "calibration_note": "Existing calibration conversion is outside this module and may use int64 division",
+  "product_linked": false
+  ,"arm_cortex_m3_os_object_text_bytes": 1724
+  ,"arm_process_stack_bytes": 104
+  ,"arm_reset_stack_bytes": 56
+  ,"host_c_benchmark": {
+    "samples": 10000,
+    "elapsed_s": 0.0815064,
+    "microseconds_per_sample_including_stdio_process": 8.15064
+  }
+}

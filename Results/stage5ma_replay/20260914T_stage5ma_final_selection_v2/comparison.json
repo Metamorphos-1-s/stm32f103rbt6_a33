@@ -1,0 +1,88 @@
+{
+  "rows": [
+    {
+      "algorithm": "filt0",
+      "static_noise_g": 0.012733310026655602,
+      "load_10_90_s": 0.30100000000000016,
+      "stable_time_s": 2.104,
+      "unload_10_90_s": 0.2289999999999992,
+      "return_zero_bias_g": null,
+      "slow_false_stable_ratio": null,
+      "static_false_positive_ratio": 0.01948051948051943,
+      "anomaly_recovery_s": null,
+      "ram_bytes": null,
+      "complexity": "existing hardware baseline",
+      "classification": "historical hardware"
+    },
+    {
+      "algorithm": "filt1",
+      "static_noise_g": 0.011100043056154162,
+      "load_10_90_s": 0.4409999999999954,
+      "stable_time_s": 2.314,
+      "unload_10_90_s": 0.2240000000000002,
+      "return_zero_bias_g": null,
+      "slow_false_stable_ratio": null,
+      "static_false_positive_ratio": 0.0,
+      "anomaly_recovery_s": null,
+      "ram_bytes": null,
+      "complexity": "existing hardware baseline",
+      "classification": "historical hardware"
+    },
+    {
+      "algorithm": "filt2",
+      "static_noise_g": 0.009285415620807813,
+      "load_10_90_s": 0.359,
+      "stable_time_s": 3.3850000000000007,
+      "unload_10_90_s": 0.30100000000000016,
+      "return_zero_bias_g": null,
+      "slow_false_stable_ratio": null,
+      "static_false_positive_ratio": 0.0,
+      "anomaly_recovery_s": null,
+      "ram_bytes": null,
+      "complexity": "existing hardware baseline",
+      "classification": "historical hardware"
+    },
+    {
+      "algorithm": "filt3",
+      "static_noise_g": 0.005439464823540295,
+      "load_10_90_s": 1.6690000000000005,
+      "stable_time_s": 8.277999999999999,
+      "unload_10_90_s": 1.6280000000000001,
+      "return_zero_bias_g": null,
+      "slow_false_stable_ratio": null,
+      "static_false_positive_ratio": 0.0,
+      "anomaly_recovery_s": null,
+      "ram_bytes": null,
+      "complexity": "existing hardware baseline",
+      "classification": "historical hardware"
+    },
+    {
+      "algorithm": "dual_iir",
+      "static_noise_g": 0.0054435719148877015,
+      "load_10_90_s": 0.319,
+      "stable_time_s": 5.573,
+      "unload_10_90_s": 0.339,
+      "return_zero_bias_g": -0.0002285,
+      "slow_false_stable_ratio": 0.24564796905222436,
+      "static_false_positive_ratio": 0.015296367112810707,
+      "anomaly_recovery_s": null,
+      "ram_bytes": 256,
+      "complexity": "3 fixed-point updates + bounded 16-sample range",
+      "classification": "offline holdout"
+    },
+    {
+      "algorithm": "robust_dual_iir",
+      "static_noise_g": 0.0054435719148877015,
+      "load_10_90_s": 0.319,
+      "stable_time_s": 5.573,
+      "unload_10_90_s": 0.339,
+      "return_zero_bias_g": -0.0002285,
+      "slow_false_stable_ratio": 0.24564796905222436,
+      "static_false_positive_ratio": 0.015296367112810707,
+      "anomaly_recovery_s": 0.1,
+      "ram_bytes": 256,
+      "complexity": "3 fixed-point updates + bounded 16-sample range",
+      "classification": "offline holdout"
+    }
+  ]
+}

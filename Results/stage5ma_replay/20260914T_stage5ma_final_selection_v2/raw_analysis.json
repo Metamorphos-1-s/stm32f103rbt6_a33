@@ -1,0 +1,311 @@
+{
+  "datasets": [
+    {
+      "dataset": "filt0_empty",
+      "records": 462,
+      "minimum": -43987,
+      "maximum": -43922,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "filt0_load",
+      "records": 919,
+      "minimum": -487896,
+      "maximum": -43913,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "filt0_unload",
+      "records": 927,
+      "minimum": -487890,
+      "maximum": -43933,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "filt1_empty",
+      "records": 463,
+      "minimum": -43992,
+      "maximum": -43916,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "filt1_load",
+      "records": 922,
+      "minimum": -497793,
+      "maximum": -43902,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "filt1_unload",
+      "records": 928,
+      "minimum": -487885,
+      "maximum": -43929,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "filt2_empty",
+      "records": 463,
+      "minimum": -43981,
+      "maximum": -43915,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "filt2_load",
+      "records": 2297,
+      "minimum": -487891,
+      "maximum": -43947,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "filt2_unload",
+      "records": 1391,
+      "minimum": -487878,
+      "maximum": -43913,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "filt3_empty",
+      "records": 523,
+      "minimum": -43966,
+      "maximum": -43902,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "filt3_load",
+      "records": 1037,
+      "minimum": -487907,
+      "maximum": -43937,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "filt3_unload",
+      "records": 1040,
+      "minimum": -487912,
+      "maximum": -43958,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "slow_fill",
+      "records": 2073,
+      "minimum": -427302,
+      "maximum": -423328,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "faster_fill",
+      "records": 2072,
+      "minimum": -444738,
+      "maximum": -423485,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "creep_500g",
+      "records": 15547,
+      "minimum": -488025,
+      "maximum": -487901,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "hot_empty",
+      "records": 31588,
+      "minimum": -44073,
+      "maximum": -43961,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cold_control1",
+      "records": 31353,
+      "minimum": -43832,
+      "maximum": -43714,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cold_control2",
+      "records": 31471,
+      "minimum": -43943,
+      "maximum": -43609,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle01_loaded",
+      "records": 518,
+      "minimum": -487944,
+      "maximum": -487856,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle01_empty",
+      "records": 524,
+      "minimum": -44071,
+      "maximum": -43999,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle02_loaded",
+      "records": 518,
+      "minimum": -487942,
+      "maximum": -487861,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle02_empty",
+      "records": 524,
+      "minimum": -44073,
+      "maximum": -43998,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle03_loaded",
+      "records": 517,
+      "minimum": -487934,
+      "maximum": -487861,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle03_empty",
+      "records": 524,
+      "minimum": -44077,
+      "maximum": -43986,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle04_loaded",
+      "records": 517,
+      "minimum": -487928,
+      "maximum": -487862,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle04_empty",
+      "records": 523,
+      "minimum": -44043,
+      "maximum": -43978,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle05_loaded",
+      "records": 518,
+      "minimum": -487933,
+      "maximum": -487868,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle05_empty",
+      "records": 523,
+      "minimum": -44048,
+      "maximum": -43980,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle06_loaded",
+      "records": 517,
+      "minimum": -487925,
+      "maximum": -487863,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle06_empty",
+      "records": 523,
+      "minimum": -44036,
+      "maximum": -43982,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle07_loaded",
+      "records": 517,
+      "minimum": -487921,
+      "maximum": -487860,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle07_empty",
+      "records": 524,
+      "minimum": -44040,
+      "maximum": -43973,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle08_loaded",
+      "records": 517,
+      "minimum": -487930,
+      "maximum": -487859,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle08_empty",
+      "records": 523,
+      "minimum": -44024,
+      "maximum": -43968,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle09_loaded",
+      "records": 518,
+      "minimum": -487936,
+      "maximum": -487827,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle09_empty",
+      "records": 523,
+      "minimum": -44011,
+      "maximum": -43947,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle10_loaded",
+      "records": 518,
+      "minimum": -487889,
+      "maximum": -487830,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    },
+    {
+      "dataset": "cycle10_empty",
+      "records": 523,
+      "minimum": -44015,
+      "maximum": -43951,
+      "near_rail_count": 0,
+      "million_count_jump_count": 0
+    }
+  ],
+  "near_rail_total": 0,
+  "million_count_jump_total": 0,
+  "historical_40hz_anomaly_excluded": true
+}

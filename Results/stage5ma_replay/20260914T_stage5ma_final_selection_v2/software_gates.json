@@ -1,0 +1,19 @@
+{
+  "host_ctest": {"result": "PASS", "tests": 18, "compiler": "MSVC /W4 /WX Debug"},
+  "stage5b_rate_policy": {"result": "PASS", "tests": 3},
+  "stage5b_python_full": {"result": "PASS", "tests": 30},
+  "stage5c_python": {"result": "PASS", "tests": 12},
+  "stage5l_python": {"result": "PASS", "tests": 8},
+  "stage5lr_g2_python": {"result": "PASS", "tests": 8},
+  "stage5ma_python": {"result": "PASS", "tests": 9},
+  "python_c_equivalence": {"result": "PASS", "samples": 900, "mismatches": 0},
+  "register_map_consistency": "PASS",
+  "debug_clean_build": "PASS",
+  "release_clean_build": "PASS",
+  "board_diagnostics_clean_build": "PASS",
+  "stage5l_diagnostics_clean_build": "PASS",
+  "adaptive_reference_arm_strict_compile": "PASS",
+  "clang": {"result": "NOT RUN", "reason": "toolchain unavailable in current environment"},
+  "asan": {"result": "NOT RUN", "reason": "supported sanitizer environment unavailable"},
+  "ubsan": {"result": "NOT RUN", "reason": "supported sanitizer environment unavailable"}
+}

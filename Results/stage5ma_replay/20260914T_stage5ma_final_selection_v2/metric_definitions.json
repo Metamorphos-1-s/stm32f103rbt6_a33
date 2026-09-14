@@ -1,0 +1,14 @@
+{
+  "static_noise": "population standard deviation after first 20% of run",
+  "step_10_90": "first display crossings after largest calibrated-input edge",
+  "stable_time": "first stable_candidate after edge",
+  "slow_false_stable": "stable_candidate ratio in operator-estimated 10-70 s fill window",
+  "static_false_positive": "TRANSIENT or SLOW_CHANGE ratio over static run",
+  "holdout_thresholds": {
+    "static_stddev_g": 0.0068,
+    "load_10_90_s": 0.6,
+    "stable_time_s": 3.0,
+    "slow_false_stable_ratio": 0.1,
+    "static_false_positive_ratio": 0.01
+  }
+}

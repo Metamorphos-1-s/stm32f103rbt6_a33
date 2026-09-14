@@ -1,0 +1,23 @@
+{
+  "lowest_noise": "filt3 / robust dual approximately tied",
+  "fastest_response": "filt0",
+  "best_slow_change_identification": "NO CANDIDATE MEETS TARGET",
+  "lowest_resource": "filt0",
+  "closest_candidate": "robust_dual_iir",
+  "selected_candidate": null,
+  "failed_holdout_targets": {
+    "stable_time_s": {
+      "actual": 5.573,
+      "limit": 3.0
+    },
+    "slow_false_stable_ratio": {
+      "actual": 0.24564796905222436,
+      "limit": 0.1
+    },
+    "static_false_positive_ratio": {
+      "actual": 0.015296367112810707,
+      "limit": 0.01
+    }
+  },
+  "result": "NO_ACCEPTABLE_CANDIDATE"
+}

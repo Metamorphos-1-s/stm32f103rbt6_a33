@@ -1,0 +1,8 @@
+{
+  "python_version": "stage5ma-replay-v1",
+  "c_runner": "build/Host5MA/Debug/stage5ma_adaptive_runner.exe",
+  "samples": 900,
+  "mismatch_count": 0,
+  "mismatches": [],
+  "result": "PASS"
+}

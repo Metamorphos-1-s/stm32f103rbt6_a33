@@ -1,0 +1,83 @@
+{
+  "method": "net std recomputed from samples.csv; step metrics rebound from per-run deterministic step_analysis",
+  "rows": [
+    {
+      "mode": 0,
+      "actual": {
+        "mode": 0,
+        "net_std_g": 0.012733310026655602,
+        "load_10_90_s": 0.30100000000000016,
+        "load_stable_after_edge_s": 2.104,
+        "unload_10_90_s": 0.2289999999999992,
+        "unload_stable_after_edge_s": 2.3059999999999974
+      },
+      "expected": {
+        "net_std_g": 0.012733310026655602,
+        "load_10_90_s": 0.30100000000000016,
+        "load_stable_after_edge_s": 2.104,
+        "unload_10_90_s": 0.2289999999999992,
+        "unload_stable_after_edge_s": 2.3059999999999974
+      },
+      "maximum_absolute_difference": 0.0
+    },
+    {
+      "mode": 1,
+      "actual": {
+        "mode": 1,
+        "net_std_g": 0.011100043056154162,
+        "load_10_90_s": 0.4409999999999954,
+        "load_stable_after_edge_s": 2.314,
+        "unload_10_90_s": 0.2240000000000002,
+        "unload_stable_after_edge_s": 2.0760000000000005
+      },
+      "expected": {
+        "net_std_g": 0.011100043056154162,
+        "load_10_90_s": 0.4409999999999954,
+        "load_stable_after_edge_s": 2.314,
+        "unload_10_90_s": 0.2240000000000002,
+        "unload_stable_after_edge_s": 2.0760000000000005
+      },
+      "maximum_absolute_difference": 0.0
+    },
+    {
+      "mode": 2,
+      "actual": {
+        "mode": 2,
+        "net_std_g": 0.009285415620807813,
+        "load_10_90_s": 0.359,
+        "load_stable_after_edge_s": 3.3850000000000007,
+        "unload_10_90_s": 0.30100000000000016,
+        "unload_stable_after_edge_s": 3.1140000000000008
+      },
+      "expected": {
+        "net_std_g": 0.009285415620807813,
+        "load_10_90_s": 0.359,
+        "load_stable_after_edge_s": 3.3850000000000007,
+        "unload_10_90_s": 0.30100000000000016,
+        "unload_stable_after_edge_s": 3.1140000000000008
+      },
+      "maximum_absolute_difference": 0.0
+    },
+    {
+      "mode": 3,
+      "actual": {
+        "mode": 3,
+        "net_std_g": 0.005439464823540295,
+        "load_10_90_s": 1.6690000000000005,
+        "load_stable_after_edge_s": 8.277999999999999,
+        "unload_10_90_s": 1.6280000000000001,
+        "unload_stable_after_edge_s": 8.221999999999994
+      },
+      "expected": {
+        "net_std_g": 0.005439464823540295,
+        "load_10_90_s": 1.6690000000000005,
+        "load_stable_after_edge_s": 8.277999999999999,
+        "unload_10_90_s": 1.6280000000000001,
+        "unload_stable_after_edge_s": 8.221999999999994
+      },
+      "maximum_absolute_difference": 0.0
+    }
+  ],
+  "maximum_absolute_difference": 0.0,
+  "result": "PASS"
+}

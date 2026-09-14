@@ -1,0 +1,24 @@
+{
+  "version": "stage5ma-replay-v2",
+  "selected_candidate": null,
+  "closest_candidate": "robust_dual_iir",
+  "parameters": {
+    "fast_shift": 1,
+    "slow_shift": 3,
+    "blend_shift": 2,
+    "transient_threshold_ug": 200000,
+    "quiet_range_ug": 60000,
+    "slow_trend_ug": 30000,
+    "disturbance_threshold_ug": 1000000,
+    "settling_min_ms": 600,
+    "static_hold_ms": 1500
+  },
+  "automatic_zero_compensation": false,
+  "input_gap_policy": "actual algorithm input gap enters SETTLING; FC03 observation omissions are counted separately and never interpolated",
+  "holdout_reopen_reason": "v1 incorrectly treated host polling omissions as device input gaps; G1/G2 evidence proves device processing continued",
+  "selection_result": "NO_ACCEPTABLE_CANDIDATE",
+  "failed_targets": {
+    "stable_time_s": {"actual": 5.573, "maximum": 3.0},
+    "slow_false_stable_ratio": {"actual": 0.24564796905222436, "maximum": 0.1}
+  }
+}

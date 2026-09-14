@@ -1,0 +1,15 @@
+{
+  "run_id": "20260914T_stage5ma_final_selection_v2",
+  "started_utc": "2026-09-14T08:45:24Z",
+  "ended_utc": "2026-09-14T09:12:01Z",
+  "repository_base": "91e0208c2ffc4681a6ff3dfb5b2fab1a2ebd8b74",
+  "branch": "stage5ma-10hz-adaptive-pipeline",
+  "algorithm_version": "stage5ma-replay-v2",
+  "label_version": 1,
+  "parameter_version": 1,
+  "hardware_execution": false,
+  "firmware_flashed": false,
+  "product_behavior_changed": false,
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "result": "NO_ACCEPTABLE_CANDIDATE"
+}
