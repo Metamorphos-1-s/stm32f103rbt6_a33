@@ -276,11 +276,13 @@ def candidate_grid():
             observation_window_s=window,
             estimator_deadband_ug=deadband,
             max_static_rate_g_per_h=max_rate,
+            step_threshold_ug=step_threshold,
             maximum_update_ug_per_s=update,
         )
-        for window in (120, 180, 300)
+        for window in (60, 120, 180, 300)
         for deadband in (0, 250, 500, 1000, 2000)
-        for max_rate in (0.25, 0.5, 1.0)
+        for max_rate in (0.5, 1.0, 2.0, 5.0)
+        for step_threshold in (20000, 50000, 100000)
         for update in (50, 75, 100)
     ]
 
