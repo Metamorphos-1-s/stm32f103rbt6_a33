@@ -194,7 +194,8 @@ def hardware_capture(a):
     if control["rate_override_active"] or control["trace_state"]==1:raise ValueError("diagnostics already active")
     if a.mode=="10": command,rate,samples=5,0,a.samples
     elif a.mode=="40":
-        if a.samples>400:raise ValueError("first 40 Hz window is limited to 400 samples")
+        limit=2400 if a.second_window else 400
+        if a.samples>limit:raise ValueError("40 Hz sample limit exceeded")
         command,rate,samples=3,1,a.samples
     else:command,rate,samples=4,0,0
     if a.mode=="10" and samples<256:raise ValueError("10 Hz baseline requires at least 256 samples")
@@ -218,7 +219,7 @@ def main():
     s=sub.add_parser("inspect-elf");s.add_argument("--elf",required=True);s.add_argument("--map",required=True);s.add_argument("--output",required=True);s.add_argument("--nm",default="arm-none-eabi-nm")
     s=sub.add_parser("decode");s.add_argument("--control",required=True);s.add_argument("--snapshot",required=True);s.add_argument("--output",required=True)
     s=sub.add_parser("validate-manifest");s.add_argument("--input",required=True)
-    s=sub.add_parser("capture");s.add_argument("--mode",choices=("10","40","restore"),required=True);s.add_argument("--samples",type=int,default=256);s.add_argument("--output",required=True);s.add_argument("--elf",required=True);s.add_argument("--map",required=True);s.add_argument("--sn",required=True);s.add_argument("--swd-khz",type=int,default=1800);s.add_argument("--poll-interval-s",type=float,default=2.0);s.add_argument("--timeout-s",type=float,default=90.0);s.add_argument("--programmer",default="STM32_Programmer_CLI.exe");s.add_argument("--nm",default="arm-none-eabi-nm")
+    s=sub.add_parser("capture");s.add_argument("--mode",choices=("10","40","restore"),required=True);s.add_argument("--samples",type=int,default=256);s.add_argument("--second-window",action="store_true");s.add_argument("--output",required=True);s.add_argument("--elf",required=True);s.add_argument("--map",required=True);s.add_argument("--sn",required=True);s.add_argument("--swd-khz",type=int,default=1800);s.add_argument("--poll-interval-s",type=float,default=2.0);s.add_argument("--timeout-s",type=float,default=90.0);s.add_argument("--programmer",default="STM32_Programmer_CLI.exe");s.add_argument("--nm",default="arm-none-eabi-nm")
     a=p.parse_args()
     if a.command=="inspect-elf":
         syms=symbols_from_elf(a.elf,a.nm);write_json(a.output,{"elf":{"path":a.elf,"length":Path(a.elf).stat().st_size,"sha256":sha256(a.elf)},"map":parse_map(a.map,syms)});return 0
