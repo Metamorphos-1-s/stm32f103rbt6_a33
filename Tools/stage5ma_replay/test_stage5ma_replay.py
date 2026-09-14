@@ -30,4 +30,7 @@ class ReplayTests(unittest.TestCase):
     def test_json_writer_lf(self):
         with tempfile.TemporaryDirectory() as d:
             p=Path(d)/"x.json";r.write_json(p,{"x":1});self.assertNotIn(b"\r\n",p.read_bytes());self.assertTrue(p.read_bytes().endswith(b"\n"));json.loads(p.read_text())
+    def test_manifest_path_must_be_inside_repository(self):
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaises(ValueError):r.repository_manifest(d,"HEAD")
 if __name__=="__main__":unittest.main()

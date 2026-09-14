@@ -159,9 +159,15 @@ def finalize(output):
     write_json(out/"comparison.json",{"rows":rows});
     with (out/"comparison.csv").open("w",encoding="utf-8",newline="") as f:w=csv.DictWriter(f,fieldnames=rows[0].keys(),lineterminator="\n");w.writeheader();w.writerows(rows)
     write_json(out/"pareto_analysis.json",{"lowest_noise":"filt3 / robust dual approximately tied","fastest_response":"filt0","best_slow_change_identification":"NO CANDIDATE MEETS TARGET","lowest_resource":"filt0","closest_candidate":"robust_dual_iir","selected_candidate":None,"failed_holdout_targets":{"stable_time_s":{"actual":5.573,"limit":3.0},"slow_false_stable_ratio":{"actual":h["slow"]["false_stable_ratio"],"limit":0.10},"static_false_positive_ratio":{"actual":h["static_filt3"]["slow_or_transient_ratio"],"limit":0.01}},"result":"NO_ACCEPTABLE_CANDIDATE"})
+def repository_manifest(output,revision):
+    run=Path(output).resolve();relative=run.relative_to(ROOT).as_posix();names=subprocess.check_output(["git","ls-tree","-r","--name-only",revision,"--",relative],cwd=ROOT,text=True).splitlines();files=[]
+    for name in sorted(x for x in names if not x.endswith("/run_manifest_v2.json")):
+        data=subprocess.check_output(["git","show",f"{revision}:{name}"],cwd=ROOT);files.append({"path":Path(name).relative_to(relative).as_posix(),"length":len(data),"sha256":hashlib.sha256(data).hexdigest().upper()})
+    tool_path="Tools/stage5ma_replay/stage5ma_replay.py";tool_data=subprocess.check_output(["git","show",f"{revision}:{tool_path}"],cwd=ROOT);value={"schema_version":2,"classification":"STAGE5MA_OFFLINE_REPLAY","run_id":run.name,"repository_commit":revision,"branch":"stage5ma-10hz-adaptive-pipeline","tool":{"path":tool_path,"length":len(tool_data),"sha256":hashlib.sha256(tool_data).hexdigest().upper(),"version":VERSION},"product_release_sha256":"82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486","hardware_run":False,"files":files};write_json(run/"run_manifest_v2.json",value);return value
 def main():
     p=argparse.ArgumentParser();sub=p.add_subparsers(dest="command",required=True)
     for name in ("inventory","evaluate","baseline","finalize"):s=sub.add_parser(name);s.add_argument("--output",required=True)
+    s=sub.add_parser("manifest");s.add_argument("--output",required=True);s.add_argument("--git-revision",required=True)
     s=sub.add_parser("equivalence");s.add_argument("--runner",required=True);s.add_argument("--output",required=True)
     s=sub.add_parser("resources");s.add_argument("--runner",required=True);s.add_argument("--output",required=True)
     a=p.parse_args()
@@ -170,6 +176,7 @@ def main():
     elif a.command=="baseline":reproduce_baseline(a.output)
     elif a.command=="resources":resources(a.runner,a.output)
     elif a.command=="finalize":finalize(a.output)
+    elif a.command=="manifest":repository_manifest(a.output,a.git_revision)
     else:
         if not equivalence(a.runner,a.output):return 2
     return 0
