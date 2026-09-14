@@ -57,7 +57,7 @@ class Stage5MR3Tests(unittest.TestCase):
         state, _, _ = model.replay(samples, config)
         self.assertEqual(state.updates, 1)
         self.assertEqual(
-            state.decisions[-1]["reason"], "STATIC_DRIFT_ACCEPTED"
+            state.decisions[-1]["reason"], "STATIC_DRIFT_RATE_ACCEPTED"
         )
 
     def test_fast_step_rebases_in_static_mode(self):
