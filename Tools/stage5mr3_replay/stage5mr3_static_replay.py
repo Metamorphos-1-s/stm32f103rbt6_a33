@@ -171,11 +171,11 @@ class StaticModeCompensator:
         if abs(delta) <= self.c.estimator_deadband_ug:
             reason = "BELOW_ESTIMATOR_DEADBAND"
         elif rate > self.c.max_static_rate_g_per_h:
-            # In STATIC_COMPENSATION this is treated as an undeclared
-            # disturbance. Rebase safely; do not turn a fast change into drift.
-            self.anchor = last - self.offset
-            self.target = self.offset
-            reason = "RATE_LIMIT_REBASE"
+            # This window is ambiguous. Freeze the existing target without
+            # destroying the learned anchor. A true load step is handled by
+            # the independent fast-step path; an isolated noisy window must
+            # not permanently discard accumulated drift correction.
+            reason = "RATE_LIMIT_HOLD"
         else:
             self.target = desired
             self.updates += 1
