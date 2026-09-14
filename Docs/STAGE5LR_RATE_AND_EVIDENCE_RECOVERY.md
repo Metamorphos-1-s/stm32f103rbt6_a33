@@ -118,3 +118,11 @@ No merge, tag or pull request was created. No history was rewritten, no mass era
 Repository identity at closeout: STM32 evidence/manifest HEAD is `337ea2c326b6058a961f96d245c4f5774f5e5268`; the final report-only commit follows it. The client remains unchanged and clean at `c4e4906f0a47a427793df6cfcb414756ac7984cc`; CH579 remains unchanged and clean at `eb888925e4fcc9dcd9bf89e8cc42e5b28679e520`. All three local branches matched their upstream references when checked.
 
 G2 conclusion: `STAGE 5L-R G2 SWD DIAGNOSTICS COMPLETE; EXTERNAL TIMING EVIDENCE REQUIRED`.
+
+## G3 blocked preflight
+
+G3 branch `stage5lr-g3-external-timing` completed the missing COM5 FC03 recovery state. Firmware 0x0510, Map 0x0104, Public Schema 2, Persistent Format 3, Profile 0, filter 3/3, calibration valid, revision/saved revision 7/7, dirty 0, fault 0, active slot A, sequence 7 and both Active hashes match the frozen baseline. COM3 was not opened or probed.
+
+No external timing instrument or capture application was detected, and the operator explicitly confirmed no external instrument is available. G3 stopped before diagnostic flashing, rate switching, waveform capture or metrology testing. No G1/G2 evidence was modified. No merge, tag or pull request was created, and Stage 5M/5N/5O were not entered.
+
+G3 conclusion: `STAGE 5L-R G3 BLOCKED; EXTERNAL INSTRUMENT UNAVAILABLE`.

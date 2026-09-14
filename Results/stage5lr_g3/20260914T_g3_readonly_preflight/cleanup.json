@@ -1,0 +1,12 @@
+{
+  "diagnostic_firmware_flashed": false,
+  "rate_switch_performed": false,
+  "external_probe_connected": false,
+  "product_release_remained_installed": true,
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "active_profile": 0,
+  "config_dirty": 0,
+  "fault_mask": 0,
+  "writes": 0,
+  "result": "NO_HARDWARE_MUTATION"
+}

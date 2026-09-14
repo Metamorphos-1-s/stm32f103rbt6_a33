@@ -66,3 +66,5 @@ In the final diagnostic build there is no software-layer reduction from MCU-obse
 ### Not proven
 
 SWD does not reveal the physical DRDY pulse/level waveform, SCLK edges, DOUT setup/hold, supply/reference behavior or ADC conversion timing. It also cannot show whether the historical event was an electrical/frame-phase transient absent from these runs. Therefore G2 does not requalify 40 Hz and does not authorize Profile 1 as a product feature. External logic-analyzer or oscilloscope evidence remains mandatory.
+
+G3 could not acquire that evidence: no compatible external instrument was detected and the operator confirmed none is available. COM5 FC03 recovery state was completed, but no G3 diagnostic flash or 40 Hz switch occurred. The historical 16.496 Hz and near-rail event remain unconfirmed rather than disproved; Profile 1 remains contained.

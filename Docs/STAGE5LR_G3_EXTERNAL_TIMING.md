@@ -1,6 +1,6 @@
 # Stage 5L-R G3 External Timing
 
-Status: instrument connection pending.
+Status: `STAGE 5L-R G3 BLOCKED; EXTERNAL INSTRUMENT UNAVAILABLE`.
 
 ## Completed preflight
 
@@ -16,6 +16,6 @@ The driver requests nominal 1 microsecond SCLK high and low phases. A digital ca
 
 ## Current blocker
 
-No connected logic analyzer or oscilloscope and no sigrok, Saleae Logic, DSView or PicoScope capture tool is detected. This does not exclude an unconnected or standalone bench oscilloscope, so final classification awaits operator confirmation of the available instrument model and export capability. No diagnostic firmware has been flashed and no 40 Hz command has been issued in G3.
+No connected logic analyzer or oscilloscope and no sigrok, Saleae Logic, DSView or PicoScope capture tool was detected. The operator then explicitly confirmed that no external instrument is available. No diagnostic firmware was flashed and no 40 Hz command was issued in G3.
 
-SWD timing from G2 is not external evidence. Until a suitable instrument is confirmed, G3 external capture, two-session repeatability and metrology requalification cannot start; Profile 1 remains contained.
+SWD timing from G2 is not external evidence. G3 external capture, two-session repeatability and metrology requalification did not start; Profile 1 remains contained. Missing items are external 10/40 Hz DRDY rates, SCLK pulse counts and widths, DOUT phase margin, external raw decode, two independent cold-start sessions, 40 Hz empty/500 g/ten-cycle metrology, and final re-enablement evidence.
