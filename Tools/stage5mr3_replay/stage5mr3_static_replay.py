@@ -163,22 +163,36 @@ class StaticModeCompensator:
         edge = self.c.endpoint_median_s
         first = r2.median(self.slow_values[:edge])
         last = r2.median(self.slow_values[-edge:])
-        delta = last - first
-        rate_g_per_h = abs(delta) * 3600.0 / (
-            self.c.observation_window_s * 1_000_000
+        endpoint_delta = last - first
+        block_medians = [
+            r2.median(self.slow_values[index : index + edge])
+            for index in range(0, len(self.slow_values) - edge + 1, edge)
+        ]
+        xs = [index * edge + edge / 2 for index in range(len(block_medians))]
+        xmean = statistics.fmean(xs)
+        ymean = statistics.fmean(block_medians)
+        denominator = sum((value - xmean) ** 2 for value in xs)
+        trend_ug_per_s = (
+            sum(
+                (x - xmean) * (y - ymean)
+                for x, y in zip(xs, block_medians)
+            ) / denominator
+            if denominator
+            else 0.0
         )
+        trend_delta = trend_ug_per_s * self.c.observation_window_s
+        rate_g_per_h = abs(trend_ug_per_s) * 3600.0 / 1_000_000
         accepted = False
-        if abs(delta) <= self.c.estimator_deadband_ug:
+        if abs(trend_delta) <= self.c.estimator_deadband_ug:
             self.correction_rate_ug_per_s = 0.0
             reason = "BELOW_ESTIMATOR_DEADBAND"
         elif rate_g_per_h > self.c.max_static_rate_g_per_h:
             self.correction_rate_ug_per_s = 0.0
             reason = "RATE_LIMIT_HOLD"
         else:
-            estimated = delta / self.c.observation_window_s
             limit = float(self.c.maximum_update_ug_per_s)
             self.correction_rate_ug_per_s = max(
-                -limit, min(limit, estimated)
+                -limit, min(limit, trend_ug_per_s)
             )
             self.updates += 1
             accepted = True
@@ -188,10 +202,10 @@ class StaticModeCompensator:
             "second": second,
             "first_ug": first,
             "last_ug": last,
-            "delta_ug": delta,
+            "endpoint_delta_ug": endpoint_delta,
+            "trend_delta_ug": trend_delta,
             "estimated_rate_g_per_h": (
-                delta * 3600.0
-                / (self.c.observation_window_s * 1_000_000)
+                trend_ug_per_s * 3600.0 / 1_000_000
             ),
             "offset_ug": self.offset,
             "correction_rate_ug_per_s": self.correction_rate_ug_per_s,
