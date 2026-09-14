@@ -1,0 +1,35 @@
+name: Stage 5M-R3 static-mode drift offline
+
+on:
+  push:
+    branches:
+      - stage5mr3-static-compensation-offline
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-replay:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify isolated scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          unexpected="$(git diff --name-only db612a8bd8f06f80faf3feffe40466c746dcca26...HEAD | grep -Ev '^(Tools/stage5mr3_replay/|Docs/STAGE5MR3_|\.github/workflows/stage5mr3-static-offline\.yml$)' || true)"
+          test -z "$unexpected" || { printf '%s\n' "$unexpected"; exit 1; }
+      - name: Unit tests
+        run: python3 -m unittest discover -s Tools/stage5mr3_replay -p 'test_*.py' -v
+      - name: Immutable evidence replay and parameter sweep
+        run: python3 Tools/stage5mr3_replay/stage5mr3_static_replay.py --output /tmp/stage5mr3-static
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage5mr3-static-mode-offline-report
+          path: /tmp/stage5mr3-static/offline_report.json
+          if-no-files-found: error
