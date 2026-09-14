@@ -44,9 +44,10 @@ because all current captures came from one physical sensor.
 
 The isolated evaluator sweeps:
 
-- observation windows: 120, 180 and 300 seconds;
+- observation windows: 60, 120, 180 and 300 seconds;
 - estimator deadbands: 0, 0.00025, 0.0005, 0.001 and 0.002 g;
-- maximum declared-static rates: 0.25, 0.5 and 1.0 g/h;
+- maximum declared-static rates: 0.5, 1.0, 2.0 and 5.0 g/h;
+- fast-step thresholds: 0.020, 0.050 and 0.100 g;
 - correction limits: 0.003, 0.0045 and 0.006 g/min.
 
 A candidate passes only if:
