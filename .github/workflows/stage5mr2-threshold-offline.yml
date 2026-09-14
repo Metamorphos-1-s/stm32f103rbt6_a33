@@ -1,0 +1,34 @@
+name: Stage 5M-R2 mode-gated threshold offline
+
+on:
+  push:
+    branches:
+      - stage5mr2-mode-gated-threshold-offline
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-replay:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify isolated scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          unexpected="$(git diff --name-only de7f610cc5677b18337d477ec781e66217db2db0...HEAD | grep -Ev '^(Tools/stage5mr2_replay/|Docs/STAGE5MR2_|\.github/workflows/stage5mr2-threshold-offline\.yml$)' || true)"
+          test -z "$unexpected" || { printf '%s\n' "$unexpected"; exit 1; }
+      - name: Unit tests
+        run: python3 -m unittest discover -s Tools/stage5mr2_replay -p 'test_*.py' -v
+      - name: Immutable evidence replay
+        run: python3 Tools/stage5mr2_replay/stage5mr2_threshold_replay.py --output /tmp/stage5mr2-threshold
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage5mr2-threshold-offline-report
+          path: /tmp/stage5mr2-threshold/offline_report.json
+          if-no-files-found: error
