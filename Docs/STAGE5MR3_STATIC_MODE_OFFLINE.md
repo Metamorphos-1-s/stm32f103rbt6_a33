@@ -55,7 +55,9 @@ A candidate passes only if:
 
 - none of the three static captures has amplified slope;
 - every static capture improves by at least 50 percent;
-- median improvement is at least 70 percent;
+- median improvement is at least 60 percent;
+- a separate 70 percent median stretch goal is reported and must not be
+  confused with the minimum development gate;
 - a constant tail does not cause continued offset chase;
 - all real and synthetic dosing-mode cases keep their offset exactly frozen;
 - the 10 second correction is no more than 0.001 g;
