@@ -12,6 +12,7 @@ import argparse
 import json
 import statistics
 import sys
+from functools import lru_cache
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 
@@ -22,6 +23,13 @@ import stage5mr2_threshold_replay as r2
 STATIC_PATHS = r2.STATIC_PATHS
 REAL_LOAD_PATHS = r2.REAL_LOAD_PATHS
 SOURCE_BLOBS = r2.SOURCE_BLOBS
+
+
+@lru_cache(maxsize=None)
+def load_seconds(relative_path):
+    # Immutable Git-blob evidence is parsed once per process, then reused by
+    # every parameter candidate. Return a tuple so callers cannot mutate it.
+    return tuple(load_seconds(relative_path))
 
 
 @dataclass(frozen=True)
@@ -207,7 +215,7 @@ def replay(samples, config, initial_offset_ug=0):
 
 
 def static_case(relative_path, config, include_trace=False):
-    source = r2.load_seconds(relative_path)
+    source = load_seconds(relative_path)
     robust_final = r2.median([mass for _, mass in source[-60:]])
     samples = [(second, mass, True) for second, mass in source]
     last = samples[-1][0]
@@ -326,7 +334,7 @@ def candidate_rank(item):
 
 
 def real_mode_case(relative_path, config, initial_offset_ug):
-    source = r2.load_seconds(relative_path)
+    source = load_seconds(relative_path)
     final_mass = r2.median([mass for _, mass in source[-60:]])
     samples = [(second, mass, False) for second, mass in source]
     last = samples[-1][0]
