@@ -1,0 +1,122 @@
+[
+  {
+    "name": "HF2-R1 status",
+    "status": "PASS",
+    "detail": "read-only telemetry",
+    "data": {
+      "identity": {
+        "display_weight": -13,
+        "decimals": 2,
+        "active_unit": 1,
+        "status_flags": 63,
+        "register_map_version": 260,
+        "firmware_version": 1296,
+        "net_mass_ug": -155454,
+        "sample_sequence": 23580,
+        "active_profile": 0,
+        "storage_state": 0,
+        "power_safe": 1,
+        "config_dirty": 0,
+        "schema_version": 2,
+        "persistent_format": 3,
+        "active_slot": 1,
+        "storage_sequence": 7,
+        "word_order": "high",
+        "hardware_revision": "UNAVAILABLE_IN_REGISTER_MAP",
+        "battery_voltage": "UNAVAILABLE_IN_REGISTER_MAP",
+        "response_ms": 53.5382
+      },
+      "weighing": {
+        "display_count": -13,
+        "decimal_places": 2,
+        "unit": 1,
+        "division_digit": 1,
+        "status_flags": 63,
+        "stable": true,
+        "tare_active": false,
+        "overload": false,
+        "net": {
+          "ug": -156581,
+          "g": "-0.156581"
+        },
+        "gross": {
+          "ug": -156581,
+          "g": "-0.156581"
+        },
+        "tare": {
+          "ug": 0,
+          "g": "0.000000"
+        },
+        "raw_count": -43852,
+        "filtered_raw": -43850,
+        "sample_sequence": 23582,
+        "cs1237_state": 4,
+        "config_dirty": false,
+        "capacity": {
+          "ug": 3000000000,
+          "g": "3000.000000"
+        },
+        "configured_decimal_places": 2,
+        "configured_division_digit": 1,
+        "overload_limit": "UNAVAILABLE_IN_REGISTER_MAP",
+        "migration_pending": "UNAVAILABLE_IN_REGISTER_MAP"
+      },
+      "display_conditioner": {
+        "state": {
+          "value": 2,
+          "name": "LOCKED"
+        },
+        "locked": true,
+        "display_mass": {
+          "ug": -132924,
+          "g": "-0.132924"
+        },
+        "anchor": {
+          "ug": -132924,
+          "g": "-0.132924"
+        },
+        "release_threshold": {
+          "ug": 80000,
+          "g": "0.080000"
+        },
+        "candidate_elapsed_ms": 1001,
+        "release_reason": {
+          "value": 5,
+          "name": "NOT_ALLOWED"
+        }
+      },
+      "runtime_drift": {
+        "state": {
+          "value": 0,
+          "name": "DISABLED"
+        },
+        "enabled": false,
+        "limited": false,
+        "reserved": 0,
+        "offset": {
+          "ug": 0,
+          "g": "0.000000"
+        },
+        "uncompensated_gross": {
+          "ug": -156581,
+          "g": "-0.156581"
+        },
+        "compensated_gross": {
+          "ug": -156581,
+          "g": "-0.156581"
+        },
+        "plateau_reference": {
+          "ug": 0,
+          "g": "0.000000"
+        },
+        "plateau_error": {
+          "ug": 0,
+          "g": "0.000000"
+        },
+        "arming_elapsed_ms": 0,
+        "window_elapsed_ms": 0,
+        "sample_count": 0
+      }
+    }
+  }
+]

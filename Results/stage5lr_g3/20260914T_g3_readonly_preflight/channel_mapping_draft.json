@@ -1,0 +1,13 @@
+{
+  "status": "DRAFT_PENDING_PHYSICAL_TEST_POINT_AND_INSTRUMENT_CONFIRMATION",
+  "signals": [
+    {"mcu_pin": "PB10", "board_net": "MCU_AD_SCLK", "cs1237_function": "SCLK", "test_point": "UNCONFIRMED", "instrument_channel": "CH2", "drive": "open-drain external pull-up", "historical_new_board_high_v": 4.997},
+    {"mcu_pin": "PB11", "board_net": "MCU_AD_DOUT", "cs1237_function": "DOUT/DRDY", "test_point": "UNCONFIRMED", "instrument_channel": "CH1", "drive": "input/open-drain external pull-up", "historical_new_board_high_v": 4.997},
+    {"mcu_pin": null, "board_net": "GND", "cs1237_function": "reference ground", "test_point": "UNCONFIRMED", "instrument_channel": "GND", "drive": "ground only"}
+  ],
+  "minimum_digital_sample_rate_hz": 10000000,
+  "recommended_digital_sample_rate_hz": 20000000,
+  "nominal_sclk_high_us": 1,
+  "nominal_sclk_low_us": 1,
+  "safety": "Do not connect a 3.3 V-only analyzer directly until actual line voltage and input tolerance are confirmed. Connect ground only to system GND."
+}

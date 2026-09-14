@@ -1,0 +1,12 @@
+{
+  "utc": "2026-09-14T07:50:38Z",
+  "connected_supported_instrument": false,
+  "detected_logic_analyzers": [],
+  "detected_oscilloscopes": [],
+  "installed_capture_tools": {"sigrok_cli": false, "saleae_logic": false, "dsview": false, "picoscope": false},
+  "stlink_detected": true,
+  "stlink_is_external_timing_instrument": false,
+  "non_usb_bench_instrument_status": "AWAITING_USER_CONFIRMATION",
+  "g3_timing_capture_authorized": false,
+  "reason": "No connected or software-addressable logic analyzer/oscilloscope was detected. SWD cannot substitute for pin-level waveform capture."
+}

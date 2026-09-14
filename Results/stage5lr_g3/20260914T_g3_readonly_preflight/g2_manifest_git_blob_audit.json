@@ -1,0 +1,7 @@
+{
+  "revision": "1328f4019ba7e44613274e1444c60e5aea21f429",
+  "manifest_count": 9,
+  "git_blob_pass_count": 9,
+  "git_blob_failures": [],
+  "worktree_note": "Two historical parser JSON files are CRLF in the current Windows worktree; the G2 manifests intentionally bind committed LF Git blobs and passed clean checkout under autocrlf false/input/true."
+}

@@ -1,0 +1,8 @@
+{
+  "utc": "2026-09-14T07:50:38Z",
+  "ports": [
+    {"port": "COM1", "pnp_id": "ACPI\\PNP0501\\0", "description": "System communications port", "manufacturer": "system", "usb_vid": null, "usb_pid": null, "usb_serial": null, "candidate": false},
+    {"port": "COM3", "pnp_id": "USB\\VID_1A86&PID_7523\\8&F2CB6FA&0&13", "description": "USB-SERIAL CH340", "manufacturer": "CH340 driver", "usb_vid": "1A86", "usb_pid": "7523", "usb_serial": "NOT_EXPOSED", "candidate": false, "action": "NOT_OPENED_AND_NOT_PROBED"},
+    {"port": "COM5", "pnp_id": "USB\\VID_1A86&PID_7523\\8&F2CB6FA&0&18", "description": "USB-SERIAL CH340", "manufacturer": "CH340 driver", "usb_vid": "1A86", "usb_pid": "7523", "usb_serial": "NOT_EXPOSED", "candidate": true, "open_result": "PASS", "identity_result": "MODBUS_FC03_PRODUCT_0X0510_CONFIRMED"}
+  ]
+}
