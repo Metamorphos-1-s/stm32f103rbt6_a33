@@ -7,6 +7,33 @@
 
 #include <stddef.h>
 
+#if (STAGE5L_SWD_DIAGNOSTICS != 0U)
+#include "stage5l_measurement_diagnostics.h"
+#define SWD_READY(index) ((index) = Stage5LSwdDiagnostics_OnReadyObserved())
+#define SWD_READ_START() Stage5LSwdDiagnostics_OnReadStart()
+#define SWD_READ_RESULT(ok, sample, clocks, settling) \
+    Stage5LSwdDiagnostics_OnReadResult((ok), \
+        (ok) ? (sample)->raw : 0, (ok) ? (sample)->config_status : 0U, \
+        (clocks), (settling))
+#define SWD_READ_CONFIG_RESULT(ok) \
+    Stage5LSwdDiagnostics_OnReadResult((ok), 0, 0U, 46U, false)
+#define SWD_CONFIG_WRITE() Stage5LSwdDiagnostics_OnConfigWrite()
+#define SWD_CONFIG_READBACK(ok) Stage5LSwdDiagnostics_OnConfigReadback(ok)
+#define SWD_FIFO_PUSH(ok, depth, index) \
+    Stage5LSwdDiagnostics_OnFifoPush(ok, depth, index)
+#define SWD_FIFO_POP(depth, index) \
+    Stage5LSwdDiagnostics_OnFifoPop(depth, index)
+#else
+#define SWD_READY(index) ((void)(index))
+#define SWD_READ_START() ((void)0)
+#define SWD_READ_RESULT(ok, sample, clocks, settling) ((void)0)
+#define SWD_READ_CONFIG_RESULT(ok) ((void)0)
+#define SWD_CONFIG_WRITE() ((void)0)
+#define SWD_CONFIG_READBACK(ok) ((void)0)
+#define SWD_FIFO_PUSH(ok, depth, index) ((void)0)
+#define SWD_FIFO_POP(depth, index) ((void)0)
+#endif
+
 #define CS1237_WRITE_CONFIG_COMMAND  0x65U
 #define CS1237_READ_CONFIG_COMMAND   0x56U
 #define CS1237_CONFIG_RESERVED_MASK  0x80U
@@ -86,6 +113,7 @@ void CS1237_Process(void)
 {
     CS1237_Sample sample;
     uint8_t register_value;
+    uint8_t trace_index = 0xFFU;
 
     CS1237_NotifySamplesAvailable();
 
@@ -106,24 +134,31 @@ void CS1237_Process(void)
     {
         return;
     }
+    SWD_READY(trace_index);
 
     if (s_state == CS1237_STATE_CONFIGURING)
     {
         if (s_config_phase == CS1237_CONFIG_PHASE_WRITE)
         {
+            SWD_READ_START();
             if (!CS1237_EncodeConfig(&s_config, &register_value) ||
                 !CS1237_ConfigTransaction(true, &register_value))
             {
+                SWD_READ_CONFIG_RESULT(false);
                 ++s_read_error_count;
                 s_state = CS1237_STATE_ERROR;
                 return;
             }
+            SWD_CONFIG_WRITE();
+            SWD_READ_CONFIG_RESULT(true);
             s_config_phase = CS1237_CONFIG_PHASE_VERIFY;
         }
         else
         {
+            SWD_READ_START();
             if (!CS1237_ConfigTransaction(false, &register_value))
             {
+                SWD_READ_CONFIG_RESULT(false);
                 ++s_read_error_count;
                 s_state = CS1237_STATE_ERROR;
                 return;
@@ -132,21 +167,33 @@ void CS1237_Process(void)
             s_last_config_valid = true;
             if (!CS1237_VerifyConfig(&s_config))
             {
+                SWD_CONFIG_READBACK(false);
+                SWD_READ_CONFIG_RESULT(true);
                 ++s_read_error_count;
                 s_state = CS1237_STATE_ERROR;
                 return;
             }
+            SWD_CONFIG_READBACK(true);
+            SWD_READ_CONFIG_RESULT(true);
             s_settling_samples = CS1237_GetSettlingCount(s_config.rate);
             s_state = CS1237_STATE_SETTLING;
         }
         return;
     }
 
+    SWD_READ_START();
     if (!CS1237_ReadDataFrame(&sample))
     {
+        SWD_READ_RESULT(false, &sample, 27U,
+            s_state == CS1237_STATE_SETTLING);
         ++s_read_error_count;
         return;
     }
+    SWD_READ_RESULT(true, &sample, 27U,
+        s_state == CS1237_STATE_SETTLING);
+#if (STAGE5L_SWD_DIAGNOSTICS != 0U)
+    sample.trace_index = trace_index;
+#endif
 
     if (s_state == CS1237_STATE_SETTLING)
     {
@@ -187,6 +234,7 @@ bool CS1237_TryPopSample(CS1237_Sample *sample)
     *sample = s_buffer[s_head];
     s_head = (uint16_t)((s_head + 1U) % CS1237_SAMPLE_BUFFER_CAPACITY);
     --s_count;
+    SWD_FIFO_POP(s_count, sample->trace_index);
     if (s_count == 0U)
     {
         s_sample_event_sent = false;
@@ -536,12 +584,14 @@ static bool CS1237_PushSample(const CS1237_Sample *sample)
     if ((sample == NULL) || (s_count >= CS1237_SAMPLE_BUFFER_CAPACITY))
     {
         ++s_buffer_overrun_count;
+        SWD_FIFO_PUSH(false, s_count, sample->trace_index);
         return false;
     }
 
     s_buffer[s_tail] = *sample;
     s_tail = (uint16_t)((s_tail + 1U) % CS1237_SAMPLE_BUFFER_CAPACITY);
     ++s_count;
+    SWD_FIFO_PUSH(true, s_count, sample->trace_index);
     CS1237_NotifySamplesAvailable();
     return true;
 }

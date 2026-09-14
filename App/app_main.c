@@ -862,6 +862,9 @@ static void App_PublishRawMeasurement(void)
       EventQueue_Push(&event))
   {
     s_last_published_raw_count = event.arg1;
+#if (STAGE5L_SWD_DIAGNOSTICS != 0U)
+    Stage5LSwdDiagnostics_OnPublish();
+#endif
   }
 }
 

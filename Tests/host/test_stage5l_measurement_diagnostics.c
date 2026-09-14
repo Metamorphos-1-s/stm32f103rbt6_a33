@@ -15,6 +15,7 @@ static CS1237_State s_adc_state = CS1237_STATE_RUNNING;
 static CS1237_Config s_adc_config;
 static MassSnapshot s_snapshot;
 static uint32_t s_now_ms;
+static uint32_t s_now_cycles;
 static uint32_t s_driver_samples;
 static uint32_t s_processed_samples;
 static uint8_t s_config_register;
@@ -68,6 +69,7 @@ uint32_t CS1237_GetSettlingDiscardCount(void) { return 4U; }
 uint32_t MeasurementBridge_GetConsumedCount(void) { return s_processed_samples; }
 uint32_t EventQueue_DroppedCount(void) { return 0U; }
 uint32_t BSP_TimeNowMs(void) { return s_now_ms; }
+uint32_t BSP_TimeNowCycles(void) { return s_now_cycles; }
 
 #define CHECK(x) do { if (!(x)) { printf("FAIL:%d\n", __LINE__); return 1; } } while (0)
 
@@ -86,6 +88,7 @@ int main(void)
 
     g_stage5l_measurement_control.command =
         STAGE5L_DIAGNOSTIC_COMMAND_APPLY_FILTER;
+    g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
     g_stage5l_measurement_control.requested_mode = FILTER_MODE_IIR;
     g_stage5l_measurement_control.requested_strength = 1U;
     g_stage5l_measurement_control.request_sequence = 1U;
@@ -98,6 +101,7 @@ int main(void)
 
     g_stage5l_measurement_control.command =
         STAGE5L_DIAGNOSTIC_COMMAND_RESTORE_FILTER;
+    g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
     g_stage5l_measurement_control.request_sequence = 2U;
     Stage5LMeasurementDiagnostics_Process();
     CHECK(s_last_mode == FILTER_MODE_MEDIAN3_IIR && s_last_strength == 3U);
@@ -108,6 +112,7 @@ int main(void)
 
     g_stage5l_measurement_control.command =
         STAGE5L_DIAGNOSTIC_COMMAND_APPLY_FILTER;
+    g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
     g_stage5l_measurement_control.requested_mode = FILTER_MODE_COUNT;
     g_stage5l_measurement_control.request_sequence = 3U;
     Stage5LMeasurementDiagnostics_Process();
@@ -117,6 +122,8 @@ int main(void)
 
     g_stage5l_measurement_control.command =
         STAGE5L_DIAGNOSTIC_COMMAND_APPLY_RATE;
+    g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
+    g_stage5l_measurement_control.requested_sample_count = 4U;
     g_stage5l_measurement_control.requested_rate =
         DEVICE_CS1237_DATA_RATE_40_HZ;
     g_stage5l_measurement_control.request_sequence = 4U;
@@ -137,6 +144,7 @@ int main(void)
 
     g_stage5l_measurement_control.command =
         STAGE5L_DIAGNOSTIC_COMMAND_RESTORE_RATE;
+    g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
     g_stage5l_measurement_control.request_sequence = 5U;
     Stage5LMeasurementDiagnostics_Process();
     s_adc_state = CS1237_STATE_RUNNING;
@@ -147,6 +155,7 @@ int main(void)
 
     g_stage5l_measurement_control.command =
         STAGE5L_DIAGNOSTIC_COMMAND_APPLY_RATE;
+    g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
     g_stage5l_measurement_control.requested_rate =
         DEVICE_CS1237_DATA_RATE_40_HZ;
     g_stage5l_measurement_control.request_sequence = 6U;
@@ -162,6 +171,7 @@ int main(void)
 
     g_stage5l_measurement_control.command =
         STAGE5L_DIAGNOSTIC_COMMAND_APPLY_RATE;
+    g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
     g_stage5l_measurement_control.requested_rate =
         DEVICE_CS1237_DATA_RATE_640_HZ;
     g_stage5l_measurement_control.request_sequence = 7U;
@@ -169,30 +179,164 @@ int main(void)
     CHECK(g_stage5l_measurement_control.status ==
           STAGE5L_DIAGNOSTIC_STATUS_INVALID);
 
-    (void)memset(&s_snapshot, 0, sizeof(s_snapshot));
-    s_snapshot.sample_sequence = 1U;
-    s_snapshot.raw_value = -100;
-    s_snapshot.filtered_raw = -90;
-    s_snapshot.sample_timestamp_ms = 10U;
-    s_driver_samples = 1U; s_processed_samples = 1U; s_now_ms = 10U;
-    Stage5LMeasurementDiagnostics_ObserveBridgeService();
-    CHECK(g_stage5l_rate_diagnostics.raw_count == 1U);
-    s_snapshot.sample_sequence = 2U;
-    s_snapshot.raw_value = -0x700001;
-    s_snapshot.sample_timestamp_ms = 20U;
-    s_driver_samples = 2U; s_processed_samples = 2U; s_now_ms = 20U;
-    Stage5LMeasurementDiagnostics_ObserveBridgeService();
-    CHECK(g_stage5l_rate_diagnostics.raw_anomaly_count == 1U);
-    for (uint32_t i = 3U; i <= 20U; ++i) {
-        s_snapshot.sample_sequence = i;
-        s_snapshot.raw_value = -100;
-        s_snapshot.sample_timestamp_ms = i * 10U;
-        s_now_ms = i * 10U;
-        Stage5LMeasurementDiagnostics_ObserveBridgeService();
+    Stage5LMeasurementDiagnostics_Init();
+    g_stage5l_measurement_control.command =
+        STAGE5L_DIAGNOSTIC_COMMAND_START_CAPTURE;
+    g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
+    g_stage5l_measurement_control.requested_sample_count = 2U;
+    g_stage5l_measurement_control.request_sequence = 1U;
+    Stage5LMeasurementDiagnostics_Process();
+    CHECK(g_stage5l_measurement_control.trace_state == STAGE5L_TRACE_RUNNING);
+    s_now_cycles = 0xFFFFFF00U;
+    uint8_t trace_index = Stage5LSwdDiagnostics_OnReadyObserved();
+    Stage5LSwdDiagnostics_OnReadStart();
+    s_now_cycles += 7200U;
+    Stage5LSwdDiagnostics_OnReadResult(true, -100, 0U, 27U, false);
+    Stage5LSwdDiagnostics_OnFifoPush(true, 1U, trace_index);
+    Stage5LSwdDiagnostics_OnFifoPop(0U, trace_index);
+    Stage5LSwdDiagnostics_OnBridgeResult(true, 1U);
+    s_now_cycles += 7200000U - 7200U;
+    trace_index = Stage5LSwdDiagnostics_OnReadyObserved();
+    Stage5LSwdDiagnostics_OnReadStart();
+    s_now_cycles += 7200U;
+    Stage5LSwdDiagnostics_OnReadResult(true, -101, 0U, 27U, false);
+    Stage5LSwdDiagnostics_OnFifoPush(true, 1U, trace_index);
+    Stage5LSwdDiagnostics_OnFifoPop(0U, trace_index);
+    Stage5LSwdDiagnostics_OnBridgeResult(true, 2U);
+    CHECK(g_stage5l_measurement_control.trace_state == STAGE5L_TRACE_FROZEN);
+    CHECK(g_stage5l_measurement_control.trigger_reason ==
+          STAGE5L_TRIGGER_SAMPLE_TARGET);
+    CHECK(g_stage5l_rate_diagnostics.counters.ready_observation_count == 2U);
+    CHECK(g_stage5l_rate_diagnostics.counters.driver_read_success_count == 2U);
+    CHECK(g_stage5l_rate_diagnostics.counters.fifo_push_count == 2U);
+    CHECK(g_stage5l_rate_diagnostics.counters.fifo_pop_count == 2U);
+    CHECK(g_stage5l_rate_diagnostics.counters.weight_engine_accept_count == 2U);
+
+    Stage5LMeasurementDiagnostics_Init();
+    g_stage5l_measurement_control.command =
+        STAGE5L_DIAGNOSTIC_COMMAND_START_CAPTURE;
+    g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
+    g_stage5l_measurement_control.requested_sample_count = 10U;
+    g_stage5l_measurement_control.request_sequence = 1U;
+    Stage5LMeasurementDiagnostics_Process();
+    s_now_cycles = 100U;
+    (void)Stage5LSwdDiagnostics_OnReadyObserved();
+    Stage5LSwdDiagnostics_OnReadStart();
+    s_now_cycles += 100U;
+    Stage5LSwdDiagnostics_OnReadResult(true, -0x700001, 0U, 27U, false);
+    CHECK(g_stage5l_measurement_control.trigger_reason ==
+          STAGE5L_TRIGGER_NEAR_RAIL);
+    CHECK(g_stage5l_measurement_control.trace_frozen == 1U);
+    CHECK(g_stage5l_rate_diagnostics.counters.near_rail_count == 1U);
+
+    Stage5LMeasurementDiagnostics_Init();
+    g_stage5l_measurement_control.command =
+        STAGE5L_DIAGNOSTIC_COMMAND_START_CAPTURE;
+    g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
+    g_stage5l_measurement_control.requested_sample_count = 20U;
+    g_stage5l_measurement_control.request_sequence = 1U;
+    Stage5LMeasurementDiagnostics_Process();
+    s_now_cycles = 1000U;
+    for (uint32_t i = 0U; i < 20U; ++i) {
+        trace_index = Stage5LSwdDiagnostics_OnReadyObserved();
+        Stage5LSwdDiagnostics_OnReadStart();
+        s_now_cycles += 7200U;
+        Stage5LSwdDiagnostics_OnReadResult(true, -100 - (int32_t)i,
+            0U, 27U, false);
+        Stage5LSwdDiagnostics_OnFifoPush(true, 1U, trace_index);
+        Stage5LSwdDiagnostics_OnFifoPop(0U, trace_index);
+        Stage5LSwdDiagnostics_OnBridgeResult(true, i + 1U);
+        s_now_cycles += 7200000U - 7200U;
     }
-    CHECK(g_stage5l_rate_diagnostics.raw_count <=
+    CHECK(g_stage5l_rate_diagnostics.raw_count ==
           STAGE5L_RAW_EVIDENCE_CAPACITY);
-    CHECK(g_stage5l_rate_diagnostics.raw_anomaly_count == 1U);
+    CHECK(g_stage5l_rate_diagnostics.raw_write_index == 4U);
+    CHECK(g_stage5l_measurement_control.trace_frozen == 1U);
+    CHECK(Stage5LSwdDiagnostics_OnReadyObserved() == 0xFFU);
+    CHECK(g_stage5l_rate_diagnostics.counters.ready_observation_count == 20U);
+
+    Stage5LMeasurementDiagnostics_Init();
+    g_stage5l_measurement_control.command =
+        STAGE5L_DIAGNOSTIC_COMMAND_START_CAPTURE;
+    g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
+    g_stage5l_measurement_control.requested_sample_count = 10U;
+    g_stage5l_measurement_control.request_sequence = 1U;
+    Stage5LMeasurementDiagnostics_Process();
+    s_now_cycles = 100U;
+    (void)Stage5LSwdDiagnostics_OnReadyObserved();
+    Stage5LSwdDiagnostics_OnReadStart();
+    Stage5LSwdDiagnostics_OnReadResult(false, 0, 0U, 27U, false);
+    CHECK(g_stage5l_measurement_control.trigger_reason ==
+          STAGE5L_TRIGGER_READ_FAILURE);
+
+    Stage5LMeasurementDiagnostics_Init();
+    g_stage5l_measurement_control.command =
+        STAGE5L_DIAGNOSTIC_COMMAND_START_CAPTURE;
+    g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
+    g_stage5l_measurement_control.requested_sample_count = 10U;
+    g_stage5l_measurement_control.request_sequence = 1U;
+    Stage5LMeasurementDiagnostics_Process();
+    Stage5LSwdDiagnostics_OnConfigReadback(false);
+    CHECK(g_stage5l_measurement_control.trigger_reason ==
+          STAGE5L_TRIGGER_CONFIG_MISMATCH);
+
+    Stage5LMeasurementDiagnostics_Init();
+    g_stage5l_measurement_control.command =
+        STAGE5L_DIAGNOSTIC_COMMAND_START_CAPTURE;
+    g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
+    g_stage5l_measurement_control.requested_sample_count = 10U;
+    g_stage5l_measurement_control.request_sequence = 1U;
+    Stage5LMeasurementDiagnostics_Process();
+    s_now_cycles = 1U;
+    (void)Stage5LSwdDiagnostics_OnReadyObserved();
+    Stage5LSwdDiagnostics_OnReadStart();
+    Stage5LSwdDiagnostics_OnReadResult(true, 0, 0U, 27U, false);
+    s_now_cycles += 7200000U;
+    (void)Stage5LSwdDiagnostics_OnReadyObserved();
+    Stage5LSwdDiagnostics_OnReadStart();
+    Stage5LSwdDiagnostics_OnReadResult(true, 1000001, 0U, 27U, false);
+    CHECK(g_stage5l_measurement_control.trigger_reason ==
+          STAGE5L_TRIGGER_RAW_JUMP);
+
+    Stage5LMeasurementDiagnostics_Init();
+    g_stage5l_measurement_control.command =
+        STAGE5L_DIAGNOSTIC_COMMAND_START_CAPTURE;
+    g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
+    g_stage5l_measurement_control.requested_sample_count = 10U;
+    g_stage5l_measurement_control.request_sequence = 1U;
+    Stage5LMeasurementDiagnostics_Process();
+    trace_index = Stage5LSwdDiagnostics_OnReadyObserved();
+    Stage5LSwdDiagnostics_OnFifoPush(false, 8U, trace_index);
+    CHECK(g_stage5l_measurement_control.trigger_reason ==
+          STAGE5L_TRIGGER_FIFO_PRESSURE);
+
+    Stage5LMeasurementDiagnostics_Init();
+    g_stage5l_measurement_control.command =
+        STAGE5L_DIAGNOSTIC_COMMAND_START_CAPTURE;
+    g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
+    g_stage5l_measurement_control.requested_sample_count = 10U;
+    g_stage5l_measurement_control.request_sequence = 1U;
+    Stage5LMeasurementDiagnostics_Process();
+    g_stage5l_rate_diagnostics.requested_rate =
+        DEVICE_CS1237_DATA_RATE_40_HZ;
+    s_now_cycles = 100U;
+    (void)Stage5LSwdDiagnostics_OnReadyObserved();
+    s_now_cycles += 1800000U;
+    (void)Stage5LSwdDiagnostics_OnReadyObserved();
+    CHECK(g_stage5l_measurement_control.trace_frozen == 0U);
+    CHECK(g_stage5l_rate_diagnostics.counters.minimum_ready_interval_cycles ==
+          1800000U);
+
+    Stage5LMeasurementDiagnostics_Init();
+    g_stage5l_measurement_control.command =
+        STAGE5L_DIAGNOSTIC_COMMAND_START_CAPTURE;
+    g_stage5l_measurement_control.command_magic = 0U;
+    g_stage5l_measurement_control.requested_sample_count = 2U;
+    g_stage5l_measurement_control.request_sequence = 1U;
+    Stage5LMeasurementDiagnostics_Process();
+    CHECK(g_stage5l_measurement_control.status ==
+          STAGE5L_DIAGNOSTIC_STATUS_INVALID);
+    CHECK(g_stage5l_measurement_control.trace_state == STAGE5L_TRACE_IDLE);
     puts("stage5l diagnostics tests passed");
     return 0;
 }

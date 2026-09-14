@@ -7,6 +7,14 @@
 
 #include <stddef.h>
 
+#if (STAGE5L_SWD_DIAGNOSTICS != 0U)
+#include "stage5l_measurement_diagnostics.h"
+#define SWD_BRIDGE_RESULT(ok, sequence) \
+    Stage5LSwdDiagnostics_OnBridgeResult(ok, sequence)
+#else
+#define SWD_BRIDGE_RESULT(ok, sequence) ((void)0)
+#endif
+
 static uint32_t s_consumed_count;
 static uint32_t s_invalid_count;
 static uint16_t s_last_backlog;
@@ -43,10 +51,18 @@ uint8_t MeasurementBridge_Process(uint8_t maximum_samples)
         if (!RawMeasurement_Accept(&raw_sample))
         {
             ++s_invalid_count;
+            SWD_BRIDGE_RESULT(false, 0U);
         }
         else
         {
+#if (STAGE5L_SWD_DIAGNOSTICS != 0U)
+            bool accepted = MetrologyManager_AcceptRawSample(&raw_sample);
+            const MassSnapshot *snapshot = MetrologyManager_GetMassSnapshot();
+            SWD_BRIDGE_RESULT(accepted,
+                (accepted && (snapshot != NULL)) ? snapshot->sample_sequence : 0U);
+#else
             (void)MetrologyManager_AcceptRawSample(&raw_sample);
+#endif
         }
         ++s_consumed_count;
         ++processed;

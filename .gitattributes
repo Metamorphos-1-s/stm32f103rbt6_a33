@@ -9,4 +9,8 @@ Results/stage5l_characterization/**/*.csv text eol=lf
 Results/stage5l_characterization/**/*.bin -text
 Results/stage5lr_hardware/**/*.jsonl text eol=lf
 Results/stage5lr_hardware/**/*.csv text eol=lf
+Results/stage5lr_g2/**/*.json text eol=lf
+Results/stage5lr_g2/**/*.csv text eol=lf
+Results/stage5lr_g2/**/*.md text eol=lf
+Results/stage5lr_g2/**/*.bin -text
 Docs/evidence/*.json text eol=lf

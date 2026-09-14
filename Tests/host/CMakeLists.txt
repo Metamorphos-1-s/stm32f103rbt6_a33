@@ -106,7 +106,9 @@ add_executable(stage5l_measurement_diagnostics_tests
     test_stage5l_measurement_diagnostics.c
     ../../Diagnostics/stage5l_measurement_diagnostics.c)
 target_compile_definitions(stage5l_measurement_diagnostics_tests PRIVATE
-    A33_ENABLE_STAGE5L_DIAGNOSTICS=1)
+    A33_ENABLE_STAGE5L_DIAGNOSTICS=1
+    STAGE5L_SWD_DIAGNOSTICS=1
+    STAGE5L_SWD_HOST_TEST=1)
 target_include_directories(stage5l_measurement_diagnostics_tests PRIVATE
     ../../App ../../Config ../../Diagnostics ../../Domain/measurement
     ../../BSP ../../Drivers/cs1237 ../../Protocol/command_service

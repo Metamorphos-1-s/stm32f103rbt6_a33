@@ -19,11 +19,10 @@ static bool s_rate_switch_pending;
 static bool s_rate_restore_pending;
 static uint32_t s_last_app_run_ms;
 static uint32_t s_last_bridge_ms;
-static uint32_t s_last_observed_sequence;
-static int32_t s_previous_raw;
-static bool s_have_previous_raw;
-static bool s_anomaly_latched;
-static uint8_t s_post_anomaly_remaining;
+static uint32_t s_trace_latest_index;
+static uint32_t s_trace_bridge_index;
+static uint32_t s_previous_trace_raw;
+static bool s_have_trace_raw;
 
 enum {
     STAGE5L_FAILURE_NONE = 0,
@@ -32,6 +31,41 @@ enum {
     STAGE5L_FAILURE_REBUILD = 3,
     STAGE5L_FAILURE_WRITE_REJECTED = 4
 };
+
+#if defined(STAGE5L_SWD_HOST_TEST)
+#define STAGE5L_CPU_CLOCK_HZ 72000000UL
+#else
+extern uint32_t SystemCoreClock;
+#define STAGE5L_CPU_CLOCK_HZ SystemCoreClock
+#endif
+
+static void FreezeTrace(Stage5LTriggerReason reason)
+{
+    if (g_stage5l_measurement_control.trace_state != STAGE5L_TRACE_RUNNING)
+        return;
+    g_stage5l_measurement_control.trace_state = STAGE5L_TRACE_FROZEN;
+    g_stage5l_measurement_control.trace_frozen = 1U;
+    g_stage5l_measurement_control.trigger_reason = (uint32_t)reason;
+}
+
+static void ResetTrace(uint32_t sample_count)
+{
+    (void)memset((void *)&g_stage5l_rate_diagnostics.counters, 0,
+        sizeof(g_stage5l_rate_diagnostics.counters));
+    (void)memset((void *)g_stage5l_rate_diagnostics.trace, 0,
+        sizeof(g_stage5l_rate_diagnostics.trace));
+    g_stage5l_rate_diagnostics.raw_write_index = 0U;
+    g_stage5l_rate_diagnostics.raw_count = 0U;
+    g_stage5l_rate_diagnostics.raw_anomaly_count = 0U;
+    g_stage5l_measurement_control.requested_sample_count = sample_count;
+    g_stage5l_measurement_control.trace_state = STAGE5L_TRACE_RUNNING;
+    g_stage5l_measurement_control.trace_frozen = 0U;
+    g_stage5l_measurement_control.result = 0U;
+    g_stage5l_measurement_control.trigger_reason = STAGE5L_TRIGGER_NONE;
+    s_trace_latest_index = 0U;
+    s_trace_bridge_index = 0U;
+    s_have_trace_raw = false;
+}
 
 static void UpdateMetrics(void)
 {
@@ -58,6 +92,10 @@ static void UpdateMetrics(void)
         EventQueue_DroppedCount();
     g_stage5l_rate_diagnostics.settling_discarded_samples =
         CS1237_GetSettlingDiscardCount();
+    g_stage5l_rate_diagnostics.counters.fifo_overrun_count =
+        g_stage5l_rate_diagnostics.fifo_overrun_count;
+    g_stage5l_rate_diagnostics.counters.settling_discard_count =
+        g_stage5l_rate_diagnostics.settling_discarded_samples;
 }
 
 static bool ActiveFilter(uint32_t *mode, uint32_t *strength)
@@ -98,19 +136,28 @@ void Stage5LMeasurementDiagnostics_Init(void)
         (context != NULL) ? context->config.metrology.profiles[
             context->config.metrology.active_profile].sample_rate : 0U;
     g_stage5l_measurement_control.rate_override_active = 0U;
+    g_stage5l_measurement_control.length =
+        (uint32_t)sizeof(g_stage5l_measurement_control);
+    g_stage5l_measurement_control.command_magic = 0U;
+    g_stage5l_measurement_control.requested_sample_count = 0U;
+    g_stage5l_measurement_control.trace_state = STAGE5L_TRACE_IDLE;
+    g_stage5l_measurement_control.result = 0U;
+    g_stage5l_measurement_control.trigger_reason = STAGE5L_TRIGGER_NONE;
+    g_stage5l_measurement_control.trace_frozen = 0U;
     s_pending_sequence = 0U;
     s_rate_switch_pending = false;
     s_rate_restore_pending = false;
     s_last_app_run_ms = BSP_TimeNowMs();
     s_last_bridge_ms = s_last_app_run_ms;
-    s_last_observed_sequence = 0U;
-    s_have_previous_raw = false;
-    s_anomaly_latched = false;
-    s_post_anomaly_remaining = 0U;
     (void)memset((void *)&g_stage5l_rate_diagnostics, 0,
                  sizeof(g_stage5l_rate_diagnostics));
     g_stage5l_rate_diagnostics.magic = STAGE5L_DIAGNOSTIC_MAGIC;
     g_stage5l_rate_diagnostics.version = STAGE5L_DIAGNOSTIC_VERSION;
+    g_stage5l_rate_diagnostics.cpu_clock_hz = STAGE5L_CPU_CLOCK_HZ;
+    g_stage5l_rate_diagnostics.trace_record_version =
+        STAGE5L_SWD_TRACE_RECORD_VERSION;
+    g_stage5l_rate_diagnostics.trace_record_size =
+        STAGE5L_SWD_TRACE_RECORD_SIZE;
 }
 
 void Stage5LMeasurementDiagnostics_Process(void)
@@ -122,6 +169,14 @@ void Stage5LMeasurementDiagnostics_Process(void)
     CS1237_Config adc_config;
     uint8_t expected_config_byte = 0U;
     UpdateMetrics();
+    if (!s_rate_switch_pending &&
+        (g_stage5l_measurement_control.trace_state == STAGE5L_TRACE_FROZEN) &&
+        (g_stage5l_measurement_control.rate_override_active != 0U)) {
+        g_stage5l_measurement_control.command_magic = STAGE5L_SWD_COMMAND_MAGIC;
+        g_stage5l_measurement_control.command =
+            STAGE5L_DIAGNOSTIC_COMMAND_RESTORE_RATE;
+        request = ++g_stage5l_measurement_control.request_sequence;
+    }
     if (s_rate_switch_pending) {
         CS1237_State state = CS1237_GetState();
         if (state == CS1237_STATE_RUNNING) {
@@ -175,6 +230,14 @@ void Stage5LMeasurementDiagnostics_Process(void)
         return;
     }
     if (request == g_stage5l_measurement_control.applied_sequence) return;
+    if (g_stage5l_measurement_control.command_magic !=
+        STAGE5L_SWD_COMMAND_MAGIC) {
+        g_stage5l_measurement_control.status =
+            STAGE5L_DIAGNOSTIC_STATUS_INVALID;
+        g_stage5l_measurement_control.applied_sequence = request;
+        return;
+    }
+    g_stage5l_measurement_control.command_magic = 0U;
     context = SystemContext_Get();
     if (context == NULL) {
         g_stage5l_measurement_control.status =
@@ -184,6 +247,18 @@ void Stage5LMeasurementDiagnostics_Process(void)
     }
     dirty = context->runtime.config_dirty;
     if (g_stage5l_measurement_control.command ==
+        STAGE5L_DIAGNOSTIC_COMMAND_START_CAPTURE) {
+        uint32_t count = g_stage5l_measurement_control.requested_sample_count;
+        if ((count == 0U) || (count > 2400U) ||
+            (g_stage5l_measurement_control.rate_override_active != 0U)) {
+            g_stage5l_measurement_control.status =
+                STAGE5L_DIAGNOSTIC_STATUS_INVALID;
+        } else {
+            ResetTrace(count);
+            g_stage5l_measurement_control.status =
+                STAGE5L_DIAGNOSTIC_STATUS_PENDING;
+        }
+    } else if (g_stage5l_measurement_control.command ==
         STAGE5L_DIAGNOSTIC_COMMAND_APPLY_FILTER) {
         mode = g_stage5l_measurement_control.requested_mode;
         strength = g_stage5l_measurement_control.requested_strength;
@@ -249,9 +324,12 @@ void Stage5LMeasurementDiagnostics_Process(void)
             g_stage5l_rate_diagnostics.verified_config_byte = 0U;
             g_stage5l_rate_diagnostics.last_failure_reason =
                 STAGE5L_FAILURE_NONE;
+            if (!restore &&
+                (g_stage5l_measurement_control.requested_sample_count != 0U))
+                ResetTrace(g_stage5l_measurement_control.requested_sample_count);
             g_stage5l_rate_diagnostics.config_write_accepted =
-                CS1237_EncodeConfig(&adc_config, &expected_config_byte) &&
-                CS1237_WriteConfig(&adc_config) ? 1U : 0U;
+                (CS1237_EncodeConfig(&adc_config, &expected_config_byte) &&
+                 CS1237_WriteConfig(&adc_config)) ? 1U : 0U;
             g_stage5l_rate_diagnostics.expected_config_byte =
                 expected_config_byte;
             if (g_stage5l_rate_diagnostics.config_write_accepted != 0U) {
@@ -260,9 +338,6 @@ void Stage5LMeasurementDiagnostics_Process(void)
                 g_stage5l_rate_diagnostics.raw_write_index = 0U;
                 g_stage5l_rate_diagnostics.raw_count = 0U;
                 g_stage5l_rate_diagnostics.raw_anomaly_count = 0U;
-                s_anomaly_latched = false;
-                s_post_anomaly_remaining = 0U;
-                s_have_previous_raw = false;
                 s_pending_sequence = request;
                 s_rate_switch_pending = true;
                 s_rate_restore_pending = restore;
@@ -287,50 +362,198 @@ bool Stage5LMeasurementDiagnostics_IsRateSwitchBusy(void)
 
 void Stage5LMeasurementDiagnostics_ObserveBridgeService(void)
 {
-    const MassSnapshot *snapshot = MetrologyManager_GetMassSnapshot();
     uint32_t now = BSP_TimeNowMs();
     uint32_t interval = now - s_last_bridge_ms;
-    Stage5LRawEvidence *entry;
-    bool anomaly;
     s_last_bridge_ms = now;
     if (interval > g_stage5l_rate_diagnostics.bridge_max_service_interval_ms)
         g_stage5l_rate_diagnostics.bridge_max_service_interval_ms = interval;
     UpdateMetrics();
-    if ((snapshot == NULL) ||
-        (snapshot->sample_sequence == s_last_observed_sequence) ||
-        (s_anomaly_latched && (s_post_anomaly_remaining == 0U))) return;
-    anomaly = (snapshot->raw_value >= 0x700000) ||
-        (snapshot->raw_value <= -0x700000) ||
-        (s_have_previous_raw &&
-         (((int64_t)snapshot->raw_value - s_previous_raw > 1000000) ||
-          ((int64_t)s_previous_raw - snapshot->raw_value > 1000000)));
-    entry = (Stage5LRawEvidence *)&g_stage5l_rate_diagnostics.raw[
-        g_stage5l_rate_diagnostics.raw_write_index];
-    entry->raw = snapshot->raw_value;
-    entry->filtered_raw = snapshot->filtered_raw;
-    entry->timestamp_ms = snapshot->sample_timestamp_ms;
-    entry->driver_sample_count = CS1237_GetSampleCount();
-    entry->processed_sequence = snapshot->sample_sequence;
-    entry->read_error_count = CS1237_GetReadErrorCount();
-    entry->overrun_count = CS1237_GetBufferOverrunCount();
-    entry->backlog = CS1237_GetBufferedSampleCount();
-    entry->config_status = CS1237_GetLastConfigRegister();
+}
+
+uint8_t Stage5LSwdDiagnostics_OnReadyObserved(void)
+{
+    uint32_t now, interval, expected;
+    Stage5LSwdTraceEntry *entry;
+    Stage5LSwdCounters *c =
+        (Stage5LSwdCounters *)&g_stage5l_rate_diagnostics.counters;
+    if (g_stage5l_measurement_control.trace_state != STAGE5L_TRACE_RUNNING)
+        return 0xFFU;
+    now = BSP_TimeNowCycles();
+    if (c->ready_observation_count == 0U) {
+        c->first_ready_timestamp_cycles = now;
+    } else {
+        interval = now - c->last_ready_timestamp_cycles;
+        if ((c->minimum_ready_interval_cycles == 0U) ||
+            (interval < c->minimum_ready_interval_cycles))
+            c->minimum_ready_interval_cycles = interval;
+        if (interval > c->maximum_ready_interval_cycles)
+            c->maximum_ready_interval_cycles = interval;
+        expected = (g_stage5l_rate_diagnostics.requested_rate ==
+                    DEVICE_CS1237_DATA_RATE_40_HZ) ?
+            (g_stage5l_rate_diagnostics.cpu_clock_hz / 40U) :
+            (g_stage5l_rate_diagnostics.cpu_clock_hz / 10U);
+        if ((interval < (expected / 2U)) || (interval > (expected * 2U)))
+            FreezeTrace(STAGE5L_TRIGGER_READY_INTERVAL);
+    }
+    c->last_ready_timestamp_cycles = now;
+    ++c->ready_observation_count;
+    if (g_stage5l_measurement_control.trace_state != STAGE5L_TRACE_RUNNING)
+        return 0xFFU;
+    s_trace_latest_index = g_stage5l_rate_diagnostics.raw_write_index;
+    entry = (Stage5LSwdTraceEntry *)&g_stage5l_rate_diagnostics.trace[
+        s_trace_latest_index];
+    (void)memset(entry, 0, sizeof(*entry));
+    entry->ready_timestamp_cycles = now;
+    entry->rate = (uint8_t)(g_stage5l_measurement_control.rate_override_active ?
+        1U : 0U);
     entry->driver_state = (uint8_t)CS1237_GetState();
     entry->config_register = CS1237_GetLastConfigRegister();
-    entry->reserved = 0U;
     g_stage5l_rate_diagnostics.raw_write_index =
-        (g_stage5l_rate_diagnostics.raw_write_index + 1U) %
-        STAGE5L_RAW_EVIDENCE_CAPACITY;
+        (s_trace_latest_index + 1U) % STAGE5L_RAW_EVIDENCE_CAPACITY;
     if (g_stage5l_rate_diagnostics.raw_count < STAGE5L_RAW_EVIDENCE_CAPACITY)
         ++g_stage5l_rate_diagnostics.raw_count;
-    if (anomaly && !s_anomaly_latched) {
-        s_anomaly_latched = true;
-        s_post_anomaly_remaining = 8U;
-        ++g_stage5l_rate_diagnostics.raw_anomaly_count;
-    } else if (s_anomaly_latched && (s_post_anomaly_remaining > 0U)) {
-        --s_post_anomaly_remaining;
+    return (uint8_t)s_trace_latest_index;
+}
+
+void Stage5LSwdDiagnostics_OnReadStart(void)
+{
+    Stage5LSwdCounters *c =
+        (Stage5LSwdCounters *)&g_stage5l_rate_diagnostics.counters;
+    if (g_stage5l_measurement_control.trace_state != STAGE5L_TRACE_RUNNING)
+        return;
+    ++c->driver_read_attempt_count;
+    g_stage5l_rate_diagnostics.trace[s_trace_latest_index].read_start_cycles =
+        BSP_TimeNowCycles();
+}
+
+void Stage5LSwdDiagnostics_OnReadResult(bool success, int32_t raw,
+    uint8_t config_status, uint8_t read_clocks, bool settling)
+{
+    uint32_t duration, now = BSP_TimeNowCycles();
+    Stage5LSwdTraceEntry *entry;
+    Stage5LSwdCounters *c =
+        (Stage5LSwdCounters *)&g_stage5l_rate_diagnostics.counters;
+    if (g_stage5l_measurement_control.trace_state != STAGE5L_TRACE_RUNNING)
+        return;
+    entry = (Stage5LSwdTraceEntry *)&g_stage5l_rate_diagnostics.trace[
+        s_trace_latest_index];
+    entry->read_done_cycles = now;
+    entry->raw = raw;
+    entry->config_status = config_status;
+    entry->read_clocks = read_clocks;
+    duration = now - entry->read_start_cycles;
+    if ((c->minimum_read_duration_cycles == 0U) ||
+        (duration < c->minimum_read_duration_cycles))
+        c->minimum_read_duration_cycles = duration;
+    if (duration > c->maximum_read_duration_cycles)
+        c->maximum_read_duration_cycles = duration;
+    if (!success) {
+        ++c->driver_read_failure_count;
+        FreezeTrace(STAGE5L_TRIGGER_READ_FAILURE);
+        return;
     }
-    s_last_observed_sequence = snapshot->sample_sequence;
-    s_previous_raw = snapshot->raw_value;
-    s_have_previous_raw = true;
+    ++c->driver_read_success_count;
+    entry->flags |= STAGE5L_TRACE_FLAG_READ_SUCCESS;
+    if (settling) entry->flags |= STAGE5L_TRACE_FLAG_SETTLING;
+    if ((raw >= 0x700000) || (raw <= -0x700000)) {
+        entry->flags |= STAGE5L_TRACE_FLAG_NEAR_RAIL;
+        ++c->near_rail_count;
+        FreezeTrace(STAGE5L_TRIGGER_NEAR_RAIL);
+    } else if (s_have_trace_raw &&
+        (((int64_t)raw - (int32_t)s_previous_trace_raw > 1000000) ||
+         ((int64_t)(int32_t)s_previous_trace_raw - raw > 1000000))) {
+        entry->flags |= STAGE5L_TRACE_FLAG_RAW_JUMP;
+        ++c->raw_jump_count;
+        FreezeTrace(STAGE5L_TRIGGER_RAW_JUMP);
+    }
+    s_previous_trace_raw = (uint32_t)raw;
+    s_have_trace_raw = true;
+}
+
+void Stage5LSwdDiagnostics_OnConfigWrite(void)
+{
+    if (g_stage5l_measurement_control.trace_state == STAGE5L_TRACE_RUNNING) {
+        ++g_stage5l_rate_diagnostics.counters.config_write_count;
+        g_stage5l_rate_diagnostics.trace[s_trace_latest_index].flags |=
+            STAGE5L_TRACE_FLAG_CONFIG;
+    }
+}
+
+void Stage5LSwdDiagnostics_OnConfigReadback(bool matched)
+{
+    if (g_stage5l_measurement_control.trace_state != STAGE5L_TRACE_RUNNING)
+        return;
+    ++g_stage5l_rate_diagnostics.counters.config_readback_count;
+    g_stage5l_rate_diagnostics.trace[s_trace_latest_index].flags |=
+        STAGE5L_TRACE_FLAG_CONFIG;
+    if (!matched) {
+        ++g_stage5l_rate_diagnostics.counters.config_mismatch_count;
+        FreezeTrace(STAGE5L_TRIGGER_CONFIG_MISMATCH);
+    }
+}
+
+void Stage5LSwdDiagnostics_OnFifoPush(bool success, uint16_t depth,
+    uint8_t trace_index)
+{
+    Stage5LSwdCounters *c =
+        (Stage5LSwdCounters *)&g_stage5l_rate_diagnostics.counters;
+    if (g_stage5l_measurement_control.trace_state != STAGE5L_TRACE_RUNNING)
+        return;
+    if (trace_index >= STAGE5L_RAW_EVIDENCE_CAPACITY) return;
+    if (success) {
+        ++c->fifo_push_count;
+        g_stage5l_rate_diagnostics.trace[trace_index].flags |=
+            STAGE5L_TRACE_FLAG_FIFO_PUSH;
+    }
+    if (depth > c->maximum_fifo_depth) c->maximum_fifo_depth = depth;
+    g_stage5l_rate_diagnostics.trace[trace_index].fifo_depth = depth;
+    if (!success) FreezeTrace(STAGE5L_TRIGGER_FIFO_PRESSURE);
+}
+
+void Stage5LSwdDiagnostics_OnFifoPop(uint16_t depth, uint8_t trace_index)
+{
+    if (g_stage5l_measurement_control.trace_state != STAGE5L_TRACE_RUNNING)
+        return;
+    if (trace_index >= STAGE5L_RAW_EVIDENCE_CAPACITY) return;
+    s_trace_bridge_index = trace_index;
+    ++g_stage5l_rate_diagnostics.counters.fifo_pop_count;
+    g_stage5l_rate_diagnostics.trace[trace_index].flags |=
+        STAGE5L_TRACE_FLAG_FIFO_POP;
+    g_stage5l_rate_diagnostics.trace[trace_index].fifo_depth = depth;
+}
+
+void Stage5LSwdDiagnostics_OnBridgeResult(bool accepted,
+    uint32_t processed_sequence)
+{
+    Stage5LSwdCounters *c =
+        (Stage5LSwdCounters *)&g_stage5l_rate_diagnostics.counters;
+    if (g_stage5l_measurement_control.trace_state != STAGE5L_TRACE_RUNNING)
+        return;
+    ++c->measurement_bridge_count;
+    if (accepted) {
+        ++c->weight_engine_accept_count;
+        ++c->sample_sequence_increment_count;
+        g_stage5l_rate_diagnostics.trace[s_trace_bridge_index].flags |=
+            STAGE5L_TRACE_FLAG_ENGINE_ACCEPT;
+        g_stage5l_rate_diagnostics.trace[s_trace_bridge_index].processed_sequence =
+            processed_sequence;
+        if ((g_stage5l_measurement_control.requested_sample_count != 0U) &&
+            (c->weight_engine_accept_count >=
+             g_stage5l_measurement_control.requested_sample_count)) {
+            g_stage5l_measurement_control.status =
+                STAGE5L_DIAGNOSTIC_STATUS_APPLIED;
+            g_stage5l_measurement_control.result = 1U;
+            FreezeTrace(STAGE5L_TRIGGER_SAMPLE_TARGET);
+        }
+    } else {
+        ++c->weight_engine_reject_count;
+    }
+    if ((c->fifo_push_count - c->weight_engine_accept_count) > 8U)
+        FreezeTrace(STAGE5L_TRIGGER_PROCESSING_DIVERGENCE);
+}
+
+void Stage5LSwdDiagnostics_OnPublish(void)
+{
+    if (g_stage5l_measurement_control.trace_state == STAGE5L_TRACE_RUNNING)
+        ++g_stage5l_rate_diagnostics.counters.publish_count;
 }

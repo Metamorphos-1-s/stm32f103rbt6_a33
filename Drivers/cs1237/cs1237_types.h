@@ -41,6 +41,9 @@ typedef struct
     uint32_t timestamp_ms;
     uint8_t config_status;
     bool valid;
+#if (STAGE5L_SWD_DIAGNOSTICS != 0U)
+    uint8_t trace_index;
+#endif
 } CS1237_Sample;
 
 typedef enum
