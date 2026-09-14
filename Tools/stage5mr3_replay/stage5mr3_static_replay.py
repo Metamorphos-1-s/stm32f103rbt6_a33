@@ -66,13 +66,16 @@ def improvement_fraction(before, after):
 
 
 class StaticModeCompensator:
-    """Anchored slow correction with an explicit enable safety boundary."""
+    """Mode-gated drift-rate estimator with a persistent integrated offset.
+
+    The accumulated offset represents already-observed sensor drift. A load
+    step resets only the rate estimator; it must not erase that offset.
+    """
 
     def __init__(self, config, initial_offset_ug=0):
         self.c = config
         self.offset = float(initial_offset_ug)
-        self.target = float(initial_offset_ug)
-        self.anchor = None
+        self.correction_rate_ug_per_s = 0.0
         self.previous_enabled = None
         self.hold_until = -1
         self.step_values = []
@@ -89,8 +92,7 @@ class StaticModeCompensator:
             return
         if enabled == self.previous_enabled:
             return
-        self.target = self.offset
-        self.anchor = None
+        self.correction_rate_ug_per_s = 0.0
         self.step_values.clear()
         self.slow_values.clear()
         self.step_count = 0
@@ -99,12 +101,10 @@ class StaticModeCompensator:
             self.hold_until = second + self.c.hold_off_s
         self.previous_enabled = enabled
 
-    def _ramp(self):
-        limit = self.c.maximum_update_ug_per_s
-        if self.target > self.offset:
-            self.offset = min(self.target, self.offset + limit)
-        elif self.target < self.offset:
-            self.offset = max(self.target, self.offset - limit)
+    def _integrate_rate(self):
+        limit = float(self.c.maximum_update_ug_per_s)
+        rate = max(-limit, min(limit, self.correction_rate_ug_per_s))
+        self.offset += rate
 
     def _detect_step(self, mass_ug):
         self.step_values.append(mass_ug)
@@ -112,7 +112,9 @@ class StaticModeCompensator:
         self.step_values = self.step_values[-2 * block :]
         if len(self.step_values) != 2 * block:
             return False
-        delta = r2.median(self.step_values[block:]) - r2.median(self.step_values[:block])
+        delta = r2.median(self.step_values[block:]) - r2.median(
+            self.step_values[:block]
+        )
         sign = 1 if delta > 0 else -1 if delta < 0 else 0
         if abs(delta) < self.c.step_threshold_ug:
             self.step_count = 0
@@ -130,11 +132,12 @@ class StaticModeCompensator:
         if not enabled:
             return normalized_mass_ug - self.offset
 
-        self._ramp()
+        self._integrate_rate()
 
         if self._detect_step(normalized_mass_ug):
-            self.target = self.offset
-            self.anchor = None
+            # Accept the new physical load by rebuilding only the observation
+            # window. Preserve the accumulated drift offset.
+            self.correction_rate_ug_per_s = 0.0
             self.step_values.clear()
             self.slow_values.clear()
             self.step_count = 0
@@ -144,8 +147,9 @@ class StaticModeCompensator:
             self.decisions.append({
                 "second": second,
                 "accepted": False,
-                "reason": "FAST_STEP_REBASE",
+                "reason": "FAST_STEP_REBUILD_RATE",
                 "offset_ug": self.offset,
+                "correction_rate_ug_per_s": 0.0,
             })
             return normalized_mass_ug - self.offset
 
@@ -159,38 +163,38 @@ class StaticModeCompensator:
         edge = self.c.endpoint_median_s
         first = r2.median(self.slow_values[:edge])
         last = r2.median(self.slow_values[-edge:])
-        if self.anchor is None:
-            self.anchor = first - self.offset
-
         delta = last - first
-        rate = abs(delta) * 3600.0 / (
+        rate_g_per_h = abs(delta) * 3600.0 / (
             self.c.observation_window_s * 1_000_000
         )
-        desired = last - self.anchor
         accepted = False
         if abs(delta) <= self.c.estimator_deadband_ug:
+            self.correction_rate_ug_per_s = 0.0
             reason = "BELOW_ESTIMATOR_DEADBAND"
-        elif rate > self.c.max_static_rate_g_per_h:
-            # This window is ambiguous. Freeze the existing target without
-            # destroying the learned anchor. A true load step is handled by
-            # the independent fast-step path; an isolated noisy window must
-            # not permanently discard accumulated drift correction.
+        elif rate_g_per_h > self.c.max_static_rate_g_per_h:
+            self.correction_rate_ug_per_s = 0.0
             reason = "RATE_LIMIT_HOLD"
         else:
-            self.target = desired
+            estimated = delta / self.c.observation_window_s
+            limit = float(self.c.maximum_update_ug_per_s)
+            self.correction_rate_ug_per_s = max(
+                -limit, min(limit, estimated)
+            )
             self.updates += 1
             accepted = True
-            reason = "STATIC_DRIFT_ACCEPTED"
+            reason = "STATIC_DRIFT_RATE_ACCEPTED"
 
         self.decisions.append({
             "second": second,
             "first_ug": first,
             "last_ug": last,
             "delta_ug": delta,
-            "estimated_rate_g_per_h": rate,
-            "desired_offset_ug": desired,
-            "offset_before_ramp_ug": self.offset,
-            "target_offset_ug": self.target,
+            "estimated_rate_g_per_h": (
+                delta * 3600.0
+                / (self.c.observation_window_s * 1_000_000)
+            ),
+            "offset_ug": self.offset,
+            "correction_rate_ug_per_s": self.correction_rate_ug_per_s,
             "accepted": accepted,
             "reason": reason,
         })
