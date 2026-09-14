@@ -25,4 +25,9 @@ Results/stage5mr_drift_compensation/**/*.json text eol=lf
 Results/stage5mr_drift_compensation/**/*.csv text eol=lf
 Results/stage5mr_drift_compensation/**/*.md text eol=lf
 Results/stage5mr_drift_compensation/**/*.bin -text
+Results/stage5mr4/**/*.json text eol=lf
+Results/stage5mr4/**/*.jsonl text eol=lf
+Results/stage5mr4/**/*.csv text eol=lf
+Results/stage5mr4/**/*.md text eol=lf
+Results/stage5mr4/**/*.bin -text
 Docs/evidence/*.json text eol=lf

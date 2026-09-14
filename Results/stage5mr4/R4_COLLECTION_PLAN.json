@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "base_commit": "ca3008a56bbd3577f71c65b60329c28052551285",
+  "branch": "stage5mr4-drift-portability-qualification",
+  "blind_parameters_frozen": true,
+  "parameters": {
+    "observation_window_s": 180,
+    "block_median_s": 15,
+    "estimator": "whole-window OLS",
+    "deadband_g": 0.002,
+    "declared_static_ceiling_g_per_h": 1.0,
+    "fast_step_g": 0.020,
+    "correction_cap_g_per_min": 0.0045,
+    "correction_cap_ug_per_s": 75,
+    "trend_damping_permille": 875,
+    "mode_reenable_holdoff_s": 15
+  },
+  "runs": [
+    {"id": "cold_empty_1", "duration_s": 3600, "status": "PENDING"},
+    {"id": "cold_empty_2", "duration_s": 3600, "status": "PENDING"},
+    {"id": "hot_empty", "duration_s": 3600, "status": "PENDING"},
+    {"id": "500g_constant_1", "duration_s": 3600, "status": "PENDING"},
+    {"id": "500g_constant_2", "duration_s": 3600, "status": "PENDING"},
+    {"id": "other_constant_load", "duration_s": 3600, "status": "PENDING_LOAD_IDENTITY"},
+    {"id": "load_unload_cycles_5", "status": "PENDING"},
+    {"id": "mode_switches_20", "status": "PENDING"}
+  ],
+  "sensor_identity": "PENDING_OPERATOR_CONFIRMATION",
+  "configured_capacity_kg": 3.0,
+  "physical_rating_claim_in_r4_prompt_kg": 6.0,
+  "identity_mismatch_must_be_resolved_before_capture": true
+}
