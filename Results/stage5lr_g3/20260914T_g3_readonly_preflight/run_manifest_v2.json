@@ -1,0 +1,62 @@
+{
+  "schema_version": 2,
+  "run_id": "20260914T_g3_readonly_preflight",
+  "classification": "STAGE5LR_G2_SWD_EVIDENCE",
+  "repository_commit": "6bf886cb749067bdd6b7943cdb5b05d8109ff54d",
+  "firmware": {
+    "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+    "firmware": "0x0510",
+    "map": "0x0104",
+    "profile": 0,
+    "source": "final_device_state.json"
+  },
+  "files": [
+    {
+      "path": "channel_mapping_draft.json",
+      "length": 1016,
+      "sha256": "17D1A4BE438408B9BEDE195A7437CC77705FE0D6FA8F618B85980EA339B608FE"
+    },
+    {
+      "path": "cleanup.json",
+      "length": 370,
+      "sha256": "BFF2095F4ECA946562EA103EE7C1B91DFA201081C3D891425335BE85AA86DA1D"
+    },
+    {
+      "path": "final_device_state.json",
+      "length": 1268,
+      "sha256": "98D3545FAEE97759AED4CD6AF08A2A4A82180E995B32432308EECFBA010B95CA"
+    },
+    {
+      "path": "g2_manifest_git_blob_audit.json",
+      "length": 354,
+      "sha256": "03E03C120CAA9D58FC578F93E0AE78899F17009C989757A24D6F82527DF3AD94"
+    },
+    {
+      "path": "hf2_status.json",
+      "length": 2970,
+      "sha256": "503F8503CF8D34FDB39CC703CB9BA001B5B9AD3926D933E6F49F7473D679094F"
+    },
+    {
+      "path": "instrument_inventory.json",
+      "length": 706,
+      "sha256": "FAF0236093F7D4109A5E9852DC8529F61BBB4E5F9DB0C3D6B120B254A0BCA5D7"
+    },
+    {
+      "path": "modbus_probe.json",
+      "length": 721,
+      "sha256": "587E9098335FF621072DD454916B2526A146A3CE5F805D444AF0C0A0F265E419"
+    },
+    {
+      "path": "port_inventory.json",
+      "length": 826,
+      "sha256": "18E7899333800853D0DE7D7C7AD43C4D526F008B2EC9ED227F8A6B1F5755FBED"
+    },
+    {
+      "path": "summary.md",
+      "length": 723,
+      "sha256": "E37859B07C8A91E567648E3517031C965C68BF5521DEE49F14506ED520950CAB"
+    }
+  ],
+  "repository_bytes_revision": "6bf886cb749067bdd6b7943cdb5b05d8109ff54d",
+  "manifest_correction": "Rebound to committed Git blob bytes; evidence content unchanged"
+}
