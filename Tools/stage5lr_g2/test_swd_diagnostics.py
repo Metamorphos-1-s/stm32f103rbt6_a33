@@ -43,4 +43,11 @@ class SwdDiagnosticsTests(unittest.TestCase):
         run.return_value.returncode=0;run.return_value.stdout="ok"
         result=swd.programmer_call("programmer","serial",1800,["-r32","0x20000000","1"])
         self.assertIn("mode=HotPlug",result["command"])
+    @mock.patch("swd_diagnostics.subprocess.check_output")
+    def test_rebind_uses_git_blob_bytes(self, check_output):
+        check_output.return_value=b"git bytes\n"
+        with tempfile.TemporaryDirectory(dir=Path(__file__).resolve().parents[2]) as directory:
+            run=Path(directory);(run/"data.json").write_bytes(b"worktree\r\n")
+            swd.write_json(run/"run_manifest_v2.json",{"run_id":run.name,"files":[{"path":"data.json","length":10,"sha256":"0"}]})
+            value=swd.rebind_manifest(run,"abc123");self.assertEqual(value["files"][0]["length"],10);self.assertEqual(value["files"][0]["sha256"],swd.hashlib.sha256(b"git bytes\n").hexdigest().upper())
 if __name__=="__main__":unittest.main()

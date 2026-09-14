@@ -109,7 +109,7 @@ The final diagnostic ELF/map SHA-256 values are `5BA1E7B270093DC3776DE53C1B8C02A
 
 The USB serial adapter was unavailable at final postflight, so the final Modbus identity/revision/dirty/fault read is `NOT RUN`, not PASS. Exact product download verification and unchanged persistent slots establish image/config restoration but are not represented as a Modbus runtime-state reading.
 
-Software gates: MSVC `/W4 /WX` Debug CTest 17/17 PASS; Stage5B rate policy 3/3 and full Python 30/30 PASS; Stage5C 12/12 PASS; Stage5L 8/8 PASS; G2 parser 7/7 PASS; register consistency PASS; Debug, Release, BoardDiagnostics and Stage5LDiagnostics clean builds PASS. Product Release contains no diagnostic symbols and retains its exact hash. Strict GCC passes for G2-modified diagnostic/driver/bridge objects; the whole-project strict build remains limited by a pre-existing unrelated missing-field initializer warning. Clang, ASan and UBSan remain `NOT RUN` because the environment is unavailable.
+Software gates: MSVC `/W4 /WX` Debug CTest 17/17 PASS; Stage5B rate policy 3/3 and full Python 30/30 PASS; Stage5C 12/12 PASS; Stage5L 8/8 PASS; G2 parser 8/8 PASS; register consistency PASS; Debug, Release, BoardDiagnostics and Stage5LDiagnostics clean builds PASS. Product Release contains no diagnostic symbols and retains its exact hash. Strict GCC passes for G2-modified diagnostic/driver/bridge objects; the whole-project strict build remains limited by a pre-existing unrelated missing-field initializer warning. Clang, ASan and UBSan remain `NOT RUN` because the environment is unavailable.
 
 No merge, tag or pull request was created. No history was rewritten, no mass erase occurred, and Stage 5M/5N/5O were not entered.
 

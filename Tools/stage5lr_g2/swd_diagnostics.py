@@ -147,6 +147,16 @@ def manifest(run_dir, metadata):
         "repository_commit":metadata["repository_commit"],"firmware":metadata["firmware"],"files":files}
     write_json(run/"run_manifest_v2.json",value); return value
 
+def rebind_manifest(run_dir, revision):
+    run=Path(run_dir);path=run/"run_manifest_v2.json";value=json.loads(path.read_text(encoding="utf-8"));root=Path(__file__).resolve().parents[2]
+    for item in value["files"]:
+        relative=(run/item["path"]).resolve().relative_to(root).as_posix()
+        data=subprocess.check_output(["git","show",f"{revision}:{relative}"],cwd=root)
+        item["length"]=len(data);item["sha256"]=hashlib.sha256(data).hexdigest().upper()
+    value["repository_bytes_revision"]=revision
+    value["manifest_correction"]="Rebound to committed Git blob bytes; evidence content unchanged"
+    write_json(path,value);return value
+
 def decode_files(control_path, snapshot_path, output_dir):
     out=Path(output_dir); out.mkdir(parents=True,exist_ok=True)
     control=decode_control(Path(control_path).read_bytes()); decoded=decode_snapshot(Path(snapshot_path).read_bytes())
@@ -219,12 +229,14 @@ def main():
     s=sub.add_parser("inspect-elf");s.add_argument("--elf",required=True);s.add_argument("--map",required=True);s.add_argument("--output",required=True);s.add_argument("--nm",default="arm-none-eabi-nm")
     s=sub.add_parser("decode");s.add_argument("--control",required=True);s.add_argument("--snapshot",required=True);s.add_argument("--output",required=True)
     s=sub.add_parser("validate-manifest");s.add_argument("--input",required=True)
+    s=sub.add_parser("rebind-manifest");s.add_argument("--input",required=True);s.add_argument("--git-revision",required=True)
     s=sub.add_parser("capture");s.add_argument("--mode",choices=("10","40","restore"),required=True);s.add_argument("--samples",type=int,default=256);s.add_argument("--second-window",action="store_true");s.add_argument("--output",required=True);s.add_argument("--elf",required=True);s.add_argument("--map",required=True);s.add_argument("--sn",required=True);s.add_argument("--swd-khz",type=int,default=1800);s.add_argument("--poll-interval-s",type=float,default=2.0);s.add_argument("--timeout-s",type=float,default=90.0);s.add_argument("--programmer",default="STM32_Programmer_CLI.exe");s.add_argument("--nm",default="arm-none-eabi-nm")
     a=p.parse_args()
     if a.command=="inspect-elf":
         syms=symbols_from_elf(a.elf,a.nm);write_json(a.output,{"elf":{"path":a.elf,"length":Path(a.elf).stat().st_size,"sha256":sha256(a.elf)},"map":parse_map(a.map,syms)});return 0
     if a.command=="decode":decode_files(a.control,a.snapshot,a.output);return 0
     if a.command=="capture":return hardware_capture(a)
+    if a.command=="rebind-manifest":rebind_manifest(a.input,a.git_revision);return 0
     run=Path(a.input);m=json.loads((run/"run_manifest_v2.json").read_text(encoding="utf-8"))
     if m["run_id"]!=run.name:raise ValueError("run id mismatch")
     for f in m["files"]:

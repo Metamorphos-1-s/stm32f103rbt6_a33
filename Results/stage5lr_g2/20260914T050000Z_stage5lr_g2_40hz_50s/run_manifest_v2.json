@@ -44,8 +44,8 @@
     },
     {
       "path": "config_slots_after_physical_power_cycle.json",
-      "length": 2738,
-      "sha256": "70D24BC90E9181E4E8B283DA5AEAE935496845DC674B1E7C7FC63210382CE7A0"
+      "length": 2642,
+      "sha256": "A267A06591B60367006F383EE72387537D9712889F0858540A2B91C2A472042F"
     },
     {
       "path": "config_slots_after_product_restore.bin",
@@ -132,5 +132,7 @@
       "length": 448,
       "sha256": "6447773442E733E88D64FEB89B283A953F84EBCACD1A37DA1885FDB0D5201C8A"
     }
-  ]
+  ],
+  "repository_bytes_revision": "258d68c5f2e7f17bf5850d550f443e7d4c5023fa",
+  "manifest_correction": "Rebound to committed Git blob bytes; evidence content unchanged"
 }

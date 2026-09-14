@@ -107,5 +107,7 @@
       "length": 448,
       "sha256": "1C3E2D41CC80C31A79760AD170A3319EA4E343162609C49E84737021FF989393"
     }
-  ]
+  ],
+  "repository_bytes_revision": "258d68c5f2e7f17bf5850d550f443e7d4c5023fa",
+  "manifest_correction": "Rebound to committed Git blob bytes; evidence content unchanged"
 }

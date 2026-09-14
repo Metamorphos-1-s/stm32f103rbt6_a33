@@ -47,8 +47,8 @@
     },
     {
       "path": "config_slots_before.json",
-      "length": 2718,
-      "sha256": "7EFE1C301C9124FF9627D4C4868AB56315045E6B260EA5EBE2F77DEE44091047"
+      "length": 2622,
+      "sha256": "5B2638A29036B3D14EB73027ED70DCA97DDD275953642A45D26CD0130DBDB277"
     },
     {
       "path": "diagnostic_control_boot.bin",
@@ -60,5 +60,7 @@
       "length": 921,
       "sha256": "3443F49BC375DF2FAFFFD01A0E7557568DD3FDB38ABCFF15F6540DA987E422A2"
     }
-  ]
+  ],
+  "repository_bytes_revision": "258d68c5f2e7f17bf5850d550f443e7d4c5023fa",
+  "manifest_correction": "Rebound to committed Git blob bytes; evidence content unchanged"
 }
