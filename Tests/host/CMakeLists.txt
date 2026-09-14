@@ -143,6 +143,27 @@ foreach(target stage5ma_adaptive_tests stage5ma_adaptive_runner)
 endforeach()
 add_test(NAME stage5ma_adaptive_logic COMMAND stage5ma_adaptive_tests)
 
+add_executable(stage5mr_drift_tests
+    test_stage5mr_drift.c
+    ../../Domain/measurement/static_drift_compensator.c)
+target_include_directories(stage5mr_drift_tests PRIVATE ../../Domain/measurement)
+if(MSVC)
+    target_compile_options(stage5mr_drift_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5mr_drift_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5mr_drift_logic COMMAND stage5mr_drift_tests)
+add_executable(stage5mr_drift_runner
+    stage5mr_drift_runner.c
+    ../../Domain/measurement/static_drift_compensator.c)
+target_include_directories(stage5mr_drift_runner PRIVATE ../../Domain/measurement)
+target_compile_definitions(stage5mr_drift_runner PRIVATE _CRT_SECURE_NO_WARNINGS)
+if(MSVC)
+    target_compile_options(stage5mr_drift_runner PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5mr_drift_runner PRIVATE -Wall -Wextra -Werror)
+endif()
+
 add_executable(display_conditioner_tests
     test_display_conditioner.c
     ../../Domain/measurement/display_conditioner.c)

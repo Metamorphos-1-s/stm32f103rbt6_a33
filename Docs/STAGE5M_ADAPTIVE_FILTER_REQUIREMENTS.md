@@ -32,3 +32,5 @@ Requirements:
 - Acceptance must include noise, t10/t90, settling, repeated load/unload, creep, hysteresis, and slow-fill false-stable tests.
 
 Stage 5M-A screening thresholds are frozen only for offline comparison. They are not production thresholds. The 40 Hz product path remains contained and raw-baseline causality remains unresolved.
+
+Stage 5M-R correction: stable latency and slow-fill stable ratio are not drift-compensation acceptance metrics. Static drift protection is evaluated independently, with real-weight preservation first. The first protected-drift candidate failed no-reverse-amplification offline and was not authorized for hardware shadow validation.

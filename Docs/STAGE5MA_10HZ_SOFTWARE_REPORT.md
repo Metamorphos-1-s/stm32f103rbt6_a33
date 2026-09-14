@@ -38,3 +38,5 @@ MSVC `/W4 /WX` Host CTest passes 18/18. Stage5B rate policy passes 3/3 and its f
 Product Release SHA-256 remains `82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486`, and its symbols contain no AdaptiveMeasurement/Stage5M entry or state. Firmware 0x0510, Map 0x0104, Schema 2 and Persistent Format 3 are unchanged. This stage performed no device I/O, firmware flash or configuration write.
 
 No merge, tag, pull request, force push, rebase or history rewrite occurred. Stage 5M-B, Stage 5N and Stage 5O were not entered.
+
+Subsequent Stage 5M-R requirements correction separates static drift protection from fast response and stable timing. This does not alter the Stage 5M-A failure result or select its adaptive candidate.

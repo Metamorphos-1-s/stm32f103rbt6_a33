@@ -21,4 +21,8 @@ Results/stage5ma_replay/**/*.json text eol=lf
 Results/stage5ma_replay/**/*.csv text eol=lf
 Results/stage5ma_replay/**/*.md text eol=lf
 Results/stage5ma_replay/**/*.bin -text
+Results/stage5mr_drift_compensation/**/*.json text eol=lf
+Results/stage5mr_drift_compensation/**/*.csv text eol=lf
+Results/stage5mr_drift_compensation/**/*.md text eol=lf
+Results/stage5mr_drift_compensation/**/*.bin -text
 Docs/evidence/*.json text eol=lf
