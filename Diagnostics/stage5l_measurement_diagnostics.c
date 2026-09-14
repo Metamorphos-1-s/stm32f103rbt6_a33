@@ -180,13 +180,9 @@ void Stage5LMeasurementDiagnostics_Process(void)
     if (s_rate_switch_pending) {
         CS1237_State state = CS1237_GetState();
         if (state == CS1237_STATE_RUNNING) {
-            DeviceConfig candidate = SystemContext_Get()->config;
             uint8_t config_byte = CS1237_GetLastConfigRegister();
             bool readback_ok = config_byte ==
                 g_stage5l_rate_diagnostics.expected_config_byte;
-            candidate.metrology.profiles[
-                candidate.metrology.active_profile].sample_rate =
-                (Cs1237DataRate)g_stage5l_rate_diagnostics.requested_rate;
             g_stage5l_rate_diagnostics.verified_config_byte = config_byte;
             g_stage5l_rate_diagnostics.config_readback_verified =
                 readback_ok ? 1U : 0U;
@@ -195,7 +191,8 @@ void Stage5LMeasurementDiagnostics_Process(void)
                     STAGE5L_DIAGNOSTIC_STATUS_FAILED;
                 g_stage5l_rate_diagnostics.last_failure_reason =
                     STAGE5L_FAILURE_READBACK;
-            } else if (!MetrologyManager_Reconfigure(&candidate)) {
+            } else if (!MetrologyManager_ReconfigureDiagnosticRate(
+                (Cs1237DataRate)g_stage5l_rate_diagnostics.requested_rate)) {
                 g_stage5l_measurement_control.status =
                     STAGE5L_DIAGNOSTIC_STATUS_FAILED;
                 g_stage5l_rate_diagnostics.last_failure_reason =

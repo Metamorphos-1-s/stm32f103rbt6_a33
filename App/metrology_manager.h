@@ -30,6 +30,9 @@ bool MetrologyManager_ApplyCalibration(
     const CalibrationConfig *calibration);
 bool MetrologyManager_ReconfigureFilter(FilterMode mode, uint8_t strength);
 bool MetrologyManager_Reconfigure(const DeviceConfig *config);
+#if (STAGE5L_SWD_DIAGNOSTICS != 0U)
+bool MetrologyManager_ReconfigureDiagnosticRate(Cs1237DataRate rate);
+#endif
 bool MetrologyManager_RestartAfterStorage(const DeviceConfig *config);
 uint32_t MetrologyManager_GetRejectedSampleCount(void);
 int32_t MetrologyManager_GetZeroOffsetRaw(void);

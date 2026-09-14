@@ -473,6 +473,29 @@ bool MetrologyManager_Reconfigure(const DeviceConfig *config)
         METROLOGY_REBUILD_REPLAY_RAW);
 }
 
+#if (STAGE5L_SWD_DIAGNOSTICS != 0U)
+bool MetrologyManager_ReconfigureDiagnosticRate(Cs1237DataRate rate)
+{
+    const SystemContext *context = SystemContext_Get();
+    WeighingProfileId active;
+    const WeighingProfileConfig *profile;
+    if (!s_initialized || (context == NULL) ||
+        ((uint32_t)rate > (uint32_t)DEVICE_CS1237_DATA_RATE_40_HZ))
+        return false;
+    active = context->config.metrology.active_profile;
+    if ((uint32_t)active >= WEIGHING_PROFILE_COUNT) return false;
+    profile = &context->config.metrology.profiles[active];
+    if (!WeightEngine_ReconfigureFilter(&s_engine, profile->filter_mode,
+                                        profile->filter_strength))
+        return false;
+    s_engine.metrology.profiles[active].sample_rate = rate;
+    s_last_published_sequence = 0U;
+    s_last_published_stable = false;
+    MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+    return true;
+}
+#endif
+
 bool MetrologyManager_RestartAfterStorage(const DeviceConfig *config)
 {
     return MetrologyManager_RebuildEngine(config, METROLOGY_REBUILD_KEEP_RAW);

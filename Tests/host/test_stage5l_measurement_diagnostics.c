@@ -19,6 +19,7 @@ static uint32_t s_now_cycles;
 static uint32_t s_driver_samples;
 static uint32_t s_processed_samples;
 static uint8_t s_config_register;
+static Cs1237DataRate s_last_diagnostic_rate;
 
 const SystemContext *SystemContext_Get(void) { return &s_context; }
 bool SystemContext_SetConfigDirty(bool dirty)
@@ -33,9 +34,9 @@ bool MetrologyManager_ReconfigureFilter(FilterMode mode, uint8_t strength)
     s_context.runtime.config_dirty = true;
     return s_reconfigure_result;
 }
-bool MetrologyManager_Reconfigure(const DeviceConfig *config)
+bool MetrologyManager_ReconfigureDiagnosticRate(Cs1237DataRate rate)
 {
-    (void)config;
+    s_last_diagnostic_rate = rate;
     return s_reconfigure_result;
 }
 const MassSnapshot *MetrologyManager_GetMassSnapshot(void)
@@ -140,6 +141,7 @@ int main(void)
     CHECK(g_stage5l_rate_diagnostics.config_readback_verified == 1U);
     CHECK(g_stage5l_measurement_control.effective_rate ==
           DEVICE_CS1237_DATA_RATE_40_HZ);
+    CHECK(s_last_diagnostic_rate == DEVICE_CS1237_DATA_RATE_40_HZ);
     CHECK(!Stage5LMeasurementDiagnostics_IsRateSwitchBusy());
 
     g_stage5l_measurement_control.command =
@@ -152,6 +154,7 @@ int main(void)
     CHECK(g_stage5l_measurement_control.status ==
           STAGE5L_DIAGNOSTIC_STATUS_RESTORED);
     CHECK(g_stage5l_measurement_control.rate_override_active == 0U);
+    CHECK(s_last_diagnostic_rate == DEVICE_CS1237_DATA_RATE_10_HZ);
 
     g_stage5l_measurement_control.command =
         STAGE5L_DIAGNOSTIC_COMMAND_APPLY_RATE;

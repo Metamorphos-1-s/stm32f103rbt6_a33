@@ -40,6 +40,10 @@ DWT CYCCNT is already initialized by the board time service, independent of debu
 
 The ring consumes 448 bytes. Together with the counters it replaces the older Stage 5L evidence ring; the complete snapshot is 660 bytes and the control block is 88 bytes. The Stage5LDiagnostics image uses 20,168 of 20,480 SRAM bytes. Because a larger pre/post ring would exceed SRAM, G2 uses rolling last-16 context and freezes on the first anomaly or sample target. Cumulative counters cover the full 256/400-sample run; retained interval percentiles cover only the last 16 entries and are labeled accordingly.
 
+The first attempted 40 Hz command exposed a diagnostic-only stack collision before usable rate evidence was produced. The previous completion path placed a full `DeviceConfig` on the Stage 5L state-machine stack and called `MetrologyManager_Reconfigure()`, whose `WeightEngine` replacement frame alone is 1,048 bytes. With `.bss` ending at `0x20004AC8`, these nested frames overwrote the counter/trace tail and then the control block. The configuration Flash hash remained unchanged and the exact product Release was restored immediately.
+
+The minimal correction adds `MetrologyManager_ReconfigureDiagnosticRate()`. It updates only the engine's non-persistent sample-rate view and reuses `WeightEngine_ReconfigureFilter()` to reset filter, stability and runtime-drift state. It does not allocate a replacement engine, change SystemContext Active configuration, mark dirty or write Flash. Stack-usage output is 16 bytes for this function and 48 bytes for the diagnostic state machine. The failed run remains classified as diagnostic infrastructure failure and contains no valid 40 Hz rate conclusion.
+
 Freeze triggers are target completion, near rail, raw jump of at least 1,000,000 counts, read failure, config mismatch, ready interval outside 0.5x to 2x the requested nominal interval, FIFO push failure, or persistent push/accept divergence. Freeze prevents further overwrite. A temporary rate override schedules automatic 10 Hz restoration.
 
 ## Host tool
