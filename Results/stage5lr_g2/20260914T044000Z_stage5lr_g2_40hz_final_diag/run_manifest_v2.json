@@ -1,0 +1,106 @@
+{
+  "schema_version": 2,
+  "run_id": "20260914T044000Z_stage5lr_g2_40hz_final_diag",
+  "classification": "STAGE5LR_G2_SWD_EVIDENCE",
+  "repository_commit": "53ed11725e4c8be0e94aa0aa09adad0e88df9c94",
+  "firmware": {
+    "repository_commit": "53ed11725e4c8be0e94aa0aa09adad0e88df9c94",
+    "branch": "stage5lr-g2-swd-diagnostics",
+    "worktree": "clean",
+    "elf": {
+      "path": "build/Stage5LDiagnostics/stm32f103rbt6_a33.elf",
+      "length": 1935532,
+      "sha256": "5BA1E7B270093DC3776DE53C1B8C02A95440C7BC86B13C9D47CDB50A5A91D173"
+    },
+    "map": {
+      "path": "build/Stage5LDiagnostics/stm32f103rbt6_a33.map",
+      "length": 1383320,
+      "sha256": "7180275B477011FD5C5797EF6B3925CFCD3BEB24FC78D19DD7F73B98BEDE8B76"
+    },
+    "symbols": {
+      "g_stage5l_measurement_control": {
+        "address": 536889980,
+        "size": 88
+      },
+      "g_stage5l_rate_diagnostics": {
+        "address": 536889308,
+        "size": 672
+      }
+    },
+    "control_schema": 3,
+    "trace_schema": 1,
+    "trace_record_size": 28
+  },
+  "files": [
+    {
+      "path": "counter_snapshot.json",
+      "length": 877,
+      "sha256": "104AAA2A1E3F144509B2236A27C502CAF5F8B7C1B619C5423755D700581CAC32"
+    },
+    {
+      "path": "diagnostic_control_after.bin",
+      "length": 88,
+      "sha256": "5B2BE5E193A40F82379F24CE4CD52DE94415875B6F4E33799C7B7E2C836C5F27"
+    },
+    {
+      "path": "diagnostic_control_before.bin",
+      "length": 88,
+      "sha256": "8C01A93350321819C81877A79EEA105FBFFF360E306BE06238236F0A4C279782"
+    },
+    {
+      "path": "diagnostic_control_poll.bin",
+      "length": 88,
+      "sha256": "5B2BE5E193A40F82379F24CE4CD52DE94415875B6F4E33799C7B7E2C836C5F27"
+    },
+    {
+      "path": "diagnostic_snapshot.bin",
+      "length": 672,
+      "sha256": "4E3FEA9593065BC2078146817A7C80436814AE3AB586AD4FCF91C683E09B3B2D"
+    },
+    {
+      "path": "firmware_identity.json",
+      "length": 770,
+      "sha256": "80A89660CED2B32550867346E56DEF85618F3AB9F9F20EA83CCB030E0607BE49"
+    },
+    {
+      "path": "postflight.json",
+      "length": 1537,
+      "sha256": "0FAF439B9A6866F5C455FEDB4237C2110323C6C1F74167741938246FFA5AB952"
+    },
+    {
+      "path": "preflight.json",
+      "length": 790,
+      "sha256": "E4DBA4474243EFB59E62DF4D11007AD58877F84383C3B663314833EDA1825F80"
+    },
+    {
+      "path": "rate_analysis.json",
+      "length": 1612,
+      "sha256": "917984CF86D62A5012121395D46107387D05851A584A57C03912A0672A86E0DF"
+    },
+    {
+      "path": "swd_adapter.json",
+      "length": 184,
+      "sha256": "18BFE1F75ABDA18EA6ABE8EF10275B98E3C26FFDF68C29D4EE49BF17BE1F049F"
+    },
+    {
+      "path": "swd_operations.json",
+      "length": 21272,
+      "sha256": "AC625C9E5C15AE8F68123A388704BE32812938BDF7DCCCCD55AC2390861A0109"
+    },
+    {
+      "path": "trace_decoded.csv",
+      "length": 1194,
+      "sha256": "605A8D4ECCA639B7D200CA675CC92F02B027802245274C77EF91813D49E6A399"
+    },
+    {
+      "path": "trace_decoded.json",
+      "length": 8393,
+      "sha256": "9ECC06C813799AE50EE0EF8811E34EBE47D31DFA07FD2243D574D017CA235A2C"
+    },
+    {
+      "path": "trace_raw.bin",
+      "length": 448,
+      "sha256": "CD185DD4BDA9DC1BAB059FE9D882CFC44051A3183008172151CDD50121FB5E48"
+    }
+  ]
+}

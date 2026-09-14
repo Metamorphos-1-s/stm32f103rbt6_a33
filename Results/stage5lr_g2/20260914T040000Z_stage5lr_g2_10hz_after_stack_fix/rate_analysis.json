@@ -1,0 +1,59 @@
+{
+  "ready_rate_hz": 9.98466975233024,
+  "retained_interval_count": 15,
+  "interval_cycles": {
+    "min": 7206073,
+    "max": 7217132,
+    "mean": 7211027.533333333,
+    "p50": 7209915,
+    "p95": 7216028.8,
+    "p99": 7216911.36
+  },
+  "read_duration_cycles": {
+    "min": 12640,
+    "max": 12693,
+    "mean": 12651.125
+  },
+  "maximum_continuous_missing_estimate": 0,
+  "raw": {
+    "count": 16,
+    "min": -43877,
+    "max": -43835,
+    "mean": -43860.8125
+  },
+  "layer_deltas": {
+    "ready_minus_read_success": 0,
+    "read_success_minus_fifo_push": 0,
+    "fifo_push_minus_pop": 0,
+    "fifo_pop_minus_engine_accept": 0,
+    "engine_accept_minus_sequence": 0
+  },
+  "counters": {
+    "ready_observation_count": 256,
+    "driver_read_attempt_count": 256,
+    "driver_read_success_count": 256,
+    "driver_read_failure_count": 0,
+    "driver_timeout_count": 0,
+    "config_write_count": 0,
+    "config_readback_count": 0,
+    "config_mismatch_count": 0,
+    "fifo_push_count": 256,
+    "fifo_pop_count": 256,
+    "fifo_overrun_count": 0,
+    "measurement_bridge_count": 256,
+    "weight_engine_accept_count": 256,
+    "weight_engine_reject_count": 0,
+    "sample_sequence_increment_count": 256,
+    "publish_count": 256,
+    "near_rail_count": 0,
+    "raw_jump_count": 0,
+    "settling_discard_count": 4,
+    "first_ready_timestamp_cycles": 3938407183,
+    "last_ready_timestamp_cycles": 1482258842,
+    "minimum_ready_interval_cycles": 7143025,
+    "maximum_ready_interval_cycles": 7267779,
+    "minimum_read_duration_cycles": 12640,
+    "maximum_read_duration_cycles": 12838,
+    "maximum_fifo_depth": 1
+  }
+}

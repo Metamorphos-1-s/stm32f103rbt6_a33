@@ -1,0 +1,122 @@
+[
+  {
+    "command": [
+      "STM32_Programmer_CLI.exe",
+      "-c",
+      "port=SWD",
+      "mode=HotPlug",
+      "freq=1800",
+      "sn=E1007200D0D2139393740544",
+      "-u",
+      "0x20004A70",
+      "88",
+      "D:\\Documents\\stm32f103rbt6_a33\\Results\\stage5lr_g2\\20260914T041000Z_stage5lr_g2_40hz_after_stack_fix\\diagnostic_control_before.bin"
+    ],
+    "output": "      -------------------------------------------------------------------\n                       STM32CubeProgrammer v2.19.0                  \n      -------------------------------------------------------------------\n\nST-LINK SN  : E1007200D0D2139393740544\nST-LINK FW  : V2J47S7\nBoard       : --\nVoltage     : 3.29V\nSWD freq    : 1800 KHz\nConnect mode: Hot Plug\nReset mode  : Software reset\nDevice ID   : 0x410\nRevision ID : Rev X\nDevice name : STM32F101/F102/F103 Medium-density\nFlash size  : 128 KBytes\nDevice type : MCU\nDevice CPU  : Cortex-M3\nBL Version  : --\n\n\nUPLOADING ...\n  File          : D:\\Documents\\stm32f103rbt6_a33\\Results\\stage5lr_g2\\20260914T041000Z_stage5lr_g2_40hz_after_stack_fix\\diagnostic_control_before.bin\n  Size          : 88 Bytes\n  Address:      : 0x20004A70\nRead progress:\n\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317 0%\n\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739 100%\nData read successfully\nTime elapsed during read operation is: 00:00:00.002\n"
+  },
+  {
+    "command": [
+      "STM32_Programmer_CLI.exe",
+      "-c",
+      "port=SWD",
+      "mode=HotPlug",
+      "freq=1800",
+      "sn=E1007200D0D2139393740544",
+      "-w32",
+      "0x20004AA0",
+      "0x00000001",
+      "-v"
+    ],
+    "output": "      -------------------------------------------------------------------\n                       STM32CubeProgrammer v2.19.0                  \n      -------------------------------------------------------------------\n\nST-LINK SN  : E1007200D0D2139393740544\nST-LINK FW  : V2J47S7\nBoard       : --\nVoltage     : 3.29V\nSWD freq    : 1800 KHz\nConnect mode: Hot Plug\nReset mode  : Software reset\nDevice ID   : 0x410\nRevision ID : Rev X\nDevice name : STM32F101/F102/F103 Medium-density\nFlash size  : 128 KBytes\nDevice type : MCU\nDevice CPU  : Cortex-M3\nBL Version  : --\n\nWrite 32-bit data\nw @0x20004aa0:  0x00000001\n\n\nDownloading...\n\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317 0%\n\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739 100%\n32-bit data download complete\n\nVerifying ...\nRead progress:\n\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317 50%\n\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739 100%\nDownload verified successfully\n"
+  },
+  {
+    "command": [
+      "STM32_Programmer_CLI.exe",
+      "-c",
+      "port=SWD",
+      "mode=HotPlug",
+      "freq=1800",
+      "sn=E1007200D0D2139393740544",
+      "-w32",
+      "0x20004AB4",
+      "0x00000190",
+      "-v"
+    ],
+    "output": "      -------------------------------------------------------------------\n                       STM32CubeProgrammer v2.19.0                  \n      -------------------------------------------------------------------\n\nST-LINK SN  : E1007200D0D2139393740544\nST-LINK FW  : V2J47S7\nBoard       : --\nVoltage     : 3.29V\nSWD freq    : 1800 KHz\nConnect mode: Hot Plug\nReset mode  : Software reset\nDevice ID   : 0x410\nRevision ID : Rev X\nDevice name : STM32F101/F102/F103 Medium-density\nFlash size  : 128 KBytes\nDevice type : MCU\nDevice CPU  : Cortex-M3\nBL Version  : --\n\nWrite 32-bit data\nw @0x20004ab4:  0x00000190\n\n\nDownloading...\n\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317 0%\n\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739 100%\n32-bit data download complete\n\nVerifying ...\nRead progress:\n\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317 50%\n\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739 100%\nDownload verified successfully\n"
+  },
+  {
+    "command": [
+      "STM32_Programmer_CLI.exe",
+      "-c",
+      "port=SWD",
+      "mode=HotPlug",
+      "freq=1800",
+      "sn=E1007200D0D2139393740544",
+      "-w32",
+      "0x20004A80",
+      "0x00000003",
+      "-v"
+    ],
+    "output": "      -------------------------------------------------------------------\n                       STM32CubeProgrammer v2.19.0                  \n      -------------------------------------------------------------------\n\nST-LINK SN  : E1007200D0D2139393740544\nST-LINK FW  : V2J47S7\nBoard       : --\nVoltage     : 3.29V\nSWD freq    : 1800 KHz\nConnect mode: Hot Plug\nReset mode  : Software reset\nDevice ID   : 0x410\nRevision ID : Rev X\nDevice name : STM32F101/F102/F103 Medium-density\nFlash size  : 128 KBytes\nDevice type : MCU\nDevice CPU  : Cortex-M3\nBL Version  : --\n\nWrite 32-bit data\nw @0x20004a80:  0x00000003\n\n\nDownloading...\n\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317 0%\n\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739 100%\n32-bit data download complete\n\nVerifying ...\nRead progress:\n\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317 50%\n\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739 100%\nDownload verified successfully\n"
+  },
+  {
+    "command": [
+      "STM32_Programmer_CLI.exe",
+      "-c",
+      "port=SWD",
+      "mode=HotPlug",
+      "freq=1800",
+      "sn=E1007200D0D2139393740544",
+      "-w32",
+      "0x20004AB0",
+      "0x47574453",
+      "-v"
+    ],
+    "output": "      -------------------------------------------------------------------\n                       STM32CubeProgrammer v2.19.0                  \n      -------------------------------------------------------------------\n\nST-LINK SN  : E1007200D0D2139393740544\nST-LINK FW  : V2J47S7\nBoard       : --\nVoltage     : 3.29V\nSWD freq    : 1800 KHz\nConnect mode: Hot Plug\nReset mode  : Software reset\nDevice ID   : 0x410\nRevision ID : Rev X\nDevice name : STM32F101/F102/F103 Medium-density\nFlash size  : 128 KBytes\nDevice type : MCU\nDevice CPU  : Cortex-M3\nBL Version  : --\n\nWrite 32-bit data\nw @0x20004ab0:  0x47574453\n\n\nDownloading...\n\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317 0%\n\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739 100%\n32-bit data download complete\n\nVerifying ...\nRead progress:\n\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317 50%\n\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739 100%\nDownload verified successfully\n"
+  },
+  {
+    "command": [
+      "STM32_Programmer_CLI.exe",
+      "-c",
+      "port=SWD",
+      "mode=HotPlug",
+      "freq=1800",
+      "sn=E1007200D0D2139393740544",
+      "-w32",
+      "0x20004A78",
+      "0x00000002",
+      "-v"
+    ],
+    "output": "      -------------------------------------------------------------------\n                       STM32CubeProgrammer v2.19.0                  \n      -------------------------------------------------------------------\n\nST-LINK SN  : E1007200D0D2139393740544\nST-LINK FW  : V2J47S7\nBoard       : --\nVoltage     : 3.29V\nSWD freq    : 1800 KHz\nConnect mode: Hot Plug\nReset mode  : Software reset\nDevice ID   : 0x410\nRevision ID : Rev X\nDevice name : STM32F101/F102/F103 Medium-density\nFlash size  : 128 KBytes\nDevice type : MCU\nDevice CPU  : Cortex-M3\nBL Version  : --\n\nWrite 32-bit data\nw @0x20004a78:  0x00000002\n\n\nDownloading...\n\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317 0%\n\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739 100%\n32-bit data download complete\n\nVerifying ...\nRead progress:\n\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317 50%\n\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739 100%\nDownload verified successfully\n"
+  },
+  {
+    "command": [
+      "STM32_Programmer_CLI.exe",
+      "-c",
+      "port=SWD",
+      "mode=HotPlug",
+      "freq=1800",
+      "sn=E1007200D0D2139393740544",
+      "-u",
+      "0x20004A70",
+      "88",
+      "D:\\Documents\\stm32f103rbt6_a33\\Results\\stage5lr_g2\\20260914T041000Z_stage5lr_g2_40hz_after_stack_fix\\diagnostic_control_poll.bin"
+    ],
+    "output": "      -------------------------------------------------------------------\n                       STM32CubeProgrammer v2.19.0                  \n      -------------------------------------------------------------------\n\nST-LINK SN  : E1007200D0D2139393740544\nST-LINK FW  : V2J47S7\nBoard       : --\nVoltage     : 3.29V\nSWD freq    : 1800 KHz\nConnect mode: Hot Plug\nReset mode  : Software reset\nDevice ID   : 0x410\nRevision ID : Rev X\nDevice name : STM32F101/F102/F103 Medium-density\nFlash size  : 128 KBytes\nDevice type : MCU\nDevice CPU  : Cortex-M3\nBL Version  : --\n\n\nUPLOADING ...\n  File          : D:\\Documents\\stm32f103rbt6_a33\\Results\\stage5lr_g2\\20260914T041000Z_stage5lr_g2_40hz_after_stack_fix\\diagnostic_control_poll.bin\n  Size          : 88 Bytes\n  Address:      : 0x20004A70\nRead progress:\n\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317 0%\n\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739 100%\nData read successfully\nTime elapsed during read operation is: 00:00:00.001\n"
+  },
+  {
+    "command": [
+      "STM32_Programmer_CLI.exe",
+      "-c",
+      "port=SWD",
+      "mode=HotPlug",
+      "freq=1800",
+      "sn=E1007200D0D2139393740544",
+      "-u",
+      "0x200047DC",
+      "660",
+      "D:\\Documents\\stm32f103rbt6_a33\\Results\\stage5lr_g2\\20260914T041000Z_stage5lr_g2_40hz_after_stack_fix\\diagnostic_snapshot.bin"
+    ],
+    "output": "      -------------------------------------------------------------------\n                       STM32CubeProgrammer v2.19.0                  \n      -------------------------------------------------------------------\n\nST-LINK SN  : E1007200D0D2139393740544\nST-LINK FW  : V2J47S7\nBoard       : --\nVoltage     : 3.29V\nSWD freq    : 1800 KHz\nConnect mode: Hot Plug\nReset mode  : Software reset\nDevice ID   : 0x410\nRevision ID : Rev X\nDevice name : STM32F101/F102/F103 Medium-density\nFlash size  : 128 KBytes\nDevice type : MCU\nDevice CPU  : Cortex-M3\nBL Version  : --\n\n\nUPLOADING ...\n  File          : D:\\Documents\\stm32f103rbt6_a33\\Results\\stage5lr_g2\\20260914T041000Z_stage5lr_g2_40hz_after_stack_fix\\diagnostic_snapshot.bin\n  Size          : 660 Bytes\n  Address:      : 0x200047DC\nRead progress:\n\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317 0%\n\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739 100%\nData read successfully\nTime elapsed during read operation is: 00:00:00.010\n"
+  }
+]

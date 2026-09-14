@@ -1,0 +1,111 @@
+{
+  "schema_version": 2,
+  "run_id": "20260914T041000Z_stage5lr_g2_40hz_after_stack_fix",
+  "classification": "STAGE5LR_G2_SWD_EVIDENCE",
+  "repository_commit": "c6d665ca6c4315e4f37c7d862eb6a466953977d7",
+  "firmware": {
+    "repository_commit": "c6d665ca6c4315e4f37c7d862eb6a466953977d7",
+    "branch": "stage5lr-g2-swd-diagnostics",
+    "worktree": "clean",
+    "elf": {
+      "path": "build/Stage5LDiagnostics/stm32f103rbt6_a33.elf",
+      "length": 1935160,
+      "sha256": "03A5CCF2B6848C4FE2628C4C8A00848E43B5759CC8682830716AFB683A0E4753"
+    },
+    "map": {
+      "path": "build/Stage5LDiagnostics/stm32f103rbt6_a33.map",
+      "length": 1382981,
+      "sha256": "146E11808D109C127AFC86A45477DCC0606045794E5547687A37D414C556F801"
+    },
+    "symbols": {
+      "g_stage5l_measurement_control": {
+        "address": 536889968,
+        "size": 88
+      },
+      "g_stage5l_rate_diagnostics": {
+        "address": 536889308,
+        "size": 660
+      }
+    },
+    "control_schema": 3,
+    "trace_schema": 1,
+    "trace_record_size": 28
+  },
+  "files": [
+    {
+      "path": "counter_snapshot.json",
+      "length": 857,
+      "sha256": "0EB4D68E96F6ECC28F9136157B25384420E9E2DD5F9269EDB0615FC12369E5A2"
+    },
+    {
+      "path": "diagnostic_control_after.bin",
+      "length": 88,
+      "sha256": "E375751FDD62CD0D8FFDE6C223B9C602EE943221310D9FFC0C5898494AFC09CF"
+    },
+    {
+      "path": "diagnostic_control_before.bin",
+      "length": 88,
+      "sha256": "8C01A93350321819C81877A79EEA105FBFFF360E306BE06238236F0A4C279782"
+    },
+    {
+      "path": "diagnostic_control_poll.bin",
+      "length": 88,
+      "sha256": "E375751FDD62CD0D8FFDE6C223B9C602EE943221310D9FFC0C5898494AFC09CF"
+    },
+    {
+      "path": "diagnostic_snapshot.bin",
+      "length": 660,
+      "sha256": "87D987710C6A1068B3DD8CE929B807E9A20347716E3FFC6EFBE72EAA7CCA3DE0"
+    },
+    {
+      "path": "firmware_identity.json",
+      "length": 770,
+      "sha256": "18DF6E6B80AD88F81113A2A90A0EF2A34ACF77D947EFC655CEC8559D465D0C43"
+    },
+    {
+      "path": "postflight.json",
+      "length": 1420,
+      "sha256": "04F3B11BB613AFC9F66BEAE98DA320DDE5E50E049AFECC8010DE5EFDF17F8224"
+    },
+    {
+      "path": "preflight.json",
+      "length": 790,
+      "sha256": "1DDF80A720106BB0479226A695B07503A49A4727F60C627B04F06F5C4E1468EE"
+    },
+    {
+      "path": "rate_analysis.json",
+      "length": 1547,
+      "sha256": "1DF11E9255FA20DE2DF6322FEA30E17B73A43EEDFDBCCA85123E08CA8D0387D8"
+    },
+    {
+      "path": "summary.md",
+      "length": 382,
+      "sha256": "619D58AA4FE90C7E917D6D8414CE954193E529B918AC3D99DD3785093912A45A"
+    },
+    {
+      "path": "swd_adapter.json",
+      "length": 184,
+      "sha256": "18BFE1F75ABDA18EA6ABE8EF10275B98E3C26FFDF68C29D4EE49BF17BE1F049F"
+    },
+    {
+      "path": "swd_operations.json",
+      "length": 12937,
+      "sha256": "07DA4EBD35F9AB78138A45506E77CA3FDD868D140CC874F9F1CB4B5638D39A64"
+    },
+    {
+      "path": "trace_decoded.csv",
+      "length": 164,
+      "sha256": "B69592D0F724728A17E2AB41C7057680F7AA31A70BA0B56CBB72632FC1DFEF6F"
+    },
+    {
+      "path": "trace_decoded.json",
+      "length": 7676,
+      "sha256": "6A01BC7F67577D30356A0CC218556CC5454E27D08112509E96B08A124E5EEDAD"
+    },
+    {
+      "path": "trace_raw.bin",
+      "length": 448,
+      "sha256": "1C3E2D41CC80C31A79760AD170A3319EA4E343162609C49E84737021FF989393"
+    }
+  ]
+}

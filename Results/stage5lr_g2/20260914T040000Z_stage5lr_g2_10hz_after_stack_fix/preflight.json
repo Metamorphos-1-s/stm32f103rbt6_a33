@@ -1,0 +1,37 @@
+{
+  "utc": "2026-09-14T06:46:33Z",
+  "control": {
+    "magic": 894190663,
+    "version": 3,
+    "request_sequence": 0,
+    "applied_sequence": 0,
+    "command": 0,
+    "requested_mode": 0,
+    "requested_strength": 0,
+    "status": 0,
+    "override_active": 0,
+    "effective_mode": 3,
+    "effective_strength": 3,
+    "preserved_dirty": 0,
+    "requested_rate": 0,
+    "effective_rate": 0,
+    "rate_override_active": 0,
+    "length": 88,
+    "command_magic": 0,
+    "requested_sample_count": 0,
+    "trace_state": 0,
+    "result": 0,
+    "trigger_reason": 0,
+    "trace_frozen": 0
+  },
+  "symbols": {
+    "g_stage5l_measurement_control": {
+      "address": 536889968,
+      "size": 88
+    },
+    "g_stage5l_rate_diagnostics": {
+      "address": 536889308,
+      "size": 660
+    }
+  }
+}

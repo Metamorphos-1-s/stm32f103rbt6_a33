@@ -1,0 +1,66 @@
+{
+  "schema_version": 2,
+  "run_id": "20260914T031500Z_stage5lr_g2_10hz",
+  "classification": "STAGE5LR_G2_SWD_EVIDENCE",
+  "repository_commit": "3abbd2291c82eb268527cd8cc555bdc706275b97",
+  "firmware": {
+    "classification": "FAILED_DIAGNOSTIC_INFRASTRUCTURE_RUN"
+  },
+  "files": [
+    {
+      "path": "counter_snapshot.json",
+      "length": 820,
+      "sha256": "F72D839CA9970F3CDF01DD7B774368579D15621B4D1B5363E3763C9503871EBA"
+    },
+    {
+      "path": "diagnostic_control_after_timeout.bin",
+      "length": 88,
+      "sha256": "BF82210CF5CBDEF95577DB4EFCF67746C2B5A23595F9978CA776CE034FCB31EE"
+    },
+    {
+      "path": "diagnostic_control_before.bin",
+      "length": 88,
+      "sha256": "BF82210CF5CBDEF95577DB4EFCF67746C2B5A23595F9978CA776CE034FCB31EE"
+    },
+    {
+      "path": "diagnostic_control_poll.bin",
+      "length": 88,
+      "sha256": "BF82210CF5CBDEF95577DB4EFCF67746C2B5A23595F9978CA776CE034FCB31EE"
+    },
+    {
+      "path": "diagnostic_snapshot_after_timeout.bin",
+      "length": 660,
+      "sha256": "C1B587647972EE2AB7A920CF33AF559467796BA861B99E0D54AAF883493BC034"
+    },
+    {
+      "path": "preflight.json",
+      "length": 788,
+      "sha256": "A8EAA39AB73EDDFE4C271DB1AAB77A81EEED8B9EBBAABD7DB56DD3950B716468"
+    },
+    {
+      "path": "rate_analysis.json",
+      "length": 1496,
+      "sha256": "E292ABFC1C9305BBE0AD0804E9DA72B0CF67EA5D5E788D7B573509E731E4DE35"
+    },
+    {
+      "path": "summary.md",
+      "length": 339,
+      "sha256": "18A6CB4DD8E9E99A5F33712BFAFBE6D03B5C6888A73D7702CB40961F64033FB3"
+    },
+    {
+      "path": "swd_adapter.json",
+      "length": 184,
+      "sha256": "18BFE1F75ABDA18EA6ABE8EF10275B98E3C26FFDF68C29D4EE49BF17BE1F049F"
+    },
+    {
+      "path": "trace_decoded.csv",
+      "length": 164,
+      "sha256": "B69592D0F724728A17E2AB41C7057680F7AA31A70BA0B56CBB72632FC1DFEF6F"
+    },
+    {
+      "path": "trace_decoded.json",
+      "length": 7588,
+      "sha256": "2786671CAB7BCFB9CDF45C9359CF4625AAD67E1CA4A3D297BC4D52C2A2D7937D"
+    }
+  ]
+}

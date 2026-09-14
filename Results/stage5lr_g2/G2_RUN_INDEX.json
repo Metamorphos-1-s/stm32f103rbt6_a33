@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "stage": "STAGE5LR_G2_SWD_DIAGNOSTICS",
+  "repository_branch": "stage5lr-g2-swd-diagnostics",
+  "base_commit": "3d8be94fa6c7d25404721cacf145966436870dff",
+  "runs": [
+    {"run_id": "20260914T031500Z_stage5lr_g2_10hz", "result": "FAIL", "reason": "Normal-mode SWD reconnect reset the MCU between command writes; no diagnostic command formed"},
+    {"run_id": "20260914T033000Z_stage5lr_g2_10hz", "result": "PASS", "purpose": "initial 10 Hz layered baseline"},
+    {"run_id": "20260914T034500Z_stage5lr_g2_40hz_first", "result": "FAIL", "reason": "diagnostic stack collision corrupted RAM ABI before valid rate evidence"},
+    {"run_id": "20260914T040000Z_stage5lr_g2_10hz_after_stack_fix", "result": "PASS", "purpose": "10 Hz regression after stack fix"},
+    {"run_id": "20260914T041000Z_stage5lr_g2_40hz_after_stack_fix", "result": "FAIL", "reason": "ready interval threshold applied during configuration transition; no steady 40 Hz samples"},
+    {"run_id": "20260914T043000Z_stage5lr_g2_10hz_final_diag", "result": "PASS", "purpose": "final diagnostic 10 Hz baseline"},
+    {"run_id": "20260914T044000Z_stage5lr_g2_40hz_final_diag", "result": "PASS", "purpose": "first valid 40 Hz window, 400 accepted samples"},
+    {"run_id": "20260914T050000Z_stage5lr_g2_40hz_50s", "result": "PASS", "purpose": "extended 40 Hz window, 2000 accepted samples and final cleanup"}
+  ],
+  "valid_conclusion_inputs": [
+    "20260914T043000Z_stage5lr_g2_10hz_final_diag",
+    "20260914T044000Z_stage5lr_g2_40hz_final_diag",
+    "20260914T050000Z_stage5lr_g2_40hz_50s"
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "schema_version": 2,
+  "run_id": "20260914T050000Z_stage5lr_g2_40hz_50s",
+  "classification": "STAGE5LR_G2_SWD_EVIDENCE",
+  "repository_commit": "3abbd2291c82eb268527cd8cc555bdc706275b97",
+  "firmware": {
+    "repository_commit": "3abbd2291c82eb268527cd8cc555bdc706275b97",
+    "branch": "stage5lr-g2-swd-diagnostics",
+    "worktree": "clean",
+    "elf": {
+      "path": "build/Stage5LDiagnostics/stm32f103rbt6_a33.elf",
+      "length": 1935532,
+      "sha256": "5BA1E7B270093DC3776DE53C1B8C02A95440C7BC86B13C9D47CDB50A5A91D173"
+    },
+    "map": {
+      "path": "build/Stage5LDiagnostics/stm32f103rbt6_a33.map",
+      "length": 1383320,
+      "sha256": "7180275B477011FD5C5797EF6B3925CFCD3BEB24FC78D19DD7F73B98BEDE8B76"
+    },
+    "symbols": {
+      "g_stage5l_measurement_control": {
+        "address": 536889980,
+        "size": 88
+      },
+      "g_stage5l_rate_diagnostics": {
+        "address": 536889308,
+        "size": 672
+      }
+    },
+    "control_schema": 3,
+    "trace_schema": 1,
+    "trace_record_size": 28
+  },
+  "files": [
+    {
+      "path": "cleanup.json",
+      "length": 1012,
+      "sha256": "D7CA92F298A3275B5A3F64AF1D0303621957FBD243D948050C404D5BDBF16C25"
+    },
+    {
+      "path": "config_slots_after_physical_power_cycle.bin",
+      "length": 4096,
+      "sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86"
+    },
+    {
+      "path": "config_slots_after_physical_power_cycle.json",
+      "length": 2738,
+      "sha256": "70D24BC90E9181E4E8B283DA5AEAE935496845DC674B1E7C7FC63210382CE7A0"
+    },
+    {
+      "path": "config_slots_after_product_restore.bin",
+      "length": 4096,
+      "sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86"
+    },
+    {
+      "path": "config_slots_before_product_restore.bin",
+      "length": 4096,
+      "sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86"
+    },
+    {
+      "path": "counter_snapshot.json",
+      "length": 886,
+      "sha256": "94B1FDB2D99E871FF3F2CA66CFB4B0D910032882859B39282199B9B474989CB2"
+    },
+    {
+      "path": "diagnostic_control_after.bin",
+      "length": 88,
+      "sha256": "02C766B825ABED983FE31FB9B06BA233D4B7FAD45BE6E102A2F872FF3EA26EF4"
+    },
+    {
+      "path": "diagnostic_control_before.bin",
+      "length": 88,
+      "sha256": "5B2BE5E193A40F82379F24CE4CD52DE94415875B6F4E33799C7B7E2C836C5F27"
+    },
+    {
+      "path": "diagnostic_control_poll.bin",
+      "length": 88,
+      "sha256": "02C766B825ABED983FE31FB9B06BA233D4B7FAD45BE6E102A2F872FF3EA26EF4"
+    },
+    {
+      "path": "diagnostic_snapshot.bin",
+      "length": 672,
+      "sha256": "4A9AFFF1E190DF62700D78214028AD24EEDA87CFE0B83B91FE5B0A5DD4465B42"
+    },
+    {
+      "path": "firmware_identity.json",
+      "length": 770,
+      "sha256": "23C6073F11B04DE342A38C332675CCE5C865E8AF140DC51AFE373BC5598A7A4D"
+    },
+    {
+      "path": "postflight.json",
+      "length": 1538,
+      "sha256": "41CC1F0EF4EA58854827524946F38C3BBBA9FB281FE082E79EB1F2DC2A17A9AF"
+    },
+    {
+      "path": "preflight.json",
+      "length": 790,
+      "sha256": "062EC81F03F957007DB331B992C376BF980D0AFDF74A76250AAE6E09189B4AD6"
+    },
+    {
+      "path": "rate_analysis.json",
+      "length": 1629,
+      "sha256": "9CF1B1EA3B326DDE033DFEA3E7BE0AB62C164938DEF47EA0605973345D1BA495"
+    },
+    {
+      "path": "summary.md",
+      "length": 862,
+      "sha256": "BF0A24A39E44BF7CB1FB24B1AA04EC979559DD6A0A249690E8C411B54078F14A"
+    },
+    {
+      "path": "swd_adapter.json",
+      "length": 184,
+      "sha256": "18BFE1F75ABDA18EA6ABE8EF10275B98E3C26FFDF68C29D4EE49BF17BE1F049F"
+    },
+    {
+      "path": "swd_operations.json",
+      "length": 52681,
+      "sha256": "1EDFD879B273901D5DD911558CB7CE5110E0590AE8AA6BE6F787583131F4C54D"
+    },
+    {
+      "path": "trace_decoded.csv",
+      "length": 1194,
+      "sha256": "E27C49DA4AC1AB9A2A1B385DE7B0453C78EA5261B3074C6B57AA843ECEBB9D48"
+    },
+    {
+      "path": "trace_decoded.json",
+      "length": 8403,
+      "sha256": "FE6152FD8EA99485491420B210474CB33A554D1C4B5446836C17F716C8A98403"
+    },
+    {
+      "path": "trace_raw.bin",
+      "length": 448,
+      "sha256": "6447773442E733E88D64FEB89B283A953F84EBCACD1A37DA1885FDB0D5201C8A"
+    }
+  ]
+}

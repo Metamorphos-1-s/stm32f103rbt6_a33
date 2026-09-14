@@ -1,0 +1,56 @@
+{
+  "schema_version": 2,
+  "run_id": "20260914T034500Z_stage5lr_g2_40hz_first",
+  "classification": "STAGE5LR_G2_SWD_EVIDENCE",
+  "repository_commit": "3abbd2291c82eb268527cd8cc555bdc706275b97",
+  "firmware": {
+    "classification": "FAILED_DIAGNOSTIC_INFRASTRUCTURE_RUN"
+  },
+  "files": [
+    {
+      "path": "config_slots_after_failure.bin",
+      "length": 4096,
+      "sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86"
+    },
+    {
+      "path": "config_slots_after_product_restore.bin",
+      "length": 4096,
+      "sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86"
+    },
+    {
+      "path": "diagnostic_control_before.bin",
+      "length": 88,
+      "sha256": "8C01A93350321819C81877A79EEA105FBFFF360E306BE06238236F0A4C279782"
+    },
+    {
+      "path": "diagnostic_control_corrupt.bin",
+      "length": 88,
+      "sha256": "4F6D787CA2E4065DFA6FB3CE3A328FAC7365C1FD0BAF24EB7C6BEB5EEA26FE73"
+    },
+    {
+      "path": "diagnostic_control_poll.bin",
+      "length": 88,
+      "sha256": "4F6D787CA2E4065DFA6FB3CE3A328FAC7365C1FD0BAF24EB7C6BEB5EEA26FE73"
+    },
+    {
+      "path": "diagnostic_snapshot_corrupt.bin",
+      "length": 660,
+      "sha256": "63090B2D6E3B1E6C5342BE014238F63EE027DE722949DED180CBDF0FE2CEFE98"
+    },
+    {
+      "path": "preflight.json",
+      "length": 790,
+      "sha256": "3B73A2E0C202C9B614C2D1D83EBB8B223F03DE0C8ABD4FEA8319ECE72A177592"
+    },
+    {
+      "path": "summary.md",
+      "length": 523,
+      "sha256": "4E22CEA4AB7A768D1503B9EAAE60BA8BDE4AE0B8BD9375110E5676CB7BEF8589"
+    },
+    {
+      "path": "swd_adapter.json",
+      "length": 184,
+      "sha256": "18BFE1F75ABDA18EA6ABE8EF10275B98E3C26FFDF68C29D4EE49BF17BE1F049F"
+    }
+  ]
+}

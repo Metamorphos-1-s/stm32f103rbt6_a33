@@ -42,3 +42,27 @@ The two valid no-switch observations therefore do not establish a repeatable col
 Before any future 40 Hz run, acceptance thresholds must be declared from the CS1237 datasheet and a no-switch 10 Hz cold-control envelope. Run no-communication, RS485-only and RS485+BLE cases separately. Any run ends with 10 Hz restore, physical power cycle, unchanged V3 slots/revision/dirty, and raw baseline inside the predeclared envelope.
 
 Current containment: Profile 0 / 10 Hz allowed; Profile 1 / 40 Hz diagnostic-only; 640/1280 Hz prohibited.
+
+## G2 SWD result
+
+### Source facts
+
+DOUT ready is polled in `CS1237_Process()`, not captured by EXTI. The counter boundary is ready-low observation -> 27-clock frame read -> FIFO push/pop -> MeasurementBridge -> WeightEngine accept -> sample-sequence increment. FIFO overrun cannot detect an external ready condition that the MCU never observes.
+
+### Test observations
+
+The final diagnostic image SHA-256 is `5BA1E7B270093DC3776DE53C1B8C02A95440C7BC86B13C9D47CDB50A5A91D173`. Its first valid 40 Hz window read back requested config `0x1C` and accepted 400 samples. The extended window read back `0x1C` and measured 2,006 ready observations and 2,006 successful reads. Two configuration frames and four settling frames account for the difference to 2,000 FIFO pushes. FIFO pop, bridge, WeightEngine accept and sequence increments are all 2,000. Whole-window ready rate is 39.8966 Hz; the final retained steady intervals average 1,803,249 cycles, approximately 39.93 Hz. Maximum FIFO depth is one. Read failure, timeout, overrun, EventQueue drop, reject, near-rail and million-count jump counts are zero.
+
+Both valid 40 Hz runs automatically restored 10 Hz. Apply config `0x1C` and restore config `0x0C` each matched readback. Product Release was then reflashed with byte verify. The 4,096-byte config region remained SHA-256 `D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86` before diagnostics, after each recovery, after final product restore and after the user-confirmed physical power cycle. Slot A/B remain valid V3/Schema 3 at sequences 7/6.
+
+### Corrected diagnostic defects
+
+The first 10 Hz command did not form because STM32CubeProgrammer Normal-mode reconnect reset RAM; the tool now uses HotPlug. The first rate attempt then exposed a diagnostic-only stack collision: the former full metrology rebuild used a 1,048-byte replacement-engine frame and overwrote the RAM ABI. The minimal diagnostic reconfigure uses 16 bytes of stack, resets filter/stability/drift, changes only the engine's temporary rate view, and leaves SystemContext and Flash untouched. A later early-stop run showed the ready threshold was being applied during configuration; it is now restricted to RUNNING and apply/restore config evidence is retained separately. Failed runs remain archived and are excluded from rate conclusions.
+
+### Reasonable inference
+
+In the final diagnostic build there is no software-layer reduction from MCU-observed ready events to WeightEngine acceptance. The historical 16.496 Hz behavior was not reproduced. The software path exercised in G2 can carry approximately 40 observed samples/s without FIFO pressure or raw anomaly.
+
+### Not proven
+
+SWD does not reveal the physical DRDY pulse/level waveform, SCLK edges, DOUT setup/hold, supply/reference behavior or ADC conversion timing. It also cannot show whether the historical event was an electrical/frame-phase transient absent from these runs. Therefore G2 does not requalify 40 Hz and does not authorize Profile 1 as a product feature. External logic-analyzer or oscilloscope evidence remains mandatory.

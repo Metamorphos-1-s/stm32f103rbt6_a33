@@ -1,0 +1,7 @@
+{
+  "stlink_serial": "E1007200D0D2139393740544",
+  "swd_frequency_khz": 1800,
+  "programmer": "STM32_Programmer_CLI.exe",
+  "poll_interval_s": 2.0,
+  "continuous_ram_polling": false
+}

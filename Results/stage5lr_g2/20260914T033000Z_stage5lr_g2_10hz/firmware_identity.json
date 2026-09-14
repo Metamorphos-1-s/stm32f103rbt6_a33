@@ -1,0 +1,28 @@
+{
+  "repository_commit": "ca68ddf666226ac47b783645e7f2ef97e04ef8d5",
+  "branch": "stage5lr-g2-swd-diagnostics",
+  "worktree": "clean",
+  "elf": {
+    "path": "build/Stage5LDiagnostics/stm32f103rbt6_a33.elf",
+    "length": 1934720,
+    "sha256": "CB91F518D472B0CAC720D4A8DB7891D3E1ACFD52186A2B056FDF09D35EB8501A"
+  },
+  "map": {
+    "path": "build/Stage5LDiagnostics/stm32f103rbt6_a33.map",
+    "length": 1382664,
+    "sha256": "2DBEA1E356A64BFCB6820096A0C4A5308B77F0AF43541CD23D0E31AF09D71675"
+  },
+  "symbols": {
+    "g_stage5l_measurement_control": {
+      "address": 536889968,
+      "size": 88
+    },
+    "g_stage5l_rate_diagnostics": {
+      "address": 536889308,
+      "size": 660
+    }
+  },
+  "control_schema": 3,
+  "trace_schema": 1,
+  "trace_record_size": 28
+}

@@ -90,3 +90,27 @@ Final hardware state observed by read-only probe is Firmware 0x0510, Map 0x0104,
 G2 synchronized DRDY/SCLK/SWD evidence, G3 analog rail measurements, G4 post-40 Hz recovery and G5 requalification remain unperformed. The earlier near-rail raw event therefore remains unexplained. Clang strict, ASan and UBSan remain `UNAVAILABLE`, not PASS. No merge, tag or pull request was created, and no history was rewritten.
 
 Final allowed conclusion: `STAGE 5L-R EVIDENCE REPAIRED; 40 HZ ROOT CAUSE PENDING`.
+
+## G2 SWD closeout
+
+G2 continued on `stage5lr-g2-swd-diagnostics` from `3d8be94fa6c7d25404721cacf145966436870dff`. Commits before evidence closeout are:
+
+- `a335e97`: bounded layered counters, trace ABI, Host model and ELF/SWD exporter.
+- `f7d9c34`: restrict hardware evidence output and tracked-worktree gate.
+- `ca68ddf`: use HotPlug so control writes and low-rate polling do not reset the MCU.
+- `34e04cb`: recognize firmware automatic 10 Hz restoration.
+- `c6d665c`: replace the diagnostic full-engine rebuild that caused stack collision.
+- `53ed117`: retain separate 40 Hz apply and 10 Hz restore readbacks and restrict ready thresholds to RUNNING.
+- `3abbd22`: explicit authorization and 2,400-sample ceiling for the second window.
+
+Final valid run IDs are `20260914T043000Z_stage5lr_g2_10hz_final_diag`, `20260914T044000Z_stage5lr_g2_40hz_final_diag`, and `20260914T050000Z_stage5lr_g2_40hz_50s`. The 10 Hz run measured 9.98471 ready observations/s with all layers 256/256. The first 40 Hz window delivered all layers 400/400. The extended window measured 39.8966 ready observations/s and all sampling layers 2000/2000 after excluding the two config and four settling frames. No read error, FIFO overrun, EventQueue drop, engine reject, near-rail raw or million-count jump occurred.
+
+The final diagnostic ELF/map SHA-256 values are `5BA1E7B270093DC3776DE53C1B8C02A95440C7BC86B13C9D47CDB50A5A91D173` and `7180275B477011FD5C5797EF6B3925CFCD3BEB24FC78D19DD7F73B98BEDE8B76`. Product Release remains `82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486` with no G2 symbols. It was restored by application-only download and byte verify. The configuration-region hash remained `D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86` through final physical power cycle; slots remain V3/Schema 3, sequences 7/6, CRC and commit markers valid.
+
+The USB serial adapter was unavailable at final postflight, so the final Modbus identity/revision/dirty/fault read is `NOT RUN`, not PASS. Exact product download verification and unchanged persistent slots establish image/config restoration but are not represented as a Modbus runtime-state reading.
+
+Software gates: MSVC `/W4 /WX` Debug CTest 17/17 PASS; Stage5B rate policy 3/3 and full Python 30/30 PASS; Stage5C 12/12 PASS; Stage5L 8/8 PASS; G2 parser 7/7 PASS; register consistency PASS; Debug, Release, BoardDiagnostics and Stage5LDiagnostics clean builds PASS. Product Release contains no diagnostic symbols and retains its exact hash. Strict GCC passes for G2-modified diagnostic/driver/bridge objects; the whole-project strict build remains limited by a pre-existing unrelated missing-field initializer warning. Clang, ASan and UBSan remain `NOT RUN` because the environment is unavailable.
+
+No merge, tag or pull request was created. No history was rewritten, no mass erase occurred, and Stage 5M/5N/5O were not entered.
+
+G2 conclusion: `STAGE 5L-R G2 SWD DIAGNOSTICS COMPLETE; EXTERNAL TIMING EVIDENCE REQUIRED`.

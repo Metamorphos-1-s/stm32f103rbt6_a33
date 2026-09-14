@@ -1,0 +1,64 @@
+{
+  "schema_version": 2,
+  "run_id": "20260914T_stage5lr_g2_preflight",
+  "classification": "STAGE5LR_G2_SWD_EVIDENCE",
+  "repository_commit": "3abbd2291c82eb268527cd8cc555bdc706275b97",
+  "firmware": {
+    "repository_branch": "stage5lr-g2-swd-diagnostics",
+    "base_commit": "3d8be94fa6c7d25404721cacf145966436870dff",
+    "stlink_serial": "E1007200D0D2139393740544",
+    "stlink_firmware": "V2J47S7",
+    "mcu_device_id": "0x410",
+    "mcu": "STM32F101/F102/F103 Medium-density",
+    "flash_kib": 128,
+    "target_voltage_v": 3.29,
+    "swd_frequency_khz": 1800,
+    "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+    "diagnostic_elf_final_sha256": "5BA1E7B270093DC3776DE53C1B8C02A95440C7BC86B13C9D47CDB50A5A91D173",
+    "diagnostic_map_final_sha256": "7180275B477011FD5C5797EF6B3925CFCD3BEB24FC78D19DD7F73B98BEDE8B76",
+    "config_slots_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+    "slot_a_sequence": 7,
+    "slot_b_sequence": 6,
+    "slots_crc_valid": true,
+    "slots_commit_marker_valid": true,
+    "platform": "EMPTY_USER_CONFIRMED",
+    "temperature": "UNMEASURED"
+  },
+  "files": [
+    {
+      "path": "config_slots_after_diagnostic_flash.bin",
+      "length": 4096,
+      "sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86"
+    },
+    {
+      "path": "config_slots_after_final_diagnostic_flash.bin",
+      "length": 4096,
+      "sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86"
+    },
+    {
+      "path": "config_slots_after_fixed_diagnostic_flash.bin",
+      "length": 4096,
+      "sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86"
+    },
+    {
+      "path": "config_slots_before.bin",
+      "length": 4096,
+      "sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86"
+    },
+    {
+      "path": "config_slots_before.json",
+      "length": 2718,
+      "sha256": "7EFE1C301C9124FF9627D4C4868AB56315045E6B260EA5EBE2F77DEE44091047"
+    },
+    {
+      "path": "diagnostic_control_boot.bin",
+      "length": 88,
+      "sha256": "BF82210CF5CBDEF95577DB4EFCF67746C2B5A23595F9978CA776CE034FCB31EE"
+    },
+    {
+      "path": "preflight_summary.json",
+      "length": 921,
+      "sha256": "3443F49BC375DF2FAFFFD01A0E7557568DD3FDB38ABCFF15F6540DA987E422A2"
+    }
+  ]
+}

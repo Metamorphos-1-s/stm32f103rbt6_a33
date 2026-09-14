@@ -1,0 +1,15 @@
+{
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "product_download": "PASS_BYTE_VERIFY",
+  "mass_erase": false,
+  "application_only": true,
+  "physical_power_cycle": "USER_CONFIRMED",
+  "config_slots_initial_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+  "config_slots_before_product_restore_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+  "config_slots_after_product_restore_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+  "config_slots_after_physical_power_cycle_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+  "slot_a": {"format": 3, "schema": 3, "sequence": 7, "crc_valid": true, "commit_marker_valid": true},
+  "slot_b": {"format": 3, "schema": 3, "sequence": 6, "crc_valid": true, "commit_marker_valid": true},
+  "modbus_postflight": "NOT_RUN_SERIAL_ADAPTER_UNAVAILABLE",
+  "result": "PRODUCT_RELEASE_RESTORED_CONFIG_UNCHANGED"
+}
