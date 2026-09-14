@@ -172,7 +172,10 @@ def hardware_capture(a):
     out=Path(a.output)
     if out.exists():raise ValueError("output directory already exists")
     root=Path(__file__).resolve().parents[2]
-    if git_value(root,"status","--porcelain"):raise ValueError("hardware evidence requires clean worktree")
+    allowed=(root/"Results"/"stage5lr_g2").resolve()
+    resolved_out=out.resolve()
+    if allowed not in resolved_out.parents:raise ValueError("hardware evidence output must be under Results/stage5lr_g2")
+    if git_value(root,"status","--porcelain","--untracked-files=no"):raise ValueError("hardware evidence requires no tracked worktree changes")
     out.mkdir(parents=True)
     symbols=symbols_from_elf(a.elf,a.nm);control_symbol=symbols["g_stage5l_measurement_control"];snapshot_symbol=symbols["g_stage5l_rate_diagnostics"]
     adapter={"stlink_serial":a.sn,"swd_frequency_khz":a.swd_khz,"programmer":a.programmer,"poll_interval_s":a.poll_interval_s,"continuous_ram_polling":False}
