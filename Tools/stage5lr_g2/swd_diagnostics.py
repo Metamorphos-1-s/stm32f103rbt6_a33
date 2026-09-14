@@ -155,7 +155,7 @@ def decode_files(control_path, snapshot_path, output_dir):
     return control,decoded
 
 def programmer_call(programmer, sn, khz, arguments):
-    command=[programmer,"-c",f"port=SWD",f"freq={khz}",f"sn={sn}"]+arguments
+    command=[programmer,"-c","port=SWD","mode=HotPlug",f"freq={khz}",f"sn={sn}"]+arguments
     result=subprocess.run(command,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
     if result.returncode: raise RuntimeError("STM32CubeProgrammer failed:\n"+result.stdout)
     return {"command":command,"output":result.stdout}

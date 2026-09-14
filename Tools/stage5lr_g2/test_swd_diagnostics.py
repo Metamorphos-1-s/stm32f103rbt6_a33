@@ -1,4 +1,5 @@
 import struct, tempfile, unittest
+from unittest import mock
 from pathlib import Path
 import swd_diagnostics as swd
 
@@ -34,4 +35,9 @@ class SwdDiagnosticsTests(unittest.TestCase):
             meta={"repository_commit":"a"*40,"firmware":{"elf":{"sha256":"B"*64}}};swd.manifest(out,meta)
             manifest=(out/"run_manifest_v2.json").read_bytes();self.assertNotIn(b"\r\n",manifest);self.assertTrue(manifest.endswith(b"\n"))
             parsed=__import__("json").loads(manifest);self.assertEqual(parsed["run_id"],"run")
+    @mock.patch("swd_diagnostics.subprocess.run")
+    def test_programmer_uses_hotplug(self, run):
+        run.return_value.returncode=0;run.return_value.stdout="ok"
+        result=swd.programmer_call("programmer","serial",1800,["-r32","0x20000000","1"])
+        self.assertIn("mode=HotPlug",result["command"])
 if __name__=="__main__":unittest.main()
