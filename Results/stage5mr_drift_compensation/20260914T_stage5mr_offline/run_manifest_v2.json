@@ -1,0 +1,102 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5MR_OFFLINE_SAFETY_FAILURE",
+  "run_id": "20260914T_stage5mr_offline",
+  "repository_commit": "3639be0a02d6709fa939ca35b6db98ee89c5cd1c",
+  "branch": "stage5ma-10hz-adaptive-pipeline",
+  "tool": {
+    "path": "Tools/stage5ma_replay/stage5ma_replay.py",
+    "length": 25333,
+    "sha256": "A0903D10FBD7CB66C4ADDD487975CB747C3921C2BFCC908894071AF302E3210F",
+    "version": "stage5ma-replay-v2"
+  },
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "hardware_run": false,
+  "files": [
+    {
+      "path": "algorithm_config.json",
+      "length": 225,
+      "sha256": "6937AFB7B958F45A319F1ECE237FE8AC2DC1FF71346DA0AD253146A41D1B4048"
+    },
+    {
+      "path": "cleanup.json",
+      "length": 232,
+      "sha256": "FE25D36B89C8091F7AAFCE1F6270ADE3EAC0F9B95E36F213FAA17094D21F1241"
+    },
+    {
+      "path": "dataset_inventory.json",
+      "length": 593,
+      "sha256": "1E9CB5D39C5E1BE18FB68088799D91AA86589F0644D103D28E9C2FDE64F8622E"
+    },
+    {
+      "path": "diagnostic_firmware_manifest.json",
+      "length": 285,
+      "sha256": "29854E373110D42CAA06867131591F579DA5622A1E8EB41F831ECEF6DEC9637E"
+    },
+    {
+      "path": "fixed_point_equivalence.json",
+      "length": 65,
+      "sha256": "B5E8B9F67B4861F39DBD961E73E2BF1BE6EB53F8559F195D2A4A1D99D94FA745"
+    },
+    {
+      "path": "label_manifest_v2.json",
+      "length": 946,
+      "sha256": "9F3F807477729DDB53A03F4719254B20850B93D82EA93A522C4235FCABECE009"
+    },
+    {
+      "path": "minimum_protected_increment.json",
+      "length": 5357,
+      "sha256": "37AEE82A2B07A64A36916FFBB014E8A38C9E3F17E24F9CC6EF6159145CB1D175"
+    },
+    {
+      "path": "offline_drip_metrics.json",
+      "length": 281,
+      "sha256": "E68A1C99F85021B5AED0EFFE1A2E221E3018D271682CF2542D76EB98FC4EFAEF"
+    },
+    {
+      "path": "offline_load_protection.json",
+      "length": 302,
+      "sha256": "635E131A1401E2ECBEC47CD26E253A79EC5761FACC966670CC15B2E6AE48D99A"
+    },
+    {
+      "path": "offline_static_metrics.json",
+      "length": 594,
+      "sha256": "CB0B439990CB77A9750B01EEEBAB2542FF80E3AA6E5D8C69B6490BC74B3CA34A"
+    },
+    {
+      "path": "postflight.json",
+      "length": 336,
+      "sha256": "CF5B437EFCA0215F404FFEFA59ADE60F998A19C91A8D1B19E84AED17DDF01DAF"
+    },
+    {
+      "path": "preflight.json",
+      "length": 333,
+      "sha256": "D016459DC54251313EAAF1D47AA844DDC12747C190DBBCCD3380977CF6D442B8"
+    },
+    {
+      "path": "requirements_correction.json",
+      "length": 504,
+      "sha256": "018C306CD20E3C196C45013C3E4575AB64C40FCC83D0C3ED8483B11B9FDE5347"
+    },
+    {
+      "path": "resource_report.json",
+      "length": 269,
+      "sha256": "694622308F64025C24E08F7E119DD3D711AD5FB17E742ED0A61B8B38571A45A0"
+    },
+    {
+      "path": "selection.json",
+      "length": 218,
+      "sha256": "15778C856C3B886CACA949BB8BF0935DC966DB7D20B982330399BA0D88218268"
+    },
+    {
+      "path": "software_gates.json",
+      "length": 729,
+      "sha256": "D15E79225021A1F13C6DE715718EABE9DD79834E0600FD12AC94F922BFA9F72A"
+    },
+    {
+      "path": "summary.md",
+      "length": 333,
+      "sha256": "C1725AD7AA05F6AE553213EE0B495E803C9CBB16F32543A91073BB68D2E67F5D"
+    }
+  ]
+}
