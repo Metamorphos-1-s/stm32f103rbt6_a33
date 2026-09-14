@@ -13,4 +13,8 @@ Results/stage5lr_g2/**/*.json text eol=lf
 Results/stage5lr_g2/**/*.csv text eol=lf
 Results/stage5lr_g2/**/*.md text eol=lf
 Results/stage5lr_g2/**/*.bin -text
+Results/stage5lr_g3/**/*.json text eol=lf
+Results/stage5lr_g3/**/*.csv text eol=lf
+Results/stage5lr_g3/**/*.md text eol=lf
+Results/stage5lr_g3/**/*.bin -text
 Docs/evidence/*.json text eol=lf
