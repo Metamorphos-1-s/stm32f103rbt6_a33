@@ -29,7 +29,7 @@ SOURCE_BLOBS = r2.SOURCE_BLOBS
 def load_seconds(relative_path):
     # Immutable Git-blob evidence is parsed once per process, then reused by
     # every parameter candidate. Return a tuple so callers cannot mutate it.
-    return tuple(load_seconds(relative_path))
+    return tuple(r2.load_seconds(relative_path))
 
 
 @dataclass(frozen=True)
