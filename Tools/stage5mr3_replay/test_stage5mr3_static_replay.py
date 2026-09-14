@@ -74,7 +74,7 @@ class Stage5MR3Tests(unittest.TestCase):
         self.assertGreaterEqual(state.step_events, 1)
 
     def test_grid_and_scaling_contract(self):
-        self.assertEqual(len(model.candidate_grid()), 720)
+        self.assertEqual(len(model.candidate_grid()), 2160)
         self.assertTrue(
             model.sensor_scaling_invariance(model.Config())["passed"]
         )

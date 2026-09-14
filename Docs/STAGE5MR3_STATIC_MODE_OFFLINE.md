@@ -48,7 +48,8 @@ The isolated evaluator sweeps:
 - estimator deadbands: 0, 0.00025, 0.0005, 0.001 and 0.002 g;
 - maximum declared-static rates: 0.5, 1.0, 2.0 and 5.0 g/h;
 - fast-step thresholds: 0.020, 0.050 and 0.100 g;
-- correction limits: 0.003, 0.0045 and 0.006 g/min.
+- correction limits: 0.003, 0.0045 and 0.006 g/min;
+- drift-rate damping: 75%, 87.5% and 100%.
 
 A candidate passes only if:
 

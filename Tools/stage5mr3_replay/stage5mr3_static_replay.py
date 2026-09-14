@@ -43,6 +43,7 @@ class Config:
     step_confirmations: int = 2
     hold_off_s: int = 15
     maximum_update_ug_per_s: int = 75
+    correction_gain_permille: int = 1000
 
 
 def normalize_adc_delta_to_ug(raw_delta, span_counts, span_mass_ug):
@@ -191,8 +192,11 @@ class StaticModeCompensator:
             reason = "RATE_LIMIT_HOLD"
         else:
             limit = float(self.c.maximum_update_ug_per_s)
+            damped_rate = (
+                trend_ug_per_s * self.c.correction_gain_permille / 1000.0
+            )
             self.correction_rate_ug_per_s = max(
-                -limit, min(limit, trend_ug_per_s)
+                -limit, min(limit, damped_rate)
             )
             self.updates += 1
             accepted = True
@@ -296,12 +300,14 @@ def candidate_grid():
             max_static_rate_g_per_h=max_rate,
             step_threshold_ug=step_threshold,
             maximum_update_ug_per_s=update,
+            correction_gain_permille=gain,
         )
         for window in (60, 120, 180, 300)
         for deadband in (0, 250, 500, 1000, 2000)
         for max_rate in (0.5, 1.0, 2.0, 5.0)
         for step_threshold in (20000, 50000, 100000)
         for update in (50, 75, 100)
+        for gain in (750, 875, 1000)
     ]
 
 
