@@ -344,7 +344,13 @@ def candidate_rank(item):
         and item["constant_tail_safe"]
         and item["ten_second_budget_safe"]
     )
+    acceptance = (
+        eligible
+        and item["minimum_full_run_improvement_fraction"] >= 0.50
+        and item["median_full_run_improvement_fraction"] >= 0.70
+    )
     return (
+        1 if acceptance else 0,
         1 if eligible else 0,
         item["minimum_full_run_improvement_fraction"],
         item["median_full_run_improvement_fraction"],
