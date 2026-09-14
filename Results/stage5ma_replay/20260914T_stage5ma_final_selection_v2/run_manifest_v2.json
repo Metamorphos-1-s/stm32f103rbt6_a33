@@ -1,0 +1,117 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5MA_OFFLINE_REPLAY",
+  "run_id": "20260914T_stage5ma_final_selection_v2",
+  "repository_commit": "5cfd655d172639cf758f94ff9ec3517036f8be5b",
+  "branch": "stage5ma-10hz-adaptive-pipeline",
+  "tool": {
+    "path": "Tools/stage5ma_replay/stage5ma_replay.py",
+    "length": 25333,
+    "sha256": "A0903D10FBD7CB66C4ADDD487975CB747C3921C2BFCC908894071AF302E3210F",
+    "version": "stage5ma-replay-v2"
+  },
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "hardware_run": false,
+  "files": [
+    {
+      "path": "algorithm_config.json",
+      "length": 929,
+      "sha256": "56CBB0291C297663A564C2022086DF7B51D8DFF3F92BE660EAB7B4233595C15E"
+    },
+    {
+      "path": "baseline_metrics.json",
+      "length": 1910,
+      "sha256": "2116955A1320105783088E434A2E05501BE74E02C4C85B317BC333BF8C6CF8A4"
+    },
+    {
+      "path": "baseline_reproduction.json",
+      "length": 2665,
+      "sha256": "C9AEC5705BB4DE354961C76379E87B72CA5CC95795D902F1F60FF71B19E2BB6D"
+    },
+    {
+      "path": "candidate_metrics.json",
+      "length": 10593,
+      "sha256": "5EE1C303D91068AEC1D632BAF7FAFFEFFB4D18B3B57EF4BD574D7BD43D61D186"
+    },
+    {
+      "path": "comparison.csv",
+      "length": 1077,
+      "sha256": "7B5DFD477BABD7D31EBE448AFB9B9EB78736D7C0D19FDECDE3485DDB6CBA2114"
+    },
+    {
+      "path": "comparison.json",
+      "length": 2957,
+      "sha256": "ACEE27B2595E305AB60FB7F429FE101B32CEE0C9A7E002DFBB47657829568B3E"
+    },
+    {
+      "path": "dataset_inventory.json",
+      "length": 44901,
+      "sha256": "39045FA2DF37EF7FEF2BDBC86032EF22F8C94FC5F582BDA58C6E664F9AC89D21"
+    },
+    {
+      "path": "dataset_split.json",
+      "length": 925,
+      "sha256": "F288AADFA384ACA2EECACE4869CC212BA355B1D2A7F509F8896E8BD0624D6F30"
+    },
+    {
+      "path": "fixed_point_equivalence.json",
+      "length": 192,
+      "sha256": "C9F1B6F049A5EC87B618367D9DB9F4D02D167D6A1863B622281BCE4A5D4B99FE"
+    },
+    {
+      "path": "holdout_metrics.json",
+      "length": 3139,
+      "sha256": "5BFE16C4D696FABDAC615E5731C536629EB0E6CF31A21C2010097F2664952421"
+    },
+    {
+      "path": "input_manifest_v2.json",
+      "length": 11429,
+      "sha256": "B45CFE8A0E0DA60CDD42E4DE6FFC57062BC7B898E31BB48D6C03DC3E6E4DE2E5"
+    },
+    {
+      "path": "label_manifest.json",
+      "length": 5840,
+      "sha256": "FAE2A0F845D04D896BB13AB48F98ECEAFD802F1672E447EE3A4396549DA82EE3"
+    },
+    {
+      "path": "metric_definitions.json",
+      "length": 567,
+      "sha256": "F3D736A58A6594EA6B59F0528D89D36D2BAEDE0BBA0BE6ABC639D1241E362F87"
+    },
+    {
+      "path": "pareto_analysis.json",
+      "length": 605,
+      "sha256": "D252A178A882C92BC782BC81B896BB873ADD32189E5ADABEE05BACDDFFFFC30F"
+    },
+    {
+      "path": "raw_analysis.json",
+      "length": 7099,
+      "sha256": "F06FA35A8252BECCAF3B64599C74EC8B5119DA706603B09B388BAD12E4338C06"
+    },
+    {
+      "path": "resource_estimate.json",
+      "length": 711,
+      "sha256": "33CA93FB34F4F99BEC869211FD97EFC3B069FB9D6A43C7653A887793823F9430"
+    },
+    {
+      "path": "run_metadata.json",
+      "length": 573,
+      "sha256": "FCDA2A2405BC7DDE5710FD1F040317EA36E9C67D35F28DD23FB614ECE3B3EE42"
+    },
+    {
+      "path": "selection_decision.json",
+      "length": 638,
+      "sha256": "5CFDA73C9223B5C39C164046C616DF76785322F1596A661B03F9CF9A967341D6"
+    },
+    {
+      "path": "software_gates.json",
+      "length": 1008,
+      "sha256": "18771BADF33754220DE94FCE935066254F919AD64536D8D191B3EEABD8FE04E0"
+    },
+    {
+      "path": "summary.md",
+      "length": 668,
+      "sha256": "57CEED13A8E8245D208C40EA1A48AB91034D10AEA9197CADCF0A0B575C313DB8"
+    }
+  ]
+}

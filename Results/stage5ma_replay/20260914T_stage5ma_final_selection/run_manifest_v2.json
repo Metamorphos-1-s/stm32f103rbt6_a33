@@ -1,0 +1,77 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5MA_OFFLINE_REPLAY",
+  "run_id": "20260914T_stage5ma_final_selection",
+  "repository_commit": "5cfd655d172639cf758f94ff9ec3517036f8be5b",
+  "branch": "stage5ma-10hz-adaptive-pipeline",
+  "tool": {
+    "path": "Tools/stage5ma_replay/stage5ma_replay.py",
+    "length": 25333,
+    "sha256": "A0903D10FBD7CB66C4ADDD487975CB747C3921C2BFCC908894071AF302E3210F",
+    "version": "stage5ma-replay-v2"
+  },
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "hardware_run": false,
+  "files": [
+    {
+      "path": "algorithm_config.json",
+      "length": 464,
+      "sha256": "EE29E439732DB206BC3FD3F9D685BB201B5E0F6793CE2DA632E6E0FFB8C57FE3"
+    },
+    {
+      "path": "baseline_metrics.json",
+      "length": 1910,
+      "sha256": "2116955A1320105783088E434A2E05501BE74E02C4C85B317BC333BF8C6CF8A4"
+    },
+    {
+      "path": "candidate_metrics.json",
+      "length": 9888,
+      "sha256": "B0A9AD9EBDFB7336A7052D711AA6DA5F284D1C3A5618EE78E46ED39DC786958A"
+    },
+    {
+      "path": "comparison.csv",
+      "length": 523,
+      "sha256": "23D87131AAD0EBEE0B7336482379061C488D9D336618E2554BED0BDBBB81B826"
+    },
+    {
+      "path": "comparison.json",
+      "length": 1573,
+      "sha256": "6E1C5FF3641C8BB739CB468BF548F153293B26837E3AB0203F4DBCC60C4CEFE8"
+    },
+    {
+      "path": "dataset_inventory.json",
+      "length": 44901,
+      "sha256": "39045FA2DF37EF7FEF2BDBC86032EF22F8C94FC5F582BDA58C6E664F9AC89D21"
+    },
+    {
+      "path": "dataset_split.json",
+      "length": 925,
+      "sha256": "F288AADFA384ACA2EECACE4869CC212BA355B1D2A7F509F8896E8BD0624D6F30"
+    },
+    {
+      "path": "fixed_point_equivalence.json",
+      "length": 192,
+      "sha256": "D39BABF57497453CBFBEB4D2BAFFF26ACA51F9601BF60BBCA3516AE03543F0D8"
+    },
+    {
+      "path": "holdout_metrics.json",
+      "length": 2881,
+      "sha256": "BDBB8C4A5F0F15F7F67F23EE03965DBC280EE15EF7E92DFFA0920717B29CEC3B"
+    },
+    {
+      "path": "label_manifest.json",
+      "length": 5840,
+      "sha256": "FAE2A0F845D04D896BB13AB48F98ECEAFD802F1672E447EE3A4396549DA82EE3"
+    },
+    {
+      "path": "pareto_analysis.json",
+      "length": 241,
+      "sha256": "8A5309B43DCF2E7626528A89C2AA93FAE55A6AB2454485781DC3EDC39A7EFF02"
+    },
+    {
+      "path": "summary.md",
+      "length": 409,
+      "sha256": "1F0FB0498B5094C04DEE3D5504AEC94F63CE3707A794C2208E972F5EB3602523"
+    }
+  ]
+}
