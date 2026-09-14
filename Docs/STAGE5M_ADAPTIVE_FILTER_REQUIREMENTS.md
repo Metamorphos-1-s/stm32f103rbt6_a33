@@ -1,6 +1,6 @@
 # Stage 5M Adaptive Filter Requirements
 
-Status: design input only; implementation is not authorized because Stage 5L is blocked.
+Status: Stage 5M-A offline reference evaluated; no acceptable candidate selected and no product integration authorized.
 
 ## Evidence-driven goals
 
@@ -25,11 +25,10 @@ Requirements:
 - Stable state uses the precision path and preserves current noise performance.
 - State transitions require hysteresis, minimum dwell time, and bounded reset behavior.
 - Filter state must be explicitly initialized on load/unload, profile, calibration, zero, tare, and fault transitions.
-- Automatic zero tracking is allowed only near zero, stable, and with external process state inactive.
+- Automatic zero tracking is outside Stage 5M-A and is not implemented. Any future proposal requires a separate explicitly configurable and bounded stage.
 - A PLC/digital `FILL_ACTIVE` or `PROCESS_ACTIVE` input must inhibit drift learning and zero tracking.
 - Telemetry must expose state, selected path, transition reason, dwell time, and both fast/precision values in a diagnostic build.
 - No known-mass attraction or special 500 g snapping is allowed; only normal division quantization is permitted.
 - Acceptance must include noise, t10/t90, settling, repeated load/unload, creep, hysteresis, and slow-fill false-stable tests.
 
-No numeric production thresholds should be frozen until the 40 Hz/raw-baseline anomaly is resolved.
-
+Stage 5M-A screening thresholds are frozen only for offline comparison. They are not production thresholds. The 40 Hz product path remains contained and raw-baseline causality remains unresolved.

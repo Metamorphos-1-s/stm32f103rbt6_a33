@@ -122,6 +122,27 @@ endif()
 add_test(NAME stage5l_measurement_diagnostics
     COMMAND stage5l_measurement_diagnostics_tests)
 
+add_executable(stage5ma_adaptive_tests
+    test_stage5ma_adaptive.c
+    ../../Experimental/stage5ma/adaptive_measurement.c)
+target_include_directories(stage5ma_adaptive_tests PRIVATE
+    ../../Experimental/stage5ma)
+add_executable(stage5ma_adaptive_runner
+    stage5ma_adaptive_runner.c
+    ../../Experimental/stage5ma/adaptive_measurement.c)
+target_include_directories(stage5ma_adaptive_runner PRIVATE
+    ../../Experimental/stage5ma)
+target_compile_definitions(stage5ma_adaptive_runner PRIVATE
+    _CRT_SECURE_NO_WARNINGS)
+foreach(target stage5ma_adaptive_tests stage5ma_adaptive_runner)
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /W4 /WX)
+    else()
+        target_compile_options(${target} PRIVATE -Wall -Wextra -Werror)
+    endif()
+endforeach()
+add_test(NAME stage5ma_adaptive_logic COMMAND stage5ma_adaptive_tests)
+
 add_executable(display_conditioner_tests
     test_display_conditioner.c
     ../../Domain/measurement/display_conditioner.c)
