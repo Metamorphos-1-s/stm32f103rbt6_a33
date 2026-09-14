@@ -8,7 +8,7 @@ class SwdDiagnosticsTests(unittest.TestCase):
         words=[0]*swd.CONTROL_WORDS;words[0]=swd.MAGIC;words[1]=swd.VERSION;words[15]=swd.CONTROL_SIZE
         return struct.pack("<%dI"%swd.CONTROL_WORDS,*words)
     def snapshot(self):
-        words=[0]*(swd.SNAPSHOT_PREFIX_WORDS+len(swd.COUNTER_NAMES));words[0]=swd.MAGIC;words[1]=swd.VERSION;words[24]=72000000;words[25]=1;words[26]=swd.TRACE_SIZE
+        words=[0]*(swd.SNAPSHOT_PREFIX_WORDS+len(swd.COUNTER_NAMES));words[0]=swd.MAGIC;words[1]=swd.VERSION;words[27]=72000000;words[28]=1;words[29]=swd.TRACE_SIZE
         return struct.pack("<%dI"%len(words),*words)+bytes(swd.TRACE_SIZE*swd.TRACE_CAPACITY)
     def test_layout_and_decode(self):
         self.assertEqual(swd.TRACE_SIZE,28);self.assertEqual(swd.decode_control(self.control())["version"],3);self.assertEqual(swd.decode_snapshot(self.snapshot())["snapshot"]["cpu_clock_hz"],72000000)
@@ -18,7 +18,7 @@ class SwdDiagnosticsTests(unittest.TestCase):
         with self.assertRaises(ValueError):swd.decode_snapshot(bad)
         bad=bytearray(self.snapshot());struct.pack_into("<I",bad,4,99)
         with self.assertRaises(ValueError):swd.decode_snapshot(bad)
-        bad=bytearray(self.snapshot());struct.pack_into("<I",bad,104,99)
+        bad=bytearray(self.snapshot());struct.pack_into("<I",bad,116,99)
         with self.assertRaises(ValueError):swd.decode_snapshot(bad)
     def test_delta_wrap(self):self.assertEqual(swd.delta32(0xFFFFFF00,0x100),0x200)
     def test_40hz_completion_accepts_automatic_restore_sequence(self):

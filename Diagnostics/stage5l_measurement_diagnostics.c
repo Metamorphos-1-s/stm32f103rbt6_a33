@@ -23,6 +23,8 @@ static uint32_t s_trace_latest_index;
 static uint32_t s_trace_bridge_index;
 static uint32_t s_previous_trace_raw;
 static bool s_have_trace_raw;
+static uint8_t s_pending_expected_config;
+static Cs1237DataRate s_pending_rate;
 
 enum {
     STAGE5L_FAILURE_NONE = 0,
@@ -181,25 +183,31 @@ void Stage5LMeasurementDiagnostics_Process(void)
         CS1237_State state = CS1237_GetState();
         if (state == CS1237_STATE_RUNNING) {
             uint8_t config_byte = CS1237_GetLastConfigRegister();
-            bool readback_ok = config_byte ==
-                g_stage5l_rate_diagnostics.expected_config_byte;
-            g_stage5l_rate_diagnostics.verified_config_byte = config_byte;
-            g_stage5l_rate_diagnostics.config_readback_verified =
-                readback_ok ? 1U : 0U;
+            bool readback_ok = config_byte == s_pending_expected_config;
+            if (s_rate_restore_pending) {
+                g_stage5l_rate_diagnostics.restore_verified_config_byte =
+                    config_byte;
+                g_stage5l_rate_diagnostics.restore_readback_verified =
+                    readback_ok ? 1U : 0U;
+            } else {
+                g_stage5l_rate_diagnostics.verified_config_byte = config_byte;
+                g_stage5l_rate_diagnostics.config_readback_verified =
+                    readback_ok ? 1U : 0U;
+            }
             if (!readback_ok) {
                 g_stage5l_measurement_control.status =
                     STAGE5L_DIAGNOSTIC_STATUS_FAILED;
                 g_stage5l_rate_diagnostics.last_failure_reason =
                     STAGE5L_FAILURE_READBACK;
             } else if (!MetrologyManager_ReconfigureDiagnosticRate(
-                (Cs1237DataRate)g_stage5l_rate_diagnostics.requested_rate)) {
+                s_pending_rate)) {
                 g_stage5l_measurement_control.status =
                     STAGE5L_DIAGNOSTIC_STATUS_FAILED;
                 g_stage5l_rate_diagnostics.last_failure_reason =
                     STAGE5L_FAILURE_REBUILD;
             } else {
                 g_stage5l_measurement_control.effective_rate =
-                    g_stage5l_rate_diagnostics.requested_rate;
+                    (uint32_t)s_pending_rate;
                 g_stage5l_measurement_control.status = s_rate_restore_pending ?
                     STAGE5L_DIAGNOSTIC_STATUS_RESTORED :
                     STAGE5L_DIAGNOSTIC_STATUS_APPLIED;
@@ -314,11 +322,16 @@ void Stage5LMeasurementDiagnostics_Process(void)
             adc_config.gain = (CS1237_Gain)profile->gain;
             adc_config.channel = CS1237_CHANNEL_A;
             adc_config.reference_output_enabled = true;
-            g_stage5l_rate_diagnostics.requested_rate = rate;
+            if (!restore) g_stage5l_rate_diagnostics.requested_rate = rate;
             g_stage5l_rate_diagnostics.switch_start_ms = BSP_TimeNowMs();
             g_stage5l_rate_diagnostics.switch_complete_ms = 0U;
-            g_stage5l_rate_diagnostics.config_readback_verified = 0U;
-            g_stage5l_rate_diagnostics.verified_config_byte = 0U;
+            if (restore) {
+                g_stage5l_rate_diagnostics.restore_readback_verified = 0U;
+                g_stage5l_rate_diagnostics.restore_verified_config_byte = 0U;
+            } else {
+                g_stage5l_rate_diagnostics.config_readback_verified = 0U;
+                g_stage5l_rate_diagnostics.verified_config_byte = 0U;
+            }
             g_stage5l_rate_diagnostics.last_failure_reason =
                 STAGE5L_FAILURE_NONE;
             if (!restore &&
@@ -327,14 +340,22 @@ void Stage5LMeasurementDiagnostics_Process(void)
             g_stage5l_rate_diagnostics.config_write_accepted =
                 (CS1237_EncodeConfig(&adc_config, &expected_config_byte) &&
                  CS1237_WriteConfig(&adc_config)) ? 1U : 0U;
-            g_stage5l_rate_diagnostics.expected_config_byte =
-                expected_config_byte;
+            s_pending_expected_config = expected_config_byte;
+            s_pending_rate = (Cs1237DataRate)rate;
+            if (restore)
+                g_stage5l_rate_diagnostics.restore_expected_config_byte =
+                    expected_config_byte;
+            else
+                g_stage5l_rate_diagnostics.expected_config_byte =
+                    expected_config_byte;
             if (g_stage5l_rate_diagnostics.config_write_accepted != 0U) {
                 g_stage5l_measurement_control.status =
                     STAGE5L_DIAGNOSTIC_STATUS_PENDING;
-                g_stage5l_rate_diagnostics.raw_write_index = 0U;
-                g_stage5l_rate_diagnostics.raw_count = 0U;
-                g_stage5l_rate_diagnostics.raw_anomaly_count = 0U;
+                if (!restore) {
+                    g_stage5l_rate_diagnostics.raw_write_index = 0U;
+                    g_stage5l_rate_diagnostics.raw_count = 0U;
+                    g_stage5l_rate_diagnostics.raw_anomaly_count = 0U;
+                }
                 s_pending_sequence = request;
                 s_rate_switch_pending = true;
                 s_rate_restore_pending = restore;
@@ -389,7 +410,8 @@ uint8_t Stage5LSwdDiagnostics_OnReadyObserved(void)
                     DEVICE_CS1237_DATA_RATE_40_HZ) ?
             (g_stage5l_rate_diagnostics.cpu_clock_hz / 40U) :
             (g_stage5l_rate_diagnostics.cpu_clock_hz / 10U);
-        if ((interval < (expected / 2U)) || (interval > (expected * 2U)))
+        if ((CS1237_GetState() == CS1237_STATE_RUNNING) &&
+            ((interval < (expected / 2U)) || (interval > (expected * 2U))))
             FreezeTrace(STAGE5L_TRIGGER_READY_INTERVAL);
     }
     c->last_ready_timestamp_cycles = now;

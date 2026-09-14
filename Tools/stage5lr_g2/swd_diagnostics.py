@@ -7,7 +7,7 @@ VERSION = 3
 COMMAND_MAGIC = 0x47574453
 CONTROL_WORDS = 22
 CONTROL_SIZE = CONTROL_WORDS * 4
-SNAPSHOT_PREFIX_WORDS = 27
+SNAPSHOT_PREFIX_WORDS = 30
 COUNTER_NAMES = (
     "ready_observation_count", "driver_read_attempt_count",
     "driver_read_success_count", "driver_read_failure_count",
@@ -41,7 +41,9 @@ SNAPSHOT_PREFIX_NAMES = (
     "current_backlog", "maximum_backlog", "event_queue_drop_count",
     "app_run_max_interval_ms", "bridge_max_service_interval_ms",
     "switch_start_ms", "switch_complete_ms", "settling_discarded_samples",
-    "last_failure_reason", "trace_write_index", "trace_count",
+    "last_failure_reason", "restore_expected_config_byte",
+    "restore_verified_config_byte", "restore_readback_verified",
+    "trace_write_index", "trace_count",
     "raw_anomaly_count", "cpu_clock_hz", "trace_record_version",
     "trace_record_size")
 TRACE_NAMES = ("ready_timestamp_cycles", "read_start_cycles",

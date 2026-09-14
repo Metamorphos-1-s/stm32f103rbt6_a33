@@ -82,6 +82,7 @@ int main(void)
     s_context.config.metrology.profiles[0].filter_mode =
         FILTER_MODE_MEDIAN3_IIR;
     s_context.config.metrology.profiles[0].filter_strength = 3U;
+    s_context.config.metrology.profiles[0].gain = DEVICE_CS1237_GAIN_128;
     Stage5LMeasurementDiagnostics_Init();
     CHECK(g_stage5l_measurement_control.magic == STAGE5L_DIAGNOSTIC_MAGIC);
     CHECK(g_stage5l_measurement_control.effective_mode ==
@@ -155,6 +156,9 @@ int main(void)
           STAGE5L_DIAGNOSTIC_STATUS_RESTORED);
     CHECK(g_stage5l_measurement_control.rate_override_active == 0U);
     CHECK(s_last_diagnostic_rate == DEVICE_CS1237_DATA_RATE_10_HZ);
+    CHECK(g_stage5l_rate_diagnostics.restore_expected_config_byte == 0x0CU);
+    CHECK(g_stage5l_rate_diagnostics.restore_verified_config_byte == 0x0CU);
+    CHECK(g_stage5l_rate_diagnostics.restore_readback_verified == 1U);
 
     g_stage5l_measurement_control.command =
         STAGE5L_DIAGNOSTIC_COMMAND_APPLY_RATE;

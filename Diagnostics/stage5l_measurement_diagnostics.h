@@ -149,6 +149,9 @@ typedef struct {
     uint32_t switch_complete_ms;
     uint32_t settling_discarded_samples;
     uint32_t last_failure_reason;
+    uint32_t restore_expected_config_byte;
+    uint32_t restore_verified_config_byte;
+    uint32_t restore_readback_verified;
     uint32_t raw_write_index;
     uint32_t raw_count;
     uint32_t raw_anomaly_count;
