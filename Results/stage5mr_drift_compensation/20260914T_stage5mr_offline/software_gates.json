@@ -1,0 +1,15 @@
+{
+  "host_ctest": {"result": "PASS", "tests": 19},
+  "stage5b_rate_policy": {"result": "PASS", "tests": 3},
+  "stage5b_python": {"result": "PASS", "tests": 30},
+  "stage5c_python": {"result": "PASS", "tests": 12},
+  "stage5l_python": {"result": "PASS", "tests": 8},
+  "stage5lr_g2_python": {"result": "PASS", "tests": 8},
+  "stage5ma_python": {"result": "PASS", "tests": 9},
+  "stage5mr_python": {"result": "PASS", "tests": 5},
+  "python_c_equivalence": {"result": "PASS", "samples": 1000, "mismatches": 0},
+  "debug_release_board_stage5l_clean_builds": "PASS",
+  "register_map_consistency": "PASS",
+  "product_symbol_absence": "PASS",
+  "clang_asan_ubsan": {"result": "NOT RUN", "reason": "supported environment unavailable"}
+}

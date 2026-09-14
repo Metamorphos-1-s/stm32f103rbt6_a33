@@ -1,0 +1,10 @@
+{
+  "hardware_run": false,
+  "diagnostic_firmware_built": false,
+  "diagnostic_firmware_flashed": false,
+  "device_writes": 0,
+  "configuration_changes": 0,
+  "product_release_remained_installed": true,
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "result": "NO_HARDWARE_MUTATION"
+}

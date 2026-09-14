@@ -1,0 +1,8 @@
+{
+  "offline_safe": false,
+  "minimum_protected_increment_g": 0.001,
+  "minimum_reliably_detected_g": 0.02,
+  "static_no_reverse_amplification": false,
+  "failed_run": "empty1",
+  "hardware_shadow_authorized": false
+}

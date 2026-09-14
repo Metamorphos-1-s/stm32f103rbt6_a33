@@ -1,0 +1,7 @@
+{
+  "built": false,
+  "flashed": false,
+  "reason": "Offline no-reverse-amplification gate failed; shadow firmware path not authorized.",
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "product_contains_static_drift_symbols": false
+}

@@ -1,0 +1,11 @@
+{
+  "state_budget_bytes": 256,
+  "arm_os_object_text_bytes": 1528,
+  "process_stack_bytes": 72,
+  "reset_stack_bytes": 56,
+  "dynamic_memory": false,
+  "unbounded_loops": false,
+  "per_sample_int64_division": false,
+  "history_samples": 16,
+  "product_linked": false
+}

@@ -1,0 +1,7 @@
+{
+  "required": false,
+  "reason": "Offline safety failure stopped before diagnostic firmware creation or device access.",
+  "product_restore": "NOT_NEEDED",
+  "physical_power_cycle": "NOT_NEEDED",
+  "result": "PRODUCT_UNTOUCHED"
+}

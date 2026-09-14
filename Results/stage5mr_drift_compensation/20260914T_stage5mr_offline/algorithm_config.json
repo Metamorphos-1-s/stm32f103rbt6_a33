@@ -1,0 +1,10 @@
+{
+  "arm_time_ms": 15000,
+  "hold_off_ms": 15000,
+  "quiet_range_ug": 40000,
+  "step_threshold_ug": 20000,
+  "trend_threshold_ug": 20000,
+  "update_period_ms": 1000,
+  "maximum_update_ug": 50,
+  "maximum_offset_ug": 500000
+}

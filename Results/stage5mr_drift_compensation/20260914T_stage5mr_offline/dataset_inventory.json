@@ -1,0 +1,15 @@
+{
+  "source_inventory": "Results/stage5ma_replay/20260914T_stage5ma_final_selection_v2/dataset_inventory.json",
+  "source_manifest": "Results/stage5ma_replay/20260914T_stage5ma_final_selection_v2/run_manifest_v2.json",
+  "runs_used": [
+    "20260914_control1_10hz_cold_60m",
+    "20260914_control2_10hz_cold_60m",
+    "20260913T064617Z_creep_500g_30m",
+    "filt1_load_step",
+    "filt1_unload_step",
+    "faster_continuous"
+  ],
+  "historical_files_modified": false,
+  "interpolation": false,
+  "limitation": "FC03 captures are observed subsequences; source omissions are not synthesized."
+}

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "stage5ma_original_result_preserved": true,
+  "correction": "Static drift protection is independent from fast response, fast stable, and process-state recognition.",
+  "drip_semantics": "Single drops separated by 2-10 second pauses; statistical stable may legitimately be true during a pause.",
+  "priority": ["preserve real weight", "avoid false compensation", "improve drift slowly"],
+  "fast_response_owner": "Stage 5M-F",
+  "automatic_zero": false,
+  "persistent_offset": false
+}

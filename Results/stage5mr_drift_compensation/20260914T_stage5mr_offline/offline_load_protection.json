@@ -1,0 +1,16 @@
+{
+  "runs": [
+    {
+      "run": "filt1_load_step",
+      "offset_change_g": 0.00025,
+      "freeze_count": 153,
+      "final_on_minus_off_g": -0.00025
+    },
+    {
+      "run": "filt1_unload_step",
+      "offset_change_g": 0.0,
+      "freeze_count": 187,
+      "final_on_minus_off_g": 0.0
+    }
+  ]
+}

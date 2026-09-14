@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "source_labels_unchanged": true,
+  "derived_labels": [
+    {"run": "slow_continuous", "range_s": [10, 70], "label": "CONTINUOUS_CHANGE", "source": "operator timing", "confidence": "MEDIUM"},
+    {"run": "faster_continuous", "range_s": [10, 70], "label": "DROP_EVENT_OR_INTER_DROP_PAUSE", "source": "operator timing plus local increments", "confidence": "LOW", "note": "Exact individual drop timestamps are unavailable; not relabeled as continuous motion."},
+    {"run": "20260914_control1_10hz_cold_60m", "range_s": [0, 3600], "label": "STATIC_EMPTY", "source": "G1 operator confirmation", "confidence": "HIGH"},
+    {"run": "20260914_control2_10hz_cold_60m", "range_s": [0, 3600], "label": "STATIC_EMPTY", "source": "G1 operator confirmation", "confidence": "HIGH"},
+    {"run": "20260913T064617Z_creep_500g_30m", "range_s": [0, 1800], "label": "STATIC_LOADED", "source": "operator confirmation", "confidence": "HIGH"}
+  ]
+}

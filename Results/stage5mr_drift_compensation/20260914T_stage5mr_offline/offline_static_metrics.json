@@ -1,0 +1,23 @@
+{
+  "empty1": {
+    "input_g_per_hour": 0.023507715811379636,
+    "corrected_g_per_hour": 0.038109205551353734,
+    "offset_change_g": -0.018796,
+    "update_count": 3090,
+    "freeze_count": 97
+  },
+  "empty2": {
+    "input_g_per_hour": 0.16803489874211136,
+    "corrected_g_per_hour": 0.11568109904269074,
+    "offset_change_g": 0.043389,
+    "update_count": 2990,
+    "freeze_count": 108
+  },
+  "loaded": {
+    "input_g_per_hour": 0.01637161595161347,
+    "corrected_g_per_hour": 0.0010349130752449092,
+    "offset_change_g": 0.006636,
+    "update_count": 1622,
+    "freeze_count": 24
+  }
+}

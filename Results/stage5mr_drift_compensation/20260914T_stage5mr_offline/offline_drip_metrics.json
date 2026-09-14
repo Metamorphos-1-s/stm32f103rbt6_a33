@@ -1,0 +1,12 @@
+{
+  "continuous_change": {
+    "input_g_per_hour": 432.07379880400447,
+    "corrected_g_per_hour": 432.069096218357,
+    "offset_change_g": 0.00055,
+    "update_count": 19,
+    "freeze_count": 762
+  },
+  "offset_change_g": 0.00055,
+  "freeze_count": 762,
+  "synthetic_scans": 36
+}

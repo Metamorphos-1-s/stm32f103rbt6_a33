@@ -1,0 +1,262 @@
+{
+  "scan": [
+    {
+      "increment_g": 0.001,
+      "interval_s": 0.5,
+      "detected": false,
+      "loss_g": 0.00025,
+      "max_offset_g": 0.00025
+    },
+    {
+      "increment_g": 0.001,
+      "interval_s": 1,
+      "detected": false,
+      "loss_g": 0.0005,
+      "max_offset_g": 0.0005
+    },
+    {
+      "increment_g": 0.001,
+      "interval_s": 2,
+      "detected": false,
+      "loss_g": 0.001,
+      "max_offset_g": 0.001
+    },
+    {
+      "increment_g": 0.001,
+      "interval_s": 5,
+      "detected": false,
+      "loss_g": 0.0025,
+      "max_offset_g": 0.0025
+    },
+    {
+      "increment_g": 0.001,
+      "interval_s": 10,
+      "detected": false,
+      "loss_g": 0.005,
+      "max_offset_g": 0.005
+    },
+    {
+      "increment_g": 0.001,
+      "interval_s": 15,
+      "detected": false,
+      "loss_g": 0.0075,
+      "max_offset_g": 0.0075
+    },
+    {
+      "increment_g": 0.002,
+      "interval_s": 0.5,
+      "detected": false,
+      "loss_g": 0.00025,
+      "max_offset_g": 0.00025
+    },
+    {
+      "increment_g": 0.002,
+      "interval_s": 1,
+      "detected": false,
+      "loss_g": 0.0005,
+      "max_offset_g": 0.0005
+    },
+    {
+      "increment_g": 0.002,
+      "interval_s": 2,
+      "detected": false,
+      "loss_g": 0.001,
+      "max_offset_g": 0.001
+    },
+    {
+      "increment_g": 0.002,
+      "interval_s": 5,
+      "detected": false,
+      "loss_g": 0.0025,
+      "max_offset_g": 0.0025
+    },
+    {
+      "increment_g": 0.002,
+      "interval_s": 10,
+      "detected": false,
+      "loss_g": 0.005,
+      "max_offset_g": 0.005
+    },
+    {
+      "increment_g": 0.002,
+      "interval_s": 15,
+      "detected": false,
+      "loss_g": 0.0075,
+      "max_offset_g": 0.0075
+    },
+    {
+      "increment_g": 0.005,
+      "interval_s": 0.5,
+      "detected": false,
+      "loss_g": 0.00025,
+      "max_offset_g": 0.00025
+    },
+    {
+      "increment_g": 0.005,
+      "interval_s": 1,
+      "detected": false,
+      "loss_g": 0.0005,
+      "max_offset_g": 0.0005
+    },
+    {
+      "increment_g": 0.005,
+      "interval_s": 2,
+      "detected": false,
+      "loss_g": 0.001,
+      "max_offset_g": 0.001
+    },
+    {
+      "increment_g": 0.005,
+      "interval_s": 5,
+      "detected": false,
+      "loss_g": 0.0025,
+      "max_offset_g": 0.0025
+    },
+    {
+      "increment_g": 0.005,
+      "interval_s": 10,
+      "detected": false,
+      "loss_g": 0.005,
+      "max_offset_g": 0.005
+    },
+    {
+      "increment_g": 0.005,
+      "interval_s": 15,
+      "detected": false,
+      "loss_g": 0.0075,
+      "max_offset_g": 0.0075
+    },
+    {
+      "increment_g": 0.01,
+      "interval_s": 0.5,
+      "detected": true,
+      "loss_g": 5e-05,
+      "max_offset_g": 5e-05
+    },
+    {
+      "increment_g": 0.01,
+      "interval_s": 1,
+      "detected": true,
+      "loss_g": 5e-05,
+      "max_offset_g": 5e-05
+    },
+    {
+      "increment_g": 0.01,
+      "interval_s": 2,
+      "detected": false,
+      "loss_g": 0.001,
+      "max_offset_g": 0.001
+    },
+    {
+      "increment_g": 0.01,
+      "interval_s": 5,
+      "detected": false,
+      "loss_g": 0.0025,
+      "max_offset_g": 0.0025
+    },
+    {
+      "increment_g": 0.01,
+      "interval_s": 10,
+      "detected": false,
+      "loss_g": 0.005,
+      "max_offset_g": 0.005
+    },
+    {
+      "increment_g": 0.01,
+      "interval_s": 15,
+      "detected": false,
+      "loss_g": 0.0075,
+      "max_offset_g": 0.0075
+    },
+    {
+      "increment_g": 0.02,
+      "interval_s": 0.5,
+      "detected": true,
+      "loss_g": 0.0,
+      "max_offset_g": 0.0
+    },
+    {
+      "increment_g": 0.02,
+      "interval_s": 1,
+      "detected": true,
+      "loss_g": 0.0,
+      "max_offset_g": 0.0
+    },
+    {
+      "increment_g": 0.02,
+      "interval_s": 2,
+      "detected": true,
+      "loss_g": 0.0,
+      "max_offset_g": 0.0
+    },
+    {
+      "increment_g": 0.02,
+      "interval_s": 5,
+      "detected": true,
+      "loss_g": 0.0,
+      "max_offset_g": 0.0
+    },
+    {
+      "increment_g": 0.02,
+      "interval_s": 10,
+      "detected": true,
+      "loss_g": 0.0,
+      "max_offset_g": 0.0
+    },
+    {
+      "increment_g": 0.02,
+      "interval_s": 15,
+      "detected": true,
+      "loss_g": 0.0,
+      "max_offset_g": 0.0
+    },
+    {
+      "increment_g": 0.05,
+      "interval_s": 0.5,
+      "detected": true,
+      "loss_g": 0.0,
+      "max_offset_g": 0.0
+    },
+    {
+      "increment_g": 0.05,
+      "interval_s": 1,
+      "detected": true,
+      "loss_g": 0.0,
+      "max_offset_g": 0.0
+    },
+    {
+      "increment_g": 0.05,
+      "interval_s": 2,
+      "detected": true,
+      "loss_g": 0.0,
+      "max_offset_g": 0.0
+    },
+    {
+      "increment_g": 0.05,
+      "interval_s": 5,
+      "detected": true,
+      "loss_g": 0.0,
+      "max_offset_g": 0.0
+    },
+    {
+      "increment_g": 0.05,
+      "interval_s": 10,
+      "detected": true,
+      "loss_g": 0.0,
+      "max_offset_g": 0.0
+    },
+    {
+      "increment_g": 0.05,
+      "interval_s": 15,
+      "detected": true,
+      "loss_g": 0.0,
+      "max_offset_g": 0.0
+    }
+  ],
+  "minimum_observed_real_increment_g": 0.001127,
+  "minimum_reliably_detected_g": 0.02,
+  "minimum_protected_increment_g": 0.001,
+  "protected_definition": "final loss <=0.005 g for each 2/5/10 s pause; detection not implied",
+  "ten_second_worst_theoretical_g": 0.0005,
+  "fifteen_second_worst_theoretical_g": 0.00075
+}
