@@ -21,6 +21,9 @@ class SwdDiagnosticsTests(unittest.TestCase):
         bad=bytearray(self.snapshot());struct.pack_into("<I",bad,104,99)
         with self.assertRaises(ValueError):swd.decode_snapshot(bad)
     def test_delta_wrap(self):self.assertEqual(swd.delta32(0xFFFFFF00,0x100),0x200)
+    def test_40hz_completion_accepts_automatic_restore_sequence(self):
+        value={"applied_sequence":2,"trace_frozen":1,"rate_override_active":0,"status":2}
+        self.assertTrue(swd.capture_complete(value,"40",1));self.assertFalse(swd.capture_complete(value,"10",1))
     def test_analysis_rate(self):
         data=bytearray(self.snapshot());base=swd.SNAPSHOT_PREFIX_WORDS*4
         values=[0]*len(swd.COUNTER_NAMES);values[0]=3;values[19]=0xFFF00000;values[20]=(0xFFF00000+14400000)&0xffffffff

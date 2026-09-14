@@ -168,6 +168,13 @@ def write32(programmer, sn, khz, address, value):
 
 def git_value(root, *args): return subprocess.check_output(["git",*args],cwd=root,text=True).strip()
 
+def capture_complete(control, mode, sequence):
+    exact=control["applied_sequence"]==sequence
+    restored_after_capture=(mode=="40" and control["trace_frozen"] and
+        not control["rate_override_active"] and control["status"] in (2,4))
+    return (exact and ((mode=="restore" and control["status"] in (2,4)) or
+        (mode=="10" and control["trace_frozen"]))) or restored_after_capture
+
 def hardware_capture(a):
     out=Path(a.output)
     if out.exists():raise ValueError("output directory already exists")
@@ -195,7 +202,7 @@ def hardware_capture(a):
     deadline=time.monotonic()+a.timeout_s;poll=out/"diagnostic_control_poll.bin";final=None
     while time.monotonic()<deadline:
         time.sleep(a.poll_interval_s);log.append(upload(a.programmer,a.sn,a.swd_khz,control_symbol["address"],CONTROL_SIZE,poll));final=decode_control(poll.read_bytes())
-        if final["applied_sequence"]==sequence and ((a.mode=="restore" and final["status"] in (2,4)) or (a.mode!="restore" and final["trace_frozen"])):break
+        if capture_complete(final,a.mode,sequence):break
     else:raise TimeoutError("diagnostic command did not complete")
     after=out/"diagnostic_control_after.bin";shutil.copyfile(poll,after);snapshot=out/"diagnostic_snapshot.bin";log.append(upload(a.programmer,a.sn,a.swd_khz,snapshot_symbol["address"],SNAPSHOT_SIZE,snapshot))
     decoded_control,decoded=decode_files(after,snapshot,out);trace_offset=(SNAPSHOT_PREFIX_WORDS+len(COUNTER_NAMES))*4;(out/"trace_raw.bin").write_bytes(snapshot.read_bytes()[trace_offset:])
