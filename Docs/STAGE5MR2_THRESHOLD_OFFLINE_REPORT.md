@@ -68,3 +68,19 @@ Before hardware work:
 4. Add mode-owner and reboot behavior tests.
 5. Re-run independent static captures not used for parameter selection.
 6. Only after those gates pass, build a non-product shadow diagnostic.
+
+
+## Remote verification
+
+GitHub Actions run 34865886583 completed successfully for commit 23fdf397c3f9581443ec0d29daa755bacf718bbd.
+
+- Isolated-scope check: PASS.
+- Python unit tests: 5/5 PASS.
+- Immutable evidence replay: PASS.
+- All static, mode-gated load-preservation, frozen-offset, post-enable and 10-second update-budget gates: PASS.
+- Uploaded artifact: stage5mr2-threshold-offline-report.
+- Artifact SHA-256: 217efd4630c27568f18760b8e4e7bd2c2d17df5365c7a2fdf186aa063614e78c.
+
+Final status for this branch: STAGE 5M-R2 MODE-GATED THRESHOLD OFFLINE CANDIDATE PASSED; FIXED-POINT C AND HARDWARE SHADOW PENDING.
+
+No product source, product build target, persistent format, public protocol, firmware image, hardware configuration or device was changed. No merge, tag or pull request was created.
