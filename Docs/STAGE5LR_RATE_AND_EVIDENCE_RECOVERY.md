@@ -102,6 +102,8 @@ G2 continued on `stage5lr-g2-swd-diagnostics` from `3d8be94fa6c7d25404721cacf145
 - `c6d665c`: replace the diagnostic full-engine rebuild that caused stack collision.
 - `53ed117`: retain separate 40 Hz apply and 10 Hz restore readbacks and restrict ready thresholds to RUNNING.
 - `3abbd22`: explicit authorization and 2,400-sample ceiling for the second window.
+- `258d68c`: preserve all successful and failed SWD runs, cleanup evidence and reports.
+- `337ea2c`: bind all nine G2 run manifests to committed Git blob bytes.
 
 Final valid run IDs are `20260914T043000Z_stage5lr_g2_10hz_final_diag`, `20260914T044000Z_stage5lr_g2_40hz_final_diag`, and `20260914T050000Z_stage5lr_g2_40hz_50s`. The 10 Hz run measured 9.98471 ready observations/s with all layers 256/256. The first 40 Hz window delivered all layers 400/400. The extended window measured 39.8966 ready observations/s and all sampling layers 2000/2000 after excluding the two config and four settling frames. No read error, FIFO overrun, EventQueue drop, engine reject, near-rail raw or million-count jump occurred.
 
@@ -112,5 +114,7 @@ The USB serial adapter was unavailable at final postflight, so the final Modbus 
 Software gates: MSVC `/W4 /WX` Debug CTest 17/17 PASS; Stage5B rate policy 3/3 and full Python 30/30 PASS; Stage5C 12/12 PASS; Stage5L 8/8 PASS; G2 parser 8/8 PASS; register consistency PASS; Debug, Release, BoardDiagnostics and Stage5LDiagnostics clean builds PASS. Product Release contains no diagnostic symbols and retains its exact hash. Strict GCC passes for G2-modified diagnostic/driver/bridge objects; the whole-project strict build remains limited by a pre-existing unrelated missing-field initializer warning. Clang, ASan and UBSan remain `NOT RUN` because the environment is unavailable.
 
 No merge, tag or pull request was created. No history was rewritten, no mass erase occurred, and Stage 5M/5N/5O were not entered.
+
+Repository identity at closeout: STM32 evidence/manifest HEAD is `337ea2c326b6058a961f96d245c4f5774f5e5268`; the final report-only commit follows it. The client remains unchanged and clean at `c4e4906f0a47a427793df6cfcb414756ac7984cc`; CH579 remains unchanged and clean at `eb888925e4fcc9dcd9bf89e8cc42e5b28679e520`. All three local branches matched their upstream references when checked.
 
 G2 conclusion: `STAGE 5L-R G2 SWD DIAGNOSTICS COMPLETE; EXTERNAL TIMING EVIDENCE REQUIRED`.
