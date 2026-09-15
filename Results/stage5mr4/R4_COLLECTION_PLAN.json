@@ -17,7 +17,7 @@
   },
   "runs": [
     {"id": "cold_empty_1", "duration_s": 3600, "status": "CAPTURED_BLIND_PENDING_BATCH_REPLAY", "run_id": "20260915T_r4_cold_empty_1"},
-    {"id": "cold_empty_2", "duration_s": 3600, "status": "PENDING"},
+    {"id": "cold_empty_2", "duration_s": 3600, "status": "CAPTURED_BLIND_PENDING_BATCH_REPLAY", "run_id": "20260915T_r4_cold_empty_2"},
     {"id": "hot_empty", "duration_s": 3600, "status": "PENDING"},
     {"id": "500g_constant_1", "duration_s": 3600, "status": "PENDING"},
     {"id": "500g_constant_2", "duration_s": 3600, "status": "PENDING"},
