@@ -4,4 +4,4 @@ R4 begins from exact R3 commit `ca3008a56bbd3577f71c65b60329c28052551285`. GitHu
 
 The first blind replay will use 180-second windows, 15-second block medians, whole-window OLS, 0.002 g deadband, 1.0 g/h declared-static ceiling, 0.020 g fast step, 75 micrograms/s cap, 875 permille damping and 15-second re-enable holdoff without tuning.
 
-New captures are pending. A pre-capture identity discrepancy must be resolved: the device configuration reports 3 kg capacity/rated load-cell capacity, while the R4 task calls the current physical sensor 6 kg. Both values will be preserved distinctly; neither is inferred.
+New captures are pending. The operator confirmed the installed load-cell nameplate is 3 kg, matching the device configuration. The R4 task's 6 kg statement is retained as a documented text error and is not used as sensor metadata.
