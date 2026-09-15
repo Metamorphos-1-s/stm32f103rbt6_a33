@@ -1,0 +1,62 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5MR4_BLIND_HARDWARE_CAPTURE",
+  "run_id": "20260915T_r4_cold_empty_2",
+  "repository_commit": "8fd3ea85ebe408bc84eac2d1205396da26faa814",
+  "branch": "stage5ma-10hz-adaptive-pipeline",
+  "tool": {
+    "path": "Tools/stage5ma_replay/stage5ma_replay.py",
+    "length": 25333,
+    "sha256": "A0903D10FBD7CB66C4ADDD487975CB747C3921C2BFCC908894071AF302E3210F",
+    "version": "stage5ma-replay-v2"
+  },
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "hardware_run": false,
+  "files": [
+    {
+      "path": "analysis.json",
+      "length": 1376,
+      "sha256": "D977C80EFF81427AF9938E641EBDA49CEB4969F841B605AD050558155422BFDB"
+    },
+    {
+      "path": "environment.json",
+      "length": 692,
+      "sha256": "D8A194BA619BBA52866372DECE7089EF036A7366F3CAEC376EF838035E88885C"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 174,
+      "sha256": "C250DEF059EF37678DF2648924EA5763189F370DE04CA934A202906EA5BBAB5C"
+    },
+    {
+      "path": "manifest.json",
+      "length": 829,
+      "sha256": "67F2659C68ECB99E7D073AB668EB5FE9097E1D6F1CB4DB8E63D0E29181474285"
+    },
+    {
+      "path": "post_probe.json",
+      "length": 721,
+      "sha256": "642B8FFA2B7EDFECC4984596B82BE03E6D4454B569617F8874C794A0F5564DD1"
+    },
+    {
+      "path": "r4_capture_assessment.json",
+      "length": 603,
+      "sha256": "2B1EE8B05C30B58D431D8BD52EDE645EA0F6914C161AA2D84424E810FA98BA78"
+    },
+    {
+      "path": "r4_metadata.json",
+      "length": 781,
+      "sha256": "BE41CD2155AA9608ADE9B4313603453F1BD1E8E9A75E146281B71655C564348A"
+    },
+    {
+      "path": "samples.csv",
+      "length": 4913666,
+      "sha256": "CEE2AE0FD9676350620AA29DEBF8C4CFBD3E71C3B7FC35E749B58622D550362B"
+    },
+    {
+      "path": "summary.json",
+      "length": 1313,
+      "sha256": "B6CE09B37D8D91CCDCDE31D119AAD3439F38A81A6DD6355BD6DC7521466E8FB4"
+    }
+  ]
+}
