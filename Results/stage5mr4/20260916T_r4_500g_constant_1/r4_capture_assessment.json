@@ -1,0 +1,18 @@
+{
+  "run_id": "20260916T_r4_500g_constant_1",
+  "classification": "R4_NEW_BLIND_HOLDOUT_CAPTURE",
+  "duration_s": 3600.093175649643,
+  "records": 31217,
+  "known_load_g": 500,
+  "placement_process_captured": false,
+  "limitation": "Formal capture began after operator confirmed mechanical stability; the original placement transient is not in this run.",
+  "uncompensated_gross_slope_g_per_h": 0.04804077354398643,
+  "mean_uncompensated_gross_g": 499.9229594572508,
+  "stable_ratio": 1.0,
+  "overrun_delta": 0,
+  "candidate_replayed": false,
+  "candidate_parameters_modified": false,
+  "temperature": "UNMEASURED",
+  "post_probe": {"firmware": "0x0510", "map": "0x0104", "profile": 0, "dirty": 0, "active_slot": 1, "storage_sequence": 7, "display_count": 49995},
+  "result": "CAPTURE_VALID_BLIND_RESULT_WITHHELD"
+}

@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "run_id": "20260916T_r4_500g_constant_1",
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 5590468,
+      "sha256": "551B05FFCDE34E7503B8C0438B86882EB9B0B813EE4AAB7CCF23442C357225FB"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 183,
+      "sha256": "3C0261F4094B3AAC97B69E18C20CB0445479CFB74B7E2E8C3AEF466A57A70C5B"
+    },
+    {
+      "path": "environment.json",
+      "length": 695,
+      "sha256": "87527D0FA84540E456417922D8DD4E752260DF60149D515F52B0836BFA818823"
+    },
+    {
+      "path": "summary.json",
+      "length": 1317,
+      "sha256": "72E7D8D47685D09D278E2084874CC9849CE1178BC3EF0B90E7B8B9D49BF7F1C9"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1378,
+      "sha256": "FD5D188F134FC03254E14FD40566F8E0DBC0850F2EC793BFFB62FAA23F04E673"
+    }
+  ]
+}
