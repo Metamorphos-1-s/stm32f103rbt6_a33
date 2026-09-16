@@ -1,0 +1,19 @@
+{
+  "run_id": "20260916T_r4_load_unload_cycles_5",
+  "classification": "R4_NEW_LOAD_UNLOAD_CYCLE_CAPTURE",
+  "duration_s": 370.002,
+  "records": 3219,
+  "known_load_g": 500,
+  "detected_rising_edges": 5,
+  "detected_falling_edges": 5,
+  "trim_rule": "exclude first and last 3 seconds of each threshold-defined plateau",
+  "threshold_g": 250,
+  "loaded_plateau_means_g": [499.961725, 499.920272, 499.923118, 499.914062, 499.882308],
+  "empty_plateau_means_g": [0.008177, 0.147990, 0.118700, 0.110400, 0.107313, 0.077852],
+  "final_empty_plateau_mean_g": 0.077852,
+  "overrun_delta": 0,
+  "candidate_replayed": false,
+  "candidate_parameters_modified": false,
+  "capture_termination": "OPERATOR_COMPLETED_PLANNED_5_CYCLES",
+  "result": "CAPTURE_VALID_BLIND_RESULT_WITHHELD"
+}

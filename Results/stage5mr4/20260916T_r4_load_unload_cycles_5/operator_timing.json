@@ -1,0 +1,10 @@
+{
+  "source": "operator confirmations received during continuous capture",
+  "cycles": [
+    {"cycle":1,"load_placed_utc":"2026-09-16T05:47:06.759Z","empty_again_utc":"2026-09-16T05:47:38.789Z"},
+    {"cycle":2,"load_placed_utc":"2026-09-16T05:48:08.622Z","empty_again_utc":"2026-09-16T05:48:39.903Z"},
+    {"cycle":3,"load_placed_utc":"2026-09-16T05:49:12.003Z","empty_again_utc":"2026-09-16T05:49:46.828Z"},
+    {"cycle":4,"load_placed_utc":"2026-09-16T05:50:19.960Z","empty_again_utc":"2026-09-16T05:50:52.985Z"},
+    {"cycle":5,"load_placed_utc":"2026-09-16T05:51:23.707Z","empty_again_utc":"2026-09-16T05:51:53.857Z"}
+  ]
+}

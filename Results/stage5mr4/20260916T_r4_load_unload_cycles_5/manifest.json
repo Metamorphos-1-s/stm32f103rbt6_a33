@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "run_id": "20260916T_r4_load_unload_cycles_5",
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 529712,
+      "sha256": "5E08ECC7F6AE273285C7DD2A67E04BA8033FEDA18BDE779693B24AFE4C452A0F"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 1008,
+      "sha256": "BF3F4FF29D325B498A593FF7D02877B99EA6D277CA2C1F9B53DC3D1247F931D7"
+    },
+    {
+      "path": "environment.json",
+      "length": 686,
+      "sha256": "A534F0B5B1DC6E415E7E2E9A9D6BB81F03BA08FE155D0E9600CDE5BB371F85CB"
+    },
+    {
+      "path": "summary.json",
+      "length": 1089,
+      "sha256": "B766751CAB2D542908CF28074B14DDC3CC7A51149B16CF503267F5DC2C938B8E"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1413,
+      "sha256": "127EFC15BB853D544B80E1FA4F4E0774E8FC9F85D99EC0F4DFA2969334B2265A"
+    }
+  ]
+}
