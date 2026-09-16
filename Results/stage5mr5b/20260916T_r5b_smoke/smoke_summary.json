@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "classification": "STAGE5MR5B_ENGINEERING_BETA_SUPERVISED_SMOKE",
+  "supervised_capture_duration_s": 3510.0091536045074,
+  "supervised_capture_records": 3510,
+  "s1": {
+    "duration_s": 300.000901222229,
+    "offset_range_ug": [
+      0,
+      0
+    ],
+    "passed": true
+  },
+  "s2": {
+    "duration_s": 1080.0012340545654,
+    "reference_fill_max": 300,
+    "observation_fill_max": 600,
+    "evaluation_count_max": 4,
+    "maximum_10s_offset_change_g": 0.0
+  },
+  "s3": {
+    "dosing_offset_range_ug": [
+      0,
+      0
+    ],
+    "shadow_duration_s": 1080.0009541511536,
+    "evaluation_count_max": 8,
+    "maximum_10s_offset_change_g": 0.000127
+  },
+  "s4": {
+    "active_duration_s": 600.0008833408356,
+    "maximum_absolute_offset_g": 0.011617,
+    "maximum_10s_offset_change_g": 0.000172,
+    "active_display_range": [
+      49994,
+      49994
+    ],
+    "active_candidate_sync_median_error_ug": 0.0,
+    "dosing_offset_range_ug": [
+      12485,
+      12485
+    ],
+    "loaded_unloaded_difference_g": 500.02876276666666,
+    "static_rebuild_reference_fill_max": 300,
+    "static_rebuild_final_state": 4
+  },
+  "s5": {
+    "shadow_display_before": -5,
+    "shadow_display_after": -5,
+    "off_display_before": -5,
+    "off_display_after": -5,
+    "final_firmware": "0x0511",
+    "final_signature": "0x55B5",
+    "final_application": 0,
+    "final_mode": 0,
+    "final_offset_ug": 0,
+    "final_fault": 0,
+    "final_dirty": 0,
+    "final_revision": 7,
+    "final_saved_revision": 7
+  },
+  "configuration": {
+    "before_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+    "final_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+    "byte_identical": true
+  },
+  "whole_smoke": {
+    "maximum_fault": 0,
+    "maximum_dirty": 0,
+    "revision_range": [
+      7,
+      7
+    ],
+    "saved_revision_range": [
+      7,
+      7
+    ],
+    "overrun_delta": 0,
+    "save_count": 0,
+    "flash_write_count_during_smoke": 0,
+    "application_flash_count_before_smoke": 1
+  },
+  "gates": {
+    "no_fault": true,
+    "dosing_offset_frozen": true,
+    "off_does_not_apply_offset": true,
+    "maximum_10s_at_most_0_001g": true,
+    "absolute_offset_at_most_0_500g": true,
+    "load_difference_preserved": true,
+    "no_display_jump_on_cleanup": true,
+    "no_dirty_or_revision_change": true,
+    "configuration_unchanged": true,
+    "final_safe_state": true
+  },
+  "passed": true
+}

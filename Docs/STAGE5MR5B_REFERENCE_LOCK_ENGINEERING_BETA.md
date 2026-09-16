@@ -59,3 +59,65 @@ slow-dosing combinations preserve the full mass change with zero offset change.
 This is a current-sensor engineering beta only. The 2-4 hour qualification,
 real 12-hour qualification and cross-sensor validation remain deferred. It is
 not approved for legal metrology or production acceptance.
+
+## Fixed-point and software gates
+
+The bounded C state is 856 bytes on the host ABI. The ARM Cortex-M3 `-Os`
+module uses 2,926 bytes of text and has a 152-byte maximum single-function
+stack record. The complete Beta image links at 98,128 bytes Flash and 20,256 of
+20,480 bytes RAM. Only 224 bytes RAM remain, so this build is not suitable for
+additional buffered features without further resource work.
+
+Python/C comparison covered 22,557 real R4 one-second samples and 25,057 total
+samples with zero mismatches across every published snapshot field. Host CTest
+passed 22/22. GCC 15.2 strict, Clang 23.1.1 strict, Stage 5B/5C/5L/R2/R3/R4/R5
+Python, register-map consistency, Manifest tests and `git diff --check` passed.
+ASan and UBSan are NOT RUN because the available portable MinGW distribution
+does not include their runtime libraries.
+
+The standard Release remains byte-identical at SHA-256
+`82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486`.
+The engineering Beta is Firmware 0x0511 with a non-frozen diagnostic extension
+at 0x0280-0x02A7 and signature 0x55B5. The public Map remains 0x0104; no existing
+0x0104 field changed meaning. Persistent Format remains V3 and contains no R5
+mode or offset.
+
+## Supervised hardware smoke
+
+The application-only Beta BIN is 98,128 bytes with SHA-256
+`DDB7AB025208252A7F2CAFEFC800CDB4C73EFD45FF874B9B5763A51F347B5E9C`.
+It was programmed at 0x08000000 with byte verification. No mass erase was used;
+the configuration region at 0x0801F000-0x0801FFFF was not written.
+
+The supervised smoke ran from 2026-09-16T10:02:19Z to
+2026-09-16T11:19:30Z. Formal per-second captures total 3,510 seconds (58.5
+minutes) and 3,510 records.
+
+- S1 OFF: 300 seconds, offset exactly zero.
+- S2 empty SHADOW STATIC: 1,080 seconds; 300-second reference and 600-second
+  observation completed; four evaluations; no offset movement.
+- S3 500 g SHADOW: DOSING offset frozen; 1,080-second STATIC run completed
+  eight evaluations; maximum 10-second candidate change 0.000127 g.
+- S4 ACTIVE: 600 seconds; displayed count remained 49994; maximum absolute
+  offset 0.011617 g; maximum 10-second change 0.000172 g. DOSING unload froze
+  offset at 0.012485 g and preserved a 500.029 g load/unload difference.
+- Returning to STATIC enforced the 15-second holdoff and completed a new
+  300-second empty reference.
+- Cleanup to SHADOW then OFF caused no display-count change. Final candidate
+  offset is zero.
+
+The full smoke had zero faults, zero ADC overruns, zero SAVE requests and zero
+Flash writes after the initial application programming. Dirty remained zero;
+revision and saved revision remained 7. The 4,096-byte configuration region
+remained byte-identical at SHA-256
+`D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86`.
+Both V3 slots retain valid CRC and commit markers at sequences 7 and 6.
+
+The device is left on the Beta image in OFF + SHADOW, with fault=0 and offset=0.
+
+## Result
+
+**STAGE 5M-R5B ENGINEERING BETA ENABLED; SHORT AND 12-HOUR QUALIFICATION DEFERRED**
+
+The 2-4 hour short qualification and a real 12-hour qualification were not run.
+No merge, tag or pull request was created.
