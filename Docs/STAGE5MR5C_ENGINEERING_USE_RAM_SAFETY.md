@@ -120,8 +120,19 @@ then superseded before formal smoke when the pre-smoke audit found the volatile
 TARE revision defect. The final 99,440-byte image is SHA-256
 `2494CB70923C67E38F1642285CF3CEE717C1A207C42BF97B96FCC2A3BCFBDEFC`.
 
-Current state: **STAGE 5M-R5C SOFTWARE READY; HARDWARE CLOSURE PENDING; STAGE
-5M-F NOT YET APPROVED**.
+The final 99,440-byte Beta image was application-only flashed and verified at
+3.29 V. The supervised hardware window ran for 3,210.326 seconds (53.5 minutes)
+and contains 2,220 structured one-second records. It covered OFF, SHADOW,
+ACTIVE/STATIC, DOSING, three 500 g load/unload cycles, ZERO, successful loaded
+TARE, clear-tare, DOSING-to-STATIC reference rebuild and a final reset. Every
+record has zero fault, overrun, dirty, SAVE request, read error, reconnect and
+host polling gap. Revision and saved revision remained 7. Configuration SHA-256
+before flash, after flash and after smoke remained
+`D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86`.
+The reset-final state is OFF + SHADOW, offset/reference zero and fault zero.
+
+Current state: **STAGE 5M-R5C ENGINEERING USE READY; LONG-DURATION AND
+CROSS-SENSOR QUALIFICATION DEFERRED; STAGE 5M-F ENTRY APPROVED**.
 
 The 2-4 hour static qualification, real 12-hour qualification, cross-sensor
 validation and metrology certification remain **DEFERRED**.

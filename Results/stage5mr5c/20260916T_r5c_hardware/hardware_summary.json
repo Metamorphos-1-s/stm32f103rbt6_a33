@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "classification": "STAGE5MR5C_SUPERVISED_HARDWARE_CLOSURE",
+  "result": "PASS",
+  "firmware": "0x0511 R5C Beta",
+  "map": "0x0104 with engineering extension 0x0280-0x02A7",
+  "beta_bin_length": 99440,
+  "beta_bin_sha256": "2494CB70923C67E38F1642285CF3CEE717C1A207C42BF97B96FCC2A3BCFBDEFC",
+  "flash": {
+    "method": "SWD application-only sectors 0-97; no mass erase and no configuration write",
+    "mcu": "STM32F101/F102/F103 Medium-density, device ID 0x410, revision X",
+    "flash_size_bytes": 131072,
+    "vdd_v": 3.29,
+    "download_verify": "PASS"
+  },
+  "supervised_window": {
+    "started_utc": "2026-09-16T15:28:20.968Z",
+    "ended_utc": "2026-09-16T16:21:51.294Z",
+    "elapsed_seconds": 3210.326,
+    "structured_record_seconds": 2220.42,
+    "structured_records": 2220,
+    "read_errors": 0,
+    "reconnect_retries": 0,
+    "host_poll_gap_count": 0
+  },
+  "coverage": {
+    "off_shadow": "PASS",
+    "shadow_static": "PASS - HOLDOFF -> REFERENCE_FILL -> OBSERVATION_FILL -> TRACKING",
+    "active_static": "PASS",
+    "dosing": "PASS - offset exactly frozen at -2447 ug across all six loaded/unloaded records",
+    "dosing_to_static": "PASS - reference rebuilt after holdoff",
+    "loaded_unloaded_cycles": 3,
+    "loaded_range_ug": [500070968, 500166719],
+    "unloaded_final_range_ug": [77727, 90118],
+    "zero": "PASS",
+    "tare_500g": "PASS - net returned to zero without revision or dirty change",
+    "clear_tare": "PASS",
+    "empty_tare": "REJECTED AS DESIGNED - OUT_OF_ZERO_RANGE",
+    "restart": "PASS - SWD read reset returned to OFF + SHADOW with volatile state cleared",
+    "host_reconnect_and_interrupt_preservation": "PASS by automated tool tests; no physical cable disconnect induced during supervised run"
+  },
+  "invariants": {
+    "fault_mask": 0,
+    "overrun_count": 0,
+    "dirty": 0,
+    "revision": 7,
+    "saved_revision": 7,
+    "save_request_count_low": 0,
+    "uncompensated_gross_readable": true
+  },
+  "configuration": {
+    "before_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+    "after_intermediate_flash_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+    "after_final_flash_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+    "after_smoke_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+    "unchanged": true
+  },
+  "final_state": {
+    "application": "SHADOW",
+    "mode": "OFF",
+    "offset_ug": 0,
+    "reference_ug": 0,
+    "fault_mask": 0,
+    "dirty": 0,
+    "revision": 7,
+    "saved_revision": 7,
+    "save_request_count_low": 0
+  }
+}

@@ -19,9 +19,9 @@
     "core_resumed": true
   },
   "intermediate_r5c_beta_flash": "PASS - application-only flash and verify; superseded before formal smoke by volatile TARE revision fix",
-  "final_r5c_beta_reflash": "PENDING",
-  "supervised_smoke": "PENDING",
-  "configuration_before_sha256": "PENDING",
-  "configuration_after_sha256": "PENDING",
-  "final_safe_state": "PENDING"
+  "final_r5c_beta_reflash": "PASS - 99440-byte application-only image downloaded and verified",
+  "supervised_smoke": "PASS - 3210.326-second supervised window; 2220 structured one-second records",
+  "configuration_before_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+  "configuration_after_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+  "final_safe_state": "PASS - OFF + SHADOW, offset 0, fault 0, dirty 0, revision/saved 7, SAVE count 0"
 }

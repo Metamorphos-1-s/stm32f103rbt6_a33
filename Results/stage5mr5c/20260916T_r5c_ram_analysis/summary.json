@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "STAGE 5M-R5C SOFTWARE READY; HARDWARE CLOSURE PENDING; STAGE 5M-F NOT YET APPROVED",
+  "status": "STAGE 5M-R5C ENGINEERING USE READY; LONG-DURATION AND CROSS-SENSOR QUALIFICATION DEFERRED; STAGE 5M-F ENTRY APPROVED",
   "baseline_head": "16e5b051a26dd104475c4de2e4987347032da04d",
   "software_head": "de57c731fddc9cbcf39bee5ae74c97639d15c7b6",
   "algorithm_or_parameter_change": false,
@@ -18,7 +18,8 @@
   "python_c_mismatches": 0,
   "host_ctest": "25/25 PASS",
   "release_hash_preserved": true,
-  "hardware_closure_required": true,
+  "hardware_closure_required": false,
+  "hardware_closure": "PASS",
   "deferred": [
     "2-4 hour static qualification",
     "real 12-hour qualification",

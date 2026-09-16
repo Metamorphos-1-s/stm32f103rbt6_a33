@@ -1,0 +1,14 @@
+[
+  {
+    "name": "command TARE",
+    "status": "PASS",
+    "detail": "OUT_OF_ZERO_RANGE",
+    "data": {
+      "token": 62832,
+      "result": 7,
+      "result_name": "OUT_OF_ZERO_RANGE",
+      "state": 0,
+      "last_command": 3
+    }
+  }
+]

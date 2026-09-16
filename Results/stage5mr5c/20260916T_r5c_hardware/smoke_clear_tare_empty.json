@@ -1,0 +1,14 @@
+[
+  {
+    "name": "command CLEAR_TARE",
+    "status": "PASS",
+    "detail": "OK",
+    "data": {
+      "token": 22214,
+      "result": 0,
+      "result_name": "OK",
+      "state": 0,
+      "last_command": 4
+    }
+  }
+]

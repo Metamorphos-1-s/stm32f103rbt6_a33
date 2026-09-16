@@ -1,0 +1,14 @@
+[
+  {
+    "name": "command ZERO",
+    "status": "PASS",
+    "detail": "OK",
+    "data": {
+      "token": 53351,
+      "result": 0,
+      "result_name": "OK",
+      "state": 0,
+      "last_command": 1
+    }
+  }
+]

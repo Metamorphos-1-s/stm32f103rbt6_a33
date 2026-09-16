@@ -1,0 +1,16 @@
+{
+  "port": "COM5",
+  "interface": "rs485",
+  "baud_rate": 115200,
+  "parity": "N",
+  "stop_bits": 1,
+  "slave_address": 1,
+  "timeout_ms": 500,
+  "allow_write": true,
+  "allow_actions": true,
+  "allow_flash": false,
+  "allow_comm_change": false,
+  "allow_factory_reset": false,
+  "allow_calibration": false,
+  "automation_authorizations": ["mailbox_write", "actions"]
+}
