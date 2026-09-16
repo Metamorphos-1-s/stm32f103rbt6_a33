@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "current_device_before_r5c_flash": {
+    "firmware": "0x0511 R5B",
+    "application": "SHADOW",
+    "mode": "OFF",
+    "offset_ug": 0,
+    "fault": 0,
+    "dirty": 0,
+    "revision": 7,
+    "saved_revision": 7,
+    "save_request_count_low": 0
+  },
+  "swd_msp_sample": {
+    "classification": "INSTANTANEOUS_SAMPLE_NOT_MAXIMUM_WATERMARK",
+    "msp": "0x20004E58",
+    "depth_from_estack_bytes": 424,
+    "ipsr": 0,
+    "core_resumed": true
+  },
+  "r5c_beta_reflash": "PENDING",
+  "supervised_smoke": "PENDING",
+  "configuration_before_sha256": "PENDING",
+  "configuration_after_sha256": "PENDING",
+  "final_safe_state": "PENDING"
+}

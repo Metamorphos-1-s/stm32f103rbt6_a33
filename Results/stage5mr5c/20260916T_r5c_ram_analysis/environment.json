@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "repository_head": "4ce9e5e040e79a0d2db903b082e5c2894f3f1364",
+  "branch": "stage5mr5c-engineering-use-ram-safety",
+  "python": "3.8.10",
+  "arm_gcc": "GNU Tools for STM32 13.3.1 20240614",
+  "cmake": "3.28.1",
+  "host_gcc": "15.2.0 portable MinGW",
+  "r5_recorder": {
+    "path": "Tools/stage5mr5b_beta/r5_beta_hw.py",
+    "length": 14378,
+    "sha256": "58007285605BF27C6ADF77CCEFA3217F49171C6BD76A4E1C1159C96DE3872A03"
+  },
+  "ram_analyzer": {
+    "path": "Tools/stage5mr5c/analyze_ram_stack.py",
+    "length": 9636,
+    "sha256": "9B11B74FEE3EF7FEAE3CA15E31C4C6D8123F94B8D6C765BAD01710F75F5352A9"
+  },
+  "source_date": "2026-09-16",
+  "timezone": "Asia/Shanghai"
+}

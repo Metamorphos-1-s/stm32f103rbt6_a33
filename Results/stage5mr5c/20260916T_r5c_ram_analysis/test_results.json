@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "host_ctest": {"passed": 24, "failed": 0},
+  "python": {
+    "stage5b": 33,
+    "stage5c": 12,
+    "stage5l": 8,
+    "r2": 5,
+    "r3": 7,
+    "r4_capture": 2,
+    "r4_replay": 3,
+    "r5": 11,
+    "manifest": 4,
+    "all_passed": true
+  },
+  "python_c_parity": {
+    "real_samples": 22557,
+    "total_samples": 25057,
+    "mismatches": 0
+  },
+  "builds": {
+    "debug": "PASS",
+    "release": "PASS",
+    "board_diagnostics": "PASS",
+    "stage5mr5_beta": "PASS",
+    "stage5mr5_beta_wextra_werror": "PASS"
+  },
+  "register_map_consistency": "PASS",
+  "persistent_v3_tests": "PASS",
+  "manifest_tests": "PASS",
+  "dynamic_allocation_scan": "PASS - no malloc/calloc/realloc/free calls",
+  "git_diff_check": "PASS",
+  "asan": "NOT RUN - portable MinGW has no libasan runtime",
+  "ubsan": "NOT RUN - portable MinGW has no libubsan runtime"
+}

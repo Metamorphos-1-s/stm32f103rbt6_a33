@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "standard_release": {
+    "firmware": "0x0510",
+    "map": "0x0104",
+    "elf_length": 172200,
+    "elf_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+    "flash_bytes": 80892,
+    "ram_bytes": 19352,
+    "r5_enabled": false
+  },
+  "r5b_beta": {
+    "bin_length": 98128,
+    "bin_sha256": "DDB7AB025208252A7F2CAFEFC800CDB4C73EFD45FF874B9B5763A51F347B5E9C",
+    "ram_bytes": 20256
+  },
+  "r5c_beta": {
+    "firmware": "0x0511",
+    "map": "0x0104 with engineering extension 0x0280-0x02A7",
+    "elf_length": 1942972,
+    "elf_sha256": "495872B42E7D93AE753669C412A874BCB5486B089A87A8CA52358D2AD2825920",
+    "bin_length": 99424,
+    "bin_sha256": "FD2E976F38C8B0565D37E1E30769578AD017B75FD8BDB7BF75E260488507DD28",
+    "flash_bytes": 99416,
+    "ram_bytes": 19416,
+    "ram_reduction_from_r5b_bytes": 840,
+    "flash_bin_growth_from_r5b_bytes": 1296
+  },
+  "debug": {"flash_bytes": 94112, "ram_bytes": 19392},
+  "board_diagnostics": {"flash_bytes": 117092, "ram_bytes": 19264},
+  "application_load_address": "0x08000000",
+  "configuration_region": "0x0801F000-0x0801FFFF"
+}

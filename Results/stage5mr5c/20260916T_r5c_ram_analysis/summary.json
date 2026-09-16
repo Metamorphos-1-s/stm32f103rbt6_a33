@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "status": "STAGE 5M-R5C SOFTWARE READY; HARDWARE CLOSURE PENDING; STAGE 5M-F NOT YET APPROVED",
+  "baseline_head": "16e5b051a26dd104475c4de2e4987347032da04d",
+  "software_head": "4ce9e5e040e79a0d2db903b082e5c2894f3f1364",
+  "algorithm_or_parameter_change": false,
+  "beta_binary_changed": true,
+  "r5b_bin_length": 98128,
+  "r5c_bin_length": 99424,
+  "ram_before_bytes": 20256,
+  "ram_after_bytes": 19416,
+  "minimum_stack_reservation_bytes": 1024,
+  "unallocated_after_reserved_stack_bytes": 1064,
+  "static_end_to_estack_bytes": 2088,
+  "bounded_conservative_stack_bytes": 1488,
+  "stack_collision_margin_bytes": 600,
+  "runtime_maximum_watermark": "NOT RUN",
+  "python_c_mismatches": 0,
+  "host_ctest": "24/24 PASS",
+  "release_hash_preserved": true,
+  "hardware_closure_required": true,
+  "deferred": [
+    "2-4 hour static qualification",
+    "real 12-hour qualification",
+    "cross-sensor validation",
+    "metrology certification",
+    "ASan",
+    "UBSan"
+  ]
+}
