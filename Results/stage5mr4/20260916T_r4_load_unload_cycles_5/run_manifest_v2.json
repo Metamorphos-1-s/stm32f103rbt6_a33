@@ -1,0 +1,62 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5MR4_LOAD_UNLOAD_CYCLE_CAPTURE",
+  "run_id": "20260916T_r4_load_unload_cycles_5",
+  "repository_commit": "6a294c9",
+  "branch": "stage5ma-10hz-adaptive-pipeline",
+  "tool": {
+    "path": "Tools/stage5ma_replay/stage5ma_replay.py",
+    "length": 25333,
+    "sha256": "A0903D10FBD7CB66C4ADDD487975CB747C3921C2BFCC908894071AF302E3210F",
+    "version": "stage5ma-replay-v2"
+  },
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "hardware_run": false,
+  "files": [
+    {
+      "path": "analysis.json",
+      "length": 1413,
+      "sha256": "127EFC15BB853D544B80E1FA4F4E0774E8FC9F85D99EC0F4DFA2969334B2265A"
+    },
+    {
+      "path": "environment.json",
+      "length": 686,
+      "sha256": "A534F0B5B1DC6E415E7E2E9A9D6BB81F03BA08FE155D0E9600CDE5BB371F85CB"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 1008,
+      "sha256": "BF3F4FF29D325B498A593FF7D02877B99EA6D277CA2C1F9B53DC3D1247F931D7"
+    },
+    {
+      "path": "manifest.json",
+      "length": 837,
+      "sha256": "7015B2E899AD12DB6B3017EB7F4CAFBCB0A5C18CAF1F5A7B8ABE409E502A62DF"
+    },
+    {
+      "path": "operator_timing.json",
+      "length": 629,
+      "sha256": "7A1CD17CFE55386CF77662E1DF93EA8D123131DCCFFB9E4EA18E6F7DCD57D274"
+    },
+    {
+      "path": "r4_capture_assessment.json",
+      "length": 774,
+      "sha256": "1667C7DB781BFF9FA2E0F494359D980711D6A4FBAD028FED8C877590EC400662"
+    },
+    {
+      "path": "r4_metadata.json",
+      "length": 811,
+      "sha256": "1C37D3A52BC66756CBCD0D9D995BF4A44C70726E159802F4BB6B54BD29664E27"
+    },
+    {
+      "path": "samples.csv",
+      "length": 529712,
+      "sha256": "5E08ECC7F6AE273285C7DD2A67E04BA8033FEDA18BDE779693B24AFE4C452A0F"
+    },
+    {
+      "path": "summary.json",
+      "length": 1089,
+      "sha256": "B766751CAB2D542908CF28074B14DDC3CC7A51149B16CF503267F5DC2C938B8E"
+    }
+  ]
+}
