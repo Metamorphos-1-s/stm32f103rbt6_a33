@@ -300,7 +300,7 @@ def main():
     output.mkdir(parents=True, exist_ok=False)
     report = build_report()
     (output / "blind_report.json").write_text(
-        json.dumps(report, indent=2) + "\n", encoding="utf-8", newline="\n"
+        json.dumps(report, indent=2) + "\n", encoding="utf-8"
     )
     print(json.dumps({
         "status": report["status"],
