@@ -1,0 +1,22 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5MR4_FROZEN_BLIND_REPLAY_FAILURE",
+  "run_id": "20260916T_r4_frozen_blind_replay",
+  "repository_commit": "0d2dec7",
+  "branch": "stage5mr4-drift-portability-qualification",
+  "tool": {
+    "path": "Tools/stage5ma_replay/stage5ma_replay.py",
+    "length": 25333,
+    "sha256": "A0903D10FBD7CB66C4ADDD487975CB747C3921C2BFCC908894071AF302E3210F",
+    "version": "stage5ma-replay-v2"
+  },
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "hardware_run": false,
+  "files": [
+    {
+      "path": "blind_report.json",
+      "length": 66581,
+      "sha256": "A817F81DAFAB898839BA73A7C91BF82EB756E02A58C17E258AC60C14F9EBAF48"
+    }
+  ]
+}
