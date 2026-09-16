@@ -96,7 +96,12 @@ bool SystemContext_SetTareStateMass(MassValueUg tare_mass_ug, bool tare_active)
     s_system_context.runtime.current_tare_ug = tare_mass_ug;
     s_system_context.runtime.current_tare = tare_compat;
     s_system_context.runtime.tare_active = tare_active;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if (s_system_context.config.system.tare_power_loss_retention)
+      (void)SystemContext_MarkConfigChanged();
+#else
     (void)SystemContext_MarkConfigChanged();
+#endif
   }
   return true;
 }

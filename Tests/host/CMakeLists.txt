@@ -260,6 +260,35 @@ else()
 endif()
 add_test(NAME stage5mr5_persistent_equal_logic
     COMMAND stage5mr5_persistent_equal_tests)
+
+add_executable(stage5mr5_tare_revision_tests
+    test_stage5mr5_tare_revision.c
+    ../../App/revision_helper.c
+    ../../App/system_context.c
+    ../../Config/alarm_config_validation.c
+    ../../Config/default_config.c
+    ../../Config/device_config_validator.c
+    ../../Domain/calibration/calibration_model.c
+    ../../Domain/measurement/mass_math.c
+    ../../Domain/measurement/metrology_config_validator.c
+    ../../Domain/measurement/metrology_standard_validator.c
+    ../../Domain/measurement/unit_converter.c
+    ../../Domain/measurement/weight_math.c
+    ../../Services/config_store/persistent_codec.c)
+target_compile_definitions(stage5mr5_tare_revision_tests PRIVATE
+    A33_ENABLE_STAGE5MR5_BETA=1)
+target_include_directories(stage5mr5_tare_revision_tests PRIVATE
+    ../../App ../../Config ../../Domain/calibration ../../Domain/filter
+    ../../Domain/measurement ../../Domain/stability
+    ../../Services/config_store)
+if(MSVC)
+    target_compile_options(stage5mr5_tare_revision_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5mr5_tare_revision_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5mr5_tare_revision_logic
+    COMMAND stage5mr5_tare_revision_tests)
 add_executable(stage5mr_drift_runner
     stage5mr_drift_runner.c
     ../../Domain/measurement/static_drift_compensator.c)
