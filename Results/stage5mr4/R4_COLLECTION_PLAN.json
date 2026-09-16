@@ -23,12 +23,16 @@
     {"id": "500g_constant_2", "duration_s": 3600, "status": "CAPTURED_BLIND_PENDING_BATCH_REPLAY", "run_id": "20260916T_r4_500g_constant_2", "placement_process_run_id": "20260916T_r4_500g_placement_2"},
     {"id": "other_constant_load", "duration_s": 3600, "status": "CAPTURED_BLIND_PENDING_BATCH_REPLAY", "known_load_g": 1000, "run_id": "20260916T_r4_1kg_constant"},
     {"id": "load_unload_cycles_5", "status": "CAPTURED_BLIND_PENDING_BATCH_REPLAY", "run_id": "20260916T_r4_load_unload_cycles_5", "completed_cycles": 5},
-    {"id": "mode_switches_20", "status": "PENDING"}
+    {"id": "mode_switches_20", "status": "REPLAYED_FIXED_SCHEDULE", "source_run_id": "20260915T_r4_cold_empty_1", "switch_count": 20}
   ],
   "sensor_identity": "OPERATOR_CONFIRMED_NAMEPLATE_3_KG",
   "configured_capacity_kg": 3.0,
   "physical_rating_claim_in_r4_prompt_kg": 6.0,
   "prompt_rating_classification": "TEXT_ERROR",
   "physical_nameplate_capacity_kg": 3.0,
-  "identity_mismatch_must_be_resolved_before_capture": false
+  "identity_mismatch_must_be_resolved_before_capture": false,
+  "blind_replay_status": "FROZEN_CANDIDATE_FAILED_INDEPENDENT_VALIDATION",
+  "blind_replay_run_id": "20260916T_r4_frozen_blind_replay",
+  "parameter_tuning_after_blind_failure": false,
+  "fixed_point_and_shadow_authorized": false
 }
