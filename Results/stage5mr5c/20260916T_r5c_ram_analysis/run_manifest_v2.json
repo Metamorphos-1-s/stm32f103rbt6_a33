@@ -2,7 +2,7 @@
   "schema_version": 2,
   "classification": "STAGE5MR5C_SOFTWARE_RAM_STACK_PREFLIGHT",
   "run_id": "20260916T_r5c_ram_analysis",
-  "repository_commit": "1b5154f",
+  "repository_commit": "d85633f2565c44af30b288aa6da245eb19dd11ac",
   "branch": "stage5mr5c-engineering-use-ram-safety",
   "tool": {
     "path": "Tools/stage5ma_replay/stage5ma_replay.py",
@@ -21,17 +21,17 @@
     {
       "path": "environment.json",
       "length": 696,
-      "sha256": "4B98D27731327D72378325AA7A7603722E6B2464D15B6CC950370014E1D7B810"
+      "sha256": "1A1C99E5D3DEFFB1C5A7849998B1168B96655ACA4FB33C3387AD47744182C015"
     },
     {
       "path": "firmware_identity.json",
       "length": 1129,
-      "sha256": "6D69ED173D0D71990729F6473CDFF45FBB37C70C659CD851C1A1250AB2B69DBF"
+      "sha256": "AD894AC053762D52F4AF719B3705DAE85DD1F11374988387876748B963EA583A"
     },
     {
       "path": "hardware_summary.json",
-      "length": 658,
-      "sha256": "A658F157463E1E72E071915AE456CE65CB8FD86D81171EBC79DDF8690A2A2547"
+      "length": 803,
+      "sha256": "2A05F95EAA9D3809E5F85B22A95EC4AB2067EC83EF6D1C6181797054C8652E88"
     },
     {
       "path": "largest_ram_symbols.json",
@@ -50,18 +50,18 @@
     },
     {
       "path": "stage5mr5c_application.bin",
-      "length": 99424,
-      "sha256": "FD2E976F38C8B0565D37E1E30769578AD017B75FD8BDB7BF75E260488507DD28"
+      "length": 99440,
+      "sha256": "2494CB70923C67E38F1642285CF3CEE717C1A207C42BF97B96FCC2A3BCFBDEFC"
     },
     {
       "path": "stage5mr5c_beta.map",
       "length": 1378628,
-      "sha256": "D176BEC77EFC5BBD2640109F0B6202F0808214334F4F82F2F75511F6AB49983A"
+      "sha256": "02B70C7B7DD6C3B45B0348848988FCEDB20AB4E8420E6F08390BE27CBFCEEDFC"
     },
     {
       "path": "summary.json",
       "length": 997,
-      "sha256": "9CE882160DAA3C420D175A0E72D813C2CA71E92AD47D2DDD7B9BEDD922D8619B"
+      "sha256": "E463ADBE9719B5D9F23B9B5988BD03C8CD481317E0E99A1CB8A5EF238E977DF7"
     },
     {
       "path": "swd_msp_sample.txt",
@@ -71,7 +71,7 @@
     {
       "path": "test_results.json",
       "length": 867,
-      "sha256": "3AC889CBB884A6A02C096EC3CBA3AE55D535BBFDDDB3C14035375B40A31C636F"
+      "sha256": "B03BF171A432570E1DED1B5560682E20854BDE9093C2312C98AC9B5170BDD43E"
     }
   ]
 }
