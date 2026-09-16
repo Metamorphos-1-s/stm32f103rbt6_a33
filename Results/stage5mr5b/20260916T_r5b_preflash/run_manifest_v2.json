@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
-  "classification": "STAGE5MR5B_ENGINEERING_BETA_PREFLASH",
+  "classification": "STAGE5MR5B_HARDWARE_PREFLIGHT",
   "run_id": "20260916T_r5b_preflash",
-  "repository_commit": "4411d75",
+  "repository_commit": "3a20657",
   "branch": "stage5mr5b-reference-lock-engineering-beta",
   "tool": {
     "path": "Tools/stage5ma_replay/stage5ma_replay.py",
@@ -13,6 +13,41 @@
   "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
   "hardware_run": false,
   "files": [
+    {
+      "path": "active_config.json",
+      "length": 622,
+      "sha256": "C59150F6EA7A414587C17F1ACFDC6A2D3D65BE38AEFA9F84C2D15D88EFE058E0"
+    },
+    {
+      "path": "config_before/config_region.bin",
+      "length": 4096,
+      "sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86"
+    },
+    {
+      "path": "config_before/parsed_slots.json",
+      "length": 2616,
+      "sha256": "6D3F6A62CFC93EB7751F5704C2FF3647E756545F232A47DF1CBDD4AF77753E5E"
+    },
+    {
+      "path": "config_before/slot_a.bin",
+      "length": 2048,
+      "sha256": "412BCED9DA8923381B0FDE954A2ECD1A2B0D8E28EC574539B2A723ADE86895F0"
+    },
+    {
+      "path": "config_before/slot_b.bin",
+      "length": 2048,
+      "sha256": "5C3B5EBD6EFC91622DC97EC61D5ABD2ED847383162BBE489F8526B89F6C63BB1"
+    },
+    {
+      "path": "hardware_preflight.json",
+      "length": 1371,
+      "sha256": "981B6EC6269297DEC11DE72B6766FC41316A43D79095336548D9CA941FBF8188"
+    },
+    {
+      "path": "product_probe.json",
+      "length": 721,
+      "sha256": "3D1B319779F1E1CA478158B539D6D1BD11745352E5E41EE835E0F0D99E80A7DF"
+    },
     {
       "path": "software_manifest.json",
       "length": 1963,
