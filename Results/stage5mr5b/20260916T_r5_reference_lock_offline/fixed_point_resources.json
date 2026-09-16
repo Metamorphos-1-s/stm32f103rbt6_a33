@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "module": "Domain/measurement/reference_lock_drift_compensator.c",
+  "state_bytes_host_x64": 4016,
+  "state_budget_bytes": 4096,
+  "storage": {
+    "reference_values": "300 signed int32 deltas",
+    "observation_values": "600 signed int32 deltas",
+    "ten_hz_second_bucket": "16 signed int64 values",
+    "dynamic_allocation": false
+  },
+  "arm_cortex_m3_os": {
+    "compiler": "arm-none-eabi-gcc from STM32CubeCLT 1.18.0",
+    "text_bytes": 2930,
+    "data_bytes": 0,
+    "bss_bytes": 0,
+    "maximum_single_function_stack_bytes": 152,
+    "conservative_nested_stack_bound_bytes": 280,
+    "largest_function": "MedianSmall"
+  },
+  "host_strict": {
+    "gcc_15_2": "PASS",
+    "clang_23_1_1": "PASS",
+    "asan": "NOT RUN - downloaded MinGW distribution has no libasan",
+    "ubsan": "NOT RUN - downloaded MinGW distribution has no libubsan"
+  },
+  "division_contract": "C11 signed division truncates toward zero; rate uses 1/1000 ug/s",
+  "median_contract": "even median averages complete signed values and truncates toward zero",
+  "per_sample_complexity": "bounded 10 Hz bucket append; median selection occurs at 1 Hz or each 60-second evaluation"
+}

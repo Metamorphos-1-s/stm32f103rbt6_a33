@@ -153,6 +153,25 @@ else()
     target_compile_options(stage5mr_drift_tests PRIVATE -Wall -Wextra -Werror)
 endif()
 add_test(NAME stage5mr_drift_logic COMMAND stage5mr_drift_tests)
+
+add_executable(stage5mr5_reference_lock_tests
+    test_stage5mr5_reference_lock.c
+    ../../Domain/measurement/reference_lock_drift_compensator.c)
+add_executable(stage5mr5_reference_lock_runner
+    stage5mr5_reference_lock_runner.c
+    ../../Domain/measurement/reference_lock_drift_compensator.c)
+foreach(target stage5mr5_reference_lock_tests stage5mr5_reference_lock_runner)
+    target_include_directories(${target} PRIVATE ../../Domain/measurement)
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /W4 /WX)
+    else()
+        target_compile_options(${target} PRIVATE -Wall -Wextra -Werror)
+    endif()
+endforeach()
+target_compile_definitions(stage5mr5_reference_lock_runner PRIVATE
+    _CRT_SECURE_NO_WARNINGS)
+add_test(NAME stage5mr5_reference_lock_logic
+    COMMAND stage5mr5_reference_lock_tests)
 add_executable(stage5mr_drift_runner
     stage5mr_drift_runner.c
     ../../Domain/measurement/static_drift_compensator.c)
