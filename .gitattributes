@@ -34,5 +34,6 @@ Results/stage5mr5b/**/*.json text eol=lf
 Results/stage5mr5b/**/*.jsonl text eol=lf
 Results/stage5mr5b/**/*.csv text eol=lf
 Results/stage5mr5b/**/*.md text eol=lf
+Results/stage5mr5b/**/*.txt text eol=lf
 Results/stage5mr5b/**/*.bin -text
 Docs/evidence/*.json text eol=lf
