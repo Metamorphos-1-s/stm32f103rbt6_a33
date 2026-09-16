@@ -2,7 +2,7 @@
   "schema_version": 2,
   "classification": "STAGE5MR5C_SOFTWARE_RAM_STACK_PREFLIGHT",
   "run_id": "20260916T_r5c_ram_analysis",
-  "repository_commit": "d85633f2565c44af30b288aa6da245eb19dd11ac",
+  "repository_commit": "d85633fc898d77eca34ebd9dd48ea7c0333fec4d",
   "branch": "stage5mr5c-engineering-use-ram-safety",
   "tool": {
     "path": "Tools/stage5ma_replay/stage5ma_replay.py",
