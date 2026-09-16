@@ -704,7 +704,11 @@ static void App_RunStateMachine(void)
 
 static CommandResult App_ExecuteLocalCommand(CommandId id, int32_t value0)
 {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+  CommandRequest request = {id, COMMAND_SOURCE_LOCAL_KEY, value0, 0, 0U, 0};
+#else
   CommandRequest request = {id, COMMAND_SOURCE_LOCAL_KEY, value0, 0, 0U};
+#endif
   CommandResponse response;
   return CommandService_Execute(&request, &response);
 }
