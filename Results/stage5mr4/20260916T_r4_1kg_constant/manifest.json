@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "run_id": "20260916T_r4_1kg_constant",
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 6227156,
+      "sha256": "A81DDA27873B5B67650ED8A584234567E04C82404D9787D2FE89E836087AFB77"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 171,
+      "sha256": "7B926FFC36963041E115740F9BC2B2FC36AC5C4B78A85D3874C204A127501ECD"
+    },
+    {
+      "path": "environment.json",
+      "length": 692,
+      "sha256": "FEFCA2B9972CA1D3C2D087E53EB40F59F46A600B1E47EE86AF59460D6C36A6CA"
+    },
+    {
+      "path": "summary.json",
+      "length": 1315,
+      "sha256": "9DF0CC64C416D0DC7A8890B0572BD8F9ECEB4815F349CC18D5A3034E7F97E56C"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1418,
+      "sha256": "5E35E71506EAA9014BB38CFB9B6B4AB0B93601E23CC7CCB253E2CADEDA26266F"
+    }
+  ]
+}

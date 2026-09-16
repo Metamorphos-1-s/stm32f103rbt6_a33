@@ -1,0 +1,7 @@
+{
+  "operator_confirmed_load_stable_utc": "2026-09-16T06:00:11.764Z",
+  "first_included_steady_sample_utc": "2026-09-16T06:00:11.791Z",
+  "last_included_steady_sample_utc": "2026-09-16T07:03:46.670Z",
+  "steady_duration_s": 3814.879,
+  "known_load_g": 1000
+}

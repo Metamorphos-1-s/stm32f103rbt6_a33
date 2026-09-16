@@ -1,0 +1,24 @@
+{
+  "run_id": "20260916T_r4_1kg_constant",
+  "classification": "R4_NEW_BLIND_HOLDOUT_CAPTURE",
+  "full_capture_duration_s": 3900.0487866401672,
+  "full_capture_records": 33777,
+  "known_load_g": 1000,
+  "placement_process_preserved": true,
+  "steady_interval": {
+    "start_utc": "2026-09-16T06:00:11.791Z",
+    "end_utc": "2026-09-16T07:03:46.670Z",
+    "duration_s": 3814.879,
+    "records": 33039,
+    "mean_uncompensated_gross_g": 1000.0086669057441,
+    "uncompensated_gross_slope_g_per_h": 0.02063563826739395,
+    "peak_to_peak_g": 0.18812200000002122,
+    "stable_ratio": 0.9994854565816157,
+    "overrun_delta": 0
+  },
+  "candidate_replayed": false,
+  "candidate_parameters_modified": false,
+  "temperature": "UNMEASURED",
+  "post_probe": {"firmware":"0x0510","map":"0x0104","profile":0,"dirty":0,"active_slot":1,"storage_sequence":7,"display_count":100001},
+  "result": "CAPTURE_VALID_BLIND_RESULT_WITHHELD"
+}
