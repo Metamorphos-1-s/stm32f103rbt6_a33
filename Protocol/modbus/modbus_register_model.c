@@ -501,6 +501,8 @@ static ModbusRegisterResult ReadOne(uint16_t address,
         else if (address >= MODBUS_R5_BETA_EVALUATION_FIRST && address <= 0x02A6U)
             *value = Word32(r5->evaluation_count,
                 (uint8_t)(address - MODBUS_R5_BETA_EVALUATION_FIRST), order);
+        else if (address == MODBUS_R5_BETA_SAVE_REQUEST_COUNT_LOW)
+            *value = (uint16_t)ConfigStore_GetStatistics()->save_request_count;
         else *value = 0U;
         return MODBUS_REGISTER_OK;
     }
@@ -571,19 +573,36 @@ bool ModbusRegisterModel_CompleteCommunicationApply(
 ModbusRegisterResult ModbusRegisterModel_ReadHolding(uint16_t start_address,
     uint16_t count,uint16_t *destination)
 {
-    const SystemContext *live=SystemContext_Get(); SystemContext copy;
-    const MassSnapshot *live_snapshot=MetrologyManager_GetMassSnapshot(); MassSnapshot snapshot;
+    const SystemContext *live=SystemContext_Get();
+    const MassSnapshot *live_snapshot=MetrologyManager_GetMassSnapshot();
     const DisplayConditionSnapshot *live_condition=
         MetrologyManager_GetDisplayConditionSnapshot();
     const RuntimeDriftSnapshot *live_drift=
         MetrologyManager_GetRuntimeDriftSnapshot();
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    static const MassSnapshot empty_snapshot = {0};
+    static const DisplayConditionSnapshot empty_condition = {0};
+    const MassSnapshot *snapshot = (live_snapshot != NULL) ?
+        live_snapshot : &empty_snapshot;
+    const DisplayConditionSnapshot *condition = (live_condition != NULL) ?
+        live_condition : &empty_condition;
+#else
+    SystemContext copy;
+    MassSnapshot snapshot;
     DisplayConditionSnapshot condition;
+#endif
     uint16_t i; ModbusRegisterResult result;
     if((count==0U)||(destination==NULL)||(live==NULL)||
        ((uint32_t)start_address+count>0x10000UL)) return MODBUS_REGISTER_ILLEGAL_VALUE;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    /* The register model runs synchronously in the single-threaded main loop.
+       UART/DMA ISRs do not mutate configuration or measurement snapshots. */
+    for(i=0U;i<count;++i){result=ReadOne((uint16_t)(start_address+i),live,snapshot,condition,live_drift,&destination[i]);if(result!=MODBUS_REGISTER_OK)return result;}
+#else
     copy=*live; if(live_snapshot!=NULL)snapshot=*live_snapshot; else (void)memset(&snapshot,0,sizeof(snapshot));
     if(live_condition!=NULL)condition=*live_condition; else (void)memset(&condition,0,sizeof(condition));
     for(i=0U;i<count;++i){result=ReadOne((uint16_t)(start_address+i),&copy,&snapshot,&condition,live_drift,&destination[i]);if(result!=MODBUS_REGISTER_OK)return result;}
+#endif
     return MODBUS_REGISTER_OK;
 }
 
@@ -647,7 +666,9 @@ static ModbusRegisterResult WriteOne(uint16_t address,uint16_t value,
     ModbusRegisterResult result=ValidateWriteAddress(address,value);
     const SystemContext *context;
     uint16_t command_id;
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     DeviceConfig candidate;
+#endif
     if(result!=MODBUS_REGISTER_OK)return result;
     if((address>=0x0242U)&&(address<=0x024DU)&&!allow_alarm_mass)
         return MODBUS_REGISTER_ILLEGAL_VALUE;
@@ -684,8 +705,17 @@ static ModbusRegisterResult WriteOne(uint16_t address,uint16_t value,
             }
             else if((command_id==10U)||(command_id==11U))
             {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+                DeviceConfig *candidate =
+                    CommandService_BeginStagedConfigWrite(source);
+                if ((candidate == NULL) ||
+                    !DecodeStaging(&context->config, candidate) ||
+                    !CommandService_CommitStagedConfigWrite(source))
+                    return MODBUS_REGISTER_BUSY;
+#else
                 if(!DecodeStaging(&context->config,&candidate)||
                    !CommandService_SetStagedConfigForSource(&candidate,source))return MODBUS_REGISTER_BUSY;
+#endif
             }
             result=ModbusCommandMailbox_Write(address,value,source);
             if(command_id==10U)s_staging_validation=ModbusCommandMailbox_GetLastResult();

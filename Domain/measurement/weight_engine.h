@@ -21,11 +21,15 @@ typedef struct
     WeightFilter filter;
     StabilityDetector stability;
     ZeroTareState zero_tare;
+#if !defined(A33_ENABLE_STAGE5MR5_BETA) || (A33_ENABLE_STAGE5MR5_BETA == 0U)
     RuntimeDriftCompensator runtime_drift;
+#endif
     WeightSnapshot snapshot;
     bool initialized;
     bool has_raw_sample;
+#if !defined(A33_ENABLE_STAGE5MR5_BETA) || (A33_ENABLE_STAGE5MR5_BETA == 0U)
     bool runtime_drift_learning_allowed;
+#endif
 #if defined(A33_ENABLE_STAGE5MR5_BETA) && (A33_ENABLE_STAGE5MR5_BETA != 0U)
     MassValueUg beta_external_drift_offset_ug;
     bool beta_external_drift_apply;
@@ -40,6 +44,12 @@ bool WeightEngine_InitMass(WeightEngine *engine,
     const MetrologyConfig *metrology, const CalibrationConfig *calibration,
     const StabilityConfig *stability, MassValueUg restored_tare_ug,
     bool restore_tare);
+#if defined(A33_ENABLE_STAGE5MR5_BETA) && (A33_ENABLE_STAGE5MR5_BETA != 0U)
+bool WeightEngine_ReinitializeMassBeta(WeightEngine *engine,
+    const MetrologyConfig *metrology, const CalibrationConfig *calibration,
+    const StabilityConfig *stability, MassValueUg restored_tare_ug,
+    bool restore_tare, int32_t zero_offset_raw);
+#endif
 bool WeightEngine_ProcessRawSample(WeightEngine *engine,
                                    const RawMeasurementSample *sample);
 const WeightSnapshot *WeightEngine_GetSnapshot(const WeightEngine *engine);

@@ -204,6 +204,7 @@ bool WeightEngine_InitMass(WeightEngine *engine,
             profile->stability_exit_threshold_ug, profile->stability_hold_ms))
         return false;
     ZeroTare_InitMass(&engine->zero_tare, restored_tare_ug, restore_tare);
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     {
         RuntimeDriftConfig drift_config =
             RuntimeDriftCompensator_DefaultConfig();
@@ -212,6 +213,7 @@ bool WeightEngine_InitMass(WeightEngine *engine,
             return false;
     }
     engine->runtime_drift_learning_allowed = true;
+#endif
     engine->snapshot.tare_mass_ug = engine->zero_tare.tare_mass_ug;
     UpdateCompatibility(&engine->snapshot, metrology);
     if (engine->zero_tare.tare_active)
@@ -273,9 +275,11 @@ WeightActionResult WeightEngine_Zero(WeightEngine *engine)
         engine->calibration.calibration_valid);
     if (result == WEIGHT_ACTION_OK)
     {
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
         RuntimeDriftCompensator_Reset(&engine->runtime_drift,
             engine->snapshot.sample_timestamp_ms,
             RUNTIME_DRIFT_RESET_MANUAL_ZERO);
+#endif
         StabilityDetector_Reset(&engine->stability);
         if (!UpdateDerived(engine, false)) return WEIGHT_ACTION_INTERNAL_ERROR;
     }
@@ -287,9 +291,11 @@ WeightActionResult WeightEngine_ResetZero(WeightEngine *engine)
     WeightActionResult result;
     if ((engine == NULL) || !engine->initialized) return WEIGHT_ACTION_INVALID_ARGUMENT;
     result = ZeroTare_ResetZero(&engine->zero_tare);
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     RuntimeDriftCompensator_Reset(&engine->runtime_drift,
         engine->snapshot.sample_timestamp_ms,
         RUNTIME_DRIFT_RESET_ZERO_RESTORE);
+#endif
     StabilityDetector_Reset(&engine->stability);
     if (engine->has_raw_sample && !UpdateDerived(engine, false))
         return WEIGHT_ACTION_INTERNAL_ERROR;
@@ -311,9 +317,11 @@ WeightActionResult WeightEngine_Tare(WeightEngine *engine)
     {
         StabilityDetector_Reset(&engine->stability);
         if (!UpdateDerived(engine, false)) return WEIGHT_ACTION_INTERNAL_ERROR;
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
         RuntimeDriftCompensator_Rearm(&engine->runtime_drift,
             engine->snapshot.sample_timestamp_ms,
             RUNTIME_DRIFT_FREEZE_TARE_REARM);
+#endif
     }
     return result;
 }
@@ -326,9 +334,11 @@ WeightActionResult WeightEngine_ClearTare(WeightEngine *engine)
     StabilityDetector_Reset(&engine->stability);
     if (engine->has_raw_sample && !UpdateDerived(engine, false))
         return WEIGHT_ACTION_INTERNAL_ERROR;
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     RuntimeDriftCompensator_Rearm(&engine->runtime_drift,
         engine->snapshot.sample_timestamp_ms,
         RUNTIME_DRIFT_FREEZE_CLEAR_TARE_REARM);
+#endif
     return result;
 }
 
@@ -339,9 +349,11 @@ bool WeightEngine_ApplyCalibration(WeightEngine *engine,
         (CalibrationModel_Validate(calibration) != CALIBRATION_RESULT_OK))
         return false;
     engine->calibration = *calibration;
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     RuntimeDriftCompensator_Reset(&engine->runtime_drift,
         engine->snapshot.sample_timestamp_ms,
         RUNTIME_DRIFT_RESET_CALIBRATION_APPLY);
+#endif
     StabilityDetector_Reset(&engine->stability);
     return !engine->has_raw_sample || UpdateDerived(engine, false);
 }
@@ -353,9 +365,11 @@ bool WeightEngine_ReconfigureFilter(WeightEngine *engine, FilterMode mode,
     if ((engine == NULL) || !engine->initialized ||
         !WeightFilter_Init(&replacement, mode, strength)) return false;
     engine->filter = replacement;
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     RuntimeDriftCompensator_Reset(&engine->runtime_drift,
         engine->snapshot.sample_timestamp_ms,
         RUNTIME_DRIFT_RESET_PROFILE_CHANGE);
+#endif
     engine->metrology.profiles[engine->metrology.active_profile].filter_mode = mode;
     engine->metrology.profiles[engine->metrology.active_profile].filter_strength = strength;
     StabilityDetector_Reset(&engine->stability);
@@ -385,33 +399,92 @@ bool WeightEngine_SetRuntimeDriftEnabled(WeightEngine *engine, bool enabled)
 #endif
 }
 
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+bool WeightEngine_ReinitializeMassBeta(WeightEngine *engine,
+    const MetrologyConfig *metrology, const CalibrationConfig *calibration,
+    const StabilityConfig *stability, MassValueUg restored_tare_ug,
+    bool restore_tare, int32_t zero_offset_raw)
+{
+    const WeighingProfileConfig *profile;
+    if ((engine == NULL) || (metrology == NULL) || (calibration == NULL) ||
+        (stability == NULL) ||
+        (MetrologyConfig_Validate(metrology, stability) != METROLOGY_CONFIG_OK) ||
+        (calibration->calibration_valid &&
+         (CalibrationModel_Validate(calibration) != CALIBRATION_RESULT_OK)))
+        return false;
+    /* Canonical validation above covers every failure condition of both
+       bounded initializers. Commit only after all validation has passed. */
+    profile = &metrology->profiles[metrology->active_profile];
+    (void)memset(engine, 0, sizeof(*engine));
+    engine->metrology = *metrology;
+    engine->calibration = *calibration;
+    engine->stability_config = *stability;
+    if (!WeightFilter_Init(&engine->filter, profile->filter_mode,
+                           profile->filter_strength) ||
+        !StabilityDetector_InitMass(&engine->stability,
+            profile->stability_window,
+            profile->stability_enter_threshold_ug,
+            profile->stability_exit_threshold_ug,
+            profile->stability_hold_ms)) return false;
+    ZeroTare_InitMass(&engine->zero_tare, restored_tare_ug, restore_tare);
+    engine->zero_tare.zero_offset_raw = zero_offset_raw;
+    engine->snapshot.tare_mass_ug = engine->zero_tare.tare_mass_ug;
+    UpdateCompatibility(&engine->snapshot, metrology);
+    if (engine->zero_tare.tare_active)
+        engine->snapshot.status_flags = WEIGHT_STATUS_TARE_ACTIVE;
+    engine->initialized = true;
+    return true;
+}
+#endif
+
 void WeightEngine_SetRuntimeDriftLearningAllowed(WeightEngine *engine,
     bool allowed)
 {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    (void)engine;
+    (void)allowed;
+#else
     if ((engine != NULL) && engine->initialized)
         engine->runtime_drift_learning_allowed = allowed;
+#endif
 }
 
 void WeightEngine_ResetRuntimeDrift(WeightEngine *engine,
     RuntimeDriftResetReason reason)
 {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    (void)engine;
+    (void)reason;
+#else
     if ((engine != NULL) && engine->initialized)
         RuntimeDriftCompensator_Reset(&engine->runtime_drift,
             engine->snapshot.sample_timestamp_ms, reason);
+#endif
 }
 
 void WeightEngine_FreezeRuntimeDrift(WeightEngine *engine, uint32_t now_ms,
     RuntimeDriftFreezeReason reason)
 {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    (void)engine;
+    (void)now_ms;
+    (void)reason;
+#else
     if ((engine != NULL) && engine->initialized)
         RuntimeDriftCompensator_Freeze(&engine->runtime_drift, now_ms, reason);
+#endif
 }
 
 const RuntimeDriftSnapshot *WeightEngine_GetRuntimeDriftSnapshot(
     const WeightEngine *engine)
 {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    (void)engine;
+    return NULL;
+#else
     return ((engine != NULL) && engine->initialized) ?
         RuntimeDriftCompensator_GetSnapshot(&engine->runtime_drift) : NULL;
+#endif
 }
 
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)

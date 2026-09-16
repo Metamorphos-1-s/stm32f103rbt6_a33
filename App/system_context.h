@@ -38,6 +38,9 @@ bool SystemContext_SyncTareStateMass(MassValueUg tare_mass_ug,
 bool SystemContext_SetConfigDirty(bool dirty);
 bool SystemContext_SetWeightView(WeightViewMode view);
 bool SystemContext_SetRuntimeWeightView(WeightViewMode view);
+#if defined(A33_ENABLE_STAGE5MR5_BETA) && (A33_ENABLE_STAGE5MR5_BETA != 0U)
+bool SystemContext_SetActiveUnitConfig(MassUnit unit);
+#endif
 bool SystemContext_ApplyConfig(const DeviceConfig *config, bool dirty);
 bool SystemContext_ReplaceConfig(const DeviceConfig *config, bool dirty);
 bool SystemContext_FinalizeSavedRevision(uint32_t revision);

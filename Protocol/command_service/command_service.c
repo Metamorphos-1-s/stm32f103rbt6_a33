@@ -346,7 +346,9 @@ static CommandResult CommandService_CommitConfig(void)
 static CommandResult CommandService_CalibrationCommit(void)
 {
     const SystemContext *context = SystemContext_Get();
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     DeviceConfig candidate;
+#endif
 
     if (!s_calibration.active || !s_calibration.have_zero ||
         !s_calibration.have_span || !s_calibration.have_weight ||
@@ -362,9 +364,15 @@ static CommandResult CommandService_CalibrationCommit(void)
     {
         return COMMAND_RESULT_CALIBRATION_INVALID;
     }
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    s_staged_config = context->config;
+    s_staged_config.calibration = s_calibration.candidate;
+    if (ConfigApplication_Apply(&s_staged_config) != CONFIG_APPLY_OK)
+#else
     candidate = context->config;
     candidate.calibration = s_calibration.candidate;
     if (ConfigApplication_Apply(&candidate) != CONFIG_APPLY_OK)
+#endif
     {
         return COMMAND_RESULT_INTERNAL_ERROR;
     }
@@ -981,6 +989,25 @@ bool CommandService_SetStagedConfigForSource(const DeviceConfig *candidate,
         s_config_owner_last_activity_ms = s_now_ms;
     return true;
 }
+
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+DeviceConfig *CommandService_BeginStagedConfigWrite(CommandSource source)
+{
+    if ((CommandService_ReserveConfigOwner(source) != COMMAND_RESULT_OK) ||
+        (s_config_owner != source)) return NULL;
+    s_staged_config_valid = false;
+    s_config_owner_last_activity_ms = s_now_ms;
+    return &s_staged_config;
+}
+
+bool CommandService_CommitStagedConfigWrite(CommandSource source)
+{
+    if (!s_config_owner_valid || (s_config_owner != source)) return false;
+    s_staged_config_valid = true;
+    s_config_owner_last_activity_ms = s_now_ms;
+    return true;
+}
+#endif
 
 CommandResult CommandService_ReserveConfigOwner(CommandSource source)
 {

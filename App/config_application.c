@@ -45,23 +45,52 @@ static ConfigApplyResult ConfigApplication_ApplyInternal(
     bool advance_revision, bool dirty)
 {
     const SystemContext *context = SystemContext_Get();
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     DeviceConfig normalized;
+#else
+    const DeviceConfig *normalized = candidate;
+#endif
     ConfigApplyResult validation = ConfigApplication_Validate(
         candidate, allow_cs1237_change);
 
     if (validation != CONFIG_APPLY_OK) return validation;
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     normalized = *candidate;
-    if (!DisplayController_SetBrightness(normalized.display.brightness))
+#endif
+    if (!DisplayController_SetBrightness(
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+        normalized->display.brightness
+#else
+        normalized.display.brightness
+#endif
+        ))
     {
         return CONFIG_APPLY_DISPLAY_ERROR;
     }
-    if (!MetrologyManager_Reconfigure(&normalized))
+    if (!MetrologyManager_Reconfigure(
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+        normalized
+#else
+        &normalized
+#endif
+        ))
     {
         (void)DisplayController_SetBrightness(context->config.display.brightness);
         return CONFIG_APPLY_METROLOGY_ERROR;
     }
-    if (!(advance_revision ? SystemContext_ApplyConfig(&normalized, dirty) :
-          SystemContext_ReplaceConfig(&normalized, dirty)))
+    if (!(advance_revision ? SystemContext_ApplyConfig(
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+            normalized
+#else
+            &normalized
+#endif
+            , dirty) : SystemContext_ReplaceConfig(
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+            normalized
+#else
+            &normalized
+#endif
+            , dirty)))
     {
         bool rollback_ok = MetrologyManager_Reconfigure(&context->config);
         rollback_ok = DisplayController_SetBrightness(

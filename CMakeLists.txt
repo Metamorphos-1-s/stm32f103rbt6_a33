@@ -156,7 +156,8 @@ endif()
 
 if(A33_ENABLE_STAGE5MR5_BETA)
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-        Domain/measurement/reference_lock_drift_compensator.c)
+        Domain/measurement/reference_lock_drift_compensator.c
+        UI/ui_config_workspace.c)
 endif()
 
 if(NOT A33_ENABLE_BOARD_DIAGNOSTICS)

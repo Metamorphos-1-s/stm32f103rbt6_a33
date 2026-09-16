@@ -15,6 +15,9 @@
 #include "project_config.h"
 #include "system_context.h"
 #include "unit_converter.h"
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#include "ui_config_workspace.h"
+#endif
 
 #include <limits.h>
 #include <stddef.h>
@@ -91,8 +94,13 @@ static uint32_t s_message_until_ms;
 static bool s_entry_ownership_allowed;
 static bool s_save_waiting;
 static bool s_exit_after_save;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#define s_original_config (*UiConfigWorkspace_Original())
+#define s_candidate_config (*UiConfigWorkspace_Candidate())
+#else
 static DeviceConfig s_original_config;
 static DeviceConfig s_candidate_config;
+#endif
 static DisplayPage s_previous_page;
 static bool s_candidate_changed;
 static bool s_brightness_previewed;
@@ -202,6 +210,9 @@ static void ExitMenu(void)
     ClearSequence();
     DisplayController_SetPage(s_previous_page);
     s_exit_request = true;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    UiConfigWorkspace_Release(UI_CONFIG_WORKSPACE_MENU);
+#endif
 }
 
 static void CancelUnconfirmedEdit(void)
@@ -734,6 +745,9 @@ bool MenuController_Enter(void)
 {
     const SystemContext *context = SystemContext_Get();
     if (s_active || (context == NULL)) return false;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if (!UiConfigWorkspace_Acquire(UI_CONFIG_WORKSPACE_MENU)) return false;
+#endif
     s_active = true; s_editing = false; s_factory_confirmation = false;
     s_item = MENU_ITEM_UNIT; s_advanced = false; ClearSequence();
     s_expected_revision = SystemContext_GetConfigRevision();
@@ -960,11 +974,17 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
 
 void MenuController_Cancel(void)
 {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if (!s_active) return;
+#endif
     DiscardCandidate();
     if (s_factory_confirmation) (void)MenuController_Command(
         COMMAND_FACTORY_RESET_CANCEL, 0, 0, 0U, 0);
     s_active = false; s_editing = false; s_factory_confirmation = false;
     s_advanced = false; ClearSequence();
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    UiConfigWorkspace_Release(UI_CONFIG_WORKSPACE_MENU);
+#endif
 }
 
 bool MenuController_IsActive(void) { return s_active; }

@@ -10,6 +10,9 @@
 #include "persistence_manager.h"
 #include "project_config.h"
 #include "system_context.h"
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#include "ui_config_workspace.h"
+#endif
 
 #include <stddef.h>
 #include <string.h>
@@ -40,8 +43,13 @@ static CommunicationConfig s_original;
 static CommunicationConfig s_candidate;
 static CommunicationConfig s_edit;
 static CommunicationConfig s_applied_candidate;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#define s_original_config (*UiConfigWorkspace_Original())
+#define s_candidate_config (*UiConfigWorkspace_Candidate())
+#else
 static DeviceConfig s_original_config;
 static DeviceConfig s_candidate_config;
+#endif
 static uint32_t s_original_revision;
 static uint32_t s_applied_revision;
 static uint32_t s_last_activity_ms;
@@ -135,6 +143,9 @@ static void ExitStatus(void)
     s_active = false;
     s_mode = STATUS_MODE_LIST;
     if (!s_suppress_display) DisplayController_SetPage(s_previous_page);
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    UiConfigWorkspace_Release(UI_CONFIG_WORKSPACE_STATUS);
+#endif
 }
 
 static bool OwnsTransaction(void)
@@ -284,6 +295,9 @@ bool StatusController_Enter(void)
 {
     const SystemContext *context = SystemContext_Get();
     if (s_active || (context == NULL)) return false;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if (!UiConfigWorkspace_Acquire(UI_CONFIG_WORKSPACE_STATUS)) return false;
+#endif
     s_active = true;
     s_confirmed = false;
     s_applied = false;

@@ -80,9 +80,125 @@ PersistentCodecResult PersistentCodec_DecodeV3(const uint8_t *buffer, uint16_t l
     return PERSISTENT_CODEC_OK;
 }
 
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+static bool PersistentCodec_MetrologyEqual(const MetrologyConfig *a,
+                                           const MetrologyConfig *b)
+{
+    uint8_t i;
+    if ((a->capacity_ug != b->capacity_ug) ||
+        (a->verification_interval_e_ug != b->verification_interval_e_ug) ||
+        (a->zero_range_ug != b->zero_range_ug) ||
+        (a->overload_threshold_ug != b->overload_threshold_ug) ||
+        (a->auto_zero_tracking_range_ug != b->auto_zero_tracking_range_ug) ||
+        (a->initial_zero_range_permille != b->initial_zero_range_permille) ||
+        (a->semi_auto_zero_range_permille != b->semi_auto_zero_range_permille) ||
+        (a->compliance_mode != b->compliance_mode) ||
+        (a->active_unit != b->active_unit) ||
+        (a->enabled_unit_mask != b->enabled_unit_mask) ||
+        (a->load_cell.rated_capacity_known != b->load_cell.rated_capacity_known) ||
+        (a->load_cell.rated_capacity_ug != b->load_cell.rated_capacity_ug) ||
+        (a->load_cell.sensitivity_known != b->load_cell.sensitivity_known) ||
+        (a->load_cell.sensitivity_uv_per_v != b->load_cell.sensitivity_uv_per_v) ||
+        (a->load_cell.safe_load_known != b->load_cell.safe_load_known) ||
+        (a->load_cell.safe_load_permille != b->load_cell.safe_load_permille) ||
+        (a->active_profile != b->active_profile)) return false;
+    for (i = 0U; i < MASS_UNIT_COUNT; ++i)
+        if ((a->unit_display[i].enabled != b->unit_display[i].enabled) ||
+            (a->unit_display[i].decimal_places != b->unit_display[i].decimal_places) ||
+            (a->unit_display[i].division_digit != b->unit_display[i].division_digit))
+            return false;
+    for (i = 0U; i < WEIGHING_PROFILE_COUNT; ++i)
+        if ((a->profiles[i].sample_rate != b->profiles[i].sample_rate) ||
+            (a->profiles[i].gain != b->profiles[i].gain) ||
+            (a->profiles[i].filter_mode != b->profiles[i].filter_mode) ||
+            (a->profiles[i].filter_strength != b->profiles[i].filter_strength) ||
+            (a->profiles[i].stability_window != b->profiles[i].stability_window) ||
+            (a->profiles[i].stability_enter_threshold_ug != b->profiles[i].stability_enter_threshold_ug) ||
+            (a->profiles[i].stability_exit_threshold_ug != b->profiles[i].stability_exit_threshold_ug) ||
+            (a->profiles[i].stability_hold_ms != b->profiles[i].stability_hold_ms))
+            return false;
+    return true;
+}
+
+static bool PersistentCodec_SemanticEqual(const DeviceConfig *a,
+    const RuntimeState *ar, const DeviceConfig *b, const RuntimeState *br)
+{
+    return (a != NULL) && (ar != NULL) && (b != NULL) && (br != NULL) &&
+        PersistentCodec_MetrologyEqual(&a->metrology, &b->metrology) &&
+        (a->calibration.raw_zero == b->calibration.raw_zero) &&
+        (a->calibration.raw_span == b->calibration.raw_span) &&
+        (a->calibration.scale_numerator == b->calibration.scale_numerator) &&
+        (a->calibration.scale_denominator == b->calibration.scale_denominator) &&
+        (a->calibration.calibration_sequence == b->calibration.calibration_sequence) &&
+        (a->calibration.calibration_valid == b->calibration.calibration_valid) &&
+        (a->calibration.span_mass_ug == b->calibration.span_mass_ug) &&
+        (a->stability.window_size == b->stability.window_size) &&
+        (a->stability.enter_threshold == b->stability.enter_threshold) &&
+        (a->stability.exit_threshold == b->stability.exit_threshold) &&
+        (a->stability.stable_hold_ms == b->stability.stable_hold_ms) &&
+        (a->communication.baud_rate == b->communication.baud_rate) &&
+        (a->communication.parity == b->communication.parity) &&
+        (a->communication.stop_bits == b->communication.stop_bits) &&
+        (a->communication.modbus_address == b->communication.modbus_address) &&
+        (a->communication.protocol_mode == b->communication.protocol_mode) &&
+        (a->communication.output_policy == b->communication.output_policy) &&
+        (a->communication.output_period_ms == b->communication.output_period_ms) &&
+        (a->communication.zero_suppress_range == b->communication.zero_suppress_range) &&
+        (a->communication.word_order == b->communication.word_order) &&
+        (a->communication.response_delay_ms == b->communication.response_delay_ms) &&
+        (a->communication.recommended_poll_interval_ms == b->communication.recommended_poll_interval_ms) &&
+        (a->communication.broadcast_write_policy == b->communication.broadcast_write_policy) &&
+        (a->communication.pending_apply == b->communication.pending_apply) &&
+        (a->bluetooth.uart_baud_rate == b->bluetooth.uart_baud_rate) &&
+        (a->bluetooth.protocol_version == b->bluetooth.protocol_version) &&
+        (a->bluetooth.w02_configured == b->bluetooth.w02_configured) &&
+        (a->alarm.lower_limit_ug == b->alarm.lower_limit_ug) &&
+        (a->alarm.upper_limit_ug == b->alarm.upper_limit_ug) &&
+        (a->alarm.hysteresis_ug == b->alarm.hysteresis_ug) &&
+        (a->alarm.weight_source == b->alarm.weight_source) &&
+        (a->alarm.internal_buzzer_enable == b->alarm.internal_buzzer_enable) &&
+        (a->alarm.external_buzzer_enable == b->alarm.external_buzzer_enable) &&
+        (a->alarm.qualified_beep_enable == b->alarm.qualified_beep_enable) &&
+        (a->alarm.limit_function_enable == b->alarm.limit_function_enable) &&
+        (a->display.brightness == b->display.brightness) &&
+        (a->display.default_weight_view == b->display.default_weight_view) &&
+        (a->battery.divider_top_ohm == b->battery.divider_top_ohm) &&
+        (a->battery.divider_bottom_ohm == b->battery.divider_bottom_ohm) &&
+        (a->battery.calibration_gain_ppm == b->battery.calibration_gain_ppm) &&
+        (a->battery.calibration_offset_mv == b->battery.calibration_offset_mv) &&
+        (a->battery.low_warning_mv == b->battery.low_warning_mv) &&
+        (a->battery.critical_low_mv == b->battery.critical_low_mv) &&
+        (a->battery.recovery_mv == b->battery.recovery_mv) &&
+        (a->battery.low_voltage_alarm_enable == b->battery.low_voltage_alarm_enable) &&
+        (a->system.tare_power_loss_retention == b->system.tare_power_loss_retention) &&
+        (a->system.watchdog_enable == b->system.watchdog_enable) &&
+        (a->system.startup_auto_zero_enable == b->system.startup_auto_zero_enable) &&
+        (ar->weight_view == br->weight_view) &&
+        (ar->current_tare_ug == br->current_tare_ug) &&
+        (ar->tare_active == br->tare_active);
+}
+#endif
+
 bool PersistentCodec_ConfigEqual(const DeviceConfig *left,const RuntimeState *left_runtime,const DeviceConfig *right,const RuntimeState *right_runtime)
-{ uint8_t a[PERSISTENT_V3_PAYLOAD_SIZE],b[PERSISTENT_V3_PAYLOAD_SIZE];uint16_t al=0U,bl=0U; if(PersistentCodec_EncodeV3(left,left_runtime,a,sizeof(a),&al)!=PERSISTENT_CODEC_OK||PersistentCodec_EncodeV3(right,right_runtime,b,sizeof(b),&bl)!=PERSISTENT_CODEC_OK||al!=bl)return false;return memcmp(a,b,al)==0; }
-bool PersistentCodec_DeviceConfigEqual(const DeviceConfig *left,const DeviceConfig *right){RuntimeState a={0},b={0};return PersistentCodec_ConfigEqual(left,&a,right,&b);}
+{
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    return PersistentCodec_SemanticEqual(left, left_runtime,
+                                         right, right_runtime);
+#else
+    uint8_t a[PERSISTENT_V3_PAYLOAD_SIZE],b[PERSISTENT_V3_PAYLOAD_SIZE];uint16_t al=0U,bl=0U; if(PersistentCodec_EncodeV3(left,left_runtime,a,sizeof(a),&al)!=PERSISTENT_CODEC_OK||PersistentCodec_EncodeV3(right,right_runtime,b,sizeof(b),&bl)!=PERSISTENT_CODEC_OK||al!=bl)return false;return memcmp(a,b,al)==0;
+#endif
+}
+bool PersistentCodec_DeviceConfigEqual(const DeviceConfig *left,const DeviceConfig *right)
+{
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    static const RuntimeState empty_runtime = {0};
+    return PersistentCodec_ConfigEqual(left, &empty_runtime,
+                                       right, &empty_runtime);
+#else
+    RuntimeState a={0},b={0};
+    return PersistentCodec_ConfigEqual(left,&a,right,&b);
+#endif
+}
 
 PersistentCodecResult PersistentCodec_Decode(uint16_t schema_version,const uint8_t *buffer,uint16_t length,DeviceConfig *config,RuntimeState *runtime)
 {(void)schema_version;(void)buffer;(void)length;(void)config;(void)runtime;return PERSISTENT_CODEC_UNSUPPORTED_SCHEMA;}

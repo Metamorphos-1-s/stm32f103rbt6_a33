@@ -150,6 +150,22 @@ bool SystemContext_SetRuntimeWeightView(WeightViewMode view)
   return true;
 }
 
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+bool SystemContext_SetActiveUnitConfig(MassUnit unit)
+{
+  if (!s_system_context.initialized ||
+      ((uint32_t)unit >= (uint32_t)MASS_UNIT_COUNT) ||
+      ((s_system_context.config.metrology.enabled_unit_mask &
+        (uint8_t)(1U << unit)) == 0U)) return false;
+  if (s_system_context.config.metrology.active_unit != unit)
+  {
+    s_system_context.config.metrology.active_unit = unit;
+    return SystemContext_MarkConfigChanged();
+  }
+  return true;
+}
+#endif
+
 bool SystemContext_ApplyConfig(const DeviceConfig *config, bool dirty)
 {
   if (!s_system_context.initialized || (config == NULL))

@@ -303,6 +303,20 @@ static bool ResumeServers(const CommunicationConfig *config)
         (!s_uart3_enabled || ModbusRtuServer_Resume(&s_server3, config));
 }
 
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+static bool RestoreRollbackContext(void)
+{
+    const SystemContext *context = SystemContext_Get();
+    DeviceConfig restored;
+    if (context == NULL) return false;
+    restored = context->config;
+    restored.communication = s_rollback;
+    return s_local_apply ? SystemContext_ReplaceConfig(&restored,
+        context->runtime.config_dirty) :
+        SystemContext_ApplyConfig(&restored, true);
+}
+#endif
+
 void CommunicationManager_Process(void)
 {
     bool storage_busy = PersistenceManager_IsBusy();
@@ -405,6 +419,9 @@ void CommunicationManager_Process(void)
                 (!s_uart3_enabled ||
                  ModbusRtuServer_Resume(&s_server3, &s_rollback)))
             {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+                bool context_restored = RestoreRollbackContext();
+#else
                 bool context_restored = false;
                 {
                     const SystemContext *context = SystemContext_Get();
@@ -418,6 +435,7 @@ void CommunicationManager_Process(void)
                             SystemContext_ApplyConfig(&restored, true);
                     }
                 }
+#endif
                 if (context_restored)
                 {
                     s_active = s_rollback;

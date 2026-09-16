@@ -24,8 +24,10 @@ typedef struct
     uint32_t flags;
     uint16_t schema;
     uint16_t payload_length;
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     DeviceConfig config;
     RuntimeState runtime;
+#endif
 } SlotRecord;
 
 static const FlashBackendOps *s_backend;
@@ -146,7 +148,12 @@ static void CaptureFlashInfo(FlashBackendResult fallback, uint32_t address)
 }
 
 static SlotStatus ReadSlot(uint32_t address, SlotRecord *record,
-                           uint8_t *payload_out)
+                           uint8_t *payload_out
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+                           , DeviceConfig *scratch_config,
+                           RuntimeState *scratch_runtime
+#endif
+                           )
 {
     uint8_t header[CONFIG_STORE_HEADER_SIZE];
     uint8_t commit[4];
@@ -214,9 +221,12 @@ static SlotStatus ReadSlot(uint32_t address, SlotRecord *record,
         ++s_statistics.crc_error_count;
         return SLOT_CORRUPT;
     }
-    codec = PersistentCodec_DecodeV3(payload_out,
-                                   payload_length, &record->config,
-                                   &record->runtime);
+    codec = PersistentCodec_DecodeV3(payload_out, payload_length,
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+                                   scratch_config, scratch_runtime);
+#else
+                                   &record->config, &record->runtime);
+#endif
     if (codec != PERSISTENT_CODEC_OK) return SLOT_VALIDATION_ERROR;
     return SLOT_VALID;
 }
@@ -261,8 +271,16 @@ ConfigLoadResult ConfigStore_Load(DeviceConfig *config, RuntimeState *runtime,
         (s_backend == NULL)) return CONFIG_LOAD_IO_ERROR;
     s_active_payload_valid = false;
     (void)memset(info, 0, sizeof(*info));
-    a.status = ReadSlot(CONFIG_FLASH_SLOT_A_ADDRESS, &a, s_slot_a_payload);
-    b.status = ReadSlot(CONFIG_FLASH_SLOT_B_ADDRESS, &b, s_slot_b_payload);
+    a.status = ReadSlot(CONFIG_FLASH_SLOT_A_ADDRESS, &a, s_slot_a_payload
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+                        , config, runtime
+#endif
+                        );
+    b.status = ReadSlot(CONFIG_FLASH_SLOT_B_ADDRESS, &b, s_slot_b_payload
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+                        , config, runtime
+#endif
+                        );
     info->slot_a_valid = a.status == SLOT_VALID;
     info->slot_b_valid = b.status == SLOT_VALID;
     info->slot_a_sequence = a.sequence;
@@ -290,8 +308,14 @@ ConfigLoadResult ConfigStore_Load(DeviceConfig *config, RuntimeState *runtime,
     else return CONFIG_LOAD_NOT_FOUND;
 
     selected_payload = (selected == &a) ? s_slot_a_payload : s_slot_b_payload;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if (PersistentCodec_DecodeV3(selected_payload, selected->payload_length,
+        config, runtime) != PERSISTENT_CODEC_OK)
+        return CONFIG_LOAD_VALIDATION_FAILED;
+#else
     *config = selected->config;
     *runtime = selected->runtime;
+#endif
     s_active_slot = (selected == &a) ? CONFIG_STORE_SLOT_A : CONFIG_STORE_SLOT_B;
     s_active_sequence = selected->sequence;
     s_active_payload_length = selected->payload_length;
@@ -503,7 +527,15 @@ void ConfigStore_Process(void)
         case CONFIG_STORE_STATE_VERIFY_FINAL:
         {
             SlotRecord record;
-            if (ReadSlot(s_target_address, &record, s_slot_b_payload) != SLOT_VALID)
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+            DeviceConfig verify_config;
+            RuntimeState verify_runtime;
+#endif
+            if (ReadSlot(s_target_address, &record, s_slot_b_payload
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+                , &verify_config, &verify_runtime
+#endif
+                ) != SLOT_VALID)
             {
                 Fail(CONFIG_STORE_OPERATION_VERIFY_ERROR, 0U);
                 break;

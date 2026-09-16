@@ -61,6 +61,10 @@ bool CommandService_GetCalibrationSnapshot(
 bool CommandService_SetStagedConfig(const DeviceConfig *candidate);
 bool CommandService_SetStagedConfigForSource(const DeviceConfig *candidate,
                                              CommandSource source);
+#if defined(A33_ENABLE_STAGE5MR5_BETA) && (A33_ENABLE_STAGE5MR5_BETA != 0U)
+DeviceConfig *CommandService_BeginStagedConfigWrite(CommandSource source);
+bool CommandService_CommitStagedConfigWrite(CommandSource source);
+#endif
 CommandResult CommandService_ReserveConfigOwner(CommandSource source);
 void CommandService_ClearStagedConfig(void);
 void CommandService_ClearStagedConfigForSource(CommandSource source);

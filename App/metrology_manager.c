@@ -321,12 +321,30 @@ static void MetrologyManager_RequestOperatorZeroAnchor(void)
 bool MetrologyManager_SetDisplayUnit(MassUnit unit)
 {
     const SystemContext *context = SystemContext_Get();
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    MetrologyConfig candidate;
+#else
     DeviceConfig candidate;
     MetrologyConfig previous_display_config;
+#endif
     if (!s_initialized || (context == NULL) ||
         ((uint32_t)unit >= MASS_UNIT_COUNT) ||
         ((context->config.metrology.enabled_unit_mask &
           (uint8_t)(1U << unit)) == 0U)) return false;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    candidate = context->config.metrology;
+    candidate.active_unit = unit;
+    if (MetrologyConfig_ValidateCanonical(&candidate) !=
+        METROLOGY_CONFIG_OK) return false;
+    if (!WeightEngine_UpdateDisplayConfig(&s_engine, &candidate)) return false;
+    if (!SystemContext_SetActiveUnitConfig(unit))
+    {
+        if (!WeightEngine_UpdateDisplayConfig(&s_engine,
+                                              &context->config.metrology))
+            FaultManager_Set(FAULT_METROLOGY_CONFIG_INVALID);
+        return false;
+    }
+#else
     candidate = context->config;
     candidate.metrology.active_unit = unit;
     if (MetrologyConfig_ValidateCanonical(&candidate.metrology) !=
@@ -341,6 +359,7 @@ bool MetrologyManager_SetDisplayUnit(MassUnit unit)
             FaultManager_Set(FAULT_METROLOGY_CONFIG_INVALID);
         return false;
     }
+#endif
     MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
     return true;
 }
@@ -476,10 +495,15 @@ typedef enum
 static bool MetrologyManager_RebuildEngine(const DeviceConfig *config,
                                            MetrologyRebuildMode mode)
 {
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     WeightEngine replacement;
+#endif
     RawMeasurementSample sample;
     bool restore_tare;
     bool calibration_changed;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    bool replay_raw;
+#endif
     int32_t zero_offset;
 
     if (!s_initialized || (config == NULL) ||
@@ -495,6 +519,25 @@ static bool MetrologyManager_RebuildEngine(const DeviceConfig *config,
         &config->calibration, &s_engine.calibration);
     restore_tare = !calibration_changed && s_engine.zero_tare.tare_active;
     zero_offset = calibration_changed ? 0 : s_engine.zero_tare.zero_offset_raw;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    replay_raw = (mode == METROLOGY_REBUILD_REPLAY_RAW) &&
+                 s_engine.has_raw_sample;
+    if (replay_raw)
+    {
+        sample.raw_value = s_engine.snapshot.raw_value;
+        sample.timestamp_ms = s_engine.snapshot.sample_timestamp_ms;
+        sample.valid = true;
+    }
+#endif
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if (!WeightEngine_ReinitializeMassBeta(&s_engine, &config->metrology,
+            &config->calibration, &config->stability,
+            restore_tare ? s_engine.zero_tare.tare_mass_ug : 0,
+            restore_tare, zero_offset))
+    {
+        return false;
+    }
+#else
     if (!WeightEngine_InitMass(&replacement, &config->metrology,
             &config->calibration, &config->stability,
             restore_tare ? s_engine.zero_tare.tare_mass_ug : 0, restore_tare))
@@ -502,6 +545,16 @@ static bool MetrologyManager_RebuildEngine(const DeviceConfig *config,
         return false;
     }
     replacement.zero_tare.zero_offset_raw = zero_offset;
+#endif
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if (replay_raw)
+    {
+        if (!WeightEngine_ProcessRawSample(&s_engine, &sample))
+        {
+            return false;
+        }
+    }
+#else
     if ((mode == METROLOGY_REBUILD_REPLAY_RAW) && s_engine.has_raw_sample)
     {
         sample.raw_value = s_engine.snapshot.raw_value;
@@ -512,7 +565,17 @@ static bool MetrologyManager_RebuildEngine(const DeviceConfig *config,
             return false;
         }
     }
+#endif
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     s_engine = replacement;
+#else
+    {
+        const R5DriftSnapshot *snapshot = R5Drift_GetSnapshot(&s_r5_drift);
+        if ((snapshot == NULL) || !WeightEngine_SetBetaExternalDrift(&s_engine,
+            snapshot->offset_ug,
+            s_r5_application == R5_BETA_APPLICATION_ACTIVE)) return false;
+    }
+#endif
     s_last_published_sequence = 0U;
     s_last_published_stable = false;
     MetrologyManager_SyncTare(false);
