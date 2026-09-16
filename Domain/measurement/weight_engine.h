@@ -26,6 +26,10 @@ typedef struct
     bool initialized;
     bool has_raw_sample;
     bool runtime_drift_learning_allowed;
+#if defined(A33_ENABLE_STAGE5MR5_BETA) && (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    MassValueUg beta_external_drift_offset_ug;
+    bool beta_external_drift_apply;
+#endif
 } WeightEngine;
 
 bool WeightEngine_Init(WeightEngine *engine,
@@ -58,5 +62,9 @@ void WeightEngine_FreezeRuntimeDrift(WeightEngine *engine, uint32_t now_ms,
     RuntimeDriftFreezeReason reason);
 const RuntimeDriftSnapshot *WeightEngine_GetRuntimeDriftSnapshot(
     const WeightEngine *engine);
+#if defined(A33_ENABLE_STAGE5MR5_BETA) && (A33_ENABLE_STAGE5MR5_BETA != 0U)
+bool WeightEngine_SetBetaExternalDrift(WeightEngine *engine,
+    MassValueUg offset_ug, bool apply);
+#endif
 
 #endif /* WEIGHT_ENGINE_H */

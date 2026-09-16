@@ -18,6 +18,10 @@ static uint32_t s_last_published_sequence;
 static bool s_last_published_stable;
 static DisplayConditioner s_display_conditioner;
 static bool s_runtime_drift_fault_latched;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+static R5DriftCompensator s_r5_drift;
+static R5BetaApplication s_r5_application;
+#endif
 
 bool MetrologyManager_FaultInvalidatesRuntimeDrift(FaultCode fault)
 {
@@ -112,6 +116,10 @@ bool MetrologyManager_Init(const DeviceConfig *config,
     s_last_published_sequence = 0U;
     s_last_published_stable = false;
     s_runtime_drift_fault_latched = false;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    s_r5_application = R5_BETA_APPLICATION_SHADOW;
+    (void)memset(&s_r5_drift, 0, sizeof(s_r5_drift));
+#endif
     (void)memset(&s_engine, 0, sizeof(s_engine));
     (void)memset(&s_display_conditioner, 0, sizeof(s_display_conditioner));
 
@@ -144,6 +152,14 @@ bool MetrologyManager_Init(const DeviceConfig *config,
     }
     if (s_initialized)
     {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+        R5DriftConfig r5_config = R5Drift_DefaultConfig();
+        if (!R5Drift_Init(&s_r5_drift, &r5_config)) {
+            s_initialized = false;
+            FaultManager_Set(FAULT_METROLOGY_CONFIG_INVALID);
+            return false;
+        }
+#endif
         const WeightSnapshot *snapshot = WeightEngine_GetSnapshot(&s_engine);
         DisplayConditioner_Init(&s_display_conditioner,
             MetrologyManager_DisplaySourceMass(snapshot, SystemContext_Get()),
@@ -182,6 +198,32 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
         FaultManager_Set(FAULT_WEIGHT_MATH_OVERFLOW);
         return false;
     }
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    {
+        const WeightSnapshot *snapshot = WeightEngine_GetSnapshot(&s_engine);
+        R5DriftInput input = {0};
+        const R5DriftSnapshot *r5_snapshot;
+        if (snapshot == NULL) return false;
+        if ((snapshot->status_flags & WEIGHT_STATUS_WEIGHT_VALID) == 0U)
+            goto r5_sample_complete;
+        input.uncompensated_gross_ug = snapshot->uncompensated_gross_mass_ug;
+        input.timestamp_ms = snapshot->sample_timestamp_ms;
+        input.sample_sequence = snapshot->sample_sequence;
+        input.calibration_valid = (snapshot->status_flags &
+            WEIGHT_STATUS_CALIBRATION_VALID) != 0U;
+        input.fault_active = FaultManager_GetActiveMask() != 0U;
+        input.overload = (snapshot->status_flags & WEIGHT_STATUS_OVERLOAD) != 0U;
+        input.near_rail = (snapshot->raw_value >= 8323072) ||
+                          (snapshot->raw_value <= -8323072);
+        if (!R5Drift_ProcessSample(&s_r5_drift, &input)) return false;
+        r5_snapshot = R5Drift_GetSnapshot(&s_r5_drift);
+        if ((r5_snapshot == NULL) || !WeightEngine_SetBetaExternalDrift(
+            &s_engine, r5_snapshot->offset_ug,
+            s_r5_application == R5_BETA_APPLICATION_ACTIVE)) return false;
+r5_sample_complete:
+        (void)0;
+    }
+#endif
     if (!MetrologyManager_UpdateDisplayConditioner())
     {
         FaultManager_Set(FAULT_WEIGHT_MATH_OVERFLOW);
@@ -321,6 +363,11 @@ WeightActionResult MetrologyManager_Zero(void)
     }
     else if (result == WEIGHT_ACTION_OK)
     {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+        R5Drift_HandleEvent(&s_r5_drift, R5_DRIFT_EVENT_ZERO);
+        (void)WeightEngine_SetBetaExternalDrift(&s_engine, 0,
+            s_r5_application == R5_BETA_APPLICATION_ACTIVE);
+#endif
         MetrologyManager_RequestOperatorZeroAnchor();
     }
     return result;
@@ -397,6 +444,9 @@ bool MetrologyManager_ApplyCalibration(
         FaultManager_Set(FAULT_WEIGHT_MATH_OVERFLOW);
         return false;
     }
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    R5Drift_HandleEvent(&s_r5_drift, R5_DRIFT_EVENT_CALIBRATION_COMMIT);
+#endif
     (void)SystemContext_SetConfigDirty(true);
     MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_CALIBRATION);
     return true;
@@ -409,6 +459,9 @@ bool MetrologyManager_ReconfigureFilter(FilterMode mode, uint8_t strength)
     {
         return false;
     }
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    R5Drift_HandleEvent(&s_r5_drift, R5_DRIFT_EVENT_PROFILE_CHANGE);
+#endif
     (void)SystemContext_SetConfigDirty(true);
     MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
     return true;
@@ -549,3 +602,52 @@ const RuntimeDriftSnapshot *MetrologyManager_GetRuntimeDriftSnapshot(void)
     return s_initialized ? WeightEngine_GetRuntimeDriftSnapshot(&s_engine) :
         NULL;
 }
+
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+bool MetrologyManager_SetR5Mode(R5DriftMode mode)
+{
+    AppState state = SystemContext_GetState();
+    const R5DriftSnapshot *snapshot;
+    if (!s_initialized || ((state != APP_STATE_RUN) &&
+        (state != APP_STATE_MENU)) || !R5Drift_SetMode(&s_r5_drift, mode))
+        return false;
+    snapshot = R5Drift_GetSnapshot(&s_r5_drift);
+    return (snapshot != NULL) && WeightEngine_SetBetaExternalDrift(&s_engine,
+        snapshot->offset_ug,
+        s_r5_application == R5_BETA_APPLICATION_ACTIVE);
+}
+
+bool MetrologyManager_SetR5Application(R5BetaApplication application)
+{
+    const R5DriftSnapshot *snapshot;
+    if (!s_initialized || ((uint32_t)application >
+        (uint32_t)R5_BETA_APPLICATION_ACTIVE)) return false;
+    snapshot = R5Drift_GetSnapshot(&s_r5_drift);
+    if (snapshot == NULL) return false;
+    s_r5_application = application;
+    return WeightEngine_SetBetaExternalDrift(&s_engine, snapshot->offset_ug,
+        application == R5_BETA_APPLICATION_ACTIVE);
+}
+
+void MetrologyManager_ResetR5(void)
+{
+    R5DriftMode mode;
+    if (!s_initialized) return;
+    mode = s_r5_drift.mode;
+    R5Drift_HandleEvent(&s_r5_drift, R5_DRIFT_EVENT_POWER_ON);
+    if (mode == R5_DRIFT_MODE_OFF)
+        (void)R5Drift_SetMode(&s_r5_drift, R5_DRIFT_MODE_OFF);
+    (void)WeightEngine_SetBetaExternalDrift(&s_engine, 0,
+        s_r5_application == R5_BETA_APPLICATION_ACTIVE);
+}
+
+const R5DriftSnapshot *MetrologyManager_GetR5Snapshot(void)
+{
+    return s_initialized ? R5Drift_GetSnapshot(&s_r5_drift) : NULL;
+}
+
+R5BetaApplication MetrologyManager_GetR5Application(void)
+{
+    return s_r5_application;
+}
+#endif

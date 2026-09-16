@@ -102,8 +102,10 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
     MassValueUg net;
     uint64_t magnitude;
     MassValueUg overload;
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     RuntimeDriftInput drift_input;
     const RuntimeDriftSnapshot *drift_snapshot;
+#endif
     StabilityState stability_state = StabilityDetector_GetState(&engine->stability);
 
     engine->snapshot.status_flags &=
@@ -125,7 +127,13 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
         engine->snapshot.filtered_raw, engine->zero_tare.zero_offset_raw,
         &uncompensated_gross) != CALIBRATION_RESULT_OK ||
         !MassMath_Subtract(uncompensated_gross,
-            engine->runtime_drift.snapshot.offset_ug, &gross) ||
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+            engine->beta_external_drift_apply ?
+                engine->beta_external_drift_offset_ug : 0,
+#else
+            engine->runtime_drift.snapshot.offset_ug,
+#endif
+            &gross) ||
         !MassMath_Subtract(gross, engine->zero_tare.tare_mass_ug, &net))
         return false;
     engine->snapshot.uncompensated_gross_mass_ug = uncompensated_gross;
@@ -145,6 +153,7 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
     if (!MassMath_Abs(gross, &magnitude)) return false;
     if ((overload > 0) && (magnitude > (uint64_t)overload))
         engine->snapshot.status_flags |= WEIGHT_STATUS_OVERLOAD;
+#if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     drift_input.uncompensated_mass_ug = uncompensated_gross;
     drift_input.now_ms = engine->snapshot.sample_timestamp_ms;
     drift_input.stable = stability_state == STABILITY_STATE_STABLE;
@@ -160,6 +169,7 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
         return false;
     engine->snapshot.gross_mass_ug = gross;
     engine->snapshot.net_mass_ug = net;
+#endif
     if (!MassMath_Abs(net, &magnitude)) return false;
     if (magnitude <= (uint64_t)engine->metrology.zero_range_ug)
         engine->snapshot.status_flags |= WEIGHT_STATUS_ZERO;
@@ -358,6 +368,11 @@ bool WeightEngine_ReconfigureFilter(WeightEngine *engine, FilterMode mode,
 
 bool WeightEngine_SetRuntimeDriftEnabled(WeightEngine *engine, bool enabled)
 {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    (void)engine;
+    (void)enabled;
+    return false;
+#else
     uint32_t now_ms;
     if ((engine == NULL) || !engine->initialized) return false;
     now_ms = engine->snapshot.sample_timestamp_ms;
@@ -367,6 +382,7 @@ bool WeightEngine_SetRuntimeDriftEnabled(WeightEngine *engine, bool enabled)
     /* Reassert the explicit control state after snapshot recomputation. */
     return RuntimeDriftCompensator_SetEnabled(&engine->runtime_drift, enabled,
                                                now_ms);
+#endif
 }
 
 void WeightEngine_SetRuntimeDriftLearningAllowed(WeightEngine *engine,
@@ -397,3 +413,14 @@ const RuntimeDriftSnapshot *WeightEngine_GetRuntimeDriftSnapshot(
     return ((engine != NULL) && engine->initialized) ?
         RuntimeDriftCompensator_GetSnapshot(&engine->runtime_drift) : NULL;
 }
+
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+bool WeightEngine_SetBetaExternalDrift(WeightEngine *engine,
+    MassValueUg offset_ug, bool apply)
+{
+    if ((engine == NULL) || !engine->initialized) return false;
+    engine->beta_external_drift_offset_ug = offset_ug;
+    engine->beta_external_drift_apply = apply;
+    return !engine->has_raw_sample || UpdateDerived(engine, false);
+}
+#endif

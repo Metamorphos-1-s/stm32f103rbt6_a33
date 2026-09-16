@@ -6,6 +6,13 @@
 #include "raw_measurement.h"
 #include "runtime_state.h"
 #include "runtime_drift_compensator.h"
+#if defined(A33_ENABLE_STAGE5MR5_BETA) && (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#include "reference_lock_drift_compensator.h"
+typedef enum {
+    R5_BETA_APPLICATION_SHADOW = 0,
+    R5_BETA_APPLICATION_ACTIVE = 1
+} R5BetaApplication;
+#endif
 #include "weight_types.h"
 #include "fault_manager.h"
 
@@ -42,5 +49,12 @@ void MetrologyManager_ResetRuntimeDrift(RuntimeDriftResetReason reason);
 void MetrologyManager_HandleFaultState(void);
 bool MetrologyManager_FaultInvalidatesRuntimeDrift(FaultCode fault);
 const RuntimeDriftSnapshot *MetrologyManager_GetRuntimeDriftSnapshot(void);
+#if defined(A33_ENABLE_STAGE5MR5_BETA) && (A33_ENABLE_STAGE5MR5_BETA != 0U)
+bool MetrologyManager_SetR5Mode(R5DriftMode mode);
+bool MetrologyManager_SetR5Application(R5BetaApplication application);
+void MetrologyManager_ResetR5(void);
+const R5DriftSnapshot *MetrologyManager_GetR5Snapshot(void);
+R5BetaApplication MetrologyManager_GetR5Application(void);
+#endif
 
 #endif /* METROLOGY_MANAGER_H */

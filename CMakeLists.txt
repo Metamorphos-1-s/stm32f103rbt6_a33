@@ -32,6 +32,8 @@ option(A33_ENABLE_STAGE5I_USART3_BRINGUP
     "Enable Stage 5I-A USART3 raw bring-up diagnostics" OFF)
 option(A33_ENABLE_STAGE5L_DIAGNOSTICS
     "Enable Stage 5L SWD-only measurement overrides" OFF)
+option(A33_ENABLE_STAGE5MR5_BETA
+    "Enable Stage 5M-R5 reference-lock engineering beta" OFF)
 
 # Enable CMake support for ASM and C languages
 enable_language(C ASM)
@@ -152,6 +154,11 @@ if(A33_ENABLE_STAGE5L_DIAGNOSTICS)
         Diagnostics/stage5l_measurement_diagnostics.c)
 endif()
 
+if(A33_ENABLE_STAGE5MR5_BETA)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        Domain/measurement/reference_lock_drift_compensator.c)
+endif()
+
 if(NOT A33_ENABLE_BOARD_DIAGNOSTICS)
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         Services/alarm_output_manager/alarm_output_manager.c)
@@ -215,6 +222,14 @@ else()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
         A33_ENABLE_STAGE5L_DIAGNOSTICS=0
         STAGE5L_SWD_DIAGNOSTICS=0)
+endif()
+
+if(A33_ENABLE_STAGE5MR5_BETA)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5MR5_BETA=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5MR5_BETA=0)
 endif()
 
 if(A33_ENABLE_BOARD_DIAGNOSTICS)

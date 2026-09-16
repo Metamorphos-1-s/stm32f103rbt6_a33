@@ -453,6 +453,58 @@ static ModbusRegisterResult ReadOne(uint16_t address,
             return MODBUS_REGISTER_ILLEGAL_ADDRESS;
         return MODBUS_REGISTER_OK;
     }
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if ((address >= MODBUS_R5_BETA_FIRST) &&
+        (address <= MODBUS_R5_BETA_LAST))
+    {
+        R5DriftSnapshot empty = {0};
+        const R5DriftSnapshot *live = MetrologyManager_GetR5Snapshot();
+        const R5DriftSnapshot *r5 = (live != NULL) ? live : &empty;
+        if (address == MODBUS_R5_BETA_SIGNATURE) *value = 0x55B5U;
+        else if (address == MODBUS_R5_BETA_APPLICATION)
+            *value = (uint16_t)MetrologyManager_GetR5Application();
+        else if (address == MODBUS_R5_BETA_MODE) *value = (uint16_t)r5->mode;
+        else if (address == MODBUS_R5_BETA_STATE) *value = (uint16_t)r5->state;
+        else if (address == MODBUS_R5_BETA_LIMITED) *value = r5->limited ? 1U : 0U;
+        else if (address == MODBUS_R5_BETA_REASON)
+            *value = (uint16_t)r5->last_rebase_reason;
+        else if (address >= MODBUS_R5_BETA_OFFSET_FIRST && address <= 0x0289U)
+            *value = Word64((uint64_t)r5->offset_ug,
+                (uint8_t)(address - MODBUS_R5_BETA_OFFSET_FIRST), order);
+        else if (address >= MODBUS_R5_BETA_UNCOMPENSATED_FIRST && address <= 0x028DU)
+            *value = Word64((uint64_t)r5->uncompensated_gross_ug,
+                (uint8_t)(address - MODBUS_R5_BETA_UNCOMPENSATED_FIRST), order);
+        else if (address >= MODBUS_R5_BETA_CORRECTED_FIRST && address <= 0x0291U)
+            *value = Word64((uint64_t)r5->corrected_gross_ug,
+                (uint8_t)(address - MODBUS_R5_BETA_CORRECTED_FIRST), order);
+        else if (address >= MODBUS_R5_BETA_REFERENCE_FIRST && address <= 0x0295U)
+            *value = Word64((uint64_t)r5->reference_ug,
+                (uint8_t)(address - MODBUS_R5_BETA_REFERENCE_FIRST), order);
+        else if (address >= MODBUS_R5_BETA_CURRENT_FIRST && address <= 0x0299U)
+            *value = Word64((uint64_t)r5->current_window_ug,
+                (uint8_t)(address - MODBUS_R5_BETA_CURRENT_FIRST), order);
+        else if (address >= MODBUS_R5_BETA_ERROR_FIRST && address <= 0x029DU)
+            *value = Word64((uint64_t)r5->reference_error_ug,
+                (uint8_t)(address - MODBUS_R5_BETA_ERROR_FIRST), order);
+        else if (address >= MODBUS_R5_BETA_RATE_FIRST && address <= 0x029FU)
+            *value = Word32((uint32_t)r5->correction_rate_milli_ug_per_s,
+                (uint8_t)(address - MODBUS_R5_BETA_RATE_FIRST), order);
+        else if (address == MODBUS_R5_BETA_HOLDOFF)
+            *value = r5->holdoff_remaining;
+        else if (address == MODBUS_R5_BETA_REFERENCE_FILL)
+            *value = r5->reference_fill;
+        else if (address == MODBUS_R5_BETA_OBSERVATION_FILL)
+            *value = r5->observation_fill;
+        else if (address >= MODBUS_R5_BETA_REBASE_FIRST && address <= 0x02A4U)
+            *value = Word32(r5->automatic_rebase_count,
+                (uint8_t)(address - MODBUS_R5_BETA_REBASE_FIRST), order);
+        else if (address >= MODBUS_R5_BETA_EVALUATION_FIRST && address <= 0x02A6U)
+            *value = Word32(r5->evaluation_count,
+                (uint8_t)(address - MODBUS_R5_BETA_EVALUATION_FIRST), order);
+        else *value = 0U;
+        return MODBUS_REGISTER_OK;
+    }
+#endif
     if ((address >= MODBUS_STARTUP_ZERO_FIRST) &&
         (address <= MODBUS_STARTUP_ZERO_LAST))
     {

@@ -832,6 +832,57 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             }
             else result = COMMAND_RESULT_INVALID_STATE;
             break;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+        case COMMAND_R5_SET_MODE:
+            if ((request->source == COMMAND_SOURCE_BLE) ||
+                (request->value0 < (int32_t)R5_DRIFT_MODE_OFF) ||
+                (request->value0 > (int32_t)R5_DRIFT_MODE_STATIC_COMPENSATION) ||
+                (request->value1 != 0) || (request->flags != 0U) ||
+                (request->value64 != 0))
+                result = COMMAND_RESULT_INVALID_ARGUMENT;
+            else result = MetrologyManager_SetR5Mode(
+                (R5DriftMode)request->value0) ? COMMAND_RESULT_OK :
+                COMMAND_RESULT_INVALID_STATE;
+            break;
+        case COMMAND_R5_RESET_STATE:
+            if ((request->source == COMMAND_SOURCE_BLE) ||
+                (request->value0 != 0) || (request->value1 != 0) ||
+                (request->flags != 0U) || (request->value64 != 0))
+                result = COMMAND_RESULT_INVALID_ARGUMENT;
+            else {
+                MetrologyManager_ResetR5();
+                result = COMMAND_RESULT_OK;
+            }
+            break;
+        case COMMAND_R5_GET_STATUS:
+            {
+                const R5DriftSnapshot *r5 = MetrologyManager_GetR5Snapshot();
+                if (r5 == NULL) result = COMMAND_RESULT_INVALID_STATE;
+                else {
+                    response->value0 = (int32_t)(((uint32_t)
+                        MetrologyManager_GetR5Application() << 24U) |
+                        ((uint32_t)r5->mode << 16U) |
+                        ((uint32_t)r5->state << 8U) |
+                        (r5->limited ? 1U : 0U));
+                    response->value1 = (r5->offset_ug > INT32_MAX) ? INT32_MAX :
+                        ((r5->offset_ug < INT32_MIN) ? INT32_MIN :
+                         (int32_t)r5->offset_ug);
+                    result = COMMAND_RESULT_OK;
+                }
+            }
+            break;
+        case COMMAND_R5_SET_APPLICATION:
+            if ((request->source == COMMAND_SOURCE_BLE) ||
+                (request->value0 < (int32_t)R5_BETA_APPLICATION_SHADOW) ||
+                (request->value0 > (int32_t)R5_BETA_APPLICATION_ACTIVE) ||
+                (request->value1 != 0) || (request->flags != 0U) ||
+                (request->value64 != 0))
+                result = COMMAND_RESULT_INVALID_ARGUMENT;
+            else result = MetrologyManager_SetR5Application(
+                (R5BetaApplication)request->value0) ? COMMAND_RESULT_OK :
+                COMMAND_RESULT_INVALID_STATE;
+            break;
+#endif
         case COMMAND_COUNT:
         default:
             result = COMMAND_RESULT_INVALID_ARGUMENT;
