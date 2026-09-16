@@ -1,0 +1,55 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5MR5B_ENGINEERING_BETA_PREFLASH",
+  "repository_commit": "e9dd337175729c2cd5beb6e9fe2361fc72b2fb7f",
+  "branch": "stage5mr5b-reference-lock-engineering-beta",
+  "product_release": {
+    "path": "build/Release/stm32f103rbt6_a33.elf",
+    "length": 172200,
+    "sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+    "firmware": "0x0510",
+    "map": "0x0104",
+    "r5_enabled": false
+  },
+  "engineering_beta": {
+    "elf_path": "build/Stage5MR5Beta/stm32f103rbt6_a33.elf",
+    "elf_length": 1938380,
+    "elf_sha256": "CBB9A338334B3D12EFB79D6FFF5EB738E7CA34DE0E5F84B3126741A0994C0FBA",
+    "application_bin_path": "stage5mr5b_application.bin",
+    "application_bin_length": 98128,
+    "application_bin_sha256": "DDB7AB025208252A7F2CAFEFC800CDB4C73EFD45FF874B9B5763A51F347B5E9C",
+    "load_address": "0x08000000",
+    "firmware": "0x0511",
+    "frozen_public_map": "0x0104",
+    "engineering_diagnostic_extension": "0x0280-0x02A7",
+    "diagnostic_signature": "0x55B5",
+    "boot_mode": "OFF",
+    "boot_application": "SHADOW",
+    "old_runtime_drift_can_apply": false,
+    "ram_used_bytes": 20256,
+    "ram_total_bytes": 20480,
+    "flash_used_bytes": 98128,
+    "flash_total_bytes": 126976
+  },
+  "hardware_tool": {
+    "path": "Tools/stage5mr5b_beta/r5_beta_hw.py",
+    "length": 6826,
+    "sha256": "5D018F8BA429A57BA869DEDF5EBDE4BADABFD5731610DA206F9F1E1EACCFF3D2"
+  },
+  "software_gates": {
+    "python_c_real_samples": 22557,
+    "python_c_total_samples": 25057,
+    "python_c_mismatches": 0,
+    "host_ctest": "22/22 PASS",
+    "gcc_strict": "PASS",
+    "clang_strict": "PASS",
+    "asan": "NOT RUN - runtime unavailable",
+    "ubsan": "NOT RUN - runtime unavailable",
+    "release_hash_preserved": true,
+    "register_map_consistency": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "flash_authorized": false,
+  "mass_erase_allowed": false,
+  "configuration_write_allowed": false
+}
