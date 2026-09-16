@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5MR5B_ENGINEERING_BETA_PREFLASH",
+  "run_id": "20260916T_r5b_preflash",
+  "repository_commit": "4411d75",
+  "branch": "stage5mr5b-reference-lock-engineering-beta",
+  "tool": {
+    "path": "Tools/stage5ma_replay/stage5ma_replay.py",
+    "length": 25333,
+    "sha256": "A0903D10FBD7CB66C4ADDD487975CB747C3921C2BFCC908894071AF302E3210F",
+    "version": "stage5ma-replay-v2"
+  },
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "hardware_run": false,
+  "files": [
+    {
+      "path": "software_manifest.json",
+      "length": 1963,
+      "sha256": "4ABD1A226BA3CB668BEA4BE28D233C210253BC26C46FABF6F53AE5EE939B79BA"
+    },
+    {
+      "path": "stage5mr5b_application.bin",
+      "length": 98128,
+      "sha256": "DDB7AB025208252A7F2CAFEFC800CDB4C73EFD45FF874B9B5763A51F347B5E9C"
+    }
+  ]
+}
