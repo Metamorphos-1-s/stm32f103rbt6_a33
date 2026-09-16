@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "repository_commit_with_beta_artifact": "c2f399ba44083af618fa3f0b09e44f0689b27751",
+  "device_before": {
+    "firmware": "0x0510",
+    "map": "0x0104",
+    "public_schema": 2,
+    "persistent_format": 3,
+    "profile": 0,
+    "dirty": 0,
+    "fault_mask": 0,
+    "revision": 7,
+    "saved_revision": 7,
+    "active_slot_register": 1,
+    "active_slot_name": "A",
+    "storage_sequence": 7
+  },
+  "configuration_region": {
+    "address": "0x0801F000",
+    "length": 4096,
+    "sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+    "slot_a_sha256": "412BCED9DA8923381B0FDE954A2ECD1A2B0D8E28EC574539B2A723ADE86895F0",
+    "slot_a_sequence": 7,
+    "slot_a_crc_valid": true,
+    "slot_a_committed": true,
+    "slot_b_sha256": "5C3B5EBD6EFC91622DC97EC61D5ABD2ED847383162BBE489F8526B89F6C63BB1",
+    "slot_b_sequence": 6,
+    "slot_b_crc_valid": true,
+    "slot_b_committed": true
+  },
+  "active_config_wire_sha256": "F596F7460C911607FA8328A6D4BA5725EA5A0E5B14765D61EE7889A0D62F48A4",
+  "swd": {
+    "stlink_serial": "E1007200D0D2139393740544",
+    "voltage_v": 3.29,
+    "device_id": "0x410",
+    "flash_kb": 128,
+    "operation": "READ_ONLY_HOTPLUG"
+  },
+  "application_flash_pending": true,
+  "mass_erase_allowed": false,
+  "configuration_write_allowed": false,
+  "result": "PREFLIGHT_PASS_USER_CONFIRMATION_REQUIRED"
+}
