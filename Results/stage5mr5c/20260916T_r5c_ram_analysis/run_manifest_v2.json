@@ -1,0 +1,77 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5MR5C_SOFTWARE_RAM_STACK_PREFLIGHT",
+  "run_id": "20260916T_r5c_ram_analysis",
+  "repository_commit": "1b5154f",
+  "branch": "stage5mr5c-engineering-use-ram-safety",
+  "tool": {
+    "path": "Tools/stage5ma_replay/stage5ma_replay.py",
+    "length": 25333,
+    "sha256": "A0903D10FBD7CB66C4ADDD487975CB747C3921C2BFCC908894071AF302E3210F",
+    "version": "stage5ma-replay-v2"
+  },
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "hardware_run": false,
+  "files": [
+    {
+      "path": "c_parity.json",
+      "length": 1442,
+      "sha256": "C81FBB3E1383284B0CA973C1AA3C83CDC48E541F457E7B7A845B64A4F3EF9DCC"
+    },
+    {
+      "path": "environment.json",
+      "length": 696,
+      "sha256": "4B98D27731327D72378325AA7A7603722E6B2464D15B6CC950370014E1D7B810"
+    },
+    {
+      "path": "firmware_identity.json",
+      "length": 1129,
+      "sha256": "6D69ED173D0D71990729F6473CDFF45FBB37C70C659CD851C1A1250AB2B69DBF"
+    },
+    {
+      "path": "hardware_summary.json",
+      "length": 658,
+      "sha256": "A658F157463E1E72E071915AE456CE65CB8FD86D81171EBC79DDF8690A2A2547"
+    },
+    {
+      "path": "largest_ram_symbols.json",
+      "length": 14217,
+      "sha256": "234495F58521CFACFED3BDBCA220F97F4D67D31C1B41E52C85F7BE3E94C0C4CD"
+    },
+    {
+      "path": "ram_layout.json",
+      "length": 7573,
+      "sha256": "ED8430E33B06572B875686E9F86A04E3E8A662441A4D331AE306D97A02C99E8E"
+    },
+    {
+      "path": "stack_watermark.json",
+      "length": 45750,
+      "sha256": "BC623F44063227391CB4CF94653F149590B758290C3BC1076FB6BA61734CE3A2"
+    },
+    {
+      "path": "stage5mr5c_application.bin",
+      "length": 99424,
+      "sha256": "FD2E976F38C8B0565D37E1E30769578AD017B75FD8BDB7BF75E260488507DD28"
+    },
+    {
+      "path": "stage5mr5c_beta.map",
+      "length": 1378628,
+      "sha256": "D176BEC77EFC5BBD2640109F0B6202F0808214334F4F82F2F75511F6AB49983A"
+    },
+    {
+      "path": "summary.json",
+      "length": 997,
+      "sha256": "9CE882160DAA3C420D175A0E72D813C2CA71E92AD47D2DDD7B9BEDD922D8619B"
+    },
+    {
+      "path": "swd_msp_sample.txt",
+      "length": 696,
+      "sha256": "D903618071A546392F54FB8371AF160DA2A2BB60E0C41C940FBFFDA9F7FD0B22"
+    },
+    {
+      "path": "test_results.json",
+      "length": 867,
+      "sha256": "3AC889CBB884A6A02C096EC3CBA3AE55D535BBFDDDB3C14035375B40A31C636F"
+    }
+  ]
+}
