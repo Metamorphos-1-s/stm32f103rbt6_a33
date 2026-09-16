@@ -1,0 +1,26 @@
+{
+  "run_id": "20260916T_r4_500g_placement_2",
+  "r4_kind": "load_cycle",
+  "sensor_label": "current_3kg_nameplate",
+  "physical_rated_capacity_kg": 3.0,
+  "configured_capacity_kg": 3.0,
+  "known_load_g": 500.0,
+  "r3_frozen_parameters": {
+    "observation_window_s": 180,
+    "block_median_s": 15,
+    "estimator": "whole-window OLS",
+    "deadband_g": 0.002,
+    "declared_static_ceiling_g_per_h": 1.0,
+    "fast_step_g": 0.02,
+    "correction_cap_g_per_min": 0.0045,
+    "correction_cap_ug_per_s": 75,
+    "trend_damping_permille": 875,
+    "mode_reenable_holdoff_s": 15
+  },
+  "capture_tool": {
+    "path": "Tools/stage5l_measurement/stage5l_capture.py",
+    "sha256": "98B82637B9B0C00F0D2DD635FB4A07895880ABB9D735A873726030CA4B0A9006"
+  },
+  "writes": 0,
+  "flash_operations": 0
+}

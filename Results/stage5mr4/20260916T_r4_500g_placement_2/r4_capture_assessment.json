@@ -1,0 +1,13 @@
+{
+  "run_id": "20260916T_r4_500g_placement_2",
+  "classification": "R4_NEW_LOAD_TRANSIENT_CAPTURE",
+  "duration_s": 300.1185395717621,
+  "records": 2602,
+  "known_load_g": 500,
+  "operator_elapsed_s_estimate": 86.963,
+  "start_uncompensated_gross_g": 0.054071,
+  "end_uncompensated_gross_g": 500.105889,
+  "overrun_delta": 0,
+  "candidate_replayed": false,
+  "result": "CAPTURE_VALID"
+}

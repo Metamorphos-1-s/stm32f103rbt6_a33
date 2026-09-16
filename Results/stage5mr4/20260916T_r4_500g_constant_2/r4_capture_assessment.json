@@ -1,0 +1,17 @@
+{
+  "run_id": "20260916T_r4_500g_constant_2",
+  "classification": "R4_NEW_BLIND_HOLDOUT_CAPTURE",
+  "duration_s": 3600.065933227539,
+  "records": 31132,
+  "known_load_g": 500,
+  "placement_process_run_id": "20260916T_r4_500g_placement_2",
+  "uncompensated_gross_slope_g_per_h": -0.01945817390782579,
+  "mean_uncompensated_gross_g": 500.1036914122446,
+  "stable_ratio": 1.0,
+  "overrun_delta": 0,
+  "candidate_replayed": false,
+  "candidate_parameters_modified": false,
+  "temperature": "UNMEASURED",
+  "post_probe": {"firmware": "0x0510", "map": "0x0104", "profile": 0, "dirty": 0, "active_slot": 1, "storage_sequence": 7, "display_count": 50008},
+  "result": "CAPTURE_VALID_BLIND_RESULT_WITHHELD"
+}

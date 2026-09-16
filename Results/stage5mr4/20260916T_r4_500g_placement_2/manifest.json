@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "run_id": "20260916T_r4_500g_placement_2",
+  "files": [
+    {
+      "path": "samples.csv",
+      "length": 456561,
+      "sha256": "F6D4A0376A32B884AD82C64EAFFB63ACFABABC14D01DD3DC221C8524DDAE451C"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 184,
+      "sha256": "4E6657187F06C5B4F97504C26C7D615DD28B22D743EF08274BE817ADB35AC981"
+    },
+    {
+      "path": "environment.json",
+      "length": 696,
+      "sha256": "3D14AF5E2EC55137E0764799B593E9FACF118BE82B2E1C013DD80F8723777661"
+    },
+    {
+      "path": "summary.json",
+      "length": 1316,
+      "sha256": "4A6FBF26B983032576BCBCE449DF9ECEFEAA5AB95EC5300534C473E9C67F6B2B"
+    },
+    {
+      "path": "analysis.json",
+      "length": 1408,
+      "sha256": "353E38597DD21913FE89BBABC4497014A38FD3D5F76CD78EEC623D3A1EF4E646"
+    }
+  ]
+}
