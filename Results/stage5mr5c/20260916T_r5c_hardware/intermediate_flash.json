@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "classification": "SUPERSEDED_PRE_SMOKE_IMAGE",
+  "source_commit": "6e0e8c68d9c25650829b857bbbf11589d0640f0b",
+  "bin_length": 99424,
+  "bin_sha256": "FD2E976F38C8B0565D37E1E30769578AD017B75FD8BDB7BF75E260488507DD28",
+  "operation": "application-only sectors 0-97, verify and reset",
+  "flash_result": "PASS",
+  "formal_smoke_started": false,
+  "superseded_reason": "Pre-smoke Host audit found that volatile TARE incremented configuration revision in the Beta build.",
+  "configuration_before_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+  "configuration_after_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+  "configuration_unchanged": true,
+  "post_flash_state": "OFF + SHADOW, offset 0, fault 0, dirty 0, revision 7, saved revision 7",
+  "qualification_credit": "NONE"
+}

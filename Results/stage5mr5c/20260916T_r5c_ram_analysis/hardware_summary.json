@@ -18,7 +18,8 @@
     "ipsr": 0,
     "core_resumed": true
   },
-  "r5c_beta_reflash": "PENDING",
+  "intermediate_r5c_beta_flash": "PASS - application-only flash and verify; superseded before formal smoke by volatile TARE revision fix",
+  "final_r5c_beta_reflash": "PENDING",
   "supervised_smoke": "PENDING",
   "configuration_before_sha256": "PENDING",
   "configuration_after_sha256": "PENDING",

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "host_ctest": {"passed": 24, "failed": 0},
+  "host_ctest": {"passed": 25, "failed": 0},
   "python": {
     "stage5b": 33,
     "stage5c": 12,

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "repository_head": "4ce9e5e040e79a0d2db903b082e5c2894f3f1364",
+  "repository_head": "de57c731fddc9cbcf39bee5ae74c97639d15c7b6",
   "branch": "stage5mr5c-engineering-use-ram-safety",
   "python": "3.8.10",
   "arm_gcc": "GNU Tools for STM32 13.3.1 20240614",

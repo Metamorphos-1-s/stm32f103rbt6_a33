@@ -103,7 +103,9 @@ the stack address range; it is not reported as an observed maximum watermark.
 ## Qualification status
 
 R5 Python and C parity remains 25,057 samples with zero mismatches, including
-22,557 real R4 samples. Host CTest is 24/24. R2/R3/R4/R5, Stage 5B/5C/5L,
+22,557 real R4 samples. Host CTest is 25/25, including the Beta-only guarantee
+that volatile TARE cannot increment configuration revision or dirty state.
+R2/R3/R4/R5, Stage 5B/5C/5L,
 Manifest and register-map tests pass. Debug, Release, BoardDiagnostics, Beta and
 Beta `-Wextra -Werror` builds pass. No dynamic allocation call exists in product
 sources. ASan and UBSan remain **NOT RUN** because the available portable MinGW
@@ -112,6 +114,11 @@ distribution does not contain their runtimes.
 The new Beta BIN changes because the RAM/stack fixes enter target firmware.
 Hardware reflash and supervised smoke are therefore mandatory before Stage
 5M-F entry can be approved.
+
+An intermediate 99,424-byte R5C image was application-only flashed and verified,
+then superseded before formal smoke when the pre-smoke audit found the volatile
+TARE revision defect. The final 99,440-byte image is SHA-256
+`2494CB70923C67E38F1642285CF3CEE717C1A207C42BF97B96FCC2A3BCFBDEFC`.
 
 Current state: **STAGE 5M-R5C SOFTWARE READY; HARDWARE CLOSURE PENDING; STAGE
 5M-F NOT YET APPROVED**.

@@ -17,14 +17,14 @@
   "r5c_beta": {
     "firmware": "0x0511",
     "map": "0x0104 with engineering extension 0x0280-0x02A7",
-    "elf_length": 1942972,
-    "elf_sha256": "495872B42E7D93AE753669C412A874BCB5486B089A87A8CA52358D2AD2825920",
-    "bin_length": 99424,
-    "bin_sha256": "FD2E976F38C8B0565D37E1E30769578AD017B75FD8BDB7BF75E260488507DD28",
-    "flash_bytes": 99416,
+    "elf_length": 1943044,
+    "elf_sha256": "03FE2AF24A2BAEE9281C55185C196FFCAADFEB7CFDDD8118DB7079CA8FBAA50E",
+    "bin_length": 99440,
+    "bin_sha256": "2494CB70923C67E38F1642285CF3CEE717C1A207C42BF97B96FCC2A3BCFBDEFC",
+    "flash_bytes": 99440,
     "ram_bytes": 19416,
     "ram_reduction_from_r5b_bytes": 840,
-    "flash_bin_growth_from_r5b_bytes": 1296
+    "flash_bin_growth_from_r5b_bytes": 1312
   },
   "debug": {"flash_bytes": 94112, "ram_bytes": 19392},
   "board_diagnostics": {"flash_bytes": 117092, "ram_bytes": 19264},

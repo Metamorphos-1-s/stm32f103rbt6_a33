@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "repository_head": "ece11ced91ecf3edcc01075d41b439cb68658d96",
+  "repository_head": "de57c731fddc9cbcf39bee5ae74c97639d15c7b6",
   "device": {
     "firmware": "0x0511 R5B",
     "map": "0x0104",
@@ -21,11 +21,11 @@
     "slot_b": {"sequence": 6, "crc_valid": true, "committed": true}
   },
   "target_beta": {
-    "bin_length": 99424,
-    "bin_sha256": "FD2E976F38C8B0565D37E1E30769578AD017B75FD8BDB7BF75E260488507DD28",
+    "bin_length": 99440,
+    "bin_sha256": "2494CB70923C67E38F1642285CF3CEE717C1A207C42BF97B96FCC2A3BCFBDEFC",
     "load_address": "0x08000000",
     "mass_erase": false,
     "configuration_write": false
   },
-  "result": "PASS_USER_EMPTY_CONFIRMATION_REQUIRED"
+  "result": "PASS_USER_EMPTY_CONFIRMED"
 }
