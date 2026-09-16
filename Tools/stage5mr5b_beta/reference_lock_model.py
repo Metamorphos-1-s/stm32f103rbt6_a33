@@ -55,6 +55,7 @@ class Config:
     step_block_s: int = 3
     step_threshold_ug: int = 100_000
     step_confirmations: int = 2
+    robust_block_s: int = 10
 
 
 CONFIG = Config()
@@ -90,6 +91,7 @@ class ReferenceLock:
         self.holdoff_remaining = 0
         self.reference_values = []
         self.observation_values = []
+        self.robust_block_values = []
         self.step_values = []
         self.step_sign = 0
         self.step_count = 0
@@ -102,6 +104,11 @@ class ReferenceLock:
 
     def snapshot(self, uncompensated_gross_ug):
         applied = 0 if self.mode == Mode.OFF else self.offset_ug
+        reference_blocks = self.c.reference_window_s // self.c.robust_block_s
+        reference_fill = len(self.reference_values) * self.c.robust_block_s
+        if len(self.reference_values) < reference_blocks:
+            reference_fill += len(self.robust_block_values)
+        observation_partial = 0 if len(self.reference_values) < reference_blocks else len(self.robust_block_values)
         return {
             "mode": int(self.mode),
             "state": int(self.state),
@@ -113,8 +120,9 @@ class ReferenceLock:
             "reference_error_ug": self.reference_error_ug,
             "correction_rate_ug_per_s": self.correction_rate_ug_per_s,
             "holdoff_remaining": self.holdoff_remaining,
-            "reference_fill": len(self.reference_values),
-            "observation_fill": len(self.observation_values),
+            "reference_fill": reference_fill,
+            "observation_fill": min(self.c.observation_window_s,
+                len(self.observation_values) * self.c.robust_block_s + observation_partial),
             "automatic_rebase_count": self.automatic_rebase_count,
             "last_rebase_reason": int(self.last_rebase_reason),
             "limited": int(self.limited),
@@ -125,6 +133,7 @@ class ReferenceLock:
         self.correction_rate_ug_per_s = 0
         self.reference_values.clear()
         self.observation_values.clear()
+        self.robust_block_values.clear()
         self.step_values.clear()
         self.step_sign = 0
         self.step_count = 0
@@ -159,6 +168,7 @@ class ReferenceLock:
             self.correction_rate_ug_per_s = 0
             self.reference_values.clear()
             self.observation_values.clear()
+            self.robust_block_values.clear()
             self.step_values.clear()
             self.state = State.DOSING
             self.last_rebase_reason = Reason.MODE_CHANGE
@@ -221,18 +231,26 @@ class ReferenceLock:
             return self.snapshot(uncompensated_gross_ug)
 
         corrected = uncompensated_gross_ug - self.offset_ug
-        if len(self.reference_values) < self.c.reference_window_s:
-            self.reference_values.append(corrected)
+        reference_blocks = self.c.reference_window_s // self.c.robust_block_s
+        observation_blocks = self.c.observation_window_s // self.c.robust_block_s
+        if len(self.reference_values) < reference_blocks:
+            self.robust_block_values.append(corrected)
             self.state = State.REFERENCE_FILL
-            if len(self.reference_values) == self.c.reference_window_s:
+            if len(self.robust_block_values) == self.c.robust_block_s:
+                self.reference_values.append(median_int(self.robust_block_values))
+                self.robust_block_values.clear()
+            if len(self.reference_values) == reference_blocks:
                 self.reference_ug = median_int(self.reference_values)
                 self.observation_values.clear()
                 self.state = State.OBSERVATION_FILL
             return self.snapshot(uncompensated_gross_ug)
 
-        self.observation_values.append(uncompensated_gross_ug)
-        self.observation_values = self.observation_values[-self.c.observation_window_s :]
-        if len(self.observation_values) < self.c.observation_window_s:
+        self.robust_block_values.append(uncompensated_gross_ug)
+        if len(self.robust_block_values) == self.c.robust_block_s:
+            self.observation_values.append(median_int(self.robust_block_values))
+            self.observation_values = self.observation_values[-observation_blocks:]
+            self.robust_block_values.clear()
+        if len(self.observation_values) < observation_blocks:
             self.state = State.OBSERVATION_FILL
             return self.snapshot(uncompensated_gross_ug)
 

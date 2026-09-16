@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "algorithm": "R5_REFERENCE_LOCK_10S_BLOCK_MEDIAN_BETA",
+  "state_bytes_host_x64": 856,
+  "state_budget_bytes": 1080,
+  "supersedes_exact_window_state_bytes": 4016,
+  "storage": {
+    "reference_values": "30 ten-second block medians as signed int32 deltas",
+    "observation_values": "60 rolling ten-second block medians as signed int32 deltas",
+    "robust_block": "10 signed int64 one-second values",
+    "ten_hz_second_bucket": "16 signed int64 values",
+    "dynamic_allocation": false
+  },
+  "arm_cortex_m3_os": {
+    "compiler": "arm-none-eabi-gcc from STM32CubeCLT 1.18.0",
+    "text_bytes": 2926,
+    "data_bytes": 0,
+    "bss_bytes": 0,
+    "maximum_single_function_stack_bytes": 152,
+    "conservative_nested_stack_bound_bytes": 272
+  },
+  "beta_link": {
+    "ram_used_bytes": 20256,
+    "ram_total_bytes": 20480,
+    "ram_free_bytes": 224,
+    "flash_used_bytes": 98128,
+    "flash_total_bytes": 126976
+  },
+  "host_strict": {
+    "gcc_15_2": "PASS",
+    "clang_23_1_1": "PASS",
+    "asan": "NOT RUN - downloaded MinGW distribution has no libasan",
+    "ubsan": "NOT RUN - downloaded MinGW distribution has no libubsan"
+  }
+}

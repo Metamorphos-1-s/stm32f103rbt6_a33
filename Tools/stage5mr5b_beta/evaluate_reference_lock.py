@@ -120,7 +120,8 @@ def protection():
 def main():
     parser=argparse.ArgumentParser(); parser.add_argument("--output", required=True); args=parser.parse_args()
     runs=[replay_run(*item) for item in RUNS]
-    report={"algorithm":"R5_REFERENCE_LOCK_FROZEN","run_count":len(runs),"runs":runs,
+    report={"algorithm":"R5_REFERENCE_LOCK_10S_BLOCK_MEDIAN_BETA","run_count":len(runs),"runs":runs,
+        "statistical_structure":"median of 10-second medians; 30 reference blocks and 60 rolling observation blocks",
         "median_ols_improvement_fraction":statistics.median(r["ols_improvement_fraction"] for r in runs),
         "median_endpoint_improvement_fraction":statistics.median(r["endpoint_improvement_fraction"] for r in runs),
         "minimum_endpoint_improvement_fraction":min(r["endpoint_improvement_fraction"] for r in runs),

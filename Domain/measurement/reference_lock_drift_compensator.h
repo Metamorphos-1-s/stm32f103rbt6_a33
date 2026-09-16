@@ -6,6 +6,9 @@
 
 #define R5_REFERENCE_WINDOW_SECONDS 300U
 #define R5_OBSERVATION_WINDOW_SECONDS 600U
+#define R5_ROBUST_BLOCK_SECONDS 10U
+#define R5_REFERENCE_BLOCK_COUNT 30U
+#define R5_OBSERVATION_BLOCK_COUNT 60U
 #define R5_SECOND_SAMPLE_CAPACITY 16U
 #define R5_STEP_VALUE_COUNT 6U
 
@@ -98,8 +101,9 @@ typedef struct {
 
 typedef struct {
     R5DriftConfig config;
-    int32_t reference_delta[R5_REFERENCE_WINDOW_SECONDS];
-    int32_t observation_delta[R5_OBSERVATION_WINDOW_SECONDS];
+    int32_t reference_delta[R5_REFERENCE_BLOCK_COUNT];
+    int32_t observation_delta[R5_OBSERVATION_BLOCK_COUNT];
+    int64_t robust_block_values[R5_ROBUST_BLOCK_SECONDS];
     int64_t second_samples[R5_SECOND_SAMPLE_CAPACITY];
     int64_t step_values[R5_STEP_VALUE_COUNT];
     int64_t reference_base_ug;
@@ -120,6 +124,9 @@ typedef struct {
     uint16_t observation_fill;
     uint16_t observation_head;
     uint16_t holdoff_remaining;
+    uint8_t reference_block_count;
+    uint8_t observation_block_count;
+    uint8_t robust_block_fill;
     uint8_t second_sample_count;
     uint8_t step_fill;
     uint8_t step_head;
@@ -142,6 +149,8 @@ bool R5Drift_Init(R5DriftCompensator *compensator,
 bool R5Drift_SetMode(R5DriftCompensator *compensator, R5DriftMode mode);
 void R5Drift_HandleEvent(R5DriftCompensator *compensator,
                          R5DriftEvent event);
+void R5Drift_Limit(R5DriftCompensator *compensator,
+                   R5DriftReason reason);
 bool R5Drift_ProcessSecond(R5DriftCompensator *compensator,
                            uint32_t second,
                            int64_t uncompensated_gross_ug,

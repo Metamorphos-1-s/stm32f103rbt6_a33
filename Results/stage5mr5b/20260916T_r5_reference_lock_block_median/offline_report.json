@@ -1,0 +1,198 @@
+{
+  "algorithm": "R5_REFERENCE_LOCK_FROZEN",
+  "run_count": 6,
+  "runs": [
+    {
+      "name": "cold_empty_1",
+      "run_id": "20260915T_r4_cold_empty_1",
+      "raw_ols_g_per_h": -0.09050381404443332,
+      "corrected_ols_g_per_h": -0.013129473975717496,
+      "ols_improvement_fraction": 0.854929053384739,
+      "raw_endpoint_g": -0.135177,
+      "corrected_endpoint_g": -0.071069,
+      "endpoint_improvement_fraction": 0.4742522766446955,
+      "final_offset_g": -0.064952,
+      "maximum_10s_offset_change_g": 0.000326,
+      "automatic_rebase_count": 0,
+      "evaluation_count": 45
+    },
+    {
+      "name": "cold_empty_2",
+      "run_id": "20260915T_r4_cold_empty_2",
+      "raw_ols_g_per_h": -0.0810773409927929,
+      "corrected_ols_g_per_h": -0.07560370455304156,
+      "ols_improvement_fraction": 0.06751129690153379,
+      "raw_endpoint_g": -0.081106,
+      "corrected_endpoint_g": -0.063114,
+      "endpoint_improvement_fraction": 0.22183315660986846,
+      "final_offset_g": -0.019175,
+      "maximum_10s_offset_change_g": 0.000444,
+      "automatic_rebase_count": 0,
+      "evaluation_count": 45
+    },
+    {
+      "name": "hot_empty",
+      "run_id": "20260915T_r4_hot_empty",
+      "raw_ols_g_per_h": 0.08543358345459286,
+      "corrected_ols_g_per_h": 0.07040322755678485,
+      "ols_improvement_fraction": 0.17593029918728031,
+      "raw_endpoint_g": 0.0546345,
+      "corrected_endpoint_g": 0.0260445,
+      "endpoint_improvement_fraction": 0.5232957197375285,
+      "final_offset_g": 0.029693,
+      "maximum_10s_offset_change_g": 0.0005,
+      "automatic_rebase_count": 0,
+      "evaluation_count": 45
+    },
+    {
+      "name": "loaded_500g_1",
+      "run_id": "20260916T_r4_500g_constant_1",
+      "raw_ols_g_per_h": 0.04801543471221017,
+      "corrected_ols_g_per_h": 0.04266294881904741,
+      "ols_improvement_fraction": 0.11147427749522465,
+      "raw_endpoint_g": 0.069842,
+      "corrected_endpoint_g": 0.0578255,
+      "endpoint_improvement_fraction": 0.17205263308610863,
+      "final_offset_g": 0.012734,
+      "maximum_10s_offset_change_g": 0.000259,
+      "automatic_rebase_count": 0,
+      "evaluation_count": 45
+    },
+    {
+      "name": "loaded_500g_2",
+      "run_id": "20260916T_r4_500g_constant_2",
+      "raw_ols_g_per_h": -0.019384729410087148,
+      "corrected_ols_g_per_h": -0.02132148430582441,
+      "ols_improvement_fraction": -0.09991137120177918,
+      "raw_endpoint_g": -0.0309785,
+      "corrected_endpoint_g": -0.0296235,
+      "endpoint_improvement_fraction": 0.04374001323498555,
+      "final_offset_g": -0.001818,
+      "maximum_10s_offset_change_g": 0.000139,
+      "automatic_rebase_count": 0,
+      "evaluation_count": 45
+    },
+    {
+      "name": "loaded_1kg",
+      "run_id": "20260916T_r4_1kg_constant",
+      "raw_ols_g_per_h": 0.020595647657190266,
+      "corrected_ols_g_per_h": 0.018797105953540557,
+      "ols_improvement_fraction": 0.08732629988558815,
+      "raw_endpoint_g": 0.070968,
+      "corrected_endpoint_g": 0.066832,
+      "endpoint_improvement_fraction": 0.058279788073497873,
+      "final_offset_g": 0.004762,
+      "maximum_10s_offset_change_g": 0.000118,
+      "automatic_rebase_count": 0,
+      "evaluation_count": 49
+    }
+  ],
+  "median_ols_improvement_fraction": 0.0994002886904064,
+  "median_endpoint_improvement_fraction": 0.19694289484798855,
+  "minimum_endpoint_improvement_fraction": 0.04374001323498555,
+  "formal_reverse_amplification_count": 0,
+  "maximum_10s_offset_change_g": 0.0005,
+  "synthetic_12h": {
+    "classification": "SYNTHETIC_NOT_HARDWARE_VALIDATION",
+    "final_offset_g": 0.203058,
+    "loaded_residual_g": 0.016941999999971813,
+    "unloaded_residual_g": 0.016942,
+    "loaded_display_g_at_e_0_05": 500.0,
+    "unloaded_display_g_at_e_0_05": 0.0,
+    "maximum_10s_offset_change_g": 5.1e-05
+  },
+  "protection": {
+    "dosing_offset_change_g": 0.0,
+    "dosing_dynamic_range_loss_g": 0.0,
+    "existing_0_20g_offset_load_difference_g": 500.084486,
+    "automatic_rebase_count": 10,
+    "physical_edge_count": 10,
+    "slow_cases": [
+      {
+        "increment_g": 0.0001,
+        "pause_s": 2,
+        "input_gain_g": 0.03,
+        "output_gain_g": 0.03,
+        "offset_change_g": 0.0
+      },
+      {
+        "increment_g": 0.0001,
+        "pause_s": 5,
+        "input_gain_g": 0.012,
+        "output_gain_g": 0.012,
+        "offset_change_g": 0.0
+      },
+      {
+        "increment_g": 0.0001,
+        "pause_s": 10,
+        "input_gain_g": 0.006,
+        "output_gain_g": 0.006,
+        "offset_change_g": 0.0
+      },
+      {
+        "increment_g": 0.001,
+        "pause_s": 2,
+        "input_gain_g": 0.3,
+        "output_gain_g": 0.3,
+        "offset_change_g": 0.0
+      },
+      {
+        "increment_g": 0.001,
+        "pause_s": 5,
+        "input_gain_g": 0.12,
+        "output_gain_g": 0.12,
+        "offset_change_g": 0.0
+      },
+      {
+        "increment_g": 0.001,
+        "pause_s": 10,
+        "input_gain_g": 0.06,
+        "output_gain_g": 0.06,
+        "offset_change_g": 0.0
+      },
+      {
+        "increment_g": 0.005,
+        "pause_s": 2,
+        "input_gain_g": 1.5,
+        "output_gain_g": 1.5,
+        "offset_change_g": 0.0
+      },
+      {
+        "increment_g": 0.005,
+        "pause_s": 5,
+        "input_gain_g": 0.6,
+        "output_gain_g": 0.6,
+        "offset_change_g": 0.0
+      },
+      {
+        "increment_g": 0.005,
+        "pause_s": 10,
+        "input_gain_g": 0.3,
+        "output_gain_g": 0.3,
+        "offset_change_g": 0.0
+      },
+      {
+        "increment_g": 0.02,
+        "pause_s": 2,
+        "input_gain_g": 6.0,
+        "output_gain_g": 6.0,
+        "offset_change_g": 0.0
+      },
+      {
+        "increment_g": 0.02,
+        "pause_s": 5,
+        "input_gain_g": 2.4,
+        "output_gain_g": 2.4,
+        "offset_change_g": 0.0
+      },
+      {
+        "increment_g": 0.02,
+        "pause_s": 10,
+        "input_gain_g": 1.2,
+        "output_gain_g": 1.2,
+        "offset_change_g": 0.0
+      }
+    ],
+    "slow_case_failures": []
+  }
+}

@@ -118,6 +118,9 @@ static void ClearLearning(R5DriftCompensator *compensator,
     compensator->correction_rate_milli_ug_per_s = 0;
     compensator->reference_fill = 0U;
     compensator->observation_fill = 0U;
+    compensator->reference_block_count = 0U;
+    compensator->observation_block_count = 0U;
+    compensator->robust_block_fill = 0U;
     compensator->observation_head = 0U;
     compensator->step_fill = 0U;
     compensator->step_head = 0U;
@@ -258,6 +261,9 @@ bool R5Drift_SetMode(R5DriftCompensator *compensator, R5DriftMode mode)
         compensator->correction_rate_milli_ug_per_s = 0;
         compensator->reference_fill = 0U;
         compensator->observation_fill = 0U;
+        compensator->reference_block_count = 0U;
+        compensator->observation_block_count = 0U;
+        compensator->robust_block_fill = 0U;
         compensator->observation_head = 0U;
         compensator->step_fill = 0U;
         compensator->step_head = 0U;
@@ -268,6 +274,8 @@ bool R5Drift_SetMode(R5DriftCompensator *compensator, R5DriftMode mode)
         compensator->have_evaluation = false;
         compensator->state = R5_DRIFT_STATE_DOSING;
     } else ClearLearning(compensator, R5_DRIFT_REASON_MODE_CHANGE, true);
+    UpdateSnapshot(compensator,
+        compensator->snapshot.uncompensated_gross_ug);
     return true;
 }
 
@@ -294,6 +302,14 @@ void R5Drift_HandleEvent(R5DriftCompensator *compensator,
     } else if (event == R5_DRIFT_EVENT_PROFILE_CHANGE) {
         EnterLimited(compensator, R5_DRIFT_REASON_PROFILE);
     }
+    UpdateSnapshot(compensator,
+        compensator->snapshot.uncompensated_gross_ug);
+}
+
+void R5Drift_Limit(R5DriftCompensator *compensator, R5DriftReason reason)
+{
+    if ((compensator != NULL) && compensator->initialized)
+        EnterLimited(compensator, reason);
 }
 
 bool R5Drift_ProcessSecond(R5DriftCompensator *compensator,
@@ -344,34 +360,53 @@ bool R5Drift_ProcessSecond(R5DriftCompensator *compensator,
         return true;
     }
     if (compensator->reference_fill < compensator->config.reference_window_s) {
-        if (compensator->reference_fill == 0U)
-            compensator->reference_base_ug = corrected;
-        if (!AddDelta(compensator->reference_base_ug, corrected,
-            &compensator->reference_delta[compensator->reference_fill])) {
-            EnterLimited(compensator, R5_DRIFT_REASON_NUMERIC);
-        } else ++compensator->reference_fill;
+        compensator->robust_block_values[compensator->robust_block_fill++] =
+            corrected;
+        ++compensator->reference_fill;
         compensator->state = R5_DRIFT_STATE_REFERENCE_FILL;
+        if (compensator->robust_block_fill == R5_ROBUST_BLOCK_SECONDS) {
+            int64_t block_median = MedianSmall(
+                compensator->robust_block_values, R5_ROBUST_BLOCK_SECONDS);
+            if (compensator->reference_block_count == 0U)
+                compensator->reference_base_ug = block_median;
+            if (!AddDelta(compensator->reference_base_ug, block_median,
+                &compensator->reference_delta[
+                    compensator->reference_block_count]))
+                EnterLimited(compensator, R5_DRIFT_REASON_NUMERIC);
+            else ++compensator->reference_block_count;
+            compensator->robust_block_fill = 0U;
+        }
         if (compensator->reference_fill == compensator->config.reference_window_s) {
             compensator->reference_ug = MedianDeltas(
                 compensator->reference_base_ug, compensator->reference_delta,
-                compensator->reference_fill);
+                compensator->reference_block_count);
             compensator->state = R5_DRIFT_STATE_OBSERVATION_FILL;
         }
         UpdateSnapshot(compensator, mass);
         return true;
     }
-    if (compensator->observation_fill == 0U)
-        compensator->observation_base_ug = mass;
-    if (!AddDelta(compensator->observation_base_ug, mass,
-        &compensator->observation_delta[compensator->observation_head])) {
-        EnterLimited(compensator, R5_DRIFT_REASON_NUMERIC);
-        UpdateSnapshot(compensator, mass);
-        return true;
-    }
-    compensator->observation_head = (uint16_t)((compensator->observation_head +
-        1U) % compensator->config.observation_window_s);
+    compensator->robust_block_values[compensator->robust_block_fill++] = mass;
     if (compensator->observation_fill < compensator->config.observation_window_s)
         ++compensator->observation_fill;
+    if (compensator->robust_block_fill == R5_ROBUST_BLOCK_SECONDS) {
+        int64_t block_median = MedianSmall(compensator->robust_block_values,
+            R5_ROBUST_BLOCK_SECONDS);
+        if (compensator->observation_block_count == 0U)
+            compensator->observation_base_ug = block_median;
+        if (!AddDelta(compensator->observation_base_ug, block_median,
+            &compensator->observation_delta[compensator->observation_head])) {
+            EnterLimited(compensator, R5_DRIFT_REASON_NUMERIC);
+            UpdateSnapshot(compensator, mass);
+            return true;
+        }
+        compensator->observation_head = (uint16_t)(
+            (compensator->observation_head + 1U) %
+            R5_OBSERVATION_BLOCK_COUNT);
+        if (compensator->observation_block_count <
+            R5_OBSERVATION_BLOCK_COUNT)
+            ++compensator->observation_block_count;
+        compensator->robust_block_fill = 0U;
+    }
     if (compensator->observation_fill < compensator->config.observation_window_s) {
         compensator->state = R5_DRIFT_STATE_OBSERVATION_FILL;
         UpdateSnapshot(compensator, mass);
@@ -383,7 +418,7 @@ bool R5Drift_ProcessSecond(R5DriftCompensator *compensator,
          compensator->config.evaluation_period_s)) {
         if (!Subtract(MedianDeltas(compensator->observation_base_ug,
                 compensator->observation_delta,
-                compensator->observation_fill), OffsetUg(compensator),
+                compensator->observation_block_count), OffsetUg(compensator),
                 &compensator->current_window_ug)) {
             EnterLimited(compensator, R5_DRIFT_REASON_NUMERIC);
             UpdateSnapshot(compensator, mass);
@@ -479,6 +514,6 @@ const R5DriftSnapshot *R5Drift_GetSnapshot(
 }
 
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
-_Static_assert(sizeof(R5DriftCompensator) <= 4096U,
-    "R5 reference-lock state exceeds 4096-byte budget");
+_Static_assert(sizeof(R5DriftCompensator) <= 1080U,
+    "R5 reference-lock state exceeds available beta RAM budget");
 #endif

@@ -18,10 +18,16 @@ Profile 0 and 10 Hz. Input is calibrated uncompensated gross mass in ug. Raw
 ADC counts remain available for hardware diagnostics and are not used as
 cross-sensor mass thresholds.
 
-The 10 Hz stream is reduced to robust 1 Hz samples. The fixed-point design uses
-300 reference values and 600 observation values stored as signed 32-bit deltas
-from a 64-bit base. Rate and integration retain 1/1000 ug resolution. Division
-truncates toward zero. Median averaging also truncates toward zero.
+The 10 Hz stream is reduced to robust 1 Hz samples. An exact 300+600 value
+implementation required 4,016 bytes of state and caused the STM32F103RB image
+to exceed 20 KB RAM by 2,936 bytes. That first reconstruction is retained as
+superseded evidence and is not the Beta implementation.
+
+The RAM-qualified Beta groups each ten 1 Hz values into a median. It stores 30
+reference-block medians and 60 rolling observation-block medians as signed
+32-bit deltas from a 64-bit base. Rate and integration retain 1/1000 ug
+resolution. Division truncates toward zero. Median averaging also truncates
+toward zero.
 
 OFF clears and does not apply the R5 offset. DOSING_NO_COMPENSATION applies the
 existing offset but freezes all learning. STATIC_COMPENSATION preserves the
@@ -30,15 +36,17 @@ a rolling 600-second observation median every 60 seconds.
 
 ## Offline reconstruction
 
-The six R4 captures reproduce the requested reference-lock result within the
-published rounding precision: median OLS improvement 9.22%, median endpoint
-improvement 19.82%, minimum endpoint improvement 5.48%, zero formal reverse
-amplifications, and maximum 10-second offset change 0.000486 g.
+The exact-window reconstruction reproduced the requested result within the
+published rounding precision, but is not linkable on this MCU. After adopting
+the documented block-median structure, all offline gates were rerun. The six R4
+captures produce median OLS improvement 9.94%, median endpoint improvement
+19.69%, minimum endpoint improvement 4.37%, zero formal reverse amplifications,
+and maximum 10-second offset change 0.000500 g.
 
 The adverse second 500 g result is retained: raw -0.0193847 g/h, corrected
--0.0210007 g/h, OLS change -8.34%, endpoint improvement +5.48%.
+-0.0213215 g/h, OLS change -9.99%, endpoint improvement +4.37%.
 
-The synthetic 12-hour scenario produces 0.203059 g final offset, 0.016941 g
+The synthetic 12-hour scenario produces 0.203058 g final offset, 0.016942 g
 loaded/unloaded residual, 500.00 g and 0.00 g displays at e=0.05 g, and
 0.000051 g maximum 10-second correction. This is synthetic behavior evidence,
 not a real 12-hour qualification.

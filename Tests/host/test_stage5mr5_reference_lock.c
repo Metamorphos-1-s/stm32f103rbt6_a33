@@ -116,7 +116,7 @@ int main(void)
 {
     (void)printf("R5DriftCompensator size=%zu bytes\n",
                  sizeof(R5DriftCompensator));
-    CHECK(sizeof(R5DriftCompensator) <= 4096U);
+    CHECK(sizeof(R5DriftCompensator) <= 1080U);
     CHECK(TestModesAndEvents() == 0);
     CHECK(TestWindowsRateAndLimits() == 0);
     CHECK(TestStepDeduplication() == 0);
