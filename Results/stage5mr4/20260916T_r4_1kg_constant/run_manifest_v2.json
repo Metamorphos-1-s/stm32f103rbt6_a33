@@ -1,0 +1,67 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5MR4_BLIND_HARDWARE_CAPTURE",
+  "run_id": "20260916T_r4_1kg_constant",
+  "repository_commit": "45f86d9",
+  "branch": "stage5ma-10hz-adaptive-pipeline",
+  "tool": {
+    "path": "Tools/stage5ma_replay/stage5ma_replay.py",
+    "length": 25333,
+    "sha256": "A0903D10FBD7CB66C4ADDD487975CB747C3921C2BFCC908894071AF302E3210F",
+    "version": "stage5ma-replay-v2"
+  },
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "hardware_run": false,
+  "files": [
+    {
+      "path": "analysis.json",
+      "length": 1418,
+      "sha256": "5E35E71506EAA9014BB38CFB9B6B4AB0B93601E23CC7CCB253E2CADEDA26266F"
+    },
+    {
+      "path": "environment.json",
+      "length": 692,
+      "sha256": "FEFCA2B9972CA1D3C2D087E53EB40F59F46A600B1E47EE86AF59460D6C36A6CA"
+    },
+    {
+      "path": "events.jsonl",
+      "length": 171,
+      "sha256": "7B926FFC36963041E115740F9BC2B2FC36AC5C4B78A85D3874C204A127501ECD"
+    },
+    {
+      "path": "manifest.json",
+      "length": 829,
+      "sha256": "E501DC62548E3D83706B72F2C36A0E0A19FB10285E47B742EEFE1716C7F9CAE3"
+    },
+    {
+      "path": "operator_timing.json",
+      "length": 259,
+      "sha256": "CCD99B70C0F80A80CEBAC280E89860F91166FAE83FE8F2E7474BF71A6E52BFF7"
+    },
+    {
+      "path": "post_probe.json",
+      "length": 728,
+      "sha256": "806E6652C69F240CEAAC5EB38605624E56E8B980D8918A163CAB95760F1E9315"
+    },
+    {
+      "path": "r4_capture_assessment.json",
+      "length": 920,
+      "sha256": "9D0390ADA07828DDEC15B1BF745FC053A728383FA3699C190A760DF1C158CAFD"
+    },
+    {
+      "path": "r4_metadata.json",
+      "length": 786,
+      "sha256": "DE144FC4FFE166E8C5D70A5C92E2BBC796146F353A13DDDF68706EB4DD010510"
+    },
+    {
+      "path": "samples.csv",
+      "length": 6227156,
+      "sha256": "A81DDA27873B5B67650ED8A584234567E04C82404D9787D2FE89E836087AFB77"
+    },
+    {
+      "path": "summary.json",
+      "length": 1315,
+      "sha256": "9DF0CC64C416D0DC7A8890B0572BD8F9ECEB4815F349CC18D5A3034E7F97E56C"
+    }
+  ]
+}
