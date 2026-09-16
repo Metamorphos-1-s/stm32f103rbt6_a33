@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "repository_head": "ece11ced91ecf3edcc01075d41b439cb68658d96",
+  "device": {
+    "firmware": "0x0511 R5B",
+    "map": "0x0104",
+    "application": "SHADOW",
+    "mode": "OFF",
+    "offset_ug": 0,
+    "fault": 0,
+    "dirty": 0,
+    "revision": 7,
+    "saved_revision": 7,
+    "save_request_count_low": 0
+  },
+  "configuration": {
+    "region_length": 4096,
+    "region_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+    "active_config_wire_sha256": "F596F7460C911607FA8328A6D4BA5725EA5A0E5B14765D61EE7889A0D62F48A4",
+    "slot_a": {"sequence": 7, "crc_valid": true, "committed": true},
+    "slot_b": {"sequence": 6, "crc_valid": true, "committed": true}
+  },
+  "target_beta": {
+    "bin_length": 99424,
+    "bin_sha256": "FD2E976F38C8B0565D37E1E30769578AD017B75FD8BDB7BF75E260488507DD28",
+    "load_address": "0x08000000",
+    "mass_erase": false,
+    "configuration_write": false
+  },
+  "result": "PASS_USER_EMPTY_CONFIRMATION_REQUIRED"
+}
