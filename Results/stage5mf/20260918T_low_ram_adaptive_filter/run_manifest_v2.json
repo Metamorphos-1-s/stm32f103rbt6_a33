@@ -1,0 +1,87 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5MF_NO_ACCEPTABLE_CANDIDATE",
+  "run_id": "20260918T_low_ram_adaptive_filter",
+  "repository_commit": "a4fc31c35f6161063c8dab75a44aa856723398f7",
+  "branch": "stage5mf-low-ram-adaptive-filter",
+  "tool": {
+    "path": "Tools/stage5ma_replay/stage5ma_replay.py",
+    "length": 25333,
+    "sha256": "A0903D10FBD7CB66C4ADDD487975CB747C3921C2BFCC908894071AF302E3210F",
+    "version": "stage5ma-replay-v2"
+  },
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "hardware_run": false,
+  "files": [
+    {
+      "path": "acceptance_contract.json",
+      "length": 592,
+      "sha256": "3FE2205714FFC2BB636CBA12008FB06D57FA5E8C1263B2FCA60DBE39BB3E603D"
+    },
+    {
+      "path": "dataset_classification.json",
+      "length": 586,
+      "sha256": "6CA12C49AC229D484FE49F2018BAE23E6493CA707ABFF3943A1F0B63385B07B0"
+    },
+    {
+      "path": "development/development_search.json",
+      "length": 19075,
+      "sha256": "312ED8A8352B646B414B7A52813195DD79A159A6A9E34167605456A8E4BDFE4C"
+    },
+    {
+      "path": "development/selected_development_candidate.json",
+      "length": 2665,
+      "sha256": "504907F551FB1A6F51D29F615636C2369430A0D39556F82C04DD8913A1BF4054"
+    },
+    {
+      "path": "development_v2/development_search.json",
+      "length": 18768,
+      "sha256": "9C8461EE9F5F20DE7FA41ADE39F5B7337B11D117D08DDD1E3D37E3A594EAC492"
+    },
+    {
+      "path": "development_v2/selected_development_candidate.json",
+      "length": 2607,
+      "sha256": "B85BB404406C203D35EFD2D614D52564D53FBB4B7ABE41C09945068B10FB600A"
+    },
+    {
+      "path": "environment.json",
+      "length": 569,
+      "sha256": "79A7E1F582D5F1D2F6AA693F92059D4DF585C2E9B885C2D9A97D46427DF63D2C"
+    },
+    {
+      "path": "firmware_identity.json",
+      "length": 493,
+      "sha256": "FC1CA40A72B32D00B5C34DCF113E16602578A601E06F8F57AC05544672C02EED"
+    },
+    {
+      "path": "hardware_summary.json",
+      "length": 394,
+      "sha256": "EFD0634E436DD2CF3C21B9476B446138F25700E1016E8B38C9BB6F5735A1BE47"
+    },
+    {
+      "path": "qualification_summary.json",
+      "length": 2235,
+      "sha256": "D0755D7C9E68A8098BDD33AC7532B2E404FF240CE7D99ACA2246B6C6C7591F3B"
+    },
+    {
+      "path": "r5_c_parity.json",
+      "length": 1442,
+      "sha256": "8CB7BC57E53BD526FDA4A178ED72EFA45FDFC0D8D3FFAD3A89067CC0C4C01EA4"
+    },
+    {
+      "path": "r5_freeze.json",
+      "length": 540,
+      "sha256": "2F4271038C0DC86C6772CDD59704DAC26A0044B1FB73854F35DE159445592837"
+    },
+    {
+      "path": "ram_stack_status.json",
+      "length": 500,
+      "sha256": "29FF3F00CACACBF82A23487E730243DA54DCB8A266650CEE53837A7F49827874"
+    },
+    {
+      "path": "software_gates.json",
+      "length": 885,
+      "sha256": "D97C0E0EECB6483FC1190B2B46E75DB49EC8A550EDCB2130AA55BDAEA1C54735"
+    }
+  ]
+}
