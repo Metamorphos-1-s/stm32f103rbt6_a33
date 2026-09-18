@@ -44,4 +44,9 @@ Results/stage5mr5c/**/*.txt text eol=lf
 Results/stage5mr5c/**/*.map text eol=lf
 Results/stage5mr5c/**/*.bin -text
 Results/stage5mr5c/**/final_preflash_com5 text eol=lf
+Results/stage5mr5d/**/*.json text eol=lf
+Results/stage5mr5d/**/*.jsonl text eol=lf
+Results/stage5mr5d/**/*.csv text eol=lf
+Results/stage5mr5d/**/*.txt text eol=lf
+Results/stage5mr5d/**/*.bin -text
 Docs/evidence/*.json text eol=lf
