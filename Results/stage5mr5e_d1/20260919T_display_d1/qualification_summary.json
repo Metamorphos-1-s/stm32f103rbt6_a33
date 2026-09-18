@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "result": "STAGE 5M-R5E-D1 DISPLAY HOLD ISSUE CONFIRMED; NO ACCEPTABLE LOW-RAM DISPLAY CANDIDATE; FIRMWARE REMAINS 0x0512; STAGE 5N ENTRY DEFERRED",
+  "firmware": "0x0512",
+  "configuration_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "configuration_post_test_sha256": "NOT READ - would reset ACTIVE + DOSING; user confirmation required",
+  "cycles": [
+    {"run": 1, "uncompensated_span_ug": 500023653, "corrected_span_ug": 500023653, "loaded_uncompensated_ug": 499864840, "empty_uncompensated_ug": -158813, "records": 720},
+    {"run": 2, "uncompensated_span_ug": 500020274, "corrected_span_ug": 500020274, "loaded_uncompensated_ug": 499860335, "empty_uncompensated_ug": -159939, "records": 720},
+    {"run": 3, "uncompensated_span_ug": 500007885, "corrected_span_ug": 500007885, "loaded_uncompensated_ug": 499846819, "empty_uncompensated_ug": -161066, "records": 720}
+  ],
+  "max_span_difference_ug": 15768,
+  "loaded_repeatability_ug": 18021,
+  "empty_repeatability_ug": 2253,
+  "dosing_offset_strictly_frozen": true,
+  "automatic_rebase_changed": false,
+  "fault_overrun_dirty_save_zero": true,
+  "revision_saved_unchanged": true,
+  "display_incident": {"authoritative_compensated_g": 500.015929, "display_anchor_g": 500.068067, "threshold_g": 0.080, "display_g": 500.07},
+  "firmware_changed": false,
+  "beta_0513_created": false,
+  "hardware_display_fix": "NOT RUN - no candidate implemented"
+}
