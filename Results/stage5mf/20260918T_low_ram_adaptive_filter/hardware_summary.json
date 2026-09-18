@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "status": "NOT RUN",
+  "reason": "No development candidate passed all offline gates; firmware was not changed or flashed.",
+  "device_last_verified_state": "R5E Firmware 0x0512, OFF + SHADOW, offset/reference/evaluation 0, fault/overrun/dirty/SAVE 0, revision/saved 7/7",
+  "configuration_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86"
+}

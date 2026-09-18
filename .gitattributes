@@ -55,4 +55,8 @@ Results/stage5mr5e/**/*.csv text eol=lf
 Results/stage5mr5e/**/*.txt text eol=lf
 Results/stage5mr5e/**/*.map text eol=lf
 Results/stage5mr5e/**/*.bin -text
+Results/stage5mf/**/*.json text eol=lf
+Results/stage5mf/**/*.csv text eol=lf
+Results/stage5mf/**/*.txt text eol=lf
+Results/stage5mf/**/*.bin -text
 Docs/evidence/*.json text eol=lf

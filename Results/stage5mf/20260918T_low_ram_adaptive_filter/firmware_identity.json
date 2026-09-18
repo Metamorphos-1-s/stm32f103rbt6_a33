@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "product_changed": false,
+  "standard_release": {"firmware": "0x0510", "sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486"},
+  "r5e_beta": {"firmware": "0x0512", "map": "0x0104", "schema": 2, "persistent_format": 3, "bin_length": 100792, "sha256": "BA8F02B2024042D601FD7F2D75BEF9E1004AACAE16852DD97CD2B28777BAF6B9"},
+  "r5f_beta": "NOT CREATED",
+  "configuration_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86"
+}

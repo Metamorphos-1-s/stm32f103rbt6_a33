@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "product_integration": false,
+  "r5e_linker_ram_bytes": 19432,
+  "r5e_static_to_estack_bytes": 2072,
+  "r5e_conservative_stack_bytes": 1488,
+  "r5e_collision_margin_bytes": 584,
+  "candidate_planned_state_bytes_max": 48,
+  "candidate_actual_target_state_bytes": "NOT MEASURED",
+  "candidate_stack_delta": "NOT MEASURED",
+  "candidate_cpu_cycles": "NOT MEASURED",
+  "reason": "Rejected before fixed-point C and target integration. Product RAM/stack remains R5E baseline."
+}

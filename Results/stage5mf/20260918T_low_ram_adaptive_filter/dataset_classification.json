@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "development": ["filt0 empty/load/unload", "filt2 empty/load-retry/unload", "slow continuous fill", "cold control 1", "load cycles 1-6"],
+  "opened_regression": ["filt1 empty/load/unload", "filt3 empty/load/unload", "faster continuous fill", "500 g creep", "hot empty", "cold control 2", "load cycles 7-10"],
+  "new_holdout": [],
+  "new_holdout_status": "NOT CAPTURED - development candidate failed before parameter freeze",
+  "historical_result": "NO ACCEPTABLE CANDIDATE",
+  "leakage_policy": "No opened regression run participated in parameter ranking."
+}

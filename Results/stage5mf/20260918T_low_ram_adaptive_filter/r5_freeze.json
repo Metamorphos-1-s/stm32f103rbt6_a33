@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "diff": "ZERO CHANGES",
+  "files": [
+    {"path": "Domain/measurement/reference_lock_drift_compensator.c", "blob": "a4c88335be16d288d8d1bbe91bbfe7e32e4aea04"},
+    {"path": "Domain/measurement/reference_lock_drift_compensator.h", "blob": "7a2b1b4ff9776a4f60891a2f74973b7c09bd9bfe"},
+    {"path": "Tools/stage5mr5b_beta/reference_lock_model.py", "blob": "5e4b9335c0d87f4dc179251c5275c6b9882c864f"}
+  ],
+  "parity": {"samples": 25057, "real_samples": 22557, "mismatches": 0},
+  "r5d_r5e_evidence_preserved": true
+}

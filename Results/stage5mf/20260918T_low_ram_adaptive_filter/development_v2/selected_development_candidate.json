@@ -1,0 +1,99 @@
+{
+  "config": {
+    "fast_shift": 1,
+    "motion_shift": 3,
+    "output_shift": 1,
+    "innovation_threshold_ug": 50000,
+    "motion_threshold_ug": 5000,
+    "settle_threshold_ug": 5000,
+    "quiet_samples": 5,
+    "stable_samples": 3
+  },
+  "metrics": {
+    "static": {
+      "stddev_g": 0.0053699174843701,
+      "motion_false_positive_ratio": 0.0,
+      "stable_ratio": 1.0,
+      "maximum_switch_jump_g": 0.004224
+    },
+    "load": {
+      "label": "LOAD_STEP",
+      "baseline_ug": 498836920,
+      "plateau_ug": 500014644,
+      "edge_s": 4.597,
+      "time_10_90_s": 0.561,
+      "first_error_band_s": 4.641,
+      "stable_time_s": 10.662,
+      "overshoot_g": 0.014644,
+      "monotonic_violation_ratio": 0.29105322763306907,
+      "final_error_g": -0.000817032967031002,
+      "disturbances": 0
+    },
+    "unload": {
+      "label": "UNLOAD_STEP",
+      "baseline_ug": 500014644.0,
+      "plateau_ug": -36047.0,
+      "edge_s": 16.246,
+      "time_10_90_s": 0.694,
+      "first_error_band_s": 1.51,
+      "stable_time_s": 11.265,
+      "overshoot_g": 0.010139,
+      "monotonic_violation_ratio": 0.2942643391521197,
+      "final_error_g": -0.00012248913043478386,
+      "disturbances": 0
+    },
+    "slow": {
+      "false_stable_ratio": 0.611969111969112,
+      "records": 518
+    },
+    "dosing": {
+      "false_stable_ratio": 0.0,
+      "records": 518
+    }
+  },
+  "passed": false,
+  "score": 12.555051534059272,
+  "opened_regression": {
+    "static": {
+      "stddev_g": 0.0054851662598041345,
+      "motion_false_positive_ratio": 0.0,
+      "stable_ratio": 1.0,
+      "maximum_switch_jump_g": 0.00338
+    },
+    "load": {
+      "label": "LOAD_STEP",
+      "baseline_ug": -28162,
+      "plateau_ug": 500016897,
+      "edge_s": 18.27,
+      "time_10_90_s": 0.622,
+      "first_error_band_s": 1.568,
+      "stable_time_s": 9.737,
+      "overshoot_g": 0.02578,
+      "monotonic_violation_ratio": 0.31927023945267957,
+      "final_error_g": -0.0005765825242996216,
+      "disturbances": 0
+    },
+    "unload": {
+      "label": "UNLOAD_STEP",
+      "baseline_ug": 500022530.0,
+      "plateau_ug": -1126.0,
+      "edge_s": 76.309,
+      "time_10_90_s": 0.539,
+      "first_error_band_s": 1.476,
+      "stable_time_s": 9.773,
+      "overshoot_g": 0.013025,
+      "monotonic_violation_ratio": 0.35092348284960423,
+      "final_error_g": -4.330769230769215e-05,
+      "disturbances": 0
+    },
+    "slow": {
+      "false_stable_ratio": 0.38684719535783363,
+      "records": 517
+    },
+    "dosing": {
+      "false_stable_ratio": 0.0,
+      "records": 517
+    }
+  },
+  "opened_regression_passed": false
+}

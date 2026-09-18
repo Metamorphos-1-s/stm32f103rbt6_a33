@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "baseline_head": "18d89803abdb10e417d10728d7b43cdbb4ac2057",
+  "branch": "stage5mf-low-ram-adaptive-filter",
+  "python": "3.8.10",
+  "arm_gcc": "GNU Tools for STM32 13.3.1 20240614",
+  "cmake_generator": "Ninja",
+  "beta_option": "A33_ENABLE_STAGE5MR5_BETA=ON",
+  "model": {"path": "Tools/stage5mf/low_ram_model.py", "sha256": "7F5489FB4B59236BAECF42364AC621D560FB2854DD3B98CDFFCD3E069809CFDA"},
+  "evaluator": {"path": "Tools/stage5mf/evaluate_development.py", "sha256": "2567F1AB4C863B3140421062396A603C5A3C9207DC671881179A308CFE583219"}
+}

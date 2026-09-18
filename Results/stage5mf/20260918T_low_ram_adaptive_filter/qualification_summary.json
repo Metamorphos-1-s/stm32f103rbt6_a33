@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "result": "STAGE 5M-F NO ACCEPTABLE CANDIDATE; PRODUCT AND BETA OUTPUT UNCHANGED; STAGE 5N/5O ENTRY REQUIRES EXPLICIT DECISION",
+  "searches": [
+    {"id": "development_v1", "parameter_combinations": 729, "result": "FAIL", "note": "filt2 retry capture did not contain a suitable complete major step for ranking"},
+    {"id": "development_v2", "parameter_combinations": 729, "result": "FAIL", "step_runs": "explicit DEVELOPMENT filt0 load/unload"}
+  ],
+  "best_failed_candidate": {
+    "architecture": "PRECISION/FAST/SETTLING; O(1) raw fast EWMA + signed motion EWMA + continuous output blend",
+    "planned_state_bytes_max": 48,
+    "parameters": {"fast_shift": 1, "motion_shift": 3, "output_shift": 1, "innovation_threshold_ug": 50000, "motion_threshold_ug": 5000, "settle_threshold_ug": 5000, "quiet_samples": 5, "stable_samples": 3},
+    "development": {"static_noise_g": 0.0053699174843701, "static_motion_false_positive": 0.0, "load_10_90_s": 0.561, "unload_10_90_s": 0.694, "stable_time_s": 10.662, "automatic_slow_fill_false_stable": 0.611969111969112, "dosing_false_stable": 0.0, "maximum_switch_jump_g": 0.004224, "load_overshoot_g": 0.014644, "unload_overshoot_g": 0.010139},
+    "opened_regression": {"static_noise_g": 0.0054851662598041345, "load_10_90_s": 0.622, "unload_10_90_s": 0.539, "stable_time_s": 9.737, "automatic_slow_fill_false_stable": 0.38684719535783363, "dosing_false_stable": 0.0},
+    "failed_gates": ["development unload response", "development stable time", "development automatic slow-fill", "opened regression load response", "opened regression stable time", "opened regression automatic slow-fill"]
+  },
+  "comparison": {
+    "filt3_static_noise_g": 0.005439464823540295,
+    "filt3_load_10_90_s": 1.669,
+    "filt3_unload_10_90_s": 1.628,
+    "filt3_stable_time_s": 8.278,
+    "historical_robust_dual_iir": "FAIL - 256 B, stable 5.573 s, slow false-stable 24.56%, static false-positive 1.53%"
+  },
+  "python_c_parity": "NOT RUN - candidate rejected before fixed-point C implementation",
+  "new_holdout": "NOT RUN",
+  "beta_shadow_integration": "NOT RUN",
+  "hardware": "NOT RUN",
+  "firmware_version": "UNCHANGED 0x0512",
+  "device_state": "UNCHANGED R5E OFF + SHADOW"
+}

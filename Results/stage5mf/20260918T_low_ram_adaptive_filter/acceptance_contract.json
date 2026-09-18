@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "frozen_before_new_holdout": false,
+  "reason": "No development candidate passed, so no new holdout was opened.",
+  "thresholds": {
+    "static_noise_g_max": 0.0068,
+    "load_10_90_s_max": 0.60,
+    "unload_10_90_s_max": 0.60,
+    "stable_time_s_max": 3.0,
+    "automatic_slow_fill_false_stable_max": 0.10,
+    "dosing_false_stable_max": 0.0,
+    "static_motion_false_positive_max": 0.01,
+    "overshoot_g_max": 0.05,
+    "step_loss_g_max": 0.01,
+    "dosing_accumulated_loss_ug": 0,
+    "official_path_sample_mismatch": 0,
+    "r5_input_sample_mismatch": 0
+  }
+}
