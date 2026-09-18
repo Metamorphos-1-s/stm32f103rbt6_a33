@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "classification": "LINKER_MAP_STATIC_ANALYSIS",
+  "elf": "build/Stage5MR5CStack/stm32f103rbt6_a33.elf",
+  "ram_origin": "0x20000000",
+  "ram_end": "0x20005000",
+  "ram_total_bytes": 20480,
+  "data": {
+    "address": "0x20000000",
+    "size": 12
+  },
+  "bss": {
+    "address": "0x20000010",
+    "size": 18392
+  },
+  "noinit": {
+    "present": false,
+    "size": 0
+  },
+  "aligned_static_end": "0x200047E8",
+  "min_heap_bytes": 0,
+  "min_stack_bytes": 1024,
+  "reserved_heap_stack_end": "0x20004BE8",
+  "estack": "0x20005000",
+  "unallocated_after_reserved_stack_bytes": 1048,
+  "total_static_to_estack_bytes": 2072,
+  "linker_ram_used_bytes": 19432,
+  "linker_ram_free_bytes": 1048,
+  "module_ram": [
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/App/communication_manager.c.obj",
+      "ram_bytes": 2613
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/App/metrology_manager.c.obj",
+      "ram_bytes": 1844
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Services/ble_transport/ble_transport.c.obj",
+      "ram_bytes": 1445
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj",
+      "ram_bytes": 1303
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj",
+      "ram_bytes": 1303
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Services/ble_command_service/ble_command_service.c.obj",
+      "ram_bytes": 1189
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/App/persistence_manager.c.obj",
+      "ram_bytes": 1126
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart3_modbus_transport.c.obj",
+      "ram_bytes": 1081
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj",
+      "ram_bytes": 689
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj",
+      "ram_bytes": 604
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/usart.c.obj",
+      "ram_bytes": 488
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/App/system_context.c.obj",
+      "ram_bytes": 392
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/App/device_manager.c.obj",
+      "ram_bytes": 371
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj",
+      "ram_bytes": 345
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj",
+      "ram_bytes": 327
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj",
+      "ram_bytes": 298
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/App/calibration_controller.c.obj",
+      "ram_bytes": 277
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_uart.c.obj",
+      "ram_bytes": 271
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj",
+      "ram_bytes": 224
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Services/ble_telemetry_service/ble_telemetry_service.c.obj",
+      "ram_bytes": 205
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj",
+      "ram_bytes": 195
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Services/scheduler/scheduler.c.obj",
+      "ram_bytes": 161
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart3_dma.c.obj",
+      "ram_bytes": 151
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj",
+      "ram_bytes": 144
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/App/app_main.c.obj",
+      "ram_bytes": 121
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj",
+      "ram_bytes": 118
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj",
+      "ram_bytes": 79
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage5c_ble_diagnostics.c.obj",
+      "ram_bytes": 77
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/tim.c.obj",
+      "ram_bytes": 72
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage4b_storage_diagnostics.c.obj",
+      "ram_bytes": 72
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj",
+      "ram_bytes": 64
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Drivers/battery_adc/battery_adc.c.obj",
+      "ram_bytes": 57
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Services/ble_connection_manager/ble_connection_manager.c.obj",
+      "ram_bytes": 57
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage3_metrology_diagnostics.c.obj",
+      "ram_bytes": 52
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/adc.c.obj",
+      "ram_bytes": 48
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/raw_measurement.c.obj",
+      "ram_bytes": 44
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj",
+      "ram_bytes": 41
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage2b_board_diagnostics.c.obj",
+      "ram_bytes": 40
+    },
+    {
+      "object": "cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c.obj",
+      "ram_bytes": 32
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj",
+      "ram_bytes": 24
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj",
+      "ram_bytes": 22
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj",
+      "ram_bytes": 17
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/App/measurement_bridge.c.obj",
+      "ram_bytes": 14
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_flash.c.obj",
+      "ram_bytes": 13
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/App/weighing_profile_manager.c.obj",
+      "ram_bytes": 12
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj",
+      "ram_bytes": 12
+    },
+    {
+      "object": "cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c.obj",
+      "ram_bytes": 9
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj",
+      "ram_bytes": 9
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Services/fault_manager/fault_manager.c.obj",
+      "ram_bytes": 8
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/App/self_test_controller.c.obj",
+      "ram_bytes": 6
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_gpio.c.obj",
+      "ram_bytes": 5
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Drivers/output_gpio/output_gpio.c.obj",
+      "ram_bytes": 5
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj",
+      "ram_bytes": 5
+    },
+    {
+      "object": "cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj",
+      "ram_bytes": 4
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_time.c.obj",
+      "ram_bytes": 4
+    },
+    {
+      "object": "CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_rtu_timer.c.obj",
+      "ram_bytes": 2
+    }
+  ]
+}

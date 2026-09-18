@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "standard_release": {"firmware": "0x0510", "elf_length": 172200, "elf_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486", "flash_bytes": 80892, "linker_ram_bytes": 19352},
+  "r5d_beta": {"firmware": "0x0511", "bin_length": 99440, "bin_sha256": "2494CB70923C67E38F1642285CF3CEE717C1A207C42BF97B96FCC2A3BCFBDEFC", "linker_ram_bytes": 19416},
+  "r5e_beta": {"firmware": "0x0512", "map": "0x0104", "public_schema": 2, "persistent_format": 3, "elf_length": 1954668, "elf_sha256": "FE5444CD2DA50E1F58BF8E6BF95F8BC53255628805B816A4A271493E5500485F", "bin_length": 100792, "bin_sha256": "BA8F02B2024042D601FD7F2D75BEF9E1004AACAE16852DD97CD2B28777BAF6B9", "flash_bytes": 100792, "linker_ram_bytes": 19432},
+  "debug": {"flash_bytes": 94116, "linker_ram_bytes": 19392}
+}

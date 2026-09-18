@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "beta_only": true,
+  "advanced_sequence": ["STAR", "HASH", "STAR", "HASH"],
+  "menu_item": "drIFt",
+  "choices": {
+    "OFF": "SHADOW then OFF",
+    "SHAdO": "SHADOW then STATIC",
+    "StAtIC": "STATIC then ACTIVE",
+    "doSInG": "DOSING then ACTIVE"
+  },
+  "short_function": "confirm volatile candidate only",
+  "long_function": "apply through CommandService",
+  "tare": "cancel without runtime/configuration side effect",
+  "timeout": "cancel without runtime/configuration side effect",
+  "config_candidate_mixing": "blocked",
+  "external_mode_or_application_change": "BUSY; external state preserved",
+  "second_step_failure": "restore original pair; if restore fails attempt OFF + SHADOW",
+  "persistence_calls": 0,
+  "status_item": "drSt",
+  "status_values": ["OFF", "doSInG", "HOLd", "rEF", "ObS", "trAC", "LInIt"],
+  "limited_font_note": "LInIt is used because the seven-segment font has no M glyph.",
+  "status_read_policy": "live COMMAND_R5_GET_STATUS on each view render; no cached R5 snapshot"
+}

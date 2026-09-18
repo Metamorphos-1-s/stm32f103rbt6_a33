@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "host_ctest": "28/28 PASS",
+  "r5_local_control": "PASS: four mappings/order, candidate-only short press, cancel, conflict, idempotence, first/second-step failure, rollback and safe fallback",
+  "surface": "PASS: standard 0x0510 without R5E enums; Beta 0x0512 with drIFt/drSt enums",
+  "font": "PASS: drIFt, drSt, four choices and seven internal-state labels encoded by production formatter",
+  "r5_tool": "13/13 PASS; exact 0x0512 identity and 0x55B5 signature required",
+  "python_c": "25057 samples / 22557 real / 0 mismatch",
+  "regressions": {"r2": "5/5", "r3": "7/7", "r4_capture": "2/2", "r4_replay": "3/3", "r5d": "5/5", "stage5b": "3/3", "stage5c": "12/12", "stage5l": "8/8", "manifest": "9/9"},
+  "builds": {"debug": "PASS", "release": "PASS", "r5e_beta": "PASS", "r5e_beta_wextra_werror": "PASS"},
+  "dynamic_allocation_scan": "PASS - no product calls",
+  "asan": "NOT RUN - portable MinGW runtime unavailable",
+  "ubsan": "NOT RUN - portable MinGW runtime unavailable",
+  "non_qualifying_attempt": "A whole-suite Stage4A Beta-fixture experiment crashed because it changed unrelated Beta product paths; it was reverted and is not counted as a gate."
+}

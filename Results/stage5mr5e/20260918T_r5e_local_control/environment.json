@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "branch": "stage5mr5e-local-runtime-control",
+  "baseline_head": "06adb202b06f7fa64b40594019f0a32c87456796",
+  "software_head": "5d7a45085acb4dd37f1bfa97a7f3fe136db303d5",
+  "python": "3.8.10",
+  "arm_gcc": "GNU Tools for STM32 13.3.1 20240614",
+  "host_gcc": "15.2.0 portable MinGW",
+  "timezone": "Asia/Shanghai",
+  "stage5mf_implemented": false
+}

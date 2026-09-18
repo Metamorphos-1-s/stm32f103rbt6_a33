@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "r5d": {"data_bytes": 12, "bss_bytes": 18376, "linker_ram_bytes": 19416, "unallocated_bytes": 1064, "static_to_estack_bytes": 2088, "conservative_stack_bytes": 1488, "collision_margin_bytes": 600},
+  "r5e": {"data_bytes": 12, "bss_bytes": 18392, "linker_ram_bytes": 19432, "unallocated_bytes": 1048, "static_to_estack_bytes": 2072, "conservative_stack_bytes": 1488, "collision_margin_bytes": 584},
+  "delta": {"data_bytes": 0, "bss_bytes": 16, "linker_ram_bytes": 16, "r5_local_control_module_bytes": 12},
+  "maximum_main_chain_bytes": 1128,
+  "maximum_irq_software_chain_bytes": 72,
+  "minimum_stack_reservation_bytes": 1024,
+  "dynamic_allocation": false,
+  "collision_margin_gate_bytes": 512,
+  "gate": "PASS"
+}
