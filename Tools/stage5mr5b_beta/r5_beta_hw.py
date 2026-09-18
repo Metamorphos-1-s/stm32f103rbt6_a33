@@ -24,6 +24,7 @@ COMMAND_GET_STATUS = 31
 COMMAND_SET_APPLICATION = 32
 MODES = {"off": 0, "dosing": 1, "static": 2}
 APPLICATIONS = {"shadow": 0, "active": 1}
+EXPECTED_FIRMWARE = 0x0512
 
 
 def i32(words, order="high"):
@@ -62,8 +63,9 @@ def read_state(client):
     storage, _ = client.read(0x1C0, 10)
     order = "low" if client.read(0x103, 1)[0][0] else "high"
     beta, _ = client.read(BETA_FIRST, BETA_COUNT)
-    if realtime[14] != 0x0104 or realtime[15] != 0x0511:
-        raise HardwareTestError("expected Beta identity Map 0x0104 / Firmware 0x0511")
+    if realtime[14] != 0x0104 or realtime[15] != EXPECTED_FIRMWARE:
+        raise HardwareTestError(
+            "expected R5E Beta identity Map 0x0104 / Firmware 0x0512")
     return {
         "utc": time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime()) +
                ".%03dZ" % int((time.time() % 1) * 1000),

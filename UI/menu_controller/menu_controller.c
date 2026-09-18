@@ -16,6 +16,7 @@
 #include "system_context.h"
 #include "unit_converter.h"
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#include "r5_local_control.h"
 #include "ui_config_workspace.h"
 #endif
 
@@ -34,6 +35,10 @@ typedef enum
     MENU_EDIT_FILTER,
     MENU_EDIT_STABILITY_HOLD,
     MENU_EDIT_BOOL
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    ,
+    MENU_EDIT_R5_DRIFT
+#endif
 #if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
     ,
     MENU_EDIT_ALARM_SOURCE
@@ -49,6 +54,9 @@ static const char s_labels[MENU_ITEM_COUNT][6] = {
     {'O','L',' ',' ',' ',' '},
     {'b','r','I','G','H','t'}, {'S','P','d',' ',' ',' '},
     {'G','A','I','n',' ',' '}, {'t','r','r','E','t',' '},
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    {'d','r','I','F','t',' '},
+#endif
 #if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
     {'L','-','E','n',' ',' '}, {'L','o',' ',' ',' ',' '},
     {'H','i',' ',' ',' ',' '}, {'H','y','S',' ',' ',' '},
@@ -157,6 +165,14 @@ static void Render(void)
                                             s_labels[s_item]);
         return;
     }
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if (s_edit_kind == MENU_EDIT_R5_DRIFT)
+    {
+        (void)DisplayController_SetTextPage(DISPLAY_PAGE_EDIT,
+            R5LocalControl_ChoiceText(R5LocalControl_GetChoice()));
+        return;
+    }
+#endif
     if (s_edit_kind == MENU_EDIT_UNIT)
     {
         if (!DisplayCodes_GetMassUnitLabel(s_candidate_unit, text) ||
@@ -203,6 +219,9 @@ static void ClearSequence(void)
 
 static void ExitMenu(void)
 {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    R5LocalControl_EndSession();
+#endif
     s_active = false;
     s_editing = false;
     s_save_waiting = false;
@@ -223,6 +242,10 @@ static void CancelUnconfirmedEdit(void)
 #if defined(STAGE2A_HOST_TEST)
     if (s_editing && (s_edit_kind != MENU_EDIT_UNIT))
         ++s_cancel_request_count;
+#endif
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if (s_editing && (s_edit_kind == MENU_EDIT_R5_DRIFT))
+        R5LocalControl_Cancel();
 #endif
     s_editing = false;
 }
@@ -495,6 +518,14 @@ static bool BeginEdit(MenuItem item, uint32_t now_ms)
             s_integer_field = CONFIG_FIELD_TARE_RETENTION;
             s_value = s_candidate_config.system.tare_power_loss_retention ? 1 : 0;
             break;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+        case MENU_ITEM_R5_DRIFT:
+            if (!R5LocalControl_Begin(s_candidate_changed)) return false;
+            s_edit_kind = MENU_EDIT_R5_DRIFT;
+            s_editing = true;
+            Render();
+            return true;
+#endif
 #if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
         case MENU_ITEM_LIMIT_ENABLE:
             s_edit_kind = MENU_EDIT_BOOL;
@@ -579,6 +610,13 @@ static bool SubmitEditValue(void)
             (WeighingProfileId)s_value;
         return true;
     }
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if (s_edit_kind == MENU_EDIT_R5_DRIFT)
+    {
+        R5LocalControl_Confirm();
+        return true;
+    }
+#endif
     if (!ConfigEdit_Begin(&s_candidate_config)) return false;
     switch (s_edit_kind)
     {
@@ -622,6 +660,13 @@ static void AdjustEdit(KeyId key)
 {
     int64_t delta;
     int64_t next;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if (s_edit_kind == MENU_EDIT_R5_DRIFT)
+    {
+        R5LocalControl_Adjust(key == KEY_ID_HASH);
+        return;
+    }
+#endif
     if (s_edit_kind == MENU_EDIT_BOOL)
     {
         s_value = (s_value == 0) ? 1 : 0;
@@ -736,6 +781,9 @@ void MenuController_Init(void)
     s_exit_after_save = false;
     s_candidate_changed = false; s_brightness_previewed = false;
     s_existing_dirty_owned = false; s_existing_dirty_revision = 0U;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    R5LocalControl_EndSession();
+#endif
 #if defined(STAGE2A_HOST_TEST)
     s_cancel_request_count = 0U;
 #endif
@@ -747,6 +795,11 @@ bool MenuController_Enter(void)
     if (s_active || (context == NULL)) return false;
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     if (!UiConfigWorkspace_Acquire(UI_CONFIG_WORKSPACE_MENU)) return false;
+    if (!R5LocalControl_BeginSession())
+    {
+        UiConfigWorkspace_Release(UI_CONFIG_WORKSPACE_MENU);
+        return false;
+    }
 #endif
     s_active = true; s_editing = false; s_factory_confirmation = false;
     s_item = MENU_ITEM_UNIT; s_advanced = false; ClearSequence();
@@ -866,9 +919,39 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
     }
     if ((event->key == KEY_ID_FUNCTION) && (event->type == KEY_EVENT_LONG))
     {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+        R5LocalResult r5_result;
+        if (s_editing && (s_edit_kind == MENU_EDIT_R5_DRIFT)) return true;
+        if (R5LocalControl_HasCandidate())
+        {
+            r5_result = R5LocalControl_Apply();
+            if (r5_result == R5_LOCAL_RESULT_OK)
+            {
+                ShowCode(DISPLAY_CODE_DONE);
+                s_exit_after_save = true;
+                s_message_until_ms = event->timestamp_ms +
+                    UI_MESSAGE_DEFAULT_MS;
+            }
+            else ShowCode(r5_result == R5_LOCAL_RESULT_BUSY ?
+                DISPLAY_CODE_BUSY : DISPLAY_CODE_ERROR);
+            return true;
+        }
+#endif
         RequestSave(event->timestamp_ms);
         return true;
     }
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if (R5LocalControl_HasCandidate())
+    {
+        if ((event->key == KEY_ID_TARE) &&
+            (event->type == KEY_EVENT_SHORT))
+        {
+            R5LocalControl_Cancel();
+            ExitMenu();
+        }
+        return true;
+    }
+#endif
     if (s_editing)
     {
         if (((event->key == KEY_ID_STAR) ||
@@ -891,6 +974,15 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         else if ((event->key == KEY_ID_FUNCTION) &&
                  (event->type == KEY_EVENT_SHORT))
         {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+            if (s_edit_kind == MENU_EDIT_R5_DRIFT)
+            {
+                R5LocalControl_Confirm();
+                s_editing = false;
+                Render();
+                return true;
+            }
+#endif
             if (SystemContext_GetConfigRevision() != s_expected_revision)
             {
                 CancelUnconfirmedEdit();
@@ -983,6 +1075,7 @@ void MenuController_Cancel(void)
     s_active = false; s_editing = false; s_factory_confirmation = false;
     s_advanced = false; ClearSequence();
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    R5LocalControl_EndSession();
     UiConfigWorkspace_Release(UI_CONFIG_WORKSPACE_MENU);
 #endif
 }

@@ -219,6 +219,50 @@ endif()
 add_test(NAME stage5mr5_beta_mailbox_logic
     COMMAND stage5mr5_beta_mailbox_tests)
 
+add_executable(stage5mr5e_local_control_tests
+    test_stage5mr5e_local_control.c
+    ../../UI/display_model/display_formatter.c
+    ../../UI/r5_local_control.c)
+target_compile_definitions(stage5mr5e_local_control_tests PRIVATE
+    A33_ENABLE_STAGE5MR5_BETA=1)
+target_include_directories(stage5mr5e_local_control_tests PRIVATE
+    ../../App ../../Config ../../Domain/measurement
+    ../../Protocol/command_service ../../Drivers/tm1628 ../../UI
+    ../../UI/display_model)
+if(MSVC)
+    target_compile_options(stage5mr5e_local_control_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5mr5e_local_control_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5mr5e_local_control_logic
+    COMMAND stage5mr5e_local_control_tests)
+
+foreach(variant standard beta)
+    add_executable(stage5mr5e_${variant}_surface_tests
+        test_stage5mr5e_surface.c)
+    target_include_directories(stage5mr5e_${variant}_surface_tests PRIVATE
+        ../../Config ../../Domain/filter ../../Domain/measurement
+        ../../Domain/stability ../../Protocol/modbus ../../UI/key_service
+        ../../UI/menu_controller ../../UI/status_controller)
+    if(variant STREQUAL "beta")
+        target_compile_definitions(stage5mr5e_${variant}_surface_tests PRIVATE
+            A33_ENABLE_STAGE5MR5_BETA=1)
+    else()
+        target_compile_definitions(stage5mr5e_${variant}_surface_tests PRIVATE
+            A33_ENABLE_STAGE5MR5_BETA=0)
+    endif()
+    if(MSVC)
+        target_compile_options(stage5mr5e_${variant}_surface_tests PRIVATE
+            /W4 /WX)
+    else()
+        target_compile_options(stage5mr5e_${variant}_surface_tests PRIVATE
+            -Wall -Wextra -Werror)
+    endif()
+    add_test(NAME stage5mr5e_${variant}_surface_logic
+        COMMAND stage5mr5e_${variant}_surface_tests)
+endforeach()
+
 add_executable(stage5mr5_ui_workspace_tests
     test_ui_config_workspace.c
     ../../UI/ui_config_workspace.c)

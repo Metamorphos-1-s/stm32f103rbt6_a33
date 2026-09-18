@@ -11,6 +11,7 @@
 #include "project_config.h"
 #include "system_context.h"
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#include "r5_local_control.h"
 #include "ui_config_workspace.h"
 #endif
 
@@ -21,7 +22,11 @@ static const char s_labels[STATUS_ITEM_COUNT][6] = {
     {'F','I','r',' ',' ',' '}, {'r','A','P',' ',' ',' '},
     {'S','C','H',' ',' ',' '}, {'P','r','O','F',' ',' '},
     {'S','P','d',' ',' ',' '}, {'G','A','I','n',' ',' '},
-    {'b','A','t',' ',' ',' '}, {'P','r','O','t',' ',' '},
+    {'b','A','t',' ',' ',' '},
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    {'d','r','S','t',' ',' '},
+#endif
+    {'P','r','O','t',' ',' '},
     {'A','d','d','r',' ',' '}, {'b','A','U','d',' ',' '},
     {'P','A','r',' ',' ',' '}, {'S','t','O','P',' ',' '},
     {'O','r','d','E','r',' '}
@@ -113,6 +118,15 @@ static void RenderValue(void)
                     (int32_t)battery->battery_mv, 3U);
             else Show("------");
             break;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+        case STATUS_ITEM_R5_STATE:
+        {
+            R5LocalStatus status;
+            Show(R5LocalControl_GetStatus(&status) ?
+                 R5LocalControl_StateText(&status) : " Err  ");
+            break;
+        }
+#endif
         case STATUS_ITEM_PROTOCOL:
             Show(context->config.communication.protocol_mode ==
                  PROTOCOL_MODE_MODBUS_RTU ? "   rtU" : "  CUSt"); break;

@@ -281,6 +281,10 @@ HASH 短按可在 NET 和 GROSS 之间快速切换。
 ## 5.4 STATUS 页面
 
 在正常称重页长按 STAR 进入 STATUS。STATUS 是称重页上的独立显示和按键层；
+R5E工程Beta还提供只读 `drSt` 项。进入该项后显示当前R5内部状态：
+`OFF`、`doSInG`、`HOLd`、`rEF`、`ObS`、`trAC`或`LInIt`。`LInIt`表示
+LIMITED（七段字形不支持字母M）。该页面只读取
+实时状态，TARE返回列表，约30秒超时退出，不会切换模式或保存配置。
 后台称重、报警和通信继续运行，但按键不会透传成 ZERO、TARE 或 NET/GROSS
 操作。STAR/HASH 浏览上一项/下一项，FUNCTION 在可编辑项进入编辑并确认，
 编辑时 STAR/HASH 选择上一/下一合法值。
@@ -491,6 +495,20 @@ UnIt → PrOF → CAL → CAP → dIU → dP → FILt → StAb → ZrnG → OL
   → briGHt → trrEt
   → L-En → Lo → Hi → HyS → Src → bIn → bEH → bOK
   → rESEt → UnIt
+
+R5E工程Beta在高级菜单中额外显示 `drIFt`。FUNCTION短按进入后，STAR/HASH
+在 `OFF`、`SHAdO`、`StAtIC`、`doSInG` 四项之间循环；再次短按FUNCTION只确认
+易失候选，不会立即改变称重。必须长按FUNCTION才应用，TARE或约30秒超时会
+取消且不产生副作用。若PLC在编辑期间改变R5状态，仪表显示 `bUSY`，不会覆盖
+PLC的新状态。
+
+四种选择的含义如下：`OFF` 清除offset和学习窗口；`SHAdO`后台学习但不修改
+正式重量；`StAtIC`在恒定载荷下学习并正式应用offset；`doSInG`冻结已有offset
+并继续应用。STATIC首次完整建参约需15分15秒（15秒holdoff、300秒参考和
+600秒观察）。加料或卸料前必须先进入DOSING。上电总是恢复OFF+SHADOW，R5
+状态不会自动保存，OFF也会清除已有offset。从SHADOW切换到ACTIVE时，显示值
+可能立即变化一个当前offset。R5仍是工程Beta；R5D只证明长期安全且显示级修正
+部分有效，不保证0.01 g显示完全不变化。
 ```
 
 **[图片占位：图 9-1 高级菜单树，后续绘制正式流程图]**
