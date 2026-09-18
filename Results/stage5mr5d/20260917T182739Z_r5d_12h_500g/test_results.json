@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "host_ctest": "25/25 PASS",
+  "python_c_parity": "25057 samples, 22557 real, 0 mismatch",
+  "python": {
+    "r2": "5/5 PASS",
+    "r3": "7/7 PASS",
+    "r4_capture": "2/2 PASS",
+    "r4_replay": "3/3 PASS",
+    "r5": "11/11 PASS",
+    "r5d": "5/5 PASS",
+    "stage5b_unittest": "3/3 PASS",
+    "stage5c": "12/12 PASS",
+    "stage5l": "8/8 PASS",
+    "manifest_tool": "9/9 PASS"
+  },
+  "builds": {
+    "debug": "PASS; flash 94112 B; data+bss 19388 B; linker RAM including reservation 19392 B",
+    "release": "PASS; flash 80892 B; data+bss 19348 B; linker RAM including reservation 19352 B",
+    "r5_beta": "PASS; flash 99440 B; data+bss 19412 B; linker RAM including reservation 19416 B",
+    "r5_beta_wextra_werror": "PASS; flash 99440 B; data+bss 19412 B; linker RAM including reservation 19416 B"
+  },
+  "release_elf_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "beta_bin_sha256": "2494CB70923C67E38F1642285CF3CEE717C1A207C42BF97B96FCC2A3BCFBDEFC",
+  "pytest": "NOT RUN - pytest module is not installed; unittest and Host gates were run",
+  "asan": "NOT RUN - portable MinGW runtime unavailable",
+  "ubsan": "NOT RUN - portable MinGW runtime unavailable"
+}

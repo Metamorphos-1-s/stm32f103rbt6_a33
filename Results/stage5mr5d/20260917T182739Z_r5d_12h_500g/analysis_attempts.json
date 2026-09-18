@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "result": "FAILED_BEFORE_OUTPUT",
+      "reason": "Host analyzer attempted decimal conversion of hexadecimal firmware/map metadata.",
+      "raw_evidence_modified": false,
+      "qualification_output_created": false,
+      "resolution": "Preserve non-decimal metadata strings and add a regression test."
+    },
+    {
+      "attempt": 2,
+      "result": "FAILED_BEFORE_OUTPUT",
+      "reason": "Python 3.8 Path.write_text does not support the newline keyword.",
+      "raw_evidence_modified": false,
+      "qualification_output_created": false,
+      "resolution": "Use an explicit UTF-8 file handle with LF newlines and add a regression test."
+    }
+  ]
+}

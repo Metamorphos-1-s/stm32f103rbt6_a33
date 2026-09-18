@@ -1,0 +1,29 @@
+      -------------------------------------------------------------------
+                       STM32CubeProgrammer v2.19.0                  
+      -------------------------------------------------------------------
+
+ST-LINK SN  : E1007200D0D2139393740544
+ST-LINK FW  : V2J47S7
+Board       : --
+Voltage     : 3.29V
+SWD freq    : 4000 KHz
+Connect mode: Under Reset
+Reset mode  : Hardware reset
+Device ID   : 0x410
+Revision ID : Rev X
+Device name : STM32F101/F102/F103 Medium-density
+Flash size  : 128 KBytes
+Device type : MCU
+Device CPU  : Cortex-M3
+BL Version  : --
+
+
+UPLOADING ...
+  File          : Results/stage5mr5d/20260917T182739Z_r5d_12h_500g/config_before.bin
+  Size          : 4096 Bytes
+  Address:      : 0x801F000
+Read progress:
+�������������������������������������������������� 0%
+�������������������������������������������������� 100%
+Data read successfully
+Time elapsed during read operation is: 00:00:00.045

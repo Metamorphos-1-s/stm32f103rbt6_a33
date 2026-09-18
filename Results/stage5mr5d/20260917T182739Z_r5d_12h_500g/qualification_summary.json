@@ -1,0 +1,510 @@
+{
+  "schema_version": 1,
+  "qualification": "SAFETY PASS; EFFICACY INCONCLUSIVE DUE TO LOW NATURAL DRIFT",
+  "verification_interval_e_ug": 1000000,
+  "display_division_ug": 10000,
+  "empty_baseline": {
+    "records": 600,
+    "last_5m": {
+      "uncompensated_gross_ug": -99130.0,
+      "corrected_gross_ug": -99130.0,
+      "offset_ug": 0.0,
+      "reference_error_ug": 0.0,
+      "display_count": -9.0
+    },
+    "median_ug": -98004.0,
+    "median_absolute_deviation_ug": 4506.0,
+    "peak_to_peak_ug": 41680,
+    "ols_uncompensated_ug_per_hour": -52009.9150703337
+  },
+  "empty_baseline_last_5m": {
+    "uncompensated_gross_ug": -99130.0,
+    "corrected_gross_ug": -99130.0,
+    "offset_ug": 0.0,
+    "reference_error_ug": 0.0,
+    "display_count": -9.0
+  },
+  "active_12h": {
+    "records": 43200,
+    "expected_records": 43200,
+    "coverage_percent": 100.0,
+    "first_utc": "2026-09-17T19:03:32.954000Z",
+    "last_utc": "2026-09-18T07:03:31.968000Z",
+    "elapsed_seconds_between_samples": 43199.013999938965,
+    "uptime_elapsed_seconds": 43202.368,
+    "uptime_regressions": 0,
+    "maximum_host_sample_gap_seconds": 1.0860002040863037,
+    "first_5m": {
+      "uncompensated_gross_ug": 500042806.0,
+      "corrected_gross_ug": 500041252.0,
+      "offset_ug": 1740.5,
+      "reference_error_ug": 21392.0,
+      "display_count": 50000.0
+    },
+    "last_5m": {
+      "uncompensated_gross_ug": 500217410,
+      "corrected_gross_ug": 500002036,
+      "offset_ug": 215374,
+      "reference_error_ug": -1343,
+      "display_count": 50001
+    },
+    "maximum_offset_10s_change_ug": 500,
+    "maximum_absolute_offset_ug": 215374,
+    "state_counts": {
+      "1/2/5/0": 43200
+    },
+    "state_percent": {
+      "1/2/5/0": 100.0
+    },
+    "invariant_values": {
+      "application": [
+        1
+      ],
+      "mode": [
+        2
+      ],
+      "state": [
+        5
+      ],
+      "limited": [
+        0
+      ],
+      "fault_mask": [
+        0
+      ],
+      "overrun_count": [
+        0
+      ],
+      "dirty": [
+        0
+      ],
+      "revision": [
+        7
+      ],
+      "saved_revision": [
+        7
+      ],
+      "save_request_count_low": [
+        0
+      ],
+      "automatic_rebase_count": [
+        0
+      ]
+    },
+    "ols_ug_per_hour": {
+      "uncompensated_gross_ug": 8885.479660445633,
+      "corrected_gross_ug": -2387.4584728542527,
+      "offset_ug": 11272.938133299871
+    },
+    "hourly": [
+      {
+        "hour": 1,
+        "records": 3600,
+        "uncompensated_gross_ug": 500050692.0,
+        "corrected_gross_ug": 500037390.0,
+        "offset_ug": 16704.5,
+        "reference_error_ug": 16900.0,
+        "display_count": 50000.0
+      },
+      {
+        "hour": 2,
+        "records": 3600,
+        "uncompensated_gross_ug": 500095751.0,
+        "corrected_gross_ug": 500048862.0,
+        "offset_ug": 56378.5,
+        "reference_error_ug": 26259.0,
+        "display_count": 50000.0
+      },
+      {
+        "hour": 3,
+        "records": 3600,
+        "uncompensated_gross_ug": 500176857.0,
+        "corrected_gross_ug": 500044255.0,
+        "offset_ug": 140042.5,
+        "reference_error_ug": 23443.0,
+        "display_count": 50000.0
+      },
+      {
+        "hour": 4,
+        "records": 3600,
+        "uncompensated_gross_ug": 500206146.0,
+        "corrected_gross_ug": 500035711.5,
+        "offset_ug": 174834.0,
+        "reference_error_ug": 17784.0,
+        "display_count": 50000.0
+      },
+      {
+        "hour": 5,
+        "records": 3600,
+        "uncompensated_gross_ug": 500219663.0,
+        "corrected_gross_ug": 500029105.0,
+        "offset_ug": 192029.0,
+        "reference_error_ug": 14252.0,
+        "display_count": 50000.0
+      },
+      {
+        "hour": 6,
+        "records": 3600,
+        "uncompensated_gross_ug": 500214031.0,
+        "corrected_gross_ug": 500018229.0,
+        "offset_ug": 195802.0,
+        "reference_error_ug": 4288.0,
+        "display_count": 50000.0
+      },
+      {
+        "hour": 7,
+        "records": 3600,
+        "uncompensated_gross_ug": 500201640.0,
+        "corrected_gross_ug": 500007001.0,
+        "offset_ug": 194769.5,
+        "reference_error_ug": -9059.0,
+        "display_count": 50000.0
+      },
+      {
+        "hour": 8,
+        "records": 3600,
+        "uncompensated_gross_ug": 500210652.0,
+        "corrected_gross_ug": 500017657.0,
+        "offset_ug": 191952.5,
+        "reference_error_ug": 1591.0,
+        "display_count": 50000.0
+      },
+      {
+        "hour": 9,
+        "records": 3600,
+        "uncompensated_gross_ug": 500200513.0,
+        "corrected_gross_ug": 500011659.0,
+        "offset_ug": 188854.0,
+        "reference_error_ug": -4252.0,
+        "display_count": 50000.0
+      },
+      {
+        "hour": 10,
+        "records": 3600,
+        "uncompensated_gross_ug": 500165592.0,
+        "corrected_gross_ug": 499998989.0,
+        "offset_ug": 165444.5,
+        "reference_error_ug": -16006.0,
+        "display_count": 50000.0
+      },
+      {
+        "hour": 11,
+        "records": 3600,
+        "uncompensated_gross_ug": 500182490.0,
+        "corrected_gross_ug": 500025236.0,
+        "offset_ug": 157254.0,
+        "reference_error_ug": 7156.0,
+        "display_count": 50000.0
+      },
+      {
+        "hour": 12,
+        "records": 3600,
+        "uncompensated_gross_ug": 500241066.0,
+        "corrected_gross_ug": 500035992.0,
+        "offset_ug": 210476.0,
+        "reference_error_ug": 19433.0,
+        "display_count": 50008.0
+      }
+    ]
+  },
+  "unload": {
+    "records": 1800,
+    "loaded_before_removal": {
+      "uncompensated_gross_ug": 500229802.0,
+      "corrected_gross_ug": 500014688.0,
+      "offset_ug": 215114.0,
+      "reference_error_ug": 748.0,
+      "display_count": 50001.0
+    },
+    "unloaded_2_5m": {
+      "uncompensated_gross_ug": 144189.0,
+      "corrected_gross_ug": -70925.0,
+      "offset_ug": 215114.0,
+      "reference_error_ug": 748.0,
+      "display_count": -2.0
+    },
+    "unloaded_last_5m": {
+      "uncompensated_gross_ug": 93498.0,
+      "corrected_gross_ug": -121616.0,
+      "offset_ug": 215114.0,
+      "reference_error_ug": 748.0,
+      "display_count": -10.0
+    },
+    "offset_distinct_values": [
+      215114
+    ],
+    "offset_strictly_frozen": true,
+    "invariant_values": {
+      "application": [
+        1
+      ],
+      "mode": [
+        1
+      ],
+      "state": [
+        1
+      ],
+      "limited": [
+        0
+      ],
+      "fault_mask": [
+        0
+      ],
+      "overrun_count": [
+        0
+      ],
+      "dirty": [
+        0
+      ],
+      "revision": [
+        7
+      ],
+      "saved_revision": [
+        7
+      ],
+      "save_request_count_low": [
+        0
+      ],
+      "automatic_rebase_count": [
+        0
+      ]
+    }
+  },
+  "recorder_summaries": {
+    "active_12h": {
+      "status": "COMPLETE",
+      "started_utc": "2026-09-17T19:03:32.954Z",
+      "ended_utc": "2026-09-18T07:03:32.739Z",
+      "duration_s": 43200.05173039436,
+      "records": 43200,
+      "read_errors": 0,
+      "reconnect_retries": 0,
+      "unobserved_device_sequences": 388115,
+      "host_poll_gap_count": 0,
+      "first_state": {
+        "utc": "2026-09-17T19:03:32.954Z",
+        "firmware": "0x0511",
+        "map": "0x0104",
+        "display_count": 50000,
+        "display_decimals": 2,
+        "status_flags": 31,
+        "net_mass_ug": 500041539,
+        "gross_mass_ug": 500041539,
+        "tare_mass_ug": 0,
+        "sample_sequence": 20253,
+        "uptime_ms": 2029405,
+        "profile": 0,
+        "sample_rate": 0,
+        "gain": 3,
+        "overrun_count": 0,
+        "storage_state": 0,
+        "power_safe": 1,
+        "dirty": 0,
+        "revision": 7,
+        "saved_revision": 7,
+        "fault_mask": 0,
+        "persistent_format": 3,
+        "active_slot": 1,
+        "storage_sequence": 7,
+        "word_order": "high",
+        "signature": "0x55B5",
+        "application": 1,
+        "mode": 2,
+        "state": 5,
+        "limited": 0,
+        "reason": 1,
+        "offset_ug": 141,
+        "uncompensated_gross_ug": 500041680,
+        "corrected_gross_ug": 500041539,
+        "reference_ug": 500016756,
+        "current_window_ug": 500034132,
+        "reference_error_ug": 17376,
+        "correction_rate_milli_ug_per_s": 8195,
+        "holdoff_remaining": 0,
+        "reference_fill": 300,
+        "observation_fill": 600,
+        "automatic_rebase_count": 0,
+        "evaluation_count": 3,
+        "save_request_count_low": 0
+      },
+      "last_state": {
+        "utc": "2026-09-18T07:03:31.968Z",
+        "firmware": "0x0511",
+        "map": "0x0104",
+        "display_count": 50001,
+        "display_decimals": 2,
+        "status_flags": 31,
+        "net_mass_ug": 500006542,
+        "gross_mass_ug": 500006542,
+        "tare_mass_ug": 0,
+        "sample_sequence": 451567,
+        "uptime_ms": 45231773,
+        "profile": 0,
+        "sample_rate": 0,
+        "gain": 3,
+        "overrun_count": 0,
+        "storage_state": 0,
+        "power_safe": 1,
+        "dirty": 0,
+        "revision": 7,
+        "saved_revision": 7,
+        "fault_mask": 0,
+        "persistent_format": 3,
+        "active_slot": 1,
+        "storage_sequence": 7,
+        "word_order": "high",
+        "signature": "0x55B5",
+        "application": 1,
+        "mode": 2,
+        "state": 5,
+        "limited": 0,
+        "reason": 1,
+        "offset_ug": 215374,
+        "uncompensated_gross_ug": 500223043,
+        "corrected_gross_ug": 500007669,
+        "reference_ug": 500016756,
+        "current_window_ug": 500008795,
+        "reference_error_ug": -7961,
+        "correction_rate_milli_ug_per_s": 0,
+        "holdoff_remaining": 0,
+        "reference_fill": 300,
+        "observation_fill": 600,
+        "automatic_rebase_count": 0,
+        "evaluation_count": 721,
+        "save_request_count_low": 0
+      },
+      "samples_length": 9099129,
+      "samples_sha256": "0428D19456130652FD74611A044789E23E38354EA762C617DBD5457471556E8D",
+      "events_length": 4061139,
+      "frames_length": 71064000,
+      "writes": 0,
+      "flash_operations": 0
+    },
+    "active_dosing_unload": {
+      "status": "COMPLETE",
+      "started_utc": "2026-09-18T07:15:52.361Z",
+      "ended_utc": "2026-09-18T07:45:52.128Z",
+      "duration_s": 1800.0340571403503,
+      "records": 1800,
+      "read_errors": 0,
+      "reconnect_retries": 0,
+      "unobserved_device_sequences": 16161,
+      "host_poll_gap_count": 0,
+      "first_state": {
+        "utc": "2026-09-18T07:15:52.361Z",
+        "firmware": "0x0511",
+        "map": "0x0104",
+        "display_count": 50001,
+        "display_decimals": 2,
+        "status_flags": 31,
+        "net_mass_ug": 500016941,
+        "gross_mass_ug": 500016941,
+        "tare_mass_ug": 0,
+        "sample_sequence": 458959,
+        "uptime_ms": 45972275,
+        "profile": 0,
+        "sample_rate": 0,
+        "gain": 3,
+        "overrun_count": 0,
+        "storage_state": 0,
+        "power_safe": 1,
+        "dirty": 0,
+        "revision": 7,
+        "saved_revision": 7,
+        "fault_mask": 0,
+        "persistent_format": 3,
+        "active_slot": 1,
+        "storage_sequence": 7,
+        "word_order": "high",
+        "signature": "0x55B5",
+        "application": 1,
+        "mode": 1,
+        "state": 1,
+        "limited": 0,
+        "reason": 1,
+        "offset_ug": 215114,
+        "uncompensated_gross_ug": 500235434,
+        "corrected_gross_ug": 500020320,
+        "reference_ug": 500016756,
+        "current_window_ug": 500017504,
+        "reference_error_ug": 748,
+        "correction_rate_milli_ug_per_s": 0,
+        "holdoff_remaining": 0,
+        "reference_fill": 0,
+        "observation_fill": 0,
+        "automatic_rebase_count": 0,
+        "evaluation_count": 733,
+        "save_request_count_low": 0
+      },
+      "last_state": {
+        "utc": "2026-09-18T07:45:51.358Z",
+        "firmware": "0x0511",
+        "map": "0x0104",
+        "display_count": -10,
+        "display_decimals": 2,
+        "status_flags": 63,
+        "net_mass_ug": -135134,
+        "gross_mass_ug": -135134,
+        "tare_mass_ug": 0,
+        "sample_sequence": 476919,
+        "uptime_ms": 47771416,
+        "profile": 0,
+        "sample_rate": 0,
+        "gain": 3,
+        "overrun_count": 0,
+        "storage_state": 0,
+        "power_safe": 1,
+        "dirty": 0,
+        "revision": 7,
+        "saved_revision": 7,
+        "fault_mask": 0,
+        "persistent_format": 3,
+        "active_slot": 1,
+        "storage_sequence": 7,
+        "word_order": "high",
+        "signature": "0x55B5",
+        "application": 1,
+        "mode": 1,
+        "state": 1,
+        "limited": 0,
+        "reason": 1,
+        "offset_ug": 215114,
+        "uncompensated_gross_ug": 81106,
+        "corrected_gross_ug": -134008,
+        "reference_ug": 500016756,
+        "current_window_ug": 500017504,
+        "reference_error_ug": 748,
+        "correction_rate_milli_ug_per_s": 0,
+        "holdoff_remaining": 0,
+        "reference_fill": 0,
+        "observation_fill": 0,
+        "automatic_rebase_count": 0,
+        "evaluation_count": 733,
+        "save_request_count_low": 0
+      },
+      "samples_length": 342451,
+      "samples_sha256": "E1A86E545D6FC25D015D4EB8F76916D1F946FE2CFD2EB8948B4FB32966C990AB",
+      "events_length": 169126,
+      "frames_length": 2961000,
+      "writes": 0,
+      "flash_operations": 0
+    }
+  },
+  "metrics": {
+    "uncompensated_load_drift_ug": 174604.0,
+    "corrected_load_drift_ug": -39216.0,
+    "improvement_percent": 77.54003344711462,
+    "final_offset_median_ug": 215374,
+    "unloaded_uncompensated_zero_residual_ug": 192628.0,
+    "unloaded_corrected_zero_residual_ug": -22486.0,
+    "uncompensated_load_unload_step_ug": 500085613.0,
+    "corrected_load_unload_step_ug": 500085613.0,
+    "load_unload_step_loss_ug": 0.0
+  },
+  "gates": {
+    "recorders_complete_and_error_free": true,
+    "universal_safety": true,
+    "natural_drift_sufficient_by_e": false,
+    "efficacy_if_drift_sufficient": true
+  }
+}

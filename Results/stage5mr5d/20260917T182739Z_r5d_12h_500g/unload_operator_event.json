@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "event": "500G_MASS_REMOVED_USER_CONFIRMED",
+  "confirmation_utc": "2026-09-18T07:16:52.152Z",
+  "recorder_started_utc": "2026-09-18T07:15:52.361Z",
+  "application": "ACTIVE",
+  "mode": "DOSING",
+  "instructions": "Mass removed smoothly; platform must remain untouched for the rest of the 30-minute record."
+}

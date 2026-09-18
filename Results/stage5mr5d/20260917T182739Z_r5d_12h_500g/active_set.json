@@ -1,0 +1,211 @@
+{
+  "before": {
+    "utc": "2026-09-17T19:02:48.634Z",
+    "firmware": "0x0511",
+    "map": "0x0104",
+    "display_count": 50000,
+    "display_decimals": 2,
+    "status_flags": 31,
+    "net_mass_ug": 500052945,
+    "gross_mass_ug": 500052945,
+    "tare_mass_ug": 0,
+    "sample_sequence": 19811,
+    "uptime_ms": 1985095,
+    "profile": 0,
+    "sample_rate": 0,
+    "gain": 3,
+    "overrun_count": 0,
+    "storage_state": 0,
+    "power_safe": 1,
+    "dirty": 0,
+    "revision": 7,
+    "saved_revision": 7,
+    "fault_mask": 0,
+    "persistent_format": 3,
+    "active_slot": 1,
+    "storage_sequence": 7,
+    "word_order": "high",
+    "signature": "0x55B5",
+    "application": 0,
+    "mode": 2,
+    "state": 5,
+    "limited": 0,
+    "reason": 1,
+    "offset_ug": 32,
+    "uncompensated_gross_ug": 500052945,
+    "corrected_gross_ug": 500052913,
+    "reference_ug": 500016756,
+    "current_window_ug": 500028020,
+    "reference_error_ug": 11264,
+    "correction_rate_milli_ug_per_s": 1404,
+    "holdoff_remaining": 0,
+    "reference_fill": 300,
+    "observation_fill": 600,
+    "automatic_rebase_count": 0,
+    "evaluation_count": 2,
+    "save_request_count_low": 0
+  },
+  "response": {
+    "token": 570,
+    "result": 0,
+    "result_name": "OK",
+    "state": 0,
+    "last_command": 32
+  },
+  "after": {
+    "utc": "2026-09-17T19:02:48.898Z",
+    "firmware": "0x0511",
+    "map": "0x0104",
+    "display_count": 50000,
+    "display_decimals": 2,
+    "status_flags": 31,
+    "net_mass_ug": 500052913,
+    "gross_mass_ug": 500052913,
+    "tare_mass_ug": 0,
+    "sample_sequence": 19813,
+    "uptime_ms": 1985295,
+    "profile": 0,
+    "sample_rate": 0,
+    "gain": 3,
+    "overrun_count": 0,
+    "storage_state": 0,
+    "power_safe": 1,
+    "dirty": 0,
+    "revision": 7,
+    "saved_revision": 7,
+    "fault_mask": 0,
+    "persistent_format": 3,
+    "active_slot": 1,
+    "storage_sequence": 7,
+    "word_order": "high",
+    "signature": "0x55B5",
+    "application": 1,
+    "mode": 2,
+    "state": 5,
+    "limited": 0,
+    "reason": 1,
+    "offset_ug": 32,
+    "uncompensated_gross_ug": 500054071,
+    "corrected_gross_ug": 500054039,
+    "reference_ug": 500016756,
+    "current_window_ug": 500028020,
+    "reference_error_ug": 11264,
+    "correction_rate_milli_ug_per_s": 1404,
+    "holdoff_remaining": 0,
+    "reference_fill": 300,
+    "observation_fill": 600,
+    "automatic_rebase_count": 0,
+    "evaluation_count": 2,
+    "save_request_count_low": 0
+  },
+  "started_utc": "2026-09-17T19:02:48Z",
+  "ended_utc": "2026-09-17T19:02:48Z",
+  "writes": 1,
+  "flash_operations": 0,
+  "frames": [
+    {
+      "monotonic_ns": 516042203000000,
+      "frame": "TX 01 03 00 00 00 20 44 12"
+    },
+    {
+      "monotonic_ns": 516042250000000,
+      "frame": "RX 01 03 40 00 00 C3 50 00 02 00 01 00 1F 00 00 00 00 C3 55 00 00 C3 55 00 00 00 00 00 01 00 00 01 04 05 11 00 00 00 00 1D CE 33 D1 00 00 00 00 1D CE 33 D1 00 00 00 00 00 00 00 00 FF F8 8E 24 FF F8 8E 27 33 DE"
+    },
+    {
+      "monotonic_ns": 516042265000000,
+      "frame": "TX 01 03 00 20 00 1B 04 0B"
+    },
+    {
+      "monotonic_ns": 516042312000000,
+      "frame": "RX 01 03 36 00 00 4D 63 00 1E 4A 47 00 00 00 00 00 00 04 67 00 00 00 00 00 03 00 04 00 00 00 00 00 00 00 07 00 00 00 01 00 00 00 00 00 07 00 00 00 07 00 00 00 00 00 00 00 00 35 6B"
+    },
+    {
+      "monotonic_ns": 516042312000000,
+      "frame": "TX 01 03 01 C0 00 0A C4 0D"
+    },
+    {
+      "monotonic_ns": 516042328000000,
+      "frame": "RX 01 03 14 00 03 00 01 00 00 00 07 00 00 00 00 00 00 00 04 00 00 00 00 4C 34"
+    },
+    {
+      "monotonic_ns": 516042343000000,
+      "frame": "TX 01 03 01 03 00 01 75 F6"
+    },
+    {
+      "monotonic_ns": 516042343000000,
+      "frame": "RX 01 03 02 00 00 B8 44"
+    },
+    {
+      "monotonic_ns": 516042343000000,
+      "frame": "TX 01 03 02 80 00 28 45 84"
+    },
+    {
+      "monotonic_ns": 516042421000000,
+      "frame": "RX 01 03 50 55 B5 00 00 00 02 00 05 00 00 00 01 00 00 00 00 00 00 00 20 00 00 00 00 1D CE 33 D1 00 00 00 00 1D CE 33 B1 00 00 00 00 1D CD A6 74 00 00 00 00 1D CD D2 74 00 00 00 00 00 00 2C 00 00 00 05 7C 00 00 01 2C 02 58 00 00 00 00 00 00 00 02 00 00 20 EA"
+    },
+    {
+      "monotonic_ns": 516042421000000,
+      "frame": "TX 01 10 00 40 00 0B 16 02 3A 00 20 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 43 D5"
+    },
+    {
+      "monotonic_ns": 516042437000000,
+      "frame": "RX 01 10 00 40 00 0B 80 1A"
+    },
+    {
+      "monotonic_ns": 516042437000000,
+      "frame": "TX 01 06 00 4B A5 5A 02 B7"
+    },
+    {
+      "monotonic_ns": 516042437000000,
+      "frame": "RX 01 06 00 4B A5 5A 02 B7"
+    },
+    {
+      "monotonic_ns": 516042437000000,
+      "frame": "TX 01 03 00 4C 00 04 85 DE"
+    },
+    {
+      "monotonic_ns": 516042453000000,
+      "frame": "RX 01 03 08 02 3A 00 00 00 00 00 20 8F D5"
+    },
+    {
+      "monotonic_ns": 516042453000000,
+      "frame": "TX 01 03 00 00 00 20 44 12"
+    },
+    {
+      "monotonic_ns": 516042515000000,
+      "frame": "RX 01 03 40 00 00 C3 50 00 02 00 01 00 1F 00 00 00 00 C3 55 00 00 C3 55 00 00 00 00 00 01 00 00 01 04 05 11 00 00 00 00 1D CE 33 B1 00 00 00 00 1D CE 33 B1 00 00 00 00 00 00 00 00 FF F8 8E 21 FF F8 8E 27 2A 7F"
+    },
+    {
+      "monotonic_ns": 516042515000000,
+      "frame": "TX 01 03 00 20 00 1B 04 0B"
+    },
+    {
+      "monotonic_ns": 516042578000000,
+      "frame": "RX 01 03 36 00 00 4D 65 00 1E 4B 0F 00 00 00 00 00 00 04 67 00 00 00 00 00 03 00 04 00 00 00 00 00 00 00 07 00 00 00 01 00 00 00 00 00 07 00 00 00 07 00 00 00 00 00 00 00 00 D4 D2"
+    },
+    {
+      "monotonic_ns": 516042578000000,
+      "frame": "TX 01 03 01 C0 00 0A C4 0D"
+    },
+    {
+      "monotonic_ns": 516042593000000,
+      "frame": "RX 01 03 14 00 03 00 01 00 00 00 07 00 00 00 00 00 00 00 04 00 00 00 00 4C 34"
+    },
+    {
+      "monotonic_ns": 516042593000000,
+      "frame": "TX 01 03 01 03 00 01 75 F6"
+    },
+    {
+      "monotonic_ns": 516042609000000,
+      "frame": "RX 01 03 02 00 00 B8 44"
+    },
+    {
+      "monotonic_ns": 516042609000000,
+      "frame": "TX 01 03 02 80 00 28 45 84"
+    },
+    {
+      "monotonic_ns": 516042687000000,
+      "frame": "RX 01 03 50 55 B5 00 01 00 02 00 05 00 00 00 01 00 00 00 00 00 00 00 20 00 00 00 00 1D CE 38 37 00 00 00 00 1D CE 38 17 00 00 00 00 1D CD A6 74 00 00 00 00 1D CD D2 74 00 00 00 00 00 00 2C 00 00 00 05 7C 00 00 01 2C 02 58 00 00 00 00 00 00 00 02 00 00 EA 6D"
+    }
+  ]
+}

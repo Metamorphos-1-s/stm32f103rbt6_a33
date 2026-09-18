@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "repository_start_head": "6440c409bb3454619b96d152921b7e09f6ebaf6f",
+  "branch": "stage5mr5d-12h-long-qualification",
+  "host_timezone": "Asia/Shanghai",
+  "python": "3.8.10",
+  "port": "COM5",
+  "serial": "115200 8N1, Modbus slave 1",
+  "sensor": "3 kg C3 load cell",
+  "test_mass": "500 g standard mass",
+  "room_temperature": "NOT MEASURED",
+  "environment_note": "Platform was kept stationary and away from intentional handling after each operator action; temperature and airflow were not instrumented.",
+  "power": {
+    "ac_sleep_seconds": 0,
+    "ac_hibernate_seconds": 0,
+    "ac_usb_selective_suspend": "DISABLED (index 0 before, during and after run)",
+    "windows_update_reboot_required": false,
+    "continuous_power_operator_assumption": true
+  },
+  "disk_free_before_bytes": 42893508608,
+  "largest_evidence_file_bytes": 71064000,
+  "all_files_below_95_mb": true
+}
