@@ -1,0 +1,132 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5MR5E_D1_DISPLAY_COHERENCY",
+  "run_id": "20260919T_display_d1",
+  "repository_commit": "c35dab41ab5fc7da5916e0b9514bdec9dd6c270a",
+  "branch": "stage5mr5e-d1-display-coherency",
+  "tool": {
+    "path": "Tools/stage5ma_replay/stage5ma_replay.py",
+    "length": 25333,
+    "sha256": "A0903D10FBD7CB66C4ADDD487975CB747C3921C2BFCC908894071AF302E3210F",
+    "version": "stage5ma-replay-v2"
+  },
+  "product_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "hardware_run": true,
+  "files": [
+    {
+      "path": "config_before.bin",
+      "length": 4096,
+      "sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4"
+    },
+    {
+      "path": "config_before_read.txt",
+      "length": 1119,
+      "sha256": "4252A17C8A9AD26118EBD2B2AAD8CEBC6499298B4A8C173CB1CE55BA9A34C0C7"
+    },
+    {
+      "path": "cycle1/environment.json",
+      "length": 578,
+      "sha256": "C4F2C25ADD12E7FBCBFD05AF2DBAD28E552392130D23992A9DD0D5CE38A70089"
+    },
+    {
+      "path": "cycle1/events.jsonl",
+      "length": 67592,
+      "sha256": "A93B775C9E1E4091077C06507233146905032A12A6F32A99CF8D10A56E628267"
+    },
+    {
+      "path": "cycle1/frames.jsonl",
+      "length": 1184400,
+      "sha256": "7B80C6B6E304E0EAD9680C61847A0B140AFAD1A70B39EF622A8C38CFD2E8A34F"
+    },
+    {
+      "path": "cycle1/samples.csv",
+      "length": 122576,
+      "sha256": "A53A620B94978BC516E18C896D21F67410FA711A6BE99C0B427E8CAB1D17CF79"
+    },
+    {
+      "path": "cycle1/summary.json",
+      "length": 2754,
+      "sha256": "27A6E9CB928C2AC6749ECFE6B601A27D7A9CCAC42D728E349DC7F451E3A207A9"
+    },
+    {
+      "path": "cycle2/environment.json",
+      "length": 578,
+      "sha256": "C4F2C25ADD12E7FBCBFD05AF2DBAD28E552392130D23992A9DD0D5CE38A70089"
+    },
+    {
+      "path": "cycle2/events.jsonl",
+      "length": 67599,
+      "sha256": "C4E30015B5F09B6194766AA27B7307AC7EEB31512A100A7EED2A43D4563FD991"
+    },
+    {
+      "path": "cycle2/frames.jsonl",
+      "length": 1184400,
+      "sha256": "FB2D14E33027EBF35B961556C7522AFDA5562E626A9678646B027D78DACA34F1"
+    },
+    {
+      "path": "cycle2/samples.csv",
+      "length": 124353,
+      "sha256": "84F3E644D5C85E3881A1C585CEF1B9787E1BDA239AC1DE0246978F815A54A397"
+    },
+    {
+      "path": "cycle2/summary.json",
+      "length": 2768,
+      "sha256": "CE90F3BD954E02C35BEC924F1CE1ACF30A62AC1FED5900CD3E16146F6A7126A6"
+    },
+    {
+      "path": "cycle3/environment.json",
+      "length": 578,
+      "sha256": "C4F2C25ADD12E7FBCBFD05AF2DBAD28E552392130D23992A9DD0D5CE38A70089"
+    },
+    {
+      "path": "cycle3/events.jsonl",
+      "length": 67591,
+      "sha256": "3F080C09C0EA93739E1963B3DC2A0939188A8D34C9D1912606B32347D3D07131"
+    },
+    {
+      "path": "cycle3/frames.jsonl",
+      "length": 1184400,
+      "sha256": "953BA596210F2FB9C07366E329323C33F93A7F73D0EEA38D736604E179336947"
+    },
+    {
+      "path": "cycle3/samples.csv",
+      "length": 124706,
+      "sha256": "EC13FEE5F1D2038A1CE5F63045A6F9C114883D584565D5399DF976D144D0F992"
+    },
+    {
+      "path": "cycle3/summary.json",
+      "length": 2768,
+      "sha256": "97CA0E85F66FD999DB4388F53A812C79CFD26F35AA09CE708F8BF48580ED6CFE"
+    },
+    {
+      "path": "dosing_entry.json",
+      "length": 2842,
+      "sha256": "0B20575A99DD3B2D20EBA1137C699849F015C17E317A8438FB7D8AA329A9B256"
+    },
+    {
+      "path": "final_dosing_state.json",
+      "length": 2844,
+      "sha256": "20358B2A1341FE13287D75E7649FC1B358CECFED4F5E691BD7D281D7D2F24B88"
+    },
+    {
+      "path": "post_swd_reset.json",
+      "length": 2838,
+      "sha256": "33DD0942E108C78E4D74CC674FA43CDA50FA7366A889875637D51745DB759DFC"
+    },
+    {
+      "path": "pre_display_condition.json",
+      "length": 213,
+      "sha256": "50704C230097600BC5355B6235B9740F260890FF6E08EEFA4043A6FD6385CC8B"
+    },
+    {
+      "path": "pre_mode_snapshot.json",
+      "length": 2849,
+      "sha256": "24574AE5AE533D0831C01729EAFCAA2DC1A200E0F7FD3E62CFE09B46EF588629"
+    },
+    {
+      "path": "qualification_summary.json",
+      "length": 1463,
+      "sha256": "467D956BD11B40617E89048520E64D9F52774BC87CDCC561D8C68C4D0568E217"
+    }
+  ]
+}
