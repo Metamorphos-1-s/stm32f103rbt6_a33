@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "event": "500G_MASS_REMOVED_USER_CONFIRMED",
+  "confirmation_utc": "2026-09-18T10:42:12.266Z",
+  "recorder_started_utc": "2026-09-18T10:41:08.835Z",
+  "application": "ACTIVE",
+  "mode": "DOSING"
+}

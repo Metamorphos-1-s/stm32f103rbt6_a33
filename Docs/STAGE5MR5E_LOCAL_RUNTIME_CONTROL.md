@@ -8,8 +8,9 @@ runtime control entry and a read-only STATUS entry. It does not modify the R5
 algorithm, parameters, input path, filtering, DeviceConfig, Persistent Format
 V3, or Stage 5M-F.
 
-Current status: **STAGE 5M-R5E SOFTWARE READY; HARDWARE CLOSURE PENDING; STAGE
-5M-F NOT YET STARTED**.
+Current status: **STAGE 5M-R5E LOCAL RUNTIME CONTROL READY; R5D LONG-DURATION
+SAFETY EVIDENCE PRESERVED; R5 REMAINS DEFAULT-OFF ENGINEERING BETA; STAGE 5M-F
+ENTRY REMAINS APPROVED**.
 
 ## Product contract
 
@@ -72,7 +73,29 @@ The R5E Beta BIN is 100,792 bytes with SHA-256
 The ELF is 1,954,668 bytes with SHA-256
 `FE5444CD2DA50E1F58BF8E6BF95F8BC53255628805B816A4A271493E5500485F`.
 Hardware reflash and supervised local-key closure are mandatory because the
-Beta binary changed.
+Beta binary changed. The final application-only reflash and Verify passed at
+3.29 V without changing the configuration SHA.
+
+## Hardware closure
+
+The 4,438.785-second supervised workflow passed the advanced entry, `drIFt`,
+all four public selections, TARE and timeout cancellation, short-confirm versus
+long-apply separation, external-control refresh, and an intentionally induced
+external conflict that displayed `bUSY` without overwriting the PLC state.
+`drSt` directly displayed `rEF`, `ObS`, and `trAC`. HOLDOFF was captured by PC
+diagnostics immediately after transition, but its 15-second panel value was not
+directly observed: both operator view attempts reached `rEF` after the state
+advanced. This limitation is explicit and is not reported as a direct panel
+PASS; the production state-to-text mapping and glyphs are Host-tested.
+
+A 960-second SHADOW run reached TRACKING with 300/600 fill and zero errors. A
+360-second ACTIVE+DOSING load/unload run held offset exactly at `18,619 ug`.
+Both uncompensated and corrected steps were `500.096877 g`, giving zero step
+loss. Loaded TARE and CLEAR TARE preserved the offset and revision. Empty ZERO
+cleared offset/reference/windows. Fault, overrun, dirty and SAVE remained zero,
+revision/saved revision remained `7/7`, and the configuration SHA remained
+`D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86`.
+Final reset state is OFF+SHADOW with offset/reference/evaluation zero.
 
 R5D long-duration safety evidence remains applicable because algorithm,
 parameters and input path are frozen. Its efficacy result remains

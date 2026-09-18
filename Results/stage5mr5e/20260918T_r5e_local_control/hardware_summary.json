@@ -1,5 +1,35 @@
 {
   "schema_version": 1,
-  "status": "PENDING",
-  "required": "Approximately 30-minute supervised local-menu/STATUS/500 g/reset closure."
+  "status": "PASS_WITH_EXPLICIT_TRANSIENT_DISPLAY_LIMITATION",
+  "started_utc": "2026-09-18T09:41:31.915Z",
+  "ended_utc": "2026-09-18T10:55:30.700Z",
+  "duration_seconds": 4438.785,
+  "menu": {
+    "advanced_sequence": "PASS", "drift_label": "PASS - drIFt",
+    "off_current_selection": "PASS", "tare_cancel": "PASS - zero side effect",
+    "timeout_cancel": "PASS - zero side effect",
+    "short_confirm": "PASS - live state remained OFF + SHADOW",
+    "long_apply_shadow": "PASS - donE and STATIC + SHADOW",
+    "long_apply_static": "PASS - donE and STATIC + ACTIVE",
+    "long_apply_dosing": "PASS - donE and DOSING + ACTIVE",
+    "long_apply_off": "PASS - donE and OFF + SHADOW",
+    "candidate_navigation_lock": "PASS - STAR/HASH intentionally locked after short confirmation",
+    "external_conflict": "PASS - bUSY; external STATIC + ACTIVE preserved",
+    "external_refresh": "PASS - re-entry displayed externally selected doSInG"
+  },
+  "status_display": {
+    "label": "PASS - drSt", "reference_fill": "PASS - rEF",
+    "observation_fill": "PASS - ObS", "tracking": "PASS - trAC",
+    "holdoff_internal": "PASS - PC capture state HOLDOFF immediately after transition",
+    "holdoff_panel": "NOT DIRECTLY OBSERVED - state advanced to rEF before both view actions",
+    "readonly": "PASS - no command, dirty, revision or SAVE side effect"
+  },
+  "shadow_to_tracking": {"duration_seconds": 960.049, "records": 960, "read_errors": 0, "reconnects": 0, "host_poll_gaps": 0, "reference_fill": 300, "observation_fill": 600, "automatic_rebase_count": 0},
+  "dosing_unload": {"duration_seconds": 360.045, "records": 360, "offset_min_ug": 18619, "offset_max_ug": 18619, "offset_strictly_frozen": true, "loaded_uncompensated_ug": 500207272, "loaded_corrected_ug": 500188653, "unloaded_uncompensated_ug": 110395, "unloaded_corrected_ug": 91776, "uncompensated_step_ug": 500096877, "corrected_step_ug": 500096877, "step_loss_ug": 0},
+  "zero": "PASS - offset/reference/windows cleared; no configuration side effect",
+  "tare": "PASS - loaded net returned to 1126 ug; offset preserved at 18619 ug",
+  "clear_tare": "PASS - tare cleared; offset preserved at 18619 ug",
+  "invariants": {"fault_mask": 0, "overrun_count": 0, "dirty": 0, "revision": 7, "saved_revision": 7, "save_request_count_low": 0},
+  "reset": "PASS - volatile application/mode/offset/reference/evaluation returned to defaults",
+  "configuration_final_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86"
 }

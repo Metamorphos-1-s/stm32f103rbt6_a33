@@ -1,5 +1,14 @@
 {
   "schema_version": 1,
-  "status": "PENDING",
-  "reason": "Final R5E Beta is software-qualified but has not yet been flashed."
+  "status": "PASS",
+  "mcu": "STM32F101/F102/F103 Medium-density; device ID 0x410; revision X",
+  "flash_size_bytes": 131072,
+  "vdd_v": 3.29,
+  "operation": "application-only sectors 0-98; no mass erase; no configuration write",
+  "bin_length": 100792,
+  "bin_sha256": "BA8F02B2024042D601FD7F2D75BEF9E1004AACAE16852DD97CD2B28777BAF6B9",
+  "download_verify": "PASS",
+  "postflash": {"firmware": "0x0512", "map": "0x0104", "public_schema": 2, "persistent_format": 3, "r5_signature": "0x55B5", "revision": 7, "saved_revision": 7, "active_slot": 1, "storage_sequence": 7},
+  "configuration_before_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86",
+  "configuration_after_flash_sha256": "D74C98D8D4221437773155E8D1ED75BC59D71AE2D285D5C2F18F6B494AA5DC86"
 }

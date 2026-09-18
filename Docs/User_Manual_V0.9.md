@@ -501,6 +501,8 @@ R5E工程Beta在高级菜单中额外显示 `drIFt`。FUNCTION短按进入后，
 易失候选，不会立即改变称重。必须长按FUNCTION才应用，TARE或约30秒超时会
 取消且不产生副作用。若PLC在编辑期间改变R5状态，仪表显示 `bUSY`，不会覆盖
 PLC的新状态。
+短按FUNCTION确认R5候选后，STAR/HASH会被锁定；此时只能长按FUNCTION应用，
+或短按TARE取消并退出。这是防止R5候选与普通配置事务混合的安全策略。
 
 四种选择的含义如下：`OFF` 清除offset和学习窗口；`SHAdO`后台学习但不修改
 正式重量；`StAtIC`在恒定载荷下学习并正式应用offset；`doSInG`冻结已有offset

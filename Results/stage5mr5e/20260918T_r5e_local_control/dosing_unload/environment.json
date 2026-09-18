@@ -1,0 +1,17 @@
+{
+  "repository_head": "3f3635c46b7cbc4e1324aebf58283fd0366684c6",
+  "python": "3.8.10 (tags/v3.8.10:3d8993a, May  3 2021, 11:48:03) [MSC v.1928 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "tool_path": "Tools/stage5mr5b_beta/r5_beta_hw.py",
+  "tool_length": 14433,
+  "tool_sha256": "8E90FB6AD8CCFF9FA8082264A237CAA51C683C1A012AEFD57E76FDEA94B59CCC",
+  "port": "COM5",
+  "baud": 115200,
+  "parity": "N",
+  "stopbits": 1,
+  "slave": 1,
+  "poll_interval_s": 1.0,
+  "algorithm": "R5_REFERENCE_LOCK_10S_BLOCK_MEDIAN_BETA",
+  "writes": 0,
+  "flash_operations": 0
+}
