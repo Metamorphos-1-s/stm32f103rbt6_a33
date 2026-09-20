@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "parameters": {
+    "increment": 1,
+    "zero_leak": 1,
+    "reverse_cancel": 1,
+    "threshold": 5,
+    "retain_remainder": false,
+    "large_step_divisions": 8
+  },
+  "state_bytes": 12,
+  "cases": [
+    {
+      "case": "r5d_12h",
+      "samples": 43200,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "r5d_unload",
+      "samples": 1800,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "r5e_shadow",
+      "samples": 960,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "d1_cycle1",
+      "samples": 720,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "d1_cycle2",
+      "samples": 720,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "d1_cycle3",
+      "samples": 720,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "d1b_opened_regression",
+      "samples": 147,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "boundary_noise",
+      "samples": 600,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "direction_reversal",
+      "samples": 200,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "int32_limits",
+      "samples": 3,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "scheduler_duplicates",
+      "samples": 35,
+      "mismatches": 0,
+      "first_mismatches": []
+    }
+  ],
+  "samples": 49105,
+  "mismatches": 0
+}

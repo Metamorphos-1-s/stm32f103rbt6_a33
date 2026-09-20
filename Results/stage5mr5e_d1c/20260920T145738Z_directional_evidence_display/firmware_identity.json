@@ -5,7 +5,7 @@
     "elf_length": 172200,
     "elf_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486"
   },
-  "d1c_beta": {
+  "d1c_beta_v1_currently_flashed": {
     "firmware": "0x0514",
     "map": "0x0104",
     "schema": 2,
@@ -15,6 +15,19 @@
     "bin_length": 102280,
     "bin_sha256": "E87759986372207FBDC915F67F03117B701D46FE79AC0C93E7751A085AB894F1",
     "map_sha256": "1B126759FECC911FB60389DAC6F405A5475EF8CF9B56FD2355B92B7702BC94ED",
-    "flashed": false
+    "flashed": true
+  },
+  "d1c_beta_v2_compact_diagnostics": {
+    "firmware": "0x0514",
+    "map": "0x0104",
+    "schema": 2,
+    "persistent_format": 3,
+    "elf_length": 1972108,
+    "elf_sha256": "189CBBFA5C961545E8A3BFCF4EB77012915C88E9BC988AB97D8AA439B1B8917A",
+    "bin_length": 102768,
+    "bin_sha256": "53461D36C78447811D9530739A51AE2710E392ACDED825CF2C0082C2265218B8",
+    "map_sha256": "81ADFD5B33B50F358E74BB522DF2AB2E4E11882B996DF716C084315EC2A5B5E2",
+    "flashed": false,
+    "change_scope": "engineering-only compact read-only evidence registers; display algorithm and parameters unchanged"
   }
 }

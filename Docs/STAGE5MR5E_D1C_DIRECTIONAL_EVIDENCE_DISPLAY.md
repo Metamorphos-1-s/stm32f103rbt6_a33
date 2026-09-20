@@ -6,9 +6,13 @@
 0x0514 ARTIFACT BUILT; NONZERO-OFFSET HARDWARE QUALIFICATION PENDING; R5
 ALGORITHM UNCHANGED; STAGE 5N ENTRY DEFERRED.**
 
-The artifact has not been flashed. The new hardware holdout has not been
-opened. Flashing requires the exact explicit authorization defined by the
-stage contract and will reset all volatile R5 state.
+The original v1 artifact was application-only flashed and device-verified after
+explicit authorization. Its configuration SHA remained unchanged. The new
+hardware holdout has not been opened: the first OFF + SHADOW recorder preflight
+correctly rejected cross-frame sequence skew. A compact, single-frame v2
+engineering diagnostic refresh is built but not flashed; its changed hash
+requires renewed confirmation. Both artifacts contain the same frozen display
+algorithm and parameters.
 
 The branch started from
 `549fd4c4a0e46ca9817f17716393f695566c2d7b` on
@@ -92,12 +96,20 @@ Thumb code have a conservative bound below 20 us at 72 MHz.
 
 ## Firmware and frozen paths
 
-The 0x0514 Beta uses Map 0x0104, Schema 2 and Persistent Format 3:
+The authorized 0x0514 v1 Beta uses Map 0x0104, Schema 2 and Persistent Format 3:
 
 - BIN: 102,280 bytes, SHA-256
   `E87759986372207FBDC915F67F03117B701D46FE79AC0C93E7751A085AB894F1`
 - ELF: 1,966,864 bytes, SHA-256
   `6C930C78AAE7B0D34C3DF2356A8770FD3F501B32D0AF46424A2E3D476F515CB6`
+
+The compact-diagnostic v2 artifact is 102,768 bytes with SHA-256
+`53461D36C78447811D9530739A51AE2710E392ACDED825CF2C0082C2265218B8`;
+its ELF is 1,972,108 bytes with SHA-256
+`189CBBFA5C961545E8A3BFCF4EB77012915C88E9BC988AB97D8AA439B1B8917A`.
+The only v2 firmware change is a packed, read-only engineering snapshot for
+one-frame 10 Hz evidence capture. It does not change algorithm, parameters,
+RAM, authoritative paths or public Map 0x0104.
 
 Standard Release remains byte-identical at
 `82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486`.
@@ -114,16 +126,24 @@ unchanged. Debug, Release and Beta builds are warning-clean; Host CTest is
 
 ## Device and next gate
 
-A read-only probe at 2026-09-20T15:25:43.341Z confirmed the device still runs
-0x0512, Map 0x0104, OFF + SHADOW, offset/reference/evaluation = 0,
-revision/saved = 8/8 and fault/overrun/dirty/SAVE = 0. The configuration SHA
-last verified at D1-B rollback is
-`A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4`;
-it has not yet been reread for D1-C because no flash is authorized.
+A preflash read confirmed the on-device 0x0512 application hash
+`BA8F02B2024042D601FD7F2D75BEF9E1004AACAE16852DD97CD2B28777BAF6B9`.
+The v1 application download erased only sectors 0-99 and device Verify passed.
+The postflash device runs 0x0514, Map 0x0104, OFF + SHADOW,
+offset/reference/evaluation = 0, revision/saved = 8/8 and
+fault/overrun/dirty/SAVE = 0. Configuration SHA before and after flash is
+`A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4`.
 
-After explicit authorization, configuration must be backed up and hashed,
-0x0512 backed up, only application sectors written and verified, and the
-configuration reread. A fresh recorder captures unique device samples from the
+The multi-frame recorder produced zero accepted records and three explicit
+sequence-alignment errors; this raw failed preflight is retained. Timing showed
+that a 21-register D1-C-only block captures every device sample (50/50 over
+five seconds), while the complete multi-block transaction takes about 250 ms.
+The v2 51-register block packs all required display, R5 and safety evidence
+into one coherent response so it can be validated at the real 10 Hz rate.
+
+Before v2 reflash, the changed artifact hash must be explicitly confirmed.
+The configuration will be reread, only application sectors written and
+verified, and the configuration reread again. A fresh recorder captures unique device samples from the
 start and rejects measurement/follower sequence mismatch. Natural
 `abs(offset) >= 0.020 g` and at least 2d authoritative movement are required
 before the slow holdout can pass. DOSING 500 g load/unload follows only after

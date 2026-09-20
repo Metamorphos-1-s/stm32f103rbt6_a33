@@ -1,0 +1,16 @@
+{
+  "status": "COMPLETE",
+  "duration_s": 2.625,
+  "records": 0,
+  "expected_sequence_records": null,
+  "coverage": null,
+  "first_sequence": null,
+  "final_sequence": null,
+  "duplicates_skipped": 0,
+  "read_errors": 3,
+  "reconnects": 0,
+  "maximum_accepted_gap_s": 0,
+  "last_state": null,
+  "writes": 0,
+  "flash_operations": 0
+}

@@ -15,6 +15,7 @@
 #include "project_config.h"
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
 #include "display_controller.h"
+#include "measurement_bridge.h"
 #endif
 #include "storage_power_guard.h"
 #include "communication_manager.h"
@@ -512,8 +513,13 @@ static ModbusRegisterResult ReadOne(uint16_t address,
     if ((address >= MODBUS_D1C_FIRST) && (address <= MODBUS_D1C_LAST))
     {
         DirectionalDisplayFollowerDiagnostics directional = {0};
+        R5DriftSnapshot r5_empty = {0};
+        const R5DriftSnapshot *r5_live = MetrologyManager_GetR5Snapshot();
+        const R5DriftSnapshot *r5 = (r5_live != NULL) ? r5_live : &r5_empty;
         DisplayPage page = DisplayController_GetPage();
         DisplayWeightValue desired = (page == DISPLAY_PAGE_GROSS) ? gross : net;
+        MassValueUg authoritative = (page == DISPLAY_PAGE_GROSS) ?
+            snapshot->gross_mass_ug : snapshot->net_mass_ug;
         uint8_t division = display->division_digit;
         int32_t desired_index = ((division != 0U) && desired.valid &&
             !desired.overflow && ((desired.display_count % division) == 0)) ?
@@ -522,43 +528,83 @@ static ModbusRegisterResult ReadOne(uint16_t address,
             &directional);
         int64_t delta = (int64_t)desired_index - directional.display_count;
         int16_t direction = (delta > 0) ? 1 : ((delta < 0) ? -1 : 0);
+        int32_t compact_delta = (delta > INT32_MAX) ? INT32_MAX :
+            ((delta < INT32_MIN) ? INT32_MIN : (int32_t)delta);
         uint16_t state_flags = (available && directional.initialized ? 1U : 0U) |
             (available && directional.locked ? 2U : 0U) |
             (available && directional.last_large_step ? 4U : 0U) |
             (((flags & WEIGHT_STATUS_STABLE) != 0U) ? 8U : 0U) |
             ((MetrologyManager_GetR5Application() ==
-                R5_BETA_APPLICATION_ACTIVE) ? 16U : 0U);
+                R5_BETA_APPLICATION_ACTIVE) ? 16U : 0U) |
+            (r5->limited ? 32U : 0U);
         if (address == MODBUS_D1C_SIGNATURE) *value = 0xD1C1U;
-        else if (address >= MODBUS_D1C_DESIRED_FIRST && address <= 0x02AAU)
+        else if (address == MODBUS_D1C_FIRMWARE) *value = FW_RELEASE_VERSION;
+        else if (address == MODBUS_D1C_MAP) *value = MODBUS_REGISTER_MAP_VERSION;
+        else if (address == MODBUS_D1C_FORMAT) *value = CONFIG_STORE_SCHEMA_V3;
+        else if (address >= MODBUS_D1C_SAMPLE_SEQUENCE_FIRST && address <= 0x02ADU)
+            *value = Word32(directional.last_sample_sequence,
+                (uint8_t)(address - MODBUS_D1C_SAMPLE_SEQUENCE_FIRST), order);
+        else if (address >= MODBUS_D1C_UPTIME_FIRST && address <= 0x02AFU)
+            *value = Word32(snapshot->sample_timestamp_ms,
+                (uint8_t)(address - MODBUS_D1C_UPTIME_FIRST), order);
+        else if (address >= MODBUS_D1C_AUTHORITATIVE_FIRST && address <= 0x02B3U)
+            *value = Word64((uint64_t)authoritative,
+                (uint8_t)(address - MODBUS_D1C_AUTHORITATIVE_FIRST), order);
+        else if (address >= MODBUS_D1C_DESIRED_FIRST && address <= 0x02B5U)
             *value = Word32((uint32_t)desired_index,
                 (uint8_t)(address - MODBUS_D1C_DESIRED_FIRST), order);
-        else if (address >= MODBUS_D1C_DISPLAY_FIRST && address <= 0x02ACU)
+        else if (address >= MODBUS_D1C_DISPLAY_FIRST && address <= 0x02B7U)
             *value = Word32((uint32_t)directional.display_count,
                 (uint8_t)(address - MODBUS_D1C_DISPLAY_FIRST), order);
-        else if (address >= MODBUS_D1C_DELTA_FIRST && address <= 0x02B0U)
-            *value = Word64((uint64_t)delta,
+        else if (address >= MODBUS_D1C_DELTA_FIRST && address <= 0x02B9U)
+            *value = Word32((uint32_t)compact_delta,
                 (uint8_t)(address - MODBUS_D1C_DELTA_FIRST), order);
-        else if (address == MODBUS_D1C_EVIDENCE)
-            *value = (uint16_t)directional.evidence;
-        else if (address == MODBUS_D1C_DIRECTION)
-            *value = (uint16_t)direction;
-        else if (address >= MODBUS_D1C_ANCHOR_FIRST && address <= 0x02B4U)
+        else if (address == MODBUS_D1C_EVIDENCE_DIRECTION)
+            *value = (uint16_t)(((uint16_t)(uint8_t)directional.evidence << 8U) |
+                (uint8_t)direction);
+        else if (address >= MODBUS_D1C_ANCHOR_FIRST && address <= 0x02BCU)
             *value = Word32((uint32_t)directional.display_count,
                 (uint8_t)(address - MODBUS_D1C_ANCHOR_FIRST), order);
         else if (address == MODBUS_D1C_FLAGS) *value = state_flags;
-        else if (address == MODBUS_D1C_RELEASE_REASON)
-            *value = directional.last_large_step ? 2U : 0U;
-        else if (address == MODBUS_D1C_SOURCE) *value = directional.source;
-        else if (address >= MODBUS_D1C_SAMPLE_SEQUENCE_FIRST &&
-                 address <= 0x02B9U)
-            *value = Word32(directional.last_sample_sequence,
-                (uint8_t)(address - MODBUS_D1C_SAMPLE_SEQUENCE_FIRST), order);
-        else if (address == MODBUS_D1C_UNIT)
-            *value = (uint16_t)config->metrology.active_unit;
-        else if (address == MODBUS_D1C_DECIMALS)
-            *value = display->decimal_places;
+        else if (address == MODBUS_D1C_REASON_SOURCE)
+            *value = (uint16_t)(((directional.last_large_step ? 2U : 0U) << 8U) |
+                directional.source);
+        else if (address == MODBUS_D1C_UNIT_DECIMALS)
+            *value = (uint16_t)(((uint16_t)config->metrology.active_unit << 8U) |
+                display->decimal_places);
         else if (address == MODBUS_D1C_DIVISION)
             *value = division;
+        else if (address == MODBUS_D1C_R5_STATE)
+            *value = (uint16_t)(((uint16_t)MetrologyManager_GetR5Application() << 12U) |
+                ((uint16_t)r5->mode << 8U) | (uint16_t)r5->state);
+        else if (address >= MODBUS_D1C_UNCOMPENSATED_FIRST && address <= 0x02C5U)
+            *value = Word64((uint64_t)r5->uncompensated_gross_ug,
+                (uint8_t)(address - MODBUS_D1C_UNCOMPENSATED_FIRST), order);
+        else if (address >= MODBUS_D1C_CORRECTED_FIRST && address <= 0x02C9U)
+            *value = Word64((uint64_t)r5->corrected_gross_ug,
+                (uint8_t)(address - MODBUS_D1C_CORRECTED_FIRST), order);
+        else if (address >= MODBUS_D1C_OFFSET_FIRST && address <= 0x02CDU)
+            *value = Word64((uint64_t)r5->offset_ug,
+                (uint8_t)(address - MODBUS_D1C_OFFSET_FIRST), order);
+        else if (address >= MODBUS_D1C_REFERENCE_FIRST && address <= 0x02D1U)
+            *value = Word64((uint64_t)r5->reference_ug,
+                (uint8_t)(address - MODBUS_D1C_REFERENCE_FIRST), order);
+        else if (address >= MODBUS_D1C_REBASE_FIRST && address <= 0x02D3U)
+            *value = Word32(r5->automatic_rebase_count,
+                (uint8_t)(address - MODBUS_D1C_REBASE_FIRST), order);
+        else if (address >= MODBUS_D1C_FAULT_FIRST && address <= 0x02D5U)
+            *value = Word32(FaultManager_GetActiveMask(),
+                (uint8_t)(address - MODBUS_D1C_FAULT_FIRST), order);
+        else if (address >= MODBUS_D1C_OVERRUN_FIRST && address <= 0x02D7U)
+            *value = Word32(MeasurementBridge_GetObservedOverrunCount(),
+                (uint8_t)(address - MODBUS_D1C_OVERRUN_FIRST), order);
+        else if (address == MODBUS_D1C_DIRTY_SAVE)
+            *value = (uint16_t)((context->runtime.config_dirty ? 0x8000U : 0U) |
+                (ConfigStore_GetStatistics()->save_request_count & 0x7FFFU));
+        else if (address == MODBUS_D1C_REVISION)
+            *value = (uint16_t)context->config_revision;
+        else if (address == MODBUS_D1C_SAVED_REVISION)
+            *value = (uint16_t)context->saved_revision;
         else return MODBUS_REGISTER_ILLEGAL_ADDRESS;
         return MODBUS_REGISTER_OK;
     }

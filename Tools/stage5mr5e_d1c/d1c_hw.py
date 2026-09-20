@@ -14,11 +14,11 @@ sys.path.insert(0, str(ROOT / "Tools" / "stage5b_hw"))
 sys.path.insert(0, str(ROOT / "Tools" / "stage5mr5b_beta"))
 from hw_common import HardwareTestError, ModbusClient
 from serial_transport import SerialTransport
-from r5_beta_hw import i32, i64, read_state
+from r5_beta_hw import i32, i64
 
 
 D1C_FIRST = 0x02A8
-D1C_COUNT = 21
+D1C_COUNT = 51
 FIELDS = ("utc", "uptime_ms", "sample_sequence", "follower_sequence",
     "firmware", "map", "authoritative_display_input_ug", "panel_display_count",
     "desired_count", "display_count", "delta_count", "desired_division",
@@ -35,22 +35,47 @@ def signed16(value):
     return value - 0x10000 if value & 0x8000 else value
 
 
+def signed8(value):
+    return value - 0x100 if value & 0x80 else value
+
+
 def decode_d1c(words, order="high"):
     if len(words) != D1C_COUNT or words[0] != 0xD1C1:
         raise HardwareTestError("D1-C diagnostic signature mismatch")
     flags = words[13]
     return {"d1c_signature": "0x%04X" % words[0],
-        "desired_division": i32(words[1:3], order),
-        "display_division": i32(words[3:5], order),
-        "delta_divisions": i64(words[5:9], order),
-        "evidence": signed16(words[9]), "direction": signed16(words[10]),
-        "anchor_division": i32(words[11:13], order),
-        "initialized": int(bool(flags & 1)), "locked": int(bool(flags & 2)),
-        "large_step": int(bool(flags & 4)), "stable": int(bool(flags & 8)),
-        "active": int(bool(flags & 16)), "release_reason": words[14],
-        "source": words[15],
-        "follower_sequence": (words[16] << 16) | words[17],
-        "unit": words[18], "decimals": words[19], "division": words[20]}
+        "firmware": "0x%04X" % words[1], "map": "0x%04X" % words[2],
+        "persistent_format": words[3],
+        "sample_sequence": (words[4] << 16) | words[5],
+        "follower_sequence": (words[4] << 16) | words[5],
+        "uptime_ms": (words[6] << 16) | words[7],
+        "authoritative_display_input_ug": i64(words[8:12], order),
+        "desired_division": i32(words[12:14], order),
+        "display_division": i32(words[14:16], order),
+        "delta_divisions": i32(words[16:18], order),
+        "evidence": signed8(words[18] >> 8),
+        "direction": signed8(words[18] & 0xFF),
+        "anchor_division": i32(words[19:21], order),
+        "initialized": int(bool(words[21] & 1)),
+        "locked": int(bool(words[21] & 2)),
+        "large_step": int(bool(words[21] & 4)),
+        "stable": int(bool(words[21] & 8)),
+        "active": int(bool(words[21] & 16)),
+        "limited": int(bool(words[21] & 32)),
+        "release_reason": words[22] >> 8, "source": words[22] & 0xFF,
+        "unit": words[23] >> 8, "decimals": words[23] & 0xFF,
+        "division": words[24], "application": words[25] >> 12,
+        "mode": (words[25] >> 8) & 0x0F, "state": words[25] & 0xFF,
+        "uncompensated_gross_ug": i64(words[26:30], order),
+        "corrected_gross_ug": i64(words[30:34], order),
+        "offset_ug": i64(words[34:38], order),
+        "reference_ug": i64(words[38:42], order),
+        "automatic_rebase_count": (words[42] << 16) | words[43],
+        "fault_mask": (words[44] << 16) | words[45],
+        "overrun_count": (words[46] << 16) | words[47],
+        "dirty": int(bool(words[48] & 0x8000)),
+        "save_request_count_low": words[48] & 0x7FFF,
+        "revision": words[49], "saved_revision": words[50]}
 
 
 def atomic_json(path, value):
@@ -60,19 +85,16 @@ def atomic_json(path, value):
 
 
 def combined_state(client, retries=3):
-    for _ in range(retries):
-        state = read_state(client)
-        panel_display_count = state["display_count"]
-        words, _ = client.read(D1C_FIRST, D1C_COUNT)
-        d1c = decode_d1c(words, state["word_order"])
-        if state["sample_sequence"] == d1c["follower_sequence"]:
-            break
-    else:
-        raise HardwareTestError("measurement/follower sequence did not align")
-    state.update(d1c)
-    state["panel_display_count"] = panel_display_count
+    del retries
+    words, _ = client.read(D1C_FIRST, D1C_COUNT)
+    state = decode_d1c(words, "high")
+    if state["firmware"] != "0x0514" or state["map"] != "0x0104":
+        raise HardwareTestError("expected D1-C Firmware 0x0514 / Map 0x0104")
+    state["utc"] = time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime()) + \
+        ".%03dZ" % int((time.time() % 1) * 1000)
     state["desired_count"] = state["desired_division"] * state["division"]
     state["display_count"] = state["display_division"] * state["division"]
+    state["panel_display_count"] = state["display_count"]
     state["delta_count"] = state["delta_divisions"] * state["division"]
     state["anchor_count"] = state["anchor_division"] * state["division"]
     state["authoritative_display_input_ug"] = state["net_mass_ug"]

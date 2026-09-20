@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "status": "V1 FLASH VERIFIED; HOLDOUT UNOPENED; V2 COMPACT DIAGNOSTIC REFLASH AUTHORIZATION PENDING",
+  "preflash": {
+    "firmware": "0x0512",
+    "application_length": 100792,
+    "application_sha256": "BA8F02B2024042D601FD7F2D75BEF9E1004AACAE16852DD97CD2B28777BAF6B9",
+    "config_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4"
+  },
+  "v1_flash": {
+    "firmware": "0x0514",
+    "bin_length": 102280,
+    "bin_sha256": "E87759986372207FBDC915F67F03117B701D46FE79AC0C93E7751A085AB894F1",
+    "application_sectors": "0-99",
+    "device_verify": "PASS"
+  },
+  "postflash": {
+    "firmware": "0x0514",
+    "map": "0x0104",
+    "application": "SHADOW",
+    "mode": "OFF",
+    "offset_reference_evaluation": [0, 0, 0],
+    "fault_overrun_dirty_save": [0, 0, 0, 0],
+    "revision_saved": [8, 8],
+    "config_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4"
+  },
+  "failed_preflight": {
+    "accepted_records": 0,
+    "alignment_errors": 3,
+    "cause": "complete R5 state and follower state were read in multiple frames while the 10 Hz sequence advanced",
+    "holdout_opened": false
+  },
+  "timing": {
+    "d1c_21_register_records": 50,
+    "d1c_21_register_expected": 50,
+    "duration_s": 5.032,
+    "missing_samples": 0,
+    "maximum_sequence_gap": 1,
+    "complete_four_frame_elapsed_ms": 250
+  },
+  "v2": {
+    "firmware": "0x0514",
+    "bin_length": 102768,
+    "bin_sha256": "53461D36C78447811D9530739A51AE2710E392ACDED825CF2C0082C2265218B8",
+    "elf_length": 1972108,
+    "elf_sha256": "189CBBFA5C961545E8A3BFCF4EB77012915C88E9BC988AB97D8AA439B1B8917A",
+    "algorithm_changed": false,
+    "parameters_changed": false,
+    "ram_changed": false,
+    "flashed": false
+  }
+}
