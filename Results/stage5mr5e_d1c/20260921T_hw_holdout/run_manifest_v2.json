@@ -2,7 +2,7 @@
   "schema_version": 2,
   "classification": "STAGE5MR5E_D1C_V1_V2_V3_FLASH_AND_PREFLIGHT_FAILURES",
   "run_id": "20260921T_hw_holdout",
-  "repository_commit": "a88348b4eb7c29ff42d78ba5f0be1fd2456d16f8",
+  "repository_commit": "531a3fc5882643253280961d8aa6ddd08732bcd3",
   "files": [
     {
       "path": "config_after_flash.bin",
@@ -233,6 +233,11 @@
       "path": "shadow_static_control.json",
       "length": 6301,
       "sha256": "605AB1DCC23B80D7DAD70AFEF376D1EF823E144094EFA75451867083DB7C9EC7"
+    },
+    {
+      "path": "waiting_v4_restore_off.json",
+      "length": 6310,
+      "sha256": "6F69D974A1735E34278969B66A1756542FE3A8CDE93BBBFCBE491B920C9F7163"
     }
   ]
 }
