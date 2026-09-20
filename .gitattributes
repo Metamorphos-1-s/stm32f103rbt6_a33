@@ -65,6 +65,7 @@ Results/stage5mr5e_d1/**/*.csv text eol=lf
 Results/stage5mr5e_d1/**/*.txt text eol=lf
 Results/stage5mr5e_d1/**/*.bin -text
 Results/stage5mr5e_d1b/**/*.json text eol=lf
+Results/stage5mr5e_d1b/**/*.jsonl text eol=lf
 Results/stage5mr5e_d1b/**/*.csv text eol=lf
 Results/stage5mr5e_d1b/**/*.txt text eol=lf
 Results/stage5mr5e_d1b/**/*.map text eol=lf

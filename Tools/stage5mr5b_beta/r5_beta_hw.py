@@ -24,7 +24,7 @@ COMMAND_GET_STATUS = 31
 COMMAND_SET_APPLICATION = 32
 MODES = {"off": 0, "dosing": 1, "static": 2}
 APPLICATIONS = {"shadow": 0, "active": 1}
-EXPECTED_FIRMWARE = 0x0513
+EXPECTED_FIRMWARE = 0x0512
 
 
 def i32(words, order="high"):
@@ -65,7 +65,7 @@ def read_state(client):
     beta, _ = client.read(BETA_FIRST, BETA_COUNT)
     if realtime[14] != 0x0104 or realtime[15] != EXPECTED_FIRMWARE:
         raise HardwareTestError(
-            "expected D1-B Beta identity Map 0x0104 / Firmware 0x0513")
+            "expected R5E Beta identity Map 0x0104 / Firmware 0x0512")
     return {
         "utc": time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime()) +
                ".%03dZ" % int((time.time() % 1) * 1000),

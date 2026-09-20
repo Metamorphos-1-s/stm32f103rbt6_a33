@@ -9,9 +9,6 @@
 #include "tm1628.h"
 #include "tm1628_board_map.h"
 #include "unit_converter.h"
-#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
-#include "active_display_follower.h"
-#endif
 
 #include <stddef.h>
 #include <string.h>
@@ -29,9 +26,6 @@ static bool s_text_override;
 static bool s_numeric_override;
 static bool s_message_active;
 static bool s_initialized;
-#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
-static ActiveDisplayFollower s_active_follower;
-#endif
 
 static bool DisplayController_ApplyEditCursor(uint16_t segments[6],
     uint8_t selected_digit, bool cursor_visible)
@@ -152,35 +146,6 @@ static bool DisplayController_BuildModel(void)
     if (!UnitConverter_MassToDisplay(mass,
             context->config.metrology.active_unit, unit_display, &converted))
         return DisplayModel_SetText6("  Lo  ");
-#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
-    if ((s_page == DISPLAY_PAGE_NET) || (s_page == DISPLAY_PAGE_GROSS))
-    {
-        ActiveDisplayFollowerInput follower_input;
-        ActiveDisplayFollowerOutput follower_output;
-        MassValueUg authoritative = (s_page == DISPLAY_PAGE_NET) ?
-            ((snapshot != NULL) ? snapshot->net_mass_ug : 0) :
-            ((snapshot != NULL) ? snapshot->gross_mass_ug : 0);
-        DisplayWeightValue desired;
-        bool desired_valid = UnitConverter_MassToDisplay(authoritative,
-            context->config.metrology.active_unit, unit_display, &desired) &&
-            desired.valid && !desired.overflow;
-        follower_input.desired_count = desired_valid ? desired.display_count :
-            converted.display_count;
-        follower_input.baseline_count = converted.display_count;
-        follower_input.now_ms = (snapshot != NULL) ?
-            snapshot->sample_timestamp_ms : BSP_TimeNowMs();
-        follower_input.source = (uint8_t)(((uint8_t)s_page << 2U) |
-            (uint8_t)context->config.metrology.active_unit);
-        follower_input.stable = (flags & WEIGHT_STATUS_STABLE) != 0U;
-        follower_input.active = MetrologyManager_GetR5Application() ==
-            R5_BETA_APPLICATION_ACTIVE;
-        follower_input.valid = converted.valid && !converted.overflow &&
-            desired_valid;
-        if (ActiveDisplayFollower_Process(&s_active_follower, &follower_input,
-            &follower_output))
-            converted.display_count = follower_output.display_count;
-    }
-#endif
     return DisplayModel_SetWeight(converted.display_count,
         converted.decimal_places, true, (uint8_t)flags);
 }

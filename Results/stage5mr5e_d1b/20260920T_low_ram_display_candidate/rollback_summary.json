@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "result": "ROLLBACK VERIFIED",
+  "rollback_bin": {"firmware": "0x0512", "length": 100792, "sha256": "BA8F02B2024042D601FD7F2D75BEF9E1004AACAE16852DD97CD2B28777BAF6B9"},
+  "operation": {"application_only": true, "erased_sectors": "0-98", "device_verify": "PASS", "configuration_written": false},
+  "pre_rollback_0513": {"offset_ug": 140683, "reference_ug": -126008, "evaluation_count": 252, "corrected_gross_ug": -243179, "panel_display_mass_ug": -191911, "display_anchor_ug": -191911},
+  "configuration": {"before_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4", "after_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4", "unchanged": true},
+  "final": {"firmware": "0x0512", "map": "0x0104", "schema": 2, "persistent_format": 3, "revision": 8, "saved_revision": 8, "fault": 0, "overrun": 0, "dirty": 0, "save": 0, "application": "SHADOW", "mode": "OFF", "offset_ug": 0, "reference_ug": 0, "evaluation_count": 0},
+  "hardware_testing_stopped": true
+}

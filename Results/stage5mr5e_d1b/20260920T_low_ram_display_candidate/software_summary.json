@@ -1,16 +1,14 @@
 {
-  "schema_version": 1,
-  "status": "SOFTWARE CANDIDATE READY; 0x0513 NOT FLASHED; NONZERO-OFFSET HARDWARE QUALIFICATION PENDING",
+  "schema_version": 2,
+  "status": "NO ACCEPTABLE LOW-RAM DISPLAY CANDIDATE; 0x0513 HARDWARE HOLDOUT FAILED; PRODUCT RESTORED TO 0x0512",
   "candidate": {"hysteresis_divisions": 1, "confirmation_ms": 1000, "large_step_divisions": 8, "state_bytes": 16},
   "offline": {"candidate_passes": 1, "slow_up_max_lag_divisions": 1, "slow_down_max_lag_divisions": 1, "slow_jump_divisions": 1, "boundary_max_aba_10s": 0, "large_step_delay_samples": 0, "step_loss_counts": 0},
   "python_c": {"samples": 48120, "mismatches": 0},
   "r5_python_c": {"samples": 25057, "mismatches": 0},
   "host_ctest": "28/28 PASS",
-  "release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
-  "beta": {"firmware": "0x0513", "elf_length": 1961120, "elf_sha256": "9B33F6D40FE77FFB808039C3CBC1BDA7EE62E81A4701C0513CDCD28664687D7A", "bin_length": 101480, "bin_sha256": "25921F905BBD03F1EE3F21309479DF311005379A440A7164F882C0245F600E6F"},
-  "ram_stack": {"data": 12, "bss": 18408, "linker_ram": 19448, "static_to_estack": 2056, "conservative_stack": 1488, "collision_margin": 568},
-  "cpu_static_bound": "ActiveDisplayFollower_Process is 420 bytes ARM Thumb, bounded and loop-free; conservative 8 cycles per halfword estimate is below 25 us at 72 MHz, far below the 100 ms sample period.",
-  "r5_blobs_unchanged": true,
-  "official_weight_path_changed": false,
-  "hardware": "PENDING EXPLICIT FLASH AUTHORIZATION"
+  "hardware": {"result": "FAIL", "reason": "real 10 Hz adjacent-count movement repeatedly reset confirmation", "formal_records": 147, "maximum_lag_divisions": 7, "panel_transitions": 0},
+  "release_elf": {"length": 172200, "sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486"},
+  "restored_beta": {"firmware": "0x0512", "elf_length": 1954668, "elf_sha256": "FE5444CD2DA50E1F58BF8E6BF95F8BC53255628805B816A4A271493E5500485F", "bin_length": 100792, "bin_sha256": "BA8F02B2024042D601FD7F2D75BEF9E1004AACAE16852DD97CD2B28777BAF6B9"},
+  "r5_algorithm_changed": false,
+  "stage5n_entry": "DEFERRED"
 }

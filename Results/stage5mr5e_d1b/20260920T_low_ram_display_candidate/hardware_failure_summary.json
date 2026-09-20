@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "result": "FAIL",
+  "qualification": "SLOW DISPLAY GATE FAILED; DOSING LOAD/UNLOAD NOT RUN",
+  "firmware": "0x0513",
+  "map": "0x0104",
+  "capture": {
+    "path": "slow_display_gate/samples.csv",
+    "records": 147,
+    "started_utc": "2026-09-20T13:37:17.783Z",
+    "ended_utc": "2026-09-20T13:39:43.742Z",
+    "sha256": "2EFD5FEBBBB259CAE3DC5B271558F2FB32D03635DA57E4BD44616D267F480FA6",
+    "raw_summary_status": "RUNNING",
+    "termination": "monitor deliberately stopped after conclusive gate failure"
+  },
+  "observed": {
+    "desired_display_count_min": -11,
+    "desired_display_count_max": -6,
+    "panel_display_count": -4,
+    "panel_transitions": 0,
+    "maximum_lag_divisions": 7,
+    "maximum_jump_divisions": 0,
+    "offset_start_ug": 167680,
+    "offset_end_ug": 172545,
+    "fault_mask": 0,
+    "overrun_count": 0,
+    "dirty": 0,
+    "revision": 8,
+    "saved_revision": 8,
+    "save_request_count_low": 0
+  },
+  "root_cause": "confirmation requires one desired count to persist for 1000 ms; real 10 Hz noise crosses adjacent quantization counts and repeatedly restarts confirmation",
+  "holdout_reused_for_tuning": false,
+  "subsequent_hardware_test": false
+}

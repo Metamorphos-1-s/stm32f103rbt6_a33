@@ -31,12 +31,12 @@ class R5BetaHardwareToolTests(unittest.TestCase):
         with self.assertRaises(Exception): decode_beta([0] * 40)
 
     def test_r5e_identity_is_exact(self):
-        self.assertEqual(r5_beta_hw.EXPECTED_FIRMWARE, 0x0513)
+        self.assertEqual(r5_beta_hw.EXPECTED_FIRMWARE, 0x0512)
         self.assertNotEqual(r5_beta_hw.EXPECTED_FIRMWARE, 0x0511)
 
     def test_read_state_rejects_legacy_identity_and_requires_signature(self):
         class Client:
-            def __init__(self, firmware=0x0513, signature=0x55B5):
+            def __init__(self, firmware=0x0512, signature=0x55B5):
                 self.firmware = firmware
                 self.signature = signature
             def read(self, address, quantity):
@@ -54,7 +54,7 @@ class R5BetaHardwareToolTests(unittest.TestCase):
                 elif address == 0x280:
                     values[0] = self.signature
                 return values, None
-        self.assertEqual(r5_beta_hw.read_state(Client())["firmware"], "0x0513")
+        self.assertEqual(r5_beta_hw.read_state(Client())["firmware"], "0x0512")
         with self.assertRaises(Exception):
             r5_beta_hw.read_state(Client(firmware=0x0511))
         with self.assertRaises(Exception):
@@ -64,7 +64,7 @@ class R5BetaHardwareToolTests(unittest.TestCase):
         class Transport:
             def __init__(self, *args, **kwargs): pass
             def close(self): pass
-        base = {"utc":"2026-09-16T00:00:00.000Z","firmware":"0x0513",
+        base = {"utc":"2026-09-16T00:00:00.000Z","firmware":"0x0512",
             "map":"0x0104","sample_sequence":1,"mode":0,"state":0,
             "application":0,"offset_ug":0}
         second = dict(base, utc="2026-09-16T00:00:01.000Z",

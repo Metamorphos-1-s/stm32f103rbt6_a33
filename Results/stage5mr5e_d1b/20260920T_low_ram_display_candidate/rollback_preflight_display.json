@@ -1,0 +1,10 @@
+{
+  "utc": "2026-09-20T14:08:52Z",
+  "state": 2,
+  "locked": 1,
+  "display_mass_ug": -191911,
+  "anchor_mass_ug": -191911,
+  "release_threshold_ug": 80000,
+  "candidate_elapsed_ms": 1002,
+  "release_reason": 2
+}
