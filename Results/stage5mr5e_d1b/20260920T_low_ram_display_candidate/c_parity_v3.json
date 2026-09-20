@@ -1,0 +1,1099 @@
+{
+  "schema_version": 1,
+  "state_bytes": 16,
+  "cases": [
+    {
+      "case": "r5d_12h",
+      "samples": 43200,
+      "mismatches": 5508,
+      "first": [
+        {
+          "index": 1,
+          "actual": {
+            "desired_display_count": "50004",
+            "actual_display_count": "50001",
+            "anchor_count": "50001",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 50004,
+            "actual_display_count": 50001,
+            "anchor_count": 50001,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 24,
+          "actual": {
+            "desired_display_count": "50003",
+            "actual_display_count": "50003",
+            "anchor_count": "50003",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 50003,
+            "actual_display_count": 50003,
+            "anchor_count": 50003,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 29,
+          "actual": {
+            "desired_display_count": "50004",
+            "actual_display_count": "50004",
+            "anchor_count": "50004",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 50004,
+            "actual_display_count": 50004,
+            "anchor_count": 50004,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 44,
+          "actual": {
+            "desired_display_count": "50003",
+            "actual_display_count": "50003",
+            "anchor_count": "50003",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 50003,
+            "actual_display_count": 50003,
+            "anchor_count": 50003,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 49,
+          "actual": {
+            "desired_display_count": "50004",
+            "actual_display_count": "50004",
+            "anchor_count": "50004",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 50004,
+            "actual_display_count": 50004,
+            "anchor_count": 50004,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 61,
+          "actual": {
+            "desired_display_count": "50003",
+            "actual_display_count": "50003",
+            "anchor_count": "50003",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 50003,
+            "actual_display_count": 50003,
+            "anchor_count": 50003,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 63,
+          "actual": {
+            "desired_display_count": "50004",
+            "actual_display_count": "50004",
+            "anchor_count": "50004",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 50004,
+            "actual_display_count": 50004,
+            "anchor_count": 50004,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 67,
+          "actual": {
+            "desired_display_count": "50005",
+            "actual_display_count": "50005",
+            "anchor_count": "50005",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 50005,
+            "actual_display_count": 50005,
+            "anchor_count": 50005,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 74,
+          "actual": {
+            "desired_display_count": "50004",
+            "actual_display_count": "50004",
+            "anchor_count": "50004",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 50004,
+            "actual_display_count": 50004,
+            "anchor_count": 50004,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 83,
+          "actual": {
+            "desired_display_count": "50005",
+            "actual_display_count": "50005",
+            "anchor_count": "50005",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 50005,
+            "actual_display_count": 50005,
+            "anchor_count": 50005,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        }
+      ]
+    },
+    {
+      "case": "r5d_unload",
+      "samples": 1800,
+      "mismatches": 229,
+      "first": [
+        {
+          "index": 3,
+          "actual": {
+            "desired_display_count": "50002",
+            "actual_display_count": "50002",
+            "anchor_count": "50002",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 50002,
+            "actual_display_count": 50002,
+            "anchor_count": 50002,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 32,
+          "actual": {
+            "desired_display_count": "49911",
+            "actual_display_count": "49911",
+            "anchor_count": "49911",
+            "confirmation_count": "0",
+            "release_reason": "2",
+            "locked": "0",
+            "large_step": "1"
+          },
+          "expected": {
+            "desired_display_count": 49911,
+            "actual_display_count": 49911,
+            "anchor_count": 49911,
+            "locked": 0,
+            "confirmation_count": 0,
+            "release_reason": 0,
+            "large_step": 1
+          }
+        },
+        {
+          "index": 33,
+          "actual": {
+            "desired_display_count": "14336",
+            "actual_display_count": "14336",
+            "anchor_count": "14336",
+            "confirmation_count": "0",
+            "release_reason": "2",
+            "locked": "0",
+            "large_step": "1"
+          },
+          "expected": {
+            "desired_display_count": 14336,
+            "actual_display_count": 14336,
+            "anchor_count": 14336,
+            "locked": 0,
+            "confirmation_count": 0,
+            "release_reason": 0,
+            "large_step": 1
+          }
+        },
+        {
+          "index": 34,
+          "actual": {
+            "desired_display_count": "3770",
+            "actual_display_count": "3770",
+            "anchor_count": "3770",
+            "confirmation_count": "0",
+            "release_reason": "2",
+            "locked": "0",
+            "large_step": "1"
+          },
+          "expected": {
+            "desired_display_count": 3770,
+            "actual_display_count": 3770,
+            "anchor_count": 3770,
+            "locked": 0,
+            "confirmation_count": 0,
+            "release_reason": 0,
+            "large_step": 1
+          }
+        },
+        {
+          "index": 35,
+          "actual": {
+            "desired_display_count": "990",
+            "actual_display_count": "990",
+            "anchor_count": "990",
+            "confirmation_count": "0",
+            "release_reason": "2",
+            "locked": "0",
+            "large_step": "1"
+          },
+          "expected": {
+            "desired_display_count": 990,
+            "actual_display_count": 990,
+            "anchor_count": 990,
+            "locked": 0,
+            "confirmation_count": 0,
+            "release_reason": 0,
+            "large_step": 1
+          }
+        },
+        {
+          "index": 36,
+          "actual": {
+            "desired_display_count": "259",
+            "actual_display_count": "259",
+            "anchor_count": "259",
+            "confirmation_count": "0",
+            "release_reason": "2",
+            "locked": "0",
+            "large_step": "1"
+          },
+          "expected": {
+            "desired_display_count": 259,
+            "actual_display_count": 259,
+            "anchor_count": 259,
+            "locked": 0,
+            "confirmation_count": 0,
+            "release_reason": 0,
+            "large_step": 1
+          }
+        },
+        {
+          "index": 37,
+          "actual": {
+            "desired_display_count": "66",
+            "actual_display_count": "66",
+            "anchor_count": "66",
+            "confirmation_count": "0",
+            "release_reason": "2",
+            "locked": "0",
+            "large_step": "1"
+          },
+          "expected": {
+            "desired_display_count": 66,
+            "actual_display_count": 66,
+            "anchor_count": 66,
+            "locked": 0,
+            "confirmation_count": 0,
+            "release_reason": 0,
+            "large_step": 1
+          }
+        },
+        {
+          "index": 38,
+          "actual": {
+            "desired_display_count": "15",
+            "actual_display_count": "15",
+            "anchor_count": "15",
+            "confirmation_count": "0",
+            "release_reason": "2",
+            "locked": "0",
+            "large_step": "1"
+          },
+          "expected": {
+            "desired_display_count": 15,
+            "actual_display_count": 15,
+            "anchor_count": 15,
+            "locked": 0,
+            "confirmation_count": 0,
+            "release_reason": 0,
+            "large_step": 1
+          }
+        },
+        {
+          "index": 39,
+          "actual": {
+            "desired_display_count": "2",
+            "actual_display_count": "2",
+            "anchor_count": "2",
+            "confirmation_count": "0",
+            "release_reason": "2",
+            "locked": "0",
+            "large_step": "1"
+          },
+          "expected": {
+            "desired_display_count": 2,
+            "actual_display_count": 2,
+            "anchor_count": 2,
+            "locked": 0,
+            "confirmation_count": 0,
+            "release_reason": 0,
+            "large_step": 1
+          }
+        },
+        {
+          "index": 41,
+          "actual": {
+            "desired_display_count": "-2",
+            "actual_display_count": "1",
+            "anchor_count": "1",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": -2,
+            "actual_display_count": 1,
+            "anchor_count": 1,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        }
+      ]
+    },
+    {
+      "case": "r5e_shadow",
+      "samples": 960,
+      "mismatches": 0,
+      "first": []
+    },
+    {
+      "case": "d1_cycle1",
+      "samples": 720,
+      "mismatches": 119,
+      "first": [
+        {
+          "index": 1,
+          "actual": {
+            "desired_display_count": "-18",
+            "actual_display_count": "-17",
+            "anchor_count": "-17",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": -18,
+            "actual_display_count": -17,
+            "anchor_count": -17,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 5,
+          "actual": {
+            "desired_display_count": "-16",
+            "actual_display_count": "-16",
+            "anchor_count": "-16",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": -16,
+            "actual_display_count": -16,
+            "anchor_count": -16,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 7,
+          "actual": {
+            "desired_display_count": "-17",
+            "actual_display_count": "-17",
+            "anchor_count": "-17",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": -17,
+            "actual_display_count": -17,
+            "anchor_count": -17,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 9,
+          "actual": {
+            "desired_display_count": "-18",
+            "actual_display_count": "-18",
+            "anchor_count": "-18",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": -18,
+            "actual_display_count": -18,
+            "anchor_count": -18,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 20,
+          "actual": {
+            "desired_display_count": "-17",
+            "actual_display_count": "-17",
+            "anchor_count": "-17",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": -17,
+            "actual_display_count": -17,
+            "anchor_count": -17,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 22,
+          "actual": {
+            "desired_display_count": "-18",
+            "actual_display_count": "-18",
+            "anchor_count": "-18",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": -18,
+            "actual_display_count": -18,
+            "anchor_count": -18,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 37,
+          "actual": {
+            "desired_display_count": "-17",
+            "actual_display_count": "-17",
+            "anchor_count": "-17",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": -17,
+            "actual_display_count": -17,
+            "anchor_count": -17,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 47,
+          "actual": {
+            "desired_display_count": "-18",
+            "actual_display_count": "-18",
+            "anchor_count": "-18",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": -18,
+            "actual_display_count": -18,
+            "anchor_count": -18,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 50,
+          "actual": {
+            "desired_display_count": "-17",
+            "actual_display_count": "-17",
+            "anchor_count": "-17",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": -17,
+            "actual_display_count": -17,
+            "anchor_count": -17,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 51,
+          "actual": {
+            "desired_display_count": "21390",
+            "actual_display_count": "21390",
+            "anchor_count": "21390",
+            "confirmation_count": "0",
+            "release_reason": "2",
+            "locked": "0",
+            "large_step": "1"
+          },
+          "expected": {
+            "desired_display_count": 21390,
+            "actual_display_count": 21390,
+            "anchor_count": 21390,
+            "locked": 0,
+            "confirmation_count": 0,
+            "release_reason": 0,
+            "large_step": 1
+          }
+        }
+      ]
+    },
+    {
+      "case": "d1_cycle2",
+      "samples": 720,
+      "mismatches": 115,
+      "first": [
+        {
+          "index": 1,
+          "actual": {
+            "desired_display_count": "49983",
+            "actual_display_count": "49983",
+            "anchor_count": "49983",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49983,
+            "actual_display_count": 49983,
+            "anchor_count": 49983,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 18,
+          "actual": {
+            "desired_display_count": "49984",
+            "actual_display_count": "49984",
+            "anchor_count": "49984",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49984,
+            "actual_display_count": 49984,
+            "anchor_count": 49984,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 24,
+          "actual": {
+            "desired_display_count": "49983",
+            "actual_display_count": "49983",
+            "anchor_count": "49983",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49983,
+            "actual_display_count": 49983,
+            "anchor_count": 49983,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 29,
+          "actual": {
+            "desired_display_count": "49985",
+            "actual_display_count": "49984",
+            "anchor_count": "49984",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49985,
+            "actual_display_count": 49984,
+            "anchor_count": 49984,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 43,
+          "actual": {
+            "desired_display_count": "49984",
+            "actual_display_count": "49984",
+            "anchor_count": "49984",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49984,
+            "actual_display_count": 49984,
+            "anchor_count": 49984,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 69,
+          "actual": {
+            "desired_display_count": "49985",
+            "actual_display_count": "49985",
+            "anchor_count": "49985",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49985,
+            "actual_display_count": 49985,
+            "anchor_count": 49985,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 77,
+          "actual": {
+            "desired_display_count": "49984",
+            "actual_display_count": "49984",
+            "anchor_count": "49984",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49984,
+            "actual_display_count": 49984,
+            "anchor_count": 49984,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 86,
+          "actual": {
+            "desired_display_count": "49985",
+            "actual_display_count": "49985",
+            "anchor_count": "49985",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49985,
+            "actual_display_count": 49985,
+            "anchor_count": 49985,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 89,
+          "actual": {
+            "desired_display_count": "49984",
+            "actual_display_count": "49984",
+            "anchor_count": "49984",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49984,
+            "actual_display_count": 49984,
+            "anchor_count": 49984,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 97,
+          "actual": {
+            "desired_display_count": "49985",
+            "actual_display_count": "49985",
+            "anchor_count": "49985",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49985,
+            "actual_display_count": 49985,
+            "anchor_count": 49985,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        }
+      ]
+    },
+    {
+      "case": "d1_cycle3",
+      "samples": 720,
+      "mismatches": 123,
+      "first": [
+        {
+          "index": 2,
+          "actual": {
+            "desired_display_count": "49982",
+            "actual_display_count": "49981",
+            "anchor_count": "49981",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49982,
+            "actual_display_count": 49981,
+            "anchor_count": 49981,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 7,
+          "actual": {
+            "desired_display_count": "49981",
+            "actual_display_count": "49981",
+            "anchor_count": "49981",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49981,
+            "actual_display_count": 49981,
+            "anchor_count": 49981,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 10,
+          "actual": {
+            "desired_display_count": "49982",
+            "actual_display_count": "49982",
+            "anchor_count": "49982",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49982,
+            "actual_display_count": 49982,
+            "anchor_count": 49982,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 13,
+          "actual": {
+            "desired_display_count": "49983",
+            "actual_display_count": "49983",
+            "anchor_count": "49983",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49983,
+            "actual_display_count": 49983,
+            "anchor_count": 49983,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 20,
+          "actual": {
+            "desired_display_count": "49984",
+            "actual_display_count": "49984",
+            "anchor_count": "49984",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49984,
+            "actual_display_count": 49984,
+            "anchor_count": 49984,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 24,
+          "actual": {
+            "desired_display_count": "49983",
+            "actual_display_count": "49983",
+            "anchor_count": "49983",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49983,
+            "actual_display_count": 49983,
+            "anchor_count": 49983,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 30,
+          "actual": {
+            "desired_display_count": "49982",
+            "actual_display_count": "49982",
+            "anchor_count": "49982",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49982,
+            "actual_display_count": 49982,
+            "anchor_count": 49982,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 38,
+          "actual": {
+            "desired_display_count": "49983",
+            "actual_display_count": "49983",
+            "anchor_count": "49983",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49983,
+            "actual_display_count": 49983,
+            "anchor_count": 49983,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 48,
+          "actual": {
+            "desired_display_count": "49984",
+            "actual_display_count": "49984",
+            "anchor_count": "49984",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49984,
+            "actual_display_count": 49984,
+            "anchor_count": 49984,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        },
+        {
+          "index": 52,
+          "actual": {
+            "desired_display_count": "49983",
+            "actual_display_count": "49983",
+            "anchor_count": "49983",
+            "confirmation_count": "0",
+            "release_reason": "0",
+            "locked": "1",
+            "large_step": "0"
+          },
+          "expected": {
+            "desired_display_count": 49983,
+            "actual_display_count": 49983,
+            "anchor_count": 49983,
+            "locked": 1,
+            "confirmation_count": 0,
+            "release_reason": 2,
+            "large_step": 0
+          }
+        }
+      ]
+    }
+  ],
+  "samples": 48120,
+  "mismatches": 6094
+}

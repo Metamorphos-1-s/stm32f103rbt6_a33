@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "status": "SOFTWARE CANDIDATE READY; 0x0513 NOT FLASHED; NONZERO-OFFSET HARDWARE QUALIFICATION PENDING",
+  "candidate": {"hysteresis_divisions": 1, "confirmation_ms": 1000, "large_step_divisions": 8, "state_bytes": 16},
+  "offline": {"candidate_passes": 1, "slow_up_max_lag_divisions": 1, "slow_down_max_lag_divisions": 1, "slow_jump_divisions": 1, "boundary_max_aba_10s": 0, "large_step_delay_samples": 0, "step_loss_counts": 0},
+  "python_c": {"samples": 48120, "mismatches": 0},
+  "r5_python_c": {"samples": 25057, "mismatches": 0},
+  "host_ctest": "28/28 PASS",
+  "release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "beta": {"firmware": "0x0513", "elf_length": 1961120, "elf_sha256": "9B33F6D40FE77FFB808039C3CBC1BDA7EE62E81A4701C0513CDCD28664687D7A", "bin_length": 101480, "bin_sha256": "25921F905BBD03F1EE3F21309479DF311005379A440A7164F882C0245F600E6F"},
+  "ram_stack": {"data": 12, "bss": 18408, "linker_ram": 19448, "static_to_estack": 2056, "conservative_stack": 1488, "collision_margin": 568},
+  "cpu_static_bound": "ActiveDisplayFollower_Process is 420 bytes ARM Thumb, bounded and loop-free; conservative 8 cycles per halfword estimate is below 25 us at 72 MHz, far below the 100 ms sample period.",
+  "r5_blobs_unchanged": true,
+  "official_weight_path_changed": false,
+  "hardware": "PENDING EXPLICIT FLASH AUTHORIZATION"
+}

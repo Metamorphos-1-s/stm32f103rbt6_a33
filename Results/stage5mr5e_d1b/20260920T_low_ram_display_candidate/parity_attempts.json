@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "samples": 48120,
+      "mismatches": 48082,
+      "result": "FAIL",
+      "cause": "Python initialized to desired count and retained historical release reason; C correctly initialized from existing panel baseline and emitted current-sample reason.",
+      "new_hardware_holdout_opened": false,
+      "resolution": "Align the Python contract with no-jump baseline initialization and current-event diagnostics, then re-freeze before holdout."
+    }
+  ]
+}

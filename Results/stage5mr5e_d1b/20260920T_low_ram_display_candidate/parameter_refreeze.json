@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "classification": "FINAL_PRE_HARDWARE_HOLDOUT_FREEZE",
+  "reason": "Model contract corrected before any new hardware holdout: initialize from existing panel baseline, emit current-event release reason, and process catch-up at most once per unique 10 Hz sample timestamp.",
+  "parameters": {"hysteresis_divisions": 1, "confirmation_ms": 1000, "large_step_divisions": 8},
+  "model_sha256": "091A84870DA4DF3BA03E0773121BB9F233B045688FFD930691C0C90A60CAB1A6",
+  "evaluator_sha256": "EC0497B045054A8B8E008FE078480DD393FA4ED1CADE36F45A7399239E72D7B4",
+  "parity_script_sha256": "9B85D30EA3AE133524A0D42A2F6D0F74267524DCE4675AF7C53C1BA85286BFF2",
+  "state_bytes": 16,
+  "new_hardware_holdout_opened": false
+}

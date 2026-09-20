@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "state_bytes": 16,
+  "cases": [
+    {
+      "case": "r5d_12h",
+      "samples": 43200,
+      "mismatches": 0,
+      "first": []
+    },
+    {
+      "case": "r5d_unload",
+      "samples": 1800,
+      "mismatches": 0,
+      "first": []
+    },
+    {
+      "case": "r5e_shadow",
+      "samples": 960,
+      "mismatches": 0,
+      "first": []
+    },
+    {
+      "case": "d1_cycle1",
+      "samples": 720,
+      "mismatches": 0,
+      "first": []
+    },
+    {
+      "case": "d1_cycle2",
+      "samples": 720,
+      "mismatches": 0,
+      "first": []
+    },
+    {
+      "case": "d1_cycle3",
+      "samples": 720,
+      "mismatches": 0,
+      "first": []
+    }
+  ],
+  "samples": 48120,
+  "mismatches": 0
+}
