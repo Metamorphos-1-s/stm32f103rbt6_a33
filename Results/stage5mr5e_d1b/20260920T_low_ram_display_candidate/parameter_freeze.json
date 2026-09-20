@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "classification": "PRE_NEW_HARDWARE_HOLDOUT_FREEZE",
+  "baseline_head": "5b7ca5fa46ac4adae3239b2ba4f33541cb7a22b2",
+  "algorithm": "ACTIVE count-domain persistent candidate with bounded one-division catch-up and immediate >8d release",
+  "parameters": {"hysteresis_divisions": 1, "confirmation_ms": 1000, "large_step_divisions": 8},
+  "model_sha256": "14C74BE38270D70EA0468B010BD6DAE48E7B623BA334BB6FB357A872C6EF6329",
+  "evaluator_sha256": "1E1ED433C58F82AC5570B2D2F9B7C91B35895164BC99615AFF1D9A6ED289BF20",
+  "ram_budget_bytes": 16,
+  "stack_budget_bytes": 16,
+  "thresholds": {"follow_ms_max": 5000, "stale_over_1d": 0, "stale_over_2d_over_5s": 0, "slow_jump_divisions_max": 1, "large_step_delay_samples_max": 1, "step_loss_counts": 0, "aba_10s_max": 2},
+  "data_plan": "New hardware holdout requires naturally learned |offset| >= 0.020 g and at least two authoritative display divisions of movement; no synthetic offset."
+}
