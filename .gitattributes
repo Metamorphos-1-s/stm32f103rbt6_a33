@@ -76,4 +76,10 @@ Results/stage5mr5e_d1c/**/*.csv text eol=lf
 Results/stage5mr5e_d1c/**/*.txt text eol=lf
 Results/stage5mr5e_d1c/**/*.map text eol=lf
 Results/stage5mr5e_d1c/**/*.bin -text
+Results/stage5na/**/*.json text eol=lf
+Results/stage5na/**/*.jsonl text eol=lf
+Results/stage5na/**/*.csv text eol=lf
+Results/stage5na/**/*.txt text eol=lf
+Results/stage5na/**/*.map text eol=lf
+Results/stage5na/**/*.bin -text
 Docs/evidence/*.json text eol=lf
