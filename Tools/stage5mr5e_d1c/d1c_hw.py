@@ -18,7 +18,7 @@ from r5_beta_hw import i32, i64
 
 
 D1C_FIRST = 0x02A8
-D1C_COUNT = 51
+D1C_COUNT = 34
 FIELDS = ("utc", "uptime_ms", "sample_sequence", "follower_sequence",
     "firmware", "map", "authoritative_display_input_ug", "panel_display_count",
     "desired_count", "display_count", "delta_count", "desired_division",
@@ -44,38 +44,36 @@ def decode_d1c(words, order="high"):
         raise HardwareTestError("D1-C diagnostic signature mismatch")
     flags = words[13]
     return {"d1c_signature": "0x%04X" % words[0],
-        "firmware": "0x%04X" % words[1], "map": "0x%04X" % words[2],
-        "persistent_format": words[3],
-        "sample_sequence": (words[4] << 16) | words[5],
-        "follower_sequence": (words[4] << 16) | words[5],
-        "uptime_ms": (words[6] << 16) | words[7],
-        "authoritative_display_input_ug": i64(words[8:12], order),
-        "desired_division": i32(words[12:14], order),
-        "display_division": i32(words[14:16], order),
-        "delta_divisions": i32(words[16:18], order),
-        "evidence": signed8(words[18] >> 8),
-        "direction": signed8(words[18] & 0xFF),
-        "anchor_division": i32(words[19:21], order),
-        "initialized": int(bool(words[21] & 1)),
-        "locked": int(bool(words[21] & 2)),
-        "large_step": int(bool(words[21] & 4)),
-        "stable": int(bool(words[21] & 8)),
-        "active": int(bool(words[21] & 16)),
-        "limited": int(bool(words[21] & 32)),
-        "release_reason": words[22] >> 8, "source": words[22] & 0xFF,
-        "unit": words[23] >> 8, "decimals": words[23] & 0xFF,
-        "division": words[24], "application": words[25] >> 12,
-        "mode": (words[25] >> 8) & 0x0F, "state": words[25] & 0xFF,
-        "uncompensated_gross_ug": i64(words[26:30], order),
-        "corrected_gross_ug": i64(words[30:34], order),
-        "offset_ug": i64(words[34:38], order),
-        "reference_ug": i64(words[38:42], order),
-        "automatic_rebase_count": (words[42] << 16) | words[43],
-        "fault_mask": (words[44] << 16) | words[45],
-        "overrun_count": (words[46] << 16) | words[47],
-        "dirty": int(bool(words[48] & 0x8000)),
-        "save_request_count_low": words[48] & 0x7FFF,
-        "revision": words[49], "saved_revision": words[50]}
+        "firmware": "0x0514", "map": "0x0104", "persistent_format": 3,
+        "sample_sequence": (words[1] << 16) | words[2],
+        "follower_sequence": (words[1] << 16) | words[2],
+        "uptime_ms": (words[3] << 16) | words[4],
+        "authoritative_display_input_ug": i32(words[5:7], order) * 100,
+        "desired_division": i32(words[7:9], order),
+        "display_division": i32(words[9:11], order),
+        "delta_divisions": i32(words[11:13], order),
+        "evidence": signed8(words[13] >> 8),
+        "direction": signed8(words[13] & 0xFF),
+        "anchor_division": i32(words[14:16], order),
+        "initialized": int(bool(words[16] & 1)),
+        "locked": int(bool(words[16] & 2)),
+        "large_step": int(bool(words[16] & 4)),
+        "stable": int(bool(words[16] & 8)),
+        "active": int(bool(words[16] & 16)),
+        "limited": int(bool(words[16] & 32)),
+        "release_reason": words[17] >> 8, "source": words[17] & 0xFF,
+        "unit": words[18] >> 8, "decimals": words[18] & 0xFF,
+        "division": words[19], "application": words[20] >> 12,
+        "mode": (words[20] >> 8) & 0x0F, "state": words[20] & 0xFF,
+        "uncompensated_gross_ug": i32(words[21:23], order) * 100,
+        "corrected_gross_ug": i32(words[23:25], order) * 100,
+        "offset_ug": i32(words[25:27], order) * 100,
+        "reference_ug": i32(words[27:29], order) * 100,
+        "automatic_rebase_count": words[29], "fault_mask": words[30],
+        "overrun_count": words[31],
+        "dirty": int(bool(words[32] & 0x8000)),
+        "save_request_count_low": words[32] & 0x7FFF,
+        "revision": words[33] >> 8, "saved_revision": words[33] & 0xFF}
 
 
 def atomic_json(path, value):
@@ -97,7 +95,6 @@ def combined_state(client, retries=3):
     state["panel_display_count"] = state["display_count"]
     state["delta_count"] = state["delta_divisions"] * state["division"]
     state["anchor_count"] = state["anchor_division"] * state["division"]
-    state["authoritative_display_input_ug"] = state["net_mass_ug"]
     return state
 
 
@@ -108,10 +105,10 @@ def record(args):
     started = time.monotonic(); last_sequence = None; last_utc = None
     records = duplicates = errors = reconnects = maximum_gap = 0
     first_sequence = final_sequence = None; final = None
+    frame_stream = frames_path.open("a", encoding="utf-8", newline="")
     def frame_log(line):
-        with frames_path.open("a", encoding="utf-8", newline="") as stream:
-            stream.write(json.dumps({"monotonic_ns": time.monotonic_ns(),
-                "frame": line}, separators=(",", ":")) + "\n")
+        frame_stream.write(json.dumps({"monotonic_ns": time.monotonic_ns(),
+            "frame": line}, separators=(",", ":")) + "\n")
     transport = SerialTransport(args.port, args.baud, args.parity,
         args.stopbits, args.timeout_ms, frame_logger=frame_log)
     client = ModbusClient(transport, args.slave)
@@ -139,8 +136,10 @@ def record(args):
                 first_sequence = sequence if first_sequence is None else first_sequence
                 final_sequence = sequence; final = state
                 writer.writerow({field: state.get(field, 0) for field in FIELDS})
-                stream.flush(); records += 1
+                records += 1
                 if records % 10 == 0:
+                    stream.flush(); frame_stream.flush()
+                if records % 100 == 0:
                     atomic_json(output / "summary.json", {
                         "status": "RUNNING", "records": records,
                         "first_sequence": first_sequence,
@@ -151,6 +150,7 @@ def record(args):
                         "last_state": final})
     finally:
         transport.close()
+        frame_stream.close()
     expected = (None if first_sequence is None else
         ((final_sequence - first_sequence) & 0xFFFFFFFF) + 1)
     summary = {"status": "COMPLETE", "duration_s": time.monotonic() - started,

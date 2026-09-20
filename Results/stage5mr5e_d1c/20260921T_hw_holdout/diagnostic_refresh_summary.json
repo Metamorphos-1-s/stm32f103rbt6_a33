@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "V1 FLASH VERIFIED; HOLDOUT UNOPENED; V2 COMPACT DIAGNOSTIC REFLASH AUTHORIZATION PENDING",
+  "status": "V2 FLASH VERIFIED BUT PERTURBS SAMPLE TIMING; HOLDOUT UNOPENED; V3 REFLASH AUTHORIZATION PENDING",
   "preflash": {
     "firmware": "0x0512",
     "application_length": 100792,
@@ -44,6 +44,25 @@
     "bin_sha256": "53461D36C78447811D9530739A51AE2710E392ACDED825CF2C0082C2265218B8",
     "elf_length": 1972108,
     "elf_sha256": "189CBBFA5C961545E8A3BFCF4EB77012915C88E9BC988AB97D8AA439B1B8917A",
+    "algorithm_changed": false,
+    "parameters_changed": false,
+    "ram_changed": false,
+    "flashed": true,
+    "preflight": {
+      "coverage": "100/100",
+      "sample_uptime_gaps_ms": [0, 97, 98, 99, 100, 101, 176, 178, 200],
+      "maximum_gap_ms": 200,
+      "result": "FAIL: response blocks main-loop sample processing"
+    }
+  },
+  "v3": {
+    "firmware": "0x0514",
+    "bin_length": 102728,
+    "bin_sha256": "EDD903D6B7194211F2C5040ADF0C9B22A243330E57AED2DF40BE57E9477C0E4D",
+    "elf_length": 1971912,
+    "elf_sha256": "F3B6E4C4E99F608C47FE52B345B65EE5BE3B1AE5F3B24510FBFC0BBE353CF2B1",
+    "register_count": 34,
+    "mass_resolution_ug": 100,
     "algorithm_changed": false,
     "parameters_changed": false,
     "ram_changed": false,

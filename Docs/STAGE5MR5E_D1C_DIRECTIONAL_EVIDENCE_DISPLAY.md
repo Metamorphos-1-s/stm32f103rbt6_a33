@@ -10,8 +10,10 @@ The original v1 artifact was application-only flashed and device-verified after
 explicit authorization. Its configuration SHA remained unchanged. The new
 hardware holdout has not been opened: the first OFF + SHADOW recorder preflight
 correctly rejected cross-frame sequence skew. A compact, single-frame v2
-engineering diagnostic refresh is built but not flashed; its changed hash
-requires renewed confirmation. Both artifacts contain the same frozen display
+engineering diagnostic refresh was flashed after renewed confirmation, but its
+51-register response perturbed the main-loop sample timing. A 34-register v3
+refresh is built but not flashed and requires a new exact-hash confirmation.
+All three artifacts contain the same frozen display
 algorithm and parameters.
 
 The branch started from
@@ -111,6 +113,17 @@ The only v2 firmware change is a packed, read-only engineering snapshot for
 one-frame 10 Hz evidence capture. It does not change algorithm, parameters,
 RAM, authoritative paths or public Map 0x0104.
 
+The v2 recorder covered sequence numbers 100/100, but sample timestamps exposed
+0, 176, 178 and 200 ms intervals: its response was still long enough to block
+main-loop measurement processing. This is not an acceptable true-10-Hz
+holdout. The v3 response is reduced to 34 registers by encoding five mass
+fields as signed int32 values at 100 ug resolution, ten times finer than the
+0.001 g step-loss gate. Fault/overrun and revision counters retain sufficient
+qualification range. The v3 BIN is 102,728 bytes, SHA-256
+`EDD903D6B7194211F2C5040ADF0C9B22A243330E57AED2DF40BE57E9477C0E4D`;
+its ELF is 1,971,912 bytes, SHA-256
+`F3B6E4C4E99F608C47FE52B345B65EE5BE3B1AE5F3B24510FBFC0BBE353CF2B1`.
+
 Standard Release remains byte-identical at
 `82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486`.
 The frozen R5 C/header/Python Git blobs remain
@@ -141,7 +154,7 @@ five seconds), while the complete multi-block transaction takes about 250 ms.
 The v2 51-register block packs all required display, R5 and safety evidence
 into one coherent response so it can be validated at the real 10 Hz rate.
 
-Before v2 reflash, the changed artifact hash must be explicitly confirmed.
+Before v3 reflash, the changed artifact hash must be explicitly confirmed.
 The configuration will be reread, only application sectors written and
 verified, and the configuration reread again. A fresh recorder captures unique device samples from the
 start and rejects measurement/follower sequence mismatch. Natural

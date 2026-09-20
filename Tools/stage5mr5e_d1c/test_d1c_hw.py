@@ -1,24 +1,23 @@
 import unittest
 
-from d1c_hw import decode_d1c
+from d1c_hw import combined_state, decode_d1c
 
 
 class D1CHardwareDecoderTests(unittest.TestCase):
     def test_decode_signed_and_flags(self):
-        words = [0] * 51
+        words = [0] * 34
         words[0] = 0xD1C1
-        words[1:4] = [0x0514, 0x0104, 3]
-        words[4:8] = [0x1234, 0x5678, 0x0001, 0x2345]
-        words[8:12] = [0xFFFF, 0xFFFF, 0xFFFF, 0xFF9C]
-        words[12:14] = [0xFFFF, 0xFFF7]
+        words[1:5] = [0x1234, 0x5678, 0x0001, 0x2345]
+        words[5:7] = [0xFFFF, 0xFFFF]
+        words[7:9] = [0xFFFF, 0xFFF7]
+        words[9:11] = [0xFFFF, 0xFFFC]
+        words[11:13] = [0xFFFF, 0xFFFB]
+        words[13] = 0xFDFF
         words[14:16] = [0xFFFF, 0xFFFC]
-        words[16:18] = [0xFFFF, 0xFFFB]
-        words[18] = 0xFDFF
-        words[19:21] = [0xFFFF, 0xFFFC]
-        words[21] = 0x3F; words[22] = 0x0207
-        words[23:26] = [0x0102, 5, 0x1205]
-        words[26:42] = [0] * 16
-        words[42:51] = [0, 4, 0, 0, 0, 0, 0x8002, 8, 8]
+        words[16] = 0x3F; words[17] = 0x0207
+        words[18:21] = [0x0102, 5, 0x1205]
+        words[21:29] = [0] * 8
+        words[29:34] = [4, 0, 0, 0x8002, 0x0808]
         value = decode_d1c(words)
         self.assertEqual(-9, value["desired_division"])
         self.assertEqual(-4, value["display_division"])
@@ -35,10 +34,17 @@ class D1CHardwareDecoderTests(unittest.TestCase):
         self.assertEqual((1, 1, 1, 1, 1),
             tuple(value[key] for key in ("initialized", "locked",
                 "large_step", "stable", "active")))
+        class Client:
+            def read(self, address, count):
+                self.last = (address, count)
+                return words, None
+        combined = combined_state(Client())
+        self.assertEqual(-100, combined["authoritative_display_input_ug"])
+        self.assertEqual(-45, combined["desired_count"])
 
     def test_rejects_signature(self):
         with self.assertRaises(Exception):
-            decode_d1c([0] * 51)
+            decode_d1c([0] * 34)
 
 
 if __name__ == "__main__":

@@ -29,5 +29,18 @@
     "map_sha256": "81ADFD5B33B50F358E74BB522DF2AB2E4E11882B996DF716C084315EC2A5B5E2",
     "flashed": false,
     "change_scope": "engineering-only compact read-only evidence registers; display algorithm and parameters unchanged"
+  },
+  "d1c_beta_v3_nonblocking_diagnostics": {
+    "firmware": "0x0514",
+    "map": "0x0104",
+    "schema": 2,
+    "persistent_format": 3,
+    "elf_length": 1971912,
+    "elf_sha256": "F3B6E4C4E99F608C47FE52B345B65EE5BE3B1AE5F3B24510FBFC0BBE353CF2B1",
+    "bin_length": 102728,
+    "bin_sha256": "EDD903D6B7194211F2C5040ADF0C9B22A243330E57AED2DF40BE57E9477C0E4D",
+    "map_sha256": "A1C21171B6ED527311ACD35C56B19F3817084CEB1CFAB95BC36C1A4EC8762B8F",
+    "flashed": false,
+    "change_scope": "34-register read-only evidence block; masses encoded at 100 ug resolution; algorithm, parameters and RAM unchanged"
   }
 }
