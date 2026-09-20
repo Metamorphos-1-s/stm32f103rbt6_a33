@@ -70,4 +70,10 @@ Results/stage5mr5e_d1b/**/*.csv text eol=lf
 Results/stage5mr5e_d1b/**/*.txt text eol=lf
 Results/stage5mr5e_d1b/**/*.map text eol=lf
 Results/stage5mr5e_d1b/**/*.bin -text
+Results/stage5mr5e_d1c/**/*.json text eol=lf
+Results/stage5mr5e_d1c/**/*.jsonl text eol=lf
+Results/stage5mr5e_d1c/**/*.csv text eol=lf
+Results/stage5mr5e_d1c/**/*.txt text eol=lf
+Results/stage5mr5e_d1c/**/*.map text eol=lf
+Results/stage5mr5e_d1c/**/*.bin -text
 Docs/evidence/*.json text eol=lf
