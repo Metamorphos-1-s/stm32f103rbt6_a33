@@ -53,6 +53,8 @@ bool WeightEngine_ReinitializeMassBeta(WeightEngine *engine,
 bool WeightEngine_ProcessRawSample(WeightEngine *engine,
                                    const RawMeasurementSample *sample);
 const WeightSnapshot *WeightEngine_GetSnapshot(const WeightEngine *engine);
+bool WeightEngine_GetFastCalibratedMass(const WeightEngine *engine,
+    MassValueUg *mass_ug);
 WeightActionResult WeightEngine_Zero(WeightEngine *engine);
 WeightActionResult WeightEngine_ResetZero(WeightEngine *engine);
 WeightActionResult WeightEngine_Tare(WeightEngine *engine);

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "result": "STAGE 5N-A CHECKWEIGH ALARM SOFTWARE CANDIDATE READY; SHADOW HARDWARE QUALIFICATION PENDING; ACTIVE OUTPUT REMAINS BLOCKED; D1-C NONZERO-OFFSET QUALIFICATION DEFERRED; STAGE 5O REMAINS DEFERRED",
+  "static": {"input": "authoritative configured NET/GROSS ug",
+    "stable_confirmation_samples": 3, "dosing": "PENDING"},
+  "dynamic": {"input": "raw ADC converted through active CalibrationModel",
+    "hysteresis_ug": 20000, "confirmation_samples": 1,
+    "minimum_dwell_samples": 0},
+  "offline": {"candidate_search": 240, "passing": 8,
+    "load_worst_delay_ms": 103, "unload_worst_delay_ms": 0,
+    "cycles_worst_delay_ms": 153, "fill_worst_delay_ms": 215,
+    "missed_crossings": 0, "direction_errors": 0,
+    "boundary_raw_crossings": 599, "boundary_final_changes": 0,
+    "unstable_static_valid": 0, "dosing_static_valid": 0},
+  "python_c": {"samples": 45711, "mismatches": 0},
+  "official_outputs_changed": false, "r5_changed": false,
+  "d1c_changed": false, "firmware_0x0515_flashed": false,
+  "new_hardware_holdout_opened": false,
+  "stage5nb_active_output": "BLOCKED"
+}

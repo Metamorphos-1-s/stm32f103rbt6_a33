@@ -4,6 +4,7 @@
 #include "display_conditioner.h"
 #include "fault_manager.h"
 #include "metrology_config_validator.h"
+#include "mass_math.h"
 #include "system_context.h"
 #include "unit_converter.h"
 #include "weight_engine.h"
@@ -21,6 +22,23 @@ static bool s_runtime_drift_fault_latched;
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
 static R5DriftCompensator s_r5_drift;
 static R5BetaApplication s_r5_application;
+static CheckweighShadow s_alarm_shadow;
+static int64_t s_alarm_shadow_low_ug;
+static int64_t s_alarm_shadow_high_ug;
+#endif
+
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#define ALARM_SHADOW_RESET_ZERO 1U
+#define ALARM_SHADOW_RESET_TARE 2U
+#define ALARM_SHADOW_RESET_CLEAR_TARE 3U
+#define ALARM_SHADOW_RESET_CALIBRATION 4U
+#define ALARM_SHADOW_RESET_FILTER 5U
+#define ALARM_SHADOW_RESET_RECONFIGURE 6U
+#define ALARM_SHADOW_RESET_UNIT 7U
+#define ALARM_SHADOW_RESET_R5_MODE 8U
+#define ALARM_SHADOW_RESET_R5_APPLICATION 9U
+#define ALARM_SHADOW_RESET_LIMITS 10U
+#define ALARM_SHADOW_RESET_REVISION 12U
 #endif
 
 bool MetrologyManager_FaultInvalidatesRuntimeDrift(FaultCode fault)
@@ -119,6 +137,9 @@ bool MetrologyManager_Init(const DeviceConfig *config,
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     s_r5_application = R5_BETA_APPLICATION_SHADOW;
     (void)memset(&s_r5_drift, 0, sizeof(s_r5_drift));
+    CheckweighShadow_Reset(&s_alarm_shadow);
+    s_alarm_shadow_low_ug = INT64_C(100000000);
+    s_alarm_shadow_high_ug = INT64_C(400000000);
 #endif
     (void)memset(&s_engine, 0, sizeof(s_engine));
     (void)memset(&s_display_conditioner, 0, sizeof(s_display_conditioner));
@@ -168,6 +189,55 @@ bool MetrologyManager_Init(const DeviceConfig *config,
     }
     return s_initialized;
 }
+
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+static bool MetrologyManager_ProcessAlarmShadow(void)
+{
+    const WeightSnapshot *snapshot = WeightEngine_GetSnapshot(&s_engine);
+    const SystemContext *context = SystemContext_Get();
+    CheckweighShadowInput input = {0};
+    CheckweighShadowOutput output;
+    MassValueUg fast_gross;
+    MassValueUg fast_weight;
+    uint16_t revision;
+    bool fast_valid;
+    if ((snapshot == NULL) || (context == NULL)) return false;
+    fast_valid = WeightEngine_GetFastCalibratedMass(&s_engine, &fast_gross);
+    if (!fast_valid) fast_gross = 0;
+    fast_weight = fast_gross;
+    if ((context->config.alarm.weight_source == ALARM_WEIGHT_NET) &&
+        !MassMath_Subtract(fast_gross, snapshot->tare_mass_ug,
+            &fast_weight)) return false;
+    revision = (uint16_t)SystemContext_GetConfigRevision();
+    if ((s_alarm_shadow.last_revision != 0U) &&
+        (s_alarm_shadow.last_revision != revision))
+        CheckweighShadow_RequestReset(&s_alarm_shadow,
+            ALARM_SHADOW_RESET_REVISION);
+    input.sequence = snapshot->sample_sequence;
+    input.timestamp_ms = snapshot->sample_timestamp_ms;
+    input.static_weight_ug =
+        (context->config.alarm.weight_source == ALARM_WEIGHT_GROSS) ?
+        snapshot->gross_mass_ug : snapshot->net_mass_ug;
+    input.dynamic_weight_ug = fast_weight;
+    input.low_limit_ug = s_alarm_shadow_low_ug;
+    input.high_limit_ug = s_alarm_shadow_high_ug;
+    input.stable = (snapshot->status_flags & WEIGHT_STATUS_STABLE) != 0U;
+    input.process_active =
+        s_r5_drift.mode == R5_DRIFT_MODE_DOSING_NO_COMPENSATION;
+    input.valid =
+        ((snapshot->status_flags & WEIGHT_STATUS_WEIGHT_VALID) != 0U) &&
+        fast_valid;
+    input.fault = FaultManager_HasWeightInvalidFault();
+    input.overload =
+        (snapshot->status_flags & WEIGHT_STATUS_OVERLOAD) != 0U;
+    input.calibration = (SystemContext_GetState() == APP_STATE_CALIBRATION) ||
+        !fast_valid;
+    if (!CheckweighShadow_Process(&s_alarm_shadow, &input, &output))
+        return false;
+    s_alarm_shadow.last_revision = revision;
+    return true;
+}
+#endif
 
 bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
 {
@@ -223,6 +293,7 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
 r5_sample_complete:
         (void)0;
     }
+    (void)MetrologyManager_ProcessAlarmShadow();
 #endif
     if (!MetrologyManager_UpdateDisplayConditioner())
     {
@@ -361,6 +432,9 @@ bool MetrologyManager_SetDisplayUnit(MassUnit unit)
     }
 #endif
     MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    CheckweighShadow_RequestReset(&s_alarm_shadow, ALARM_SHADOW_RESET_UNIT);
+#endif
     return true;
 }
 
@@ -386,6 +460,8 @@ WeightActionResult MetrologyManager_Zero(void)
         R5Drift_HandleEvent(&s_r5_drift, R5_DRIFT_EVENT_ZERO);
         (void)WeightEngine_SetBetaExternalDrift(&s_engine, 0,
             s_r5_application == R5_BETA_APPLICATION_ACTIVE);
+        CheckweighShadow_RequestReset(&s_alarm_shadow,
+            ALARM_SHADOW_RESET_ZERO);
 #endif
         MetrologyManager_RequestOperatorZeroAnchor();
     }
@@ -404,6 +480,10 @@ WeightActionResult MetrologyManager_ResetZero(void)
     else if (result == WEIGHT_ACTION_OK)
     {
         MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+        CheckweighShadow_RequestReset(&s_alarm_shadow,
+            ALARM_SHADOW_RESET_ZERO);
+#endif
     }
     return result;
 }
@@ -415,6 +495,10 @@ WeightActionResult MetrologyManager_Tare(void)
 
     if (result == WEIGHT_ACTION_OK)
     {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+        CheckweighShadow_RequestReset(&s_alarm_shadow,
+            ALARM_SHADOW_RESET_TARE);
+#endif
         MetrologyManager_SyncTare(true);
         if ((SystemContext_Get() != NULL) &&
             (SystemContext_Get()->runtime.weight_view == WEIGHT_VIEW_NET))
@@ -440,6 +524,10 @@ WeightActionResult MetrologyManager_ClearTare(void)
 
     if (result == WEIGHT_ACTION_OK)
     {
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+        CheckweighShadow_RequestReset(&s_alarm_shadow,
+            ALARM_SHADOW_RESET_CLEAR_TARE);
+#endif
         MetrologyManager_SyncTare(true);
         MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
     }
@@ -465,6 +553,8 @@ bool MetrologyManager_ApplyCalibration(
     }
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     R5Drift_HandleEvent(&s_r5_drift, R5_DRIFT_EVENT_CALIBRATION_COMMIT);
+    CheckweighShadow_RequestReset(&s_alarm_shadow,
+        ALARM_SHADOW_RESET_CALIBRATION);
 #endif
     (void)SystemContext_SetConfigDirty(true);
     MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_CALIBRATION);
@@ -480,6 +570,7 @@ bool MetrologyManager_ReconfigureFilter(FilterMode mode, uint8_t strength)
     }
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     R5Drift_HandleEvent(&s_r5_drift, R5_DRIFT_EVENT_PROFILE_CHANGE);
+    CheckweighShadow_RequestReset(&s_alarm_shadow, ALARM_SHADOW_RESET_FILTER);
 #endif
     (void)SystemContext_SetConfigDirty(true);
     MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
@@ -585,8 +676,13 @@ static bool MetrologyManager_RebuildEngine(const DeviceConfig *config,
 
 bool MetrologyManager_Reconfigure(const DeviceConfig *config)
 {
-    return MetrologyManager_RebuildEngine(config,
+    bool result = MetrologyManager_RebuildEngine(config,
         METROLOGY_REBUILD_REPLAY_RAW);
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if (result) CheckweighShadow_RequestReset(&s_alarm_shadow,
+        ALARM_SHADOW_RESET_RECONFIGURE);
+#endif
+    return result;
 }
 
 #if (STAGE5L_SWD_DIAGNOSTICS != 0U)
@@ -675,9 +771,12 @@ bool MetrologyManager_SetR5Mode(R5DriftMode mode)
         (state != APP_STATE_MENU)) || !R5Drift_SetMode(&s_r5_drift, mode))
         return false;
     snapshot = R5Drift_GetSnapshot(&s_r5_drift);
-    return (snapshot != NULL) && WeightEngine_SetBetaExternalDrift(&s_engine,
+    if ((snapshot == NULL) || !WeightEngine_SetBetaExternalDrift(&s_engine,
         snapshot->offset_ug,
-        s_r5_application == R5_BETA_APPLICATION_ACTIVE);
+        s_r5_application == R5_BETA_APPLICATION_ACTIVE)) return false;
+    CheckweighShadow_RequestReset(&s_alarm_shadow,
+        ALARM_SHADOW_RESET_R5_MODE);
+    return true;
 }
 
 bool MetrologyManager_SetR5Application(R5BetaApplication application)
@@ -688,8 +787,11 @@ bool MetrologyManager_SetR5Application(R5BetaApplication application)
     snapshot = R5Drift_GetSnapshot(&s_r5_drift);
     if (snapshot == NULL) return false;
     s_r5_application = application;
-    return WeightEngine_SetBetaExternalDrift(&s_engine, snapshot->offset_ug,
-        application == R5_BETA_APPLICATION_ACTIVE);
+    if (!WeightEngine_SetBetaExternalDrift(&s_engine, snapshot->offset_ug,
+        application == R5_BETA_APPLICATION_ACTIVE)) return false;
+    CheckweighShadow_RequestReset(&s_alarm_shadow,
+        ALARM_SHADOW_RESET_R5_APPLICATION);
+    return true;
 }
 
 void MetrologyManager_ResetR5(void)
@@ -702,6 +804,8 @@ void MetrologyManager_ResetR5(void)
         (void)R5Drift_SetMode(&s_r5_drift, R5_DRIFT_MODE_OFF);
     (void)WeightEngine_SetBetaExternalDrift(&s_engine, 0,
         s_r5_application == R5_BETA_APPLICATION_ACTIVE);
+    CheckweighShadow_RequestReset(&s_alarm_shadow,
+        ALARM_SHADOW_RESET_R5_MODE);
 }
 
 const R5DriftSnapshot *MetrologyManager_GetR5Snapshot(void)
@@ -712,5 +816,60 @@ const R5DriftSnapshot *MetrologyManager_GetR5Snapshot(void)
 R5BetaApplication MetrologyManager_GetR5Application(void)
 {
     return s_r5_application;
+}
+
+bool MetrologyManager_SetAlarmShadowThresholds(int64_t low_ug,
+    int64_t high_ug)
+{
+    s_alarm_shadow_low_ug = low_ug;
+    s_alarm_shadow_high_ug = high_ug;
+    CheckweighShadow_RequestReset(&s_alarm_shadow,
+        ALARM_SHADOW_RESET_LIMITS);
+    return true;
+}
+
+bool MetrologyManager_GetAlarmShadowDiagnostics(
+    AlarmShadowDiagnostics *diagnostics)
+{
+    const WeightSnapshot *snapshot = WeightEngine_GetSnapshot(&s_engine);
+    const SystemContext *context = SystemContext_Get();
+    MassValueUg fast_gross;
+    MassValueUg fast_weight;
+    if ((diagnostics == NULL) || (snapshot == NULL) || (context == NULL) ||
+        !WeightEngine_GetFastCalibratedMass(&s_engine, &fast_gross))
+        return false;
+    fast_weight = fast_gross;
+    if ((context->config.alarm.weight_source == ALARM_WEIGHT_NET) &&
+        !MassMath_Subtract(fast_gross, snapshot->tare_mass_ug,
+            &fast_weight)) return false;
+    diagnostics->static_input_ug =
+        (context->config.alarm.weight_source == ALARM_WEIGHT_GROSS) ?
+        snapshot->gross_mass_ug : snapshot->net_mass_ug;
+    diagnostics->dynamic_input_ug = fast_weight;
+    diagnostics->low_limit_ug = s_alarm_shadow_low_ug;
+    diagnostics->high_limit_ug = s_alarm_shadow_high_ug;
+    diagnostics->event_count = s_alarm_shadow.event_count;
+    diagnostics->sample_sequence = snapshot->sample_sequence;
+    diagnostics->timestamp_ms = snapshot->sample_timestamp_ms;
+    diagnostics->revision = s_alarm_shadow.last_revision;
+    diagnostics->static_immediate = CheckweighShadow_Classify(
+        diagnostics->static_input_ug, s_alarm_shadow_low_ug,
+        s_alarm_shadow_high_ug);
+    diagnostics->static_class = s_alarm_shadow.last_static_class;
+    diagnostics->static_last_valid = s_alarm_shadow.static_last_valid;
+    diagnostics->static_stable_count = s_alarm_shadow.static_stable_count;
+    diagnostics->static_reason = s_alarm_shadow.last_static_reason;
+    diagnostics->dynamic_immediate = CheckweighShadow_Classify(
+        diagnostics->dynamic_input_ug, s_alarm_shadow_low_ug,
+        s_alarm_shadow_high_ug);
+    diagnostics->dynamic_candidate = s_alarm_shadow.dynamic_candidate;
+    diagnostics->dynamic_confirmed = s_alarm_shadow.dynamic_confirmed;
+    diagnostics->dynamic_confirm_count = s_alarm_shadow.dynamic_confirm_count;
+    diagnostics->dynamic_reason = s_alarm_shadow.last_dynamic_reason;
+    diagnostics->process_active =
+        s_r5_drift.mode == R5_DRIFT_MODE_DOSING_NO_COMPENSATION;
+    diagnostics->valid =
+        (snapshot->status_flags & WEIGHT_STATUS_WEIGHT_VALID) != 0U;
+    return true;
 }
 #endif

@@ -262,6 +262,16 @@ const WeightSnapshot *WeightEngine_GetSnapshot(const WeightEngine *engine)
     return ((engine != NULL) && engine->initialized) ? &engine->snapshot : NULL;
 }
 
+bool WeightEngine_GetFastCalibratedMass(const WeightEngine *engine,
+    MassValueUg *mass_ug)
+{
+    if ((engine == NULL) || !engine->initialized || !engine->has_raw_sample ||
+        (mass_ug == NULL)) return false;
+    return CalibrationModel_ConvertMass(&engine->calibration,
+        engine->snapshot.raw_value, engine->zero_tare.zero_offset_raw,
+        mass_ug) == CALIBRATION_RESULT_OK;
+}
+
 WeightActionResult WeightEngine_Zero(WeightEngine *engine)
 {
     WeightActionResult result;

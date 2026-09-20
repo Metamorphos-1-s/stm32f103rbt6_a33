@@ -890,6 +890,14 @@ CommandResult CommandService_Execute(const CommandRequest *request,
                 (R5BetaApplication)request->value0) ? COMMAND_RESULT_OK :
                 COMMAND_RESULT_INVALID_STATE;
             break;
+        case COMMAND_ALARM_SHADOW_SET_LIMITS:
+            if ((request->source == COMMAND_SOURCE_BLE) ||
+                (request->flags != 0U) || (request->value64 != 0))
+                result = COMMAND_RESULT_INVALID_ARGUMENT;
+            else result = MetrologyManager_SetAlarmShadowThresholds(
+                request->value0, request->value1) ? COMMAND_RESULT_OK :
+                COMMAND_RESULT_INVALID_STATE;
+            break;
 #endif
         case COMMAND_COUNT:
         default:

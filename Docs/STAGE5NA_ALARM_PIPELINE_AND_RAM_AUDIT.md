@@ -92,12 +92,11 @@ feeds it into formal stable, R5, official weights or display.
 
 Formal alarm static state consists of `LimitChecker`, `AlarmOutputManager`,
 last sample/revision/state/fault flags and a cached AlarmConfig. None is reused
-or modified by Stage 5N-A. The selected independent SHADOW design needs four
-uint32 fields and eight uint8 fields, exactly 24 bytes before target ABI
-verification. It has no arrays, allocation or queue.
+or modified by Stage 5N-A. The selected state uses three uint32 fields, one
+uint16 field, nine uint8 fields and one alignment byte: 24 bytes total. It has
+no arrays, allocation or queue. Two volatile int64 thresholds add 16 bytes.
 
-D1-C collision margin is 568 bytes and the hard minimum is 512 bytes. Stage
-5N-A budgets at most 24 bytes permanent state and 24 bytes additional worst
-call-chain stack. The engineering diagnostic will read a snapshot of that
-state without duplicating histories. Final map and stack-usage analysis remain
-mandatory before 0x0515 can be built or flashed.
+D1-C collision margin is 568 bytes and the hard minimum is 512 bytes. The
+Stage 5N-A global maximum call chain does not increase; the 40-byte RAM delta
+therefore leaves 528 bytes. The engineering diagnostic reads a snapshot of
+candidate state without duplicating histories.

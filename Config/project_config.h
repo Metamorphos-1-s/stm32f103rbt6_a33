@@ -11,7 +11,7 @@
 #define A33_ENABLE_STAGE5MR5_BETA     0U
 #endif
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
-#define FW_RELEASE_VERSION            0x0514U
+#define FW_RELEASE_VERSION            0x0515U
 #else
 #define FW_RELEASE_VERSION            0x0510U
 #endif

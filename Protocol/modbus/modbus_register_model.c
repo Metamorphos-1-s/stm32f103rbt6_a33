@@ -593,6 +593,88 @@ static ModbusRegisterResult ReadOne(uint16_t address,
         else return MODBUS_REGISTER_ILLEGAL_ADDRESS;
         return MODBUS_REGISTER_OK;
     }
+    if ((address >= MODBUS_5NA_FIRST) && (address <= MODBUS_5NA_LAST))
+    {
+        AlarmShadowDiagnostics alarm_shadow = {0};
+        AlarmOutputDiagnostics formal = {0};
+        R5DriftSnapshot r5_empty = {0};
+        const R5DriftSnapshot *r5_live = MetrologyManager_GetR5Snapshot();
+        const R5DriftSnapshot *r5 = (r5_live != NULL) ? r5_live : &r5_empty;
+        const ConfigStoreStatistics *statistics = ConfigStore_GetStatistics();
+        bool available = MetrologyManager_GetAlarmShadowDiagnostics(
+            &alarm_shadow);
+        bool formal_available = App_GetAlarmOutputDiagnostics(&formal);
+        if (address == MODBUS_5NA_SIGNATURE) *value = 0x5AA5U;
+        else if (address >= MODBUS_5NA_STATIC_INPUT_FIRST && address <= 0x02E4U)
+            *value = Word64((uint64_t)alarm_shadow.static_input_ug,
+                (uint8_t)(address - MODBUS_5NA_STATIC_INPUT_FIRST), order);
+        else if (address >= MODBUS_5NA_DYNAMIC_INPUT_FIRST && address <= 0x02E8U)
+            *value = Word64((uint64_t)alarm_shadow.dynamic_input_ug,
+                (uint8_t)(address - MODBUS_5NA_DYNAMIC_INPUT_FIRST), order);
+        else if (address >= MODBUS_5NA_LOW_LIMIT_FIRST && address <= 0x02ECU)
+            *value = Word64((uint64_t)alarm_shadow.low_limit_ug,
+                (uint8_t)(address - MODBUS_5NA_LOW_LIMIT_FIRST), order);
+        else if (address >= MODBUS_5NA_HIGH_LIMIT_FIRST && address <= 0x02F0U)
+            *value = Word64((uint64_t)alarm_shadow.high_limit_ug,
+                (uint8_t)(address - MODBUS_5NA_HIGH_LIMIT_FIRST), order);
+        else if (address >= MODBUS_5NA_SEQUENCE_FIRST && address <= 0x02F2U)
+            *value = Word32(alarm_shadow.sample_sequence,
+                (uint8_t)(address - MODBUS_5NA_SEQUENCE_FIRST), order);
+        else if (address >= MODBUS_5NA_EVENT_FIRST && address <= 0x02F4U)
+            *value = Word32(alarm_shadow.event_count,
+                (uint8_t)(address - MODBUS_5NA_EVENT_FIRST), order);
+        else if (address == MODBUS_5NA_CLASSES)
+            *value = (uint16_t)((alarm_shadow.static_immediate << 12U) |
+                (alarm_shadow.static_class << 8U) |
+                (alarm_shadow.dynamic_immediate << 4U) |
+                alarm_shadow.dynamic_confirmed);
+        else if (address == MODBUS_5NA_STATIC_DETAIL)
+            *value = (uint16_t)((alarm_shadow.static_stable_count << 8U) |
+                alarm_shadow.static_reason);
+        else if (address == MODBUS_5NA_DYNAMIC_DETAIL)
+            *value = (uint16_t)((alarm_shadow.dynamic_candidate << 12U) |
+                (alarm_shadow.dynamic_confirm_count << 8U) |
+                (alarm_shadow.dynamic_reason << 4U) |
+                (alarm_shadow.process_active ? 2U : 0U) |
+                (alarm_shadow.valid ? 1U : 0U));
+        else if (address == MODBUS_5NA_FORMAL_OUTPUTS)
+            *value = (uint16_t)((formal_available ?
+                (uint16_t)formal.checkweigh_state : 0U) |
+                ((formal_available && formal.buzzer_mode ==
+                    ALARM_BUZZER_MODE_ALARM) ? 0x0010U : 0U) |
+                ((formal_available && formal.green_active) ? 0x0020U : 0U) |
+                ((formal_available && formal.yellow_active) ? 0x0040U : 0U) |
+                ((formal_available && formal.red_active) ? 0x0080U : 0U) |
+                ((formal_available && formal.internal_buzzer_active) ?
+                    0x0100U : 0U) |
+                ((formal_available && formal.external_buzzer_active) ?
+                    0x0200U : 0U) |
+                (((flags & WEIGHT_STATUS_STABLE) != 0U) ? 0x0400U : 0U) |
+                (((flags & WEIGHT_STATUS_OVERLOAD) != 0U) ? 0x0800U : 0U));
+        else if (address == MODBUS_5NA_SAFETY)
+            *value = (uint16_t)((context->runtime.config_dirty ? 0x8000U : 0U) |
+                (((statistics != NULL && statistics->save_request_count > 7U) ?
+                    7U : (statistics != NULL ? statistics->save_request_count : 0U)) << 12U) |
+                ((FaultManager_GetActiveMask() != 0U) ? 0x0F00U : 0U) |
+                ((MeasurementBridge_GetObservedOverrunCount() > 15U ? 15U :
+                    MeasurementBridge_GetObservedOverrunCount()) << 4U));
+        else if (address == MODBUS_5NA_REVISION_SAVED)
+            *value = (uint16_t)(((context->config_revision > 255U ? 255U :
+                context->config_revision) << 8U) |
+                (context->saved_revision > 255U ? 255U :
+                context->saved_revision));
+        else if (address >= MODBUS_5NA_R5_INPUT_FIRST && address <= 0x02FCU)
+            *value = Word32((uint32_t)(int32_t)
+                (r5->uncompensated_gross_ug / INT64_C(100)),
+                (uint8_t)(address - MODBUS_5NA_R5_INPUT_FIRST), order);
+        else if (address >= MODBUS_5NA_TIMESTAMP_FIRST && address <= 0x02FEU)
+            *value = Word32(alarm_shadow.timestamp_ms,
+                (uint8_t)(address - MODBUS_5NA_TIMESTAMP_FIRST), order);
+        else return MODBUS_REGISTER_ILLEGAL_ADDRESS;
+        if (!available && address != MODBUS_5NA_SIGNATURE)
+            *value = 0U;
+        return MODBUS_REGISTER_OK;
+    }
 #endif
     if ((address >= MODBUS_STARTUP_ZERO_FIRST) &&
         (address <= MODBUS_STARTUP_ZERO_LAST))

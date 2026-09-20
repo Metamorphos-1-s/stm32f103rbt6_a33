@@ -167,6 +167,20 @@ else()
     target_compile_options(stage5mr5e_d1c_display_runner PRIVATE
         -Wall -Wextra -Werror)
 endif()
+
+add_executable(stage5na_shadow_runner
+    stage5na_shadow_runner.c
+    ../../Experimental/stage5na/checkweigh_shadow.c)
+target_include_directories(stage5na_shadow_runner PRIVATE
+    ../../Experimental/stage5na)
+target_compile_definitions(stage5na_shadow_runner PRIVATE
+    _CRT_SECURE_NO_WARNINGS)
+if(MSVC)
+    target_compile_options(stage5na_shadow_runner PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5na_shadow_runner PRIVATE
+        -Wall -Wextra -Werror)
+endif()
 add_test(NAME stage5ma_adaptive_logic COMMAND stage5ma_adaptive_tests)
 
 add_executable(stage5mr_drift_tests

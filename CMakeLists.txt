@@ -157,9 +157,15 @@ endif()
 if(A33_ENABLE_STAGE5MR5_BETA)
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         Domain/measurement/reference_lock_drift_compensator.c
+        Experimental/stage5na/checkweigh_shadow.c
         UI/display_model/directional_display_follower.c
         UI/r5_local_control.c
         UI/ui_config_workspace.c)
+endif()
+
+if(A33_ENABLE_STAGE5MR5_BETA)
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        Experimental/stage5na)
 endif()
 
 if(NOT A33_ENABLE_BOARD_DIAGNOSTICS)

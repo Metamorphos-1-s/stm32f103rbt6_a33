@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "state_bytes": 24,
+  "config": {
+    "static_stable_samples": 3,
+    "dynamic_hysteresis_ug": 20000,
+    "dynamic_confirm_samples": 1,
+    "dynamic_min_dwell_samples": 0
+  },
+  "cases": [
+    {
+      "case": "load_500g",
+      "samples": 919,
+      "mismatches": 1,
+      "first_mismatches": [
+        {
+          "rows": 0,
+          "expected": 919
+        }
+      ]
+    },
+    {
+      "case": "unload_500g",
+      "samples": 927,
+      "mismatches": 1,
+      "first_mismatches": [
+        {
+          "rows": 0,
+          "expected": 927
+        }
+      ]
+    },
+    {
+      "case": "cycles_5",
+      "samples": 3219,
+      "mismatches": 1,
+      "first_mismatches": [
+        {
+          "rows": 0,
+          "expected": 3219
+        }
+      ]
+    },
+    {
+      "case": "empty_static",
+      "samples": 5266,
+      "mismatches": 1,
+      "first_mismatches": [
+        {
+          "rows": 0,
+          "expected": 5266
+        }
+      ]
+    },
+    {
+      "case": "loaded_static",
+      "samples": 31132,
+      "mismatches": 1,
+      "first_mismatches": [
+        {
+          "rows": 0,
+          "expected": 31132
+        }
+      ]
+    },
+    {
+      "case": "slow_fill",
+      "samples": 2073,
+      "mismatches": 1,
+      "first_mismatches": [
+        {
+          "rows": 0,
+          "expected": 2073
+        }
+      ]
+    },
+    {
+      "case": "faster_fill",
+      "samples": 2072,
+      "mismatches": 1,
+      "first_mismatches": [
+        {
+          "rows": 0,
+          "expected": 2072
+        }
+      ]
+    },
+    {
+      "case": "synthetic_resets_boundaries",
+      "samples": 103,
+      "mismatches": 1,
+      "first_mismatches": [
+        {
+          "rows": 0,
+          "expected": 103
+        }
+      ]
+    }
+  ],
+  "samples": 45711,
+  "mismatches": 8
+}

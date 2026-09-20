@@ -8,10 +8,33 @@
 #include "runtime_drift_compensator.h"
 #if defined(A33_ENABLE_STAGE5MR5_BETA) && (A33_ENABLE_STAGE5MR5_BETA != 0U)
 #include "reference_lock_drift_compensator.h"
+#include "checkweigh_shadow.h"
 typedef enum {
     R5_BETA_APPLICATION_SHADOW = 0,
     R5_BETA_APPLICATION_ACTIVE = 1
 } R5BetaApplication;
+typedef struct {
+    int64_t static_input_ug;
+    int64_t dynamic_input_ug;
+    int64_t low_limit_ug;
+    int64_t high_limit_ug;
+    uint32_t event_count;
+    uint32_t sample_sequence;
+    uint32_t timestamp_ms;
+    uint16_t revision;
+    uint8_t static_immediate;
+    uint8_t static_class;
+    uint8_t static_last_valid;
+    uint8_t static_stable_count;
+    uint8_t static_reason;
+    uint8_t dynamic_immediate;
+    uint8_t dynamic_candidate;
+    uint8_t dynamic_confirmed;
+    uint8_t dynamic_confirm_count;
+    uint8_t dynamic_reason;
+    bool process_active;
+    bool valid;
+} AlarmShadowDiagnostics;
 #endif
 #include "weight_types.h"
 #include "fault_manager.h"
@@ -55,6 +78,10 @@ bool MetrologyManager_SetR5Application(R5BetaApplication application);
 void MetrologyManager_ResetR5(void);
 const R5DriftSnapshot *MetrologyManager_GetR5Snapshot(void);
 R5BetaApplication MetrologyManager_GetR5Application(void);
+bool MetrologyManager_SetAlarmShadowThresholds(int64_t low_ug,
+    int64_t high_ug);
+bool MetrologyManager_GetAlarmShadowDiagnostics(
+    AlarmShadowDiagnostics *diagnostics);
 #endif
 
 #endif /* METROLOGY_MANAGER_H */

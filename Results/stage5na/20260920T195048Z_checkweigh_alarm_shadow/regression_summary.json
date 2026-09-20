@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "stage5na_python": "12/12 PASS",
+  "stage5na_python_c": "45711 samples / 0 mismatch",
+  "r5_python_c": "25057 samples / 0 mismatch",
+  "d1c_python_c": "49105 samples / 0 mismatch",
+  "host_ctest": "28/28 PASS",
+  "stage5b": "3/3 top-level and 30/30 nested PASS",
+  "stage5c": "12/12 PASS", "stage5l": "8/8 PASS",
+  "stage5lr_g2": "8/8 PASS", "r2_r3_r4": "22/22 PASS",
+  "stage5mf": "3/3 PASS", "r5_tools": "13/13 PASS",
+  "r5d": "5/5 PASS", "d1b": "6/6 PASS", "d1c": "10/10 PASS",
+  "manifest_tools": "4/4 PASS", "debug_build": "PASS",
+  "release_build": "PASS", "beta_build": "PASS",
+  "warning_clean": "PASS -Wall -Wextra -Werror",
+  "formal_output_isolation": "PASS",
+  "dynamic_memory_scan": "PASS", "asan": "NOT RUN", "ubsan": "NOT RUN"
+}
