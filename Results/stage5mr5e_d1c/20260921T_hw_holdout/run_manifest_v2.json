@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
-  "classification": "STAGE5MR5E_D1C_V1_FLASH_AND_FAILED_RECORDER_PREFLIGHT",
+  "classification": "STAGE5MR5E_D1C_V1_V2_FLASH_AND_PREFLIGHT_FAILURES",
   "run_id": "20260921T_hw_holdout",
-  "repository_commit": "b6938c175346a45af7a51f942164c472e3034bf6",
+  "repository_commit": "7429f3a32b5af77dcf73f504225ed9f47e60558b",
   "files": [
     {
       "path": "config_after_flash.bin",
@@ -15,6 +15,16 @@
       "sha256": "7A48453F5F3B6F9B538A4728C37956E9942CCA339EB69E59B1C9779D6A148725"
     },
     {
+      "path": "config_after_v2_flash.bin",
+      "length": 4096,
+      "sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4"
+    },
+    {
+      "path": "config_after_v2_flash_read.txt",
+      "length": 1125,
+      "sha256": "A0587B4FA30E9C2B3C902E81CFFAB8AE7751F323CF0F6243EFD3B33CC2CC0EF7"
+    },
+    {
       "path": "config_before_flash.bin",
       "length": 4096,
       "sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4"
@@ -25,14 +35,29 @@
       "sha256": "950CFC7650B2E3A79F6D42654B0F9A2F9B401161ECFB7A01427E3884A7770601"
     },
     {
+      "path": "config_before_v2_flash.bin",
+      "length": 4096,
+      "sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4"
+    },
+    {
+      "path": "config_before_v2_flash_read.txt",
+      "length": 1126,
+      "sha256": "6C62E6DFD6F1A66A60BB7C0B7F6420338B572903565198FDED37D07CB2701997"
+    },
+    {
       "path": "diagnostic_refresh_summary.json",
-      "length": 1761,
-      "sha256": "E378BAD8ACA5CF226E08E8902408A4CF6F46360E3404F1B81E896553FF709454"
+      "length": 2428,
+      "sha256": "2C27458E58A7511EC375A0A29B4A42C8CC84F0C1F100E8F94EFF2FB134819CF9"
     },
     {
       "path": "flash_0514.txt",
       "length": 1700,
       "sha256": "396D1301D10C7135C6AE380B0D5EECFC920346D1198288C16DEA78CD777B4CB9"
+    },
+    {
+      "path": "flash_0514_v2.txt",
+      "length": 1708,
+      "sha256": "A34E2BBB0CFE77C6D72F4F8EED6F658AB1ED27D280E4ECB22EB9795C46881107"
     },
     {
       "path": "postflash_d1c_preflight/frames.jsonl",
@@ -53,6 +78,51 @@
       "path": "postflash_probe_0514.json",
       "length": 2830,
       "sha256": "E2574D5C85895F4C5A308524F1D692912D92612438285D92DB30B6F4956E8F49"
+    },
+    {
+      "path": "postflash_v2_10hz_preflight/frames.jsonl",
+      "length": 4785,
+      "sha256": "F49FFD92147ED87FD665B45754CE13713ED653782B0E0D6E1A21ABD971C08717"
+    },
+    {
+      "path": "postflash_v2_10hz_preflight/samples.csv",
+      "length": 509,
+      "sha256": "995B4C7E90CAE89801F180AE703CDF6B1A22FCF62B60B8D994629C9265DA2B35"
+    },
+    {
+      "path": "postflash_v2_10hz_preflight_retry/frames.jsonl",
+      "length": 43935,
+      "sha256": "4F7E7219B3BC8CAC6E346AE0936E9FD9E936BC4D41A2C0AB61AD073B3BF0E498"
+    },
+    {
+      "path": "postflash_v2_10hz_preflight_retry/samples.csv",
+      "length": 16349,
+      "sha256": "DED1A760483C3CB58A5453C2C7EAA2805158F26F792A49C0F62C6492B0DCFFB7"
+    },
+    {
+      "path": "postflash_v2_10hz_preflight_retry/summary.json",
+      "length": 1476,
+      "sha256": "3F10CE4EC39ECE8F36F06168938F03D7A1AE894559459363933FBFC4074FF9F2"
+    },
+    {
+      "path": "postflash_v2_10hz_preflight_retry2/frames.jsonl",
+      "length": 43935,
+      "sha256": "4CBE4A96A10CF397C2E1A6935D336EC3852C3044783785C3769C5A96C5211C72"
+    },
+    {
+      "path": "postflash_v2_10hz_preflight_retry2/samples.csv",
+      "length": 16509,
+      "sha256": "B8CB707CA586298FD9AACBFC1F49E309EA75AE6CF2A2E5090B99E106134CB73C"
+    },
+    {
+      "path": "postflash_v2_10hz_preflight_retry2/summary.json",
+      "length": 1476,
+      "sha256": "4DA0AEC7835D7554B7374CD6668F64B8E76A4CABCA75587B43CE04D3C96EB8A8"
+    },
+    {
+      "path": "postflash_v2_probe.json",
+      "length": 2830,
+      "sha256": "2FDB593BB05A574CDD4FBBEAB0EF091F010C086A4B323865A7FFC6B9067C2D7A"
     },
     {
       "path": "preflash_0512_application.bin",

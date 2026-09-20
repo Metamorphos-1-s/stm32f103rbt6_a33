@@ -2,7 +2,7 @@
   "schema_version": 2,
   "classification": "STAGE5MR5E_D1C_DIRECTIONAL_DISPLAY_SOFTWARE_FREEZE",
   "run_id": "20260920T145738Z_directional_evidence_display",
-  "repository_commit": "b6938c175346a45af7a51f942164c472e3034bf6",
+  "repository_commit": "7429f3a32b5af77dcf73f504225ed9f47e60558b",
   "files": [
     {
       "path": "c_parity.json",
@@ -31,8 +31,8 @@
     },
     {
       "path": "firmware_identity.json",
-      "length": 1246,
-      "sha256": "1DDCFDF7F8B7C773A814DBACC68368D7551044EE3EAA618932C792B6ACDE48FF"
+      "length": 1856,
+      "sha256": "F11AD160B6BA28DE982FDC77F80A00BC6302A6F125ABBC5A66D3122EDAB17317"
     },
     {
       "path": "parameter_freeze.json",
@@ -91,8 +91,8 @@
     },
     {
       "path": "software_summary.json",
-      "length": 1320,
-      "sha256": "3F28ACB56BBE5810CE3115FE8205EC51F5CCF931A83946A6A54D3E280725B381"
+      "length": 1482,
+      "sha256": "D9A0A077ECC79896BB182D5343890EA3C79F16BC8A5D00D0208BA5C6AD398304"
     },
     {
       "path": "stage5mr5e_d1c_0514_application.bin",
@@ -105,6 +105,11 @@
       "sha256": "53461D36C78447811D9530739A51AE2710E392ACDED825CF2C0082C2265218B8"
     },
     {
+      "path": "stage5mr5e_d1c_0514_application_v3.bin",
+      "length": 102728,
+      "sha256": "EDD903D6B7194211F2C5040ADF0C9B22A243330E57AED2DF40BE57E9477C0E4D"
+    },
+    {
       "path": "stage5mr5e_d1c_0514_beta.map",
       "length": 1396772,
       "sha256": "61DE959CF7943C0053AC6B3013334DD86A028DD6B6ED2C91F6599386F03B7026"
@@ -113,6 +118,11 @@
       "path": "stage5mr5e_d1c_0514_beta_v2.map",
       "length": 1396772,
       "sha256": "F8C3047D09B9E285BB9227107A4CF89D6E8441185CC8094752D9856B3276AEAE"
+    },
+    {
+      "path": "stage5mr5e_d1c_0514_beta_v3.map",
+      "length": 1396772,
+      "sha256": "3F3FB48274586C528C07DF6D2F0098FA50BA3BA01C951BBF2D0E84952E0373B3"
     }
   ]
 }
