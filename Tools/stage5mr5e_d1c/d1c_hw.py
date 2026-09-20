@@ -12,9 +12,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "Tools" / "stage5b_hw"))
 sys.path.insert(0, str(ROOT / "Tools" / "stage5mr5b_beta"))
-from hw_common import HardwareTestError, ModbusClient
+from hw_common import HardwareTestError, ModbusClient, execute_command
 from serial_transport import SerialTransport
-from r5_beta_hw import i32, i64
+from r5_beta_hw import COMMAND_SET_APPLICATION, i32, i64
 
 
 D1C_FIRST = 0x02A8
@@ -105,14 +105,29 @@ def record(args):
     next_poll = started
     records = duplicates = errors = reconnects = maximum_gap = 0
     first_sequence = final_sequence = None; final = None
-    frame_stream = frames_path.open("a", encoding="utf-8", newline="")
+    desired_min = desired_max = trigger_monotonic = None
+    status = "COMPLETE"
+    frame_stream = None if args.no_frames else frames_path.open(
+        "a", encoding="utf-8", newline="")
     def frame_log(line):
-        frame_stream.write(json.dumps({"monotonic_ns": time.monotonic_ns(),
-            "frame": line}, separators=(",", ":")) + "\n")
+        if frame_stream is not None:
+            frame_stream.write(json.dumps({"monotonic_ns": time.monotonic_ns(),
+                "frame": line}, separators=(",", ":")) + "\n")
     transport = SerialTransport(args.port, args.baud, args.parity,
-        args.stopbits, args.timeout_ms, frame_logger=frame_log)
+        args.stopbits, args.timeout_ms,
+        frame_logger=None if args.no_frames else frame_log)
     client = ModbusClient(transport, args.slave)
     try:
+        if args.activate_before_record:
+            if not args.allow_control:
+                raise HardwareTestError(
+                    "--activate-before-record requires --allow-control")
+            token = int(time.time() * 1000) & 0xFFFF or 1
+            response = execute_command(client, token,
+                COMMAND_SET_APPLICATION, arg0=1)
+            atomic_json(output / "activation_event.json", {
+                "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "command": "SET_APPLICATION_ACTIVE", "response": response})
         with samples_path.open("w", encoding="utf-8", newline="") as stream:
             writer = csv.DictWriter(stream, fieldnames=FIELDS,
                 lineterminator="\n")
@@ -142,10 +157,16 @@ def record(args):
                 last_utc = now; last_sequence = sequence
                 first_sequence = sequence if first_sequence is None else first_sequence
                 final_sequence = sequence; final = state
+                desired_min = state["desired_count"] if desired_min is None else \
+                    min(desired_min, state["desired_count"])
+                desired_max = state["desired_count"] if desired_max is None else \
+                    max(desired_max, state["desired_count"])
                 writer.writerow({field: state.get(field, 0) for field in FIELDS})
                 records += 1
                 if records % 10 == 0:
-                    stream.flush(); frame_stream.flush()
+                    stream.flush()
+                    if frame_stream is not None:
+                        frame_stream.flush()
                 if records % 100 == 0:
                     atomic_json(output / "summary.json", {
                         "status": "RUNNING", "records": records,
@@ -155,17 +176,37 @@ def record(args):
                         "read_errors": errors, "reconnects": reconnects,
                         "maximum_accepted_gap_s": maximum_gap,
                         "last_state": final})
+                trigger_ready = args.stop_on_trigger and \
+                    abs(state["offset_ug"]) >= args.offset_threshold_ug and \
+                    desired_max - desired_min >= args.division_crossing and \
+                    state["application"] == 1 and state["mode"] == 2 and \
+                    state["state"] == 5 and state["stable"] and \
+                    state["fault_mask"] == 0 and state["overrun_count"] == 0 and \
+                    state["dirty"] == 0 and state["save_request_count_low"] == 0
+                if trigger_ready and trigger_monotonic is None:
+                    trigger_monotonic = time.monotonic()
+                    atomic_json(output / "trigger_event.json", {
+                        "utc": state["utc"], "record": records,
+                        "sample_sequence": sequence, "offset_ug": state["offset_ug"],
+                        "desired_min": desired_min, "desired_max": desired_max})
+                if trigger_monotonic is not None and \
+                        time.monotonic() - trigger_monotonic >= args.post_trigger_s:
+                    status = "TRIGGER_CAPTURED"
+                    break
     finally:
         transport.close()
-        frame_stream.close()
+        if frame_stream is not None:
+            frame_stream.close()
     expected = (None if first_sequence is None else
         ((final_sequence - first_sequence) & 0xFFFFFFFF) + 1)
-    summary = {"status": "COMPLETE", "duration_s": time.monotonic() - started,
+    summary = {"status": status, "duration_s": time.monotonic() - started,
         "records": records, "expected_sequence_records": expected,
         "coverage": None if not expected else records / expected,
         "first_sequence": first_sequence, "final_sequence": final_sequence,
         "duplicates_skipped": duplicates, "read_errors": errors,
         "reconnects": reconnects, "maximum_accepted_gap_s": maximum_gap,
+        "desired_min": desired_min, "desired_max": desired_max,
+        "trigger_reached": trigger_monotonic is not None,
         "last_state": final, "writes": 0, "flash_operations": 0}
     atomic_json(output / "summary.json", summary)
     return 0
@@ -184,6 +225,13 @@ def main():
     parser.add_argument("--max-errors", type=int, default=10)
     parser.add_argument("--poll-s", type=float, default=0.1)
     parser.add_argument("--duplicate-retry-s", type=float, default=0.015)
+    parser.add_argument("--no-frames", action="store_true")
+    parser.add_argument("--activate-before-record", action="store_true")
+    parser.add_argument("--allow-control", action="store_true")
+    parser.add_argument("--stop-on-trigger", action="store_true")
+    parser.add_argument("--offset-threshold-ug", type=int, default=20000)
+    parser.add_argument("--division-crossing", type=int, default=2)
+    parser.add_argument("--post-trigger-s", type=float, default=300)
     return record(parser.parse_args())
 
 

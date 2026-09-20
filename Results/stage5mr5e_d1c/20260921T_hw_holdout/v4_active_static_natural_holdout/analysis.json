@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "classification": "NEW HARDWARE HOLDOUT; STOPPED FOR LOW NATURAL OFFSET",
+  "records": 18560,
+  "expected_records": 18560,
+  "coverage": 1.0,
+  "first_sequence": 13681,
+  "final_sequence": 32240,
+  "duration_ms": 1859288,
+  "maximum_sequence_gap": 1,
+  "maximum_device_gap_ms": 139,
+  "desired_min": -33,
+  "desired_max": -24,
+  "desired_span_divisions": 9,
+  "maximum_abs_offset_ug": 2200,
+  "final_offset_ug": -2000,
+  "trigger_reached": false,
+  "display": {
+    "updates": 897,
+    "wrong_direction_updates": 0,
+    "transition_violations": 0,
+    "maximum_jump_divisions": 1,
+    "maximum_lag_divisions": 5,
+    "stale_over_1d_records": 25,
+    "maximum_over_2d_duration_ms": 902,
+    "aba_count": 0,
+    "max_aba_10s": 0,
+    "direction_reversals": 789,
+    "initial_desired": -30,
+    "initial_display": -26,
+    "final_desired": -27,
+    "final_display": -27
+  },
+  "safety": {
+    "fault_max": 0,
+    "overrun_max": 0,
+    "dirty_max": 0,
+    "save_max": 0,
+    "revision_values": [
+      8
+    ],
+    "saved_revision_values": [
+      8
+    ],
+    "rebase_max": 0
+  },
+  "safety_pass": true,
+  "display_gate_pass_on_observed_low_offset_data": true,
+  "qualification": "NONZERO-OFFSET HARDWARE QUALIFICATION PENDING"
+}

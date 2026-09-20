@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "V3 FLASH VERIFIED BUT STATIC CAPTURE INCOMPLETE; HOLDOUT UNOPENED; V4 REFLASH AUTHORIZATION PENDING",
+  "status": "V4 FLASH VERIFIED; DISPLAY AND SAFETY PASS ON OBSERVED DATA; NONZERO-OFFSET QUALIFICATION PENDING",
   "preflash": {
     "firmware": "0x0512",
     "application_length": 100792,
@@ -86,6 +86,10 @@
     "algorithm_changed": false,
     "parameters_changed": false,
     "ram_changed": false,
-    "flashed": false
+    "flashed": true,
+    "off_preflight": "300/300 sequences",
+    "shadow_static_preflight": "600/600 sequences",
+    "shadow_reference_to_tracking": "8984/8984 sequences",
+    "active_holdout": "18560/18560 sequences; maximum offset 2200 ug; trigger not reached"
   }
 }

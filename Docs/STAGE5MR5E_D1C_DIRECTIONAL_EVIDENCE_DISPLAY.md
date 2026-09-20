@@ -3,7 +3,7 @@
 ## Result
 
 **STAGE 5M-R5E-D1-C DIRECTIONAL DISPLAY CANDIDATE SOFTWARE READY; FIRMWARE
-0x0514 ARTIFACT BUILT; NONZERO-OFFSET HARDWARE QUALIFICATION PENDING; R5
+0x0514 V4 FLASHED; NONZERO-OFFSET HARDWARE QUALIFICATION PENDING; R5
 ALGORITHM UNCHANGED; STAGE 5N ENTRY DEFERRED.**
 
 The original v1 artifact was application-only flashed and device-verified after
@@ -13,8 +13,8 @@ correctly rejected cross-frame sequence skew. A compact, single-frame v2
 engineering diagnostic refresh was flashed after renewed confirmation, but its
 51-register response perturbed the main-loop sample timing. The 34-register v3
 was flashed after confirmation, but STATIC capture still covered only 586 of
-599 device sequences. A 24-register v4 is built but not flashed and requires a
-new exact-hash confirmation. All artifacts contain the same frozen display
+599 device sequences. A 24-register v4 was subsequently authorized, flashed
+and verified. All artifacts contain the same frozen display
 algorithm and parameters.
 
 The branch started from
@@ -164,10 +164,24 @@ five seconds), while the complete multi-block transaction takes about 250 ms.
 The v2 51-register block packs all required display, R5 and safety evidence
 into one coherent response so it can be validated at the real 10 Hz rate.
 
-Before v4 reflash, the changed artifact hash must be explicitly confirmed.
-The configuration will be reread, only application sectors written and
-verified, and the configuration reread again. A fresh recorder captures unique device samples from the
-start and rejects measurement/follower sequence mismatch. Natural
-`abs(offset) >= 0.020 g` and at least 2d authoritative movement are required
-before the slow holdout can pass. DOSING 500 g load/unload follows only after
-that gate. Stage 5N-A is not authorized by this result.
+The v4 application-only download erased sectors 0-100 and device Verify passed.
+Configuration SHA remained
+`A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4`.
+OFF preflight covered 300/300 sequences and SHADOW+STATIC covered 600/600.
+The 900.062-second reference build covered 8,984/8,984 sequences, average
+device interval 100.184 ms, maximum 139 ms, and ended in TRACKING.
+
+The fresh ACTIVE holdout captured 18,560/18,560 consecutive sequences over
+1,859.288 seconds. Desired display naturally spanned 9d. The candidate made
+897 valid 1d updates, with zero wrong-direction update, zero invalid
+transition, zero A-B-A return in any 10-second window and at most 902 ms above
+2d lag. Fault, overrun, dirty, SAVE and automatic rebase remained zero;
+revision/saved remained 8/8. This is a display and safety pass on the observed
+low-offset data.
+
+Maximum natural offset was only 2,200 ug, below the required 20,000 ug, so the
+strict nonzero-offset trigger did not occur. The 500 g DOSING step was not run.
+After evidence capture, ACTIVE was changed to SHADOW, STATIC to OFF, and an MCU
+reset cleared evaluation count. Final state is OFF + SHADOW with
+offset/reference/evaluation = 0 and unchanged configuration. Stage 5N-A is not
+authorized by this result.

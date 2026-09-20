@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "result": "SOFTWARE CANDIDATE READY; 0x0514 V4 FLASHED; NONZERO-OFFSET HARDWARE QUALIFICATION PENDING",
+  "firmware": {
+    "version": "0x0514",
+    "map": "0x0104",
+    "bin_length": 102656,
+    "bin_sha256": "65B9CE4D6D9383DAC6F05E842BFA24C38BB2F246EA1770DA7ABB5B6C7C028877",
+    "verify": "PASS",
+    "application_sectors": "0-100"
+  },
+  "configuration": {
+    "before_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+    "after_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+    "final_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+    "unchanged": true
+  },
+  "recorder_gates": {
+    "off_preflight": {"records": 300, "expected": 300, "coverage": 1.0},
+    "shadow_static_preflight": {"records": 600, "expected": 600, "coverage": 1.0},
+    "shadow_reference_to_tracking": {
+      "duration_s": 900.062,
+      "records": 8984,
+      "expected": 8984,
+      "coverage": 1.0,
+      "maximum_sequence_gap": 1,
+      "average_device_interval_ms": 100.184,
+      "maximum_device_interval_ms": 139,
+      "final_state": "TRACKING"
+    }
+  },
+  "active_holdout": {
+    "classification": "NEW HARDWARE HOLDOUT; STOPPED FOR LOW NATURAL OFFSET",
+    "duration_s": 1859.288,
+    "records": 18560,
+    "expected": 18560,
+    "coverage": 1.0,
+    "maximum_sequence_gap": 1,
+    "maximum_device_interval_ms": 139,
+    "desired_min": -33,
+    "desired_max": -24,
+    "desired_span_divisions": 9,
+    "maximum_abs_offset_ug": 2200,
+    "final_offset_ug": -2000,
+    "required_offset_ug": 20000,
+    "trigger_reached": false,
+    "display_updates": 897,
+    "wrong_direction_updates": 0,
+    "transition_violations": 0,
+    "maximum_slow_jump_divisions": 1,
+    "maximum_lag_divisions": 5,
+    "maximum_over_2d_duration_ms": 902,
+    "max_aba_10s": 0,
+    "initial_desired_display": [-30, -26],
+    "final_desired_display": [-27, -27],
+    "observed_display_gate": "PASS",
+    "safety_gate": "PASS"
+  },
+  "dosing_500g_test": "NOT RUN: strict nonzero-offset holdout gate not reached",
+  "final_device": {
+    "application": "SHADOW",
+    "mode": "OFF",
+    "offset_ug": 0,
+    "reference_ug": 0,
+    "evaluation_count": 0,
+    "fault": 0,
+    "overrun": 0,
+    "dirty": 0,
+    "save": 0,
+    "revision": 8,
+    "saved_revision": 8
+  },
+  "stage5n_entry": "DEFERRED"
+}

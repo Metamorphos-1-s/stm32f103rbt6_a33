@@ -53,7 +53,7 @@
     "bin_length": 102656,
     "bin_sha256": "65B9CE4D6D9383DAC6F05E842BFA24C38BB2F246EA1770DA7ABB5B6C7C028877",
     "map_sha256": "F3C46757B45743C7B767CB633254BAD81E3D211034212C41B05D686B58A0D0A2",
-    "flashed": false,
+    "flashed": true,
     "change_scope": "24-register evidence block; derived delta/anchor; saturated qualification counters; algorithm, parameters and RAM unchanged"
   }
 }
