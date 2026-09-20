@@ -17,13 +17,14 @@ def main():
     build = sub.add_parser("build")
     build.add_argument("--input", required=True, type=Path)
     build.add_argument("--git-revision", required=True)
+    build.add_argument("--classification",
+        default="STAGE5MR5E_D1C_DIRECTIONAL_DISPLAY_SOFTWARE_FREEZE")
     verify = sub.add_parser("verify")
     verify.add_argument("--input", required=True, type=Path)
     args = parser.parse_args(); evidence = args.input.resolve()
     if args.command == "build":
         value = common.build(evidence, args.git_revision, ROOT)
-        value["classification"] = \
-            "STAGE5MR5E_D1C_DIRECTIONAL_DISPLAY_SOFTWARE_FREEZE"
+        value["classification"] = args.classification
         (evidence / "run_manifest_v2.json").write_text(
             json.dumps(value, indent=2) + "\n", encoding="utf-8")
         print("BUILT %d files" % len(value["files"]))
