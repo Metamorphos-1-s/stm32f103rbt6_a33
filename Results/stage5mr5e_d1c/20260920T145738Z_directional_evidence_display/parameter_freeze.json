@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
-  "classification": "D1-C SOFTWARE DEVELOPMENT FREEZE; NEW HARDWARE HOLDOUT UNOPENED",
+  "classification": "D1-C FINAL SOFTWARE FREEZE AFTER INVALID-INPUT CONTRACT CORRECTION; NEW HARDWARE HOLDOUT UNOPENED",
+  "contract_correction": "Invalid conversion output keeps the follower uninitialized so the next valid sample re-establishes the normalized division domain; candidate parameters and scored outputs are unchanged.",
   "algorithm": "signed directional evidence relative to current panel count",
   "parameters": {
     "same_direction_increment": 1,
@@ -39,7 +40,7 @@
     "large_step_loss_counts": 0
   },
   "sha256": {
-    "python_model": "CEAECE2A1EE42C2EB2535A6194C5A70212A610297536C4476D6C2168309A9972",
+    "python_model": "236770A9B4309C9338AD31A3063A99331BC1D0E9016B09BA7F3F28FD450BC8D5",
     "scoring_script": "598C28072B04D0463508C29FD210F9F36853447AB2E2B07D0B78901442B503C8",
     "candidate_results": "80DD54DC5FE08ECD439D62C0E0FF15E52C76C8FB8FB779E59DB5A9E6C181FD4E",
     "d1b_replay": "6AFAF36A31B08172DCA67A548691D3A00657FB22749876068F5BE4B6C9F125D3",

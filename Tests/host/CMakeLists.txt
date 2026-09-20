@@ -153,6 +153,20 @@ else()
     target_compile_options(stage5mr5e_d1b_display_runner PRIVATE
         -Wall -Wextra -Werror)
 endif()
+
+add_executable(stage5mr5e_d1c_display_runner
+    stage5mr5e_d1c_display_runner.c
+    ../../UI/display_model/directional_display_follower.c)
+target_include_directories(stage5mr5e_d1c_display_runner PRIVATE
+    ../../UI/display_model)
+target_compile_definitions(stage5mr5e_d1c_display_runner PRIVATE
+    _CRT_SECURE_NO_WARNINGS)
+if(MSVC)
+    target_compile_options(stage5mr5e_d1c_display_runner PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5mr5e_d1c_display_runner PRIVATE
+        -Wall -Wextra -Werror)
+endif()
 add_test(NAME stage5ma_adaptive_logic COMMAND stage5ma_adaptive_tests)
 
 add_executable(stage5mr_drift_tests

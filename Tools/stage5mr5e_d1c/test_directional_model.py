@@ -55,6 +55,25 @@ class DirectionalDisplayTests(unittest.TestCase):
                 baseline_count=count)
             self.assertEqual(count, result["current_count"])
 
+    def test_unit_or_display_source_change_resets_to_new_baseline(self):
+        model = DirectionalDisplay(CONFIG)
+        model.process(4, True, True, baseline_count=0, source=0x08)
+        for _ in range(5):
+            model.process(4, True, True, baseline_count=0, source=0x08)
+        self.assertEqual(1, model.display_count)
+        result = model.process(200, True, True, baseline_count=200,
+            source=0x2D)
+        self.assertEqual(200, result["current_count"])
+        self.assertEqual(0, result["evidence"])
+
+    def test_invalid_sample_requires_fresh_valid_initialization(self):
+        model = DirectionalDisplay(CONFIG)
+        model.process(100, True, True, valid=False, baseline_count=100)
+        result = model.process(20, True, True, valid=True,
+            baseline_count=20)
+        self.assertEqual(20, result["current_count"])
+        self.assertEqual(0, result["evidence"])
+
 
 if __name__ == "__main__":
     unittest.main()

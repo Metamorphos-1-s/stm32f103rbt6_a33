@@ -24,7 +24,7 @@ COMMAND_GET_STATUS = 31
 COMMAND_SET_APPLICATION = 32
 MODES = {"off": 0, "dosing": 1, "static": 2}
 APPLICATIONS = {"shadow": 0, "active": 1}
-EXPECTED_FIRMWARE = 0x0512
+EXPECTED_FIRMWARE = 0x0514
 
 
 def i32(words, order="high"):
@@ -65,7 +65,7 @@ def read_state(client):
     beta, _ = client.read(BETA_FIRST, BETA_COUNT)
     if realtime[14] != 0x0104 or realtime[15] != EXPECTED_FIRMWARE:
         raise HardwareTestError(
-            "expected R5E Beta identity Map 0x0104 / Firmware 0x0512")
+            "expected D1-C Beta identity Map 0x0104 / Firmware 0x0514")
     return {
         "utc": time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime()) +
                ".%03dZ" % int((time.time() % 1) * 1000),
@@ -248,6 +248,7 @@ def record(args):
 
 
 def main():
+    global EXPECTED_FIRMWARE
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", required=True)
     parser.add_argument("--baud", type=int, default=115200)
@@ -255,6 +256,8 @@ def main():
     parser.add_argument("--stopbits", type=int, default=1)
     parser.add_argument("--slave", type=int, default=1)
     parser.add_argument("--timeout-ms", type=int, default=300)
+    parser.add_argument("--expected-firmware", type=lambda value: int(value, 0),
+                        default=EXPECTED_FIRMWARE)
     parser.add_argument("--output", required=True)
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("probe")
@@ -273,6 +276,7 @@ def main():
     recorder.add_argument("--max-retries", type=int, default=10)
     recorder.add_argument("--retry-delay-s", type=float, default=1.0)
     args = parser.parse_args()
+    EXPECTED_FIRMWARE = args.expected_firmware
     if args.command == "record":
         return record(args)
     frames = []

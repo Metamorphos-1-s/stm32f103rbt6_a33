@@ -67,7 +67,7 @@ class DirectionalDisplay:
         if not self.initialized or not valid or self.source != source:
             self.display_count = baseline_count
             self.evidence = 0
-            self.initialized = True
+            self.initialized = bool(valid)
             self.locked = bool(valid)
             self.source = source
             self.release_reason = 0

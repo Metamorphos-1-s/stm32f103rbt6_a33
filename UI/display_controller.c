@@ -9,6 +9,9 @@
 #include "tm1628.h"
 #include "tm1628_board_map.h"
 #include "unit_converter.h"
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#include "directional_display_follower.h"
+#endif
 
 #include <stddef.h>
 #include <string.h>
@@ -26,6 +29,26 @@ static bool s_text_override;
 static bool s_numeric_override;
 static bool s_message_active;
 static bool s_initialized;
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+static DirectionalDisplayFollower s_directional_follower;
+
+static uint8_t DisplayController_DivisionCode(uint8_t division)
+{
+    if (division == 1U) return 0U;
+    if (division == 2U) return 1U;
+    if (division == 5U) return 2U;
+    return 3U;
+}
+
+static uint8_t DisplayController_DirectionalSource(DisplayPage page,
+    MassUnit unit, const UnitDisplayConfig *display)
+{
+    return (uint8_t)(((page == DISPLAY_PAGE_GROSS) ? 0x80U : 0U) |
+        (((uint8_t)unit & 0x03U) << 5U) |
+        ((display->decimal_places & 0x07U) << 2U) |
+        DisplayController_DivisionCode(display->division_digit));
+}
+#endif
 
 static bool DisplayController_ApplyEditCursor(uint16_t segments[6],
     uint8_t selected_digit, bool cursor_visible)
@@ -146,6 +169,38 @@ static bool DisplayController_BuildModel(void)
     if (!UnitConverter_MassToDisplay(mass,
             context->config.metrology.active_unit, unit_display, &converted))
         return DisplayModel_SetText6("  Lo  ");
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if ((s_page == DISPLAY_PAGE_NET) || (s_page == DISPLAY_PAGE_GROSS))
+    {
+        DirectionalDisplayFollowerInput input;
+        DirectionalDisplayFollowerOutput output;
+        DisplayWeightValue desired;
+        MassValueUg authoritative = (s_page == DISPLAY_PAGE_NET) ?
+            ((snapshot != NULL) ? snapshot->net_mass_ug : 0) :
+            ((snapshot != NULL) ? snapshot->gross_mass_ug : 0);
+        uint8_t division = unit_display->division_digit;
+        bool desired_valid = UnitConverter_MassToDisplay(authoritative,
+            context->config.metrology.active_unit, unit_display, &desired) &&
+            desired.valid && !desired.overflow && (division != 0U) &&
+            ((desired.display_count % division) == 0) &&
+            ((converted.display_count % division) == 0);
+        input.desired_count = desired_valid ?
+            desired.display_count / division : converted.display_count;
+        input.baseline_count = desired_valid ?
+            converted.display_count / division : converted.display_count;
+        input.sample_sequence = (snapshot != NULL) ?
+            snapshot->sample_sequence : 0U;
+        input.source = DisplayController_DirectionalSource(s_page,
+            context->config.metrology.active_unit, unit_display);
+        input.stable = (flags & WEIGHT_STATUS_STABLE) != 0U;
+        input.active = MetrologyManager_GetR5Application() ==
+            R5_BETA_APPLICATION_ACTIVE;
+        input.valid = converted.valid && !converted.overflow && desired_valid;
+        if (DirectionalDisplayFollower_Process(&s_directional_follower,
+            &input, &output) && desired_valid)
+            converted.display_count = output.display_count * division;
+    }
+#endif
     return DisplayModel_SetWeight(converted.display_count,
         converted.decimal_places, true, (uint8_t)flags);
 }
@@ -344,3 +399,12 @@ DisplayPage DisplayController_GetPage(void)
 {
     return s_page;
 }
+
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+bool DisplayController_GetDirectionalDiagnostics(
+    DirectionalDisplayFollowerDiagnostics *diagnostics)
+{
+    return DirectionalDisplayFollower_GetDiagnostics(
+        &s_directional_follower, diagnostics);
+}
+#endif

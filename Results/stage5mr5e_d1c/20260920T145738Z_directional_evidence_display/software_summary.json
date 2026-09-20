@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "result": "STAGE 5M-R5E-D1-C DIRECTIONAL DISPLAY CANDIDATE SOFTWARE READY; FIRMWARE 0x0514 ARTIFACT BUILT; NONZERO-OFFSET HARDWARE QUALIFICATION PENDING; R5 ALGORITHM UNCHANGED; STAGE 5N ENTRY DEFERRED",
+  "candidate": {
+    "increment": 1,
+    "zero_leak": 1,
+    "reverse_cancel": 1,
+    "threshold": 5,
+    "post_trigger": "CLEAR",
+    "large_step": "abs(delta) > 8d"
+  },
+  "search": {"candidates": 216, "passing": 63},
+  "d1b": {"records": 147, "first_correct_update_ms": 4978,
+    "updates": 9, "wrong_direction_updates": 0,
+    "final_error_divisions": 0},
+  "boundary_noise": {"duration_s": 60, "updates": 0,
+    "aba_max_10s": 0, "peak_to_peak_divisions": 0},
+  "reversal": {"response_ms": 400, "wrong_extra_divisions": 0},
+  "large_step": {"load_delay_samples": 0, "unload_delay_samples": 0,
+    "loss_counts": 0},
+  "python_c": {"samples": 49105, "mismatches": 0},
+  "r5_python_c": {"samples": 25057, "mismatches": 0},
+  "firmware_0x0514_flashed": false,
+  "new_hardware_holdout_opened": false,
+  "rollback_occurred": false,
+  "stage5n_entry": "DEFERRED"
+}

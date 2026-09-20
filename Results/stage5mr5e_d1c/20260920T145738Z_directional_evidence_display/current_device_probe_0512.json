@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "utc": "2026-09-20T15:25:43.341Z",
+  "read_only": true,
+  "firmware": "0x0512",
+  "map": "0x0104",
+  "persistent_format": 3,
+  "application": "SHADOW",
+  "mode": "OFF",
+  "state": 0,
+  "offset_ug": 0,
+  "reference_ug": 0,
+  "evaluation_count": 0,
+  "fault_mask": 0,
+  "overrun_count": 0,
+  "dirty": 0,
+  "save_request_count_low": 0,
+  "revision": 8,
+  "saved_revision": 8,
+  "configuration_sha256_last_verified_at_d1b_rollback": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "configuration_reread_for_d1c": false
+}

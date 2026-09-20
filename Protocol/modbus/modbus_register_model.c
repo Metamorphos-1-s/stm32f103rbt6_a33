@@ -13,6 +13,9 @@
 #include "modbus_register_map.h"
 #include "persistent_schema.h"
 #include "project_config.h"
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#include "display_controller.h"
+#endif
 #include "storage_power_guard.h"
 #include "communication_manager.h"
 #include "system_context.h"
@@ -504,6 +507,59 @@ static ModbusRegisterResult ReadOne(uint16_t address,
         else if (address == MODBUS_R5_BETA_SAVE_REQUEST_COUNT_LOW)
             *value = (uint16_t)ConfigStore_GetStatistics()->save_request_count;
         else *value = 0U;
+        return MODBUS_REGISTER_OK;
+    }
+    if ((address >= MODBUS_D1C_FIRST) && (address <= MODBUS_D1C_LAST))
+    {
+        DirectionalDisplayFollowerDiagnostics directional = {0};
+        DisplayPage page = DisplayController_GetPage();
+        DisplayWeightValue desired = (page == DISPLAY_PAGE_GROSS) ? gross : net;
+        uint8_t division = display->division_digit;
+        int32_t desired_index = ((division != 0U) && desired.valid &&
+            !desired.overflow && ((desired.display_count % division) == 0)) ?
+            desired.display_count / division : 0;
+        bool available = DisplayController_GetDirectionalDiagnostics(
+            &directional);
+        int64_t delta = (int64_t)desired_index - directional.display_count;
+        int16_t direction = (delta > 0) ? 1 : ((delta < 0) ? -1 : 0);
+        uint16_t state_flags = (available && directional.initialized ? 1U : 0U) |
+            (available && directional.locked ? 2U : 0U) |
+            (available && directional.last_large_step ? 4U : 0U) |
+            (((flags & WEIGHT_STATUS_STABLE) != 0U) ? 8U : 0U) |
+            ((MetrologyManager_GetR5Application() ==
+                R5_BETA_APPLICATION_ACTIVE) ? 16U : 0U);
+        if (address == MODBUS_D1C_SIGNATURE) *value = 0xD1C1U;
+        else if (address >= MODBUS_D1C_DESIRED_FIRST && address <= 0x02AAU)
+            *value = Word32((uint32_t)desired_index,
+                (uint8_t)(address - MODBUS_D1C_DESIRED_FIRST), order);
+        else if (address >= MODBUS_D1C_DISPLAY_FIRST && address <= 0x02ACU)
+            *value = Word32((uint32_t)directional.display_count,
+                (uint8_t)(address - MODBUS_D1C_DISPLAY_FIRST), order);
+        else if (address >= MODBUS_D1C_DELTA_FIRST && address <= 0x02B0U)
+            *value = Word64((uint64_t)delta,
+                (uint8_t)(address - MODBUS_D1C_DELTA_FIRST), order);
+        else if (address == MODBUS_D1C_EVIDENCE)
+            *value = (uint16_t)directional.evidence;
+        else if (address == MODBUS_D1C_DIRECTION)
+            *value = (uint16_t)direction;
+        else if (address >= MODBUS_D1C_ANCHOR_FIRST && address <= 0x02B4U)
+            *value = Word32((uint32_t)directional.display_count,
+                (uint8_t)(address - MODBUS_D1C_ANCHOR_FIRST), order);
+        else if (address == MODBUS_D1C_FLAGS) *value = state_flags;
+        else if (address == MODBUS_D1C_RELEASE_REASON)
+            *value = directional.last_large_step ? 2U : 0U;
+        else if (address == MODBUS_D1C_SOURCE) *value = directional.source;
+        else if (address >= MODBUS_D1C_SAMPLE_SEQUENCE_FIRST &&
+                 address <= 0x02B9U)
+            *value = Word32(directional.last_sample_sequence,
+                (uint8_t)(address - MODBUS_D1C_SAMPLE_SEQUENCE_FIRST), order);
+        else if (address == MODBUS_D1C_UNIT)
+            *value = (uint16_t)config->metrology.active_unit;
+        else if (address == MODBUS_D1C_DECIMALS)
+            *value = display->decimal_places;
+        else if (address == MODBUS_D1C_DIVISION)
+            *value = division;
+        else return MODBUS_REGISTER_ILLEGAL_ADDRESS;
         return MODBUS_REGISTER_OK;
     }
 #endif

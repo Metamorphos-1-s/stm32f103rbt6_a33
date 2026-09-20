@@ -2,6 +2,9 @@
 #define DISPLAY_CONTROLLER_H
 
 #include "display_types.h"
+#if defined(A33_ENABLE_STAGE5MR5_BETA) && (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#include "directional_display_follower.h"
+#endif
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -22,5 +25,9 @@ bool DisplayController_SetBrightness(uint8_t brightness);
 bool DisplayController_SetTestPattern(const uint16_t segments[6],
     uint8_t top_led_mask, uint8_t bottom_led_mask);
 DisplayPage DisplayController_GetPage(void);
+#if defined(A33_ENABLE_STAGE5MR5_BETA) && (A33_ENABLE_STAGE5MR5_BETA != 0U)
+bool DisplayController_GetDirectionalDiagnostics(
+    DirectionalDisplayFollowerDiagnostics *diagnostics);
+#endif
 
 #endif /* DISPLAY_CONTROLLER_H */

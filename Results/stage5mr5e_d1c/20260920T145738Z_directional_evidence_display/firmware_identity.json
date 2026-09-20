@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "standard_release": {
+    "firmware": "0x0510",
+    "elf_length": 172200,
+    "elf_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486"
+  },
+  "d1c_beta": {
+    "firmware": "0x0514",
+    "map": "0x0104",
+    "schema": 2,
+    "persistent_format": 3,
+    "elf_length": 1966864,
+    "elf_sha256": "6C930C78AAE7B0D34C3DF2356A8770FD3F501B32D0AF46424A2E3D476F515CB6",
+    "bin_length": 102280,
+    "bin_sha256": "E87759986372207FBDC915F67F03117B701D46FE79AC0C93E7751A085AB894F1",
+    "map_sha256": "1B126759FECC911FB60389DAC6F405A5475EF8CF9B56FD2355B92B7702BC94ED",
+    "flashed": false
+  }
+}

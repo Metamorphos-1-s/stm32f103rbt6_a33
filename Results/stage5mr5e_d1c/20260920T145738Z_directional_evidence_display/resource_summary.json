@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "state_layout": {
+    "display_count": 4,
+    "last_sample_sequence": 4,
+    "evidence": 2,
+    "flags": 1,
+    "source": 1,
+    "total_bytes": 12
+  },
+  "ram": {
+    "baseline_0x0512_linker_bytes": 19432,
+    "d1c_0x0514_linker_bytes": 19448,
+    "delta_bytes": 16,
+    "data_bytes": 12,
+    "bss_bytes": 18408,
+    "static_to_estack_bytes": 2056
+  },
+  "stack": {
+    "baseline_display_build_local_bytes": 104,
+    "d1c_display_build_local_bytes": 120,
+    "new_max_call_chain_delta_bytes": 16,
+    "main_static_chain_bytes": 1128,
+    "largest_irq_chain_bytes": 72,
+    "conservative_stack_bytes": 1488,
+    "collision_margin_bytes": 568,
+    "minimum_gate_bytes": 512
+  },
+  "cpu": {
+    "process_thumb_bytes": 338,
+    "loops": 0,
+    "dynamic_allocation": false,
+    "per_sample_division_in_follower": false,
+    "conservative_bound": "below 20 us at 72 MHz using 8 cycles per Thumb halfword"
+  },
+  "gates_passed": true
+}
