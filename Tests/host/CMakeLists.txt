@@ -141,6 +141,18 @@ foreach(target stage5ma_adaptive_tests stage5ma_adaptive_runner)
         target_compile_options(${target} PRIVATE -Wall -Wextra -Werror)
     endif()
 endforeach()
+
+add_executable(stage5mr5e_d1b_display_runner
+    stage5mr5e_d1b_display_runner.c
+    ../../UI/display_model/active_display_follower.c)
+target_include_directories(stage5mr5e_d1b_display_runner PRIVATE
+    ../../UI/display_model)
+if(MSVC)
+    target_compile_options(stage5mr5e_d1b_display_runner PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5mr5e_d1b_display_runner PRIVATE
+        -Wall -Wextra -Werror)
+endif()
 add_test(NAME stage5ma_adaptive_logic COMMAND stage5ma_adaptive_tests)
 
 add_executable(stage5mr_drift_tests

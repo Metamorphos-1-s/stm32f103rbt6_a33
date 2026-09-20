@@ -21,6 +21,7 @@ class DisplayModelTests(unittest.TestCase):
         model.process(0, 0, True, True)
         model.process(3, 100, True, True)
         self.assertEqual(model.process(3, 1100, True, True)["actual_display_count"], 1)
+        self.assertEqual(model.process(3, 1100, True, True)["actual_display_count"], 1)
         self.assertEqual(model.process(3, 1200, True, True)["actual_display_count"], 2)
         self.assertEqual(model.process(3, 1300, True, True)["actual_display_count"], 3)
 

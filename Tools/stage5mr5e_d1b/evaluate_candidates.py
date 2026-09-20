@@ -31,8 +31,9 @@ def analyze_series(records, config=None):
         now = int(row["uptime_ms"])
         stable = (int(row["status_flags"]) & 16) != 0
         active = int(row["application"]) == 1
-        actual = int(row["display_count"]) if model is None or not active else model.process(
-            desired, now, stable, active)["actual_display_count"]
+        baseline = int(row["display_count"])
+        actual = baseline if model is None or not active else model.process(
+            desired, now, stable, active, baseline_count=baseline)["actual_display_count"]
         output.append({"now": now, "desired": desired, "actual": actual,
             "stable": stable, "active": active, "index": index})
     return metrics(output)
