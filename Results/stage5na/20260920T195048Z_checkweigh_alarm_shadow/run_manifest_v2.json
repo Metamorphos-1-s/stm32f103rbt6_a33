@@ -1,0 +1,118 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5NA_CHECKWEIGH_ALARM_SOFTWARE_PREFLASH_FREEZE",
+  "run_id": "20260920T195048Z_checkweigh_alarm_shadow",
+  "repository_commit": "8f8ce5c0f915ef93c473f0cb00686990514c5989",
+  "files": [
+    {
+      "path": "c_parity.json",
+      "length": 1205,
+      "sha256": "0B3AA70FC37BF4D616F0AF58F97C1ABAFAAFE161F05D5B2E2ACFF092328267F4"
+    },
+    {
+      "path": "c_parity_attempt1.json",
+      "length": 1803,
+      "sha256": "801DC3647E454210D75D9B311E9BD2C443046EFED9F4DE34327EDE7E5EBC0046"
+    },
+    {
+      "path": "c_parity_final.json",
+      "length": 1205,
+      "sha256": "0B3AA70FC37BF4D616F0AF58F97C1ABAFAAFE161F05D5B2E2ACFF092328267F4"
+    },
+    {
+      "path": "c_parity_preintegration.json",
+      "length": 1205,
+      "sha256": "0B3AA70FC37BF4D616F0AF58F97C1ABAFAAFE161F05D5B2E2ACFF092328267F4"
+    },
+    {
+      "path": "candidate_results.json",
+      "length": 2072729,
+      "sha256": "32740ED5B62B32B76169FAFDDB82906F16D1F2CCEC7A0A18A90C846483F410D2"
+    },
+    {
+      "path": "current_device_audit.json",
+      "length": 717,
+      "sha256": "30F84ABA08C91F169DDE5CA81BA61BD94728FD63C4297C751F734BF6042C9789"
+    },
+    {
+      "path": "d1c_parity.json",
+      "length": 1566,
+      "sha256": "66FAAF4832ADF6DF902F26E94A998C4D556E383CCB8455FA083917A397F64CD3"
+    },
+    {
+      "path": "firmware_identity.json",
+      "length": 787,
+      "sha256": "CF9312EF76B17E9DFFE59ACB428DFA4C8EA62506F339EF1CFCC798A07F74B799"
+    },
+    {
+      "path": "implementation_freeze.json",
+      "length": 1119,
+      "sha256": "E6A486CC06F666A08095120A70942532BFEAFEFE71A6DE1F07C244945B16164B"
+    },
+    {
+      "path": "parameter_freeze.json",
+      "length": 1635,
+      "sha256": "9E7BB59C1B8B7AC3124627DF4AD1F8D431C58D27AC8D4EEDC29845D9290908E4"
+    },
+    {
+      "path": "r5_parity.json",
+      "length": 1440,
+      "sha256": "77AA676115A0FDC0E0893E59B7468CE70A3EFA79BF46606199F72C0CC7B5B896"
+    },
+    {
+      "path": "ram_stack/largest_ram_symbols.json",
+      "length": 14217,
+      "sha256": "D987338D0E67A8D6617672B75FAF067C7D1729AFC5EB63E388FB3F56859275EF"
+    },
+    {
+      "path": "ram_stack/ram_layout.json",
+      "length": 7682,
+      "sha256": "EBE3FAE4A09CE1829CA07D4118D63942BD16B45CF8F4E747F083C334AD90F23F"
+    },
+    {
+      "path": "ram_stack/stack_watermark.json",
+      "length": 46416,
+      "sha256": "C63286E1869DB282B361C9CD7479F13D8580C4BDADF9EE4C51C112047CD3A78C"
+    },
+    {
+      "path": "ram_stack_final/largest_ram_symbols.json",
+      "length": 14217,
+      "sha256": "D987338D0E67A8D6617672B75FAF067C7D1729AFC5EB63E388FB3F56859275EF"
+    },
+    {
+      "path": "ram_stack_final/ram_layout.json",
+      "length": 7682,
+      "sha256": "EBE3FAE4A09CE1829CA07D4118D63942BD16B45CF8F4E747F083C334AD90F23F"
+    },
+    {
+      "path": "ram_stack_final/stack_watermark.json",
+      "length": 46405,
+      "sha256": "4E2A2C9C287DCB0C9FC994C4C72A01162A0E45626CEB3D6DC6F52C0FD1C64A96"
+    },
+    {
+      "path": "regression_summary.json",
+      "length": 771,
+      "sha256": "BD24E855B8937FF1415C4C46092AD1A0F10DAAAB1C6A81146950ED8AB8049C13"
+    },
+    {
+      "path": "resource_summary.json",
+      "length": 1095,
+      "sha256": "76E78D3CE1ED83191BBB092CC11F5BE86BA1D97011DA5DC6A7687F55E551680B"
+    },
+    {
+      "path": "software_summary.json",
+      "length": 1116,
+      "sha256": "344E53FFE7A84EA5385187646550812119A9BA03EF37524BC2404CBEFAB928C2"
+    },
+    {
+      "path": "stage5na_0515_application.bin",
+      "length": 105416,
+      "sha256": "62648C3AD79C324B1860BE3005B8EA365C2BCE98C084BE4F5FD20D7599065228"
+    },
+    {
+      "path": "stage5na_0515_beta.map",
+      "length": 1406435,
+      "sha256": "B6BF794CD0427BB566F5F22BD8693DD65BA583C7671F8A437024748E72530C1A"
+    }
+  ]
+}
