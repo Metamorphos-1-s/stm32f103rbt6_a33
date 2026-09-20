@@ -2,10 +2,15 @@
   "schema_version": 2,
   "classification": "STAGE5MR5E_D1C_DIRECTIONAL_DISPLAY_SOFTWARE_FREEZE",
   "run_id": "20260920T145738Z_directional_evidence_display",
-  "repository_commit": "97af666dec0d124aebd42adb2168bf8418623389",
+  "repository_commit": "b6938c175346a45af7a51f942164c472e3034bf6",
   "files": [
     {
       "path": "c_parity.json",
+      "length": 1566,
+      "sha256": "66FAAF4832ADF6DF902F26E94A998C4D556E383CCB8455FA083917A397F64CD3"
+    },
+    {
+      "path": "c_parity_v2.json",
       "length": 1566,
       "sha256": "66FAAF4832ADF6DF902F26E94A998C4D556E383CCB8455FA083917A397F64CD3"
     },
@@ -26,8 +31,8 @@
     },
     {
       "path": "firmware_identity.json",
-      "length": 637,
-      "sha256": "28354C2E8E1116ACBF1B1B28A9A129D63523AD5DDAC994EA6B714E6C44AD4A4C"
+      "length": 1246,
+      "sha256": "1DDCFDF7F8B7C773A814DBACC68368D7551044EE3EAA618932C792B6ACDE48FF"
     },
     {
       "path": "parameter_freeze.json",
@@ -36,6 +41,11 @@
     },
     {
       "path": "r5_parity.json",
+      "length": 1452,
+      "sha256": "51DFF3C0D32A6702F58C813E5269B4480167B8F035C30756C13D40AF67EFA6AE"
+    },
+    {
+      "path": "r5_parity_v2.json",
       "length": 1452,
       "sha256": "51DFF3C0D32A6702F58C813E5269B4480167B8F035C30756C13D40AF67EFA6AE"
     },
@@ -55,6 +65,21 @@
       "sha256": "9D51E3E623E1D40431BC537817C1D157D0801BE509F559F2F8193B46E7CD8247"
     },
     {
+      "path": "ram_stack_v2/largest_ram_symbols.json",
+      "length": 14217,
+      "sha256": "2CAEC5ACDFB74A3F4D9658048143C995A2A0AF5A3AC18D939ACDB41172752BBA"
+    },
+    {
+      "path": "ram_stack_v2/ram_layout.json",
+      "length": 7689,
+      "sha256": "BBCC2EDC4E80CC610BE0D59FAE95CB356149FAA00F7951D03458E0AE88589691"
+    },
+    {
+      "path": "ram_stack_v2/stack_watermark.json",
+      "length": 46640,
+      "sha256": "166C0EE042755D802A9AF46EEB61F3B1001368F8344CD1E0669FCC0FD540406A"
+    },
+    {
       "path": "regression_summary.json",
       "length": 832,
       "sha256": "87D7C32830B134E6E23932F5E3B0F95B597672AEBC83869BD71684EF05D1DF9C"
@@ -66,8 +91,8 @@
     },
     {
       "path": "software_summary.json",
-      "length": 1095,
-      "sha256": "082F37E8D4128E303AB8329AC35FC704660A1CC31B9492F0AB7E64AD319EC6D2"
+      "length": 1320,
+      "sha256": "3F28ACB56BBE5810CE3115FE8205EC51F5CCF931A83946A6A54D3E280725B381"
     },
     {
       "path": "stage5mr5e_d1c_0514_application.bin",
@@ -75,9 +100,19 @@
       "sha256": "E87759986372207FBDC915F67F03117B701D46FE79AC0C93E7751A085AB894F1"
     },
     {
+      "path": "stage5mr5e_d1c_0514_application_v2.bin",
+      "length": 102768,
+      "sha256": "53461D36C78447811D9530739A51AE2710E392ACDED825CF2C0082C2265218B8"
+    },
+    {
       "path": "stage5mr5e_d1c_0514_beta.map",
       "length": 1396772,
       "sha256": "61DE959CF7943C0053AC6B3013334DD86A028DD6B6ED2C91F6599386F03B7026"
+    },
+    {
+      "path": "stage5mr5e_d1c_0514_beta_v2.map",
+      "length": 1396772,
+      "sha256": "F8C3047D09B9E285BB9227107A4CF89D6E8441185CC8094752D9856B3276AEAE"
     }
   ]
 }

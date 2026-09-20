@@ -1,0 +1,73 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5MR5E_D1C_V1_FLASH_AND_FAILED_RECORDER_PREFLIGHT",
+  "run_id": "20260921T_hw_holdout",
+  "repository_commit": "b6938c175346a45af7a51f942164c472e3034bf6",
+  "files": [
+    {
+      "path": "config_after_flash.bin",
+      "length": 4096,
+      "sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4"
+    },
+    {
+      "path": "config_after_flash_read.txt",
+      "length": 1122,
+      "sha256": "7A48453F5F3B6F9B538A4728C37956E9942CCA339EB69E59B1C9779D6A148725"
+    },
+    {
+      "path": "config_before_flash.bin",
+      "length": 4096,
+      "sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4"
+    },
+    {
+      "path": "config_before_flash_read.txt",
+      "length": 1123,
+      "sha256": "950CFC7650B2E3A79F6D42654B0F9A2F9B401161ECFB7A01427E3884A7770601"
+    },
+    {
+      "path": "diagnostic_refresh_summary.json",
+      "length": 1761,
+      "sha256": "E378BAD8ACA5CF226E08E8902408A4CF6F46360E3404F1B81E896553FF709454"
+    },
+    {
+      "path": "flash_0514.txt",
+      "length": 1700,
+      "sha256": "396D1301D10C7135C6AE380B0D5EECFC920346D1198288C16DEA78CD777B4CB9"
+    },
+    {
+      "path": "postflash_d1c_preflight/frames.jsonl",
+      "length": 14040,
+      "sha256": "08A4E8AE5D6E2B3EBB43B9F4C1548F909E7917E5041186E8A388D8BE79B552A0"
+    },
+    {
+      "path": "postflash_d1c_preflight/samples.csv",
+      "length": 509,
+      "sha256": "995B4C7E90CAE89801F180AE703CDF6B1A22FCF62B60B8D994629C9265DA2B35"
+    },
+    {
+      "path": "postflash_d1c_preflight/summary.json",
+      "length": 334,
+      "sha256": "9F4C849F2E2B184A294A93EB4C469C0FB7BE4AEBAF100EA94920C1FE13FDA803"
+    },
+    {
+      "path": "postflash_probe_0514.json",
+      "length": 2830,
+      "sha256": "E2574D5C85895F4C5A308524F1D692912D92612438285D92DB30B6F4956E8F49"
+    },
+    {
+      "path": "preflash_0512_application.bin",
+      "length": 100792,
+      "sha256": "BA8F02B2024042D601FD7F2D75BEF9E1004AACAE16852DD97CD2B28777BAF6B9"
+    },
+    {
+      "path": "preflash_0512_read.txt",
+      "length": 1131,
+      "sha256": "EABE607883DB87B0484CD9660570E739A9091C17E56A66D98C470B052097BF2D"
+    },
+    {
+      "path": "preflash_probe_0512.json",
+      "length": 2834,
+      "sha256": "8CD044A3AE737AE3DEA118B838581C6A2E390A6AF39EAD4DF0936A14AEB2E41E"
+    }
+  ]
+}
