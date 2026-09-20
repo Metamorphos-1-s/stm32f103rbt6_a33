@@ -15,6 +15,7 @@ SUPPRESS_UNSTABLE = 7
 SUPPRESS_CONFIRMING = 8
 SUPPRESS_SEQUENCE = 9
 SUPPRESS_TIMESTAMP = 10
+SUPPRESS_RESET = 11
 RESET_NONE = 0
 
 
@@ -126,6 +127,8 @@ class CheckweighShadow:
             static_reason = SUPPRESS_SEQUENCE
         elif timestamp_error:
             static_reason = SUPPRESS_TIMESTAMP
+        elif explicit_reset:
+            static_reason = SUPPRESS_RESET
         if static_reason != SUPPRESS_NONE:
             self.static_stable_count = 0
             static_output = INVALID if static_reason in (SUPPRESS_CONFIG,
@@ -149,11 +152,13 @@ class CheckweighShadow:
             dynamic_reason = SUPPRESS_SEQUENCE
         elif timestamp_error:
             dynamic_reason = SUPPRESS_TIMESTAMP
+        elif explicit_reset:
+            dynamic_reason = SUPPRESS_RESET
         event = False
         if dynamic_reason != SUPPRESS_NONE:
             self.dynamic_candidate = PENDING
             self.dynamic_confirm_count = 0
-            dynamic_output = INVALID
+            dynamic_output = PENDING if dynamic_reason == SUPPRESS_RESET else INVALID
         else:
             target = self._hysteresis(dynamic_weight_ug, low_limit_ug,
                                       high_limit_ug)

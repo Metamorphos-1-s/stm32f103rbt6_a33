@@ -67,6 +67,16 @@ class CheckweighShadowTests(unittest.TestCase):
             process_active=False)
         self.assertEqual(SUPPRESS_TIMESTAMP, row["dynamic_reason"])
 
+    def test_explicit_reset_is_pending_for_entire_sample(self):
+        model = self.model(); self.step(model, 1); self.step(model, 2)
+        row = model.process(sequence=3, timestamp_ms=300,
+            static_weight_ug=150000000, dynamic_weight_ug=150000000,
+            low_limit_ug=100000000, high_limit_ug=200000000,
+            stable=True, process_active=False, reset_reason=7)
+        self.assertEqual((PENDING, PENDING, SUPPRESS_RESET),
+            (row["static_class"], row["dynamic_confirmed"],
+             row["static_reason"]))
+
     def test_calibration_rounding_and_direction(self):
         self.assertEqual(0, calibrate_raw(-44047))
         self.assertEqual(500000000, calibrate_raw(-487965))
