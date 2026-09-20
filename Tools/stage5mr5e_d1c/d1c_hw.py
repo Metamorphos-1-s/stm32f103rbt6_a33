@@ -18,14 +18,13 @@ from r5_beta_hw import i32, i64
 
 
 D1C_FIRST = 0x02A8
-D1C_COUNT = 34
+D1C_COUNT = 24
 FIELDS = ("utc", "uptime_ms", "sample_sequence", "follower_sequence",
     "firmware", "map", "authoritative_display_input_ug", "panel_display_count",
     "desired_count", "display_count", "delta_count", "desired_division",
     "display_division", "delta_divisions", "anchor_division", "direction",
-    "evidence", "anchor_count",
-    "locked", "stable", "large_step", "release_reason", "source", "unit",
-    "decimals", "division", "application", "mode", "state",
+    "evidence", "anchor_count", "locked", "stable", "large_step",
+    "release_reason", "division", "application", "mode", "state",
     "uncompensated_gross_ug", "corrected_gross_ug", "offset_ug",
     "reference_ug", "automatic_rebase_count", "fault_mask", "overrun_count",
     "dirty", "save_request_count_low", "revision", "saved_revision")
@@ -51,29 +50,29 @@ def decode_d1c(words, order="high"):
         "authoritative_display_input_ug": i32(words[5:7], order) * 100,
         "desired_division": i32(words[7:9], order),
         "display_division": i32(words[9:11], order),
-        "delta_divisions": i32(words[11:13], order),
-        "evidence": signed8(words[13] >> 8),
-        "direction": signed8(words[13] & 0xFF),
-        "anchor_division": i32(words[14:16], order),
-        "initialized": int(bool(words[16] & 1)),
-        "locked": int(bool(words[16] & 2)),
-        "large_step": int(bool(words[16] & 4)),
-        "stable": int(bool(words[16] & 8)),
-        "active": int(bool(words[16] & 16)),
-        "limited": int(bool(words[16] & 32)),
-        "release_reason": words[17] >> 8, "source": words[17] & 0xFF,
-        "unit": words[18] >> 8, "decimals": words[18] & 0xFF,
-        "division": words[19], "application": words[20] >> 12,
-        "mode": (words[20] >> 8) & 0x0F, "state": words[20] & 0xFF,
-        "uncompensated_gross_ug": i32(words[21:23], order) * 100,
-        "corrected_gross_ug": i32(words[23:25], order) * 100,
-        "offset_ug": i32(words[25:27], order) * 100,
-        "reference_ug": i32(words[27:29], order) * 100,
-        "automatic_rebase_count": words[29], "fault_mask": words[30],
-        "overrun_count": words[31],
-        "dirty": int(bool(words[32] & 0x8000)),
-        "save_request_count_low": words[32] & 0x7FFF,
-        "revision": words[33] >> 8, "saved_revision": words[33] & 0xFF}
+        "delta_divisions": i32(words[7:9], order) - i32(words[9:11], order),
+        "evidence": signed8(words[11] >> 8),
+        "direction": signed8(words[11] & 0xFF),
+        "anchor_division": i32(words[9:11], order),
+        "initialized": int(bool((words[12] >> 8) & 1)),
+        "locked": int(bool((words[12] >> 8) & 2)),
+        "large_step": int(bool((words[12] >> 8) & 4)),
+        "stable": int(bool((words[12] >> 8) & 8)),
+        "active": int(bool((words[12] >> 8) & 16)),
+        "limited": int(bool((words[12] >> 8) & 32)),
+        "release_reason": (words[12] >> 4) & 0x0F,
+        "division": words[12] & 0x0F, "application": words[13] >> 12,
+        "mode": (words[13] >> 8) & 0x0F, "state": words[13] & 0xFF,
+        "uncompensated_gross_ug": i32(words[14:16], order) * 100,
+        "corrected_gross_ug": i32(words[16:18], order) * 100,
+        "offset_ug": i32(words[18:20], order) * 100,
+        "reference_ug": i32(words[20:22], order) * 100,
+        "automatic_rebase_count": (words[22] >> 8) & 0x0F,
+        "fault_mask": (words[22] >> 4) & 0x0F,
+        "overrun_count": words[22] & 0x0F,
+        "dirty": int(bool(words[22] & 0x8000)),
+        "save_request_count_low": (words[22] >> 12) & 0x07,
+        "revision": words[23] >> 8, "saved_revision": words[23] & 0xFF}
 
 
 def atomic_json(path, value):
@@ -103,6 +102,7 @@ def record(args):
     samples_path = output / "samples.csv"
     frames_path = output / "frames.jsonl"
     started = time.monotonic(); last_sequence = None; last_utc = None
+    next_poll = started
     records = duplicates = errors = reconnects = maximum_gap = 0
     first_sequence = final_sequence = None; final = None
     frame_stream = frames_path.open("a", encoding="utf-8", newline="")
@@ -118,17 +118,24 @@ def record(args):
                 lineterminator="\n")
             writer.writeheader()
             while time.monotonic() - started < args.duration_s:
+                delay = next_poll - time.monotonic()
+                if delay > 0:
+                    time.sleep(delay)
+                request_started = time.monotonic()
                 try:
                     state = combined_state(client)
                 except Exception:
                     errors += 1
                     if errors > args.max_errors:
                         raise
+                    next_poll = time.monotonic() + args.poll_s
                     continue
                 sequence = state["sample_sequence"]
                 if sequence == last_sequence:
                     duplicates += 1
+                    next_poll = time.monotonic() + args.duplicate_retry_s
                     continue
+                next_poll = request_started + args.poll_s
                 now = time.monotonic()
                 if last_utc is not None:
                     maximum_gap = max(maximum_gap, now - last_utc)
@@ -175,6 +182,8 @@ def main():
     parser.add_argument("--timeout-ms", type=int, default=300)
     parser.add_argument("--duration-s", type=float, required=True)
     parser.add_argument("--max-errors", type=int, default=10)
+    parser.add_argument("--poll-s", type=float, default=0.1)
+    parser.add_argument("--duplicate-retry-s", type=float, default=0.015)
     return record(parser.parse_args())
 
 

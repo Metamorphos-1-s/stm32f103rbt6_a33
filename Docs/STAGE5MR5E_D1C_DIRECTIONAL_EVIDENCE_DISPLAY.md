@@ -11,9 +11,10 @@ explicit authorization. Its configuration SHA remained unchanged. The new
 hardware holdout has not been opened: the first OFF + SHADOW recorder preflight
 correctly rejected cross-frame sequence skew. A compact, single-frame v2
 engineering diagnostic refresh was flashed after renewed confirmation, but its
-51-register response perturbed the main-loop sample timing. A 34-register v3
-refresh is built but not flashed and requires a new exact-hash confirmation.
-All three artifacts contain the same frozen display
+51-register response perturbed the main-loop sample timing. The 34-register v3
+was flashed after confirmation, but STATIC capture still covered only 586 of
+599 device sequences. A 24-register v4 is built but not flashed and requires a
+new exact-hash confirmation. All artifacts contain the same frozen display
 algorithm and parameters.
 
 The branch started from
@@ -124,6 +125,15 @@ qualification range. The v3 BIN is 102,728 bytes, SHA-256
 its ELF is 1,971,912 bytes, SHA-256
 `F3B6E4C4E99F608C47FE52B345B65EE5BE3B1AE5F3B24510FBFC0BBE353CF2B1`.
 
+The v4 block removes transmitted delta and anchor because both are exactly
+derived from desired/display, and packs qualification counters with saturation:
+any nonzero fault, overrun, SAVE or rebase remains a hard failure. It is 24
+registers, while preserving 100 ug mass resolution. The v4 BIN is 102,656
+bytes, SHA-256
+`65B9CE4D6D9383DAC6F05E842BFA24C38BB2F246EA1770DA7ABB5B6C7C028877`;
+its ELF is 1,971,572 bytes, SHA-256
+`C9CA064F36A602425DA10126D4F0D33622024AC302AEC2834CADEA67CEBF430A`.
+
 Standard Release remains byte-identical at
 `82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486`.
 The frozen R5 C/header/Python Git blobs remain
@@ -154,7 +164,7 @@ five seconds), while the complete multi-block transaction takes about 250 ms.
 The v2 51-register block packs all required display, R5 and safety evidence
 into one coherent response so it can be validated at the real 10 Hz rate.
 
-Before v3 reflash, the changed artifact hash must be explicitly confirmed.
+Before v4 reflash, the changed artifact hash must be explicitly confirmed.
 The configuration will be reread, only application sectors written and
 verified, and the configuration reread again. A fresh recorder captures unique device samples from the
 start and rejects measurement/follower sequence mismatch. Natural

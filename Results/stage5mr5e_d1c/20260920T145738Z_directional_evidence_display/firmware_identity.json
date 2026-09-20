@@ -40,7 +40,20 @@
     "bin_length": 102728,
     "bin_sha256": "EDD903D6B7194211F2C5040ADF0C9B22A243330E57AED2DF40BE57E9477C0E4D",
     "map_sha256": "A1C21171B6ED527311ACD35C56B19F3817084CEB1CFAB95BC36C1A4EC8762B8F",
-    "flashed": false,
+    "flashed": true,
     "change_scope": "34-register read-only evidence block; masses encoded at 100 ug resolution; algorithm, parameters and RAM unchanged"
+  },
+  "d1c_beta_v4_minimal_diagnostics": {
+    "firmware": "0x0514",
+    "map": "0x0104",
+    "schema": 2,
+    "persistent_format": 3,
+    "elf_length": 1971572,
+    "elf_sha256": "C9CA064F36A602425DA10126D4F0D33622024AC302AEC2834CADEA67CEBF430A",
+    "bin_length": 102656,
+    "bin_sha256": "65B9CE4D6D9383DAC6F05E842BFA24C38BB2F246EA1770DA7ABB5B6C7C028877",
+    "map_sha256": "F3C46757B45743C7B767CB633254BAD81E3D211034212C41B05D686B58A0D0A2",
+    "flashed": false,
+    "change_scope": "24-register evidence block; derived delta/anchor; saturated qualification counters; algorithm, parameters and RAM unchanged"
   }
 }

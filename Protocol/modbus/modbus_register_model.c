@@ -528,8 +528,9 @@ static ModbusRegisterResult ReadOne(uint16_t address,
             &directional);
         int64_t delta = (int64_t)desired_index - directional.display_count;
         int16_t direction = (delta > 0) ? 1 : ((delta < 0) ? -1 : 0);
-        int32_t compact_delta = (delta > INT32_MAX) ? INT32_MAX :
-            ((delta < INT32_MIN) ? INT32_MIN : (int32_t)delta);
+        uint32_t fault = FaultManager_GetActiveMask();
+        uint32_t overrun = MeasurementBridge_GetObservedOverrunCount();
+        uint32_t save_count = ConfigStore_GetStatistics()->save_request_count;
         uint16_t state_flags = (available && directional.initialized ? 1U : 0U) |
             (available && directional.locked ? 2U : 0U) |
             (available && directional.last_large_step ? 4U : 0U) |
@@ -553,50 +554,37 @@ static ModbusRegisterResult ReadOne(uint16_t address,
         else if (address >= MODBUS_D1C_DISPLAY_FIRST && address <= 0x02B2U)
             *value = Word32((uint32_t)directional.display_count,
                 (uint8_t)(address - MODBUS_D1C_DISPLAY_FIRST), order);
-        else if (address >= MODBUS_D1C_DELTA_FIRST && address <= 0x02B4U)
-            *value = Word32((uint32_t)compact_delta,
-                (uint8_t)(address - MODBUS_D1C_DELTA_FIRST), order);
         else if (address == MODBUS_D1C_EVIDENCE_DIRECTION)
             *value = (uint16_t)(((uint16_t)(uint8_t)directional.evidence << 8U) |
                 (uint8_t)direction);
-        else if (address >= MODBUS_D1C_ANCHOR_FIRST && address <= 0x02B7U)
-            *value = Word32((uint32_t)directional.display_count,
-                (uint8_t)(address - MODBUS_D1C_ANCHOR_FIRST), order);
-        else if (address == MODBUS_D1C_FLAGS) *value = state_flags;
-        else if (address == MODBUS_D1C_REASON_SOURCE)
-            *value = (uint16_t)(((directional.last_large_step ? 2U : 0U) << 8U) |
-                directional.source);
-        else if (address == MODBUS_D1C_UNIT_DECIMALS)
-            *value = (uint16_t)(((uint16_t)config->metrology.active_unit << 8U) |
-                display->decimal_places);
-        else if (address == MODBUS_D1C_DIVISION)
-            *value = division;
+        else if (address == MODBUS_D1C_FLAGS_REASON_DIVISION)
+            *value = (uint16_t)((state_flags << 8U) |
+                ((directional.last_large_step ? 2U : 0U) << 4U) |
+                (division > 15U ? 15U : division));
         else if (address == MODBUS_D1C_R5_STATE)
             *value = (uint16_t)(((uint16_t)MetrologyManager_GetR5Application() << 12U) |
                 ((uint16_t)r5->mode << 8U) | (uint16_t)r5->state);
-        else if (address >= MODBUS_D1C_UNCOMPENSATED_FIRST && address <= 0x02BEU)
+        else if (address >= MODBUS_D1C_UNCOMPENSATED_FIRST && address <= 0x02B7U)
             *value = Word32((uint32_t)(int32_t)
                 (r5->uncompensated_gross_ug / INT64_C(100)),
                 (uint8_t)(address - MODBUS_D1C_UNCOMPENSATED_FIRST), order);
-        else if (address >= MODBUS_D1C_CORRECTED_FIRST && address <= 0x02C0U)
+        else if (address >= MODBUS_D1C_CORRECTED_FIRST && address <= 0x02B9U)
             *value = Word32((uint32_t)(int32_t)
                 (r5->corrected_gross_ug / INT64_C(100)),
                 (uint8_t)(address - MODBUS_D1C_CORRECTED_FIRST), order);
-        else if (address >= MODBUS_D1C_OFFSET_FIRST && address <= 0x02C2U)
+        else if (address >= MODBUS_D1C_OFFSET_FIRST && address <= 0x02BBU)
             *value = Word32((uint32_t)(int32_t)(r5->offset_ug / INT64_C(100)),
                 (uint8_t)(address - MODBUS_D1C_OFFSET_FIRST), order);
-        else if (address >= MODBUS_D1C_REFERENCE_FIRST && address <= 0x02C4U)
+        else if (address >= MODBUS_D1C_REFERENCE_FIRST && address <= 0x02BDU)
             *value = Word32((uint32_t)(int32_t)(r5->reference_ug / INT64_C(100)),
                 (uint8_t)(address - MODBUS_D1C_REFERENCE_FIRST), order);
-        else if (address == MODBUS_D1C_REBASE_LOW)
-            *value = (uint16_t)r5->automatic_rebase_count;
-        else if (address == MODBUS_D1C_FAULT_LOW)
-            *value = (uint16_t)FaultManager_GetActiveMask();
-        else if (address == MODBUS_D1C_OVERRUN_LOW)
-            *value = (uint16_t)MeasurementBridge_GetObservedOverrunCount();
-        else if (address == MODBUS_D1C_DIRTY_SAVE)
+        else if (address == MODBUS_D1C_SAFETY)
             *value = (uint16_t)((context->runtime.config_dirty ? 0x8000U : 0U) |
-                (ConfigStore_GetStatistics()->save_request_count & 0x7FFFU));
+                ((save_count > 7U ? 7U : save_count) << 12U) |
+                ((r5->automatic_rebase_count > 15U ? 15U :
+                    r5->automatic_rebase_count) << 8U) |
+                ((fault > 15U ? 15U : fault) << 4U) |
+                (overrun > 15U ? 15U : overrun));
         else if (address == MODBUS_D1C_REVISION_SAVED)
             *value = (uint16_t)(((context->config_revision > 255U ? 255U :
                 context->config_revision) << 8U) |

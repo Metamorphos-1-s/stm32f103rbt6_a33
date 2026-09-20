@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "V2 FLASH VERIFIED BUT PERTURBS SAMPLE TIMING; HOLDOUT UNOPENED; V3 REFLASH AUTHORIZATION PENDING",
+  "status": "V3 FLASH VERIFIED BUT STATIC CAPTURE INCOMPLETE; HOLDOUT UNOPENED; V4 REFLASH AUTHORIZATION PENDING",
   "preflash": {
     "firmware": "0x0512",
     "application_length": 100792,
@@ -63,6 +63,26 @@
     "elf_sha256": "F3B6E4C4E99F608C47FE52B345B65EE5BE3B1AE5F3B24510FBFC0BBE353CF2B1",
     "register_count": 34,
     "mass_resolution_ug": 100,
+    "algorithm_changed": false,
+    "parameters_changed": false,
+    "ram_changed": false,
+    "flashed": true,
+    "preflight": {
+      "off_coverage": "200/200 after startup interval",
+      "shadow_static_coverage": "586/599",
+      "result": "FAIL: STATIC processing plus 34-register polling still skips device sequences"
+    }
+  },
+  "v4": {
+    "firmware": "0x0514",
+    "bin_length": 102656,
+    "bin_sha256": "65B9CE4D6D9383DAC6F05E842BFA24C38BB2F246EA1770DA7ABB5B6C7C028877",
+    "elf_length": 1971572,
+    "elf_sha256": "C9CA064F36A602425DA10126D4F0D33622024AC302AEC2834CADEA67CEBF430A",
+    "register_count": 24,
+    "mass_resolution_ug": 100,
+    "derived_fields": ["delta", "anchor"],
+    "saturated_qualification_counters": true,
     "algorithm_changed": false,
     "parameters_changed": false,
     "ram_changed": false,

@@ -5,19 +5,17 @@ from d1c_hw import combined_state, decode_d1c
 
 class D1CHardwareDecoderTests(unittest.TestCase):
     def test_decode_signed_and_flags(self):
-        words = [0] * 34
+        words = [0] * 24
         words[0] = 0xD1C1
         words[1:5] = [0x1234, 0x5678, 0x0001, 0x2345]
         words[5:7] = [0xFFFF, 0xFFFF]
         words[7:9] = [0xFFFF, 0xFFF7]
         words[9:11] = [0xFFFF, 0xFFFC]
-        words[11:13] = [0xFFFF, 0xFFFB]
-        words[13] = 0xFDFF
-        words[14:16] = [0xFFFF, 0xFFFC]
-        words[16] = 0x3F; words[17] = 0x0207
-        words[18:21] = [0x0102, 5, 0x1205]
-        words[21:29] = [0] * 8
-        words[29:34] = [4, 0, 0, 0x8002, 0x0808]
+        words[11] = 0xFDFF
+        words[12] = 0x3F25
+        words[13] = 0x1205
+        words[14:22] = [0] * 8
+        words[22:24] = [0xA400, 0x0808]
         value = decode_d1c(words)
         self.assertEqual(-9, value["desired_division"])
         self.assertEqual(-4, value["display_division"])
@@ -44,7 +42,7 @@ class D1CHardwareDecoderTests(unittest.TestCase):
 
     def test_rejects_signature(self):
         with self.assertRaises(Exception):
-            decode_d1c([0] * 34)
+            decode_d1c([0] * 24)
 
 
 if __name__ == "__main__":
