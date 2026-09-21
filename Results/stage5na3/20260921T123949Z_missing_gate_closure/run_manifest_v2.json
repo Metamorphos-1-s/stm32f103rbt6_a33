@@ -2,7 +2,7 @@
   "schema_version": 2,
   "classification": "STAGE5NA3_P0_P2_PREAUTHORIZATION",
   "run_id": "20260921T123949Z_missing_gate_closure",
-  "repository_commit": "ddb1ab3",
+  "repository_commit": "69da3d544115d705bbaf309f7484526c30f8d8bd",
   "files": [
     {
       "path": "d1c_parity.json",
@@ -113,6 +113,16 @@
       "path": "p3_plan.json",
       "length": 859,
       "sha256": "0E02FA154535360C955E42DB8ECF88730DE31294DDE936BB0C6097B1451D444E"
+    },
+    {
+      "path": "preauthorization_final_alarm_shadow.json",
+      "length": 1009,
+      "sha256": "B364ADEDE688BBC866CA6708358BBDCBDCFA54B2404CA8EFD91B6D5E5D74622C"
+    },
+    {
+      "path": "preauthorization_final_r5.json",
+      "length": 2840,
+      "sha256": "6D08A3F870E8892CB43F2CD8C3358CAD06F1451CDCE0BFB1C9A24044E33FB335"
     },
     {
       "path": "r5_parity.json",
