@@ -1,0 +1,148 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5NA3_P0_P2_PREAUTHORIZATION",
+  "run_id": "20260921T123949Z_missing_gate_closure",
+  "repository_commit": "ddb1ab3",
+  "files": [
+    {
+      "path": "d1c_parity.json",
+      "length": 1566,
+      "sha256": "66FAAF4832ADF6DF902F26E94A998C4D556E383CCB8455FA083917A397F64CD3"
+    },
+    {
+      "path": "diagnostic_design.json",
+      "length": 1498,
+      "sha256": "059E4732F6D8B8F84155D96E5E25F951716D4CC2A17EF2F2A31A62F4576EE46C"
+    },
+    {
+      "path": "diagnostic_identity.json",
+      "length": 514,
+      "sha256": "2742E9E8426CFD1DFF1B9831D3FA85BCB464D6C2A7694E223BA99690311DEC17"
+    },
+    {
+      "path": "environment.json",
+      "length": 535,
+      "sha256": "F894BEB343B8DC565CA1F6A902C58F227A3EE857B08ED077728C71F0F8E20158"
+    },
+    {
+      "path": "firmware_identity.json",
+      "length": 1158,
+      "sha256": "9D5CAA7358AE4A94783C2DEB3D7E5796BA576C5AADA54FA9F679DC825056DA87"
+    },
+    {
+      "path": "freeze_summary.json",
+      "length": 877,
+      "sha256": "1E22F2BB4A4D92D66A3B70793F637ED3378A0DF353DD5DFFF7CB848AE27BB353"
+    },
+    {
+      "path": "frozen_0515_recovery.bin",
+      "length": 105416,
+      "sha256": "62648C3AD79C324B1860BE3005B8EA365C2BCE98C084BE4F5FD20D7599065228"
+    },
+    {
+      "path": "p0_alarm_shadow.json",
+      "length": 1008,
+      "sha256": "21169E40C558597712857E9A250420F73004FE19204ECC729BADBCC8B2E99FBB"
+    },
+    {
+      "path": "p0_combined/environment.json",
+      "length": 1051,
+      "sha256": "2EB8F41BDF14DE033E5F28F926564EEBF9B64EBE8AB41380304C58660636F7D8"
+    },
+    {
+      "path": "p0_combined/events.jsonl",
+      "length": 137,
+      "sha256": "7DF290D40B98D5B28B35ADA4F1DAA41FF1583BAF454112986569D8A30A1EA8F8"
+    },
+    {
+      "path": "p0_combined/samples.csv",
+      "length": 5810,
+      "sha256": "D7C542816DDFB858C2CCCD4848B6CF71B6370DAE7BE1DBF32CB41A5997C395F2"
+    },
+    {
+      "path": "p0_combined/summary.json",
+      "length": 4011,
+      "sha256": "74DF63EC89BBFD4491D630F7FBB1B9BF8F47EBCFAC3B8A937AACC4936CE3AEC7"
+    },
+    {
+      "path": "p0_r5.json",
+      "length": 2841,
+      "sha256": "29D894A3DB9597E22538632F6389AFCD7F16D1C25F7F0C71F2FB8EDB52130B34"
+    },
+    {
+      "path": "p1_container_probe.json",
+      "length": 1015,
+      "sha256": "A14DB5FA852FE62951301F691D2ECEC189D5FEC4B1F2A79F2DABC97A84607B04"
+    },
+    {
+      "path": "p1_monotonic_slow_fill_run1/environment.json",
+      "length": 1051,
+      "sha256": "815A0050E9749E4170D6F1F82121C351AD8A805D90D84EC5CF30F676BA8C7E0B"
+    },
+    {
+      "path": "p1_monotonic_slow_fill_run1/events.jsonl",
+      "length": 1260,
+      "sha256": "6A0B6A100A42ABB525AB905DECF0D1DE5BC8EB398743B261E0AB00B3BAFFB20F"
+    },
+    {
+      "path": "p1_monotonic_slow_fill_run1/p1_analysis.json",
+      "length": 3363,
+      "sha256": "5BBE940040182D9CF76E4B041B4B0943C542368AB9AC141AD0CE478D2C850700"
+    },
+    {
+      "path": "p1_monotonic_slow_fill_run1/samples.csv",
+      "length": 1417657,
+      "sha256": "2171C003A35353339F7E66D474B5E248E478C50F3D64C29FAFFEBEC867C6949F"
+    },
+    {
+      "path": "p1_monotonic_slow_fill_run1/summary.json",
+      "length": 4077,
+      "sha256": "89C853B654F27F43AC47E6AA7DA18E507ECDF1F46A45F1D66FD904DB7145C5BD"
+    },
+    {
+      "path": "p1_summary.json",
+      "length": 942,
+      "sha256": "D4BC9D2B57B0D8C6F28DD3AB7A6F68DC92A7E79D0A1B824175081740DA9C80F6"
+    },
+    {
+      "path": "p2_regression_summary.json",
+      "length": 735,
+      "sha256": "2C1CF7DA56205D8D38E1940E4A19C7737400D37DD307AEA69322EDE614A88F36"
+    },
+    {
+      "path": "p3_plan.json",
+      "length": 859,
+      "sha256": "0E02FA154535360C955E42DB8ECF88730DE31294DDE936BB0C6097B1451D444E"
+    },
+    {
+      "path": "r5_parity.json",
+      "length": 1451,
+      "sha256": "D9860786C8BFCBAAD260971FD7045E02CC1B5913B3764EE631DB5CEC5FB1730B"
+    },
+    {
+      "path": "resource_summary.json",
+      "length": 791,
+      "sha256": "39722B21A2BCA76701D04C28A82C1F73D462DBC2F66A844C9844D47FDECD139C"
+    },
+    {
+      "path": "stage5na3_diagnostics.elf",
+      "length": 1995364,
+      "sha256": "97CCD708500EC930168FAF878DD288937DF6AD038750A527090B3738866AB485"
+    },
+    {
+      "path": "stage5na3_diagnostics.map",
+      "length": 1415532,
+      "sha256": "3C49C0654448600A5C51CA571D06AE74DD2AD21CA9C9BB88D4652FE7C580DD3D"
+    },
+    {
+      "path": "stage5na3_diagnostics_application.bin",
+      "length": 105808,
+      "sha256": "6FE3181EC275A122C8A7CABF4918AA4665EC028CB0C26E697A9C011487AC2B6C"
+    },
+    {
+      "path": "stage5na_parity.json",
+      "length": 1205,
+      "sha256": "0B3AA70FC37BF4D616F0AF58F97C1ABAFAAFE161F05D5B2E2ACFF092328267F4"
+    }
+  ]
+}
