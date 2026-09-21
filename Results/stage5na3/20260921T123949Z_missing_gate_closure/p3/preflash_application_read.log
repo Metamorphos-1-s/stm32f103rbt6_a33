@@ -1,0 +1,29 @@
+      -------------------------------------------------------------------
+                       STM32CubeProgrammer v2.19.0                  
+      -------------------------------------------------------------------
+
+ST-LINK SN  : E1007200D0D2139393740544
+ST-LINK FW  : V2J47S7
+Board       : --
+Voltage     : 3.29V
+SWD freq    : 4000 KHz
+Connect mode: Hot Plug
+Reset mode  : Software reset
+Device ID   : 0x410
+Revision ID : Rev X
+Device name : STM32F101/F102/F103 Medium-density
+Flash size  : 128 KBytes
+Device type : MCU
+Device CPU  : Cortex-M3
+BL Version  : --
+
+
+UPLOADING ...
+  File          : Results\stage5na3\20260921T123949Z_missing_gate_closure\p3\preflash_0515_application.bin
+  Size          : 105416 Bytes
+  Address:      : 0x8000000
+Read progress:
+�������������������������������������������������� 0%
+�������������������������������������������������� 100%
+Data read successfully
+Time elapsed during read operation is: 00:00:01.134
