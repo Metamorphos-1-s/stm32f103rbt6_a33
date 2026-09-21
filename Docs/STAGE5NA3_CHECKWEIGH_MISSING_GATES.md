@@ -112,7 +112,7 @@ Full strict MSVC still fails only on the two frozen A2 debts: C4310 at
 **KNOWN BUILD-HYGIENE DEBT; MUST CLOSE BEFORE ACTIVE STAGE 5N-B ARTIFACT**.
 ASan and UBSan are NOT RUN.
 
-The preauthorization evidence Manifest passed file length, SHA-256 and Git-blob
+The final evidence Manifest passed file length, SHA-256 and Git-blob
 verification in independent `core.autocrlf=false`, `input` and `true` clones.
 The final read-only device snapshot at 2026-09-21 14:06:52 UTC still shows the
 original 0x0515, empty and stable, OFF + SHADOW, offset/reference/evaluation
