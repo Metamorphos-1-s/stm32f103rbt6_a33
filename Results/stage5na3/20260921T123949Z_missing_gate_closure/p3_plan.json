@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "NOT AUTHORIZED",
+  "status": "COMPLETE",
   "preflash": [
     "read-only Modbus identity and state",
     "SWD backup configuration region and compute SHA-256",

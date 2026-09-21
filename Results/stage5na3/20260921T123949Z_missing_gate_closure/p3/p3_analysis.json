@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "result": "PASS",
+  "scope": "TARGET INVALID_INPUT INJECTION; NOT PHYSICAL SENSOR FAULT",
+  "automatic_restore": {
+    "requested_duration_ms": 2000,
+    "target_final": {
+      "magic": 894320947,
+      "version": 1,
+      "length": 92,
+      "request_sequence": 1,
+      "applied_sequence": 1,
+      "command_magic": 0,
+      "command": 1,
+      "requested_duration_ms": 2000,
+      "status": 2,
+      "injection_type": 0,
+      "active": 0,
+      "start_ms": 131559,
+      "remaining_ms": 0,
+      "completion_reason": 1,
+      "accepted_count": 1,
+      "rejected_count": 0,
+      "injected_sample_count": 20,
+      "natural_invalid_count": 2,
+      "last_input_valid": 1,
+      "last_static_class": 4,
+      "last_dynamic_class": 4,
+      "last_sample_sequence": 1331,
+      "last_timestamp_ms": 134149
+    },
+    "modbus_capture": {
+      "records": 350,
+      "read_errors": 0,
+      "invalid_observation_records": 12,
+      "first_invalid_sequence": 1305,
+      "last_invalid_sequence": 1324,
+      "formal_output_nonzero_records": 0,
+      "fault_max": 0,
+      "overrun_max": 0,
+      "dirty_max": 0,
+      "save_max": 0,
+      "revision_values": [
+        8
+      ],
+      "saved_revision_values": [
+        8
+      ],
+      "r5_offset_values": [
+        0
+      ],
+      "r5_reference_values": [
+        0
+      ],
+      "r5_rebase_values": [
+        0
+      ],
+      "sequence_advanced": true
+    },
+    "host_disconnected_for_injection_duration": true
+  },
+  "abort_restore": {
+    "active_snapshot": {
+      "magic": 894320947,
+      "version": 1,
+      "length": 92,
+      "request_sequence": 2,
+      "applied_sequence": 2,
+      "command_magic": 0,
+      "command": 1,
+      "requested_duration_ms": 5000,
+      "status": 1,
+      "injection_type": 1,
+      "active": 1,
+      "start_ms": 263231,
+      "remaining_ms": 4716,
+      "completion_reason": 0,
+      "accepted_count": 2,
+      "rejected_count": 0,
+      "injected_sample_count": 24,
+      "natural_invalid_count": 2,
+      "last_input_valid": 0,
+      "last_static_class": 0,
+      "last_dynamic_class": 0,
+      "last_sample_sequence": 2622,
+      "last_timestamp_ms": 263493
+    },
+    "abort_snapshot": {
+      "magic": 894320947,
+      "version": 1,
+      "length": 92,
+      "request_sequence": 3,
+      "applied_sequence": 3,
+      "command_magic": 0,
+      "command": 2,
+      "requested_duration_ms": 0,
+      "status": 3,
+      "injection_type": 0,
+      "active": 0,
+      "start_ms": 263231,
+      "remaining_ms": 0,
+      "completion_reason": 2,
+      "accepted_count": 3,
+      "rejected_count": 0,
+      "injected_sample_count": 33,
+      "natural_invalid_count": 2,
+      "last_input_valid": 1,
+      "last_static_class": 4,
+      "last_dynamic_class": 4,
+      "last_sample_sequence": 2637,
+      "last_timestamp_ms": 265019
+    },
+    "modbus_capture": {
+      "records": 262,
+      "read_errors": 0,
+      "invalid_observation_records": 7,
+      "first_invalid_sequence": 2619,
+      "last_invalid_sequence": 2630,
+      "formal_output_nonzero_records": 0,
+      "fault_max": 0,
+      "overrun_max": 0,
+      "dirty_max": 0,
+      "save_max": 0,
+      "revision_values": [
+        8
+      ],
+      "saved_revision_values": [
+        8
+      ],
+      "r5_offset_values": [
+        0
+      ],
+      "r5_reference_values": [
+        0
+      ],
+      "r5_rebase_values": [
+        0
+      ],
+      "sequence_advanced": true
+    }
+  },
+  "engineering_modbus_note": "During suppression, dynamic_reason reports INPUT while the frozen diagnostic dynamic_confirmed field retains internal hysteresis state; A3 last_dynamic_class records the actual CheckweighShadow output INVALID.",
+  "configuration": {
+    "before_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+    "after_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+    "byte_identical": true,
+    "v3_slots": "A sequence 7 valid; B sequence 8 valid and active"
+  },
+  "recovery": {
+    "expected_sha256": "62648C3AD79C324B1860BE3005B8EA365C2BCE98C084BE4F5FD20D7599065228",
+    "readback_sha256": "62648C3AD79C324B1860BE3005B8EA365C2BCE98C084BE4F5FD20D7599065228",
+    "byte_identical": true,
+    "page103_all_ff": true
+  },
+  "gates": {
+    "automatic_command_accepted": true,
+    "automatic_timeout_completed": true,
+    "automatic_injected_samples": true,
+    "active_snapshot_invalid": true,
+    "abort_completed": true,
+    "abort_recovered_high": true,
+    "main_loop_and_modbus_continued": true,
+    "formal_outputs_zero": true,
+    "safety_clean": true,
+    "configuration_unchanged": true,
+    "application_restored": true,
+    "diagnostic_tail_erased": true
+  }
+}

@@ -117,6 +117,9 @@ def control(args):
         current = decode_control(poll_path.read_bytes())
         observed.append(current)
         if current["applied_sequence"] == sequence:
+            if args.action == "invalid" and args.return_when_active and \
+                    current["active"] == 1:
+                break
             if args.action == "abort" or current["status"] in (2, 3, 4):
                 break
             if args.action == "invalid" and current["active"] == 1:
@@ -157,6 +160,7 @@ def parser():
         command.add_argument("--timeout-s", type=float, default=10.0)
         command.add_argument("--autonomous-restore", action="store_true")
         command.add_argument("--autonomous-margin-s", type=float, default=0.5)
+        command.add_argument("--return-when-active", action="store_true")
         command.add_argument("--nm", default="arm-none-eabi-nm")
         command.set_defaults(action=action)
     return result

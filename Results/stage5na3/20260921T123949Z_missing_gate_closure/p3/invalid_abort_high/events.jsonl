@@ -1,0 +1,4 @@
+{"utc":"2026-09-21T15:23:03.316Z","event":"RECORDER_STARTED"}
+{"utc":"2026-09-21T15:23:31.612Z","host_monotonic_ns":175402046000000,"event":"BEFORE_INVALID_ABORT","note":"500g HIGH stable; request 5000ms injection then abort after active snapshot"}
+{"utc":"2026-09-21T15:23:34.219Z","host_monotonic_ns":175404656000000,"event":"AFTER_INVALID_ABORT","note":"Target active snapshot captured and ABORT accepted"}
+{"utc":"2026-09-21T15:23:48.404Z","event":"RECORDER_STOPPED","records":262}

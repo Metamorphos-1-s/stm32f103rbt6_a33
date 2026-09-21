@@ -1,0 +1,4 @@
+{"utc":"2026-09-21T15:20:52.721Z","event":"RECORDER_STARTED"}
+{"utc":"2026-09-21T15:21:19.893Z","host_monotonic_ns":175270328000000,"event":"BEFORE_INVALID_AUTO","note":"500g HIGH stable; starting bounded 2000ms target invalid injection"}
+{"utc":"2026-09-21T15:21:23.405Z","host_monotonic_ns":175273843000000,"event":"AFTER_INVALID_AUTO","note":"SWD reconnected only after injection deadline; target reported autonomous timeout completion"}
+{"utc":"2026-09-21T15:21:52.863Z","event":"RECORDER_STOPPED","records":350}

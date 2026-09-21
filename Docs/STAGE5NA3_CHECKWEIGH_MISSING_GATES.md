@@ -2,13 +2,17 @@
 
 ## Current Result
 
-**STAGE 5N-A MONOTONIC SLOW-FILL GATE PASSED; TARGET FAULT-RECOVERY GATE
-NOT RUN; SHADOW HARDWARE QUALIFICATION REMAINS INCOMPLETE; ACTIVE OUTPUT
-REMAINS BLOCKED.**
+**STAGE 5N-A SHADOW TARGET QUALIFICATION COMPLETE; STAGE 5N-B DESIGN ENTRY
+APPROVED; ACTIVE ALARM OUTPUT REMAINS BLOCKED UNTIL STAGE 5N-B; PHYSICAL
+SENSOR-FAULT QUALIFICATION DEFERRED; D1-C NONZERO-OFFSET QUALIFICATION
+DEFERRED; 40 HZ REMAINS BLOCKED; STAGE 5O REMAINS DEFERRED.**
 
-This report covers P0 through P2. P3 is deliberately not run because SWD,
-reset, configuration backup and application programming require the explicit
-authorization defined by the task. Stage 5N-B entry is not yet approved.
+**WARNING-CLEAN ACTIVE BUILD GATE REMAINS OPEN.**
+
+This report covers P0 through P3. P3 proceeded only after the user explicitly
+authorized configuration backup, diagnostic programming and mandatory 0x0515
+recovery. The qualification is target-side INVALID_INPUT coverage, not a claim
+for physical sensor disconnection, short circuit or reference failure.
 
 The stage started from
 `8c68acd4cfc3094f5f494b9aa918e8263e9a364b` on the A2 branch and continues
@@ -114,18 +118,45 @@ The final read-only device snapshot at 2026-09-21 14:06:52 UTC still shows the
 original 0x0515, empty and stable, OFF + SHADOW, offset/reference/evaluation
 zero, clean revision 8/8, fault/overrun/SAVE zero and formal outputs zero.
 
-## P3 Authorization Boundary
+## P3 Target Validation And Recovery
 
-Configuration SHA remains NOT RUN. With authorization, P3 will first record the
-Modbus state, use SWD to back up and parse both V3 configuration slots, and bind
-the preflash SHA. It will erase/program/verify application pages 0-103 only,
-validate the RAM ABI, execute bounded INVALID_INPUT automatic and ABORT recovery
-while Modbus records candidate/formal states, then erase pages 0-103 and restore
-the exact frozen 0x0515 BIN. Finally it will reread configuration, require the
-same SHA and valid V3 slots, and verify the target is empty, 10 Hz,
-filt3/strength3, OFF + SHADOW, clean 8/8 with formal outputs zero.
+The preflash application readback was byte-identical to the frozen 0x0515 BIN.
+The 4,096-byte configuration region SHA-256 was
+`A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4`.
+Both V3 slots were valid: A sequence 7 and active B sequence 8. The diagnostic
+ELF erased and programmed application pages 0-103 and passed device Verify.
 
-The SWD backup and each application flash reset the MCU and clear volatile R5,
-candidate and diagnostic state. Configuration pages are never erased and SAVE
-is never sent. P3 remains NOT RUN until the exact explicit authorization is
-received.
+At stable 500 g HIGH, a 2,000 ms INVALID_INPUT command was accepted. The SWD
+host then remained disconnected for the complete injection interval. The MCU
+injected 20 samples and autonomously completed with TIMEOUT. Modbus continued
+to advance during the interval and recorded 12 suppression observations. The
+recovered candidate returned to HIGH without physical action.
+
+A second 5,000 ms command captured the active target control block with
+`last_input_valid=0`, `last_static_class=INVALID` and
+`last_dynamic_class=INVALID`. ABORT was then accepted and the next captured
+state had valid input and both outputs HIGH. The frozen engineering Modbus block
+retains the internal DYNAMIC hysteresis state in its `dynamic_confirmed` field
+during suppression, while `dynamic_reason=INPUT`; the A3 control block observes
+the actual current `CheckweighShadowOutput.dynamic_confirmed`, which was
+INVALID. No candidate state was directly overwritten.
+
+Both runs had zero formal alarm/lamp/buzzer output, read error, fault, overrun,
+dirty or SAVE activity. Revision/saved remained 8/8 and R5 offset/reference/
+rebase remained zero. Main-loop and sample sequences continued advancing.
+
+Recovery explicitly erased application pages 0-103, programmed the frozen
+0x0515 BIN into pages 0-102 and passed Verify. Application readback is
+byte-identical at SHA-256
+`62648C3AD79C324B1860BE3005B8EA365C2BCE98C084BE4F5FD20D7599065228`;
+page 103 is all `0xFF`, so no diagnostic tail remains. Configuration before and
+after is byte-identical at the SHA above and both V3 slots remain valid 7/8.
+
+The final device is empty and stable on original 0x0515, Map 0x0104, 10 Hz,
+filt3/strength3, R5 OFF + SHADOW, offset/reference/evaluation/rebase zero,
+fault/overrun/dirty/SAVE zero, revision/saved 8/8 and formal outputs zero.
+No SAVE was sent and configuration pages were never erased.
+
+Physical sensor disconnection, short circuit, excitation/reference faults,
+cross-sensor validation, D1-C nonzero-offset qualification, 40 Hz external
+timing, metrology certification, ASan, UBSan and Stage 5O remain deferred.

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "p1_monotonic_slow_fill": "PASS",
+  "p3_target_invalid_recovery": "PASS",
+  "p3_scope": "TARGET INVALID_INPUT; NOT PHYSICAL SENSOR FAULT",
+  "automatic_restore": {
+    "duration_ms": 2000,
+    "injected_samples": 20,
+    "completion": "TIMEOUT",
+    "host_disconnected_during_duration": true
+  },
+  "abort_restore": {
+    "active_input_valid": 0,
+    "active_static_class": "INVALID",
+    "active_dynamic_class": "INVALID",
+    "completion": "ABORT",
+    "recovered_static_class": "HIGH",
+    "recovered_dynamic_class": "HIGH"
+  },
+  "formal_output_nonzero_records": 0,
+  "fault_overrun_dirty_save": [0, 0, 0, 0],
+  "revision_saved_revision": [8, 8],
+  "r5_offset_reference_rebase": [0, 0, 0],
+  "configuration_sha256_before": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "configuration_sha256_after": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "configuration_byte_identical": true,
+  "v3_slots": "A valid sequence 7; B valid active sequence 8",
+  "restored_0x0515_sha256": "62648C3AD79C324B1860BE3005B8EA365C2BCE98C084BE4F5FD20D7599065228",
+  "restored_application_byte_identical": true,
+  "diagnostic_page103_all_ff": true,
+  "final_device": "empty stable; 0x0515; 10Hz filt3/strength3; OFF+SHADOW; clean 8/8; formal outputs zero"
+}

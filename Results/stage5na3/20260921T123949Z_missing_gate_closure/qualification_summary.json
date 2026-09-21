@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "qualification": "COMPLETE",
+  "statement": "STAGE 5N-A SHADOW TARGET QUALIFICATION COMPLETE; STAGE 5N-B DESIGN ENTRY APPROVED; ACTIVE ALARM OUTPUT REMAINS BLOCKED UNTIL STAGE 5N-B",
+  "warning_clean_active_build_gate": "OPEN",
+  "active_alarm_output_authorized": false,
+  "physical_sensor_fault_qualification": "DEFERRED",
+  "d1c_nonzero_offset_qualification": "DEFERRED",
+  "cross_sensor_validation": "DEFERRED",
+  "40hz_external_timing": "BLOCKED",
+  "metrology_certification": "DEFERRED",
+  "asan": "NOT RUN",
+  "ubsan": "NOT RUN",
+  "stage5o": "DEFERRED"
+}
