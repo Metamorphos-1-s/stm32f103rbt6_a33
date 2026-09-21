@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "qualification": "INCOMPLETE",
+  "statement": "STAGE 5N-A SOFTWARE CANDIDATE PRESERVED; SHADOW HARDWARE QUALIFICATION INCOMPLETE; ACTIVE OUTPUT REMAINS BLOCKED",
+  "blocking_gaps": [
+    "extreme monotonic slow ramp was invalidated by reported intermediate unloads",
+    "physical fault injection and recovery was not run because 0x0515 has no safe reversible injection interface"
+  ],
+  "candidate_failure_found": false,
+  "stage5nb_entry_approved": false,
+  "active_output_authorized": false,
+  "d1c_nonzero_offset_qualification": "DEFERRED",
+  "real_12h_display_validation": "DEFERRED",
+  "cross_sensor_validation": "DEFERRED",
+  "40hz_external_timing": "DEFERRED",
+  "metrology_certification": "DEFERRED",
+  "stage5o": "DEFERRED",
+  "asan": "NOT RUN",
+  "ubsan": "NOT RUN"
+}

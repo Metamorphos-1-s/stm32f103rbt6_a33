@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "result": "STAGE 5N-A SOFTWARE CANDIDATE PRESERVED; SHADOW HARDWARE QUALIFICATION INCOMPLETE; ACTIVE OUTPUT REMAINS BLOCKED",
+  "firmware": {
+    "version": "0x0515",
+    "map": "0x0104",
+    "schema": 2,
+    "persistent_format": 3,
+    "bin_length": 105416,
+    "bin_sha256": "62648C3AD79C324B1860BE3005B8EA365C2BCE98C084BE4F5FD20D7599065228"
+  },
+  "configuration": {
+    "profile": 0,
+    "sample_rate": "10 Hz",
+    "filter": "filt3/strength3",
+    "calibration_valid": true,
+    "thresholds_ug": [100000000, 400000000],
+    "hysteresis_ug": 20000,
+    "configuration_sha256": "NOT RUN - requires SWD reset and no reset authorization was given"
+  },
+  "hardware_records": {
+    "combined_records": 12796,
+    "read_errors": 0,
+    "observable_dynamic_transitions": 110,
+    "dynamic_outside_hysteresis_contract": 0,
+    "static_contract_errors": 0,
+    "formal_output_nonzero_records": 0,
+    "maximum_host_observation_gap_ms": 391
+  },
+  "scenarios": {
+    "slow_fill_and_pauses": "PARTIAL PASS - LOW/OK/HIGH, reverse crossings, segmented loading and 2/5/10 second pauses covered; extreme monotonic ramp NOT QUALIFIED because the user reported intermediate unloads",
+    "mechanical_disturbance": "PASS at LOW, OK, HIGH and lower-threshold positions",
+    "physical_tare_clear": "PASS; panel actions captured, exact reset samples supplemented with formal CommandService captures",
+    "physical_fault_injection": "NOT RUN - no safe reversible frozen-firmware injection interface"
+  },
+  "safety": {
+    "fault": 0,
+    "overrun": 0,
+    "dirty": 0,
+    "save": 0,
+    "revision_saved": [8, 8],
+    "r5_offset_reference_rebase": [0, 0, 0],
+    "formal_outputs": 0
+  },
+  "final_device": {
+    "load": "empty and user-confirmed stable",
+    "firmware": "0x0515",
+    "application": "SHADOW",
+    "mode": "OFF",
+    "offset_ug": 0,
+    "reference_ug": 0,
+    "evaluation_count": 0,
+    "fault": 0,
+    "overrun": 0,
+    "dirty": 0,
+    "save": 0,
+    "revision": 8,
+    "saved_revision": 8,
+    "formal_outputs": 0
+  },
+  "stage5nb_entry_approved": false
+}

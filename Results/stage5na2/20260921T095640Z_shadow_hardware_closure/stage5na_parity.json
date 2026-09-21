@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "state_bytes": 24,
+  "config": {
+    "static_stable_samples": 3,
+    "dynamic_hysteresis_ug": 20000,
+    "dynamic_confirm_samples": 1,
+    "dynamic_min_dwell_samples": 0
+  },
+  "cases": [
+    {
+      "case": "load_500g",
+      "samples": 919,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "unload_500g",
+      "samples": 927,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "cycles_5",
+      "samples": 3219,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "empty_static",
+      "samples": 5266,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "loaded_static",
+      "samples": 31132,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "slow_fill",
+      "samples": 2073,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "faster_fill",
+      "samples": 2072,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "synthetic_resets_boundaries",
+      "samples": 103,
+      "mismatches": 0,
+      "first_mismatches": []
+    }
+  ],
+  "samples": 45711,
+  "mismatches": 0
+}

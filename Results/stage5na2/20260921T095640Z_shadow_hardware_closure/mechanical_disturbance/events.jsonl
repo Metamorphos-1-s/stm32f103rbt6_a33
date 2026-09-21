@@ -1,0 +1,11 @@
+{"utc":"2026-09-21T10:27:34.549Z","event":"RECORDER_STARTED"}
+{"utc":"2026-09-21T10:28:11.277Z","host_monotonic_ns":157687328000000,"event":"LOW_STABLE_BEFORE_DISTURBANCE","note":"Approximately 37g tape; user confirmed stable"}
+{"utc":"2026-09-21T10:28:48.287Z","host_monotonic_ns":157724343000000,"event":"LOW_DISTURBANCE_RECOVERED","note":"User applied approximately 1s light press and confirmed stable recovery"}
+{"utc":"2026-09-21T10:29:28.498Z","host_monotonic_ns":157764546000000,"event":"OK_STABLE_BEFORE_DISTURBANCE","note":"Approximately 137g total; user confirmed stable"}
+{"utc":"2026-09-21T10:30:00.458Z","host_monotonic_ns":157796515000000,"event":"OK_DISTURBANCE_RECOVERED","note":"User applied approximately 1s light press and confirmed stable recovery"}
+{"utc":"2026-09-21T10:31:04.015Z","host_monotonic_ns":157860062000000,"event":"HIGH_STABLE_BEFORE_DISTURBANCE","note":"Approximately 637g total; user confirmed stable"}
+{"utc":"2026-09-21T10:31:59.786Z","host_monotonic_ns":157915843000000,"event":"HIGH_DISTURBANCE_RECOVERED","note":"User applied approximately 1s light press and confirmed stable recovery"}
+{"utc":"2026-09-21T10:32:50.297Z","host_monotonic_ns":157966343000000,"event":"OK_STABLE_AFTER_HIGH","note":"500g removed; approximately 137g remained and user confirmed stable"}
+{"utc":"2026-09-21T10:33:48.615Z","host_monotonic_ns":158024671000000,"event":"LOW_THRESHOLD_STABLE_BEFORE_DISTURBANCE","note":"Nominal 100g mass retained near frozen lower limit; user confirmed stable"}
+{"utc":"2026-09-21T10:34:56.383Z","host_monotonic_ns":158092437000000,"event":"LOW_THRESHOLD_DISTURBANCE_RECOVERED","note":"User applied approximately 1s light disturbance near 100g lower threshold and confirmed stable recovery"}
+{"utc":"2026-09-21T10:34:56.621Z","event":"RECORDER_STOPPED","records":2717}

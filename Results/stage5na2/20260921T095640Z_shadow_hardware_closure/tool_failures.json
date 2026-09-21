@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "preserved_failures": [
+    {
+      "step": "parallel preflight",
+      "result": "R5 probe could not open COM5 because Alarm SHADOW probe owned the port",
+      "classification": "host orchestration error; sequential retry passed"
+    },
+    {
+      "step": "generic Stage 5B probe",
+      "result": "unsupported firmware version 0x0515",
+      "classification": "legacy host-tool identity table; raw Modbus response was valid"
+    },
+    {
+      "step": "generic Stage 5B read",
+      "result": "same-second report directory collision WinError 183",
+      "classification": "host evidence-tool collision; sequential retry passed"
+    },
+    {
+      "step": "Host CMake initial configure",
+      "result": "no C compiler found and ctest reported no tests",
+      "classification": "invalid invocation; never counted as PASS"
+    },
+    {
+      "step": "Stage 5B Python first invocation",
+      "result": "9 import errors from repository-root working directory",
+      "classification": "wrong working directory; rerun from Tools/stage5b_hw passed 30/30"
+    },
+    {
+      "step": "strict MSVC host build",
+      "result": "failed /WX on C4310 in frozen D1-C source and C4127 in frozen R5 host test",
+      "classification": "real cross-compiler warning-clean failure; sources not modified"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{"utc":"2026-09-21T10:02:13.201Z","event":"RECORDER_STARTED"}
+{"utc":"2026-09-21T10:02:35.138Z","host_monotonic_ns":156151187000000,"event":"EMPTY_BASELINE_STABLE","note":"User preparation requested; scale remains unloaded"}
+{"utc":"2026-09-21T10:15:42.988Z","host_monotonic_ns":156939046000000,"event":"SLOW_FILL_START","note":"Frozen limits 100g/400g; available pieces 37g tape, 100g mass, 500g mass; pauses start immediately at target reading, not after stable lamp"}
+{"utc":"2026-09-21T10:16:27.135Z","host_monotonic_ns":156983187000000,"event":"LOW_STABLE_37G","note":"User confirmed tape fully placed and stable lamp on"}
+{"utc":"2026-09-21T10:17:13.766Z","host_monotonic_ns":157029812000000,"event":"LOW_TO_OK_RAMP_COMPLETE","note":"100g mass slowly added over 37g tape; user confirmed total approximately 137g placed"}
+{"utc":"2026-09-21T10:17:44.358Z","host_monotonic_ns":157060406000000,"event":"OK_PAUSE_5S_COMPLETE","note":"137g load held untouched for user-timed 5 seconds"}
+{"utc":"2026-09-21T10:19:46.288Z","host_monotonic_ns":157182343000000,"event":"HIGH_THRESHOLD_APPROACH_WITH_DEVIATION","note":"User reached approximately 400g while supporting 500g mass, but reported several intermediate unloads; retain raw evidence and exclude this segment from monotonic-ramp qualification"}
+{"utc":"2026-09-21T10:20:21.244Z","host_monotonic_ns":157217296000000,"event":"HIGH_THRESHOLD_PAUSE_10S_COMPLETE","note":"Approximately 400g supported load held for user-timed 10 seconds; prior segment excluded from monotonic qualification due to intermediate unloads"}
+{"utc":"2026-09-21T10:21:18.626Z","host_monotonic_ns":157274671000000,"event":"HIGH_STABLE_637G_WITH_DEVIATION","note":"User confirmed approximately 637g stable; intermediate unload occurred during preceding ramp. Segment retained as disturbance/segmented-load evidence, not monotonic ramp"}
+{"utc":"2026-09-21T10:22:36.631Z","host_monotonic_ns":157352687000000,"event":"HIGH_TO_OK_UNLOAD_STABLE","note":"500g mass removed; approximately 137g remained; user confirmed stable"}
+{"utc":"2026-09-21T10:26:38.607Z","host_monotonic_ns":157594656000000,"event":"OK_TO_LOW_SLOW_UNLOAD_STABLE","note":"100g mass slowly removed with approximately 2s supported pause near 100g; 37g tape remained; user confirmed stable"}
+{"utc":"2026-09-21T10:27:07.614Z","host_monotonic_ns":157623671000000,"event":"EMPTY_STABLE_AFTER_SLOW_TEST","note":"All pieces removed; user confirmed empty and stable"}
+{"utc":"2026-09-21T10:27:07.794Z","event":"RECORDER_STOPPED","records":9246}

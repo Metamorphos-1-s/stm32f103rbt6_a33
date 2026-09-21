@@ -1,0 +1,6 @@
+{"utc":"2026-09-21T10:35:27.157Z","event":"RECORDER_STARTED"}
+{"utc":"2026-09-21T10:35:45.702Z","host_monotonic_ns":158141750000000,"event":"TARE_PRECONDITION_STABLE","note":"Nominal 100g mass stable near lower threshold; physical panel TARE requested next"}
+{"utc":"2026-09-21T10:36:15.585Z","host_monotonic_ns":158171640000000,"event":"PHYSICAL_TARE_COMPLETE","note":"User short-pressed panel TARE under stable nominal 100g load, observed done, returned to weighing and stable"}
+{"utc":"2026-09-21T10:36:57.061Z","host_monotonic_ns":158213109000000,"event":"PHYSICAL_CLEAR_TARE_COMPLETE","note":"User long-pressed panel TARE under unchanged nominal 100g load, observed done, returned to weighing and stable"}
+{"utc":"2026-09-21T10:37:00.309Z","event":"RECORDER_STOPPED","records":573}
+{"utc":"2026-09-21T10:37:50.873Z","host_monotonic_ns":158266921000000,"event":"EMPTY_STABLE_AFTER_TARE_TEST","note":"Nominal 100g mass removed; user confirmed empty and stable"}
