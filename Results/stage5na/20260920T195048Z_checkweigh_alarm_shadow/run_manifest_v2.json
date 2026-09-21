@@ -2,7 +2,7 @@
   "schema_version": 2,
   "classification": "STAGE5NA_CHECKWEIGH_ALARM_SOFTWARE_PREFLASH_FREEZE",
   "run_id": "20260920T195048Z_checkweigh_alarm_shadow",
-  "repository_commit": "8f8ce5c0f915ef93c473f0cb00686990514c5989",
+  "repository_commit": "7acaa1b1614dcf08bed2b31457a80a2aebe2622e",
   "files": [
     {
       "path": "c_parity.json",
@@ -41,13 +41,13 @@
     },
     {
       "path": "firmware_identity.json",
-      "length": 787,
-      "sha256": "CF9312EF76B17E9DFFE59ACB428DFA4C8EA62506F339EF1CFCC798A07F74B799"
+      "length": 786,
+      "sha256": "50CB0A9D3715B32475A0E7EF190DDA31335CF93ED25BCCE485F404609D62261E"
     },
     {
       "path": "implementation_freeze.json",
-      "length": 1119,
-      "sha256": "E6A486CC06F666A08095120A70942532BFEAFEFE71A6DE1F07C244945B16164B"
+      "length": 1118,
+      "sha256": "734E932D633736AFEB968A0E535C7C55A6F98868F74C7086B66F828FDF7C4289"
     },
     {
       "path": "parameter_freeze.json",
@@ -101,8 +101,8 @@
     },
     {
       "path": "software_summary.json",
-      "length": 1116,
-      "sha256": "344E53FFE7A84EA5385187646550812119A9BA03EF37524BC2404CBEFAB928C2"
+      "length": 1241,
+      "sha256": "5A44AF3C918B877C8EDD4783093ECC689DF46A0EB42A2AB00D6D45ECD94F33AD"
     },
     {
       "path": "stage5na_0515_application.bin",
