@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "result": "PASS",
+  "records": 4631,
+  "duration_s": 760.1755442619324,
+  "start_weight_ug": 98744588,
+  "end_weight_ug": 410626512,
+  "gain_ug": 311881924,
+  "average_gain_g_per_min": 24.616571239697926,
+  "user_operation_contract": "water added only; container not moved; no unload",
+  "baseline_records": 132,
+  "baseline_range_ug": 45053,
+  "five_second_median_bucket_count": 152,
+  "minimum_five_second_median_delta_ug": -27595,
+  "maximum_five_second_median_drawdown_ug": 38858,
+  "reverse_windows_over_100mg": 0,
+  "monotonic_within_frozen_noise_envelope": true,
+  "transitions": [
+    {
+      "utc": "2026-09-21T13:22:34.700Z",
+      "from": "LOW",
+      "to": "OK",
+      "sample_sequence": 206671,
+      "dynamic_input_ug": 100026356,
+      "observed_sequence_delta": 1,
+      "observed_timestamp_delta_ms": 76,
+      "candidate_same_sample": true
+    },
+    {
+      "utc": "2026-09-21T13:32:41.349Z",
+      "from": "OK",
+      "to": "HIGH",
+      "sample_sequence": 212726,
+      "dynamic_input_ug": 400046856,
+      "observed_sequence_delta": 2,
+      "observed_timestamp_delta_ms": 189,
+      "candidate_same_sample": true
+    }
+  ],
+  "transition_order": [
+    [
+      "LOW",
+      "OK"
+    ],
+    [
+      "OK",
+      "HIGH"
+    ]
+  ],
+  "maximum_observed_transition_bound_ms": 189,
+  "static_contract_errors": 0,
+  "dynamic_hysteresis_contract_errors": 0,
+  "unstable_records": 2233,
+  "unstable_static_pending_records": 2233,
+  "formal_output_nonzero_records": 0,
+  "fault_max": 0,
+  "overrun_max": 0,
+  "dirty_max": 0,
+  "save_max": 0,
+  "revision_values": [
+    8
+  ],
+  "saved_revision_values": [
+    8
+  ],
+  "r5_offset_values": [
+    0
+  ],
+  "r5_reference_values": [
+    0
+  ],
+  "r5_rebase_values": [
+    0
+  ],
+  "read_errors": 0,
+  "maximum_host_gap_ms": 391.0,
+  "events": [
+    {
+      "utc": "2026-09-21T13:21:26.179Z",
+      "event": "RECORDER_STARTED"
+    },
+    {
+      "utc": "2026-09-21T13:21:47.966Z",
+      "host_monotonic_ns": 168104015000000,
+      "event": "CONTAINER_LOW_STABLE",
+      "note": "Empty container fixed in place; measured approximately 98.75g, official stable, LOW; no ZERO/TARE/menu/mode action"
+    },
+    {
+      "utc": "2026-09-21T13:23:57.609Z",
+      "host_monotonic_ns": 168233656000000,
+      "event": "LOW_TO_OK_CONFIRMED_BY_USER",
+      "note": "User reports monotonic water addition only; paused after stable display exceeded approximately 105g; container not moved"
+    },
+    {
+      "utc": "2026-09-21T13:30:14.624Z",
+      "host_monotonic_ns": 168610671000000,
+      "event": "HIGH_APPROACH_USER_REPORTED_FASTER",
+      "note": "User reports monotonic addition only and container unmoved, but addition was somewhat faster than requested 15-25 g/min; paused near 385-395g"
+    },
+    {
+      "utc": "2026-09-21T13:34:00.953Z",
+      "host_monotonic_ns": 168837000000000,
+      "event": "OK_TO_HIGH_CONFIRMED_BY_USER",
+      "note": "User reports continued water addition only, container unmoved, stable display exceeded 410g, addition stopped"
+    },
+    {
+      "utc": "2026-09-21T13:34:06.085Z",
+      "host_monotonic_ns": 168842140000000,
+      "event": "HIGH_FINAL_HOLD",
+      "note": "Five-second final untouched hold before recorder stop"
+    },
+    {
+      "utc": "2026-09-21T13:34:06.356Z",
+      "event": "RECORDER_STOPPED",
+      "records": 4631
+    }
+  ]
+}

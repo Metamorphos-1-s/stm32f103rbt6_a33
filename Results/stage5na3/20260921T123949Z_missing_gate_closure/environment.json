@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "stage": "Stage 5N-A3 P0-P2 pre-authorization",
+  "started_utc": "2026-09-21T12:39:49Z",
+  "repository_start_head": "8c68acd4cfc3094f5f494b9aa918e8263e9a364b",
+  "branch": "stage5na3-checkweigh-missing-gates",
+  "serial_port": "COM5",
+  "baud": 115200,
+  "target_operations": "Modbus read-only during P0/P1; no SWD, reset, flash or SAVE",
+  "configuration_sha256": "NOT RUN - P3 reset/flash authorization not yet granted",
+  "existing_user_changes_preserved": "15 pyc modifications and 4 manual snapshots"
+}
