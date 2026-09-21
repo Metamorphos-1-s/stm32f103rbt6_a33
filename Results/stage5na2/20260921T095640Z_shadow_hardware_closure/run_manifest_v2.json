@@ -2,7 +2,7 @@
   "schema_version": 2,
   "classification": "STAGE5NA2_SHADOW_HARDWARE_CLOSURE_INCOMPLETE",
   "run_id": "20260921T095640Z_shadow_hardware_closure",
-  "repository_commit": "1fcfc33",
+  "repository_commit": "5b22c302053fa60a1743483acb041b720a46fb40",
   "files": [
     {
       "path": "active_config_read.json",
@@ -186,8 +186,8 @@
     },
     {
       "path": "regression_summary.json",
-      "length": 1298,
-      "sha256": "60B4C7085787CEADE7F13B62AB223865A9B997555E6CBA1D962CA0598EEF33D8"
+      "length": 1423,
+      "sha256": "C5DC530DFC8136AE330C34E72535569E605F7BF11937796E67C36933A76671DF"
     },
     {
       "path": "slow_fill_and_pauses/environment.json",
