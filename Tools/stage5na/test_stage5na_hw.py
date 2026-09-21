@@ -15,6 +15,8 @@ class Stage5NAHardwareTests(unittest.TestCase):
         self.assertEqual((2, 3, 4, 4), (value["static_immediate"],
             value["static_class"], value["dynamic_immediate"],
             value["dynamic_confirmed"]))
+        self.assertEqual((4, 15), (value["dynamic_candidate"],
+            value["dynamic_confirm_count"]))
         self.assertEqual((1, 1, 1, 1), (value["process_active"], value["valid"],
             value["dirty"], value["overrun"]))
         self.assertEqual(-100, value["r5_input_ug"])

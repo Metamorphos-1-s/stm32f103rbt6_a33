@@ -36,6 +36,9 @@ def decode(words, order="high"):
         raise HardwareTestError("Stage 5N-A diagnostic signature mismatch")
     classes, static_detail, dynamic_detail = words[21:24]
     formal, safety, revision_saved = words[24:27]
+    confirmed = classes & 0x0F
+    candidate = confirmed if confirmed in (2, 3, 4) else \
+        ((dynamic_detail >> 12) & 0x0F)
     return {"signature": "0x%04X" % words[0],
         "static_input_ug": decode_i64_words(words[1:5], order),
         "dynamic_input_ug": decode_i64_words(words[5:9], order),
@@ -49,8 +52,8 @@ def decode(words, order="high"):
         "dynamic_confirmed": classes & 0x0F,
         "static_stable_count": static_detail >> 8,
         "static_reason": static_detail & 0xFF,
-        "dynamic_candidate": (dynamic_detail >> 12) & 0x0F,
-        "dynamic_confirm_count": (dynamic_detail >> 8) & 0x0F,
+        "dynamic_candidate": candidate,
+        "dynamic_confirm_count": min(15, (dynamic_detail >> 8) & 0xFF),
         "dynamic_reason": (dynamic_detail >> 4) & 0x0F,
         "process_active": int(bool(dynamic_detail & 2)),
         "valid": int(bool(dynamic_detail & 1)),

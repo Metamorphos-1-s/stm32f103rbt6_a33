@@ -14,7 +14,8 @@
     "unstable_static_valid": 0, "dosing_static_valid": 0},
   "python_c": {"samples": 45711, "mismatches": 0},
   "official_outputs_changed": false, "r5_changed": false,
-  "d1c_changed": false, "firmware_0x0515_flashed": false,
-  "new_hardware_holdout_opened": false,
+  "d1c_changed": false, "firmware_0x0515_flashed": true,
+  "new_hardware_holdout_opened": true,
+  "hardware": "PARTIAL PASS; 5 LOAD/UNLOAD CYCLES AND SAFETY PASSED; SLOW FILL, DISTURBANCE AND PHYSICAL TARE/CLEAR DEFERRED",
   "stage5nb_active_output": "BLOCKED"
 }

@@ -16,5 +16,5 @@
   },
   "new_holdout_plan": "30-60 min real 10 Hz Alarm SHADOW with volatile thresholds and formal-output invariance",
   "active_output_authorized": false,
-  "flashed": false
+  "flashed": true
 }

@@ -1,0 +1,12 @@
+{
+  "utc": "2026-09-21T06:24:38Z",
+  "action": "zero",
+  "after_sequence": 31491,
+  "response": {
+    "token": 21391,
+    "result": 0,
+    "result_name": "OK",
+    "state": 0,
+    "last_command": 1
+  }
+}

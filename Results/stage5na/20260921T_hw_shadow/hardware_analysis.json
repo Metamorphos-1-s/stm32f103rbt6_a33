@@ -1,0 +1,475 @@
+{
+  "schema_version": 1,
+  "classification": "NEW HARDWARE HOLDOUT; PARTIAL PHYSICAL COVERAGE",
+  "cycles": [
+    {
+      "path": "cycle1_load",
+      "coverage": {
+        "records": 2550,
+        "expected": 2550,
+        "coverage": 1.0,
+        "maximum_sequence_gap": 1
+      },
+      "transitions": {
+        "low_to_ok": {
+          "present": true,
+          "reference_sequence": 11725,
+          "confirmed_sequence": 11725,
+          "delay_ms": 0
+        },
+        "ok_to_high": {
+          "present": true,
+          "reference_sequence": 11727,
+          "confirmed_sequence": 11727,
+          "delay_ms": 0
+        }
+      },
+      "safety": {
+        "formal_nonzero_records": 0,
+        "fault_max": 0,
+        "overrun_max": 0,
+        "dirty_max": 0,
+        "save_max": 0,
+        "revision_values": [
+          8
+        ],
+        "saved_revision_values": [
+          8
+        ]
+      },
+      "final_static": 4,
+      "final_dynamic": 4
+    },
+    {
+      "path": "cycle1_unload_valid",
+      "coverage": {
+        "records": 1370,
+        "expected": 1370,
+        "coverage": 1.0,
+        "maximum_sequence_gap": 1
+      },
+      "transitions": {
+        "high_to_ok": {
+          "present": true,
+          "reference_sequence": 13498,
+          "confirmed_sequence": 13498,
+          "delay_ms": 0
+        },
+        "ok_to_low": {
+          "present": true,
+          "reference_sequence": 13499,
+          "confirmed_sequence": 13499,
+          "delay_ms": 0
+        }
+      },
+      "safety": {
+        "formal_nonzero_records": 0,
+        "fault_max": 0,
+        "overrun_max": 0,
+        "dirty_max": 0,
+        "save_max": 0,
+        "revision_values": [
+          8
+        ],
+        "saved_revision_values": [
+          8
+        ]
+      },
+      "final_static": 2,
+      "final_dynamic": 2
+    },
+    {
+      "path": "cycle2_load",
+      "coverage": {
+        "records": 2100,
+        "expected": 2100,
+        "coverage": 1.0,
+        "maximum_sequence_gap": 1
+      },
+      "transitions": {
+        "low_to_ok": {
+          "present": true,
+          "reference_sequence": 16095,
+          "confirmed_sequence": 16095,
+          "delay_ms": 0
+        },
+        "ok_to_high": {
+          "present": true,
+          "reference_sequence": 16097,
+          "confirmed_sequence": 16097,
+          "delay_ms": 0
+        }
+      },
+      "safety": {
+        "formal_nonzero_records": 0,
+        "fault_max": 0,
+        "overrun_max": 0,
+        "dirty_max": 0,
+        "save_max": 0,
+        "revision_values": [
+          8
+        ],
+        "saved_revision_values": [
+          8
+        ]
+      },
+      "final_static": 4,
+      "final_dynamic": 4
+    },
+    {
+      "path": "cycle2_unload",
+      "coverage": {
+        "records": 770,
+        "expected": 770,
+        "coverage": 1.0,
+        "maximum_sequence_gap": 1
+      },
+      "transitions": {
+        "high_to_ok": {
+          "present": true,
+          "reference_sequence": 17303,
+          "confirmed_sequence": 17303,
+          "delay_ms": 0
+        },
+        "ok_to_low": {
+          "present": true,
+          "reference_sequence": 17304,
+          "confirmed_sequence": 17304,
+          "delay_ms": 0
+        }
+      },
+      "safety": {
+        "formal_nonzero_records": 0,
+        "fault_max": 0,
+        "overrun_max": 0,
+        "dirty_max": 0,
+        "save_max": 0,
+        "revision_values": [
+          8
+        ],
+        "saved_revision_values": [
+          8
+        ]
+      },
+      "final_static": 2,
+      "final_dynamic": 2
+    },
+    {
+      "path": "cycle3_load",
+      "coverage": {
+        "records": 3610,
+        "expected": 3610,
+        "coverage": 1.0,
+        "maximum_sequence_gap": 1
+      },
+      "transitions": {
+        "low_to_ok": {
+          "present": true,
+          "reference_sequence": 21167,
+          "confirmed_sequence": 21167,
+          "delay_ms": 0
+        },
+        "ok_to_high": {
+          "present": true,
+          "reference_sequence": 21169,
+          "confirmed_sequence": 21169,
+          "delay_ms": 0
+        }
+      },
+      "safety": {
+        "formal_nonzero_records": 0,
+        "fault_max": 0,
+        "overrun_max": 0,
+        "dirty_max": 0,
+        "save_max": 0,
+        "revision_values": [
+          8
+        ],
+        "saved_revision_values": [
+          8
+        ]
+      },
+      "final_static": 4,
+      "final_dynamic": 4
+    },
+    {
+      "path": "cycle3_unload",
+      "coverage": {
+        "records": 1480,
+        "expected": 1480,
+        "coverage": 1.0,
+        "maximum_sequence_gap": 1
+      },
+      "transitions": {
+        "high_to_ok": {
+          "present": true,
+          "reference_sequence": 23690,
+          "confirmed_sequence": 23690,
+          "delay_ms": 0
+        },
+        "ok_to_low": {
+          "present": true,
+          "reference_sequence": 23691,
+          "confirmed_sequence": 23691,
+          "delay_ms": 0
+        }
+      },
+      "safety": {
+        "formal_nonzero_records": 0,
+        "fault_max": 0,
+        "overrun_max": 0,
+        "dirty_max": 0,
+        "save_max": 0,
+        "revision_values": [
+          8
+        ],
+        "saved_revision_values": [
+          8
+        ]
+      },
+      "final_static": 2,
+      "final_dynamic": 2
+    },
+    {
+      "path": "cycle4_load",
+      "coverage": {
+        "records": 650,
+        "expected": 650,
+        "coverage": 1.0,
+        "maximum_sequence_gap": 1
+      },
+      "transitions": {
+        "low_to_ok": {
+          "present": true,
+          "reference_sequence": 25038,
+          "confirmed_sequence": 25038,
+          "delay_ms": 0
+        },
+        "ok_to_high": {
+          "present": true,
+          "reference_sequence": 25039,
+          "confirmed_sequence": 25039,
+          "delay_ms": 0
+        }
+      },
+      "safety": {
+        "formal_nonzero_records": 0,
+        "fault_max": 0,
+        "overrun_max": 0,
+        "dirty_max": 0,
+        "save_max": 0,
+        "revision_values": [
+          8
+        ],
+        "saved_revision_values": [
+          8
+        ]
+      },
+      "final_static": 4,
+      "final_dynamic": 4
+    },
+    {
+      "path": "cycle4_unload",
+      "coverage": {
+        "records": 930,
+        "expected": 930,
+        "coverage": 1.0,
+        "maximum_sequence_gap": 1
+      },
+      "transitions": {
+        "high_to_ok": {
+          "present": true,
+          "reference_sequence": 26117,
+          "confirmed_sequence": 26117,
+          "delay_ms": 0
+        },
+        "ok_to_low": {
+          "present": true,
+          "reference_sequence": 26118,
+          "confirmed_sequence": 26118,
+          "delay_ms": 0
+        }
+      },
+      "safety": {
+        "formal_nonzero_records": 0,
+        "fault_max": 0,
+        "overrun_max": 0,
+        "dirty_max": 0,
+        "save_max": 0,
+        "revision_values": [
+          8
+        ],
+        "saved_revision_values": [
+          8
+        ]
+      },
+      "final_static": 2,
+      "final_dynamic": 2
+    },
+    {
+      "path": "cycle5_load",
+      "coverage": {
+        "records": 1170,
+        "expected": 1170,
+        "coverage": 1.0,
+        "maximum_sequence_gap": 1
+      },
+      "transitions": {
+        "low_to_ok": {
+          "present": true,
+          "reference_sequence": 27355,
+          "confirmed_sequence": 27355,
+          "delay_ms": 0
+        },
+        "ok_to_high": {
+          "present": true,
+          "reference_sequence": 27357,
+          "confirmed_sequence": 27357,
+          "delay_ms": 0
+        }
+      },
+      "safety": {
+        "formal_nonzero_records": 0,
+        "fault_max": 0,
+        "overrun_max": 0,
+        "dirty_max": 0,
+        "save_max": 0,
+        "revision_values": [
+          8
+        ],
+        "saved_revision_values": [
+          8
+        ]
+      },
+      "final_static": 4,
+      "final_dynamic": 4
+    },
+    {
+      "path": "cycle5_unload",
+      "coverage": {
+        "records": 960,
+        "expected": 960,
+        "coverage": 1.0,
+        "maximum_sequence_gap": 1
+      },
+      "transitions": {
+        "high_to_low_direct": {
+          "present": true,
+          "reference_sequence": 28783,
+          "confirmed_sequence": 28783,
+          "delay_ms": 0
+        }
+      },
+      "safety": {
+        "formal_nonzero_records": 0,
+        "fault_max": 0,
+        "overrun_max": 0,
+        "dirty_max": 0,
+        "save_max": 0,
+        "revision_values": [
+          8
+        ],
+        "saved_revision_values": [
+          8
+        ]
+      },
+      "final_static": 2,
+      "final_dynamic": 2
+    }
+  ],
+  "cycle_count": 5,
+  "maximum_dynamic_delay_ms": 0,
+  "median_dynamic_delay_ms": 0,
+  "transition_count": 19,
+  "missed_transitions": 0,
+  "formal_nonzero_records": 0,
+  "cycle_safety_pass": true,
+  "dosing": {
+    "records": 300,
+    "static_valid": 0,
+    "static_pending": 300,
+    "process_active": 300,
+    "safety": {
+      "formal_nonzero_records": 0,
+      "fault_max": 0,
+      "overrun_max": 0,
+      "dirty_max": 0,
+      "save_max": 0,
+      "revision_values": [
+        8
+      ],
+      "saved_revision_values": [
+        8
+      ]
+    }
+  },
+  "zero": {
+    "records": 100,
+    "reset_pending_records": 1,
+    "safety": {
+      "formal_nonzero_records": 0,
+      "fault_max": 0,
+      "overrun_max": 0,
+      "dirty_max": 0,
+      "save_max": 0,
+      "revision_values": [
+        8
+      ],
+      "saved_revision_values": [
+        8
+      ]
+    }
+  },
+  "equal_limits": {
+    "records": 51,
+    "valid_records": 49,
+    "safety": {
+      "formal_nonzero_records": 0,
+      "fault_max": 0,
+      "overrun_max": 0,
+      "dirty_max": 0,
+      "save_max": 0,
+      "revision_values": [
+        8
+      ],
+      "saved_revision_values": [
+        8
+      ]
+    }
+  },
+  "invalid_limits": {
+    "records": 50,
+    "valid_records": 0,
+    "safety": {
+      "formal_nonzero_records": 0,
+      "fault_max": 0,
+      "overrun_max": 0,
+      "dirty_max": 0,
+      "save_max": 0,
+      "revision_values": [
+        8
+      ],
+      "saved_revision_values": [
+        8
+      ]
+    }
+  },
+  "not_run": [
+    "slow physical fill with pauses",
+    "mechanical disturbance",
+    "physical TARE",
+    "physical CLEAR TARE",
+    "fault/invalid physical injection"
+  ],
+  "host_covered": [
+    "TARE reset",
+    "CLEAR TARE reset",
+    "fault",
+    "overload",
+    "calibration",
+    "sequence gap",
+    "timestamp anomaly"
+  ],
+  "qualification": "SHADOW HARDWARE QUALIFICATION INCOMPLETE",
+  "active_output_authorized": false
+}

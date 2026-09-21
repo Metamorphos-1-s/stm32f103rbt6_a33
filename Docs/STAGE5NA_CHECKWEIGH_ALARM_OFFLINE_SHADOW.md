@@ -6,8 +6,9 @@
 QUALIFICATION PENDING; ACTIVE OUTPUT REMAINS BLOCKED; D1-C NONZERO-OFFSET
 QUALIFICATION DEFERRED; STAGE 5O REMAINS DEFERRED.**
 
-The 0x0515 artifact is built but not flashed. Hardware SHADOW and all active
-alarm output work require later gates and explicit authorization.
+The 0x0515 artifact was application-only flashed after explicit authorization
+and device Verify passed. The SHADOW hardware run is a partial pass; active
+alarm output work remains blocked.
 
 The stage started at `04d53ba1a596110e835fb33b8877893d1afb0765` on the
 frozen D1-C branch and continues on
@@ -94,9 +95,33 @@ R5 C/header/Python blobs remain `a4c88335be16d288d8d1bbe91bbfe7e32e4aea04`,
 The device remains 0x0514, OFF + SHADOW, with configuration SHA
 `A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4`.
 
-After explicit 0x0515 flash authorization, the first hardware gate must prove
-the engineering snapshot can record true 10 Hz without changing formal alarm
-state, lamps, buzzers, PLC-visible registers, official weight/stable, R5 input,
-panel, persistence or configuration SHA. Active output remains prohibited even
-if SHADOW passes. ASan and UBSan are NOT RUN. Stage 5N-B authorization cannot
-be requested until SHADOW hardware qualification passes.
+The application download erased only sectors 0-102 and device Verify passed.
+Configuration SHA before, after and at final state remained
+`A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4`.
+
+Five valid 500 g load/unload cycles captured 19 physically observable
+transitions. One unload moved directly HIGH to LOW within one 10 Hz sample, so
+the independent fast reference had no intermediate OK state. Every observable
+transition was confirmed in the same sample: median and maximum delay are 0
+ms, with zero miss and zero direction error. All cycle files have 100% sequence
+coverage and maximum sequence gap 1.
+
+The DOSING pause run has 300/300 process-active samples, 300 STATIC PENDING and
+zero STATIC valid classification. ZERO was captured around the command; the
+first following sample made both candidates PENDING with explicit RESET reason.
+Volatile empty-OK, equal-limit and low-above-high tests passed. Across all
+physical cycle records, formal alarm state, three lamps and both buzzers have
+zero nonzero record. Fault, overrun, dirty and SAVE remain zero and
+revision/saved revision remain 8/8.
+
+The user could not perform slow physical fill with pauses. Mechanical
+disturbance, physical TARE/CLEAR TARE and physical fault injection are also not
+run; their reset/error contracts pass Host injection only. These gaps prevent a
+complete SHADOW qualification. They are not replaced by fast cycles or labeled
+as passed.
+
+Final device state after MCU reset is firmware 0x0515, Map 0x0104, OFF + R5
+SHADOW, offset/reference/evaluation = 0, Alarm SHADOW enabled only for
+diagnostics, fault/overrun/dirty/SAVE = 0 and revision/saved = 8/8. Active
+output remains prohibited. ASan and UBSan are NOT RUN. Stage 5N-B authorization
+cannot be requested until the deferred physical SHADOW coverage passes.
