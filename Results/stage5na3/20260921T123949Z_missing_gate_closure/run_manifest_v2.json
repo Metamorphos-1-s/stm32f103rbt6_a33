@@ -2,7 +2,7 @@
   "schema_version": 2,
   "classification": "STAGE5NA3_TARGET_QUALIFICATION_COMPLETE",
   "run_id": "20260921T123949Z_missing_gate_closure",
-  "repository_commit": "63f6f52f75a360068baf1eb5475f6854d44fc7d4",
+  "repository_commit": "db0acff664458b6a3e83090549b5e3a117184b67",
   "files": [
     {
       "path": "d1c_parity.json",
