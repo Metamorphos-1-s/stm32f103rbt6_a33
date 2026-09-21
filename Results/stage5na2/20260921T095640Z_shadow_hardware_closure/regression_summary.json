@@ -15,6 +15,9 @@
   "release_build": "PASS",
   "beta_0x0515_build": "PASS",
   "strict_msvc_build": "FAIL on two frozen pre-existing warnings: D1-C constant truncation C4310 and R5 host-test constant condition C4127",
+  "manifest_core_autocrlf_false": "PASS",
+  "manifest_core_autocrlf_input": "PASS",
+  "manifest_core_autocrlf_true": "PASS",
   "standard_release_elf": {
     "length": 172200,
     "sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486"

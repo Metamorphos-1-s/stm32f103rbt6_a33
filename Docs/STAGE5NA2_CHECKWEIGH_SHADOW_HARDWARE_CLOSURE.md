@@ -96,6 +96,8 @@ Host CTest passed 28/28 after a non-strict MSVC build. Stage 5N-A Python passed
 passed 25,057/0 and D1-C parity passed 49,105/0. Stage 5B passed 30/30, Stage 5C
 12/12, Stage 5L 8/8, Stage 5L-R G2 8/8, and the selected R2/R3/R4/R5 tool
 regressions passed. Debug, standard Release and 0x0515 Beta builds passed.
+The evidence Manifest verified file lengths, SHA-256 values and Git blobs in
+independent `core.autocrlf=false`, `input` and `true` clones.
 
 The strict MSVC `/WX` build failed on two pre-existing frozen warnings: C4310
 in D1-C and C4127 in an R5 host test. They were preserved and not modified.
