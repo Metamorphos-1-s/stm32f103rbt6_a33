@@ -60,6 +60,16 @@
                 "A33_DEBUG_OPTIMIZATION": "-Og",
                 "A33_ENABLE_STAGE5MR5_BETA": "ON"
             }
+        },
+        {
+            "name": "Stage5NA3Diagnostics",
+            "inherits": "default",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "A33_DEBUG_OPTIMIZATION": "-Og",
+                "A33_ENABLE_STAGE5MR5_BETA": "ON",
+                "A33_ENABLE_STAGE5NA3_DIAGNOSTICS": "ON"
+            }
         }
     ],
     "buildPresets": [
@@ -86,6 +96,10 @@
         {
             "name": "Stage5MR5Beta",
             "configurePreset": "Stage5MR5Beta"
+        },
+        {
+            "name": "Stage5NA3Diagnostics",
+            "configurePreset": "Stage5NA3Diagnostics"
         }
     ]
 }

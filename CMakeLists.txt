@@ -34,6 +34,12 @@ option(A33_ENABLE_STAGE5L_DIAGNOSTICS
     "Enable Stage 5L SWD-only measurement overrides" OFF)
 option(A33_ENABLE_STAGE5MR5_BETA
     "Enable Stage 5M-R5 reference-lock engineering beta" OFF)
+option(A33_ENABLE_STAGE5NA3_DIAGNOSTICS
+    "Enable Stage 5N-A3 SWD-only invalid-input injection" OFF)
+
+if(A33_ENABLE_STAGE5NA3_DIAGNOSTICS AND NOT A33_ENABLE_STAGE5MR5_BETA)
+    message(FATAL_ERROR "Stage 5N-A3 diagnostics require Stage 5M-R5 Beta")
+endif()
 
 # Enable CMake support for ASM and C languages
 enable_language(C ASM)
@@ -154,6 +160,11 @@ if(A33_ENABLE_STAGE5L_DIAGNOSTICS)
         Diagnostics/stage5l_measurement_diagnostics.c)
 endif()
 
+if(A33_ENABLE_STAGE5NA3_DIAGNOSTICS)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        Diagnostics/stage5na3_fault_injection.c)
+endif()
+
 if(A33_ENABLE_STAGE5MR5_BETA)
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         Domain/measurement/reference_lock_drift_compensator.c
@@ -161,6 +172,14 @@ if(A33_ENABLE_STAGE5MR5_BETA)
         UI/display_model/directional_display_follower.c
         UI/r5_local_control.c
         UI/ui_config_workspace.c)
+endif()
+
+if(A33_ENABLE_STAGE5NA3_DIAGNOSTICS)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5NA3_DIAGNOSTICS=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5NA3_DIAGNOSTICS=0)
 endif()
 
 if(A33_ENABLE_STAGE5MR5_BETA)

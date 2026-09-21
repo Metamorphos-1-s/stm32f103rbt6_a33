@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "injection": "INVALID_INPUT",
+  "stale_claimed": false,
+  "physical_sensor_fault_claimed": false,
+  "injection_point": "MetrologyManager_ProcessAlarmShadow after real WeightSnapshot and fast calibrated mass are prepared, before frozen CheckweighShadow_Process",
+  "mechanism": "diagnostic build gates only CheckweighShadowInput.valid to false",
+  "candidate_output_forced": false,
+  "weight_engine_sampling_continues": true,
+  "r5_sampling_continues": true,
+  "main_loop_continues": true,
+  "modbus_monitoring_continues": true,
+  "public_modbus_command_added": false,
+  "ble_command_added": false,
+  "flash_write_by_control": false,
+  "control": {
+    "magic": "0x354E4133",
+    "version": 1,
+    "size_bytes": 92,
+    "commands": ["INJECT_INVALID", "ABORT"],
+    "minimum_duration_ms": 100,
+    "maximum_duration_ms": 5000,
+    "automatic_timeout_restore": true,
+    "reset_clears_state": true,
+    "invalid_command_rejected": true,
+    "repeated_sequence_idempotent": true
+  },
+  "diagnostic_ram_tradeoff": "BLE command response cache depth is 1 only in A3 diagnostics, versus 4 in product and original Beta; BLE is not a P3 qualification channel",
+  "why_not_stale": "The frozen candidate executes only when a new WeightSnapshot is accepted and has no periodic data-age evaluation. Pausing samples would retain the old candidate indefinitely and cannot exercise a frozen stale contract.",
+  "qualification_scope": "target-side invalid-input state and recovery only"
+}

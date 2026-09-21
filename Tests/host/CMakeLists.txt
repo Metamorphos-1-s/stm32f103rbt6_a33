@@ -183,6 +183,21 @@ else()
 endif()
 add_test(NAME stage5ma_adaptive_logic COMMAND stage5ma_adaptive_tests)
 
+add_executable(stage5na3_fault_injection_tests
+    test_stage5na3_fault_injection.c
+    ../../Diagnostics/stage5na3_fault_injection.c
+    ../../Experimental/stage5na/checkweigh_shadow.c)
+target_include_directories(stage5na3_fault_injection_tests PRIVATE
+    ../../Diagnostics ../../Experimental/stage5na)
+if(MSVC)
+    target_compile_options(stage5na3_fault_injection_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5na3_fault_injection_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5na3_fault_injection_logic
+    COMMAND stage5na3_fault_injection_tests)
+
 add_executable(stage5mr_drift_tests
     test_stage5mr_drift.c
     ../../Domain/measurement/static_drift_compensator.c)

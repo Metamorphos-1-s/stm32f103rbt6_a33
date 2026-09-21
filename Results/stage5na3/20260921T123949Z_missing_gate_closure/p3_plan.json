@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "status": "NOT AUTHORIZED",
+  "preflash": [
+    "read-only Modbus identity and state",
+    "SWD backup configuration region and compute SHA-256",
+    "parse and validate both V3 slots",
+    "record original application readback and frozen recovery SHA"
+  ],
+  "diagnostic_flash": "erase/program/verify application pages 0-103 only; never erase configuration pages",
+  "test": "stable target region, bounded INVALID_INPUT with SWD disconnected for the full duration, automatic restore, ABORT restore, candidate and formal-output monitoring",
+  "restore": "abort injection, erase application pages 0-103, program frozen 0x0515 BIN pages 0-102, verify, reread configuration and compare SHA, final Modbus probe",
+  "reset_effect": "SWD backup/flash resets MCU and clears all volatile R5 and diagnostic state",
+  "save_allowed": false
+}

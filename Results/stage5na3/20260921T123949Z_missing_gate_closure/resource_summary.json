@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "original_beta_linker_ram_bytes": 19488,
+  "diagnostic_first_attempt_ram_bytes": 19576,
+  "diagnostic_first_attempt_collision_margin_bytes": 440,
+  "diagnostic_first_attempt_result": "REJECTED BELOW 512 BYTE GATE",
+  "diagnostic_final_ram_bytes": 18848,
+  "diagnostic_final_delta_vs_original_beta_bytes": -640,
+  "static_end_to_estack_bytes": 2656,
+  "conservative_stack_bound_bytes": 1488,
+  "collision_margin_bytes": 1168,
+  "minimum_gate_bytes": 512,
+  "collision_gate": "PASS",
+  "app_run_local_stack_bytes": 40,
+  "alarm_shadow_wrapper_local_stack_bytes": 136,
+  "diagnostic_max_local_stack_bytes": 16,
+  "main_chain_growth": 0,
+  "dynamic_allocation": false,
+  "ram_reduction_reason": "diagnostic-only BLE command cache depth 1 instead of product depth 4"
+}

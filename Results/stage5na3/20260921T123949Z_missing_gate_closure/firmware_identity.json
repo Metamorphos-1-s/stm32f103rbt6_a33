@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "standard_release_elf": {
+    "length": 172200,
+    "sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+    "diagnostic_symbol_present": false
+  },
+  "frozen_0x0515_recovery_bin": {
+    "length": 105416,
+    "sha256": "62648C3AD79C324B1860BE3005B8EA365C2BCE98C084BE4F5FD20D7599065228",
+    "application_pages": "0-102",
+    "diagnostic_symbol_present": false
+  },
+  "diagnostic_bin": {
+    "length": 105808,
+    "sha256": "6FE3181EC275A122C8A7CABF4918AA4665EC028CB0C26E697A9C011487AC2B6C",
+    "application_pages": "0-103"
+  },
+  "diagnostic_elf": {
+    "length": 1995364,
+    "sha256": "97CCD708500EC930168FAF878DD288937DF6AD038750A527090B3738866AB485",
+    "control_symbol": "g_stage5na3_fault_control",
+    "control_address": "0x20004284",
+    "control_size": 92
+  },
+  "diagnostic_map": {
+    "length": 1430123,
+    "sha256": "C68E29223813EF09697E2BEAA2E603E7B26DDA157882BFCA7E9F6F88B5CD327B"
+  },
+  "recovery_note": "P3 restore must erase diagnostic application pages 0-103, then program and verify the frozen BIN; page 103 must not retain diagnostic tail bytes. Configuration pages are excluded."
+}

@@ -1,0 +1,19 @@
+{
+  "elf": {
+    "path": "build\\Stage5NA3Diagnostics\\stm32f103rbt6_a33.elf",
+    "length": 1995364,
+    "sha256": "97CCD708500EC930168FAF878DD288937DF6AD038750A527090B3738866AB485"
+  },
+  "map": {
+    "path": "build\\Stage5NA3Diagnostics\\stm32f103rbt6_a33.map",
+    "length": 1430123,
+    "sha256": "C68E29223813EF09697E2BEAA2E603E7B26DDA157882BFCA7E9F6F88B5CD327B"
+  },
+  "symbol": {
+    "address": 536887940,
+    "size": 92
+  },
+  "control_magic": "0x354E4133",
+  "control_version": 1,
+  "control_size": 92
+}

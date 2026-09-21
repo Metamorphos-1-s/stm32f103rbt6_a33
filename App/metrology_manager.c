@@ -8,6 +8,10 @@
 #include "system_context.h"
 #include "unit_converter.h"
 #include "weight_engine.h"
+#if (A33_ENABLE_STAGE5NA3_DIAGNOSTICS != 0U)
+#include "bsp_time.h"
+#include "stage5na3_fault_injection.h"
+#endif
 
 #include <stddef.h>
 #include <string.h>
@@ -227,6 +231,10 @@ static bool MetrologyManager_ProcessAlarmShadow(void)
     input.valid =
         ((snapshot->status_flags & WEIGHT_STATUS_WEIGHT_VALID) != 0U) &&
         fast_valid;
+#if (A33_ENABLE_STAGE5NA3_DIAGNOSTICS != 0U)
+    input.valid = Stage5NA3FaultInjection_ApplyInputValid(input.valid,
+        BSP_TimeNowMs());
+#endif
     input.fault = FaultManager_HasWeightInvalidFault();
     input.overload =
         (snapshot->status_flags & WEIGHT_STATUS_OVERLOAD) != 0U;
@@ -234,6 +242,10 @@ static bool MetrologyManager_ProcessAlarmShadow(void)
         !fast_valid;
     if (!CheckweighShadow_Process(&s_alarm_shadow, &input, &output))
         return false;
+#if (A33_ENABLE_STAGE5NA3_DIAGNOSTICS != 0U)
+    Stage5NA3FaultInjection_ObserveCandidate(output.static_class,
+        output.dynamic_confirmed, input.sequence, input.timestamp_ms);
+#endif
     s_alarm_shadow.last_revision = revision;
     return true;
 }

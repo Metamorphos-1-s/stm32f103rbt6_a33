@@ -42,6 +42,9 @@
 #if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
 #include "stage5l_measurement_diagnostics.h"
 #endif
+#if (A33_ENABLE_STAGE5NA3_DIAGNOSTICS != 0U)
+#include "stage5na3_fault_injection.h"
+#endif
 #if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
 #include "alarm_output_manager.h"
 #include "alarm_config_validation.h"
@@ -163,6 +166,9 @@ bool App_Init(void)
 #if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
   Stage5LMeasurementDiagnostics_Init();
 #endif
+#if (A33_ENABLE_STAGE5NA3_DIAGNOSTICS != 0U)
+  Stage5NA3FaultInjection_Init();
+#endif
   (void)StartupAutoZeroController_Init(&s_startup_auto_zero,
       config.system.startup_auto_zero_enable,
       config.system.tare_power_loss_retention && runtime.tare_active,
@@ -228,6 +234,9 @@ void App_Run(void)
   WeighingProfileManager_Process();
 #if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
   Stage5LMeasurementDiagnostics_Process();
+#endif
+#if (A33_ENABLE_STAGE5NA3_DIAGNOSTICS != 0U)
+  Stage5NA3FaultInjection_Process(BSP_TimeNowMs());
 #endif
   if (!DeviceManager_IsInStorageMaintenance()
 #if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)

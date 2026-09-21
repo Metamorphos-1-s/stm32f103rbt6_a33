@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "host_ctest": "29/29 PASS",
+  "stage5na_python": "20/20 PASS",
+  "stage5na_python_c": "45711 samples / 0 mismatch",
+  "r5_python_c": "25057 samples / 0 mismatch",
+  "d1c_python_c": "49105 samples / 0 mismatch",
+  "stage5b": "30/30 PASS",
+  "stage5c": "12/12 PASS",
+  "stage5l": "8/8 PASS",
+  "stage5lr_g2": "8/8 PASS",
+  "debug_release_original_beta": "PASS",
+  "stage5na3_diagnostics": "PASS",
+  "stage5na3_arm_wextra_werror": "PASS",
+  "stage5na3_new_msvc_w4_wx_target": "PASS",
+  "strict_full_msvc": "FAIL - pre-existing frozen C4310 in D1-C and C4127 in R5 host test",
+  "strict_debt": "KNOWN BUILD-HYGIENE DEBT; MUST CLOSE BEFORE ACTIVE STAGE 5N-B ARTIFACT",
+  "asan": "NOT RUN",
+  "ubsan": "NOT RUN"
+}

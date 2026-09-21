@@ -10,6 +10,15 @@
 #ifndef A33_ENABLE_STAGE5MR5_BETA
 #define A33_ENABLE_STAGE5MR5_BETA     0U
 #endif
+
+#ifndef A33_ENABLE_STAGE5NA3_DIAGNOSTICS
+#define A33_ENABLE_STAGE5NA3_DIAGNOSTICS 0U
+#endif
+
+#if (A33_ENABLE_STAGE5NA3_DIAGNOSTICS != 0U) && \
+    (A33_ENABLE_STAGE5MR5_BETA == 0U)
+#error "Stage 5N-A3 diagnostics require Stage 5M-R5 Beta"
+#endif
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
 #define FW_RELEASE_VERSION            0x0515U
 #else
