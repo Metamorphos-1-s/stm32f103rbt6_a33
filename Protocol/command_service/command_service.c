@@ -12,6 +12,9 @@
 #include "system_context.h"
 #include "unit_converter.h"
 #include "weighing_profile_manager.h"
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+#include "app_main.h"
+#endif
 
 #include <limits.h>
 #include <stddef.h>
@@ -898,6 +901,37 @@ CommandResult CommandService_Execute(const CommandRequest *request,
                 request->value0, request->value1) ? COMMAND_RESULT_OK :
                 COMMAND_RESULT_INVALID_STATE;
             break;
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+        case COMMAND_CHECKWEIGH_SET_MODE:
+            if ((request->source == COMMAND_SOURCE_BLE) ||
+                (request->value0 < (int32_t)GUARDED_CHECKWEIGH_OFF) ||
+                (request->value0 >= (int32_t)GUARDED_CHECKWEIGH_MODE_COUNT) ||
+                ((request->flags & ~UINT32_C(1)) != 0U) ||
+                (request->value64 != 0))
+                result = COMMAND_RESULT_INVALID_ARGUMENT;
+            else result = App_SetGuardedCheckweighMode(
+                (GuardedCheckweighMode)request->value0,
+                (uint32_t)request->value1, (request->flags & 1U) != 0U) ?
+                COMMAND_RESULT_OK : COMMAND_RESULT_BUSY;
+            break;
+        case COMMAND_CHECKWEIGH_GET_STATUS:
+            {
+                GuardedCheckweigh guarded;
+                if ((request->value0 != 0) || (request->value1 != 0) ||
+                    (request->flags != 0U) || (request->value64 != 0) ||
+                    !App_GetGuardedCheckweighState(&guarded))
+                    result = COMMAND_RESULT_INVALID_ARGUMENT;
+                else {
+                    response->value0 = (int32_t)guarded.mode;
+                    response->value1 = (int32_t)guarded.generation;
+                    response->status_flags =
+                        ((uint32_t)guarded.reason << 8U) |
+                        (uint32_t)guarded.formal_state;
+                    result = COMMAND_RESULT_OK;
+                }
+            }
+            break;
+#endif
 #endif
         case COMMAND_COUNT:
         default:

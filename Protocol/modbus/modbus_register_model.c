@@ -675,6 +675,35 @@ static ModbusRegisterResult ReadOne(uint16_t address,
             *value = 0U;
         return MODBUS_REGISTER_OK;
     }
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    if ((address >= MODBUS_5NB_FIRST) && (address <= MODBUS_5NB_LAST))
+    {
+        GuardedCheckweigh guarded;
+        AlarmOutputDiagnostics formal = {0};
+        bool guarded_available = App_GetGuardedCheckweighState(&guarded);
+        bool formal_available = App_GetAlarmOutputDiagnostics(&formal);
+        if (address == MODBUS_5NB_SIGNATURE) *value = 0x5BB5U;
+        else if (address == MODBUS_5NB_MODE) *value = (uint16_t)guarded.mode;
+        else if (address >= MODBUS_5NB_GENERATION_FIRST && address <= 0x02C3U)
+            *value = Word32(guarded.generation,
+                (uint8_t)(address - MODBUS_5NB_GENERATION_FIRST), order);
+        else if (address == MODBUS_5NB_REASON) *value = (uint16_t)guarded.reason;
+        else if (address == MODBUS_5NB_FORMAL_STATE)
+            *value = formal_available ? (uint16_t)formal.checkweigh_state : 0U;
+        else if (address == MODBUS_5NB_FLAGS)
+            *value = (uint16_t)((guarded.armed ? 1U : 0U) |
+                ((formal_available && formal.green_active) ? 0x0010U : 0U) |
+                ((formal_available && formal.yellow_active) ? 0x0020U : 0U) |
+                ((formal_available && formal.red_active) ? 0x0040U : 0U) |
+                ((formal_available && formal.internal_buzzer_active) ?
+                    0x0080U : 0U) |
+                ((formal_available && formal.external_buzzer_active) ?
+                    0x0100U : 0U));
+        else *value = 0U;
+        if (!guarded_available && address != MODBUS_5NB_SIGNATURE) *value = 0U;
+        return MODBUS_REGISTER_OK;
+    }
+#endif
 #endif
     if ((address >= MODBUS_STARTUP_ZERO_FIRST) &&
         (address <= MODBUS_STARTUP_ZERO_LAST))

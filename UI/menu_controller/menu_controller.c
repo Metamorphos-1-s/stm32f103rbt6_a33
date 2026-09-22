@@ -19,6 +19,9 @@
 #include "r5_local_control.h"
 #include "ui_config_workspace.h"
 #endif
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+#include "checkweigh_local_control.h"
+#endif
 
 #include <limits.h>
 #include <stddef.h>
@@ -38,6 +41,10 @@ typedef enum
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     ,
     MENU_EDIT_R5_DRIFT
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    ,
+    MENU_EDIT_CHECKWEIGH_MODE
+#endif
 #endif
 #if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
     ,
@@ -56,6 +63,9 @@ static const char s_labels[MENU_ITEM_COUNT][6] = {
     {'G','A','I','n',' ',' '}, {'t','r','r','E','t',' '},
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     {'d','r','I','F','t',' '},
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    {'A','L','A','r','n',' '},
+#endif
 #endif
 #if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
     {'L','-','E','n',' ',' '}, {'L','o',' ',' ',' ',' '},
@@ -172,6 +182,15 @@ static void Render(void)
             R5LocalControl_ChoiceText(R5LocalControl_GetChoice()));
         return;
     }
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    if (s_edit_kind == MENU_EDIT_CHECKWEIGH_MODE)
+    {
+        (void)DisplayController_SetTextPage(DISPLAY_PAGE_EDIT,
+            CheckweighLocalControl_ChoiceText(
+                CheckweighLocalControl_GetChoice()));
+        return;
+    }
+#endif
 #endif
     if (s_edit_kind == MENU_EDIT_UNIT)
     {
@@ -221,6 +240,9 @@ static void ExitMenu(void)
 {
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     R5LocalControl_EndSession();
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    CheckweighLocalControl_EndSession();
+#endif
 #endif
     s_active = false;
     s_editing = false;
@@ -246,6 +268,10 @@ static void CancelUnconfirmedEdit(void)
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     if (s_editing && (s_edit_kind == MENU_EDIT_R5_DRIFT))
         R5LocalControl_Cancel();
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    if (s_editing && (s_edit_kind == MENU_EDIT_CHECKWEIGH_MODE))
+        CheckweighLocalControl_Cancel();
+#endif
 #endif
     s_editing = false;
 }
@@ -525,6 +551,14 @@ static bool BeginEdit(MenuItem item, uint32_t now_ms)
             s_editing = true;
             Render();
             return true;
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+        case MENU_ITEM_CHECKWEIGH_MODE:
+            if (!CheckweighLocalControl_Begin(s_candidate_changed)) return false;
+            s_edit_kind = MENU_EDIT_CHECKWEIGH_MODE;
+            s_editing = true;
+            Render();
+            return true;
+#endif
 #endif
 #if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
         case MENU_ITEM_LIMIT_ENABLE:
@@ -616,6 +650,13 @@ static bool SubmitEditValue(void)
         R5LocalControl_Confirm();
         return true;
     }
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    if (s_edit_kind == MENU_EDIT_CHECKWEIGH_MODE)
+    {
+        CheckweighLocalControl_Confirm();
+        return true;
+    }
+#endif
 #endif
     if (!ConfigEdit_Begin(&s_candidate_config)) return false;
     switch (s_edit_kind)
@@ -666,6 +707,13 @@ static void AdjustEdit(KeyId key)
         R5LocalControl_Adjust(key == KEY_ID_HASH);
         return;
     }
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    if (s_edit_kind == MENU_EDIT_CHECKWEIGH_MODE)
+    {
+        CheckweighLocalControl_Adjust(key == KEY_ID_HASH);
+        return;
+    }
+#endif
 #endif
     if (s_edit_kind == MENU_EDIT_BOOL)
     {
@@ -783,6 +831,9 @@ void MenuController_Init(void)
     s_existing_dirty_owned = false; s_existing_dirty_revision = 0U;
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     R5LocalControl_EndSession();
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    CheckweighLocalControl_EndSession();
+#endif
 #endif
 #if defined(STAGE2A_HOST_TEST)
     s_cancel_request_count = 0U;
@@ -800,6 +851,14 @@ bool MenuController_Enter(void)
         UiConfigWorkspace_Release(UI_CONFIG_WORKSPACE_MENU);
         return false;
     }
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    if (!CheckweighLocalControl_BeginSession())
+    {
+        R5LocalControl_EndSession();
+        UiConfigWorkspace_Release(UI_CONFIG_WORKSPACE_MENU);
+        return false;
+    }
+#endif
 #endif
     s_active = true; s_editing = false; s_factory_confirmation = false;
     s_item = MENU_ITEM_UNIT; s_advanced = false; ClearSequence();
@@ -921,7 +980,27 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
     {
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
         R5LocalResult r5_result;
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+        CheckweighLocalResult checkweigh_result;
+#endif
         if (s_editing && (s_edit_kind == MENU_EDIT_R5_DRIFT)) return true;
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+        if (s_editing && (s_edit_kind == MENU_EDIT_CHECKWEIGH_MODE)) return true;
+        if (CheckweighLocalControl_HasCandidate())
+        {
+            checkweigh_result = CheckweighLocalControl_Apply();
+            if (checkweigh_result == CHECKWEIGH_LOCAL_OK)
+            {
+                ShowCode(DISPLAY_CODE_DONE);
+                s_exit_after_save = true;
+                s_message_until_ms = event->timestamp_ms +
+                    UI_MESSAGE_DEFAULT_MS;
+            }
+            else ShowCode(checkweigh_result == CHECKWEIGH_LOCAL_BUSY ?
+                DISPLAY_CODE_BUSY : DISPLAY_CODE_ERROR);
+            return true;
+        }
+#endif
         if (R5LocalControl_HasCandidate())
         {
             r5_result = R5LocalControl_Apply();
@@ -941,6 +1020,18 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         return true;
     }
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    if (CheckweighLocalControl_HasCandidate())
+    {
+        if ((event->key == KEY_ID_TARE) &&
+            (event->type == KEY_EVENT_SHORT))
+        {
+            CheckweighLocalControl_Cancel();
+            ExitMenu();
+        }
+        return true;
+    }
+#endif
     if (R5LocalControl_HasCandidate())
     {
         if ((event->key == KEY_ID_TARE) &&
@@ -982,6 +1073,15 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                 Render();
                 return true;
             }
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+            if (s_edit_kind == MENU_EDIT_CHECKWEIGH_MODE)
+            {
+                CheckweighLocalControl_Confirm();
+                s_editing = false;
+                Render();
+                return true;
+            }
+#endif
 #endif
             if (SystemContext_GetConfigRevision() != s_expected_revision)
             {
@@ -1076,6 +1176,9 @@ void MenuController_Cancel(void)
     s_advanced = false; ClearSequence();
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     R5LocalControl_EndSession();
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    CheckweighLocalControl_EndSession();
+#endif
     UiConfigWorkspace_Release(UI_CONFIG_WORKSPACE_MENU);
 #endif
 }

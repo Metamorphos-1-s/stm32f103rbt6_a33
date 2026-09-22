@@ -47,6 +47,28 @@ static int Execute(uint16_t token, uint16_t wire_command, uint16_t argument)
     return 0;
 }
 
+static int ExecuteGuarded(uint16_t token, uint16_t wire_command,
+    uint16_t mode, uint16_t generation, uint16_t flags)
+{
+    CHECK(ModbusCommandMailbox_Write(0x0040U, token,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusCommandMailbox_Write(0x0041U, wire_command,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusCommandMailbox_Write(0x0042U, 0U,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusCommandMailbox_Write(0x0043U, mode,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusCommandMailbox_Write(0x0044U, 0U,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusCommandMailbox_Write(0x0045U, generation,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusCommandMailbox_Write(0x004AU, flags,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    CHECK(ModbusCommandMailbox_Write(0x004BU, MODBUS_EXECUTE_VALUE,
+        COMMAND_SOURCE_MODBUS) == MODBUS_REGISTER_OK);
+    return 0;
+}
+
 int main(void)
 {
     uint16_t value;
@@ -65,5 +87,11 @@ int main(void)
     CHECK(s_last_request.id == COMMAND_R5_GET_STATUS);
     CHECK(Execute(3U, 32U, 1U) == 0);
     CHECK(s_last_request.id == COMMAND_R5_SET_APPLICATION);
+    CHECK(ExecuteGuarded(4U, 34U, 2U, 7U, 1U) == 0);
+    CHECK(s_last_request.id == COMMAND_CHECKWEIGH_SET_MODE);
+    CHECK(s_last_request.value0 == 2 && s_last_request.value1 == 7);
+    CHECK(s_last_request.flags == 1U);
+    CHECK(ExecuteGuarded(5U, 35U, 0U, 0U, 0U) == 0);
+    CHECK(s_last_request.id == COMMAND_CHECKWEIGH_GET_STATUS);
     return 0;
 }

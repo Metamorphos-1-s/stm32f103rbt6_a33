@@ -65,6 +65,9 @@ static bool MapCommand(uint16_t id, CommandId *command)
         , COMMAND_R5_SET_MODE, COMMAND_R5_RESET_STATE,
         COMMAND_R5_GET_STATUS, COMMAND_R5_SET_APPLICATION,
         COMMAND_ALARM_SHADOW_SET_LIMITS
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+        , COMMAND_CHECKWEIGH_SET_MODE, COMMAND_CHECKWEIGH_GET_STATUS
+#endif
 #endif
     };
     if (id >= (uint16_t)(sizeof(map) / sizeof(map[0]))) return false;

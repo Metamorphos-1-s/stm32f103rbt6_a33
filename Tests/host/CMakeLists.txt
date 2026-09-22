@@ -147,6 +147,8 @@ add_executable(stage5mr5e_d1b_display_runner
     ../../UI/display_model/active_display_follower.c)
 target_include_directories(stage5mr5e_d1b_display_runner PRIVATE
     ../../UI/display_model)
+target_compile_definitions(stage5mr5e_d1b_display_runner PRIVATE
+    _CRT_SECURE_NO_WARNINGS)
 if(MSVC)
     target_compile_options(stage5mr5e_d1b_display_runner PRIVATE /W4 /WX)
 else()
@@ -197,6 +199,49 @@ else()
 endif()
 add_test(NAME stage5na3_fault_injection_logic
     COMMAND stage5na3_fault_injection_tests)
+
+add_executable(stage5nb_guarded_checkweigh_tests
+    test_guarded_checkweigh.c
+    ../../Services/guarded_checkweigh/guarded_checkweigh.c)
+target_include_directories(stage5nb_guarded_checkweigh_tests PRIVATE
+    ../../Config ../../Domain/limit_checker ../../Domain/measurement
+    ../../Experimental/stage5na ../../Services/guarded_checkweigh)
+add_executable(stage5nb_local_control_tests
+    test_checkweigh_local_control.c
+    ../../UI/checkweigh_local_control.c)
+target_compile_definitions(stage5nb_local_control_tests PRIVATE
+    A33_ENABLE_STAGE5MR5_BETA=1 A33_ENABLE_STAGE5NB_BETA=1)
+target_include_directories(stage5nb_local_control_tests PRIVATE
+    ../../App ../../Config ../../Domain/limit_checker ../../Domain/measurement
+    ../../Experimental/stage5na ../../Protocol/command_service
+    ../../Services/guarded_checkweigh ../../UI)
+foreach(target stage5nb_guarded_checkweigh_tests stage5nb_local_control_tests)
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /W4 /WX)
+    else()
+        target_compile_options(${target} PRIVATE -Wall -Wextra -Werror)
+    endif()
+endforeach()
+add_test(NAME stage5nb_guarded_checkweigh_logic
+    COMMAND stage5nb_guarded_checkweigh_tests)
+add_test(NAME stage5nb_local_control_logic
+    COMMAND stage5nb_local_control_tests)
+
+add_executable(stage5nb_output_safety_tests
+    test_stage5nb_output_safety.c
+    ../../Services/guarded_checkweigh/guarded_checkweigh.c
+    ../../Services/alarm_output_manager/alarm_output_manager.c)
+target_include_directories(stage5nb_output_safety_tests PRIVATE
+    ../../Config ../../Domain/limit_checker ../../Domain/measurement
+    ../../Drivers/output_gpio ../../Experimental/stage5na
+    ../../Services/alarm_output_manager ../../Services/guarded_checkweigh)
+if(MSVC)
+    target_compile_options(stage5nb_output_safety_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5nb_output_safety_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5nb_output_safety_logic COMMAND stage5nb_output_safety_tests)
 
 add_executable(stage5mr_drift_tests
     test_stage5mr_drift.c
@@ -261,7 +306,7 @@ add_executable(stage5mr5_beta_mailbox_tests
     test_stage5mr5_beta_mailbox.c
     ../../Protocol/modbus/modbus_command_mailbox.c)
 target_compile_definitions(stage5mr5_beta_mailbox_tests PRIVATE
-    A33_ENABLE_STAGE5MR5_BETA=1)
+    A33_ENABLE_STAGE5MR5_BETA=1 A33_ENABLE_STAGE5NB_BETA=1)
 target_include_directories(stage5mr5_beta_mailbox_tests PRIVATE
     ../../App ../../Config ../../Domain/measurement
     ../../Protocol/command_service ../../Protocol/modbus)
