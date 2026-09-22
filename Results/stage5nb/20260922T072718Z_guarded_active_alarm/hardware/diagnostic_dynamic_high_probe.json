@@ -1,0 +1,20 @@
+{
+  "state": {
+    "signature": "0x5BB5",
+    "mode": 2,
+    "generation": 1,
+    "reason": 8,
+    "formal_state": 3,
+    "armed": 1,
+    "green": 0,
+    "yellow": 0,
+    "red": 1,
+    "internal_buzzer": 1,
+    "external_buzzer": 1,
+    "firmware": "0x0516",
+    "map": "0x0104",
+    "utc": "2026-09-22T08:49:38.213Z"
+  },
+  "writes": 0,
+  "flash_operations": 0
+}

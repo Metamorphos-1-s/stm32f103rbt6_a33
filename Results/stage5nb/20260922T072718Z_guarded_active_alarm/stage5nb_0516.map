@@ -8876,7 +8876,7 @@ LOAD E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/
                 0x08000000                g_pfnVectors
                 0x0800010c                        . = ALIGN (0x4)
 
-.text           0x08000110    0x19a60
+.text           0x08000110    0x19ab4
                 0x08000110                        . = ALIGN (0x4)
  *(.text)
  .text          0x08000110       0x40 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
@@ -11415,400 +11415,402 @@ LOAD E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/
                 0x08017c5e       0x1c CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
  .text.SafeResult
                 0x08017c7a        0xe CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
+ .text.RequireReacquisition
+                0x08017c88        0xa CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
  .text.GuardedCheckweigh_Init
-                0x08017c88       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
-                0x08017c88                GuardedCheckweigh_Init
+                0x08017c92       0x10 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
+                0x08017c92                GuardedCheckweigh_Init
  .text.GuardedCheckweigh_SetMode
-                0x08017c98       0x54 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
-                0x08017c98                GuardedCheckweigh_SetMode
+                0x08017ca2       0x54 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
+                0x08017ca2                GuardedCheckweigh_SetMode
  .text.GuardedCheckweigh_Process
-                0x08017cec      0x126 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
-                0x08017cec                GuardedCheckweigh_Process
- .text.Execute  0x08017e12       0x38 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
- *fill*         0x08017e4a        0x2 
+                0x08017cf6      0x170 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
+                0x08017cf6                GuardedCheckweigh_Process
+ .text.Execute  0x08017e66       0x38 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+ *fill*         0x08017e9e        0x2 
  .text.CheckweighLocalControl_BeginSession
-                0x08017e4c       0x5c CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
-                0x08017e4c                CheckweighLocalControl_BeginSession
+                0x08017ea0       0x5c CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+                0x08017ea0                CheckweighLocalControl_BeginSession
  .text.CheckweighLocalControl_EndSession
-                0x08017ea8       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
-                0x08017ea8                CheckweighLocalControl_EndSession
+                0x08017efc       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+                0x08017efc                CheckweighLocalControl_EndSession
  .text.CheckweighLocalControl_Begin
-                0x08017ec4       0x38 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
-                0x08017ec4                CheckweighLocalControl_Begin
+                0x08017f18       0x38 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+                0x08017f18                CheckweighLocalControl_Begin
  .text.CheckweighLocalControl_Adjust
-                0x08017efc       0x38 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
-                0x08017efc                CheckweighLocalControl_Adjust
+                0x08017f50       0x38 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+                0x08017f50                CheckweighLocalControl_Adjust
  .text.CheckweighLocalControl_Confirm
-                0x08017f34       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
-                0x08017f34                CheckweighLocalControl_Confirm
+                0x08017f88       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+                0x08017f88                CheckweighLocalControl_Confirm
  .text.CheckweighLocalControl_Cancel
-                0x08017f50       0x14 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
-                0x08017f50                CheckweighLocalControl_Cancel
+                0x08017fa4       0x14 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+                0x08017fa4                CheckweighLocalControl_Cancel
  .text.CheckweighLocalControl_HasCandidate
-                0x08017f64        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
-                0x08017f64                CheckweighLocalControl_HasCandidate
+                0x08017fb8        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+                0x08017fb8                CheckweighLocalControl_HasCandidate
  .text.CheckweighLocalControl_GetChoice
-                0x08017f70        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
-                0x08017f70                CheckweighLocalControl_GetChoice
+                0x08017fc4        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+                0x08017fc4                CheckweighLocalControl_GetChoice
  .text.CheckweighLocalControl_Apply
-                0x08017f7c       0xa4 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
-                0x08017f7c                CheckweighLocalControl_Apply
+                0x08017fd0       0xa4 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+                0x08017fd0                CheckweighLocalControl_Apply
  .text.CheckweighLocalControl_ChoiceText
-                0x08018020       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
-                0x08018020                CheckweighLocalControl_ChoiceText
+                0x08018074       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+                0x08018074                CheckweighLocalControl_ChoiceText
  .text.TruncateDivide
-                0x0801803c        0x8 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x08018090        0x8 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .text.Subtract
-                0x08018044       0x4c CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
- .text.Add      0x08018090       0x54 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x08018098       0x4c CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+ .text.Add      0x080180e4       0x54 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .text.Magnitude
-                0x080180e4        0xe CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x08018138        0xe CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .text.AverageTowardZero
-                0x080180f2       0x7e CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x08018146       0x7e CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .text.SortSmall
-                0x08018170       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x080181c4       0x5c CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .text.MedianSmall
-                0x080181cc       0x80 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x08018220       0x80 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .text.SelectKth
-                0x0801824c       0x7e CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x080182a0       0x7e CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .text.MedianDeltas
-                0x080182ca       0x80 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x0801831e       0x80 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .text.AddDelta
-                0x0801834a       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x0801839e       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .text.OffsetUg
-                0x08018392       0x16 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x080183e6       0x16 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .text.ClearLearning
-                0x080183a8       0x62 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x080183fc       0x62 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .text.EnterLimited
-                0x0801840a       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x0801845e       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .text.UpdateSnapshot
-                0x08018422       0xc8 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
- *fill*         0x080184ea        0x2 
+                0x08018476       0xc8 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+ *fill*         0x0801853e        0x2 
  .text.StepDetected
-                0x080184ec      0x128 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x08018540      0x128 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .text.R5Drift_DefaultConfig
-                0x08018614       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
-                0x08018614                R5Drift_DefaultConfig
+                0x08018668       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x08018668                R5Drift_DefaultConfig
  .text.R5Drift_Init
-                0x08018634       0xc4 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
-                0x08018634                R5Drift_Init
+                0x08018688       0xc4 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x08018688                R5Drift_Init
  .text.R5Drift_SetMode
-                0x080186f8       0xa0 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
-                0x080186f8                R5Drift_SetMode
+                0x0801874c       0xa0 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x0801874c                R5Drift_SetMode
  .text.R5Drift_HandleEvent
-                0x08018798       0x78 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
-                0x08018798                R5Drift_HandleEvent
+                0x080187ec       0x78 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x080187ec                R5Drift_HandleEvent
  .text.R5Drift_ProcessSecond
-                0x08018810      0x4c0 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
-                0x08018810                R5Drift_ProcessSecond
+                0x08018864      0x4c0 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x08018864                R5Drift_ProcessSecond
  .text.R5Drift_ProcessSample
-                0x08018cd0       0xf4 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
-                0x08018cd0                R5Drift_ProcessSample
+                0x08018d24       0xf4 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x08018d24                R5Drift_ProcessSample
  .text.R5Drift_GetSnapshot
-                0x08018dc4       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
-                0x08018dc4                R5Drift_GetSnapshot
+                0x08018e18       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x08018e18                R5Drift_GetSnapshot
  .text.IsValidClass
-                0x08018dd8        0xe CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
+                0x08018e2c        0xe CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
  .text.Suppression
-                0x08018de6       0x4c CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
+                0x08018e3a       0x4c CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
  .text.CheckweighShadow_Classify
-                0x08018e32       0x2e CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
-                0x08018e32                CheckweighShadow_Classify
+                0x08018e86       0x2e CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
+                0x08018e86                CheckweighShadow_Classify
  .text.Hysteresis
-                0x08018e60       0x9c CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
+                0x08018eb4       0x9c CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
  .text.CheckweighShadow_Reset
-                0x08018efc       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
-                0x08018efc                CheckweighShadow_Reset
+                0x08018f50       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
+                0x08018f50                CheckweighShadow_Reset
  .text.CheckweighShadow_RequestReset
-                0x08018f14       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
-                0x08018f14                CheckweighShadow_RequestReset
+                0x08018f68       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
+                0x08018f68                CheckweighShadow_RequestReset
  .text.CheckweighShadow_Process
-                0x08018f28      0x29e CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
-                0x08018f28                CheckweighShadow_Process
+                0x08018f7c      0x29e CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
+                0x08018f7c                CheckweighShadow_Process
  .text.Direction
-                0x080191c6       0x1a CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
+                0x0801921a       0x1a CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
  .text.Magnitude
-                0x080191e0        0xe CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
- .text.Publish  0x080191ee       0x4e CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
+                0x08019234        0xe CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
+ .text.Publish  0x08019242       0x4e CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
  .text.Accumulate
-                0x0801923c       0x74 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
+                0x08019290       0x74 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
  .text.DirectionalDisplayFollower_Reset
-                0x080192b0        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
-                0x080192b0                DirectionalDisplayFollower_Reset
+                0x08019304        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
+                0x08019304                DirectionalDisplayFollower_Reset
  .text.DirectionalDisplayFollower_Process
-                0x080192bc      0x152 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
-                0x080192bc                DirectionalDisplayFollower_Process
+                0x08019310      0x152 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
+                0x08019310                DirectionalDisplayFollower_Process
  .text.DirectionalDisplayFollower_GetDiagnostics
-                0x0801940e       0x3a CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
-                0x0801940e                DirectionalDisplayFollower_GetDiagnostics
+                0x08019462       0x3a CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
+                0x08019462                DirectionalDisplayFollower_GetDiagnostics
  .text.ChoiceFromStatus
-                0x08019448       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x0801949c       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
  .text.SamePublicState
-                0x08019464       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
- .text.Execute  0x08019480       0x2c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
- .text.SetMode  0x080194ac       0x14 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x080194b8       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+ .text.Execute  0x080194d4       0x2c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+ .text.SetMode  0x08019500       0x14 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
  .text.SetApplication
-                0x080194c0       0x14 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
- .text.SetPair  0x080194d4       0x42 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
- .text.Restore  0x08019516       0x2a CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x08019514       0x14 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+ .text.SetPair  0x08019528       0x42 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+ .text.Restore  0x0801956a       0x2a CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
  .text.R5LocalControl_GetStatus
-                0x08019540       0x58 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
-                0x08019540                R5LocalControl_GetStatus
+                0x08019594       0x58 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x08019594                R5LocalControl_GetStatus
  .text.R5LocalControl_BeginSession
-                0x08019598       0x28 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
-                0x08019598                R5LocalControl_BeginSession
+                0x080195ec       0x28 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x080195ec                R5LocalControl_BeginSession
  .text.R5LocalControl_EndSession
-                0x080195c0       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
-                0x080195c0                R5LocalControl_EndSession
+                0x08019614       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x08019614                R5LocalControl_EndSession
  .text.R5LocalControl_Begin
-                0x080195dc       0x3c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
-                0x080195dc                R5LocalControl_Begin
+                0x08019630       0x3c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x08019630                R5LocalControl_Begin
  .text.R5LocalControl_Adjust
-                0x08019618       0x28 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
-                0x08019618                R5LocalControl_Adjust
+                0x0801966c       0x28 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x0801966c                R5LocalControl_Adjust
  .text.R5LocalControl_Confirm
-                0x08019640       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
-                0x08019640                R5LocalControl_Confirm
+                0x08019694       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x08019694                R5LocalControl_Confirm
  .text.R5LocalControl_Cancel
-                0x0801965c       0x14 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
-                0x0801965c                R5LocalControl_Cancel
+                0x080196b0       0x14 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x080196b0                R5LocalControl_Cancel
  .text.R5LocalControl_HasCandidate
-                0x08019670        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
-                0x08019670                R5LocalControl_HasCandidate
+                0x080196c4        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x080196c4                R5LocalControl_HasCandidate
  .text.R5LocalControl_GetChoice
-                0x0801967c        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
-                0x0801967c                R5LocalControl_GetChoice
+                0x080196d0        0xc CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x080196d0                R5LocalControl_GetChoice
  .text.R5LocalControl_Apply
-                0x08019688       0xd0 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
-                0x08019688                R5LocalControl_Apply
+                0x080196dc       0xd0 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x080196dc                R5LocalControl_Apply
  .text.R5LocalControl_ChoiceText
-                0x08019758       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
-                0x08019758                R5LocalControl_ChoiceText
+                0x080197ac       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x080197ac                R5LocalControl_ChoiceText
  .text.R5LocalControl_StateText
-                0x08019774       0x68 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
-                0x08019774                R5LocalControl_StateText
+                0x080197c8       0x68 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x080197c8                R5LocalControl_StateText
  .text.UiConfigWorkspace_Acquire
-                0x080197dc       0x24 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
-                0x080197dc                UiConfigWorkspace_Acquire
+                0x08019830       0x24 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
+                0x08019830                UiConfigWorkspace_Acquire
  .text.UiConfigWorkspace_Release
-                0x08019800       0x38 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
-                0x08019800                UiConfigWorkspace_Release
+                0x08019854       0x38 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
+                0x08019854                UiConfigWorkspace_Release
  .text.UiConfigWorkspace_Original
-                0x08019838       0x18 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
-                0x08019838                UiConfigWorkspace_Original
+                0x0801988c       0x18 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
+                0x0801988c                UiConfigWorkspace_Original
  .text.UiConfigWorkspace_Candidate
-                0x08019850       0x18 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
-                0x08019850                UiConfigWorkspace_Candidate
+                0x080198a4       0x18 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
+                0x080198a4                UiConfigWorkspace_Candidate
  .text.AlarmOutputManager_IsAlarmState
-                0x08019868        0xe CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+                0x080198bc        0xe CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
  .text.AlarmOutputManager_SetMode
-                0x08019876        0x8 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+                0x080198ca        0x8 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
  .text.AlarmOutputManager_Apply
-                0x0801987e       0x6e CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+                0x080198d2       0x6e CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
  .text.AlarmOutputManager_Init
-                0x080198ec       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
-                0x080198ec                AlarmOutputManager_Init
+                0x08019940       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+                0x08019940                AlarmOutputManager_Init
  .text.AlarmOutputManager_Update
-                0x0801990c       0xbe CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
-                0x0801990c                AlarmOutputManager_Update
- *fill*         0x080199ca        0x2 
+                0x08019960       0xbe CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+                0x08019960                AlarmOutputManager_Update
+ *fill*         0x08019a1e        0x2 
  .text.AlarmOutputManager_Run
-                0x080199cc       0x88 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
-                0x080199cc                AlarmOutputManager_Run
+                0x08019a20       0x88 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+                0x08019a20                AlarmOutputManager_Run
  .text.AlarmOutputManager_AllOff
-                0x08019a54       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
-                0x08019a54                AlarmOutputManager_AllOff
+                0x08019aa8       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+                0x08019aa8                AlarmOutputManager_AllOff
  .text.AlarmOutputManager_GetDiagnostics
-                0x08019a74       0x1c CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
-                0x08019a74                AlarmOutputManager_GetDiagnostics
- .text.memcmp   0x08019a90       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
-                0x08019a90                memcmp
- .text.memmove  0x08019ab0       0x34 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
-                0x08019ab0                memmove
- .text.memset   0x08019ae4       0x10 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
-                0x08019ae4                memset
+                0x08019ac8       0x1c CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+                0x08019ac8                AlarmOutputManager_GetDiagnostics
+ .text.memcmp   0x08019ae4       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
+                0x08019ae4                memcmp
+ .text.memmove  0x08019b04       0x34 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
+                0x08019b04                memmove
+ .text.memset   0x08019b38       0x10 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
+                0x08019b38                memset
  .text.__libc_init_array
-                0x08019af4       0x48 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
-                0x08019af4                __libc_init_array
- .text.memcpy   0x08019b3c       0x1c E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
-                0x08019b3c                memcpy
+                0x08019b48       0x48 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
+                0x08019b48                __libc_init_array
+ .text.memcpy   0x08019b90       0x1c E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
+                0x08019b90                memcpy
  *(.glue_7)
- .glue_7        0x08019b58        0x0 linker stubs
+ .glue_7        0x08019bac        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x08019b58        0x0 linker stubs
+ .glue_7t       0x08019bac        0x0 linker stubs
  *(.eh_frame)
- .eh_frame      0x08019b58        0x0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
+ .eh_frame      0x08019bac        0x0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
  *(.init)
- .init          0x08019b58        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crti.o
-                0x08019b58                _init
- .init          0x08019b5c        0x8 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtn.o
+ .init          0x08019bac        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crti.o
+                0x08019bac                _init
+ .init          0x08019bb0        0x8 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtn.o
  *(.fini)
- .fini          0x08019b64        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crti.o
-                0x08019b64                _fini
- .fini          0x08019b68        0x8 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtn.o
-                0x08019b70                        . = ALIGN (0x4)
-                0x08019b70                        _etext = .
+ .fini          0x08019bb8        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crti.o
+                0x08019bb8                _fini
+ .fini          0x08019bbc        0x8 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtn.o
+                0x08019bc4                        . = ALIGN (0x4)
+                0x08019bc4                        _etext = .
 
-.vfp11_veneer   0x08019b70        0x0
- .vfp11_veneer  0x08019b70        0x0 linker stubs
+.vfp11_veneer   0x08019bc4        0x0
+ .vfp11_veneer  0x08019bc4        0x0 linker stubs
 
-.v4_bx          0x08019b70        0x0
- .v4_bx         0x08019b70        0x0 linker stubs
+.v4_bx          0x08019bc4        0x0
+ .v4_bx         0x08019bc4        0x0 linker stubs
 
-.iplt           0x08019b70        0x0
- .iplt          0x08019b70        0x0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
+.iplt           0x08019bc4        0x0
+ .iplt          0x08019bc4        0x0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
 
-.rodata         0x08019b70      0x5a0
-                0x08019b70                        . = ALIGN (0x4)
+.rodata         0x08019bc8      0x5a0
+                0x08019bc8                        . = ALIGN (0x4)
  *(.rodata)
- .rodata        0x08019b70       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Config/default_config.c.obj
- .rodata        0x08019bb8       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+ .rodata        0x08019bc8       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Config/default_config.c.obj
+ .rodata        0x08019c10       0x20 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  *(.rodata*)
  .rodata.APBPrescTable
-                0x08019bd8        0x8 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
-                0x08019bd8                APBPrescTable
+                0x08019c30        0x8 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
+                0x08019c30                APBPrescTable
  .rodata.AHBPrescTable
-                0x08019be0       0x10 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
-                0x08019be0                AHBPrescTable
+                0x08019c38       0x10 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
+                0x08019c38                AHBPrescTable
  .rodata.aPredivFactorTable.0
-                0x08019bf0        0x2 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c.obj
- *fill*         0x08019bf2        0x2 
+                0x08019c48        0x2 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c.obj
+ *fill*         0x08019c4a        0x2 
  .rodata.aPLLMULFactorTable.1
-                0x08019bf4       0x10 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c.obj
+                0x08019c4c       0x10 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c.obj
  .rodata.aPredivFactorTable.0
-                0x08019c04        0x2 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c.obj
- *fill*         0x08019c06        0x2 
+                0x08019c5c        0x2 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c.obj
+ *fill*         0x08019c5e        0x2 
  .rodata.aPLLMULFactorTable.1
-                0x08019c08       0x10 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c.obj
+                0x08019c60       0x10 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c.obj
  .rodata.SelfTestController_Process10ms.str1.4
-                0x08019c18      0x10f CMakeFiles/stm32f103rbt6_a33.dir/App/self_test_controller.c.obj
+                0x08019c70      0x10f CMakeFiles/stm32f103rbt6_a33.dir/App/self_test_controller.c.obj
                                   0x7 (size before relaxing)
- *fill*         0x08019d27        0x1 
+ *fill*         0x08019d7f        0x1 
  .rodata.s_backend
-                0x08019d28       0x18 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_flash.c.obj
+                0x08019d80       0x18 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_flash.c.obj
  .rodata.scales.0
-                0x08019d40       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/unit_converter.c.obj
+                0x08019d98       0x30 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/unit_converter.c.obj
  .rodata.counts.0
-                0x08019d70        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+                0x08019dc8        0x4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
  .rodata.s_transport
-                0x08019d74       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/modbus_uart2_transport.c.obj
+                0x08019dcc       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/modbus_uart2_transport.c.obj
  .rodata.s_transport
-                0x08019da0       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart3_modbus_transport.c.obj
+                0x08019df8       0x2c CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart3_modbus_transport.c.obj
  .rodata.board_to_tm_bit.0
-                0x08019dcc        0xa CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj
- *fill*         0x08019dd6        0x2 
+                0x08019e24        0xa CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj
+ *fill*         0x08019e2e        0x2 
  .rodata.g_board_digit_to_grid
-                0x08019dd8        0x6 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj
-                0x08019dd8                g_board_digit_to_grid
- *fill*         0x08019dde        0x2 
- .rodata.map.0  0x08019de0       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
+                0x08019e30        0x6 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj
+                0x08019e30                g_board_digit_to_grid
+ *fill*         0x08019e36        0x2 
+ .rodata.map.0  0x08019e38       0x24 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
  .rodata.baud.0
-                0x08019e04       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x08019e5c       0x14 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
  .rodata.empty_condition.1
-                0x08019e18       0x28 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x08019e70       0x28 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
  .rodata.empty_snapshot.2
-                0x08019e40       0x58 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+                0x08019e98       0x58 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
  .rodata.empty_runtime.0
-                0x08019e98       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+                0x08019ef0       0x18 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
  .rodata.DisplayController_BuildModel.str1.4
-                0x08019eb0       0x1f CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+                0x08019f08       0x1f CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
  .rodata.s_mass_unit_labels
-                0x08019eb0       0x12 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_codes.c.obj
- *fill*         0x08019ec2        0x2 
+                0x08019f08       0x12 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_codes.c.obj
+ *fill*         0x08019f1a        0x2 
  .rodata.s_codes
-                0x08019ec4       0xd8 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_codes.c.obj
+                0x08019f1c       0xd8 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_codes.c.obj
  .rodata.DisplayFormatter_FormatWeight.str1.4
-                0x08019f9c        0xf CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
+                0x08019ff4        0xf CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
  .rodata.DisplayModel_SetWeight.str1.4
-                0x08019f9c        0xf CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
+                0x08019ff4        0xf CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
  .rodata.s_step_by_digit
-                0x08019f9c       0x18 CMakeFiles/stm32f103rbt6_a33.dir/UI/numeric_edit_cursor.c.obj
+                0x08019ff4       0x18 CMakeFiles/stm32f103rbt6_a33.dir/UI/numeric_edit_cursor.c.obj
  .rodata.g_key_map_development_default
-                0x08019fb4        0x5 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_map.c.obj
-                0x08019fb4                g_key_map_development_default
+                0x0801a00c        0x5 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_map.c.obj
+                0x0801a00c                g_key_map_development_default
  .rodata.Render.str1.4
-                0x08019fb9       0x1f CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- *fill*         0x08019fb9        0x3 
+                0x0801a011       0x1f CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ *fill*         0x0801a011        0x3 
  .rodata.backward.0
-                0x08019fbc        0x3 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- *fill*         0x08019fbf        0x1 
+                0x0801a014        0x3 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ *fill*         0x0801a017        0x1 
  .rodata.forward.1
-                0x08019fc0        0x3 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- *fill*         0x08019fc3        0x1 
+                0x0801a018        0x3 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ *fill*         0x0801a01b        0x1 
  .rodata.expected.2
-                0x08019fc4        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x0801a01c        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
  .rodata.s_ordinary
-                0x08019fc8        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x0801a020        0x4 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
  .rodata.s_labels
-                0x08019fcc       0xa8 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+                0x0801a024       0xa8 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
  .rodata.RenderValue.str1.4
-                0x0801a074       0x47 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
+                0x0801a0cc       0x47 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
  .rodata.RequestSaveOnly.str1.4
-                0x0801a074       0x1f CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
+                0x0801a0cc       0x1f CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
  .rodata.BeginSave.str1.4
-                0x0801a074       0x1f CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
+                0x0801a0cc       0x1f CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
  .rodata.StatusController_Process10ms.str1.4
-                0x0801a074        0x7 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
+                0x0801a0cc        0x7 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
  .rodata.s_baud
-                0x0801a074       0x14 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
+                0x0801a0cc       0x14 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
  .rodata.s_labels
-                0x0801a088       0x54 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
+                0x0801a0e0       0x54 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
  .rodata.CheckweighLocalControl_ChoiceText.str1.4
-                0x0801a0dc        0x7 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+                0x0801a134        0x7 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
  .rodata.text.0
-                0x0801a0dc       0x15 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+                0x0801a134       0x15 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
  .rodata.R5LocalControl_ChoiceText.str1.4
-                0x0801a0f1        0x7 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x0801a149        0x7 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
  .rodata.R5LocalControl_StateText.str1.4
-                0x0801a0f1       0x37 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
- *fill*         0x0801a0f1        0x3 
+                0x0801a149       0x37 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+ *fill*         0x0801a149        0x3 
  .rodata.text.0
-                0x0801a0f4       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
-                0x0801a110                        . = ALIGN (0x4)
+                0x0801a14c       0x1c CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x0801a168                        . = ALIGN (0x4)
 
-.ARM.extab      0x0801a110        0x0
-                0x0801a110                        . = ALIGN (0x4)
+.ARM.extab      0x0801a168        0x0
+                0x0801a168                        . = ALIGN (0x4)
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x0801a110                        . = ALIGN (0x4)
+                0x0801a168                        . = ALIGN (0x4)
 
-.ARM            0x0801a110        0x8
-                0x0801a110                        . = ALIGN (0x4)
-                0x0801a110                        __exidx_start = .
+.ARM            0x0801a168        0x8
+                0x0801a168                        . = ALIGN (0x4)
+                0x0801a168                        __exidx_start = .
  *(.ARM.exidx*)
- .ARM.exidx     0x0801a110        0x8 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_udivmoddi4.o)
-                0x0801a118                        __exidx_end = .
-                0x0801a118                        . = ALIGN (0x4)
+ .ARM.exidx     0x0801a168        0x8 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_udivmoddi4.o)
+                0x0801a170                        __exidx_end = .
+                0x0801a170                        . = ALIGN (0x4)
 
-.preinit_array  0x0801a118        0x0
-                0x0801a118                        . = ALIGN (0x4)
-                0x0801a118                        PROVIDE (__preinit_array_start = .)
+.preinit_array  0x0801a170        0x0
+                0x0801a170                        . = ALIGN (0x4)
+                0x0801a170                        PROVIDE (__preinit_array_start = .)
  *(.preinit_array*)
-                0x0801a118                        PROVIDE (__preinit_array_end = .)
-                0x0801a118                        . = ALIGN (0x4)
+                0x0801a170                        PROVIDE (__preinit_array_end = .)
+                0x0801a170                        . = ALIGN (0x4)
 
-.init_array     0x0801a118        0x4
-                0x0801a118                        . = ALIGN (0x4)
-                0x0801a118                        PROVIDE (__init_array_start = .)
+.init_array     0x0801a170        0x4
+                0x0801a170                        . = ALIGN (0x4)
+                0x0801a170                        PROVIDE (__init_array_start = .)
  *(SORT_BY_NAME(.init_array.*))
  *(.init_array*)
- .init_array    0x0801a118        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
-                0x0801a11c                        PROVIDE (__init_array_end = .)
-                0x0801a11c                        . = ALIGN (0x4)
+ .init_array    0x0801a170        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
+                0x0801a174                        PROVIDE (__init_array_end = .)
+                0x0801a174                        . = ALIGN (0x4)
 
-.fini_array     0x0801a11c        0x4
-                0x0801a11c                        . = ALIGN (0x4)
+.fini_array     0x0801a174        0x4
+                0x0801a174                        . = ALIGN (0x4)
                 [!provide]                        PROVIDE (__fini_array_start = .)
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x0801a11c        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
+ .fini_array    0x0801a174        0x4 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
                 [!provide]                        PROVIDE (__fini_array_end = .)
-                0x0801a120                        . = ALIGN (0x4)
-                0x0801a120                        _sidata = LOADADDR (.data)
+                0x0801a178                        . = ALIGN (0x4)
+                0x0801a178                        _sidata = LOADADDR (.data)
 
-.rel.dyn        0x0801a120        0x0
- .rel.iplt      0x0801a120        0x0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
+.rel.dyn        0x0801a178        0x0
+ .rel.iplt      0x0801a178        0x0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
 
-.data           0x20000000        0xc load address 0x0801a120
+.data           0x20000000        0xc load address 0x0801a178
                 0x20000000                        . = ALIGN (0x4)
                 0x20000000                        _sdata = .
  *(.data)
@@ -11827,10 +11829,10 @@ LOAD E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/
  *(.RamFunc*)
                 0x2000000c                        . = ALIGN (0x4)
 
-.igot.plt       0x2000000c        0x0 load address 0x0801a12c
+.igot.plt       0x2000000c        0x0 load address 0x0801a184
  .igot.plt      0x2000000c        0x0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
 
-.tdata          0x2000000c        0x0 load address 0x0801a12c
+.tdata          0x2000000c        0x0 load address 0x0801a184
  *(.tdata .tdata.* .gnu.linkonce.td.*)
                 0x2000000c                        . = ALIGN (0x4)
                 0x2000000c                        _edata = .
@@ -11847,7 +11849,7 @@ LOAD E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/
                 [!provide]                        PROVIDE (__data_source_end = __tdata_source_end)
                 [!provide]                        PROVIDE (__data_source_size = (__data_source_end - __data_source))
 
-.tbss           0x2000000c        0x0 load address 0x0801a12c
+.tbss           0x2000000c        0x0 load address 0x0801a184
                 0x2000000c                        _sbss = .
                 0x2000000c                        __bss_start__ = _sbss
  *(.tbss .tbss.*)
@@ -11864,7 +11866,7 @@ LOAD E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/
                 [!provide]                        PROVIDE (__arm32_tls_tcb_offset = MAX (0x8, __tls_align))
                 [!provide]                        PROVIDE (__arm64_tls_tcb_offset = MAX (0x10, __tls_align))
 
-.bss            0x20000010     0x4800 load address 0x0801a12c
+.bss            0x20000010     0x4800 load address 0x0801a184
  *(.bss)
  .bss           0x20000010       0x1c E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/crtbegin.o
  *(.bss*)
@@ -12676,7 +12678,7 @@ LOAD E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/
                 [!provide]                        PROVIDE (__bss_size = (__bss_end - __bss_start))
 
 ._user_heap_stack
-                0x20004810      0x400 load address 0x0801a12c
+                0x20004810      0x400 load address 0x0801a184
                 0x20004810                        . = ALIGN (0x8)
                 [!provide]                        PROVIDE (end = .)
                 0x20004810                        PROVIDE (_end = .)
@@ -13092,7 +13094,7 @@ LOAD linker stubs
  .comment       0x00000043       0x44 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
  .comment       0x00000043       0x44 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
 
-.debug_info     0x00000000    0x5e227
+.debug_info     0x00000000    0x5e2f0
  .debug_info    0x00000000      0x231 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
  .debug_info    0x00000231      0xedd cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.c.obj
  .debug_info    0x0000110e      0xc3e cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.c.obj
@@ -13207,21 +13209,21 @@ LOAD linker stubs
  .debug_info    0x00054201     0x2d95 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
  .debug_info    0x00056f96     0x1e62 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
  .debug_info    0x00058df8      0x1ad CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/run_key_policy.c.obj
- .debug_info    0x00058fa5      0x62c CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
- .debug_info    0x000595d1      0x719 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
- .debug_info    0x00059cea     0x1528 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
- .debug_info    0x0005b212      0x75d CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
- .debug_info    0x0005b96f      0x67b CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
- .debug_info    0x0005bfea      0xabc CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
- .debug_info    0x0005caa6      0xacf CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
- .debug_info    0x0005d575      0x793 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
- .debug_info    0x0005dd08      0x104 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
- .debug_info    0x0005de0c      0x10f E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
- .debug_info    0x0005df1b       0xe0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
- .debug_info    0x0005dffb      0x10b E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
- .debug_info    0x0005e106      0x121 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
+ .debug_info    0x00058fa5      0x6f5 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
+ .debug_info    0x0005969a      0x719 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+ .debug_info    0x00059db3     0x1528 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+ .debug_info    0x0005b2db      0x75d CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
+ .debug_info    0x0005ba38      0x67b CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
+ .debug_info    0x0005c0b3      0xabc CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+ .debug_info    0x0005cb6f      0xacf CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
+ .debug_info    0x0005d63e      0x793 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+ .debug_info    0x0005ddd1      0x104 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
+ .debug_info    0x0005ded5      0x10f E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
+ .debug_info    0x0005dfe4       0xe0 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
+ .debug_info    0x0005e0c4      0x10b E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
+ .debug_info    0x0005e1cf      0x121 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
 
-.debug_abbrev   0x00000000     0xe3c8
+.debug_abbrev   0x00000000     0xe3ca
  .debug_abbrev  0x00000000      0x145 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
  .debug_abbrev  0x00000145      0x254 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.c.obj
  .debug_abbrev  0x00000399      0x289 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.c.obj
@@ -13336,22 +13338,22 @@ LOAD linker stubs
  .debug_abbrev  0x0000cb13      0x342 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
  .debug_abbrev  0x0000ce55      0x2e0 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
  .debug_abbrev  0x0000d135       0xcd CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/run_key_policy.c.obj
- .debug_abbrev  0x0000d202      0x190 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
- .debug_abbrev  0x0000d392      0x1d4 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
- .debug_abbrev  0x0000d566      0x299 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
- .debug_abbrev  0x0000d7ff      0x1b6 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
- .debug_abbrev  0x0000d9b5      0x193 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
- .debug_abbrev  0x0000db48      0x208 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
- .debug_abbrev  0x0000dd50      0x185 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
- .debug_abbrev  0x0000ded5      0x18f CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
- .debug_abbrev  0x0000e064       0x90 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
- .debug_abbrev  0x0000e0f4       0xac E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
- .debug_abbrev  0x0000e1a0       0x9e E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
- .debug_abbrev  0x0000e23e       0xc9 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
- .debug_abbrev  0x0000e307       0xc1 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
+ .debug_abbrev  0x0000d202      0x192 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
+ .debug_abbrev  0x0000d394      0x1d4 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+ .debug_abbrev  0x0000d568      0x299 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+ .debug_abbrev  0x0000d801      0x1b6 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
+ .debug_abbrev  0x0000d9b7      0x193 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
+ .debug_abbrev  0x0000db4a      0x208 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+ .debug_abbrev  0x0000dd52      0x185 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
+ .debug_abbrev  0x0000ded7      0x18f CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+ .debug_abbrev  0x0000e066       0x90 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
+ .debug_abbrev  0x0000e0f6       0xac E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
+ .debug_abbrev  0x0000e1a2       0x9e E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
+ .debug_abbrev  0x0000e240       0xc9 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
+ .debug_abbrev  0x0000e309       0xc1 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
 
 .debug_loclists
-                0x00000000    0x1f66e
+                0x00000000    0x1f5a9
  .debug_loclists
                 0x00000000       0xb7 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
  .debug_loclists
@@ -13565,33 +13567,33 @@ LOAD linker stubs
  .debug_loclists
                 0x0001d235       0x57 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/run_key_policy.c.obj
  .debug_loclists
-                0x0001d28c      0x381 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
+                0x0001d28c      0x2bc CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
  .debug_loclists
-                0x0001d60d      0x11d CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+                0x0001d548      0x11d CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
  .debug_loclists
-                0x0001d72a      0xd51 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x0001d665      0xd51 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .debug_loclists
-                0x0001e47b      0x504 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
+                0x0001e3b6      0x504 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
  .debug_loclists
-                0x0001e97f      0x2c8 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
+                0x0001e8ba      0x2c8 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
  .debug_loclists
-                0x0001ec47      0x3a8 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x0001eb82      0x3a8 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
  .debug_loclists
-                0x0001efef       0x59 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
+                0x0001ef2a       0x59 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
  .debug_loclists
-                0x0001f048      0x302 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+                0x0001ef83      0x302 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
  .debug_loclists
-                0x0001f34a       0xbf E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
+                0x0001f285       0xbf E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
  .debug_loclists
-                0x0001f409      0x149 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
+                0x0001f344      0x149 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
  .debug_loclists
-                0x0001f552       0x3b E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
+                0x0001f48d       0x3b E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
  .debug_loclists
-                0x0001f58d       0x34 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
+                0x0001f4c8       0x34 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
  .debug_loclists
-                0x0001f5c1       0xad E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
+                0x0001f4fc       0xad E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
 
-.debug_aranges  0x00000000     0x3920
+.debug_aranges  0x00000000     0x3928
  .debug_aranges
                 0x00000000       0x28 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
  .debug_aranges
@@ -13821,34 +13823,34 @@ LOAD linker stubs
  .debug_aranges
                 0x000034e8       0x20 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/run_key_policy.c.obj
  .debug_aranges
-                0x00003508       0x48 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
+                0x00003508       0x50 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
  .debug_aranges
-                0x00003550       0x70 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+                0x00003558       0x70 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
  .debug_aranges
-                0x000035c0       0xd0 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x000035c8       0xd0 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .debug_aranges
-                0x00003690       0x50 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
+                0x00003698       0x50 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
  .debug_aranges
-                0x000036e0       0x50 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
+                0x000036e8       0x50 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
  .debug_aranges
-                0x00003730       0xb8 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x00003738       0xb8 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
  .debug_aranges
-                0x000037e8       0x40 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
+                0x000037f0       0x40 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
  .debug_aranges
-                0x00003828       0x58 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+                0x00003830       0x58 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
  .debug_aranges
-                0x00003880       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
+                0x00003888       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
  .debug_aranges
-                0x000038a0       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
+                0x000038a8       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
  .debug_aranges
-                0x000038c0       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
+                0x000038c8       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
  .debug_aranges
-                0x000038e0       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
+                0x000038e8       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
  .debug_aranges
-                0x00003900       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
+                0x00003908       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
 
 .debug_rnglists
-                0x00000000     0x2bfb
+                0x00000000     0x2c01
  .debug_rnglists
                 0x00000000       0x1a cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
  .debug_rnglists
@@ -14078,31 +14080,31 @@ LOAD linker stubs
  .debug_rnglists
                 0x000028e3       0x13 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/run_key_policy.c.obj
  .debug_rnglists
-                0x000028f6       0x32 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
+                0x000028f6       0x38 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
  .debug_rnglists
-                0x00002928       0x50 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+                0x0000292e       0x50 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
  .debug_rnglists
-                0x00002978       0xb7 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+                0x0000297e       0xb7 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
  .debug_rnglists
-                0x00002a2f       0x39 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
+                0x00002a35       0x39 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
  .debug_rnglists
-                0x00002a68       0x44 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
+                0x00002a6e       0x44 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
  .debug_rnglists
-                0x00002aac       0x86 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+                0x00002ab2       0x86 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
  .debug_rnglists
-                0x00002b32       0x2b CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
+                0x00002b38       0x2b CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
  .debug_rnglists
-                0x00002b5d       0x3f CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+                0x00002b63       0x3f CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
  .debug_rnglists
-                0x00002b9c       0x13 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
+                0x00002ba2       0x13 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
  .debug_rnglists
-                0x00002baf       0x13 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
+                0x00002bb5       0x13 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
  .debug_rnglists
-                0x00002bc2       0x13 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
+                0x00002bc8       0x13 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
  .debug_rnglists
-                0x00002bd5       0x13 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
+                0x00002bdb       0x13 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
  .debug_rnglists
-                0x00002be8       0x13 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
+                0x00002bee       0x13 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
 
 .debug_macro    0x00000000    0x22eed
  .debug_macro   0x00000000      0x1b7 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
@@ -14313,7 +14315,7 @@ LOAD linker stubs
  .debug_macro   0x00022cb8      0x165 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
  .debug_macro   0x00022e1d       0xd0 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
 
-.debug_line     0x00000000    0x54072
+.debug_line     0x00000000    0x5408f
  .debug_line    0x00000000      0x764 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
  .debug_line    0x00000764     0x12f6 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.c.obj
  .debug_line    0x00001a5a      0xfc2 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.c.obj
@@ -14428,151 +14430,151 @@ LOAD linker stubs
  .debug_line    0x0004b2dc     0x2309 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
  .debug_line    0x0004d5e5     0x1525 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
  .debug_line    0x0004eb0a      0x324 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/run_key_policy.c.obj
- .debug_line    0x0004ee2e      0x79f CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
- .debug_line    0x0004f5cd      0x755 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
- .debug_line    0x0004fd22     0x1356 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
- .debug_line    0x00051078      0x9a3 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
- .debug_line    0x00051a1b      0x7c7 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
- .debug_line    0x000521e2      0x9d2 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
- .debug_line    0x00052bb4      0x4c7 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
- .debug_line    0x0005307b      0x7b5 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
- .debug_line    0x00053830      0x19d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
- .debug_line    0x000539cd      0x1bb E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
- .debug_line    0x00053b88      0x17e E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
- .debug_line    0x00053d06      0x165 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
- .debug_line    0x00053e6b      0x207 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
+ .debug_line    0x0004ee2e      0x7bc CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
+ .debug_line    0x0004f5ea      0x755 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+ .debug_line    0x0004fd3f     0x1356 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+ .debug_line    0x00051095      0x9a3 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
+ .debug_line    0x00051a38      0x7c7 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
+ .debug_line    0x000521ff      0x9d2 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+ .debug_line    0x00052bd1      0x4c7 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
+ .debug_line    0x00053098      0x7b5 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+ .debug_line    0x0005384d      0x19d E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
+ .debug_line    0x000539ea      0x1bb E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
+ .debug_line    0x00053ba5      0x17e E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
+ .debug_line    0x00053d23      0x165 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
+ .debug_line    0x00053e88      0x207 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
 
-.debug_str      0x00000000    0xa5c80
- .debug_str     0x00000000    0xa5c80 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
+.debug_str      0x00000000    0xa5c95
+ .debug_str     0x00000000    0xa5c95 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
                               0x88189 (size before relaxing)
- .debug_str     0x000a5c80    0x8886d cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.c.obj
- .debug_str     0x000a5c80    0x88855 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.c.obj
- .debug_str     0x000a5c80    0x888bc cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c.obj
- .debug_str     0x000a5c80    0x885b8 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c.obj
- .debug_str     0x000a5c80    0x88308 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c.obj
- .debug_str     0x000a5c80    0x8850f cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c.obj
- .debug_str     0x000a5c80    0x88532 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c.obj
- .debug_str     0x000a5c80    0x88808 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c.obj
- .debug_str     0x000a5c80    0x886c0 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c.obj
- .debug_str     0x000a5c80    0x88464 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c.obj
- .debug_str     0x000a5c80    0x88612 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c.obj
- .debug_str     0x000a5c80    0x895ba cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c.obj
- .debug_str     0x000a5c80    0x88dc6 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c.obj
- .debug_str     0x000a5c80    0x88c29 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c.obj
- .debug_str     0x000a5c80    0x88d9c CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/main.c.obj
- .debug_str     0x000a5c80    0x886f1 CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/gpio.c.obj
- .debug_str     0x000a5c80    0x88a96 CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/adc.c.obj
- .debug_str     0x000a5c80    0x8894f CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/dma.c.obj
- .debug_str     0x000a5c80    0x88f9a CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/tim.c.obj
- .debug_str     0x000a5c80    0x88f10 CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/usart.c.obj
- .debug_str     0x000a5c80    0x88943 CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/stm32f1xx_it.c.obj
- .debug_str     0x000a5c80    0x88679 CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/stm32f1xx_hal_msp.c.obj
- .debug_str     0x000a5c80       0x83 CMakeFiles/stm32f103rbt6_a33.dir/startup_stm32f103xb.s.obj
- .debug_str     0x000a5c80     0xaa39 CMakeFiles/stm32f103rbt6_a33.dir/App/calibration_controller.c.obj
- .debug_str     0x000a5c80     0x6b95 CMakeFiles/stm32f103rbt6_a33.dir/App/communication_manager.c.obj
- .debug_str     0x000a5c80     0x5c66 CMakeFiles/stm32f103rbt6_a33.dir/App/config_application.c.obj
- .debug_str     0x000a5c80     0xcc8f CMakeFiles/stm32f103rbt6_a33.dir/App/app_main.c.obj
- .debug_str     0x000a5c80     0x9c09 CMakeFiles/stm32f103rbt6_a33.dir/App/device_manager.c.obj
- .debug_str     0x000a5c80     0x4c53 CMakeFiles/stm32f103rbt6_a33.dir/App/measurement_bridge.c.obj
- .debug_str     0x000a5c80     0xaca9 CMakeFiles/stm32f103rbt6_a33.dir/App/metrology_manager.c.obj
- .debug_str     0x000a5c80     0xa625 CMakeFiles/stm32f103rbt6_a33.dir/App/persistence_manager.c.obj
- .debug_str     0x000a5c80     0x3efb CMakeFiles/stm32f103rbt6_a33.dir/App/revision_helper.c.obj
- .debug_str     0x000a5c80     0x7dd1 CMakeFiles/stm32f103rbt6_a33.dir/App/self_test_controller.c.obj
- .debug_str     0x000a5c80     0x7809 CMakeFiles/stm32f103rbt6_a33.dir/App/startup_auto_zero_controller.c.obj
- .debug_str     0x000a5c80     0x8468 CMakeFiles/stm32f103rbt6_a33.dir/App/system_context.c.obj
- .debug_str     0x000a5c80     0x5bd7 CMakeFiles/stm32f103rbt6_a33.dir/App/weighing_profile_manager.c.obj
- .debug_str     0x000a5c80    0x89477 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_adc.c.obj
- .debug_str     0x000a5c80     0x48a9 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_board.c.obj
- .debug_str     0x000a5c80    0x8b5dc CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_flash.c.obj
- .debug_str     0x000a5c80    0x88c96 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_power_monitor.c.obj
- .debug_str     0x000a5c80    0x88c4b CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_rtu_timer.c.obj
- .debug_str     0x000a5c80    0x8932b CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_gpio.c.obj
- .debug_str     0x000a5c80    0x8aa20 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_time.c.obj
- .debug_str     0x000a5c80    0x89351 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
- .debug_str     0x000a5c80    0x8bd75 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart3_dma.c.obj
- .debug_str     0x000a5c80     0x4470 CMakeFiles/stm32f103rbt6_a33.dir/Config/alarm_config_validation.c.obj
- .debug_str     0x000a5c80     0x528a CMakeFiles/stm32f103rbt6_a33.dir/Config/device_config_validator.c.obj
- .debug_str     0x000a5c80     0x8514 CMakeFiles/stm32f103rbt6_a33.dir/Config/default_config.c.obj
- .debug_str     0x000a5c80     0x7d32 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage2b_board_diagnostics.c.obj
- .debug_str     0x000a5c80     0x74b7 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage3_metrology_diagnostics.c.obj
- .debug_str     0x000a5c80     0x845d CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage4b_storage_diagnostics.c.obj
- .debug_str     0x000a5c80     0x7d12 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage5c_ble_diagnostics.c.obj
- .debug_str     0x000a5c80     0x772b CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/calibration_model.c.obj
- .debug_str     0x000a5c80     0x70c6 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/raw_calibration_stability.c.obj
- .debug_str     0x000a5c80     0x716d CMakeFiles/stm32f103rbt6_a33.dir/Domain/filter/weight_filter.c.obj
- .debug_str     0x000a5c80     0x4826 CMakeFiles/stm32f103rbt6_a33.dir/Domain/limit_checker/limit_checker.c.obj
- .debug_str     0x000a5c80     0x7204 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/metrology_config_validator.c.obj
- .debug_str     0x000a5c80     0x791f CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/display_conditioner.c.obj
- .debug_str     0x000a5c80     0x5fcd CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/mass_math.c.obj
- .debug_str     0x000a5c80     0x4a55 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/metrology_standard_validator.c.obj
- .debug_str     0x000a5c80     0x6f77 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/raw_measurement.c.obj
- .debug_str     0x000a5c80     0x754c CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/unit_converter.c.obj
- .debug_str     0x000a5c80     0x965a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
- .debug_str     0x000a5c80     0x5fd0 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_math.c.obj
- .debug_str     0x000a5c80     0x767d CMakeFiles/stm32f103rbt6_a33.dir/Domain/stability/stability_detector.c.obj
- .debug_str     0x000a5c80     0x76ce CMakeFiles/stm32f103rbt6_a33.dir/Domain/zero_tare/zero_tare.c.obj
- .debug_str     0x000a5c80     0x8392 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/battery_adc/battery_adc.c.obj
- .debug_str     0x000a5c80     0x57ab CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
- .debug_str     0x000a5c80     0x4036 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/output_gpio/output_gpio.c.obj
- .debug_str     0x000a5c80     0x4786 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
- .debug_str     0x000a5c80     0x49eb CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/modbus_uart2_transport.c.obj
- .debug_str     0x000a5c80     0x42ab CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_position.c.obj
- .debug_str     0x000a5c80     0x77a3 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
- .debug_str     0x000a5c80     0x76e4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart3_modbus_transport.c.obj
- .debug_str     0x000a5c80     0x7bc3 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
- .debug_str     0x000a5c80     0x488a CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj
- .debug_str     0x000a5c80     0x504b CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
- .debug_str     0x000a5c80    0x8bc25 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_uart.c.obj
- .debug_str     0x000a5c80     0xb778 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
- .debug_str     0x000a5c80     0x420f CMakeFiles/stm32f103rbt6_a33.dir/Protocol/crc16/crc16.c.obj
- .debug_str     0x000a5c80     0x71bc CMakeFiles/stm32f103rbt6_a33.dir/Protocol/ble/ble_frame_codec.c.obj
- .debug_str     0x000a5c80     0x4716 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/ble/ble_checkweigh_codec.c.obj
- .debug_str     0x000a5c80     0x794e CMakeFiles/stm32f103rbt6_a33.dir/Protocol/ble/ble_command_protocol.c.obj
- .debug_str     0x000a5c80     0x98db CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
- .debug_str     0x000a5c80     0xcc67 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
- .debug_str     0x000a5c80     0x3eef CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_crc16.c.obj
- .debug_str     0x000a5c80     0x442e CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_timing.c.obj
- .debug_str     0x000a5c80     0x751e CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
- .debug_str     0x000a5c80     0x7dc1 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
- .debug_str     0x000a5c80     0x430b CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_transport.c.obj
- .debug_str     0x000a5c80     0x91de CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
- .debug_str     0x000a5c80     0x8e13 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
- .debug_str     0x000a5c80     0x8639 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
- .debug_str     0x000a5c80     0x4234 CMakeFiles/stm32f103rbt6_a33.dir/Services/crc32/crc32.c.obj
- .debug_str     0x000a5c80     0x4f5e CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
- .debug_str     0x000a5c80     0x4312 CMakeFiles/stm32f103rbt6_a33.dir/Services/fault_manager/fault_manager.c.obj
- .debug_str     0x000a5c80     0x4d3c CMakeFiles/stm32f103rbt6_a33.dir/Services/scheduler/scheduler.c.obj
- .debug_str     0x000a5c80     0x4a2b CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
- .debug_str     0x000a5c80     0x731b CMakeFiles/stm32f103rbt6_a33.dir/Services/ble_transport/ble_transport.c.obj
- .debug_str     0x000a5c80     0x760c CMakeFiles/stm32f103rbt6_a33.dir/Services/ble_connection_manager/ble_connection_manager.c.obj
- .debug_str     0x000a5c80     0x7395 CMakeFiles/stm32f103rbt6_a33.dir/Services/ble_telemetry_service/ble_telemetry_scheduler.c.obj
- .debug_str     0x000a5c80     0x91c6 CMakeFiles/stm32f103rbt6_a33.dir/Services/ble_telemetry_service/ble_telemetry_service.c.obj
- .debug_str     0x000a5c80     0xbf6d CMakeFiles/stm32f103rbt6_a33.dir/Services/ble_command_service/ble_command_service.c.obj
- .debug_str     0x000a5c80     0x98a9 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
- .debug_str     0x000a5c80     0x72a0 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_codes.c.obj
- .debug_str     0x000a5c80     0x4f7d CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
- .debug_str     0x000a5c80     0x746a CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
- .debug_str     0x000a5c80     0x4352 CMakeFiles/stm32f103rbt6_a33.dir/UI/numeric_edit_cursor.c.obj
- .debug_str     0x000a5c80     0x42ee CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_map.c.obj
- .debug_str     0x000a5c80     0x7b63 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
- .debug_str     0x000a5c80     0xb606 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
- .debug_str     0x000a5c80     0xae94 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
- .debug_str     0x000a5c80     0x431c CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/run_key_policy.c.obj
- .debug_str     0x000a5c80     0x736b CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
- .debug_str     0x000a5c80     0x576a CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
- .debug_str     0x000a5c80     0x7e28 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
- .debug_str     0x000a5c80     0x736a CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
- .debug_str     0x000a5c80     0x7166 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
- .debug_str     0x000a5c80     0x5a23 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
- .debug_str     0x000a5c80     0x7b46 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
- .debug_str     0x000a5c80     0x481d CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
- .debug_str     0x000a5c80      0x209 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
- .debug_str     0x000a5c80      0x224 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
- .debug_str     0x000a5c80      0x209 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
- .debug_str     0x000a5c80      0x26a E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
- .debug_str     0x000a5c80      0x227 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
+ .debug_str     0x000a5c95    0x8886d cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.c.obj
+ .debug_str     0x000a5c95    0x88855 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.c.obj
+ .debug_str     0x000a5c95    0x888bc cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c.obj
+ .debug_str     0x000a5c95    0x885b8 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c.obj
+ .debug_str     0x000a5c95    0x88308 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c.obj
+ .debug_str     0x000a5c95    0x8850f cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c.obj
+ .debug_str     0x000a5c95    0x88532 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c.obj
+ .debug_str     0x000a5c95    0x88808 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c.obj
+ .debug_str     0x000a5c95    0x886c0 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c.obj
+ .debug_str     0x000a5c95    0x88464 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c.obj
+ .debug_str     0x000a5c95    0x88612 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c.obj
+ .debug_str     0x000a5c95    0x895ba cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c.obj
+ .debug_str     0x000a5c95    0x88dc6 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c.obj
+ .debug_str     0x000a5c95    0x88c29 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c.obj
+ .debug_str     0x000a5c95    0x88d9c CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/main.c.obj
+ .debug_str     0x000a5c95    0x886f1 CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/gpio.c.obj
+ .debug_str     0x000a5c95    0x88a96 CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/adc.c.obj
+ .debug_str     0x000a5c95    0x8894f CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/dma.c.obj
+ .debug_str     0x000a5c95    0x88f9a CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/tim.c.obj
+ .debug_str     0x000a5c95    0x88f10 CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/usart.c.obj
+ .debug_str     0x000a5c95    0x88943 CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/stm32f1xx_it.c.obj
+ .debug_str     0x000a5c95    0x88679 CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/stm32f1xx_hal_msp.c.obj
+ .debug_str     0x000a5c95       0x83 CMakeFiles/stm32f103rbt6_a33.dir/startup_stm32f103xb.s.obj
+ .debug_str     0x000a5c95     0xaa39 CMakeFiles/stm32f103rbt6_a33.dir/App/calibration_controller.c.obj
+ .debug_str     0x000a5c95     0x6b95 CMakeFiles/stm32f103rbt6_a33.dir/App/communication_manager.c.obj
+ .debug_str     0x000a5c95     0x5c66 CMakeFiles/stm32f103rbt6_a33.dir/App/config_application.c.obj
+ .debug_str     0x000a5c95     0xcc8f CMakeFiles/stm32f103rbt6_a33.dir/App/app_main.c.obj
+ .debug_str     0x000a5c95     0x9c09 CMakeFiles/stm32f103rbt6_a33.dir/App/device_manager.c.obj
+ .debug_str     0x000a5c95     0x4c53 CMakeFiles/stm32f103rbt6_a33.dir/App/measurement_bridge.c.obj
+ .debug_str     0x000a5c95     0xaca9 CMakeFiles/stm32f103rbt6_a33.dir/App/metrology_manager.c.obj
+ .debug_str     0x000a5c95     0xa625 CMakeFiles/stm32f103rbt6_a33.dir/App/persistence_manager.c.obj
+ .debug_str     0x000a5c95     0x3efb CMakeFiles/stm32f103rbt6_a33.dir/App/revision_helper.c.obj
+ .debug_str     0x000a5c95     0x7dd1 CMakeFiles/stm32f103rbt6_a33.dir/App/self_test_controller.c.obj
+ .debug_str     0x000a5c95     0x7809 CMakeFiles/stm32f103rbt6_a33.dir/App/startup_auto_zero_controller.c.obj
+ .debug_str     0x000a5c95     0x8468 CMakeFiles/stm32f103rbt6_a33.dir/App/system_context.c.obj
+ .debug_str     0x000a5c95     0x5bd7 CMakeFiles/stm32f103rbt6_a33.dir/App/weighing_profile_manager.c.obj
+ .debug_str     0x000a5c95    0x89477 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_adc.c.obj
+ .debug_str     0x000a5c95     0x48a9 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_board.c.obj
+ .debug_str     0x000a5c95    0x8b5dc CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_flash.c.obj
+ .debug_str     0x000a5c95    0x88c96 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_power_monitor.c.obj
+ .debug_str     0x000a5c95    0x88c4b CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_rtu_timer.c.obj
+ .debug_str     0x000a5c95    0x8932b CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_gpio.c.obj
+ .debug_str     0x000a5c95    0x8aa20 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_time.c.obj
+ .debug_str     0x000a5c95    0x89351 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart_dma.c.obj
+ .debug_str     0x000a5c95    0x8bd75 CMakeFiles/stm32f103rbt6_a33.dir/BSP/bsp_uart3_dma.c.obj
+ .debug_str     0x000a5c95     0x4470 CMakeFiles/stm32f103rbt6_a33.dir/Config/alarm_config_validation.c.obj
+ .debug_str     0x000a5c95     0x528a CMakeFiles/stm32f103rbt6_a33.dir/Config/device_config_validator.c.obj
+ .debug_str     0x000a5c95     0x8514 CMakeFiles/stm32f103rbt6_a33.dir/Config/default_config.c.obj
+ .debug_str     0x000a5c95     0x7d32 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage2b_board_diagnostics.c.obj
+ .debug_str     0x000a5c95     0x74b7 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage3_metrology_diagnostics.c.obj
+ .debug_str     0x000a5c95     0x845d CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage4b_storage_diagnostics.c.obj
+ .debug_str     0x000a5c95     0x7d12 CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage5c_ble_diagnostics.c.obj
+ .debug_str     0x000a5c95     0x772b CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/calibration_model.c.obj
+ .debug_str     0x000a5c95     0x70c6 CMakeFiles/stm32f103rbt6_a33.dir/Domain/calibration/raw_calibration_stability.c.obj
+ .debug_str     0x000a5c95     0x716d CMakeFiles/stm32f103rbt6_a33.dir/Domain/filter/weight_filter.c.obj
+ .debug_str     0x000a5c95     0x4826 CMakeFiles/stm32f103rbt6_a33.dir/Domain/limit_checker/limit_checker.c.obj
+ .debug_str     0x000a5c95     0x7204 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/metrology_config_validator.c.obj
+ .debug_str     0x000a5c95     0x791f CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/display_conditioner.c.obj
+ .debug_str     0x000a5c95     0x5fcd CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/mass_math.c.obj
+ .debug_str     0x000a5c95     0x4a55 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/metrology_standard_validator.c.obj
+ .debug_str     0x000a5c95     0x6f77 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/raw_measurement.c.obj
+ .debug_str     0x000a5c95     0x754c CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/unit_converter.c.obj
+ .debug_str     0x000a5c95     0x965a CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_engine.c.obj
+ .debug_str     0x000a5c95     0x5fd0 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/weight_math.c.obj
+ .debug_str     0x000a5c95     0x767d CMakeFiles/stm32f103rbt6_a33.dir/Domain/stability/stability_detector.c.obj
+ .debug_str     0x000a5c95     0x76ce CMakeFiles/stm32f103rbt6_a33.dir/Domain/zero_tare/zero_tare.c.obj
+ .debug_str     0x000a5c95     0x8392 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/battery_adc/battery_adc.c.obj
+ .debug_str     0x000a5c95     0x57ab CMakeFiles/stm32f103rbt6_a33.dir/Drivers/cs1237/cs1237.c.obj
+ .debug_str     0x000a5c95     0x4036 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/output_gpio/output_gpio.c.obj
+ .debug_str     0x000a5c95     0x4786 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/rs485_tx_controller.c.obj
+ .debug_str     0x000a5c95     0x49eb CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/modbus_uart2_transport.c.obj
+ .debug_str     0x000a5c95     0x42ab CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_position.c.obj
+ .debug_str     0x000a5c95     0x77a3 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart2_dma_transport.c.obj
+ .debug_str     0x000a5c95     0x76e4 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/serial/uart3_modbus_transport.c.obj
+ .debug_str     0x000a5c95     0x7bc3 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628.c.obj
+ .debug_str     0x000a5c95     0x488a CMakeFiles/stm32f103rbt6_a33.dir/Drivers/tm1628/tm1628_board_map.c.obj
+ .debug_str     0x000a5c95     0x504b CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_pwrkey.c.obj
+ .debug_str     0x000a5c95    0x8bc25 CMakeFiles/stm32f103rbt6_a33.dir/Drivers/w02/w02_uart.c.obj
+ .debug_str     0x000a5c95     0xb778 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/command_service/command_service.c.obj
+ .debug_str     0x000a5c95     0x420f CMakeFiles/stm32f103rbt6_a33.dir/Protocol/crc16/crc16.c.obj
+ .debug_str     0x000a5c95     0x71bc CMakeFiles/stm32f103rbt6_a33.dir/Protocol/ble/ble_frame_codec.c.obj
+ .debug_str     0x000a5c95     0x4716 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/ble/ble_checkweigh_codec.c.obj
+ .debug_str     0x000a5c95     0x794e CMakeFiles/stm32f103rbt6_a33.dir/Protocol/ble/ble_command_protocol.c.obj
+ .debug_str     0x000a5c95     0x98db CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
+ .debug_str     0x000a5c95     0xcc67 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+ .debug_str     0x000a5c95     0x3eef CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_crc16.c.obj
+ .debug_str     0x000a5c95     0x442e CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_timing.c.obj
+ .debug_str     0x000a5c95     0x751e CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_framer.c.obj
+ .debug_str     0x000a5c95     0x7dc1 CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_server.c.obj
+ .debug_str     0x000a5c95     0x430b CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_rtu_transport.c.obj
+ .debug_str     0x000a5c95     0x91de CMakeFiles/stm32f103rbt6_a33.dir/Services/config_edit/config_edit.c.obj
+ .debug_str     0x000a5c95     0x8e13 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/config_store.c.obj
+ .debug_str     0x000a5c95     0x8639 CMakeFiles/stm32f103rbt6_a33.dir/Services/config_store/persistent_codec.c.obj
+ .debug_str     0x000a5c95     0x4234 CMakeFiles/stm32f103rbt6_a33.dir/Services/crc32/crc32.c.obj
+ .debug_str     0x000a5c95     0x4f5e CMakeFiles/stm32f103rbt6_a33.dir/Services/event_queue/event_queue.c.obj
+ .debug_str     0x000a5c95     0x4312 CMakeFiles/stm32f103rbt6_a33.dir/Services/fault_manager/fault_manager.c.obj
+ .debug_str     0x000a5c95     0x4d3c CMakeFiles/stm32f103rbt6_a33.dir/Services/scheduler/scheduler.c.obj
+ .debug_str     0x000a5c95     0x4a2b CMakeFiles/stm32f103rbt6_a33.dir/Services/storage_power_guard/storage_power_guard.c.obj
+ .debug_str     0x000a5c95     0x731b CMakeFiles/stm32f103rbt6_a33.dir/Services/ble_transport/ble_transport.c.obj
+ .debug_str     0x000a5c95     0x760c CMakeFiles/stm32f103rbt6_a33.dir/Services/ble_connection_manager/ble_connection_manager.c.obj
+ .debug_str     0x000a5c95     0x7395 CMakeFiles/stm32f103rbt6_a33.dir/Services/ble_telemetry_service/ble_telemetry_scheduler.c.obj
+ .debug_str     0x000a5c95     0x91c6 CMakeFiles/stm32f103rbt6_a33.dir/Services/ble_telemetry_service/ble_telemetry_service.c.obj
+ .debug_str     0x000a5c95     0xbf6d CMakeFiles/stm32f103rbt6_a33.dir/Services/ble_command_service/ble_command_service.c.obj
+ .debug_str     0x000a5c95     0x98a9 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_controller.c.obj
+ .debug_str     0x000a5c95     0x72a0 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_codes.c.obj
+ .debug_str     0x000a5c95     0x4f7d CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_formatter.c.obj
+ .debug_str     0x000a5c95     0x746a CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/display_model.c.obj
+ .debug_str     0x000a5c95     0x4352 CMakeFiles/stm32f103rbt6_a33.dir/UI/numeric_edit_cursor.c.obj
+ .debug_str     0x000a5c95     0x42ee CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_map.c.obj
+ .debug_str     0x000a5c95     0x7b63 CMakeFiles/stm32f103rbt6_a33.dir/UI/key_service/key_service.c.obj
+ .debug_str     0x000a5c95     0xb606 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
+ .debug_str     0x000a5c95     0xae94 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
+ .debug_str     0x000a5c95     0x431c CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/run_key_policy.c.obj
+ .debug_str     0x000a5c95     0x7380 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
+ .debug_str     0x000a5c95     0x576a CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+ .debug_str     0x000a5c95     0x7e28 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+ .debug_str     0x000a5c95     0x736a CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
+ .debug_str     0x000a5c95     0x7166 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
+ .debug_str     0x000a5c95     0x5a23 CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+ .debug_str     0x000a5c95     0x7b46 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
+ .debug_str     0x000a5c95     0x481d CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+ .debug_str     0x000a5c95      0x209 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
+ .debug_str     0x000a5c95      0x224 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
+ .debug_str     0x000a5c95      0x209 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
+ .debug_str     0x000a5c95      0x26a E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
+ .debug_str     0x000a5c95      0x227 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
 
-.debug_frame    0x00000000     0x9528
+.debug_frame    0x00000000     0x9544
  .debug_frame   0x00000000       0x30 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
  .debug_frame   0x00000030      0x2c8 cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.c.obj
  .debug_frame   0x000002f8      0x19c cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.c.obj
@@ -14686,22 +14688,22 @@ LOAD linker stubs
  .debug_frame   0x00008558      0x2e0 CMakeFiles/stm32f103rbt6_a33.dir/UI/menu_controller/menu_controller.c.obj
  .debug_frame   0x00008838      0x22c CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
  .debug_frame   0x00008a64       0x20 CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/run_key_policy.c.obj
- .debug_frame   0x00008a84       0x98 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
- .debug_frame   0x00008b1c       0xf0 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
- .debug_frame   0x00008c0c      0x2d0 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
- .debug_frame   0x00008edc       0xe8 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
- .debug_frame   0x00008fc4       0xb4 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
- .debug_frame   0x00009078      0x1cc CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
- .debug_frame   0x00009244       0x68 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
- .debug_frame   0x000092ac      0x114 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
- .debug_frame   0x000093c0       0x44 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_aeabi_ldivmod.o)
- .debug_frame   0x00009404       0x2c E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_aeabi_uldivmod.o)
- .debug_frame   0x00009430       0x34 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_udivmoddi4.o)
- .debug_frame   0x00009464       0x28 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
- .debug_frame   0x0000948c       0x28 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
- .debug_frame   0x000094b4       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
- .debug_frame   0x000094d4       0x2c E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
- .debug_frame   0x00009500       0x28 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
+ .debug_frame   0x00008a84       0xb4 CMakeFiles/stm32f103rbt6_a33.dir/Services/guarded_checkweigh/guarded_checkweigh.c.obj
+ .debug_frame   0x00008b38       0xf0 CMakeFiles/stm32f103rbt6_a33.dir/UI/checkweigh_local_control.c.obj
+ .debug_frame   0x00008c28      0x2d0 CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/reference_lock_drift_compensator.c.obj
+ .debug_frame   0x00008ef8       0xe8 CMakeFiles/stm32f103rbt6_a33.dir/Experimental/stage5na/checkweigh_shadow.c.obj
+ .debug_frame   0x00008fe0       0xb4 CMakeFiles/stm32f103rbt6_a33.dir/UI/display_model/directional_display_follower.c.obj
+ .debug_frame   0x00009094      0x1cc CMakeFiles/stm32f103rbt6_a33.dir/UI/r5_local_control.c.obj
+ .debug_frame   0x00009260       0x68 CMakeFiles/stm32f103rbt6_a33.dir/UI/ui_config_workspace.c.obj
+ .debug_frame   0x000092c8      0x114 CMakeFiles/stm32f103rbt6_a33.dir/Services/alarm_output_manager/alarm_output_manager.c.obj
+ .debug_frame   0x000093dc       0x44 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_aeabi_ldivmod.o)
+ .debug_frame   0x00009420       0x2c E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_aeabi_uldivmod.o)
+ .debug_frame   0x0000944c       0x34 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libgcc.a(_udivmoddi4.o)
+ .debug_frame   0x00009480       0x28 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcmp.o)
+ .debug_frame   0x000094a8       0x28 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memmove.o)
+ .debug_frame   0x000094d0       0x20 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memset.o)
+ .debug_frame   0x000094f0       0x2c E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
+ .debug_frame   0x0000951c       0x28 E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp\libg_nano.a(libc_a-memcpy-stub.o)
 
 .debug_line_str
                 0x00000000       0x67

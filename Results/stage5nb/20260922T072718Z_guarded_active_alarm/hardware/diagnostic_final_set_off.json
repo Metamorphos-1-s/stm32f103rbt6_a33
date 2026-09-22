@@ -1,0 +1,44 @@
+{
+  "before": {
+    "signature": "0x5BB5",
+    "mode": 2,
+    "generation": 1,
+    "reason": 8,
+    "formal_state": 3,
+    "armed": 1,
+    "green": 0,
+    "yellow": 0,
+    "red": 1,
+    "internal_buzzer": 0,
+    "external_buzzer": 0,
+    "firmware": "0x0516",
+    "map": "0x0104",
+    "utc": "2026-09-22T09:04:21.535Z"
+  },
+  "response": {
+    "token": 59423,
+    "result": 0,
+    "result_name": "OK",
+    "state": 0,
+    "last_command": 34
+  },
+  "after": {
+    "signature": "0x5BB5",
+    "mode": 0,
+    "generation": 2,
+    "reason": 0,
+    "formal_state": 0,
+    "armed": 0,
+    "green": 0,
+    "yellow": 0,
+    "red": 0,
+    "internal_buzzer": 0,
+    "external_buzzer": 0,
+    "firmware": "0x0516",
+    "map": "0x0104",
+    "utc": "2026-09-22T09:04:21.665Z"
+  },
+  "writes": 1,
+  "flash_operations": 0,
+  "save_operations": 0
+}

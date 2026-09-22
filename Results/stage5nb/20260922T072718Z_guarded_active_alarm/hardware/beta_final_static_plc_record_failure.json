@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "result": "INTERRUPTED",
+  "intended_duration_s": 300,
+  "persisted_samples": 0,
+  "exception": "modbus_frame.FrameError: short response or invalid CRC",
+  "followup_reads": "two Modbus response timeouts",
+  "root_cause": "operator confirmed that device power had been disconnected",
+  "device_algorithm_failure": false,
+  "used_as_pass_evidence": false,
+  "recovery": "physical power cycle restored COM5 and device booted in default OFF",
+  "final_state_evidence": "beta_power_cycle_default_off.json and beta_power_cycle_final_state.json"
+}

@@ -3,7 +3,7 @@
   "runner": {
     "path": "Tests/host/build_stage5nb_msvc/stage5mr5_reference_lock_runner.exe",
     "length": 70656,
-    "sha256": "8B382BE4ED33B11F4101C5CC05C0871BF6F860026CDFE36A45B6724F1F22EBB5"
+    "sha256": "1416940B282F8664B9D3CA475AE5F6546CDE1C8B0647FD09AAB6510570CBE309"
   },
   "cases": [
     {

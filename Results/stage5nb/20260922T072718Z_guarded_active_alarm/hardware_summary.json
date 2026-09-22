@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "result": "PASS",
+  "device": {
+    "firmware": "0x0516",
+    "map": "0x0104",
+    "schema": 2,
+    "persistent_format": 3,
+    "sample_rate_hz": 10,
+    "filter": "filt3/strength3"
+  },
+  "diagnostic_invalid": {
+    "result": "PASS",
+    "duration_ms": 2000,
+    "injected_samples": 20,
+    "recorded_samples": 121,
+    "record_duration_s": 40.141,
+    "invalid_poll_records": 6,
+    "invalid_formal_state": "DISABLED",
+    "invalid_outputs_all_off": true,
+    "automatic_recovery": true,
+    "physical_observation_confirmed": true
+  },
+  "supervised_active": {
+    "result": "PASS",
+    "wall_clock_window": "more than 30 minutes",
+    "static_low_ok_high": "PASS",
+    "dynamic_low_ok_high": "PASS",
+    "dynamic_500g_cycles": 3,
+    "slow_load_sequence": "LOW -> OK -> HIGH",
+    "mechanical_disturbance": "PASS",
+    "tare_and_clear_tare": "PASS",
+    "local_static_dynamic_control": "PASS",
+    "plc_control": "PASS",
+    "stale_local_candidate_rejected_busy": true,
+    "mutually_exclusive_lamps": true,
+    "internal_external_buzzer": "PASS",
+    "emergency_off": "PASS"
+  },
+  "recording_notes": {
+    "off_record_samples": 2722,
+    "off_record_duration_s": 900.172,
+    "off_record_read_errors": 0,
+    "active_continuous_record": "INTERRUPTED BY PHYSICAL DEVICE POWER LOSS",
+    "interrupted_record_used_as_pass_evidence": false,
+    "com5_was_unplugged_during_supervised_window": true,
+    "point_snapshots_and_physical_observations_preserved": true
+  },
+  "persistence": {
+    "pre_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+    "postflash_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+    "final_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+    "save_requests": 0,
+    "final_revision": 8,
+    "final_saved_revision": 8
+  },
+  "final_state": {
+    "checkweigh": "OFF",
+    "formal_alarm": "OFF",
+    "outputs_all_off": true,
+    "r5": "OFF + SHADOW",
+    "offset_ug": 0,
+    "reference_ug": 0,
+    "evaluation_count": 0,
+    "fault": 0,
+    "overrun": 0,
+    "dirty": 0,
+    "save": 0
+  }
+}

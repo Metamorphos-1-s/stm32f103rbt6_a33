@@ -4,8 +4,8 @@
     "Debug":{"ram_bytes":19392,"flash_bytes":94116},
     "Release":{"ram_bytes":19352,"elf_bytes":172200},
     "frozen_0x0515":{"ram_bytes":19488,"bin_bytes":105416},
-    "beta_0x0516":{"ram_bytes":19472,"bin_bytes":106796,"data_bytes":12,"bss_bytes":18432},
-    "Stage5NBHardware":{"ram_bytes":18840,"bin_bytes":107180}
+    "beta_0x0516":{"ram_bytes":19472,"bin_bytes":106884,"data_bytes":12,"bss_bytes":18432},
+    "Stage5NBHardware":{"ram_bytes":18840,"bin_bytes":107260}
   },
   "beta_static_end_to_estack_bytes":2032,
   "main_static_chain_bytes":1144,

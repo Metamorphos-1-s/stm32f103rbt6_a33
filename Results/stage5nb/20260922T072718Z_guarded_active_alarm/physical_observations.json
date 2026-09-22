@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "source": "operator confirmations during supervised hardware session",
+  "observations": [
+    {"scenario":"diagnostic DYNAMIC HIGH","load_g":500,"lamps":"red only","internal_buzzer":"intermittent","external_buzzer":"intermittent","result":"PASS"},
+    {"scenario":"diagnostic INVALID","lamps":"all off then red recovered","buzzers":"all off then intermittent recovered","result":"PASS"},
+    {"scenario":"local STATIC HIGH","load_g":500,"lamps":"red only","buzzers":"intermittent","result":"PASS"},
+    {"scenario":"local STATIC LOW","load_g":0,"lamps":"yellow only","buzzers":"off","result":"PASS"},
+    {"scenario":"local STATIC OK","load_g":137,"lamps":"green only","buzzers":"qualified short beep then off","result":"PASS"},
+    {"scenario":"local DYNAMIC OK","load_g":137,"lamps":"green only","buzzers":"off","result":"PASS"},
+    {"scenario":"DYNAMIC cycles","cycles":3,"low_load_g":137,"high_load_g":637,"lamps":"green/red mutually exclusive","result":"PASS"},
+    {"scenario":"slow load","load_g":500,"sequence":"yellow -> green plus short beep -> red plus intermittent alarm","lamp_overlap":false,"result":"PASS"},
+    {"scenario":"mechanical disturbance","load_g":500,"unexpected_output_change":false,"result":"PASS"},
+    {"scenario":"TARE","display_g":0,"lamps":"yellow only","buzzers":"off","result":"PASS"},
+    {"scenario":"CLEAR TARE","display_g":500,"lamps":"red only","buzzers":"intermittent","result":"PASS"},
+    {"scenario":"PLC OFF during local edit","outputs":"all off","local_apply_result":"BUSY","result":"PASS"},
+    {"scenario":"PLC STATIC empty","lamps":"yellow only","buzzers":"off","result":"PASS"},
+    {"scenario":"power-cycle default","load_g":0,"outputs":"all off","display":"normal","result":"PASS"}
+  ]
+}
