@@ -1,0 +1,153 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5NB_GUARDED_ACTIVE_SOFTWARE_READY",
+  "run_id": "20260922T072718Z_guarded_active_alarm",
+  "repository_commit": "2e3ec91",
+  "files": [
+    {
+      "path": "active_safety_contract.json",
+      "length": 1063,
+      "sha256": "7523A30DDA0997CD7A539D03E3EAAEC558092A86FF6CD7CA73C7527B126144F7"
+    },
+    {
+      "path": "arm_strict_build.txt",
+      "length": 13854,
+      "sha256": "4CD9678D0AABFA3C77C551AFEE5F4B06E649489CE078AB7C16EC37853D922CA1"
+    },
+    {
+      "path": "d1c_parity.json",
+      "length": 1566,
+      "sha256": "66FAAF4832ADF6DF902F26E94A998C4D556E383CCB8455FA083917A397F64CD3"
+    },
+    {
+      "path": "device_preflight_alarm.json",
+      "length": 1007,
+      "sha256": "3848459E8BE0DFEDCEB691F97833FC1794CD12CAF32B66B4DB5BADEB3A1FC7A2"
+    },
+    {
+      "path": "device_preflight_r5.json",
+      "length": 2841,
+      "sha256": "AEF5DABB7E1C1ED1F9A9C8E273905B555641F1F1C546DEE231985398AAA67B41"
+    },
+    {
+      "path": "environment.json",
+      "length": 532,
+      "sha256": "BD9072C806FAF096EF38B5A5E1364D5AE944EB40A8C0B600ACEA9EBF344F35A6"
+    },
+    {
+      "path": "firmware_identity.json",
+      "length": 948,
+      "sha256": "D587F5AC19945EFE5D279ECB4A684F9A01BA4817E73D8FA62EADC2C63817C0CF"
+    },
+    {
+      "path": "freeze_summary.json",
+      "length": 938,
+      "sha256": "08A429CF0272DF322796DD54BEFDA6A081EE2D25965D1FD6758E37836CC0B251"
+    },
+    {
+      "path": "frozen_0515_recovery.bin",
+      "length": 105416,
+      "sha256": "62648C3AD79C324B1860BE3005B8EA365C2BCE98C084BE4F5FD20D7599065228"
+    },
+    {
+      "path": "hardware_plan.json",
+      "length": 902,
+      "sha256": "47803986BB4F7E3EC8DEA6228BDB075FFD5D5D71D8DABBB0D36FA0CAA3B1781E"
+    },
+    {
+      "path": "largest_ram_symbols.json",
+      "length": 14208,
+      "sha256": "F2C57BB9B858997021B356303425946A0B7048C5E192BA8BCBAD48A871BBC8D8"
+    },
+    {
+      "path": "msvc_strict_build_and_ctest.txt",
+      "length": 498988,
+      "sha256": "89A5F76A4935E9EE968E0090340F31289DF5BF890F523C3725C90A65E372CA1B"
+    },
+    {
+      "path": "protocol_summary.json",
+      "length": 726,
+      "sha256": "41FAABE953343E169937E96DBD01CAB158C04C2DE360C528A8E74FC30089E233"
+    },
+    {
+      "path": "qualification_summary.json",
+      "length": 625,
+      "sha256": "DA11B7DDC203E3A8B3CB2164E2B7608C8239DB334B90E43022AFE328D3AF75BC"
+    },
+    {
+      "path": "r5_parity.json",
+      "length": 1450,
+      "sha256": "5A3F04138D547334A97246BF0EF087D02474F6F5F1131228EE4B38D78DC1F83A"
+    },
+    {
+      "path": "ram_layout.json",
+      "length": 7803,
+      "sha256": "D9521DC8A43AE7CA5BE405702C39137B2A31FFFA917D442EF9E62629D05F9B6B"
+    },
+    {
+      "path": "resource_summary.json",
+      "length": 948,
+      "sha256": "CEDC2E5CA63B9A502AE72106C3C18B4190A62612D10405F5F2309B24C5173A61"
+    },
+    {
+      "path": "software_summary.json",
+      "length": 716,
+      "sha256": "F20AAF4F689D30261DBD521CDDB189D2D79618F621486B84F099303319F13629"
+    },
+    {
+      "path": "stack_watermark.json",
+      "length": 46254,
+      "sha256": "C4969B1C9A6B3925B0DEA6B3C06A09EAC8732FA0704129C153837C9268D31526"
+    },
+    {
+      "path": "stage5na_parity.json",
+      "length": 1205,
+      "sha256": "0B3AA70FC37BF4D616F0AF58F97C1ABAFAAFE161F05D5B2E2ACFF092328267F4"
+    },
+    {
+      "path": "stage5nb_0516.elf",
+      "length": 2012504,
+      "sha256": "721BD55249335D1B97E0C83E7D5FFED935ED2200A4F057E2C01835A4BCFEAFB7"
+    },
+    {
+      "path": "stage5nb_0516.map",
+      "length": 1425743,
+      "sha256": "49ACAEF1E28594330090AB79E74E0101DA8F9EC82D95584B6F74FA6D705F7044"
+    },
+    {
+      "path": "stage5nb_0516_application.bin",
+      "length": 106796,
+      "sha256": "6AECAEE3D8B2EFD00CE7EFA879CFC1B4BFA8F5753F27CC97F29E234FB2ADC851"
+    },
+    {
+      "path": "stage5nb_hardware.elf",
+      "length": 2018660,
+      "sha256": "E469609211E228BE199F45C49D1F901BC98542FC51C7980EDC6DEF5699CC292D"
+    },
+    {
+      "path": "stage5nb_hardware.map",
+      "length": 1434840,
+      "sha256": "70B0C0523D7508A604107E7208F57CC35769DB246D4CA65C71E088902C4CF966"
+    },
+    {
+      "path": "stage5nb_hardware_application.bin",
+      "length": 107180,
+      "sha256": "4AFAAF85EBDBF10D779EA1DAC88834154E2CD35606AB12BC1BBB0C993DCEA985"
+    },
+    {
+      "path": "strict_attempt1.txt",
+      "length": 23645,
+      "sha256": "4B4CD802E81F407F4E7A609F55DAF1090363C2A08A20CF00FEFAFB458D336944"
+    },
+    {
+      "path": "strict_attempt2.txt",
+      "length": 262449,
+      "sha256": "EE9805C2B292F9A259D2FB80F292DACC571D21B10C412570047521F2E8358916"
+    },
+    {
+      "path": "warning_audit.json",
+      "length": 1218,
+      "sha256": "AAFA149B02C930D5DE6C79B5509A5A29AE76A1EF95A65725264B14182278FEB0"
+    }
+  ]
+}
