@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "stage": "Stage 5N-B software preauthorization",
+  "started_utc": "2026-09-22T07:27:18Z",
+  "repository_start_head": "78e440eb9fddf1bf4611b0b048bb6d06c681925a",
+  "branch": "stage5nb-guarded-active-alarm",
+  "device_operations": "Modbus read-only only; no SWD, reset, flash, mode change or output activation",
+  "device_expected_configuration_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "existing_user_changes_preserved": "15 pyc modifications and 4 manual snapshots"
+}

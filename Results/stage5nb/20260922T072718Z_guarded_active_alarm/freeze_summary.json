@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "stage5na_c_sha256": "F89034B47AEC92372DD6BE0AEC3947ED27F0008727A268359AE3B172CD607C8F",
+  "stage5na_h_sha256": "84951C9F4E5AFF14AB0BC37DDA2AB67E8737CB19D645A519734B4AE03AD50745",
+  "stage5na_python_sha256": "D8A65766839452C9B87B874E8B2834B19EEF91C7AA25695ECBF10638299135B5",
+  "stage5na_parameters": {"static_stable_samples":3,"dynamic_hysteresis_ug":20000,"dynamic_confirm_samples":1,"dynamic_minimum_dwell_samples":0},
+  "r5_c_sha256": "5C9E77EA7B58FF5A1FC76ADEB1D2A0E17E05FAF2B7E279D732A7CBFAA42EA5A1",
+  "d1c_c_sha256_after_mechanical_warning_fix": "2F828DFDDF9C8BE98D8825E87C5D6559057693FD5458707A7A784A0BD838D19C",
+  "d1c_behavior_equivalence": "49105 samples / 0 mismatch; frozen 0x0515 BIN byte-identical",
+  "candidate_algorithm_changed": false,
+  "candidate_parameters_changed": false,
+  "r5_changed": false,
+  "d1c_algorithm_or_parameters_changed": false,
+  "filter_or_calibration_changed": false
+}

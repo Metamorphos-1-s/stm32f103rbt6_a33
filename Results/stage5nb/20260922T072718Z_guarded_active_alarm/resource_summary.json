@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "builds": {
+    "Debug":{"ram_bytes":19392,"flash_bytes":94116},
+    "Release":{"ram_bytes":19352,"elf_bytes":172200},
+    "frozen_0x0515":{"ram_bytes":19488,"bin_bytes":105416},
+    "beta_0x0516":{"ram_bytes":19472,"bin_bytes":106796,"data_bytes":12,"bss_bytes":18432},
+    "Stage5NBHardware":{"ram_bytes":18840,"bin_bytes":107180}
+  },
+  "beta_static_end_to_estack_bytes":2032,
+  "main_static_chain_bytes":1144,
+  "largest_irq_static_chain_bytes":72,
+  "exception_frame_bytes":32,
+  "indirect_call_allowance_bytes":256,
+  "conservative_stack_bytes":1504,
+  "collision_margin_bytes":528,
+  "minimum_gate_bytes":512,
+  "gate":"PASS",
+  "largest_new_local_frame_bytes":128,
+  "largest_new_permanent_object":"GuardedCheckweigh plus local-control state, below 40 bytes combined",
+  "capacity_reductions_in_0x0516":false,
+  "dynamic_allocation":false,
+  "analysis":"static GCC stack usage/callgraph; not runtime watermark"
+}

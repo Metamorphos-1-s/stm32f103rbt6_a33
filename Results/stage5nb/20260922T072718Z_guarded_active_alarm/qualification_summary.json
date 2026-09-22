@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "qualification": "SOFTWARE READY; HARDWARE NOT RUN",
+  "statement": "STAGE 5N-B GUARDED ACTIVE SOFTWARE READY; 0x0516 ARTIFACT BUILT; HARDWARE FLASH AUTHORIZATION REQUIRED; ACTIVE OUTPUT NOT YET QUALIFIED",
+  "device_firmware": "0x0515 unchanged",
+  "hardware_flash_authorized": false,
+  "active_output_qualified": false,
+  "stage5o_entry": false,
+  "physical_sensor_fault_qualification": "DEFERRED",
+  "d1c_nonzero_offset_qualification": "DEFERRED",
+  "cross_sensor_validation": "DEFERRED",
+  "40hz": "BLOCKED",
+  "metrology_certification": "DEFERRED",
+  "asan": "NOT RUN",
+  "ubsan": "NOT RUN"
+}

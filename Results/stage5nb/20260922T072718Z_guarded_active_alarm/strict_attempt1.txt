@@ -1,0 +1,223 @@
+[1/170] Building C object CMakeFiles\stage5mr5e_standard_surface_tests.dir\test_stage5mr5e_surface.c.obj
+FAILED: CMakeFiles/stage5mr5e_standard_surface_tests.dir/test_stage5mr5e_surface.c.obj 
+"E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\bin\Hostx64\x64\cl.exe"  /nologo -DA33_ENABLE_STAGE5MR5_BETA=0 -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\Config -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\Domain\filter -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\Domain\measurement -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\Domain\stability -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\Protocol\modbus -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\UI\key_service -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\UI\menu_controller -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\UI\status_controller /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /W4 /WX /showIncludes /FoCMakeFiles\stage5mr5e_standard_surface_tests.dir\test_stage5mr5e_surface.c.obj /FdCMakeFiles\stage5mr5e_standard_surface_tests.dir\ /FS -c D:\Documents\stm32f103rbt6_a33\Tests\host\test_stage5mr5e_surface.c
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\UI\menu_controller\menu_types.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Config\project_config.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\UI\status_controller\status_controller.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\UI\key_service\key_types.h
+注意: 包含文件:    E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdint.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vcruntime.h
+注意: 包含文件:      E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\sal.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\concurrencysal.h
+注意: 包含文件:      E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vadefs.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Config\device_config.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\mass_types.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\unit_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdbool.h
+注意: 包含文件:  E:\Windows Kits\10\include\10.0.22621.0\ucrt\stdio.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt_wstdio.h
+注意: 包含文件:    E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt_stdio_config.h
+D:\Documents\stm32f103rbt6_a33\Tests\host\test_stage5mr5e_surface.c(19): error C2220: 以下警告被视为错误
+D:\Documents\stm32f103rbt6_a33\Tests\host\test_stage5mr5e_surface.c(19): warning C4127: 条件表达式是常量
+D:\Documents\stm32f103rbt6_a33\Tests\host\test_stage5mr5e_surface.c(20): warning C4127: 条件表达式是常量
+[2/170] Building C object CMakeFiles\stage5mr5e_beta_surface_tests.dir\test_stage5mr5e_surface.c.obj
+FAILED: CMakeFiles/stage5mr5e_beta_surface_tests.dir/test_stage5mr5e_surface.c.obj 
+"E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\bin\Hostx64\x64\cl.exe"  /nologo -DA33_ENABLE_STAGE5MR5_BETA=1 -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\Config -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\Domain\filter -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\Domain\measurement -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\Domain\stability -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\Protocol\modbus -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\UI\key_service -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\UI\menu_controller -ID:\Documents\stm32f103rbt6_a33\Tests\host\..\..\UI\status_controller /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -std:c11 -MDd /W4 /WX /showIncludes /FoCMakeFiles\stage5mr5e_beta_surface_tests.dir\test_stage5mr5e_surface.c.obj /FdCMakeFiles\stage5mr5e_beta_surface_tests.dir\ /FS -c D:\Documents\stm32f103rbt6_a33\Tests\host\test_stage5mr5e_surface.c
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\UI\menu_controller\menu_types.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Config\project_config.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\UI\status_controller\status_controller.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\UI\key_service\key_types.h
+注意: 包含文件:    E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdint.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vcruntime.h
+注意: 包含文件:      E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\sal.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\concurrencysal.h
+注意: 包含文件:      E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vadefs.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Config\device_config.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\mass_types.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\unit_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdbool.h
+注意: 包含文件:  E:\Windows Kits\10\include\10.0.22621.0\ucrt\stdio.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt_wstdio.h
+注意: 包含文件:    E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt_stdio_config.h
+D:\Documents\stm32f103rbt6_a33\Tests\host\test_stage5mr5e_surface.c(14): error C2220: 以下警告被视为错误
+D:\Documents\stm32f103rbt6_a33\Tests\host\test_stage5mr5e_surface.c(14): warning C4127: 条件表达式是常量
+D:\Documents\stm32f103rbt6_a33\Tests\host\test_stage5mr5e_surface.c(15): warning C4127: 条件表达式是常量
+D:\Documents\stm32f103rbt6_a33\Tests\host\test_stage5mr5e_surface.c(16): warning C4127: 条件表达式是常量
+D:\Documents\stm32f103rbt6_a33\Tests\host\test_stage5mr5e_surface.c(17): warning C4127: 条件表达式是常量
+[3/170] Building C object CMakeFiles\stage5mr5_persistent_equal_tests.dir\D_\Documents\stm32f103rbt6_a33\Domain\measurement\mass_math.c.obj
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\measurement\mass_math.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Domain\measurement\mass_types.h
+注意: 包含文件:    E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdint.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vcruntime.h
+注意: 包含文件:      E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\sal.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\concurrencysal.h
+注意: 包含文件:      E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vadefs.h
+注意: 包含文件:   E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdbool.h
+注意: 包含文件:  E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\limits.h
+注意: 包含文件:  E:\Windows Kits\10\include\10.0.22621.0\ucrt\stddef.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt.h
+[4/170] Building C object CMakeFiles\stage5mr5_persistent_equal_tests.dir\D_\Documents\stm32f103rbt6_a33\Config\device_config_validator.c.obj
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Config\device_config_validator.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Config\device_config.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\mass_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdint.h
+注意: 包含文件:      E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vcruntime.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\sal.h
+注意: 包含文件:        E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\concurrencysal.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vadefs.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\unit_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdbool.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Config\alarm_config_validation.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\calibration\calibration_model.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Domain\measurement\weight_types.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\measurement\metrology_config_validator.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Config\runtime_state.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\stability\stability_detector.h
+注意: 包含文件:  E:\Windows Kits\10\include\10.0.22621.0\ucrt\stddef.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt.h
+[5/170] Building C object CMakeFiles\stage5mr5_persistent_equal_tests.dir\D_\Documents\stm32f103rbt6_a33\Domain\measurement\metrology_standard_validator.c.obj
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\measurement\metrology_standard_validator.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Config\device_config.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\mass_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdint.h
+注意: 包含文件:      E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vcruntime.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\sal.h
+注意: 包含文件:        E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\concurrencysal.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vadefs.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\unit_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdbool.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\measurement\mass_math.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\measurement\unit_converter.h
+注意: 包含文件:  E:\Windows Kits\10\include\10.0.22621.0\ucrt\stddef.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt.h
+[6/170] Building C object CMakeFiles\stage5mr5_persistent_equal_tests.dir\D_\Documents\stm32f103rbt6_a33\Domain\measurement\metrology_config_validator.c.obj
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\measurement\metrology_config_validator.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Config\device_config.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\mass_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdint.h
+注意: 包含文件:      E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vcruntime.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\sal.h
+注意: 包含文件:        E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\concurrencysal.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vadefs.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\unit_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdbool.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\measurement\metrology_standard_validator.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\stability\stability_detector.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Domain\measurement\weight_types.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\measurement\unit_converter.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\filter\weight_filter.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Config\project_config.h
+注意: 包含文件:  E:\Windows Kits\10\include\10.0.22621.0\ucrt\stddef.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt.h
+注意: 包含文件:  E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\limits.h
+[7/170] Building C object CMakeFiles\stage5mr5_persistent_equal_tests.dir\D_\Documents\stm32f103rbt6_a33\Domain\measurement\unit_converter.c.obj
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\measurement\unit_converter.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Domain\measurement\unit_types.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\mass_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdint.h
+注意: 包含文件:      E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vcruntime.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\sal.h
+注意: 包含文件:        E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\concurrencysal.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vadefs.h
+注意: 包含文件:    E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdbool.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\measurement\mass_math.h
+注意: 包含文件:  E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\limits.h
+注意: 包含文件:  E:\Windows Kits\10\include\10.0.22621.0\ucrt\stddef.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt.h
+注意: 包含文件:  E:\Windows Kits\10\include\10.0.22621.0\ucrt\string.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt_memory.h
+注意: 包含文件:    E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt_memcpy_s.h
+注意: 包含文件:     E:\Windows Kits\10\include\10.0.22621.0\ucrt\errno.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vcruntime_string.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt_wstring.h
+[8/170] Building C object CMakeFiles\stage5mr5_persistent_equal_tests.dir\D_\Documents\stm32f103rbt6_a33\Domain\calibration\calibration_model.c.obj
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\calibration\calibration_model.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Config\device_config.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\mass_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdint.h
+注意: 包含文件:      E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vcruntime.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\sal.h
+注意: 包含文件:        E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\concurrencysal.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vadefs.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\unit_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdbool.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Domain\measurement\weight_types.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\measurement\mass_math.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\measurement\weight_math.h
+注意: 包含文件:  E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\limits.h
+注意: 包含文件:  E:\Windows Kits\10\include\10.0.22621.0\ucrt\stddef.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt.h
+注意: 包含文件:  E:\Windows Kits\10\include\10.0.22621.0\ucrt\string.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt_memory.h
+注意: 包含文件:    E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt_memcpy_s.h
+注意: 包含文件:     E:\Windows Kits\10\include\10.0.22621.0\ucrt\errno.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vcruntime_string.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt_wstring.h
+[9/170] Building C object CMakeFiles\stage5mr5_persistent_equal_tests.dir\D_\Documents\stm32f103rbt6_a33\Domain\measurement\weight_math.c.obj
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Domain\measurement\weight_math.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Domain\measurement\weight_types.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\mass_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdint.h
+注意: 包含文件:      E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vcruntime.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\sal.h
+注意: 包含文件:        E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\concurrencysal.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vadefs.h
+注意: 包含文件:   E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdbool.h
+注意: 包含文件:  E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\limits.h
+注意: 包含文件:  E:\Windows Kits\10\include\10.0.22621.0\ucrt\stddef.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt.h
+[10/170] Building C object CMakeFiles\stage5mr5_tare_revision_tests.dir\D_\Documents\stm32f103rbt6_a33\App\revision_helper.c.obj
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\App\revision_helper.h
+注意: 包含文件:   E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdbool.h
+注意: 包含文件:   E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdint.h
+注意: 包含文件:    E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vcruntime.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\sal.h
+注意: 包含文件:      E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\concurrencysal.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vadefs.h
+[11/170] Building C object CMakeFiles\stage5mr5_persistent_equal_tests.dir\D_\Documents\stm32f103rbt6_a33\Services\config_store\persistent_codec.c.obj
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Services\config_store\persistent_codec.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Config\device_config.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\mass_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdint.h
+注意: 包含文件:      E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vcruntime.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\sal.h
+注意: 包含文件:        E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\concurrencysal.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vadefs.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\unit_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdbool.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Config\runtime_state.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Config\default_config.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Config\device_config_validator.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Services\config_store\persistent_schema.h
+注意: 包含文件:  E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\limits.h
+注意: 包含文件:  E:\Windows Kits\10\include\10.0.22621.0\ucrt\stddef.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt.h
+注意: 包含文件:  E:\Windows Kits\10\include\10.0.22621.0\ucrt\string.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt_memory.h
+注意: 包含文件:    E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt_memcpy_s.h
+注意: 包含文件:     E:\Windows Kits\10\include\10.0.22621.0\ucrt\errno.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vcruntime_string.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt_wstring.h
+[12/170] Building C object CMakeFiles\stage5mr5_tare_revision_tests.dir\test_stage5mr5_tare_revision.c.obj
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\Config\default_config.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Config\device_config.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\mass_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdint.h
+注意: 包含文件:      E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vcruntime.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\sal.h
+注意: 包含文件:        E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\concurrencysal.h
+注意: 包含文件:       E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\vadefs.h
+注意: 包含文件:    D:\Documents\stm32f103rbt6_a33\Domain\measurement\unit_types.h
+注意: 包含文件:     E:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdbool.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\Config\runtime_state.h
+注意: 包含文件:  D:\Documents\stm32f103rbt6_a33\App\system_context.h
+注意: 包含文件:   D:\Documents\stm32f103rbt6_a33\App\app_state.h
+注意: 包含文件:  E:\Windows Kits\10\include\10.0.22621.0\ucrt\stdio.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt.h
+注意: 包含文件:   E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt_wstdio.h
+注意: 包含文件:    E:\Windows Kits\10\include\10.0.22621.0\ucrt\corecrt_stdio_config.h
+[13/170] Linking C executable stage5mr5e_local_control_tests.exe
+[14/170] Linking C executable stage5mr5_ui_workspace_tests.exe
+ninja: build stopped: subcommand failed.

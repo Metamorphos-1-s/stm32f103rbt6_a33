@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "modes": {"OFF":0,"STATIC":1,"DYNAMIC":2},
+  "boot_default": "OFF",
+  "persistent": false,
+  "mode_side_effects": {"revision":0,"dirty":0,"save":0,"flash":0},
+  "source": {"STATIC":"frozen Stage 5N-A STATIC output","DYNAMIC":"frozen Stage 5N-A current DYNAMIC output","OFF":"none"},
+  "safe_mapping": {"OFF":"DISABLED/all-off","PENDING":"DISABLED/all-off","INVALID":"DISABLED/all-off","FAULT":"DISABLED/all-off","STALE":"DISABLED/all-off","CALIBRATION":"DISABLED/all-off","MODE_SWITCH":"DISABLED/all-off"},
+  "stale_timeout_ms": 250,
+  "mode_switch_contract": "all-off immediately; first new candidate sample remains safe; activation no earlier than the following new sample",
+  "output_owner": "AlarmOutputManager only",
+  "manual_output": "COMMAND_REQUEST_MANUAL_OUTPUT has no GPIO implementation",
+  "buzzer": {"LOW":"off","OK":"100ms qualified beep when enabled","HIGH":"250ms nonblocking alarm phases when enabled"},
+  "configuration_source": "existing AlarmConfig lower/upper/source/enables; no second persistent configuration"
+}

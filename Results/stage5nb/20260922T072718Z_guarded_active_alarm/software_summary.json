@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "result": "STAGE 5N-B GUARDED ACTIVE SOFTWARE READY; 0x0516 ARTIFACT BUILT; HARDWARE FLASH AUTHORIZATION REQUIRED; ACTIVE OUTPUT NOT YET QUALIFIED",
+  "host_ctest":"32/32 PASS under MSVC /W4 /WX",
+  "stage5na_python":"27/27 PASS",
+  "stage5na_python_c":"45711/0",
+  "r5_python_c":"25057/0",
+  "d1c_python_c":"49105/0",
+  "stage5b":"30/30 PASS",
+  "stage5c":"12/12 PASS",
+  "stage5l":"8/8 PASS",
+  "stage5lr_g2":"8/8 PASS",
+  "arm_wextra_werror":"PASS",
+  "debug_release_0515_0516_hardware_builds":"PASS",
+  "candidate_source_changed":false,
+  "dynamic_allocation":false,
+  "asan":"NOT RUN",
+  "ubsan":"NOT RUN",
+  "hardware_qualification":"NOT RUN",
+  "device":"remains original 0x0515"
+}

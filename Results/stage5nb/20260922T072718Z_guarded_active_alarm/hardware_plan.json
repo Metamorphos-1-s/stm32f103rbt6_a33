@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "status":"NOT AUTHORIZED",
+  "preflight":"read-only Modbus, then authorized SWD configuration/application backup",
+  "diagnostic_first":"flash Stage5NBHardware, enable temporary RAM alarm config without SAVE, validate ACTIVE INVALID_INPUT all-off and automatic recovery",
+  "beta_second":"flash exact 0x0516, verify boot OFF, local STATIC/DYNAMIC, LOW/OK/HIGH, cycles, slow fill, disturbance, TARE/CLEAR, PLC/local conflict, OFF exit and reset-default OFF",
+  "configuration":"existing persisted alarm config is disabled; any test enable/threshold changes must be RAM-only, explicitly evidenced, never SAVEd, and cleared by final reset",
+  "failure":"switch OFF, preserve evidence, erase app pages 0-104, restore/verify frozen 0x0515, compare configuration SHA",
+  "success_final":"0x0516 retained; CHECKWEIGH OFF; R5 OFF+SHADOW; all outputs off; clean revision/saved 8/8"
+}

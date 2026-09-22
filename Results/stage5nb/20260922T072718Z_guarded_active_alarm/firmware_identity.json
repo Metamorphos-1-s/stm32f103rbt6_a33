@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "standard_release_elf":{"length":172200,"sha256":"82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486","active_feature":false,"a3_injection":false},
+  "frozen_0x0515_bin":{"length":105416,"sha256":"62648C3AD79C324B1860BE3005B8EA365C2BCE98C084BE4F5FD20D7599065228","active_feature":false,"a3_injection":false},
+  "beta_0x0516":{"bin_length":106796,"bin_sha256":"6AECAEE3D8B2EFD00CE7EFA879CFC1B4BFA8F5753F27CC97F29E234FB2ADC851","elf_length":2012504,"elf_sha256":"721BD55249335D1B97E0C83E7D5FFED935ED2200A4F057E2C01835A4BCFEAFB7","application_pages":"0-104","a3_injection":false},
+  "hardware_diagnostics":{"bin_length":107180,"bin_sha256":"4AFAAF85EBDBF10D779EA1DAC88834154E2CD35606AB12BC1BBB0C993DCEA985","elf_length":2018660,"elf_sha256":"E469609211E228BE199F45C49D1F901BC98542FC51C7980EDC6DEF5699CC292D","application_pages":"0-104","a3_injection":true},
+  "map":"0x0104","schema":2,"persistent_format":3
+}

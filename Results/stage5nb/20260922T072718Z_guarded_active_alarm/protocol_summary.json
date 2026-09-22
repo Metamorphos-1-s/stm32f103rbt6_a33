@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "public_map": "0x0104 unchanged",
+  "schema": 2,
+  "persistent_format": 3,
+  "plc_control": {"transport":"existing command mailbox","set_mode_command":34,"get_status_command":35,"expected_generation":"argument1 with flags bit0","invalid_values":"rejected","save":false},
+  "engineering_read_only": {"range":"0x02C0-0x02CF","signature":"0x5BB5","classification":"Beta-only; outside public Map contract"},
+  "old_client_safe_states": "OFF/PENDING/INVALID/fault/stale appear as existing DISABLED state 0 with every output off",
+  "ble": "existing V1 telemetry remains read-only and sees formal AlarmOutputManager diagnostics; no write command or frame layout change",
+  "map_upgrade_required": false
+}

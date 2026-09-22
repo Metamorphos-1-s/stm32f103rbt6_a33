@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "msvc": "Microsoft C/C++ Optimizing Compiler 19.43.34810 for x64",
+  "required_flags": "/W4 /WX",
+  "initial_known_failures": [
+    {"file":"UI/display_model/directional_display_follower.c","line":118,"code":"C4310","cause":"integer promotion before uint8 bit-clear mask","fix":"narrow flag before complement","behavior":"mechanically equivalent; D1-C parity 49105/0 and frozen 0x0515 BIN unchanged"},
+    {"file":"Tests/host/test_stage5mr5_reference_lock.c","line":119,"code":"C4127","cause":"runtime CHECK on compile-time sizeof","fix":"C11 static assertion","behavior":"test-only; identical size contract"}
+  ],
+  "additional_debt_exposed_after_initial_failures": [
+    {"scope":"D1-B display follower","fix":"same mechanical uint8 mask expression"},
+    {"scope":"D1-B runner","fix":"target-local existing CRT compatibility definition"},
+    {"scope":"R5 WeightEngine and firmware surface tests","fix":"runtime constant CHECK converted to static assertions"}
+  ],
+  "warnings_disabled": false,
+  "tests_removed": false,
+  "final_msvc_strict": "PASS; 32/32 CTest",
+  "final_arm_wextra_werror": "PASS",
+  "standard_release_sha_unchanged": true,
+  "frozen_0x0515_bin_sha_unchanged": true
+}

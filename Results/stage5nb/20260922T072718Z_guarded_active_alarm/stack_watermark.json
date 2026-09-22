@@ -1,0 +1,1163 @@
+{
+  "schema_version": 1,
+  "classification": "STATIC_STACK_ANALYSIS_NOT_RUNTIME_WATERMARK",
+  "declared_stack_bytes": 1024,
+  "hardware_exception_frame_bytes": 32,
+  "main_static_chain": {
+    "function": "main",
+    "local_stack_bytes": 8,
+    "static_chain_bytes": 1144,
+    "path": [
+      "main",
+      "App_Run",
+      "CommunicationManager_Process",
+      "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessTransports",
+      "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessPort",
+      "ModbusRtuServer_Process",
+      "ModbusRtuServer_HandleAdu",
+      "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_rtu_server.c:HandleWriteMultiple",
+      "ModbusRegisterModel_WriteMultiple",
+      "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_register_model.c:WriteOne",
+      "ModbusCommandMailbox_Write",
+      "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_command_mailbox.c:Execute",
+      "CommandService_Execute",
+      "MetrologyManager_SetDisplayUnit",
+      "WeightEngine_UpdateDisplayConfig",
+      "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+      "UnitConverter_MassToCountUnbounded",
+      "MassMath_Quantize",
+      "MassMath_MulDivRound",
+      "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+    ]
+  },
+  "largest_irq_static_chain": {
+    "function": "USART3_IRQHandler",
+    "local_stack_bytes": 8,
+    "static_chain_bytes": 72,
+    "path": [
+      "USART3_IRQHandler",
+      "BSP_Uart3IrqHandler",
+      "HAL_UART_IRQHandler",
+      "D:/Documents/stm32f103rbt6_a33/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c:UART_Receive_IT"
+    ]
+  },
+  "conservative_main_plus_one_irq_bytes": 1248,
+  "indirect_call_allowance_bytes": 256,
+  "bounded_conservative_stack_bytes": 1504,
+  "margin_within_declared_stack_bytes": -480,
+  "margin_before_static_collision_bytes": 528,
+  "instantaneous_msp_evidence": null,
+  "largest_chains": [
+    {
+      "function": "D:/Documents/stm32f103rbt6_a33/Services/ble_command_service/ble_command_service.c:HandleRequest",
+      "local_stack_bytes": 384,
+      "static_chain_bytes": 1208,
+      "path": [
+        "D:/Documents/stm32f103rbt6_a33/Services/ble_command_service/ble_command_service.c:HandleRequest",
+        "D:/Documents/stm32f103rbt6_a33/Services/ble_command_service/ble_command_service.c:ExecuteCommand",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "main",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 1144,
+      "path": [
+        "main",
+        "App_Run",
+        "CommunicationManager_Process",
+        "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessTransports",
+        "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessPort",
+        "ModbusRtuServer_Process",
+        "ModbusRtuServer_HandleAdu",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_rtu_server.c:HandleWriteMultiple",
+        "ModbusRegisterModel_WriteMultiple",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_register_model.c:WriteOne",
+        "ModbusCommandMailbox_Write",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_command_mailbox.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "App_Run",
+      "local_stack_bytes": 40,
+      "static_chain_bytes": 1136,
+      "path": [
+        "App_Run",
+        "CommunicationManager_Process",
+        "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessTransports",
+        "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessPort",
+        "ModbusRtuServer_Process",
+        "ModbusRtuServer_HandleAdu",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_rtu_server.c:HandleWriteMultiple",
+        "ModbusRegisterModel_WriteMultiple",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_register_model.c:WriteOne",
+        "ModbusCommandMailbox_Write",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_command_mailbox.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "CommunicationManager_Process",
+      "local_stack_bytes": 16,
+      "static_chain_bytes": 1096,
+      "path": [
+        "CommunicationManager_Process",
+        "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessTransports",
+        "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessPort",
+        "ModbusRtuServer_Process",
+        "ModbusRtuServer_HandleAdu",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_rtu_server.c:HandleWriteMultiple",
+        "ModbusRegisterModel_WriteMultiple",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_register_model.c:WriteOne",
+        "ModbusCommandMailbox_Write",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_command_mailbox.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessTransports",
+      "local_stack_bytes": 16,
+      "static_chain_bytes": 1080,
+      "path": [
+        "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessTransports",
+        "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessPort",
+        "ModbusRtuServer_Process",
+        "ModbusRtuServer_HandleAdu",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_rtu_server.c:HandleWriteMultiple",
+        "ModbusRegisterModel_WriteMultiple",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_register_model.c:WriteOne",
+        "ModbusCommandMailbox_Write",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_command_mailbox.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessPort",
+      "local_stack_bytes": 16,
+      "static_chain_bytes": 1064,
+      "path": [
+        "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessPort",
+        "ModbusRtuServer_Process",
+        "ModbusRtuServer_HandleAdu",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_rtu_server.c:HandleWriteMultiple",
+        "ModbusRegisterModel_WriteMultiple",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_register_model.c:WriteOne",
+        "ModbusCommandMailbox_Write",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_command_mailbox.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "ModbusRtuServer_Process",
+      "local_stack_bytes": 40,
+      "static_chain_bytes": 1048,
+      "path": [
+        "ModbusRtuServer_Process",
+        "ModbusRtuServer_HandleAdu",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_rtu_server.c:HandleWriteMultiple",
+        "ModbusRegisterModel_WriteMultiple",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_register_model.c:WriteOne",
+        "ModbusCommandMailbox_Write",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_command_mailbox.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "D:/Documents/stm32f103rbt6_a33/App/app_main.c:App_10msTask",
+      "local_stack_bytes": 80,
+      "static_chain_bytes": 1008,
+      "path": [
+        "D:/Documents/stm32f103rbt6_a33/App/app_main.c:App_10msTask",
+        "CalibrationController_Begin",
+        "D:/Documents/stm32f103rbt6_a33/App/calibration_controller.c:CalibrationController_Command",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "ModbusRtuServer_HandleAdu",
+      "local_stack_bytes": 48,
+      "static_chain_bytes": 1008,
+      "path": [
+        "ModbusRtuServer_HandleAdu",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_rtu_server.c:HandleWriteMultiple",
+        "ModbusRegisterModel_WriteMultiple",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_register_model.c:WriteOne",
+        "ModbusCommandMailbox_Write",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_command_mailbox.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_rtu_server.c:HandleWriteMultiple",
+      "local_stack_bytes": 48,
+      "static_chain_bytes": 960,
+      "path": [
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_rtu_server.c:HandleWriteMultiple",
+        "ModbusRegisterModel_WriteMultiple",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_register_model.c:WriteOne",
+        "ModbusCommandMailbox_Write",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_command_mailbox.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "App_Init",
+      "local_stack_bytes": 400,
+      "static_chain_bytes": 944,
+      "path": [
+        "App_Init",
+        "PersistenceManager_LoadStartup",
+        "ConfigStore_Load",
+        "D:/Documents/stm32f103rbt6_a33/Services/config_store/config_store.c:ReadSlot",
+        "PersistentCodec_DecodeV3",
+        "PersistentCodec_ValidateConfig",
+        "DeviceConfig_Validate",
+        "MetrologyConfig_ValidateCanonical",
+        "UnitConverter_ValidateDisplayConfig",
+        "UnitConverter_MassToDisplay",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "CalibrationController_Begin",
+      "local_stack_bytes": 104,
+      "static_chain_bytes": 928,
+      "path": [
+        "CalibrationController_Begin",
+        "D:/Documents/stm32f103rbt6_a33/App/calibration_controller.c:CalibrationController_Command",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_rtu_server.c:HandleWriteSingle",
+      "local_stack_bytes": 40,
+      "static_chain_bytes": 928,
+      "path": [
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_rtu_server.c:HandleWriteSingle",
+        "ModbusRegisterModel_WriteSingle",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_register_model.c:WriteOne",
+        "ModbusCommandMailbox_Write",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_command_mailbox.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "D:/Documents/stm32f103rbt6_a33/App/app_main.c:App_ProcessKeyEvent",
+      "local_stack_bytes": 16,
+      "static_chain_bytes": 920,
+      "path": [
+        "D:/Documents/stm32f103rbt6_a33/App/app_main.c:App_ProcessKeyEvent",
+        "MenuController_HandleKeyEvent",
+        "R5LocalControl_Apply",
+        "D:/Documents/stm32f103rbt6_a33/UI/r5_local_control.c:Restore",
+        "D:/Documents/stm32f103rbt6_a33/UI/r5_local_control.c:SetPair",
+        "D:/Documents/stm32f103rbt6_a33/UI/r5_local_control.c:SetApplication",
+        "D:/Documents/stm32f103rbt6_a33/UI/r5_local_control.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "CalibrationController_Process10ms",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 912,
+      "path": [
+        "CalibrationController_Process10ms",
+        "D:/Documents/stm32f103rbt6_a33/App/calibration_controller.c:CalibrationController_CaptureStable",
+        "D:/Documents/stm32f103rbt6_a33/App/calibration_controller.c:CalibrationController_Command",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "ModbusRegisterModel_WriteMultiple",
+      "local_stack_bytes": 32,
+      "static_chain_bytes": 912,
+      "path": [
+        "ModbusRegisterModel_WriteMultiple",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_register_model.c:WriteOne",
+        "ModbusCommandMailbox_Write",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_command_mailbox.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "D:/Documents/stm32f103rbt6_a33/App/calibration_controller.c:CalibrationController_CaptureStable",
+      "local_stack_bytes": 80,
+      "static_chain_bytes": 904,
+      "path": [
+        "D:/Documents/stm32f103rbt6_a33/App/calibration_controller.c:CalibrationController_CaptureStable",
+        "D:/Documents/stm32f103rbt6_a33/App/calibration_controller.c:CalibrationController_Command",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "PersistenceManager_Process",
+      "local_stack_bytes": 24,
+      "static_chain_bytes": 904,
+      "path": [
+        "PersistenceManager_Process",
+        "ConfigStore_Process",
+        "D:/Documents/stm32f103rbt6_a33/Services/config_store/config_store.c:ReadSlot",
+        "PersistentCodec_DecodeV3",
+        "PersistentCodec_ValidateConfig",
+        "DeviceConfig_Validate",
+        "MetrologyConfig_ValidateCanonical",
+        "UnitConverter_ValidateDisplayConfig",
+        "UnitConverter_MassToDisplay",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "MenuController_HandleKeyEvent",
+      "local_stack_bytes": 24,
+      "static_chain_bytes": 904,
+      "path": [
+        "MenuController_HandleKeyEvent",
+        "R5LocalControl_Apply",
+        "D:/Documents/stm32f103rbt6_a33/UI/r5_local_control.c:Restore",
+        "D:/Documents/stm32f103rbt6_a33/UI/r5_local_control.c:SetPair",
+        "D:/Documents/stm32f103rbt6_a33/UI/r5_local_control.c:SetApplication",
+        "D:/Documents/stm32f103rbt6_a33/UI/r5_local_control.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "D:/Documents/stm32f103rbt6_a33/App/app_main.c:App_RunStateMachine",
+      "local_stack_bytes": 16,
+      "static_chain_bytes": 896,
+      "path": [
+        "D:/Documents/stm32f103rbt6_a33/App/app_main.c:App_RunStateMachine",
+        "MenuController_Enter",
+        "CheckweighLocalControl_BeginSession",
+        "D:/Documents/stm32f103rbt6_a33/UI/checkweigh_local_control.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "CalibrationController_HandleKeyEvent",
+      "local_stack_bytes": 64,
+      "static_chain_bytes": 896,
+      "path": [
+        "CalibrationController_HandleKeyEvent",
+        "D:/Documents/stm32f103rbt6_a33/App/calibration_controller.c:CalibrationController_CommandMass",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "ModbusRegisterModel_WriteSingle",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 888,
+      "path": [
+        "ModbusRegisterModel_WriteSingle",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_register_model.c:WriteOne",
+        "ModbusCommandMailbox_Write",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_command_mailbox.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "StatusController_Process10ms",
+      "local_stack_bytes": 24,
+      "static_chain_bytes": 888,
+      "path": [
+        "StatusController_Process10ms",
+        "D:/Documents/stm32f103rbt6_a33/UI/status_controller/status_controller.c:RenderValue",
+        "R5LocalControl_GetStatus",
+        "D:/Documents/stm32f103rbt6_a33/UI/r5_local_control.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "StatusController_HandleKeyEvent",
+      "local_stack_bytes": 24,
+      "static_chain_bytes": 888,
+      "path": [
+        "StatusController_HandleKeyEvent",
+        "D:/Documents/stm32f103rbt6_a33/UI/status_controller/status_controller.c:RenderValue",
+        "R5LocalControl_GetStatus",
+        "D:/Documents/stm32f103rbt6_a33/UI/r5_local_control.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_register_model.c:WriteOne",
+      "local_stack_bytes": 32,
+      "static_chain_bytes": 880,
+      "path": [
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_register_model.c:WriteOne",
+        "ModbusCommandMailbox_Write",
+        "D:/Documents/stm32f103rbt6_a33/Protocol/modbus/modbus_command_mailbox.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "ConfigStore_Process",
+      "local_stack_bytes": 416,
+      "static_chain_bytes": 880,
+      "path": [
+        "ConfigStore_Process",
+        "D:/Documents/stm32f103rbt6_a33/Services/config_store/config_store.c:ReadSlot",
+        "PersistentCodec_DecodeV3",
+        "PersistentCodec_ValidateConfig",
+        "DeviceConfig_Validate",
+        "MetrologyConfig_ValidateCanonical",
+        "UnitConverter_ValidateDisplayConfig",
+        "UnitConverter_MassToDisplay",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "R5LocalControl_Apply",
+      "local_stack_bytes": 24,
+      "static_chain_bytes": 880,
+      "path": [
+        "R5LocalControl_Apply",
+        "D:/Documents/stm32f103rbt6_a33/UI/r5_local_control.c:Restore",
+        "D:/Documents/stm32f103rbt6_a33/UI/r5_local_control.c:SetPair",
+        "D:/Documents/stm32f103rbt6_a33/UI/r5_local_control.c:SetApplication",
+        "D:/Documents/stm32f103rbt6_a33/UI/r5_local_control.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "MenuController_Enter",
+      "local_stack_bytes": 16,
+      "static_chain_bytes": 880,
+      "path": [
+        "MenuController_Enter",
+        "CheckweighLocalControl_BeginSession",
+        "D:/Documents/stm32f103rbt6_a33/UI/checkweigh_local_control.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "WeighingProfileManager_Process",
+      "local_stack_bytes": 376,
+      "static_chain_bytes": 864,
+      "path": [
+        "WeighingProfileManager_Process",
+        "ConfigApplication_ApplyFactoryDefaults",
+        "D:/Documents/stm32f103rbt6_a33/App/config_application.c:ConfigApplication_ApplyInternal",
+        "MetrologyManager_Reconfigure",
+        "D:/Documents/stm32f103rbt6_a33/App/metrology_manager.c:MetrologyManager_RebuildEngine",
+        "WeightEngine_ProcessRawSample",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:UpdateDerived",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ClearDerived",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:UpdateCompatibility",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    },
+    {
+      "function": "CheckweighLocalControl_BeginSession",
+      "local_stack_bytes": 32,
+      "static_chain_bytes": 864,
+      "path": [
+        "CheckweighLocalControl_BeginSession",
+        "D:/Documents/stm32f103rbt6_a33/UI/checkweigh_local_control.c:Execute",
+        "CommandService_Execute",
+        "MetrologyManager_SetDisplayUnit",
+        "WeightEngine_UpdateDisplayConfig",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/weight_engine.c:ConvertCompatibility",
+        "UnitConverter_MassToCountUnbounded",
+        "MassMath_Quantize",
+        "MassMath_MulDivRound",
+        "D:/Documents/stm32f103rbt6_a33/Domain/measurement/mass_math.c:DivideWideRounded"
+      ]
+    }
+  ],
+  "irq_chains": [
+    {
+      "function": "USART3_IRQHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 72,
+      "path": [
+        "USART3_IRQHandler",
+        "BSP_Uart3IrqHandler",
+        "HAL_UART_IRQHandler",
+        "D:/Documents/stm32f103rbt6_a33/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c:UART_Receive_IT"
+      ]
+    },
+    {
+      "function": "BSP_Uart3IrqHandler",
+      "local_stack_bytes": 32,
+      "static_chain_bytes": 64,
+      "path": [
+        "BSP_Uart3IrqHandler",
+        "HAL_UART_IRQHandler",
+        "D:/Documents/stm32f103rbt6_a33/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c:UART_Receive_IT"
+      ]
+    },
+    {
+      "function": "USART2_IRQHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 64,
+      "path": [
+        "USART2_IRQHandler",
+        "BSP_Uart2IrqHandler",
+        "HAL_UART_IRQHandler",
+        "D:/Documents/stm32f103rbt6_a33/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c:UART_Receive_IT"
+      ]
+    },
+    {
+      "function": "BSP_Uart2IrqHandler",
+      "local_stack_bytes": 24,
+      "static_chain_bytes": 56,
+      "path": [
+        "BSP_Uart2IrqHandler",
+        "HAL_UART_IRQHandler",
+        "D:/Documents/stm32f103rbt6_a33/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c:UART_Receive_IT"
+      ]
+    },
+    {
+      "function": "USART1_IRQHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 40,
+      "path": [
+        "USART1_IRQHandler",
+        "HAL_UART_IRQHandler",
+        "D:/Documents/stm32f103rbt6_a33/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c:UART_Receive_IT"
+      ]
+    },
+    {
+      "function": "HAL_UART_IRQHandler",
+      "local_stack_bytes": 16,
+      "static_chain_bytes": 32,
+      "path": [
+        "HAL_UART_IRQHandler",
+        "D:/Documents/stm32f103rbt6_a33/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c:UART_Receive_IT"
+      ]
+    },
+    {
+      "function": "DMA1_Channel2_IRQHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 32,
+      "path": [
+        "DMA1_Channel2_IRQHandler",
+        "BSP_Uart3TxDmaIrqHandler",
+        "HAL_DMA_IRQHandler"
+      ]
+    },
+    {
+      "function": "DMA1_Channel3_IRQHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 32,
+      "path": [
+        "DMA1_Channel3_IRQHandler",
+        "BSP_Uart3RxDmaIrqHandler",
+        "HAL_DMA_IRQHandler"
+      ]
+    },
+    {
+      "function": "DMA1_Channel6_IRQHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 32,
+      "path": [
+        "DMA1_Channel6_IRQHandler",
+        "BSP_Uart2RxDmaIrqHandler",
+        "HAL_DMA_IRQHandler"
+      ]
+    },
+    {
+      "function": "DMA1_Channel7_IRQHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 32,
+      "path": [
+        "DMA1_Channel7_IRQHandler",
+        "BSP_Uart2TxDmaIrqHandler",
+        "HAL_DMA_IRQHandler"
+      ]
+    },
+    {
+      "function": "TIM4_IRQHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 32,
+      "path": [
+        "TIM4_IRQHandler",
+        "BSP_RtuTimerIrqHandler",
+        "HAL_TIM_IRQHandler"
+      ]
+    },
+    {
+      "function": "HAL_FLASH_IRQHandler",
+      "local_stack_bytes": 24,
+      "static_chain_bytes": 24,
+      "path": [
+        "HAL_FLASH_IRQHandler"
+      ]
+    },
+    {
+      "function": "BSP_RtuTimerIrqHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 24,
+      "path": [
+        "BSP_RtuTimerIrqHandler",
+        "HAL_TIM_IRQHandler"
+      ]
+    },
+    {
+      "function": "BSP_Uart3RxDmaIrqHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 24,
+      "path": [
+        "BSP_Uart3RxDmaIrqHandler",
+        "HAL_DMA_IRQHandler"
+      ]
+    },
+    {
+      "function": "BSP_Uart3TxDmaIrqHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 24,
+      "path": [
+        "BSP_Uart3TxDmaIrqHandler",
+        "HAL_DMA_IRQHandler"
+      ]
+    },
+    {
+      "function": "BSP_Uart2RxDmaIrqHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 24,
+      "path": [
+        "BSP_Uart2RxDmaIrqHandler",
+        "HAL_DMA_IRQHandler"
+      ]
+    },
+    {
+      "function": "BSP_Uart2TxDmaIrqHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 24,
+      "path": [
+        "BSP_Uart2TxDmaIrqHandler",
+        "HAL_DMA_IRQHandler"
+      ]
+    },
+    {
+      "function": "HAL_ADC_IRQHandler",
+      "local_stack_bytes": 16,
+      "static_chain_bytes": 16,
+      "path": [
+        "HAL_ADC_IRQHandler"
+      ]
+    },
+    {
+      "function": "HAL_DMA_IRQHandler",
+      "local_stack_bytes": 16,
+      "static_chain_bytes": 16,
+      "path": [
+        "HAL_DMA_IRQHandler"
+      ]
+    },
+    {
+      "function": "HAL_TIM_IRQHandler",
+      "local_stack_bytes": 16,
+      "static_chain_bytes": 16,
+      "path": [
+        "HAL_TIM_IRQHandler"
+      ]
+    },
+    {
+      "function": "HAL_SYSTICK_IRQHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 8,
+      "path": [
+        "HAL_SYSTICK_IRQHandler"
+      ]
+    },
+    {
+      "function": "HAL_EXTI_IRQHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 8,
+      "path": [
+        "HAL_EXTI_IRQHandler"
+      ]
+    },
+    {
+      "function": "HAL_GPIO_EXTI_IRQHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 8,
+      "path": [
+        "HAL_GPIO_EXTI_IRQHandler"
+      ]
+    },
+    {
+      "function": "HAL_PWR_PVD_IRQHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 8,
+      "path": [
+        "HAL_PWR_PVD_IRQHandler"
+      ]
+    },
+    {
+      "function": "HAL_RCC_NMI_IRQHandler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 8,
+      "path": [
+        "HAL_RCC_NMI_IRQHandler"
+      ]
+    },
+    {
+      "function": "SysTick_Handler",
+      "local_stack_bytes": 8,
+      "static_chain_bytes": 8,
+      "path": [
+        "SysTick_Handler"
+      ]
+    },
+    {
+      "function": "Error_Handler",
+      "local_stack_bytes": 0,
+      "static_chain_bytes": 0,
+      "path": [
+        "Error_Handler"
+      ]
+    },
+    {
+      "function": "NMI_Handler",
+      "local_stack_bytes": 0,
+      "static_chain_bytes": 0,
+      "path": [
+        "NMI_Handler"
+      ]
+    },
+    {
+      "function": "HardFault_Handler",
+      "local_stack_bytes": 0,
+      "static_chain_bytes": 0,
+      "path": [
+        "HardFault_Handler"
+      ]
+    },
+    {
+      "function": "MemManage_Handler",
+      "local_stack_bytes": 0,
+      "static_chain_bytes": 0,
+      "path": [
+        "MemManage_Handler"
+      ]
+    },
+    {
+      "function": "BusFault_Handler",
+      "local_stack_bytes": 0,
+      "static_chain_bytes": 0,
+      "path": [
+        "BusFault_Handler"
+      ]
+    },
+    {
+      "function": "UsageFault_Handler",
+      "local_stack_bytes": 0,
+      "static_chain_bytes": 0,
+      "path": [
+        "UsageFault_Handler"
+      ]
+    },
+    {
+      "function": "SVC_Handler",
+      "local_stack_bytes": 0,
+      "static_chain_bytes": 0,
+      "path": [
+        "SVC_Handler"
+      ]
+    },
+    {
+      "function": "DebugMon_Handler",
+      "local_stack_bytes": 0,
+      "static_chain_bytes": 0,
+      "path": [
+        "DebugMon_Handler"
+      ]
+    },
+    {
+      "function": "PendSV_Handler",
+      "local_stack_bytes": 0,
+      "static_chain_bytes": 0,
+      "path": [
+        "PendSV_Handler"
+      ]
+    }
+  ],
+  "indirect_call_sites": [
+    {
+      "caller": "ADC_DMAConvCplt",
+      "source": "build\\Stage5NBStack\\cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_adc.c.ci"
+    },
+    {
+      "caller": "HAL_DMA_Abort_IT",
+      "source": "build\\Stage5NBStack\\cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_dma.c.ci"
+    },
+    {
+      "caller": "HAL_DMA_IRQHandler",
+      "source": "build\\Stage5NBStack\\cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_dma.c.ci"
+    },
+    {
+      "caller": "HAL_DMA_IRQHandler",
+      "source": "build\\Stage5NBStack\\cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_dma.c.ci"
+    },
+    {
+      "caller": "HAL_DMA_IRQHandler",
+      "source": "build\\Stage5NBStack\\cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_dma.c.ci"
+    },
+    {
+      "caller": "HAL_EXTI_IRQHandler",
+      "source": "build\\Stage5NBStack\\cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_exti.c.ci"
+    },
+    {
+      "caller": "HAL_UART_AbortTransmit_IT",
+      "source": "build\\Stage5NBStack\\cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_uart.c.ci"
+    },
+    {
+      "caller": "HAL_UART_AbortReceive_IT",
+      "source": "build\\Stage5NBStack\\cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_uart.c.ci"
+    },
+    {
+      "caller": "HAL_UART_IRQHandler",
+      "source": "build\\Stage5NBStack\\cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_uart.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:StartUart2",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\App\\communication_manager.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:StartUart3",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\App\\communication_manager.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessPort",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\App\\communication_manager.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessTransports",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\App\\communication_manager.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:ProcessTransports",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\App\\communication_manager.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:DiscardAndReset",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\App\\communication_manager.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:DiscardAndReset",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\App\\communication_manager.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:DiscardAndReset",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\App\\communication_manager.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/App/communication_manager.c:DiscardAndReset",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\App\\communication_manager.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/Protocol/ble/ble_command_protocol.c:DecodeRequest",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Protocol\\ble\\ble_command_protocol.c.ci"
+    },
+    {
+      "caller": "ModbusRtuFramer_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Protocol\\modbus\\modbus_rtu_framer.c.ci"
+    },
+    {
+      "caller": "ModbusRtuFramer_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Protocol\\modbus\\modbus_rtu_framer.c.ci"
+    },
+    {
+      "caller": "ModbusRtuFramer_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Protocol\\modbus\\modbus_rtu_framer.c.ci"
+    },
+    {
+      "caller": "ModbusRtuFramer_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Protocol\\modbus\\modbus_rtu_framer.c.ci"
+    },
+    {
+      "caller": "ModbusRtuFramer_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Protocol\\modbus\\modbus_rtu_framer.c.ci"
+    },
+    {
+      "caller": "ModbusRtuServer_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Protocol\\modbus\\modbus_rtu_server.c.ci"
+    },
+    {
+      "caller": "ModbusRtuServer_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Protocol\\modbus\\modbus_rtu_server.c.ci"
+    },
+    {
+      "caller": "ModbusRtuServer_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Protocol\\modbus\\modbus_rtu_server.c.ci"
+    },
+    {
+      "caller": "ModbusRtuServer_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Protocol\\modbus\\modbus_rtu_server.c.ci"
+    },
+    {
+      "caller": "ModbusRtuServer_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Protocol\\modbus\\modbus_rtu_server.c.ci"
+    },
+    {
+      "caller": "ModbusRtuServer_Suspend",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Protocol\\modbus\\modbus_rtu_server.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/Services/ble_telemetry_service/ble_telemetry_scheduler.c:RunOne",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\ble_telemetry_service\\ble_telemetry_scheduler.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/Services/ble_telemetry_service/ble_telemetry_scheduler.c:RunOne",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\ble_telemetry_service\\ble_telemetry_scheduler.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/Services/config_store/config_store.c:CaptureFlashInfo",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\config_store\\config_store.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/Services/config_store/config_store.c:PowerSafe",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\config_store\\config_store.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/Services/config_store/config_store.c:ReadSlot",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\config_store\\config_store.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/Services/config_store/config_store.c:ReadSlot",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\config_store\\config_store.c.ci"
+    },
+    {
+      "caller": "D:/Documents/stm32f103rbt6_a33/Services/config_store/config_store.c:ReadSlot",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\config_store\\config_store.c.ci"
+    },
+    {
+      "caller": "ConfigStore_Init",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\config_store\\config_store.c.ci"
+    },
+    {
+      "caller": "ConfigStore_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\config_store\\config_store.c.ci"
+    },
+    {
+      "caller": "ConfigStore_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\config_store\\config_store.c.ci"
+    },
+    {
+      "caller": "ConfigStore_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\config_store\\config_store.c.ci"
+    },
+    {
+      "caller": "ConfigStore_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\config_store\\config_store.c.ci"
+    },
+    {
+      "caller": "ConfigStore_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\config_store\\config_store.c.ci"
+    },
+    {
+      "caller": "ConfigStore_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\config_store\\config_store.c.ci"
+    },
+    {
+      "caller": "ConfigStore_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\config_store\\config_store.c.ci"
+    },
+    {
+      "caller": "ConfigStore_Process",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\config_store\\config_store.c.ci"
+    },
+    {
+      "caller": "Scheduler_RunPending",
+      "source": "build\\Stage5NBStack\\CMakeFiles\\stm32f103rbt6_a33.dir\\Services\\scheduler\\scheduler.c.ci"
+    }
+  ],
+  "cycle_count": 0,
+  "limitations": [
+    "GCC callgraph does not resolve function-pointer targets.",
+    "Assembly startup usage and asynchronous nesting are not directly measured.",
+    "All enabled peripheral IRQs are configured at preemption priority 5 and cannot preempt each other.",
+    "This report is not a fill-pattern runtime stack-watermark measurement."
+  ]
+}

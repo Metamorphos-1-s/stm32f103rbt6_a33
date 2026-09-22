@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "runner": {
+    "path": "Tests/host/build_stage5nb_msvc/stage5mr5_reference_lock_runner.exe",
+    "length": 70656,
+    "sha256": "8B382BE4ED33B11F4101C5CC05C0871BF6F860026CDFE36A45B6724F1F22EBB5"
+  },
+  "cases": [
+    {
+      "case": "cold_empty_1",
+      "samples": 3596,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "cold_empty_2",
+      "samples": 3601,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "hot_empty",
+      "samples": 3601,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "loaded_500g_1",
+      "samples": 3601,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "loaded_500g_2",
+      "samples": 3600,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "loaded_1kg",
+      "samples": 3816,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "cycles_static",
+      "samples": 371,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "cycles_dosing",
+      "samples": 371,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "mode_switches",
+      "samples": 2500,
+      "mismatch_count": 0,
+      "first_mismatches": []
+    }
+  ],
+  "real_sample_count": 22557,
+  "total_sample_count": 25057,
+  "total_mismatch_count": 0,
+  "passed": true
+}
