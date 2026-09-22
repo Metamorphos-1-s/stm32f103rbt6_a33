@@ -10,6 +10,8 @@
 
 int main(void)
 {
+    _Static_assert(sizeof(WeightEngine) < 960U,
+                   "WeightEngine exceeds frozen RAM budget");
     DeviceConfig config;
     CalibrationConfig calibration;
     WeightEngine engine;
@@ -23,7 +25,6 @@ int main(void)
     config.metrology.profiles[0].filter_strength = 0U;
     CHECK(WeightEngine_InitMass(&engine, &config.metrology,
         &config.calibration, &config.stability, 0, false));
-    CHECK(sizeof(WeightEngine) < 960U);
     sample.raw_value = -500000;
     sample.timestamp_ms = 100U;
     sample.valid = true;

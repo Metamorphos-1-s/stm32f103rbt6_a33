@@ -115,7 +115,7 @@ bool DirectionalDisplayFollower_Process(DirectionalDisplayFollower *follower,
         return true;
     }
     follower->flags = (uint8_t)((follower->flags | FLAG_LOCKED) &
-        (uint8_t)~FLAG_LARGE_STEP);
+        (uint8_t)~(uint8_t)FLAG_LARGE_STEP);
     direction = Direction(delta);
     if (input->sample_sequence != follower->last_sample_sequence)
     {

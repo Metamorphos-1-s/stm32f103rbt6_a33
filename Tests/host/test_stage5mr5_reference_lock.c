@@ -114,9 +114,10 @@ static int TestFaultAndSampleWrap(void)
 
 int main(void)
 {
+    _Static_assert(sizeof(R5DriftCompensator) <= 1080U,
+                   "R5DriftCompensator exceeds frozen RAM budget");
     (void)printf("R5DriftCompensator size=%zu bytes\n",
                  sizeof(R5DriftCompensator));
-    CHECK(sizeof(R5DriftCompensator) <= 1080U);
     CHECK(TestModesAndEvents() == 0);
     CHECK(TestWindowsRateAndLimits() == 0);
     CHECK(TestStepDeduplication() == 0);
