@@ -32,6 +32,13 @@ static void SafeResult(GuardedCheckweigh *guarded,
     result->qualified_ok_transition = false;
 }
 
+static void RequireReacquisition(GuardedCheckweigh *guarded,
+    const GuardedCheckweighInput *input)
+{
+    guarded->armed = false;
+    guarded->switch_sequence = input->sample_sequence;
+}
+
 void GuardedCheckweigh_Init(GuardedCheckweigh *guarded)
 {
     if (guarded == NULL) return;
@@ -73,33 +80,51 @@ bool GuardedCheckweigh_Process(GuardedCheckweigh *guarded,
     if (guarded->mode == GUARDED_CHECKWEIGH_OFF)
         SafeResult(guarded, GUARDED_REASON_OFF, result);
     else if (!input->enabled)
+    {
+        RequireReacquisition(guarded, input);
         SafeResult(guarded, GUARDED_REASON_DISABLED, result);
+    }
     else if (input->fault_active)
+    {
+        RequireReacquisition(guarded, input);
         SafeResult(guarded, GUARDED_REASON_FAULT, result);
+    }
     else if (input->calibration_active)
+    {
+        RequireReacquisition(guarded, input);
         SafeResult(guarded, GUARDED_REASON_CALIBRATION, result);
+    }
     else if ((uint32_t)(now_ms - input->sample_timestamp_ms) >
              GUARDED_STALE_TIMEOUT_MS)
-        SafeResult(guarded, GUARDED_REASON_STALE, result);
-    else if (!guarded->armed)
     {
-        if (input->sample_sequence != guarded->switch_sequence)
-        {
-            guarded->armed = true;
-            guarded->switch_sequence = input->sample_sequence;
-        }
-        SafeResult(guarded, GUARDED_REASON_MODE_SWITCH, result);
+        RequireReacquisition(guarded, input);
+        SafeResult(guarded, GUARDED_REASON_STALE, result);
     }
-    else if (input->sample_sequence == guarded->switch_sequence)
-        SafeResult(guarded, GUARDED_REASON_MODE_SWITCH, result);
     else
     {
         candidate = (guarded->mode == GUARDED_CHECKWEIGH_STATIC) ?
             input->static_class : input->dynamic_class;
         if (candidate == CHECKWEIGH_SHADOW_PENDING)
+        {
+            RequireReacquisition(guarded, input);
             SafeResult(guarded, GUARDED_REASON_PENDING, result);
+        }
         else if (!IsCandidateValid(candidate))
+        {
+            RequireReacquisition(guarded, input);
             SafeResult(guarded, GUARDED_REASON_INVALID, result);
+        }
+        else if (!guarded->armed)
+        {
+            if (input->sample_sequence != guarded->switch_sequence)
+            {
+                guarded->armed = true;
+                guarded->switch_sequence = input->sample_sequence;
+            }
+            SafeResult(guarded, GUARDED_REASON_MODE_SWITCH, result);
+        }
+        else if (input->sample_sequence == guarded->switch_sequence)
+            SafeResult(guarded, GUARDED_REASON_MODE_SWITCH, result);
         else
         {
             guarded->reason = GUARDED_REASON_ACTIVE;
