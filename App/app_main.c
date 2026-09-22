@@ -39,6 +39,9 @@
 #include "ble_command_service.h"
 #include "stage5c_ble_diagnostics.h"
 #include "stage5i_usart3_diagnostics.h"
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+#include "guarded_checkweigh.h"
+#endif
 #if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
 #include "stage5l_measurement_diagnostics.h"
 #endif
@@ -53,6 +56,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
 static void App_1msTask(void *context);
 static void App_10msTask(void *context);
@@ -78,6 +82,9 @@ static uint32_t s_last_published_raw_count;
 static StartupAutoZeroController s_startup_auto_zero;
 #if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
 static AlarmOutputManager s_alarm_output_manager;
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+static GuardedCheckweigh s_guarded_checkweigh;
+#endif
 static LimitChecker s_limit_checker;
 static uint32_t s_alarm_last_sample_sequence;
 static uint32_t s_alarm_last_config_revision;
@@ -131,6 +138,9 @@ bool App_Init(void)
 #if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
   LimitChecker_Init(&s_limit_checker);
   AlarmOutputManager_Init(&s_alarm_output_manager);
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+  GuardedCheckweigh_Init(&s_guarded_checkweigh);
+#endif
   s_alarm_last_sample_sequence = 0U;
   s_alarm_last_config_revision = 0U;
   s_alarm_last_app_state = APP_STATE_BOOT;
@@ -312,6 +322,24 @@ bool App_GetAlarmOutputDiagnostics(AlarmOutputDiagnostics *diagnostics)
 #endif
 }
 
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+bool App_SetGuardedCheckweighMode(GuardedCheckweighMode mode,
+    uint32_t expected_generation, bool require_generation)
+{
+  if (!GuardedCheckweigh_SetMode(&s_guarded_checkweigh, mode,
+      expected_generation, require_generation)) return false;
+  AlarmOutputManager_AllOff(&s_alarm_output_manager);
+  return true;
+}
+
+bool App_GetGuardedCheckweighState(GuardedCheckweigh *state)
+{
+  if (state == NULL) return false;
+  *state = s_guarded_checkweigh;
+  return true;
+}
+#endif
+
 const StartupAutoZeroSnapshot *App_GetStartupAutoZeroSnapshot(void)
 {
   return StartupAutoZeroController_GetSnapshot(&s_startup_auto_zero);
@@ -464,6 +492,10 @@ static void App_UpdateAlarmOutputs(uint32_t now_ms)
   uint32_t config_revision;
   bool weight_invalid;
   bool classification_changed;
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+  AlarmShadowDiagnostics shadow;
+  GuardedCheckweighInput guarded_input;
+#endif
 
   if (context == NULL)
   {
@@ -488,6 +520,34 @@ static void App_UpdateAlarmOutputs(uint32_t now_ms)
   {
     return;
   }
+
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+  (void)memset(&shadow, 0, sizeof(shadow));
+  if (!MetrologyManager_GetAlarmShadowDiagnostics(&shadow))
+  {
+    AlarmOutputManager_AllOff(&s_alarm_output_manager);
+    return;
+  }
+  (void)memset(&guarded_input, 0, sizeof(guarded_input));
+  guarded_input.sample_sequence = shadow.sample_sequence;
+  guarded_input.sample_timestamp_ms = shadow.timestamp_ms;
+  guarded_input.evaluated_weight_ug =
+      (s_guarded_checkweigh.mode == GUARDED_CHECKWEIGH_DYNAMIC) ?
+      shadow.dynamic_input_ug : shadow.static_input_ug;
+  guarded_input.static_class = shadow.static_class;
+  guarded_input.dynamic_class = shadow.dynamic_confirmed;
+  guarded_input.enabled = context->config.alarm.limit_function_enable &&
+      AlarmConfig_Validate(&context->config.alarm);
+  guarded_input.calibration_active = state == APP_STATE_CALIBRATION;
+  guarded_input.fault_active = (FaultManager_GetActiveMask() != 0U) ||
+      (state == APP_STATE_FAULT);
+  if (GuardedCheckweigh_Process(&s_guarded_checkweigh, &guarded_input,
+      now_ms, &result))
+    (void)AlarmOutputManager_Update(&s_alarm_output_manager, &result,
+                                    &context->config.alarm, now_ms);
+  else AlarmOutputManager_AllOff(&s_alarm_output_manager);
+  return;
+#endif
 
   config_revision = SystemContext_GetConfigRevision();
   weight_invalid = FaultManager_HasWeightInvalidFault();

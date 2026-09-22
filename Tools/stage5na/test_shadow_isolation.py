@@ -1,3 +1,4 @@
+import re
 import unittest
 from pathlib import Path
 
@@ -13,12 +14,22 @@ class ShadowIsolationTests(unittest.TestCase):
                 "BleTelemetry", "DisplayController"):
             self.assertNotIn(forbidden, source)
 
-    def test_app_formal_alarm_path_does_not_reference_shadow(self):
+    def test_app_shadow_integration_is_beta_guarded(self):
         source = (ROOT / "App/app_main.c").read_text(encoding="utf-8")
         marker = "static void App_UpdateAlarmOutputs(uint32_t now_ms)\n{"
         function = source[source.index(marker):]
-        function = function[:function.index("#endif")]
-        self.assertNotIn("AlarmShadow", function)
+        function = function[:function.index("\n}\n#endif") + 2]
+        blocks = re.findall(
+            r"#if \(A33_ENABLE_STAGE5NB_BETA != 0U\).*?#endif",
+            function, flags=re.S)
+        guarded = "\n".join(blocks)
+        standard = re.sub(
+            r"#if \(A33_ENABLE_STAGE5NB_BETA != 0U\).*?#endif", "",
+            function, flags=re.S)
+        self.assertNotIn("AlarmShadow", standard)
+        self.assertIn("AlarmShadowDiagnostics", guarded)
+        self.assertIn("GuardedCheckweigh_Process", function)
+        self.assertNotIn("OutputGpio", function)
         self.assertIn("AlarmOutputManager_Update", function)
 
 

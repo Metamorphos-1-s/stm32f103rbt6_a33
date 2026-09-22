@@ -27,6 +27,9 @@ static bool s_runtime_drift_fault_latched;
 static R5DriftCompensator s_r5_drift;
 static R5BetaApplication s_r5_application;
 static CheckweighShadow s_alarm_shadow;
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+static uint8_t s_alarm_shadow_dynamic_output;
+#endif
 static int64_t s_alarm_shadow_low_ug;
 static int64_t s_alarm_shadow_high_ug;
 #endif
@@ -142,6 +145,9 @@ bool MetrologyManager_Init(const DeviceConfig *config,
     s_r5_application = R5_BETA_APPLICATION_SHADOW;
     (void)memset(&s_r5_drift, 0, sizeof(s_r5_drift));
     CheckweighShadow_Reset(&s_alarm_shadow);
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    s_alarm_shadow_dynamic_output = CHECKWEIGH_SHADOW_PENDING;
+#endif
     s_alarm_shadow_low_ug = INT64_C(100000000);
     s_alarm_shadow_high_ug = INT64_C(400000000);
 #endif
@@ -225,6 +231,10 @@ static bool MetrologyManager_ProcessAlarmShadow(void)
     input.dynamic_weight_ug = fast_weight;
     input.low_limit_ug = s_alarm_shadow_low_ug;
     input.high_limit_ug = s_alarm_shadow_high_ug;
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    input.low_limit_ug = context->config.alarm.lower_limit_ug;
+    input.high_limit_ug = context->config.alarm.upper_limit_ug;
+#endif
     input.stable = (snapshot->status_flags & WEIGHT_STATUS_STABLE) != 0U;
     input.process_active =
         s_r5_drift.mode == R5_DRIFT_MODE_DOSING_NO_COMPENSATION;
@@ -242,6 +252,9 @@ static bool MetrologyManager_ProcessAlarmShadow(void)
         !fast_valid;
     if (!CheckweighShadow_Process(&s_alarm_shadow, &input, &output))
         return false;
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    s_alarm_shadow_dynamic_output = output.dynamic_confirmed;
+#endif
 #if (A33_ENABLE_STAGE5NA3_DIAGNOSTICS != 0U)
     Stage5NA3FaultInjection_ObserveCandidate(output.static_class,
         output.dynamic_confirmed, input.sequence, input.timestamp_ms);
@@ -860,6 +873,10 @@ bool MetrologyManager_GetAlarmShadowDiagnostics(
     diagnostics->dynamic_input_ug = fast_weight;
     diagnostics->low_limit_ug = s_alarm_shadow_low_ug;
     diagnostics->high_limit_ug = s_alarm_shadow_high_ug;
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    diagnostics->low_limit_ug = context->config.alarm.lower_limit_ug;
+    diagnostics->high_limit_ug = context->config.alarm.upper_limit_ug;
+#endif
     diagnostics->event_count = s_alarm_shadow.event_count;
     diagnostics->sample_sequence = snapshot->sample_sequence;
     diagnostics->timestamp_ms = snapshot->sample_timestamp_ms;
@@ -875,7 +892,11 @@ bool MetrologyManager_GetAlarmShadowDiagnostics(
         diagnostics->dynamic_input_ug, s_alarm_shadow_low_ug,
         s_alarm_shadow_high_ug);
     diagnostics->dynamic_candidate = s_alarm_shadow.dynamic_candidate;
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    diagnostics->dynamic_confirmed = s_alarm_shadow_dynamic_output;
+#else
     diagnostics->dynamic_confirmed = s_alarm_shadow.dynamic_confirmed;
+#endif
     diagnostics->dynamic_confirm_count = s_alarm_shadow.dynamic_confirm_count;
     diagnostics->dynamic_reason = s_alarm_shadow.last_dynamic_reason;
     diagnostics->process_active =
