@@ -2,6 +2,7 @@
 """Stage 5N-B engineering-only guarded ACTIVE monitor and controls."""
 
 import argparse
+import csv
 import json
 import sys
 import time
@@ -9,8 +10,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "Tools" / "stage5b_hw"))
+sys.path.insert(0, str(ROOT / "Tools" / "stage5mr5b_beta"))
 from hw_common import HardwareTestError, ModbusClient, execute_command
 from serial_transport import SerialTransport
+from stage5na2_hw import decode_display, decode_primary, read_static_context
+from stage5na_hw import decode as decode_shadow
+from r5_beta_hw import decode_beta
 
 FIRST = 0x02C0
 COUNT = 16
@@ -55,13 +60,16 @@ def main():
     control = sub.add_parser("set-mode")
     control.add_argument("--mode", choices=sorted(MODES), required=True)
     control.add_argument("--allow-control", action="store_true")
+    record = sub.add_parser("record")
+    record.add_argument("--duration-s", type=float, required=True)
+    record.add_argument("--poll-s", type=float, default=0.0)
     args = parser.parse_args()
     with SerialTransport(args.port, args.baud, "N", 1, 300) as transport:
         client = ModbusClient(transport, 1)
         before = read_state(client)
         if args.command == "probe":
             result = {"state": before, "writes": 0, "flash_operations": 0}
-        else:
+        elif args.command == "set-mode":
             if not args.allow_control:
                 raise HardwareTestError("set-mode requires --allow-control")
             token = int(time.time() * 1000) & 0xFFFF or 1
@@ -70,6 +78,58 @@ def main():
             result = {"before": before, "response": response,
                       "after": read_state(client), "writes": 1,
                       "flash_operations": 0, "save_operations": 0}
+        else:
+            args.output.mkdir(parents=True, exist_ok=False)
+            order = "low" if client.read(0x0103, 1)[0][0] else "high"
+            context = read_static_context(client, order)
+            started = time.monotonic(); rows = []; last_sequence = None
+            while time.monotonic() - started < args.duration_s:
+                cycle = time.monotonic()
+                primary = decode_primary(client.read(0, 64)[0], order, 0x0516)
+                shadow = decode_shadow(client.read(0x02E0, 31)[0], order)
+                guarded = decode(client.read(FIRST, COUNT)[0])
+                beta = decode_beta(client.read(0x0280, 40)[0], order)
+                display = decode_display(client.read(0x01E0, 17)[0], order)
+                if shadow["sample_sequence"] != last_sequence:
+                    row = {"utc": time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime()) +
+                        ".%03dZ" % int((time.time() % 1) * 1000),
+                        "host_monotonic_ns": time.monotonic_ns(), **primary,
+                        **display,
+                        "shadow_static_class": shadow["static_class"],
+                        "shadow_static_reason": shadow["static_reason"],
+                        "shadow_dynamic_class": shadow["dynamic_confirmed"],
+                        "shadow_dynamic_reason": shadow["dynamic_reason"],
+                        "shadow_valid": shadow["valid"],
+                        "low_limit_ug": shadow["low_limit_ug"],
+                        "high_limit_ug": shadow["high_limit_ug"],
+                        "guarded_mode": guarded["mode"],
+                        "guarded_generation": guarded["generation"],
+                        "guarded_reason": guarded["reason"],
+                        "formal_state": guarded["formal_state"],
+                        "guarded_armed": guarded["armed"],
+                        "green": guarded["green"], "yellow": guarded["yellow"],
+                        "red": guarded["red"],
+                        "internal_buzzer": guarded["internal_buzzer"],
+                        "external_buzzer": guarded["external_buzzer"],
+                        "r5_application": beta["application"],
+                        "r5_mode": beta["mode"], "r5_state": beta["state"],
+                        "r5_offset_ug": beta["offset_ug"],
+                        "r5_reference_ug": beta["reference_ug"],
+                        "r5_rebase": beta["automatic_rebase_count"]}
+                    rows.append(row); last_sequence = shadow["sample_sequence"]
+                delay = args.poll_s - (time.monotonic() - cycle)
+                if delay > 0: time.sleep(delay)
+            with (args.output / "samples.csv").open("w", encoding="utf-8",
+                    newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=list(rows[0]),
+                                        lineterminator="\n")
+                writer.writeheader(); writer.writerows(rows)
+            result = {"records": len(rows), "duration_s": time.monotonic()-started,
+                "context": context, "first": rows[0], "last": rows[-1],
+                "read_errors": 0, "flash_operations": 0, "save_operations": 0}
+            (args.output / "summary.json").write_bytes(
+                (json.dumps(result, indent=2)+"\n").encode("utf-8"))
+            print(json.dumps(result, indent=2)); return 0
         args.output.write_bytes((json.dumps(result, indent=2) + "\n").encode("utf-8"))
         print(json.dumps(result, indent=2))
     return 0

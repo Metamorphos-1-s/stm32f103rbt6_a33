@@ -40,9 +40,10 @@ def append_jsonl(path, value):
         stream.write(json.dumps(value, separators=(",", ":")) + "\n")
 
 
-def decode_primary(words, order):
-    if len(words) != 64 or words[14] != 0x0104 or words[15] != 0x0515:
-        raise HardwareTestError("expected Map 0x0104 / Firmware 0x0515")
+def decode_primary(words, order, expected_firmware=0x0515):
+    if (len(words) != 64 or words[14] != 0x0104 or
+            words[15] != expected_firmware):
+        raise HardwareTestError("unexpected Map or firmware identity")
     flags = words[4] | (words[5] << 16)
     return {
         "firmware": "0x%04X" % words[15],
