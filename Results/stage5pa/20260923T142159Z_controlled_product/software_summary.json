@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "classification": "SOFTWARE CANDIDATE",
+  "firmware": "0x0518",
+  "map": "0x0104",
+  "schema": 2,
+  "persistent_format": 3,
+  "host_ctest": "35/35 PASS",
+  "arm_wextra_werror": "PASS",
+  "release_sha_unchanged": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "rollback_0517_sha": "9D8C5881CD880D2C5D6A7D0C499A4EACF9495A550B08B237A81D4BB2F71641C5",
+  "r5_parity": "25057/0",
+  "stage5na_parity": "45711/0",
+  "d1d_parity": "49533/0",
+  "early_tracking": "REJECTED; excluded from product",
+  "asan": "NOT RUN",
+  "ubsan": "NOT RUN",
+  "hardware": "PENDING EXPLICIT AUTHORIZATION"
+}

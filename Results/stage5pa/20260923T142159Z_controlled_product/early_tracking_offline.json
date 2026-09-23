@@ -1,0 +1,513 @@
+{
+  "schema_version": 1,
+  "classification": "DEVELOPMENT / OPENED REGRESSION",
+  "parameters": {
+    "holdoff_s": 15,
+    "early_reference_s": [
+      15,
+      45
+    ],
+    "evaluation_s": 10,
+    "window_s": 30,
+    "confirmations": 2,
+    "earliest_adjustment_s": 65,
+    "end_s": 900,
+    "max_step_ug": 1667,
+    "max_early_offset_ug": 100000,
+    "deadband_ug": 10000
+  },
+  "datasets": {
+    "stage5l_creep": {
+      "path": "Results/stage5l_characterization/20260913T064617Z_creep_500g_30m/samples.csv",
+      "classification": "DEVELOPMENT / OPENED REGRESSION",
+      "candidate": {
+        "eligible": true,
+        "reference_ug": 500031541,
+        "metrics": {
+          "60": {
+            "original_error_ug": 14645,
+            "corrected_error_ug": 14645,
+            "offset_ug": 0
+          },
+          "120": {
+            "original_error_ug": 27036,
+            "corrected_error_ug": 22035,
+            "offset_ug": 5001
+          },
+          "180": {
+            "original_error_ug": 25909,
+            "corrected_error_ug": 15907,
+            "offset_ug": 10002
+          },
+          "300": {
+            "original_error_ug": 49565,
+            "corrected_error_ug": 29561,
+            "offset_ug": 20004
+          },
+          "600": {
+            "original_error_ug": 54071,
+            "corrected_error_ug": 10729,
+            "offset_ug": 43342
+          },
+          "900": {
+            "original_error_ug": 70969,
+            "corrected_error_ug": 22626,
+            "offset_ug": 48343
+          },
+          "1800": {
+            "original_error_ug": 32668,
+            "corrected_error_ug": -15675,
+            "offset_ug": 48343
+          }
+        },
+        "final_offset_ug": 48343,
+        "reverse_amplification": false,
+        "improved_5_10_15_count": 3,
+        "max_10s_correction_ug": 1667
+      }
+    },
+    "r4_placement_2": {
+      "path": "Results/stage5mr4/20260916T_r4_500g_placement_2/samples.csv",
+      "classification": "DEVELOPMENT / OPENED REGRESSION",
+      "candidate": {
+        "eligible": true,
+        "reference_ug": 47312,
+        "metrics": {
+          "60": {
+            "original_error_ug": 500038300,
+            "corrected_error_ug": 500038300,
+            "offset_ug": 0
+          },
+          "120": {
+            "original_error_ug": 500063083,
+            "corrected_error_ug": 500059749,
+            "offset_ug": 3334
+          },
+          "180": {
+            "original_error_ug": 500051818,
+            "corrected_error_ug": 500043483,
+            "offset_ug": 8335
+          },
+          "300": {
+            "original_error_ug": 500058577,
+            "corrected_error_ug": 500040240,
+            "offset_ug": 18337
+          },
+          "600": {
+            "original_error_ug": 500058577,
+            "corrected_error_ug": 500036906,
+            "offset_ug": 21671
+          },
+          "900": {
+            "original_error_ug": 500058577,
+            "corrected_error_ug": 500036906,
+            "offset_ug": 21671
+          },
+          "1800": {
+            "original_error_ug": 500058577,
+            "corrected_error_ug": 500036906,
+            "offset_ug": 21671
+          }
+        },
+        "final_offset_ug": 21671,
+        "reverse_amplification": false,
+        "improved_5_10_15_count": 3,
+        "max_10s_correction_ug": 1667
+      }
+    },
+    "r4_cycles": {
+      "path": "Results/stage5mr4/20260916T_r4_load_unload_cycles_5/samples.csv",
+      "classification": "DEVELOPMENT / OPENED REGRESSION",
+      "candidate": {
+        "eligible": true,
+        "reference_ug": 5632,
+        "metrics": {
+          "60": {
+            "original_error_ug": 500047313,
+            "corrected_error_ug": 500047313,
+            "offset_ug": 0
+          },
+          "120": {
+            "original_error_ug": 500051818,
+            "corrected_error_ug": 500050151,
+            "offset_ug": 1667
+          },
+          "180": {
+            "original_error_ug": 500039427,
+            "corrected_error_ug": 500036093,
+            "offset_ug": 3334
+          },
+          "300": {
+            "original_error_ug": -21403,
+            "corrected_error_ug": -28071,
+            "offset_ug": 6668
+          },
+          "600": {
+            "original_error_ug": -14644,
+            "corrected_error_ug": -17978,
+            "offset_ug": 3334
+          },
+          "900": {
+            "original_error_ug": -14644,
+            "corrected_error_ug": -17978,
+            "offset_ug": 3334
+          },
+          "1800": {
+            "original_error_ug": -14644,
+            "corrected_error_ug": -17978,
+            "offset_ug": 3334
+          }
+        },
+        "final_offset_ug": 3334,
+        "reverse_amplification": false,
+        "improved_5_10_15_count": 0,
+        "max_10s_correction_ug": 1667
+      }
+    },
+    "filt0_load": {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt0_load_step/samples.csv",
+      "classification": "DEVELOPMENT / OPENED REGRESSION",
+      "candidate": {
+        "eligible": true,
+        "reference_ug": 499969585,
+        "metrics": {
+          "60": {
+            "original_error_ug": 30415,
+            "corrected_error_ug": 30415,
+            "offset_ug": 0
+          },
+          "120": {
+            "original_error_ug": 73221,
+            "corrected_error_ug": 68220,
+            "offset_ug": 5001
+          },
+          "180": {
+            "original_error_ug": 73221,
+            "corrected_error_ug": 66553,
+            "offset_ug": 6668
+          },
+          "300": {
+            "original_error_ug": 73221,
+            "corrected_error_ug": 66553,
+            "offset_ug": 6668
+          },
+          "600": {
+            "original_error_ug": 73221,
+            "corrected_error_ug": 66553,
+            "offset_ug": 6668
+          },
+          "900": {
+            "original_error_ug": 73221,
+            "corrected_error_ug": 66553,
+            "offset_ug": 6668
+          },
+          "1800": {
+            "original_error_ug": 73221,
+            "corrected_error_ug": 66553,
+            "offset_ug": 6668
+          }
+        },
+        "final_offset_ug": 6668,
+        "reverse_amplification": false,
+        "improved_5_10_15_count": 3,
+        "max_10s_correction_ug": 1667
+      }
+    },
+    "filt1_load": {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt1_load_step/samples.csv",
+      "classification": "DEVELOPMENT / OPENED REGRESSION",
+      "candidate": {
+        "eligible": true,
+        "reference_ug": -56324,
+        "metrics": {
+          "60": {
+            "original_error_ug": 15771,
+            "corrected_error_ug": 15771,
+            "offset_ug": 0
+          },
+          "120": {
+            "original_error_ug": 500070968,
+            "corrected_error_ug": 500067634,
+            "offset_ug": 3334
+          },
+          "180": {
+            "original_error_ug": 500070968,
+            "corrected_error_ug": 500064300,
+            "offset_ug": 6668
+          },
+          "300": {
+            "original_error_ug": 500070968,
+            "corrected_error_ug": 500064300,
+            "offset_ug": 6668
+          },
+          "600": {
+            "original_error_ug": 500070968,
+            "corrected_error_ug": 500064300,
+            "offset_ug": 6668
+          },
+          "900": {
+            "original_error_ug": 500070968,
+            "corrected_error_ug": 500064300,
+            "offset_ug": 6668
+          },
+          "1800": {
+            "original_error_ug": 500070968,
+            "corrected_error_ug": 500064300,
+            "offset_ug": 6668
+          }
+        },
+        "final_offset_ug": 6668,
+        "reverse_amplification": false,
+        "improved_5_10_15_count": 3,
+        "max_10s_correction_ug": 1667
+      }
+    },
+    "filt2_load": {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt2_load_step_retry/samples.csv",
+      "classification": "DEVELOPMENT / OPENED REGRESSION",
+      "candidate": {
+        "eligible": true,
+        "reference_ug": 500002253,
+        "metrics": {
+          "60": {
+            "original_error_ug": -11265,
+            "corrected_error_ug": -11265,
+            "offset_ug": 0
+          },
+          "120": {
+            "original_error_ug": -28162,
+            "corrected_error_ug": -28162,
+            "offset_ug": 0
+          },
+          "180": {
+            "original_error_ug": 2253,
+            "corrected_error_ug": 2253,
+            "offset_ug": 0
+          },
+          "300": {
+            "original_error_ug": -6759,
+            "corrected_error_ug": -6759,
+            "offset_ug": 0
+          },
+          "600": {
+            "original_error_ug": -6759,
+            "corrected_error_ug": -6759,
+            "offset_ug": 0
+          },
+          "900": {
+            "original_error_ug": -6759,
+            "corrected_error_ug": -6759,
+            "offset_ug": 0
+          },
+          "1800": {
+            "original_error_ug": -6759,
+            "corrected_error_ug": -6759,
+            "offset_ug": 0
+          }
+        },
+        "final_offset_ug": 0,
+        "reverse_amplification": false,
+        "improved_5_10_15_count": 0,
+        "max_10s_correction_ug": 0
+      }
+    },
+    "filt3_load": {
+      "path": "Results/stage5l_characterization/20260913_filter_compare/filt3_load_step/samples.csv",
+      "classification": "DEVELOPMENT / OPENED REGRESSION",
+      "candidate": {
+        "eligible": true,
+        "reference_ug": 499942550,
+        "metrics": {
+          "60": {
+            "original_error_ug": 7885,
+            "corrected_error_ug": 7885,
+            "offset_ug": 0
+          },
+          "120": {
+            "original_error_ug": 20276,
+            "corrected_error_ug": 20276,
+            "offset_ug": 0
+          },
+          "180": {
+            "original_error_ug": 20276,
+            "corrected_error_ug": 18609,
+            "offset_ug": 1667
+          },
+          "300": {
+            "original_error_ug": 20276,
+            "corrected_error_ug": 18609,
+            "offset_ug": 1667
+          },
+          "600": {
+            "original_error_ug": 20276,
+            "corrected_error_ug": 18609,
+            "offset_ug": 1667
+          },
+          "900": {
+            "original_error_ug": 20276,
+            "corrected_error_ug": 18609,
+            "offset_ug": 1667
+          },
+          "1800": {
+            "original_error_ug": 20276,
+            "corrected_error_ug": 18609,
+            "offset_ug": 1667
+          }
+        },
+        "final_offset_ug": 1667,
+        "reverse_amplification": false,
+        "improved_5_10_15_count": 3,
+        "max_10s_correction_ug": 1667
+      }
+    },
+    "r5d_12h": {
+      "path": "Results/stage5mr5d/20260917T182739Z_r5d_12h_500g/active_12h/samples.csv",
+      "classification": "DEVELOPMENT / OPENED REGRESSION",
+      "candidate": {
+        "eligible": true,
+        "reference_ug": 500039427,
+        "metrics": {
+          "60": {
+            "original_error_ug": -11265,
+            "corrected_error_ug": -11265,
+            "offset_ug": 0
+          },
+          "120": {
+            "original_error_ug": 3379,
+            "corrected_error_ug": 3379,
+            "offset_ug": 0
+          },
+          "180": {
+            "original_error_ug": -6759,
+            "corrected_error_ug": -6759,
+            "offset_ug": 0
+          },
+          "300": {
+            "original_error_ug": 6759,
+            "corrected_error_ug": 6759,
+            "offset_ug": 0
+          },
+          "600": {
+            "original_error_ug": 3379,
+            "corrected_error_ug": 45,
+            "offset_ug": 3334
+          },
+          "900": {
+            "original_error_ug": 7885,
+            "corrected_error_ug": 4551,
+            "offset_ug": 3334
+          },
+          "1800": {
+            "original_error_ug": 10138,
+            "corrected_error_ug": 6804,
+            "offset_ug": 3334
+          }
+        },
+        "final_offset_ug": 3334,
+        "reverse_amplification": false,
+        "improved_5_10_15_count": 2,
+        "max_10s_correction_ug": 1667
+      }
+    },
+    "r5d_unload": {
+      "path": "Results/stage5mr5d/20260917T182739Z_r5d_12h_500g/active_dosing_unload/samples.csv",
+      "classification": "DEVELOPMENT / OPENED REGRESSION",
+      "candidate": {
+        "eligible": true,
+        "reference_ug": 500232055,
+        "metrics": {
+          "60": {
+            "original_error_ug": -500046186,
+            "corrected_error_ug": -500046186,
+            "offset_ug": 0
+          },
+          "120": {
+            "original_error_ug": -500070969,
+            "corrected_error_ug": -500065968,
+            "offset_ug": -5001
+          },
+          "180": {
+            "original_error_ug": -500066463,
+            "corrected_error_ug": -500056461,
+            "offset_ug": -10002
+          },
+          "300": {
+            "original_error_ug": -500094625,
+            "corrected_error_ug": -500074621,
+            "offset_ug": -20004
+          },
+          "600": {
+            "original_error_ug": -500099131,
+            "corrected_error_ug": -500054122,
+            "offset_ug": -45009
+          },
+          "900": {
+            "original_error_ug": -500110395,
+            "corrected_error_ug": -500040381,
+            "offset_ug": -70014
+          },
+          "1800": {
+            "original_error_ug": -500150949,
+            "corrected_error_ug": -500080935,
+            "offset_ug": -70014
+          }
+        },
+        "final_offset_ug": -70014,
+        "reverse_amplification": false,
+        "improved_5_10_15_count": 3,
+        "max_10s_correction_ug": 1667
+      }
+    },
+    "dosing_slow_fill": {
+      "path": "Results/stage5na2/20260921T095640Z_shadow_hardware_closure/slow_fill_and_pauses/samples.csv",
+      "classification": "DEVELOPMENT / OPENED REGRESSION",
+      "candidate": {
+        "eligible": true,
+        "reference_ug": -25906,
+        "metrics": {
+          "60": {
+            "original_error_ug": 4506,
+            "corrected_error_ug": 4506,
+            "offset_ug": 0
+          },
+          "120": {
+            "original_error_ug": 7885,
+            "corrected_error_ug": 7885,
+            "offset_ug": 0
+          },
+          "180": {
+            "original_error_ug": 7885,
+            "corrected_error_ug": 7885,
+            "offset_ug": 0
+          },
+          "300": {
+            "original_error_ug": 28159,
+            "corrected_error_ug": 28159,
+            "offset_ug": 0
+          },
+          "600": {
+            "original_error_ug": 66454,
+            "corrected_error_ug": 66454,
+            "offset_ug": 0
+          },
+          "900": {
+            "original_error_ug": 137408260,
+            "corrected_error_ug": 137408260,
+            "offset_ug": 0
+          },
+          "1800": {
+            "original_error_ug": 49559,
+            "corrected_error_ug": 49559,
+            "offset_ug": 0
+          }
+        },
+        "final_offset_ug": 0,
+        "reverse_amplification": false,
+        "improved_5_10_15_count": 0,
+        "max_10s_correction_ug": 0
+      }
+    }
+  },
+  "passed": false,
+  "decision": "REJECT"
+}
