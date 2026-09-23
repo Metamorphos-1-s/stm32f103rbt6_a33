@@ -1,0 +1,88 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5PA1_SOFTWARE_PREFLASH_FREEZE",
+  "run_id": "software",
+  "repository_commit": "9787109",
+  "files": [
+    {
+      "path": "artifacts/stage5pa1_0519_baseline_diagnostics.bin",
+      "length": 109008,
+      "sha256": "81A601EE1618F5EE41E3C40F3AD54A57289B9F2E0CDB29E7EAC2FAC2F4F5823E"
+    },
+    {
+      "path": "artifacts/stage5pa1_0519_baseline_diagnostics.elf",
+      "length": 2033104,
+      "sha256": "466C04AB5B06BAFA71A0504F841F35F3840B2EC042FF8BA33BFB9E0DE1D934B5"
+    },
+    {
+      "path": "artifacts/stage5pa1_0519_candidate.bin",
+      "length": 107516,
+      "sha256": "74992D2F8C0537DFAD06C12C878C6791FD041C3F1798B4CC0981EDA2E5A0BB82"
+    },
+    {
+      "path": "artifacts/stage5pa1_0519_candidate.elf",
+      "length": 2024140,
+      "sha256": "07026CC12DE030445F8D72EB2980C2D8FD8CAB8539DEC81EC76888C3295A0E17"
+    },
+    {
+      "path": "artifacts/stage5pa1_0519_candidate.map",
+      "length": 1430155,
+      "sha256": "533FC7E000D0A1AFC6A21CA36674A4E6CE539587A6DB311E874B9C4BA4046E95"
+    },
+    {
+      "path": "artifacts/stage5pa1_0519_optimized_diagnostics.bin",
+      "length": 108808,
+      "sha256": "01B39FC5CCF7DEA7CF0EDEDA146EC510A512740A08D99AF6BE54EF86EB58D057"
+    },
+    {
+      "path": "artifacts/stage5pa1_0519_optimized_diagnostics.elf",
+      "length": 2039220,
+      "sha256": "B5A5C4D4C900577CEE5B3B139E6B366D6D7332B7C4399D9255761DB95550990A"
+    },
+    {
+      "path": "d1d_parity.json",
+      "length": 1098,
+      "sha256": "89ECAC80B85D6955C0544CEF2F9EF80226D4FBB10CDB7A795E7C2FB549C2E239"
+    },
+    {
+      "path": "device_preflight_0517.json",
+      "length": 2854,
+      "sha256": "6D432FB28AE035B74FFF5260143A444D1711E1A04EEEA1557C603FBD12117801"
+    },
+    {
+      "path": "r5_legacy_parity.json",
+      "length": 1457,
+      "sha256": "1F74FC5BC4BB340936D2FECD33E3662D4C8726FC28666FC92741BAF0BB6D4695"
+    },
+    {
+      "path": "r5_sample_parity.json",
+      "length": 253,
+      "sha256": "268F20C360CEEF4601E1A790B203EE29E6ADC0805E163C90FD39D936C51A10C5"
+    },
+    {
+      "path": "ram_stack/largest_ram_symbols.json",
+      "length": 14212,
+      "sha256": "33EC20C60A0CF03376C78C087405546AE01D39FAB351D691DD2C4B21472612CE"
+    },
+    {
+      "path": "ram_stack/ram_layout.json",
+      "length": 7804,
+      "sha256": "4A33A79A31ED75AB3B578333F9E0264F6F09509307AAE4FA858B990979643B0E"
+    },
+    {
+      "path": "ram_stack/stack_watermark.json",
+      "length": 46316,
+      "sha256": "1B60B96735BD16A04BB7A5E8934747E396228D5F1EF927F9FFAB36EE687BDB59"
+    },
+    {
+      "path": "software_summary.json",
+      "length": 2218,
+      "sha256": "CD5CAEF414DF3B8ADAC49AF939D4F88AE7A947200621F764E8002271074114DD"
+    },
+    {
+      "path": "stage5na_parity.json",
+      "length": 1205,
+      "sha256": "0B3AA70FC37BF4D616F0AF58F97C1ABAFAAFE161F05D5B2E2ACFF092328267F4"
+    }
+  ]
+}
