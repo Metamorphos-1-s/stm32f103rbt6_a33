@@ -74,11 +74,17 @@ typedef struct
     int32_t desired_display_count;
     int32_t display_count;
     uint32_t last_sample_sequence;
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    uint32_t last_evidence_ms;
+#endif
     int8_t direction;
     int8_t evidence;
     uint16_t source;
     bool display_domain_valid;
     bool large_step;
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    bool have_evidence_time;
+#endif
 #endif
 } DisplayConditionSnapshot;
 

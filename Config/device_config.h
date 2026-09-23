@@ -215,7 +215,10 @@ typedef struct
     bool tare_power_loss_retention;
     bool watchdog_enable;
     bool startup_auto_zero_enable;
-    uint8_t reserved[5];
+    uint8_t requested_r5_mode;
+    uint8_t requested_r5_application;
+    uint8_t requested_checkweigh_mode;
+    uint8_t reserved[2];
 } SystemConfig;
 
 typedef struct

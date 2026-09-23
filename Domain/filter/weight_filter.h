@@ -27,6 +27,8 @@ typedef struct
 
 bool WeightFilter_Init(WeightFilter *filter, FilterMode mode,
                        uint8_t strength);
+bool WeightFilter_InitForRate(WeightFilter *filter, FilterMode mode,
+    uint8_t strength, Cs1237DataRate rate);
 void WeightFilter_Reset(WeightFilter *filter);
 bool WeightFilter_Process(WeightFilter *filter, int32_t raw,
                           int32_t *filtered);

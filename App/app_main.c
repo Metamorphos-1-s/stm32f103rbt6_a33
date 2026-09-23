@@ -173,6 +173,16 @@ bool App_Init(void)
     return false;
   }
   (void)MetrologyManager_Init(&config, &SystemContext_Get()->runtime);
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+  (void)MetrologyManager_RestoreR5Request(
+      (R5BetaApplication)config.system.requested_r5_application,
+      (R5DriftMode)config.system.requested_r5_mode);
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+  (void)GuardedCheckweigh_SetMode(&s_guarded_checkweigh,
+      (GuardedCheckweighMode)config.system.requested_checkweigh_mode,
+      s_guarded_checkweigh.generation, true);
+#endif
+#endif
 #if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
   Stage5LMeasurementDiagnostics_Init();
 #endif
@@ -329,6 +339,9 @@ bool App_SetGuardedCheckweighMode(GuardedCheckweighMode mode,
   if (!GuardedCheckweigh_SetMode(&s_guarded_checkweigh, mode,
       expected_generation, require_generation)) return false;
   AlarmOutputManager_AllOff(&s_alarm_output_manager);
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+  if (!SystemContext_SetRequestedCheckweighMode((uint8_t)mode)) return false;
+#endif
   return true;
 }
 

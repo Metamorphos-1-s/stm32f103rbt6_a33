@@ -102,6 +102,13 @@
                 "A33_ENABLE_STAGE5NB_BETA": "ON",
                 "A33_ENABLE_STAGE5MR5E_D1D_BETA": "ON"
             }
+        },
+        {
+            "name": "Stage5PABeta",
+            "inherits": "Stage5MR5ED1DBeta",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5PA_PRODUCT": "ON"
+            }
         }
     ],
     "buildPresets": [
@@ -144,6 +151,10 @@
         {
             "name": "Stage5MR5ED1DBeta",
             "configurePreset": "Stage5MR5ED1DBeta"
+        },
+        {
+            "name": "Stage5PABeta",
+            "configurePreset": "Stage5PABeta"
         }
     ]
 }

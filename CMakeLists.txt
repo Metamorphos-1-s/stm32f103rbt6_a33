@@ -40,6 +40,8 @@ option(A33_ENABLE_STAGE5NB_BETA
     "Enable Stage 5N-B guarded ACTIVE alarm engineering beta" OFF)
 option(A33_ENABLE_STAGE5MR5E_D1D_BETA
     "Enable Stage 5M-R5E-D1-D unified display engineering beta" OFF)
+option(A33_ENABLE_STAGE5PA_PRODUCT
+    "Enable Stage 5P-A controlled product candidate" OFF)
 
 if(A33_ENABLE_STAGE5NA3_DIAGNOSTICS AND NOT A33_ENABLE_STAGE5MR5_BETA)
     message(FATAL_ERROR "Stage 5N-A3 diagnostics require Stage 5M-R5 Beta")
@@ -49,6 +51,9 @@ if(A33_ENABLE_STAGE5NB_BETA AND NOT A33_ENABLE_STAGE5MR5_BETA)
 endif()
 if(A33_ENABLE_STAGE5MR5E_D1D_BETA AND NOT A33_ENABLE_STAGE5NB_BETA)
     message(FATAL_ERROR "Stage 5M-R5E-D1-D Beta requires Stage 5N-B Beta")
+endif()
+if(A33_ENABLE_STAGE5PA_PRODUCT AND NOT A33_ENABLE_STAGE5MR5E_D1D_BETA)
+    message(FATAL_ERROR "Stage 5P-A requires Stage 5M-R5E-D1-D")
 endif()
 
 # Enable CMake support for ASM and C languages
@@ -187,6 +192,13 @@ if(A33_ENABLE_STAGE5MR5E_D1D_BETA)
 else()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
         A33_ENABLE_STAGE5MR5E_D1D_BETA=0)
+endif()
+if(A33_ENABLE_STAGE5PA_PRODUCT)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5PA_PRODUCT=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5PA_PRODUCT=0)
 endif()
 
 if(A33_ENABLE_STAGE5MR5_BETA)

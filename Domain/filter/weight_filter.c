@@ -83,6 +83,29 @@ bool WeightFilter_Init(WeightFilter *filter, FilterMode mode,
     return true;
 }
 
+bool WeightFilter_InitForRate(WeightFilter *filter, FilterMode mode,
+    uint8_t strength, Cs1237DataRate rate)
+{
+    uint8_t effective = strength;
+    if ((rate != DEVICE_CS1237_DATA_RATE_10_HZ) &&
+        (rate != DEVICE_CS1237_DATA_RATE_40_HZ)) return false;
+    if (rate == DEVICE_CS1237_DATA_RATE_40_HZ)
+    {
+        if (mode == FILTER_MODE_AVERAGE)
+        {
+            uint16_t scaled = (uint16_t)strength * 4U;
+            effective = (uint8_t)((scaled > WEIGHT_FILTER_MAX_WINDOW) ?
+                WEIGHT_FILTER_MAX_WINDOW : scaled);
+        }
+        else if ((mode == FILTER_MODE_IIR) ||
+                 (mode == FILTER_MODE_MEDIAN3_IIR))
+        {
+            effective = (strength > 6U) ? 8U : (uint8_t)(strength + 2U);
+        }
+    }
+    return WeightFilter_Init(filter, mode, effective);
+}
+
 void WeightFilter_Reset(WeightFilter *filter)
 {
     FilterMode mode;

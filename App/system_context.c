@@ -154,6 +154,31 @@ bool SystemContext_SetRuntimeWeightView(WeightViewMode view)
   s_system_context.runtime.weight_view = view;
   return true;
 }
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+bool SystemContext_SetRequestedR5Mode(uint8_t mode)
+{
+  if (!s_system_context.initialized || mode > 2U) return false;
+  if (s_system_context.config.system.requested_r5_mode == mode) return true;
+  s_system_context.config.system.requested_r5_mode = mode;
+  return SystemContext_MarkConfigChanged();
+}
+bool SystemContext_SetRequestedR5Application(uint8_t application)
+{
+  if (!s_system_context.initialized || application > 1U) return false;
+  if (s_system_context.config.system.requested_r5_application == application)
+    return true;
+  s_system_context.config.system.requested_r5_application = application;
+  return SystemContext_MarkConfigChanged();
+}
+bool SystemContext_SetRequestedCheckweighMode(uint8_t mode)
+{
+  if (!s_system_context.initialized || mode > 2U) return false;
+  if (s_system_context.config.system.requested_checkweigh_mode == mode)
+    return true;
+  s_system_context.config.system.requested_checkweigh_mode = mode;
+  return SystemContext_MarkConfigChanged();
+}
+#endif
 
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
 bool SystemContext_SetActiveUnitConfig(MassUnit unit)

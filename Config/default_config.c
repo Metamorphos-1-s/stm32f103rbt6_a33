@@ -41,7 +41,13 @@ void DefaultConfig_Load(DeviceConfig *config)
     /* DEVELOPMENT DEFAULT - NOT VERIFIED ON SCALE HARDWARE. */
     config->metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION] =
         (WeighingProfileConfig){DEVICE_CS1237_DATA_RATE_10_HZ,
-        DEVICE_CS1237_GAIN_128, FILTER_MODE_MEDIAN3_IIR, 3U, 8U,
+        DEVICE_CS1237_GAIN_128,
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+        FILTER_MODE_AVERAGE, 3U,
+#else
+        FILTER_MODE_MEDIAN3_IIR, 3U,
+#endif
+        8U,
         HIGH_PRECISION_ENTER_UG, HIGH_PRECISION_EXIT_UG,
         HIGH_PRECISION_HOLD_MS};
     config->metrology.profiles[WEIGHING_PROFILE_HIGH_SPEED] =
@@ -88,4 +94,9 @@ void DefaultConfig_Load(DeviceConfig *config)
     config->system.tare_power_loss_retention = false;
     config->system.watchdog_enable = (PROJECT_ENABLE_IWDG != 0U);
     config->system.startup_auto_zero_enable = false;
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    config->system.requested_r5_mode = 0U;
+    config->system.requested_r5_application = 0U;
+    config->system.requested_checkweigh_mode = 0U;
+#endif
 }

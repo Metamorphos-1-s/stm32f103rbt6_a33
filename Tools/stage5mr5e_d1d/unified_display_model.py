@@ -60,6 +60,8 @@ class UnifiedDisplay:
         self.candidate_start_ms = 0
         self.samples = []
         self.last_sequence = 0
+        self.last_evidence_ms = 0
+        self.have_evidence_time = False
         self.release_samples = 0
 
     @staticmethod
@@ -75,6 +77,7 @@ class UnifiedDisplay:
         self.direction = 0
         self.evidence = 0
         self.large_step = False
+        self.have_evidence_time = False
         self.samples = []
         self.release_samples = 0
 
@@ -184,14 +187,19 @@ class UnifiedDisplay:
                 return self.snapshot(item)
             if item.sequence != self.last_sequence:
                 self.last_sequence = item.sequence
-                if magnitude <= item.division:
-                    self.evidence -= self.sign(self.evidence)
-                elif item.stable:
-                    if self.evidence == 0 or self.sign(self.evidence) == direction:
-                        self.evidence = max(-6, min(6,
-                            self.evidence + direction))
-                    else:
-                        self.evidence += direction
+                if not self.have_evidence_time or \
+                        ((item.now_ms - self.last_evidence_ms) &
+                         0xFFFFFFFF) >= 100:
+                    self.last_evidence_ms = item.now_ms
+                    self.have_evidence_time = True
+                    if magnitude <= item.division:
+                        self.evidence -= self.sign(self.evidence)
+                    elif item.stable:
+                        if self.evidence == 0 or self.sign(self.evidence) == direction:
+                            self.evidence = max(-6, min(6,
+                                self.evidence + direction))
+                        else:
+                            self.evidence += direction
             if magnitude > item.division and \
                     self.sign(self.evidence) == direction and \
                     abs(self.evidence) >= 5:

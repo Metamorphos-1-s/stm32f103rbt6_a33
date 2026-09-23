@@ -75,6 +75,10 @@ const RuntimeDriftSnapshot *MetrologyManager_GetRuntimeDriftSnapshot(void);
 #if defined(A33_ENABLE_STAGE5MR5_BETA) && (A33_ENABLE_STAGE5MR5_BETA != 0U)
 bool MetrologyManager_SetR5Mode(R5DriftMode mode);
 bool MetrologyManager_SetR5Application(R5BetaApplication application);
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+bool MetrologyManager_RestoreR5Request(R5BetaApplication application,
+    R5DriftMode mode);
+#endif
 void MetrologyManager_ResetR5(void);
 const R5DriftSnapshot *MetrologyManager_GetR5Snapshot(void);
 R5BetaApplication MetrologyManager_GetR5Application(void);

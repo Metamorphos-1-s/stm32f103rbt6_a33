@@ -372,8 +372,14 @@ bool WeightEngine_ReconfigureFilter(WeightEngine *engine, FilterMode mode,
                                     uint8_t strength)
 {
     WeightFilter replacement;
-    if ((engine == NULL) || !engine->initialized ||
-        !WeightFilter_Init(&replacement, mode, strength)) return false;
+    if ((engine == NULL) || !engine->initialized) return false;
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    if (!WeightFilter_InitForRate(&replacement, mode, strength,
+        engine->metrology.profiles[
+            engine->metrology.active_profile].sample_rate)) return false;
+#else
+    if (!WeightFilter_Init(&replacement, mode, strength)) return false;
+#endif
     engine->filter = replacement;
 #if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     RuntimeDriftCompensator_Reset(&engine->runtime_drift,
@@ -429,8 +435,18 @@ bool WeightEngine_ReinitializeMassBeta(WeightEngine *engine,
     engine->metrology = *metrology;
     engine->calibration = *calibration;
     engine->stability_config = *stability;
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    if (!WeightFilter_InitForRate(&engine->filter, profile->filter_mode,
+            profile->filter_strength, profile->sample_rate) ||
+#else
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    if (!WeightFilter_InitForRate(&engine->filter, profile->filter_mode,
+            profile->filter_strength, profile->sample_rate) ||
+#else
     if (!WeightFilter_Init(&engine->filter, profile->filter_mode,
                            profile->filter_strength) ||
+#endif
+#endif
         !StabilityDetector_InitMass(&engine->stability,
             profile->stability_window,
             profile->stability_enter_threshold_ug,

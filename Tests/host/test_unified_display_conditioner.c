@@ -149,11 +149,32 @@ static void TestSourceInvalidAndWrap(void)
             DISPLAY_RELEASE_INVALID_DOMAIN);
 }
 
+static void TestFortyHzPhysicalCadence(void)
+{
+    DisplayConditioner conditioner;
+    DisplayConditionInput input;
+    uint32_t sequence = 10U;
+    uint8_t index;
+    DisplayConditioner_Init(&conditioner, 0, 0U);
+    (void)Lock(&conditioner, 0, 1U, 5U);
+    for (index = 0U; index < 16U; ++index)
+    {
+        input = Input(2, ++sequence, 925U + (uint32_t)index * 25U,
+            true, 5U, MASS_UNIT_G, 2U, 1U);
+        CHECK(DisplayConditioner_Update(&conditioner, &input));
+    }
+    CHECK(conditioner.snapshot.display_count == 0);
+    input = Input(2, ++sequence, 1325U, true, 5U, MASS_UNIT_G, 2U, 1U);
+    CHECK(DisplayConditioner_Update(&conditioner, &input));
+    CHECK(conditioner.snapshot.display_count == 1);
+}
+
 int main(void)
 {
     TestThreeZonesAndUniqueSequence();
     TestDivisionAndDirection();
     TestSourceInvalidAndWrap();
+    TestFortyHzPhysicalCadence();
     if (s_failures != 0U)
     {
         (void)printf("Unified display tests: %u failure(s)\n", s_failures);

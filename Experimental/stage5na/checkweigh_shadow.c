@@ -136,6 +136,9 @@ bool CheckweighShadow_Process(CheckweighShadow *shadow,
     if (static_reason != SUPPRESS_NONE)
     {
         shadow->static_stable_count = 0U;
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+        shadow->static_confirming = false;
+#endif
         static_class = (static_reason == SUPPRESS_PROCESS_ACTIVE ||
             static_reason == SUPPRESS_UNSTABLE ||
             static_reason == SUPPRESS_RESET) ?
@@ -143,9 +146,22 @@ bool CheckweighShadow_Process(CheckweighShadow *shadow,
     }
     else
     {
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+        if (!shadow->static_confirming)
+        {
+            shadow->static_confirm_start_ms = input->timestamp_ms;
+            shadow->static_confirming = true;
+        }
+#endif
         if (shadow->static_stable_count < UINT8_MAX)
             ++shadow->static_stable_count;
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+        if ((shadow->static_stable_count >= STATIC_STABLE_SAMPLES) &&
+            ((uint32_t)(input->timestamp_ms -
+             shadow->static_confirm_start_ms) >= 200U))
+#else
         if (shadow->static_stable_count >= STATIC_STABLE_SAMPLES)
+#endif
         {
             shadow->static_last_valid = output->static_immediate;
             static_class = output->static_immediate;

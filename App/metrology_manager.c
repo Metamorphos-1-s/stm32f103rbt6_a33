@@ -26,6 +26,13 @@ static bool s_runtime_drift_fault_latched;
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
 static R5DriftCompensator s_r5_drift;
 static R5BetaApplication s_r5_application;
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+static bool s_restoring_r5_request;
+static bool MetrologyManager_IsRestoringR5Request(void)
+{
+    return s_restoring_r5_request;
+}
+#endif
 static CheckweighShadow s_alarm_shadow;
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
 static uint8_t s_alarm_shadow_dynamic_output;
@@ -823,8 +830,14 @@ bool MetrologyManager_SetR5Mode(R5DriftMode mode)
 {
     AppState state = SystemContext_GetState();
     const R5DriftSnapshot *snapshot;
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    if (!s_initialized || (!MetrologyManager_IsRestoringR5Request() &&
+        (state != APP_STATE_RUN) && (state != APP_STATE_MENU)) ||
+        !R5Drift_SetMode(&s_r5_drift, mode))
+#else
     if (!s_initialized || ((state != APP_STATE_RUN) &&
         (state != APP_STATE_MENU)) || !R5Drift_SetMode(&s_r5_drift, mode))
+#endif
         return false;
     snapshot = R5Drift_GetSnapshot(&s_r5_drift);
     if ((snapshot == NULL) || !WeightEngine_SetBetaExternalDrift(&s_engine,
@@ -832,6 +845,10 @@ bool MetrologyManager_SetR5Mode(R5DriftMode mode)
         s_r5_application == R5_BETA_APPLICATION_ACTIVE)) return false;
     CheckweighShadow_RequestReset(&s_alarm_shadow,
         ALARM_SHADOW_RESET_R5_MODE);
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    if (!s_restoring_r5_request)
+        (void)SystemContext_SetRequestedR5Mode((uint8_t)mode);
+#endif
     return true;
 }
 
@@ -847,8 +864,25 @@ bool MetrologyManager_SetR5Application(R5BetaApplication application)
         application == R5_BETA_APPLICATION_ACTIVE)) return false;
     CheckweighShadow_RequestReset(&s_alarm_shadow,
         ALARM_SHADOW_RESET_R5_APPLICATION);
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    if (!s_restoring_r5_request)
+        (void)SystemContext_SetRequestedR5Application((uint8_t)application);
+#endif
     return true;
 }
+
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+bool MetrologyManager_RestoreR5Request(R5BetaApplication application,
+    R5DriftMode mode)
+{
+    bool result;
+    s_restoring_r5_request = true;
+    result = MetrologyManager_SetR5Application(application) &&
+        MetrologyManager_SetR5Mode(mode);
+    s_restoring_r5_request = false;
+    return result;
+}
+#endif
 
 void MetrologyManager_ResetR5(void)
 {

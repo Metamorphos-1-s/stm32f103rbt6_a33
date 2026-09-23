@@ -185,7 +185,8 @@ foreach(target stage5mr5e_d1d_display_tests stage5mr5e_d1d_display_runner)
         ../../Config ../../Domain/measurement)
     target_compile_definitions(${target} PRIVATE
         A33_ENABLE_STAGE5MR5_BETA=1 A33_ENABLE_STAGE5NB_BETA=1
-        A33_ENABLE_STAGE5MR5E_D1D_BETA=1 _CRT_SECURE_NO_WARNINGS)
+        A33_ENABLE_STAGE5MR5E_D1D_BETA=1 A33_ENABLE_STAGE5PA_PRODUCT=1
+        _CRT_SECURE_NO_WARNINGS)
     if(MSVC)
         target_compile_options(${target} PRIVATE /W4 /WX)
     else()
@@ -429,6 +430,51 @@ else()
 endif()
 add_test(NAME stage5mr5_persistent_equal_logic
     COMMAND stage5mr5_persistent_equal_tests)
+
+add_executable(stage5pa_persistence_tests
+    test_stage5pa_persistence.c
+    ../../Config/alarm_config_validation.c
+    ../../Config/default_config.c
+    ../../Config/device_config_validator.c
+    ../../Domain/calibration/calibration_model.c
+    ../../Domain/measurement/mass_math.c
+    ../../Domain/measurement/metrology_config_validator.c
+    ../../Domain/measurement/metrology_standard_validator.c
+    ../../Domain/measurement/unit_converter.c
+    ../../Domain/measurement/weight_math.c
+    ../../Services/config_store/persistent_codec.c)
+target_compile_definitions(stage5pa_persistence_tests PRIVATE
+    A33_ENABLE_STAGE5MR5_BETA=1 A33_ENABLE_STAGE5NB_BETA=1
+    A33_ENABLE_STAGE5MR5E_D1D_BETA=1 A33_ENABLE_STAGE5PA_PRODUCT=1)
+target_include_directories(stage5pa_persistence_tests PRIVATE
+    ../../Config ../../Domain/calibration ../../Domain/filter
+    ../../Domain/measurement ../../Domain/stability
+    ../../Services/config_store)
+if(MSVC)
+    target_compile_options(stage5pa_persistence_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5pa_persistence_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5pa_persistence_logic COMMAND stage5pa_persistence_tests)
+
+add_executable(stage5pa_timing_tests
+    test_stage5pa_timing.c
+    ../../Domain/filter/weight_filter.c
+    ../../Domain/measurement/weight_math.c
+    ../../Experimental/stage5na/checkweigh_shadow.c)
+target_compile_definitions(stage5pa_timing_tests PRIVATE
+    A33_ENABLE_STAGE5PA_PRODUCT=1)
+target_include_directories(stage5pa_timing_tests PRIVATE
+    ../../Config ../../Domain/filter ../../Domain/measurement
+    ../../Experimental/stage5na)
+if(MSVC)
+    target_compile_options(stage5pa_timing_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5pa_timing_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5pa_timing_logic COMMAND stage5pa_timing_tests)
 
 add_executable(stage5mr5_tare_revision_tests
     test_stage5mr5_tare_revision.c

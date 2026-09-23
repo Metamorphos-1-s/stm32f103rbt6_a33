@@ -18,6 +18,9 @@ typedef struct
     uint32_t last_sequence;
     uint32_t last_timestamp_ms;
     uint32_t event_count;
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    uint32_t static_confirm_start_ms;
+#endif
     uint16_t last_revision;
     uint8_t static_stable_count;
     uint8_t static_last_valid;
@@ -28,6 +31,9 @@ typedef struct
     uint8_t last_static_reason;
     uint8_t last_dynamic_reason;
     uint8_t flags;
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    bool static_confirming;
+#endif
 } CheckweighShadow;
 
 typedef struct

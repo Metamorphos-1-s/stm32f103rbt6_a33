@@ -155,6 +155,9 @@ static void ResetFollowEvidence(DisplayConditioner *conditioner)
     conditioner->snapshot.evidence = 0;
     conditioner->snapshot.direction = 0;
     conditioner->snapshot.large_step = false;
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    conditioner->snapshot.have_evidence_time = false;
+#endif
 }
 
 static void LeakEvidence(DisplayConditioner *conditioner)
@@ -472,10 +475,24 @@ bool DisplayConditioner_Update(DisplayConditioner *conditioner,
         {
             conditioner->snapshot.last_sample_sequence =
                 input->sample_sequence;
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+            if (!conditioner->snapshot.have_evidence_time ||
+                ((uint32_t)(input->now_ms -
+                 conditioner->snapshot.last_evidence_ms) >= 100U))
+            {
+                conditioner->snapshot.last_evidence_ms = input->now_ms;
+                conditioner->snapshot.have_evidence_time = true;
+                if (magnitude <= division)
+                    LeakEvidence(conditioner);
+                else if (input->stable)
+                    AccumulateEvidence(conditioner, direction);
+            }
+#else
             if (magnitude <= division)
                 LeakEvidence(conditioner);
             else if (input->stable)
                 AccumulateEvidence(conditioner, direction);
+#endif
         }
         if ((magnitude > division) &&
             (Direction64(conditioner->snapshot.evidence) == direction) &&

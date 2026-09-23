@@ -53,7 +53,14 @@ PersistentCodecResult PersistentCodec_EncodeV3(
     PutU32(&w, config->bluetooth.uart_baud_rate); PutU16(&w, config->bluetooth.protocol_version); PutU8(&w, config->bluetooth.w02_configured ? 1U : 0U);
     PutI64(&w, config->alarm.lower_limit_ug); PutI64(&w, config->alarm.upper_limit_ug); PutI64(&w, config->alarm.hysteresis_ug); PutU8(&w, (uint8_t)config->alarm.weight_source); PutU8(&w, config->alarm.internal_buzzer_enable ? 1U : 0U); PutU8(&w, config->alarm.external_buzzer_enable ? 1U : 0U); PutU8(&w, config->alarm.qualified_beep_enable ? 1U : 0U); PutU8(&w, config->alarm.limit_function_enable ? 1U : 0U);
     PutU8(&w, config->display.brightness); PutU8(&w, config->display.default_weight_view); PutU32(&w, config->battery.divider_top_ohm); PutU32(&w, config->battery.divider_bottom_ohm); PutI32(&w, config->battery.calibration_gain_ppm); PutI32(&w, config->battery.calibration_offset_mv); PutU32(&w, config->battery.low_warning_mv); PutU32(&w, config->battery.critical_low_mv); PutU32(&w, config->battery.recovery_mv); PutU8(&w, config->battery.low_voltage_alarm_enable ? 1U : 0U); PutU8(&w, config->system.tare_power_loss_retention ? 1U : 0U); PutU8(&w, config->system.watchdog_enable ? 1U : 0U); PutU8(&w, config->system.startup_auto_zero_enable ? 1U : 0U);
-    PutU8(&w, (uint8_t)runtime->weight_view); PutU64(&w, (uint64_t)runtime->current_tare_ug); PutU8(&w, runtime->tare_active ? 1U : 0U); PutU8(&w, 0U);
+    PutU8(&w, (uint8_t)runtime->weight_view); PutU64(&w, (uint64_t)runtime->current_tare_ug); PutU8(&w, runtime->tare_active ? 1U : 0U);
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    PutU8(&w, (uint8_t)((config->system.requested_r5_mode & 0x03U) |
+        ((config->system.requested_r5_application & 0x01U) << 2U) |
+        ((config->system.requested_checkweigh_mode & 0x03U) << 4U)));
+#else
+    PutU8(&w, 0U);
+#endif
     if (w.failed || w.position != PERSISTENT_V3_PAYLOAD_SIZE) return PERSISTENT_CODEC_BUFFER_TOO_SMALL;
     *encoded_length = w.position; return PERSISTENT_CODEC_OK;
 }
@@ -69,7 +76,22 @@ PersistentCodecResult PersistentCodec_DecodeV3(const uint8_t *buffer, uint16_t l
     for(i=0U;i<MASS_UNIT_COUNT;++i){valid&=GetBool(&r,&config->metrology.unit_display[i].enabled);config->metrology.unit_display[i].decimal_places=GetU8(&r);config->metrology.unit_display[i].division_digit=(uint8_t)GetU32(&r);} valid&=GetBool(&r,&config->metrology.load_cell.rated_capacity_known);config->metrology.load_cell.rated_capacity_ug=(MassValueUg)GetU64(&r);valid&=GetBool(&r,&config->metrology.load_cell.sensitivity_known);config->metrology.load_cell.sensitivity_uv_per_v=GetU32(&r);valid&=GetBool(&r,&config->metrology.load_cell.safe_load_known);config->metrology.load_cell.safe_load_permille=GetU16(&r);
     for(i=0U;i<WEIGHING_PROFILE_COUNT;++i){WeighingProfileConfig *p=&config->metrology.profiles[i];p->sample_rate=(Cs1237DataRate)GetU8(&r);p->gain=(Cs1237Gain)GetU8(&r);p->filter_mode=(FilterMode)GetU8(&r);p->filter_strength=GetU8(&r);p->stability_window=GetU8(&r);p->stability_enter_threshold_ug=(MassValueUg)GetU64(&r);p->stability_exit_threshold_ug=(MassValueUg)GetU64(&r);p->stability_hold_ms=GetU32(&r);} config->metrology.active_profile=(WeighingProfileId)GetU8(&r); config->calibration.raw_zero=GetI32(&r);config->calibration.raw_span=GetI32(&r);config->calibration.scale_numerator=GetI32(&r);config->calibration.scale_denominator=GetI32(&r);config->calibration.calibration_sequence=GetU32(&r);valid&=GetBool(&r,&config->calibration.calibration_valid);config->calibration.span_mass_ug=(MassValueUg)GetU64(&r);
     config->stability.window_size=GetU16(&r);config->stability.enter_threshold=GetU32(&r);config->stability.exit_threshold=GetU32(&r);config->stability.stable_hold_ms=GetU32(&r);config->communication.baud_rate=GetU32(&r);config->communication.parity=(CommunicationParity)GetU8(&r);config->communication.stop_bits=(CommunicationStopBits)GetU8(&r);config->communication.modbus_address=GetU8(&r);config->communication.protocol_mode=(ProtocolMode)GetU8(&r);config->communication.output_policy=(OutputPolicy)GetU8(&r);config->communication.output_period_ms=GetU32(&r);config->communication.zero_suppress_range=GetU32(&r);config->communication.word_order=(ModbusWordOrder)GetU8(&r);config->communication.response_delay_ms=GetU16(&r);config->communication.recommended_poll_interval_ms=GetU16(&r);config->communication.broadcast_write_policy=GetU8(&r);valid&=GetBool(&r,&config->communication.pending_apply);config->bluetooth.uart_baud_rate=GetU32(&r);config->bluetooth.protocol_version=GetU16(&r);valid&=GetBool(&r,&config->bluetooth.w02_configured);
-    config->alarm.lower_limit_ug=GetI64(&r);config->alarm.upper_limit_ug=GetI64(&r);config->alarm.hysteresis_ug=GetI64(&r);config->alarm.weight_source=(AlarmWeightSource)GetU8(&r);valid&=GetBool(&r,&config->alarm.internal_buzzer_enable);valid&=GetBool(&r,&config->alarm.external_buzzer_enable);valid&=GetBool(&r,&config->alarm.qualified_beep_enable);valid&=GetBool(&r,&config->alarm.limit_function_enable);config->display.brightness=GetU8(&r);config->display.default_weight_view=GetU8(&r);config->battery.divider_top_ohm=GetU32(&r);config->battery.divider_bottom_ohm=GetU32(&r);config->battery.calibration_gain_ppm=GetI32(&r);config->battery.calibration_offset_mv=GetI32(&r);config->battery.low_warning_mv=GetU32(&r);config->battery.critical_low_mv=GetU32(&r);config->battery.recovery_mv=GetU32(&r);valid&=GetBool(&r,&config->battery.low_voltage_alarm_enable);valid&=GetBool(&r,&config->system.tare_power_loss_retention);valid&=GetBool(&r,&config->system.watchdog_enable);valid&=GetBool(&r,&config->system.startup_auto_zero_enable);runtime->weight_view=(WeightViewMode)GetU8(&r);runtime->current_tare_ug=(MassValueUg)GetU64(&r);runtime->current_tare=(runtime->current_tare_ug>INT32_MAX)?INT32_MAX:(int32_t)runtime->current_tare_ug;valid&=GetBool(&r,&runtime->tare_active);valid&=(GetU8(&r)==0U);
+    config->alarm.lower_limit_ug=GetI64(&r);config->alarm.upper_limit_ug=GetI64(&r);config->alarm.hysteresis_ug=GetI64(&r);config->alarm.weight_source=(AlarmWeightSource)GetU8(&r);valid&=GetBool(&r,&config->alarm.internal_buzzer_enable);valid&=GetBool(&r,&config->alarm.external_buzzer_enable);valid&=GetBool(&r,&config->alarm.qualified_beep_enable);valid&=GetBool(&r,&config->alarm.limit_function_enable);config->display.brightness=GetU8(&r);config->display.default_weight_view=GetU8(&r);config->battery.divider_top_ohm=GetU32(&r);config->battery.divider_bottom_ohm=GetU32(&r);config->battery.calibration_gain_ppm=GetI32(&r);config->battery.calibration_offset_mv=GetI32(&r);config->battery.low_warning_mv=GetU32(&r);config->battery.critical_low_mv=GetU32(&r);config->battery.recovery_mv=GetU32(&r);valid&=GetBool(&r,&config->battery.low_voltage_alarm_enable);valid&=GetBool(&r,&config->system.tare_power_loss_retention);valid&=GetBool(&r,&config->system.watchdog_enable);valid&=GetBool(&r,&config->system.startup_auto_zero_enable);runtime->weight_view=(WeightViewMode)GetU8(&r);runtime->current_tare_ug=(MassValueUg)GetU64(&r);runtime->current_tare=(runtime->current_tare_ug>INT32_MAX)?INT32_MAX:(int32_t)runtime->current_tare_ug;valid&=GetBool(&r,&runtime->tare_active);
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    { uint8_t requested = GetU8(&r);
+      config->system.requested_r5_mode = requested & 0x03U;
+      config->system.requested_r5_application = (requested >> 2U) & 0x01U;
+      config->system.requested_checkweigh_mode = (requested >> 4U) & 0x03U;
+      if ((config->system.requested_r5_mode > 2U) ||
+          (config->system.requested_checkweigh_mode > 2U) ||
+          ((requested & 0xC8U) != 0U)) {
+          config->system.requested_r5_mode = 0U;
+          config->system.requested_r5_application = 0U;
+          config->system.requested_checkweigh_mode = 0U;
+      } }
+#else
+    valid&=(GetU8(&r)==0U);
+#endif
     if (r.failed || !valid || (r.position != PERSISTENT_V3_PAYLOAD_SIZE) ||
         !PersistentCodec_ValidateConfig(config) ||
         ((uint32_t)runtime->weight_view >= WEIGHT_VIEW_COUNT))
@@ -173,6 +195,11 @@ static bool PersistentCodec_SemanticEqual(const DeviceConfig *a,
         (a->system.tare_power_loss_retention == b->system.tare_power_loss_retention) &&
         (a->system.watchdog_enable == b->system.watchdog_enable) &&
         (a->system.startup_auto_zero_enable == b->system.startup_auto_zero_enable) &&
+#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+        (a->system.requested_r5_mode == b->system.requested_r5_mode) &&
+        (a->system.requested_r5_application == b->system.requested_r5_application) &&
+        (a->system.requested_checkweigh_mode == b->system.requested_checkweigh_mode) &&
+#endif
         (ar->weight_view == br->weight_view) &&
         (ar->current_tare_ug == br->current_tare_ug) &&
         (ar->tare_active == br->tare_active);
