@@ -1,0 +1,123 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5MR5E_D1D_UNIFIED_DISPLAY_SOFTWARE_READY",
+  "run_id": "20260923T080510Z_unified_display_conditioner",
+  "repository_commit": "185c162ab8e4870fe56791d48dacea34735764d8",
+  "files": [
+    {
+      "path": "arm_wall_wextra_werror.txt",
+      "length": 13852,
+      "sha256": "E1D810281DAE132CE6DE72917D3C97FB8715AD9FD8C3880C0CA50C9C942D3756"
+    },
+    {
+      "path": "beta_0517_build.txt",
+      "length": 13854,
+      "sha256": "AD8255997F69F6BE3816EAE6FC10CAC83606F5BC5FC4A733433371BC3B433FC0"
+    },
+    {
+      "path": "d1c_parity.json",
+      "length": 1566,
+      "sha256": "66FAAF4832ADF6DF902F26E94A998C4D556E383CCB8455FA083917A397F64CD3"
+    },
+    {
+      "path": "debug_build.txt",
+      "length": 13129,
+      "sha256": "FEF650E0F0687659D81D38DBDD9F8F9CB76201A1443D89AF8ED42993FCB85060"
+    },
+    {
+      "path": "device_preflight_alarm.json",
+      "length": 364,
+      "sha256": "3559458FD0BAD53123C0E9B7ED32BA96B4DDA43D35111C77D1D6290A88197C65"
+    },
+    {
+      "path": "device_preflight_r5.json",
+      "length": 2841,
+      "sha256": "24AC51D213E616968F4123AC5851CB9EAF83BAA95F0A41846322FAD4E34C938D"
+    },
+    {
+      "path": "environment.json",
+      "length": 248,
+      "sha256": "56029829A07E07C1E4252221E30F7D02C9F51B5DC1E5BB0BD7B7C791D62F8B9E"
+    },
+    {
+      "path": "firmware_identity.json",
+      "length": 783,
+      "sha256": "3AD6B7A5974CCCAFAD052594464975613E8D209C429EF356006DB32E1D6C5F04"
+    },
+    {
+      "path": "freeze_audit.json",
+      "length": 864,
+      "sha256": "79149D096B274C7B99D928C41DAEA44369E50B97950AD544DBF216B7CFD24BE5"
+    },
+    {
+      "path": "msvc_w4_wx_ctest.txt",
+      "length": 514808,
+      "sha256": "16ABC37AFFFA617FB58A9196F906ECB0ABB95DF96702B9C4F62552AF8FC8360E"
+    },
+    {
+      "path": "opened_regression_analysis.json",
+      "length": 33295,
+      "sha256": "71DE2587620309373199BE07F4FD04F55E269A826C95B4E6BE0BAA998A288814"
+    },
+    {
+      "path": "python_c_parity.json",
+      "length": 1098,
+      "sha256": "738840C79B713892B027257406FEECFD40DBE09F6685DB82FA0C52CED8005199"
+    },
+    {
+      "path": "qualification_summary.json",
+      "length": 1169,
+      "sha256": "9ED5767FDCDB3E66A262835613A374ED26C20FBF77A29BF0E7DB273AD3475FA9"
+    },
+    {
+      "path": "r5_parity.json",
+      "length": 1456,
+      "sha256": "E26936850540A86DE3DE145E1084F00140721EFF25A67E10B3B7927944A29EE7"
+    },
+    {
+      "path": "ram_stack_analysis.json/largest_ram_symbols.json",
+      "length": 14208,
+      "sha256": "329521299780933D1D8903AE045054FD70B2359E9383468170FF68E2B6085EB4"
+    },
+    {
+      "path": "ram_stack_analysis.json/ram_layout.json",
+      "length": 7808,
+      "sha256": "886C6145BACCF2CCFE8030A04EB855ACEB97EF13DD2BAAB82B3617525288B5B8"
+    },
+    {
+      "path": "ram_stack_analysis.json/stack_watermark.json",
+      "length": 46468,
+      "sha256": "762644B3359F5BD281BA9341E240CA9BFB9AEC5E876DAD0A510C63CC0BEA2BA9"
+    },
+    {
+      "path": "resource_summary.json",
+      "length": 830,
+      "sha256": "E5A43E18170B1EDFBDAE773FC996F6E379BB6AC3933B94CC8956834BBF355972"
+    },
+    {
+      "path": "software_regression.json",
+      "length": 759,
+      "sha256": "16C26A8EF64F871E4668F7AA5ACBB67417EC432E909EEB14FB6F402C23B744B6"
+    },
+    {
+      "path": "stage5mr5e_d1d_0517.bin",
+      "length": 107084,
+      "sha256": "9D8C5881CD880D2C5D6A7D0C499A4EACF9495A550B08B237A81D4BB2F71641C5"
+    },
+    {
+      "path": "stage5mr5e_d1d_0517.elf",
+      "length": 2011496,
+      "sha256": "DD1549D2AC80C023F2B3524AE4A742203072532CF4523F6A09B6891A15DC77BF"
+    },
+    {
+      "path": "stage5mr5e_d1d_0517.map",
+      "length": 1428007,
+      "sha256": "7969F759C12FE0D7A314FCD54A8D1060F552DD27A86F74192C5B6063C7B6BA03"
+    },
+    {
+      "path": "stage5na_parity.json",
+      "length": 1205,
+      "sha256": "0B3AA70FC37BF4D616F0AF58F97C1ABAFAAFE161F05D5B2E2ACFF092328267F4"
+    }
+  ]
+}
