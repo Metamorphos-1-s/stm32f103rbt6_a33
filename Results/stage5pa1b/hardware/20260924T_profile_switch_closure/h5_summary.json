@@ -1,0 +1,318 @@
+{
+  "result": "RATE_AND_COUNTER_PASS",
+  "app_run_over_25ms": "SUPPORTED BY A1 DWT DIAGNOSTIC; NOT DIRECTLY PRESENT IN EXACT PRODUCT CANDIDATE",
+  "cases": [
+    {
+      "case": "h5_10_filt0_30s",
+      "rate_hz": 9.98492209750377,
+      "sequence_delta": 298,
+      "duration_s": 29.845,
+      "counter_before": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 21462,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 21462
+      },
+      "counter_after": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 21766,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 21766
+      },
+      "counter_delta": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 304,
+        "s_read_error_count": 0,
+        "s_sample_count": 304
+      },
+      "backlog_delta": 0,
+      "counter_conservation": true,
+      "read_errors": 0,
+      "host_poll_gaps": 0,
+      "fault_max": 0,
+      "overrun_delta": 0,
+      "limited_max": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ]
+    },
+    {
+      "case": "h5_10_filt1_30s",
+      "rate_hz": 9.983972218512088,
+      "sequence_delta": 299,
+      "duration_s": 29.948,
+      "counter_before": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 21780,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 21780
+      },
+      "counter_after": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 22084,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 22084
+      },
+      "counter_delta": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 304,
+        "s_read_error_count": 0,
+        "s_sample_count": 304
+      },
+      "backlog_delta": 0,
+      "counter_conservation": true,
+      "read_errors": 0,
+      "host_poll_gaps": 0,
+      "fault_max": 0,
+      "overrun_delta": 0,
+      "limited_max": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ]
+    },
+    {
+      "case": "h5_10_filt2_30s",
+      "rate_hz": 9.98463901689708,
+      "sequence_delta": 299,
+      "duration_s": 29.946,
+      "counter_before": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 22098,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 22098
+      },
+      "counter_after": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 22403,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 22403
+      },
+      "counter_delta": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 305,
+        "s_read_error_count": 0,
+        "s_sample_count": 305
+      },
+      "backlog_delta": 0,
+      "counter_conservation": true,
+      "read_errors": 0,
+      "host_poll_gaps": 0,
+      "fault_max": 0,
+      "overrun_delta": 0,
+      "limited_max": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ]
+    },
+    {
+      "case": "h5_10_filt3_30s",
+      "rate_hz": 9.984587549420358,
+      "sequence_delta": 298,
+      "duration_s": 29.846,
+      "counter_before": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 22417,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 22417
+      },
+      "counter_after": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 22721,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 22721
+      },
+      "counter_delta": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 304,
+        "s_read_error_count": 0,
+        "s_sample_count": 304
+      },
+      "backlog_delta": 0,
+      "counter_conservation": true,
+      "read_errors": 0,
+      "host_poll_gaps": 0,
+      "fault_max": 0,
+      "overrun_delta": 0,
+      "limited_max": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ]
+    },
+    {
+      "case": "h5_40_filt0_30s",
+      "rate_hz": 39.939789262418465,
+      "sequence_delta": 1194,
+      "duration_s": 29.895,
+      "counter_before": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 22762,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 22762
+      },
+      "counter_after": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 23978,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 23978
+      },
+      "counter_delta": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 1216,
+        "s_read_error_count": 0,
+        "s_sample_count": 1216
+      },
+      "backlog_delta": 0,
+      "counter_conservation": true,
+      "read_errors": 0,
+      "host_poll_gaps": 0,
+      "fault_max": 0,
+      "overrun_delta": 0,
+      "limited_max": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ]
+    },
+    {
+      "case": "h5_40_filt1_30s",
+      "rate_hz": 39.93850472912002,
+      "sequence_delta": 1195,
+      "duration_s": 29.921,
+      "counter_before": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 24034,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 24034
+      },
+      "counter_after": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 25249,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 25249
+      },
+      "counter_delta": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 1215,
+        "s_read_error_count": 0,
+        "s_sample_count": 1215
+      },
+      "backlog_delta": 0,
+      "counter_conservation": true,
+      "read_errors": 0,
+      "host_poll_gaps": 0,
+      "fault_max": 0,
+      "overrun_delta": 0,
+      "limited_max": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ]
+    },
+    {
+      "case": "h5_40_filt2_30s",
+      "rate_hz": 39.941125309426646,
+      "sequence_delta": 1194,
+      "duration_s": 29.894,
+      "counter_before": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 25304,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 25304
+      },
+      "counter_after": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 26520,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 26520
+      },
+      "counter_delta": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 1216,
+        "s_read_error_count": 0,
+        "s_sample_count": 1216
+      },
+      "backlog_delta": 0,
+      "counter_conservation": true,
+      "read_errors": 0,
+      "host_poll_gaps": 0,
+      "fault_max": 0,
+      "overrun_delta": 0,
+      "limited_max": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ]
+    },
+    {
+      "case": "h5_40_filt3_30s",
+      "rate_hz": 39.93716997526903,
+      "sequence_delta": 1195,
+      "duration_s": 29.922,
+      "counter_before": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 26576,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 26576
+      },
+      "counter_after": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 27791,
+        "s_count": 0,
+        "s_read_error_count": 0,
+        "s_sample_count": 27791
+      },
+      "counter_delta": {
+        "s_buffer_overrun_count": 0,
+        "s_consumed_count": 1215,
+        "s_read_error_count": 0,
+        "s_sample_count": 1215
+      },
+      "backlog_delta": 0,
+      "counter_conservation": true,
+      "read_errors": 0,
+      "host_poll_gaps": 0,
+      "fault_max": 0,
+      "overrun_delta": 0,
+      "limited_max": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ]
+    }
+  ]
+}

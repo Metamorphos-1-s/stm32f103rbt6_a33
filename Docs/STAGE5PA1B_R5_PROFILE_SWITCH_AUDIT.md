@@ -63,18 +63,16 @@ one-sample rebaseline and positive/negative offset contracts.
 - Frozen 0x0517 SHA remains
   `9D8C5881CD880D2C5D6A7D0C499A4EACF9495A550B08B237A81D4BB2F71641C5`.
 
-## Hardware Stop Point
+## Hardware Execution
 
 Modbus-only preflight confirms the device remains 0x0517, Map 0x0104,
 10 Hz/filt3, OFF+SHADOW, offset/reference/evaluation zero, fault/overrun/dirty
 zero, revision/saved 8/8, and approximately 500 g loaded.
 
-No SWD configuration read, application erase, firmware flash, mode change or
-load change has been performed in A1B. After authorization, the 4 KB region at
-`0x0801F000` will be backed up and hashed. The 107,532-byte candidate occupies
-application pages 0-105 (`0x08000000-0x0801A7FF`); configuration pages are
-excluded. Programming will use Verify and no SAVE/ZERO/TARE/calibration action.
-
-Hardware work is waiting for the exact authorization:
-
-`授权读取配置并烧录 Stage 5P-A1B 候选`
+The authorized hardware closure completed without changing the approximately
+500 g load. The 4 KB region at `0x0801F000` was backed up and remained unchanged.
+The 107,532-byte candidate occupied application pages 0-105
+(`0x08000000-0x0801A7FF`); configuration pages were excluded. Candidate and
+0x0517 rollback Verify both passed. No SAVE/ZERO/TARE/calibration action was
+performed. Detailed results are in
+`Docs/STAGE5PA1B_R5_PROFILE_SWITCH_HARDWARE_CLOSURE.md`.

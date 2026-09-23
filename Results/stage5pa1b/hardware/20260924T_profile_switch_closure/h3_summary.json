@@ -1,0 +1,89 @@
+{
+  "result": "PASS",
+  "host_analysis_correction": "conditioned_display_ug column",
+  "cases": [
+    {
+      "case": "h3_active_static_10_pre",
+      "records": 99,
+      "application": [
+        1
+      ],
+      "mode": [
+        2
+      ],
+      "state": [
+        3
+      ],
+      "offset_min_max": [
+        0,
+        0
+      ],
+      "reference_min_max": [
+        0,
+        0
+      ],
+      "display_mass_changes": 5,
+      "panel_count_changes": 2,
+      "sequence_delta": 99,
+      "fault_max": 0,
+      "overrun_delta": 0,
+      "final_relation_ug": 0
+    },
+    {
+      "case": "h3_active_static_40_f2",
+      "records": 199,
+      "application": [
+        1
+      ],
+      "mode": [
+        2
+      ],
+      "state": [
+        2,
+        3
+      ],
+      "offset_min_max": [
+        0,
+        0
+      ],
+      "reference_min_max": [
+        0,
+        0
+      ],
+      "display_mass_changes": 3,
+      "panel_count_changes": 1,
+      "sequence_delta": 798,
+      "fault_max": 0,
+      "overrun_delta": 0,
+      "final_relation_ug": 0
+    },
+    {
+      "case": "h3_active_static_10_f0",
+      "records": 196,
+      "application": [
+        1
+      ],
+      "mode": [
+        2
+      ],
+      "state": [
+        2,
+        3
+      ],
+      "offset_min_max": [
+        0,
+        0
+      ],
+      "reference_min_max": [
+        0,
+        0
+      ],
+      "display_mass_changes": 19,
+      "panel_count_changes": 5,
+      "sequence_delta": 200,
+      "fault_max": 0,
+      "overrun_delta": 0,
+      "final_relation_ug": 0
+    }
+  ]
+}

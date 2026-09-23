@@ -1,0 +1,41 @@
+{
+  "elf": {
+    "path": "Results\\stage5pa1b\\software\\artifacts\\stage5pa1b_0519_candidate.elf",
+    "sha256": "A2832B10FF9F815EACE61E7A13FE63E09987EA912EB781E6012ED55F338A72DE"
+  },
+  "tool_sha256": "75BC038E3086FBAC38DE68B637BF8ABA7E6FC5FDAEE5BC4D1FC96C258C523344",
+  "symbols": {
+    "s_buffer_overrun_count": {
+      "address": 536879124,
+      "size": 4
+    },
+    "s_consumed_count": {
+      "address": 536874988,
+      "size": 4
+    },
+    "s_count": {
+      "address": 536879132,
+      "size": 2
+    },
+    "s_read_error_count": {
+      "address": 536879120,
+      "size": 4
+    },
+    "s_sample_count": {
+      "address": 536879128,
+      "size": 4
+    }
+  },
+  "read_address": "0x20000FEC",
+  "read_length": 4146,
+  "counters": {
+    "s_buffer_overrun_count": 0,
+    "s_consumed_count": 23978,
+    "s_count": 0,
+    "s_read_error_count": 0,
+    "s_sample_count": 23978
+  },
+  "continuous_swd_polling": false,
+  "core_halted_only_for_boundary_snapshot": true,
+  "programmer_output": "      -------------------------------------------------------------------\n                       STM32CubeProgrammer v2.19.0                  \n      -------------------------------------------------------------------\n\nST-LINK SN  : E1007200D0D2139393740544\nST-LINK FW  : V2J47S7\nBoard       : --\nVoltage     : 3.29V\nSWD freq    : 1800 KHz\nConnect mode: Hot Plug\nReset mode  : Software reset\nDevice ID   : 0x410\nRevision ID : Rev X\nDevice name : STM32F101/F102/F103 Medium-density\nFlash size  : 128 KBytes\nDevice type : MCU\nDevice CPU  : Cortex-M3\nBL Version  : --\n\nCore halted\n\nUPLOADING ...\n  File          : D:\\Documents\\stm32f103rbt6_a33\\Results\\stage5pa1b\\hardware\\20260924T_profile_switch_closure\\h5_40_filt0_30s_counters_after.bin\n  Size          : 4146 Bytes\n  Address:      : 0x20000FEC\nRead progress:\n\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317\u5317 0%\n\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739\u5739 100%\nData read successfully\nTime elapsed during read operation is: 00:00:00.059\nCore run\n"
+}

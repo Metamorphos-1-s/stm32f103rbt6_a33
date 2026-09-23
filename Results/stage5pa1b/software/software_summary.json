@@ -1,6 +1,6 @@
 {
   "stage": "5P-A1B",
-  "classification": "SOFTWARE FIX READY; HARDWARE CLOSURE PENDING",
+  "classification": "SOFTWARE FIX AND HARDWARE CLOSURE PASSED",
   "starting_head": "87dc8310bfda11f5a45a55ce2a9e538b2b5125e3",
   "product_code_changed": false,
   "candidate": {
@@ -41,5 +41,5 @@
     "collision_margin_bytes": 536
   },
   "device_preflight": "0x0517, 10 Hz/filt3, OFF+SHADOW, approximately 500 g, fault/overrun/dirty 0, revision/saved 8/8",
-  "next_authorization": "授权读取配置并烧录 Stage 5P-A1B 候选"
+  "hardware": "H1-H5 PASS; DEVICE ROLLED BACK TO 0x0517"
 }

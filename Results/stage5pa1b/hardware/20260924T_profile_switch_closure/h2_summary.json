@@ -1,0 +1,266 @@
+{
+  "result": "PASS",
+  "cases": [
+    {
+      "case": "h2_r1_10_f0",
+      "records": 100,
+      "states": [
+        2,
+        3
+      ],
+      "holdoff_first_last": [
+        15,
+        0
+      ],
+      "reference_first_last": [
+        0,
+        5
+      ],
+      "offset_min_max": [
+        0,
+        0
+      ],
+      "limited_max": 0,
+      "application_values": [
+        0
+      ],
+      "mode_values": [
+        2
+      ],
+      "fault_max": 0,
+      "overrun_delta": 0
+    },
+    {
+      "case": "h2_r1_40_f1",
+      "records": 100,
+      "states": [
+        2,
+        3
+      ],
+      "holdoff_first_last": [
+        15,
+        0
+      ],
+      "reference_first_last": [
+        0,
+        5
+      ],
+      "offset_min_max": [
+        0,
+        0
+      ],
+      "limited_max": 0,
+      "application_values": [
+        0
+      ],
+      "mode_values": [
+        2
+      ],
+      "fault_max": 0,
+      "overrun_delta": 0
+    },
+    {
+      "case": "h2_r1_10_f2",
+      "records": 100,
+      "states": [
+        2,
+        3
+      ],
+      "holdoff_first_last": [
+        15,
+        0
+      ],
+      "reference_first_last": [
+        0,
+        5
+      ],
+      "offset_min_max": [
+        0,
+        0
+      ],
+      "limited_max": 0,
+      "application_values": [
+        0
+      ],
+      "mode_values": [
+        2
+      ],
+      "fault_max": 0,
+      "overrun_delta": 0
+    },
+    {
+      "case": "h2_r2_10_f2",
+      "records": 100,
+      "states": [
+        2,
+        3
+      ],
+      "holdoff_first_last": [
+        14,
+        0
+      ],
+      "reference_first_last": [
+        0,
+        6
+      ],
+      "offset_min_max": [
+        0,
+        0
+      ],
+      "limited_max": 0,
+      "application_values": [
+        0
+      ],
+      "mode_values": [
+        2
+      ],
+      "fault_max": 0,
+      "overrun_delta": 0
+    },
+    {
+      "case": "h2_r2_40_f3",
+      "records": 100,
+      "states": [
+        2,
+        3
+      ],
+      "holdoff_first_last": [
+        15,
+        0
+      ],
+      "reference_first_last": [
+        0,
+        5
+      ],
+      "offset_min_max": [
+        0,
+        0
+      ],
+      "limited_max": 0,
+      "application_values": [
+        0
+      ],
+      "mode_values": [
+        2
+      ],
+      "fault_max": 0,
+      "overrun_delta": 0
+    },
+    {
+      "case": "h2_r2_10_f1",
+      "records": 100,
+      "states": [
+        2,
+        3
+      ],
+      "holdoff_first_last": [
+        15,
+        0
+      ],
+      "reference_first_last": [
+        0,
+        5
+      ],
+      "offset_min_max": [
+        0,
+        0
+      ],
+      "limited_max": 0,
+      "application_values": [
+        0
+      ],
+      "mode_values": [
+        2
+      ],
+      "fault_max": 0,
+      "overrun_delta": 0
+    },
+    {
+      "case": "h2_r3_10_f1",
+      "records": 100,
+      "states": [
+        2,
+        3
+      ],
+      "holdoff_first_last": [
+        14,
+        0
+      ],
+      "reference_first_last": [
+        0,
+        5
+      ],
+      "offset_min_max": [
+        0,
+        0
+      ],
+      "limited_max": 0,
+      "application_values": [
+        0
+      ],
+      "mode_values": [
+        2
+      ],
+      "fault_max": 0,
+      "overrun_delta": 0
+    },
+    {
+      "case": "h2_r3_40_f0",
+      "records": 100,
+      "states": [
+        2,
+        3
+      ],
+      "holdoff_first_last": [
+        15,
+        0
+      ],
+      "reference_first_last": [
+        0,
+        5
+      ],
+      "offset_min_max": [
+        0,
+        0
+      ],
+      "limited_max": 0,
+      "application_values": [
+        0
+      ],
+      "mode_values": [
+        2
+      ],
+      "fault_max": 0,
+      "overrun_delta": 0
+    },
+    {
+      "case": "h2_r3_10_f3",
+      "records": 100,
+      "states": [
+        2,
+        3
+      ],
+      "holdoff_first_last": [
+        15,
+        0
+      ],
+      "reference_first_last": [
+        0,
+        5
+      ],
+      "offset_min_max": [
+        0,
+        0
+      ],
+      "limited_max": 0,
+      "application_values": [
+        0
+      ],
+      "mode_values": [
+        2
+      ],
+      "fault_max": 0,
+      "overrun_delta": 0
+    }
+  ]
+}

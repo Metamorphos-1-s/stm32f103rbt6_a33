@@ -1,0 +1,11 @@
+﻿{
+    "timestamp":  "2026-09-24T03:46:36.2426625+08:00",
+    "git_sha":  "1c6f7251c51a462c30474f6b3ea430d7fd0fc3a7",
+    "git_status":  " M Tools/stage5b_hw/__pycache__/hw_common.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/modbus_crc.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/modbus_frame.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/register_map.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/register_map_check.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/report_writer.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/serial_transport.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/soak_test.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/test_commands.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/test_config_apply.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/test_protocol_errors.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/test_rs232.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/test_rs485.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/test_smoke.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/test_storage.cpython-38.pyc\n?? Results/manual_after_reload_20260919.json\n?? Results/manual_current_r5_offset.json\n?? Results/manual_current_r5_offset_20260919.json\n?? Results/manual_current_r5_state.json\n?? Results/stage5nb_stack_analysis/\n?? Results/stage5nb_tmp/\n?? Results/stage5pa1b/hardware/\n?? Tools/stage5pa1b/",
+    "elf":  "D:\\Documents\\stm32f103rbt6_a33\\Results\\stage5mr5e_d1d\\20260923T080510Z_unified_display_conditioner\\stage5mr5e_d1d_0517.elf",
+    "elf_sha256":  "DD1549D2AC80C023F2B3524AE4A742203072532CF4523F6A09B6891A15DC77BF",
+    "programmer":  "E:\\ST\\STM32CubeCLT_1.18.0\\STM32CubeProgrammer\\bin\\STM32_Programmer_CLI.exe",
+    "mass_erase":  false,
+    "config_region_preserved":  true,
+    "nrst_connected":  true
+}

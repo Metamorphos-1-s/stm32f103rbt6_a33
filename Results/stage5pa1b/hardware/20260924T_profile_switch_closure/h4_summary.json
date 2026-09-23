@@ -1,0 +1,104 @@
+{
+  "result": "PASS",
+  "cases": [
+    {
+      "case": "h4_active_dosing_10_f0_30s",
+      "records": 150,
+      "application": [
+        1
+      ],
+      "mode": [
+        1
+      ],
+      "state": [
+        1
+      ],
+      "offset_min_max": [
+        0,
+        0
+      ],
+      "relation_error_min_max": [
+        0,
+        0
+      ],
+      "reference_min_max": [
+        0,
+        0
+      ],
+      "observation_min_max": [
+        0,
+        0
+      ],
+      "limited_max": 0,
+      "fault_max": 0,
+      "overrun_delta": 0,
+      "read_errors": 0
+    },
+    {
+      "case": "h4_active_dosing_40_f3_30s",
+      "records": 150,
+      "application": [
+        1
+      ],
+      "mode": [
+        1
+      ],
+      "state": [
+        1
+      ],
+      "offset_min_max": [
+        0,
+        0
+      ],
+      "relation_error_min_max": [
+        0,
+        0
+      ],
+      "reference_min_max": [
+        0,
+        0
+      ],
+      "observation_min_max": [
+        0,
+        0
+      ],
+      "limited_max": 0,
+      "fault_max": 0,
+      "overrun_delta": 0,
+      "read_errors": 0
+    },
+    {
+      "case": "h4_active_dosing_10_f1_30s",
+      "records": 150,
+      "application": [
+        1
+      ],
+      "mode": [
+        1
+      ],
+      "state": [
+        1
+      ],
+      "offset_min_max": [
+        0,
+        0
+      ],
+      "relation_error_min_max": [
+        0,
+        0
+      ],
+      "reference_min_max": [
+        0,
+        0
+      ],
+      "observation_min_max": [
+        0,
+        0
+      ],
+      "limited_max": 0,
+      "fault_max": 0,
+      "overrun_delta": 0,
+      "read_errors": 0
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "stage": "5P-A1B",
+  "result": "PASS",
+  "candidate": {
+    "firmware": "0x0519",
+    "bin_length": 107532,
+    "bin_sha256": "2101D1F344B63AA9A6983B56A90EBFF3AF8167B838B506611776D71C37D3C6AA",
+    "flash_verify": "PASS"
+  },
+  "h1": {"result": "PASS", "segments": 6, "limited": 0, "offset_ug": 0},
+  "h2": {"result": "PASS", "rounds": 3, "segments": 9, "holdoff_s": 15, "limited": 0},
+  "h3": {"result": "PASS", "application": "ACTIVE", "mode": "STATIC", "offset_ug": 0, "weight_relation_error_ug": 0},
+  "h4": {"result": "PASS", "durations_s": [30, 30, 30], "mode": "DOSING", "offset_min_max_ug": [0, 0], "reference_observation": [0, 0]},
+  "h5": {
+    "result": "PASS",
+    "rates_hz": {
+      "10_filt0": 9.984922,
+      "10_filt1": 9.983972,
+      "10_filt2": 9.984639,
+      "10_filt3": 9.984588,
+      "40_filt0": 39.939789,
+      "40_filt1": 39.938505,
+      "40_filt2": 39.941125,
+      "40_filt3": 39.937170
+    },
+    "counter_conservation": "PASS ALL 8",
+    "backlog_before_after": "0/0 ALL 8",
+    "read_error_overrun_fault_modbus_error": "0/0/0/0",
+    "app_run_over_25ms": "A1 DWT DIRECT PASS PLUS A1B EXACT-CANDIDATE RATE/COUNTER PASS"
+  },
+  "host_evidence_failures_preserved": [
+    "H3 initial analyzer used wrong CSV column; raw record valid and reanalyzed",
+    "H5 attempt 1 omitted FIFO depth",
+    "H5 attempt 2 read running counters non-atomically"
+  ],
+  "config_sha256_before": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "config_sha256_before_rollback": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "config_sha256_after_rollback": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "save_executed": false,
+  "final_device": {
+    "firmware": "0x0517",
+    "map": "0x0104",
+    "profile": "10 Hz/filt3/strength3",
+    "r5": "OFF+SHADOW",
+    "checkweigh": "OFF",
+    "offset_reference_evaluation": "0/0/0",
+    "fault_overrun_dirty_save": "0/0/0/0",
+    "revision_saved": "8/8",
+    "rollback_verify": "PASS"
+  },
+  "conclusion": "STAGE 5P-A1 COMPLETE; MODBUS THROUGHPUT AND R5 PROFILE-SWITCH COMPATIBILITY CLOSED; 10/40 HZ ENGINEERING PATH READY; STAGE 5P-A2 ENTRY APPROVED; FORMAL QUALIFICATION WAIVERS REMAIN"
+}
