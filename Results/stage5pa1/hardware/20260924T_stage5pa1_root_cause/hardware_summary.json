@@ -1,0 +1,61 @@
+{
+  "stage": "5P-A1",
+  "result": "PARTIAL",
+  "root_cause": "CONFIRMED",
+  "modbus_optimization": "HARDWARE PASS",
+  "r5_steady_10_40_admission": "HARDWARE PASS",
+  "r5_profile_switch": "HARDWARE FAIL",
+  "stage5pa2_entry": "NOT APPROVED",
+  "baseline_matrix": [
+    {"load": "none", "rate_hz": 39.933333, "app_over_25ms": 0, "app_over_50ms": 0},
+    {"load": "q1", "rate_hz": 39.966667, "app_over_25ms": 0, "app_over_50ms": 0},
+    {"load": "q10", "rate_hz": 39.918696, "app_over_25ms": 0, "app_over_50ms": 0},
+    {"load": "q27", "rate_hz": 28.017457, "app_over_25ms": 520, "app_over_50ms": 0},
+    {"load": "q32", "rate_hz": 24.681078, "app_over_25ms": 457, "app_over_50ms": 6},
+    {"load": "q40", "rate_hz": 22.740137, "app_over_25ms": 375, "app_over_50ms": 375},
+    {"load": "full", "rate_hz": 27.6, "app_over_25ms": 372, "app_over_50ms": 124}
+  ],
+  "optimized_matrix": [
+    {"rate": 10, "filter": 0, "measured_hz": 10.0},
+    {"rate": 10, "filter": 1, "measured_hz": 9.983333},
+    {"rate": 10, "filter": 2, "measured_hz": 9.983333},
+    {"rate": 10, "filter": 3, "measured_hz": 9.983333},
+    {"rate": 40, "filter": 0, "measured_hz": 39.949334},
+    {"rate": 40, "filter": 1, "measured_hz": 39.933333},
+    {"rate": 40, "filter": 2, "measured_hz": 39.933333},
+    {"rate": 40, "filter": 3, "measured_hz": 39.933333}
+  ],
+  "optimized_common_gates": {
+    "counter_chain_consistent": true,
+    "overrun": 0,
+    "read_errors": 0,
+    "modbus_errors": 0,
+    "fault": 0,
+    "app_over_25ms": 0
+  },
+  "r5": {
+    "static_duration_s": 35,
+    "holdoff_start_end": "15/0",
+    "reference_fill_start_end": "0/20",
+    "static_limited": 0,
+    "dosing_duration_s": 30,
+    "dosing_offset_min_max_ug": "0/0",
+    "switch_40_to_10": "FAIL TIMESTAMP LIMITED",
+    "switch_10_to_40": "FAIL TIMESTAMP LIMITED",
+    "post_failure_fix": "SOFTWARE ONLY; NOT HARDWARE RETESTED"
+  },
+  "config_sha256_before": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "config_sha256_at_hard_stop": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "config_sha256_after_rollback": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "save_executed": false,
+  "final_device": {
+    "firmware": "0x0517",
+    "map": "0x0104",
+    "r5": "OFF+SHADOW",
+    "checkweigh": "OFF",
+    "offset_reference_evaluation": "0/0/0",
+    "fault_overrun_dirty": "0/0/0",
+    "revision_saved": "8/8"
+  },
+  "conclusion": "STAGE 5P-A1 ROOT CAUSE CONFIRMED; R5 RATE COMPATIBILITY INCOMPLETE; 40 HZ REMAINS BLOCKED; STAGE 5P-A2 NOT APPROVED"
+}

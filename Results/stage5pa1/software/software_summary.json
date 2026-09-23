@@ -6,7 +6,7 @@
   "map": "0x0104",
   "schema": 2,
   "persistent_format": 3,
-  "root_cause_status": "CODE HYPOTHESIS SUPPORTED; TARGET DWT MATRIX PENDING",
+  "root_cause_status": "CONFIRMED BY TARGET DWT MATRIX",
   "modbus_issue": "CONFIRMED IN CODE: four display conversions per register",
   "r5_issue": "CONFIRMED IN CODE AND 5P-A CAPTURE: 17th sample caused TIMESTAMP LIMITED",
   "candidate": {
@@ -35,7 +35,7 @@
     "stage5c_python": "12/12 PASS",
     "stage5l_python": "8/8 PASS",
     "dynamic_allocation": "NONE",
-    "hardware": "PENDING EXPLICIT AUTHORIZATION"
+    "hardware": "MODBUS/RATE PASS; R5 PROFILE SWITCH FAIL"
   },
   "resources": {
     "product_ram_bytes": 19464,
@@ -47,5 +47,9 @@
   "frozen_0517_sha256": "9D8C5881CD880D2C5D6A7D0C499A4EACF9495A550B08B237A81D4BB2F71641C5",
   "formal_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
   "device_preflight": "0x0517 OFF+SHADOW, 10 Hz, approximately 500 g loaded, fault/overrun/dirty 0, revision/saved 8/8",
-  "next_required_authorization": "授权读取配置并烧录5P-A1诊断固件"
+  "post_failure_fix": {
+    "classification": "SOFTWARE ONLY; NOT HARDWARE RETESTED",
+    "bin_length": 107532,
+    "bin_sha256": "2101D1F344B63AA9A6983B56A90EBFF3AF8167B838B506611776D71C37D3C6AA"
+  }
 }

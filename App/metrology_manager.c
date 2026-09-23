@@ -742,8 +742,11 @@ bool MetrologyManager_Reconfigure(const DeviceConfig *config)
     bool result = MetrologyManager_RebuildEngine(config,
         METROLOGY_REBUILD_REPLAY_RAW);
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
-    if (result) CheckweighShadow_RequestReset(&s_alarm_shadow,
-        ALARM_SHADOW_RESET_RECONFIGURE);
+    if (result) {
+        R5Drift_HandleEvent(&s_r5_drift, R5_DRIFT_EVENT_PROFILE_CHANGE);
+        CheckweighShadow_RequestReset(&s_alarm_shadow,
+            ALARM_SHADOW_RESET_RECONFIGURE);
+    }
 #endif
     return result;
 }

@@ -1,0 +1,82 @@
+{
+  "load": "full",
+  "duration_s": 60.0,
+  "target_rate_hz": 39.93333333333333,
+  "counter_deltas": {
+    "cs1237_sample": 2396,
+    "bridge_consumed": 2396,
+    "engine_sequence": 2396,
+    "overrun": 0,
+    "read_error": 0,
+    "fault": 0
+  },
+  "quantity_stats": [
+    {
+      "quantity": 1,
+      "count": 919,
+      "average_cycles": 1089.9347116430904,
+      "maximum_cycles": 1238
+    },
+    {
+      "quantity": 10,
+      "count": 919,
+      "average_cycles": 2945.9782372143636,
+      "maximum_cycles": 3150
+    },
+    {
+      "quantity": 27,
+      "count": 919,
+      "average_cycles": 6233.926006528835,
+      "maximum_cycles": 6414
+    },
+    {
+      "quantity": 32,
+      "count": 920,
+      "average_cycles": 109926.14673913043,
+      "maximum_cycles": 110315
+    },
+    {
+      "quantity": 40,
+      "count": 919,
+      "average_cycles": 47738.09902067464,
+      "maximum_cycles": 47931
+    }
+  ],
+  "app_run": {
+    "count": 521079,
+    "max_interval_cycles": 376043,
+    "max_execution_cycles": 375869,
+    "over_25ms": 0,
+    "over_50ms": 0
+  },
+  "communication": {
+    "count": 521079,
+    "average_cycles": 2802.9973938692597,
+    "maximum_cycles": 123968
+  },
+  "chain": {
+    "ready_observed_count": 2396,
+    "read_success_count": 2396,
+    "read_failure_count": 0,
+    "fifo_push_count": 2396,
+    "fifo_pop_count": 2396,
+    "fifo_max_depth": 1,
+    "bridge_accept_count": 2396,
+    "bridge_reject_count": 0,
+    "sample_sequence_increment_count": 2396
+  },
+  "cs1237_config_register": 28,
+  "cs1237_state": 4,
+  "host_reads": 4600,
+  "host_errors": 0,
+  "control": {
+    "magic": 827343157,
+    "version": 1,
+    "request_sequence": 6,
+    "applied_sequence": 6,
+    "command_magic": 0,
+    "duration_ms": 60000,
+    "state": 2,
+    "length": 32
+  }
+}

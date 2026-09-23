@@ -1,9 +1,10 @@
 # Stage 5P-A1 40 Hz Target-Rate Root-Cause Closure
 
-## Current Decision
+## Final Decision
 
-**SOFTWARE AND DIAGNOSTIC CANDIDATES READY; TARGET ROOT-CAUSE CLOSURE
-PENDING AUTHORIZED HARDWARE EXECUTION.**
+**STAGE 5P-A1 ROOT CAUSE CONFIRMED; MODBUS THROUGHPUT OPTIMIZATION CLOSED;
+R5 PROFILE-SWITCH RATE COMPATIBILITY INCOMPLETE; 40 HZ REMAINS BLOCKED;
+STAGE 5P-A2 NOT APPROVED.**
 
 This stage is not a release and does not claim metrology, cross-sensor,
 external DRDY timing, or new 12-hour qualification.
@@ -89,20 +90,56 @@ Both diagnostic builds retain the complete product feature set. They differ
 only in the request-view optimization switch and include SWD-only DWT counters
 outside the product RAM result.
 
-## Hardware Plan And Stop Point
+## Hardware Evidence
 
-The current Modbus-only preflight confirms 0x0517, Map 0x0104, 10 Hz, R5
-OFF+SHADOW, offset/reference/evaluation zero, fault/overrun/dirty zero,
-revision/saved 8/8, and approximately 500 g still loaded.
+The configuration region was backed up before flashing. Both slots were valid
+V3 records (A sequence 7, B sequence 8 active). Its SHA-256 was
+`A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4`.
+Both diagnostics were programmed application-only and verified.
 
-No SWD configuration read or flash was performed. After explicit authorization,
-the configuration region will be backed up first. The baseline diagnostic then
-runs the no-load, q1, q10, q27, q32, q40, and normal five-block matrix before
-the optimized diagnostic is tested. The diagnostic image occupies application
-pages 0-106 (`0x08000000-0x0801ABFF`); configuration starts at `0x0801F000`
-and is excluded. Every flash uses Verify. The final default action is a verified
-application-only rollback to frozen 0x0517 and an unchanged configuration SHA.
+| Baseline load | Rate | App_Run >25 ms | >50 ms |
+|---|---:|---:|---:|
+| none | 39.933 Hz | 0 | 0 |
+| q1 | 39.967 Hz | 0 | 0 |
+| q10 | 39.919 Hz | 0 | 0 |
+| q27 | 28.017 Hz | 520 | 0 |
+| q32 | 24.681 Hz | 457 | 6 |
+| q40 | 22.740 Hz | 375 | 375 |
+| normal five blocks | 27.600 Hz | 372 | 124 |
 
-Hardware execution is waiting for the exact authorization:
+The q27/q32/q40 register-model averages were approximately 2.807/3.325/4.213
+million cycles. In every run, ready/read/push/pop/bridge/engine counts matched;
+there was no FIFO loss. This confirms that synchronous repeated conversion
+prevented timely DRDY observation and reproduces the original 26.7-29.2 Hz
+range under the normal five-block workload.
 
-`授权读取配置并烧录5P-A1诊断固件`
+With the request-level read view, the same normal workload produced 39.949 Hz
+at 40 Hz/filt0. q27/q32/q40 fell to about 0.006/0.110/0.048 million cycles and
+there were no App_Run executions above 25 ms. The complete matrix passed:
+
+| Rate | filt0 | filt1 | filt2 | filt3 |
+|---|---:|---:|---:|---:|
+| 10 Hz | 10.000 | 9.983 | 9.983 | 9.983 |
+| 40 Hz | 39.949 | 39.933 | 39.933 | 39.933 |
+
+All eight runs had matching acquisition/processing counts and zero Modbus
+errors, read errors, overrun, or fault. CS1237 readback was `0x0C` at 10 Hz and
+`0x1C` at 40 Hz.
+
+R5 SHADOW+STATIC at 40 Hz spent 15 real seconds in holdoff and reached
+reference fill 20 after a 35-second run. It never became LIMITED. A 30-second
+DOSING run held offset exactly at zero. However, both 40-to-10 and 10-to-40
+profile transitions entered TIMESTAMP LIMITED. Investigation found that
+`MetrologyManager_Reconfigure()` rebuilt WeightEngine and reset its sequence
+without issuing the R5 profile-change event. The hard-stop rule was applied.
+
+A minimal post-failure software correction now issues that event after a
+successful rebuild. It passes Host 36/36, strict ARM build and the unchanged
+RAM/stack gates, but was not reflashed or reused to claim hardware success.
+The corrected, software-only BIN is 107,532 bytes with SHA-256
+`2101D1F344B63AA9A6983B56A90EBFF3AF8167B838B506611776D71C37D3C6AA`.
+
+The device was application-only rolled back and verified. Final state is
+0x0517, Map 0x0104, OFF+SHADOW, Checkweigh OFF, offset/reference/evaluation
+zero, fault/overrun/dirty zero, revision/saved 8/8. The configuration SHA before
+testing, at hard stop, and after rollback is identical. No SAVE was executed.

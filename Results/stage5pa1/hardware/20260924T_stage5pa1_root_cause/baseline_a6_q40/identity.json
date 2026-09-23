@@ -1,0 +1,19 @@
+{
+  "elf": {
+    "path": "Results\\stage5pa1\\software\\artifacts\\stage5pa1_0519_baseline_diagnostics.elf",
+    "length": 2033104,
+    "sha256": "466C04AB5B06BAFA71A0504F841F35F3840B2EC042FF8BA33BFB9E0DE1D934B5"
+  },
+  "symbols": {
+    "g_stage5pa1_diagnostic_control": {
+      "address": 536888884,
+      "size": 32
+    },
+    "g_stage5pa1_throughput_snapshot": {
+      "address": 536888648,
+      "size": 236
+    }
+  },
+  "tool_sha256": "8FA95724AFAEBD6882F5CC7B960DFBC51237DA47CEEF9ED89F9B647295B70965",
+  "continuous_swd_polling": false
+}

@@ -1,0 +1,19 @@
+{
+  "elf": {
+    "path": "Results\\stage5pa1\\software\\artifacts\\stage5pa1_0519_optimized_diagnostics.elf",
+    "length": 2039220,
+    "sha256": "B5A5C4D4C900577CEE5B3B139E6B366D6D7332B7C4399D9255761DB95550990A"
+  },
+  "symbols": {
+    "g_stage5pa1_diagnostic_control": {
+      "address": 536888884,
+      "size": 32
+    },
+    "g_stage5pa1_throughput_snapshot": {
+      "address": 536888648,
+      "size": 236
+    }
+  },
+  "tool_sha256": "8FA95724AFAEBD6882F5CC7B960DFBC51237DA47CEEF9ED89F9B647295B70965",
+  "continuous_swd_polling": false
+}
