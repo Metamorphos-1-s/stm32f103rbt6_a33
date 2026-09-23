@@ -29,7 +29,7 @@
     "postflash": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
     "final": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4"
   },
-  "device_final": "0x0517 / OFF + SHADOW / Checkweigh OFF",
+  "device_final": "0x0517 / OFF + SHADOW / Checkweigh OFF / offset-reference-evaluation 0/0/0",
   "hardware_notes": {
     "configuration_read": "PASS",
     "v3_slots": "A sequence 7 valid; B sequence 8 valid active",

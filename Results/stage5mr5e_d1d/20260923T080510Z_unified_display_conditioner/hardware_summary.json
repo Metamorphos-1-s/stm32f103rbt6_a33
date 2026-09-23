@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "result": "PASS",
+  "firmware": "0x0517",
+  "map": "0x0104",
+  "persistent_format": 3,
+  "preflash_application_sha256": "759AF431C2F7379296817419090DA305C55D18110A6E1733312B8C5388BF98FE",
+  "postflash_application_sha256": "9D8C5881CD880D2C5D6A7D0C499A4EACF9495A550B08B237A81D4BB2F71641C5",
+  "configuration_sha256": {
+    "preflash": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+    "postflash": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+    "final": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4"
+  },
+  "v3_slots": "A sequence 7 valid; B sequence 8 valid active",
+  "off_shadow": {"empty_records": 177, "empty_duration_s": 60.109, "large_step": "PASS", "cycles": 3},
+  "r5_shadow_reference": {"records": 960, "duration_s": 960.034, "state": "TRACKING", "read_errors": 0},
+  "active_static": {"records": 1200, "duration_s": 1200.042, "natural_offset_g": 0.025288, "read_errors": 0, "rebase": 0},
+  "dosing": {
+    "offset_frozen_g": 0.025977,
+    "cycle1": "PASS",
+    "cycle2": "PASS",
+    "cycle3": "PASS",
+    "large_step_loss": "0d",
+    "rebase_change": 0
+  },
+  "final_state": {
+    "r5": "OFF + SHADOW",
+    "checkweigh": "OFF",
+    "offset_g": 0,
+    "reference_g": 0,
+    "evaluation_count": 0,
+    "fault": 0,
+    "overrun": 0,
+    "dirty": 0,
+    "save": 0,
+    "revision": 8,
+    "saved_revision": 8,
+    "empty_display_g": 0.11,
+    "empty_authoritative_g": 0.068706
+  },
+  "incomplete_records": [
+    "dosing_cycle1_unload: operator confirmation arrived after fixed 60 s window",
+    "dosing_cycle2_load: operator confirmation arrived after fixed 120 s window"
+  ],
+  "incomplete_records_used_as_pass": false,
+  "writes_after_flash": 0,
+  "save_requests_after_flash": 0
+}

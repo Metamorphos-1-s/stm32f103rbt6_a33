@@ -7,8 +7,9 @@ GENERAL OFF/SHADOW/ACTIVE DISPLAY COHERENCY QUALIFIED; R5 AND CHECKWEIGH
 ALGORITHMS UNCHANGED; FORMAL RELEASE QUALIFICATION REMAINS SEPARATE.**
 
 The authorized hardware session completed. The device now runs 0x0517 and
-ends in OFF + SHADOW with Checkweigh OFF, all formal outputs off, offset and
-reference zero, fault/overrun/dirty/SAVE 0/0/0/0 and revision/saved 8/8.
+ends in OFF + SHADOW with Checkweigh OFF, all formal outputs off, offset,
+reference and evaluation zero, fault/overrun/dirty/SAVE 0/0/0/0 and
+revision/saved 8/8.
 
 Start HEAD is `e6308a38796426296f2663831cefaefce5a0225a`. The frozen software
 and evidence HEAD is `4e16cd08e42a636febbef24e7e0500af76e173c4`; the final Manifest
