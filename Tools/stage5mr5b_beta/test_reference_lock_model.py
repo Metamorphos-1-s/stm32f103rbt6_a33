@@ -45,6 +45,36 @@ class ReferenceLockUnitTests(unittest.TestCase):
         self.assertEqual(snap["offset_ug"], 1000)
         self.assertEqual(snap["state"], State.LIMITED)
 
+    def test_profile_change_rebaselines_once_and_preserves_offset(self):
+        model = ReferenceLock()
+        model.set_mode(Mode.STATIC_COMPENSATION)
+        model.offset_ug = -175_000
+        model.offset_milli_ug = -175_000_000
+        model.process_sample(100, 975, 500_000_000)
+        model.profile_change()
+        self.assertFalse(model.have_sample)
+        self.assertEqual(model.state, State.HOLDOFF)
+        snap = model.process_sample(0, 0xFFFFFFF0, 500_000_000)
+        self.assertEqual(snap["limited"], 0)
+        self.assertEqual(snap["offset_ug"], -175_000)
+        self.assertEqual(snap["corrected_gross_ug"], 500_175_000)
+        snap = model.process_sample(2, 84, 500_000_000)
+        self.assertEqual(snap["state"], State.LIMITED)
+        self.assertEqual(snap["last_rebase_reason"], Reason.SEQUENCE)
+
+    def test_dosing_profile_change_freezes_positive_offset(self):
+        model = ReferenceLock()
+        model.set_mode(Mode.DOSING_NO_COMPENSATION)
+        model.offset_ug = 321_000
+        model.offset_milli_ug = 321_000_000
+        for sequence in range(4):
+            model.profile_change()
+            snap = model.process_sample(sequence * 1000,
+                sequence * 100000, 500_000_000)
+            self.assertEqual(snap["state"], State.DOSING)
+            self.assertEqual(snap["offset_ug"], 321_000)
+            self.assertEqual(snap["corrected_gross_ug"], 499_679_000)
+
 
 class ReferenceLockReconstructionTests(unittest.TestCase):
     @classmethod

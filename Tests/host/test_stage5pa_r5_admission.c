@@ -108,6 +108,111 @@ static int TestProfileChangePreservesOffsetAndRebuilds(void)
     CHECK(model.state == R5_DRIFT_STATE_HOLDOFF);
     CHECK(model.holdoff_remaining == config.holdoff_s);
     CHECK(model.second_sample_count == 0U && !model.have_sample);
+    CHECK(Feed(&model, 1U, 25U, INT64_C(500000000)));
+    CHECK(!model.limited && model.have_sample);
+    CHECK(model.offset_milli_ug == INT64_C(200000000));
+    CHECK(model.snapshot.corrected_gross_ug == INT64_C(499800000));
+    return 0;
+}
+
+static int TestLegalSwitchPositionsAndWrap(void)
+{
+    static const uint32_t positions[] = {0U, 475U, 975U};
+    R5DriftConfig config = R5Drift_DefaultConfig();
+    uint32_t index;
+    for (index = 0U; index < sizeof(positions) / sizeof(positions[0]); ++index) {
+        R5DriftCompensator model;
+        CHECK(R5Drift_Init(&model, &config));
+        CHECK(R5Drift_SetMode(&model, R5_DRIFT_MODE_STATIC_COMPENSATION));
+        model.offset_milli_ug = -INT64_C(175000000);
+        CHECK(Feed(&model, 100U, positions[index], INT64_C(500000000)));
+        R5Drift_HandleEvent(&model, R5_DRIFT_EVENT_PROFILE_CHANGE);
+        CHECK(!model.limited && !model.have_sample);
+        CHECK(model.state == R5_DRIFT_STATE_HOLDOFF);
+        CHECK(model.offset_milli_ug == -INT64_C(175000000));
+        CHECK(Feed(&model, 0U, UINT32_MAX - 20U,
+            INT64_C(500000000)));
+        CHECK(Feed(&model, 1U, 79U, INT64_C(500000000)));
+        CHECK(!model.limited);
+        CHECK(model.snapshot.corrected_gross_ug == INT64_C(500175000));
+    }
+    return 0;
+}
+
+static int TestModeContractsAcrossRepeatedSwitches(void)
+{
+    R5DriftCompensator dosing;
+    R5DriftCompensator off;
+    R5DriftConfig config = R5Drift_DefaultConfig();
+    uint32_t cycle;
+    CHECK(R5Drift_Init(&dosing, &config));
+    CHECK(R5Drift_SetMode(&dosing,
+        R5_DRIFT_MODE_DOSING_NO_COMPENSATION));
+    dosing.offset_milli_ug = INT64_C(321000000);
+    for (cycle = 0U; cycle < 8U; ++cycle) {
+        R5Drift_HandleEvent(&dosing, R5_DRIFT_EVENT_PROFILE_CHANGE);
+        CHECK(dosing.mode == R5_DRIFT_MODE_DOSING_NO_COMPENSATION);
+        CHECK(dosing.state == R5_DRIFT_STATE_DOSING);
+        CHECK(!dosing.limited && !dosing.have_sample);
+        CHECK(dosing.offset_milli_ug == INT64_C(321000000));
+        CHECK(Feed(&dosing, cycle * 1000U, cycle * 100000U,
+            INT64_C(500000000)));
+        CHECK(dosing.snapshot.corrected_gross_ug == INT64_C(499679000));
+        CHECK(dosing.reference_fill == 0U && dosing.observation_fill == 0U);
+    }
+    CHECK(R5Drift_Init(&off, &config));
+    R5Drift_HandleEvent(&off, R5_DRIFT_EVENT_PROFILE_CHANGE);
+    CHECK(off.mode == R5_DRIFT_MODE_OFF && off.state == R5_DRIFT_STATE_OFF);
+    CHECK(off.offset_milli_ug == 0 && !off.limited);
+    return 0;
+}
+
+static int ExpectSequenceLimited(uint32_t next_sequence)
+{
+    R5DriftCompensator model;
+    R5DriftConfig config = R5Drift_DefaultConfig();
+    CHECK(R5Drift_Init(&model, &config));
+    CHECK(R5Drift_SetMode(&model, R5_DRIFT_MODE_STATIC_COMPENSATION));
+    CHECK(Feed(&model, 100U, 1000U, 0));
+    CHECK(Feed(&model, next_sequence, 1100U, 0));
+    CHECK(model.limited &&
+        model.last_rebase_reason == R5_DRIFT_REASON_SEQUENCE);
+    return 0;
+}
+
+static int ExpectTimestampLimited(uint32_t next_timestamp)
+{
+    R5DriftCompensator model;
+    R5DriftConfig config = R5Drift_DefaultConfig();
+    CHECK(R5Drift_Init(&model, &config));
+    CHECK(R5Drift_SetMode(&model, R5_DRIFT_MODE_STATIC_COMPENSATION));
+    CHECK(Feed(&model, 100U, 1000U, 0));
+    CHECK(Feed(&model, 101U, next_timestamp, 0));
+    CHECK(model.limited &&
+        model.last_rebase_reason == R5_DRIFT_REASON_TIMESTAMP);
+    return 0;
+}
+
+static int TestTrueContinuityErrorsRemainLimited(void)
+{
+    R5DriftCompensator model;
+    R5DriftConfig config = R5Drift_DefaultConfig();
+    CHECK(ExpectSequenceLimited(102U) == 0);
+    CHECK(ExpectSequenceLimited(1000U) == 0);
+    CHECK(ExpectSequenceLimited(100U) == 0);
+    CHECK(ExpectSequenceLimited(99U) == 0);
+    CHECK(ExpectTimestampLimited(1000U) == 0);
+    CHECK(ExpectTimestampLimited(999U) == 0);
+    CHECK(ExpectTimestampLimited(1251U) == 0);
+
+    CHECK(R5Drift_Init(&model, &config));
+    CHECK(R5Drift_SetMode(&model, R5_DRIFT_MODE_STATIC_COMPENSATION));
+    R5Drift_HandleEvent(&model, R5_DRIFT_EVENT_PROFILE_CHANGE);
+    R5Drift_HandleEvent(&model, R5_DRIFT_EVENT_PROFILE_CHANGE);
+    CHECK(Feed(&model, 500U, 50000U, 0));
+    CHECK(Feed(&model, 502U, 50100U, 0));
+    CHECK(model.limited &&
+        model.last_rebase_reason == R5_DRIFT_REASON_SEQUENCE);
     return 0;
 }
 
@@ -119,5 +224,8 @@ int main(void)
     CHECK(TestJitterRateSwitchAndDosingFreeze() == 0);
     CHECK(TestWrapAndSequenceGap() == 0);
     CHECK(TestProfileChangePreservesOffsetAndRebuilds() == 0);
+    CHECK(TestLegalSwitchPositionsAndWrap() == 0);
+    CHECK(TestModeContractsAcrossRepeatedSwitches() == 0);
+    CHECK(TestTrueContinuityErrorsRemainLimited() == 0);
     return 0;
 }

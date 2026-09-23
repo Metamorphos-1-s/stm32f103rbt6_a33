@@ -181,12 +181,27 @@ class ReferenceLock:
             self.last_rebase_reason = Reason.MODE_CHANGE
         else:
             self.clear_learning(Reason.MODE_CHANGE, True)
+        self.have_sample = False
+        self.second_samples.clear()
+        self.second_slot = None
 
     def limit(self, reason):
         self.limited = True
         self.correction_rate_ug_per_s = 0
         self.state = State.LIMITED
         self.last_rebase_reason = reason
+
+    def profile_change(self):
+        self.limited = False
+        self.have_sample = False
+        self.second_samples.clear()
+        self.second_slot = None
+        self.clear_learning(Reason.PROFILE,
+            self.mode == Mode.STATIC_COMPENSATION)
+        if self.mode == Mode.OFF:
+            self.state = State.OFF
+        elif self.mode == Mode.DOSING_NO_COMPENSATION:
+            self.state = State.DOSING
 
     def _step(self, value):
         self.step_values.append(value)
