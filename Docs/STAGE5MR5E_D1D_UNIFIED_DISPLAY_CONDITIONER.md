@@ -2,12 +2,13 @@
 
 ## Result
 
-**STAGE 5M-R5E-D1-D UNIFIED DISPLAY CONDITIONER SOFTWARE READY; 0x0517
-ARTIFACT BUILT; HARDWARE FLASH REQUIRES EXPLICIT AUTHORIZATION; R5 AND
-CHECKWEIGH ALGORITHMS UNCHANGED.**
+**STAGE 5M-R5E-D1-D UNIFIED DISPLAY CONDITIONER ENGINEERING BETA READY;
+GENERAL OFF/SHADOW/ACTIVE DISPLAY COHERENCY QUALIFIED; R5 AND CHECKWEIGH
+ALGORITHMS UNCHANGED; FORMAL RELEASE QUALIFICATION REMAINS SEPARATE.**
 
-No SWD connection, reset, configuration-region read or Flash write was
-performed. The device remains on 0x0516 in its measured clean default state.
+The authorized hardware session completed. The device now runs 0x0517 and
+ends in OFF + SHADOW with Checkweigh OFF, all formal outputs off, offset and
+reference zero, fault/overrun/dirty/SAVE 0/0/0/0 and revision/saved 8/8.
 
 Start HEAD is `e6308a38796426296f2663831cefaefce5a0225a`. The frozen software
 and evidence HEAD is `4e16cd08e42a636febbef24e7e0500af76e173c4`; the final Manifest
@@ -91,19 +92,36 @@ uses no dynamic allocation, recursion, floating point or history growth.
   `759AF431C2F7379296817419090DA305C55D18110A6E1733312B8C5388BF98FE`
 - Application pages: 0-104; configuration remains 0x0801F000-0x0801FFFF.
 
-## Hardware Boundary
+## Hardware Qualification
 
-Hardware qualification is **NOT RUN**. The configuration SHA is also NOT RUN
-for this stage because reading it over SWD would reset the MCU and requires
-explicit authorization. The last historical value is not reused as current
-evidence.
+The authorized session backed up the application and configuration over SWD,
+verified V3 slot A sequence 7 and active slot B sequence 8, and erased only
+application pages 0-104. 0x0517 programming and Verify passed. Configuration
+SHA was identical before, after flash and at final cleanup:
+`A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4`.
 
-Before hardware work, authorization must be exactly:
+OFF + SHADOW hardware records covered 60 s empty, a 500 g large step, three
+complete 500 g load/unload cycles, mechanical disturbance, NET/GROSS page
+change and TARE/CLEAR TARE. The panel released large steps in the same sample
+and remained within one display division at stable endpoints.
 
-`授权读取配置并烧录 0x0517 D1-D Beta`
+R5 SHADOW reference establishment ran 960 s with 960 records, no read errors,
+and reached TRACKING. ACTIVE + STATIC then ran 1,200 s with 1,200 records and
+naturally reached offset `0.025288 g`; no diagnostic stimulus or tuning was
+used. The display stayed within one division of corrected authoritative
+weight, with no rebase, fault, overrun, dirty or SAVE change.
 
-The authorized operation will reset the MCU, clearing volatile R5
-offset/reference/evaluation and returning Checkweigh to OFF. Only application
-pages will be erased, the configuration area will not be written, programming
-will be verified, and rollback to 0x0516 would require a separate explicit
-authorization.
+ACTIVE + DOSING froze offset at `0.025977 g`. Three valid load/unload cycles
+were completed. Two earlier windows where the user's confirmation arrived
+after a fixed recording window are retained as incomplete and explicitly
+excluded from PASS evidence. The valid cycles used a stop-request tail so the
+physical event and stable tail are both inside the same original CSV.
+
+The host tool was extended to accept an explicit expected firmware identity;
+the default remains 0x0516. This is a host evidence correction only and does
+not alter firmware behavior.
+
+The current sensor engineering qualification is complete. Cross-sensor,
+metrology certification, 40 Hz, physical sensor-fault qualification, ASan,
+UBSan and Stage 5O remain deferred. The final state is ready for normal
+engineering use; formal Release qualification remains separate.

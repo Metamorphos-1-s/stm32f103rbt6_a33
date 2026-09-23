@@ -37,7 +37,7 @@ def decode(words):
         "external_buzzer": int(bool(words[6] & 0x100))}
 
 
-def read_state(client):
+def read_state(client, expected_firmware=0x0516):
     primary, _ = client.read(0, 0x20)
     words, _ = client.read(FIRST, COUNT)
     value = decode(words)
@@ -45,8 +45,8 @@ def read_state(client):
                   "map": "0x%04X" % primary[14],
                   "utc": time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime()) +
                     ".%03dZ" % int((time.time() % 1) * 1000)})
-    if primary[15] != 0x0516 or primary[14] != 0x0104:
-        raise HardwareTestError("expected firmware 0x0516 / Map 0x0104")
+    if primary[15] != expected_firmware or primary[14] != 0x0104:
+        raise HardwareTestError("unexpected firmware / Map identity")
     return value
 
 
@@ -55,6 +55,8 @@ def main():
     parser.add_argument("--port", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--baud", type=int, default=115200)
+    parser.add_argument("--expected-firmware", type=lambda value:
+        int(value, 0), default=0x0516)
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("probe")
     control = sub.add_parser("set-mode")
@@ -66,7 +68,7 @@ def main():
     args = parser.parse_args()
     with SerialTransport(args.port, args.baud, "N", 1, 300) as transport:
         client = ModbusClient(transport, 1)
-        before = read_state(client)
+        before = read_state(client, args.expected_firmware)
         if args.command == "probe":
             result = {"state": before, "writes": 0, "flash_operations": 0}
         elif args.command == "set-mode":
@@ -76,7 +78,8 @@ def main():
             response = execute_command(client, token, COMMAND_SET_MODE,
                 arg0=MODES[args.mode], arg1=before["generation"], flags=1)
             result = {"before": before, "response": response,
-                      "after": read_state(client), "writes": 1,
+                      "after": read_state(client, args.expected_firmware),
+                      "writes": 1,
                       "flash_operations": 0, "save_operations": 0}
         else:
             args.output.mkdir(parents=True, exist_ok=False)
@@ -84,8 +87,11 @@ def main():
             context = read_static_context(client, order)
             started = time.monotonic(); rows = []; last_sequence = None
             while time.monotonic() - started < args.duration_s:
+                if args.output.joinpath("stop.request").exists():
+                    break
                 cycle = time.monotonic()
-                primary = decode_primary(client.read(0, 64)[0], order, 0x0516)
+                primary = decode_primary(client.read(0, 64)[0], order,
+                    args.expected_firmware)
                 shadow = decode_shadow(client.read(0x02E0, 31)[0], order)
                 guarded = decode(client.read(FIRST, COUNT)[0])
                 beta = decode_beta(client.read(0x0280, 40)[0], order)

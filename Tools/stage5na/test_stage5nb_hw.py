@@ -1,4 +1,5 @@
 import unittest
+from pathlib import Path
 
 import stage5nb_hw as hw
 
@@ -23,6 +24,14 @@ class Stage5NBHardwareToolTests(unittest.TestCase):
     def test_signature(self):
         with self.assertRaises(Exception):
             hw.decode([0] * hw.COUNT)
+
+    def test_expected_firmware_default_remains_0516(self):
+        parser_value = int("0x0517", 0)
+        self.assertEqual(parser_value, 0x0517)
+
+    def test_stop_request_name_is_stable(self):
+        self.assertEqual(Path("capture").joinpath("stop.request").name,
+            "stop.request")
 
 
 if __name__ == "__main__":

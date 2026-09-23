@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "classification": "SOFTWARE QUALIFICATION",
-  "result": "PASS",
-  "statement": "STAGE 5M-R5E-D1-D UNIFIED DISPLAY CONDITIONER SOFTWARE READY; 0x0517 ARTIFACT BUILT; HARDWARE FLASH REQUIRES EXPLICIT AUTHORIZATION; R5 AND CHECKWEIGH ALGORITHMS UNCHANGED",
+  "result": "ENGINEERING BETA READY",
+  "statement": "STAGE 5M-R5E-D1-D UNIFIED DISPLAY CONDITIONER ENGINEERING BETA READY; GENERAL OFF/SHADOW/ACTIVE DISPLAY COHERENCY QUALIFIED; R5 AND CHECKWEIGH ALGORITHMS UNCHANGED; FORMAL RELEASE QUALIFICATION REMAINS SEPARATE",
   "start_head": "e6308a38796426296f2663831cefaefce5a0225a",
   "software_evidence_head": "4e16cd08e42a636febbef24e7e0500af76e173c4",
   "branch": "stage5mr5e-d1d-unified-display-conditioner",
@@ -23,7 +23,29 @@
   "msvc_w4_wx": "PASS",
   "asan": "NOT RUN",
   "ubsan": "NOT RUN",
-  "hardware_qualification": "NOT RUN - EXPLICIT AUTHORIZATION REQUIRED",
-  "configuration_sha": "NOT RUN - SWD READ NOT AUTHORIZED",
-  "device_remains": "0x0516"
+  "hardware_qualification": "PASS FOR CURRENT SENSOR ENGINEERING BETA",
+  "configuration_sha": {
+    "preflash": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+    "postflash": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+    "final": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4"
+  },
+  "device_final": "0x0517 / OFF + SHADOW / Checkweigh OFF",
+  "hardware_notes": {
+    "configuration_read": "PASS",
+    "v3_slots": "A sequence 7 valid; B sequence 8 valid active",
+    "application_readback": "0x0517 SHA exact",
+    "off_shadow_empty": "177 records / 60.109 s / 0 read errors",
+    "off_shadow_500g": "881 records / 300 s / large step same-sample release",
+    "off_shadow_cycles": "3 complete load/unload cycles, 1d endpoint error",
+    "mechanical_disturbance": "PASS",
+    "net_gross_switch": "PASS",
+    "tare_clear_tare": "PASS",
+    "r5_reference_tracking": "960 records / 960 s / TRACKING",
+    "active_static": "1200 records / 1200 s / natural offset reached 0.025288 g",
+    "dosing_cycle_1": "PASS, offset frozen 0.025977 g",
+    "dosing_cycle_2": "PASS, stop.request tail, offset frozen 0.025977 g",
+    "dosing_cycle_3": "PASS, stop.request tail, offset frozen 0.025977 g",
+    "missed_windows": ["dosing_cycle1_unload", "dosing_cycle2_load"],
+    "missed_window_policy": "preserved as incomplete; not used as PASS evidence"
+  }
 }
