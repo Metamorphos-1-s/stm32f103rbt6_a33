@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
-  "classification": "STAGE5MR5E_D1D_UNIFIED_DISPLAY_SOFTWARE_READY",
+  "classification": "STAGE5MR5E_D1D_UNIFIED_DISPLAY_ENGINEERING_BETA_READY",
   "run_id": "20260923T080510Z_unified_display_conditioner",
-  "repository_commit": "185c162ab8e4870fe56791d48dacea34735764d8",
+  "repository_commit": "30146a9c2b62bc921d5d30c21247377dc6620b35",
   "files": [
     {
       "path": "arm_wall_wextra_werror.txt",
@@ -50,6 +50,396 @@
       "sha256": "79149D096B274C7B99D928C41DAEA44369E50B97950AD544DBF216B7CFD24BE5"
     },
     {
+      "path": "hardware/current_after_missed_cycle2_load.json",
+      "length": 364,
+      "sha256": "26B2BCF057E9259DB95C767DEE11A2437150A60FCEF5C4E4B581509FBCD647BF"
+    },
+    {
+      "path": "hardware/current_after_missed_cycle2_load_r5.json",
+      "length": 2881,
+      "sha256": "5948AE235086E265A0B1E4A48E44C1CD136920D06A48AAF7A8E32C0E45E7B20F"
+    },
+    {
+      "path": "hardware/cycle1_load/samples.csv",
+      "length": 44831,
+      "sha256": "0665052B284609EDF93C9D63BFEC6E16846DBEA43B4D0BFF9D53D54F22D2194B"
+    },
+    {
+      "path": "hardware/cycle1_load/summary.json",
+      "length": 3860,
+      "sha256": "0271F15E945884F2EDB96EF0666C3DB82C50BECE1F29350D4E36D63D429E5BCC"
+    },
+    {
+      "path": "hardware/cycle1_unload/samples.csv",
+      "length": 45211,
+      "sha256": "0DF300B1D596BA2A45A11EE85609A26EFBB418798309CE1E5F6511B469C87658"
+    },
+    {
+      "path": "hardware/cycle1_unload/summary.json",
+      "length": 3862,
+      "sha256": "CB6594EE924075D2B8E492912D6401BA97AC9143C3B56FF9EE6B9F450EBD8AA8"
+    },
+    {
+      "path": "hardware/cycle2_load/samples.csv",
+      "length": 35347,
+      "sha256": "73CDD9D50D4A227CF2331DBCBEB8F3A8B9760EC46F58766A4D1E093326F8FFC8"
+    },
+    {
+      "path": "hardware/cycle2_load/summary.json",
+      "length": 3854,
+      "sha256": "8293DF896D02887368E30B1D2BB0956DD7CDCBC65C85E72781D4F6ACF630D200"
+    },
+    {
+      "path": "hardware/cycle2_unload/samples.csv",
+      "length": 36387,
+      "sha256": "41F2E1293290F8A1A6BA9752E70101DE368A75B87DDEC210A3BC619C4B77044E"
+    },
+    {
+      "path": "hardware/cycle2_unload/summary.json",
+      "length": 3862,
+      "sha256": "A2618F1C75E6802FC975F881C8CB07AE093CFAE0A412CB89363B50B4F8D3BD1B"
+    },
+    {
+      "path": "hardware/cycle3_load/samples.csv",
+      "length": 36102,
+      "sha256": "31E5CADFFAE20CFF3F75F09A0C01682F7B99B16B740D3B184B6C380396750E4F"
+    },
+    {
+      "path": "hardware/cycle3_load/summary.json",
+      "length": 3853,
+      "sha256": "72C0BE72C5C3C0674DCB965587FDF5E4ED500D5BB04CCCC7509C5755532E1FE7"
+    },
+    {
+      "path": "hardware/cycle3_unload/samples.csv",
+      "length": 37907,
+      "sha256": "1170E453AD394BB5E0A04E692D687C90811A454C777135E6274E4A4DC0874F1E"
+    },
+    {
+      "path": "hardware/cycle3_unload/summary.json",
+      "length": 3854,
+      "sha256": "3352C41691BC1B4C1876754D84303FA6DB81D06CA6F6F8CE9E447B3A8F0E5F96"
+    },
+    {
+      "path": "hardware/dosing_cycle1_load_valid/samples.csv",
+      "length": 75834,
+      "sha256": "B2A81EB7ABD8070284ADBD20AFD756AE6B6AF1BD7EFB43766773245012F8369B"
+    },
+    {
+      "path": "hardware/dosing_cycle1_load_valid/summary.json",
+      "length": 3878,
+      "sha256": "76792D0036B6CF6FF72D1D7FB64BB8ADD5A73CC04FEE08C9853B6685DCFD16B6"
+    },
+    {
+      "path": "hardware/dosing_cycle1_unload/samples.csv",
+      "length": 40716,
+      "sha256": "A527CC6B5DC1AC17CF243FDBE4081C9F39AE6FA164CC7CA70FB543B866FE83A0"
+    },
+    {
+      "path": "hardware/dosing_cycle1_unload/summary.json",
+      "length": 3912,
+      "sha256": "A74FE269E786FAED2DDEE9A70B7315FE8FD801E3E49F3EBE95AC1A3AE6F929F0"
+    },
+    {
+      "path": "hardware/dosing_cycle1_unload_valid/samples.csv",
+      "length": 75892,
+      "sha256": "FC3F0060A812C006B1EB493AD4DAF10C3DC9B6B4CFFF9451F2AC4235658FC716"
+    },
+    {
+      "path": "hardware/dosing_cycle1_unload_valid/summary.json",
+      "length": 3895,
+      "sha256": "F7457F85CE5167346263B5027494B9075C656CA9B766F006D49E7597676DB815"
+    },
+    {
+      "path": "hardware/dosing_cycle2_load_valid/samples.csv",
+      "length": 74029,
+      "sha256": "A0110698CA22B27A9A3D09C2B297F87BD970A83B133C253CDAC435D40CB45A8C"
+    },
+    {
+      "path": "hardware/dosing_cycle2_load_valid/summary.json",
+      "length": 3876,
+      "sha256": "614F50F3BD4D4F8B738EFADCE3F8562FBAA7B46444A2B8FC0750C7E3100A5934"
+    },
+    {
+      "path": "hardware/dosing_cycle2_unload_valid/samples.csv",
+      "length": 112516,
+      "sha256": "D5490E7BFAC398B49C3A4F05511E39D5C61CD022DC572194A85AE7245B0DE584"
+    },
+    {
+      "path": "hardware/dosing_cycle2_unload_valid/stop.request",
+      "length": 40,
+      "sha256": "6F07526B4B3B3006A6CE55BACCB3A49A5949036538A350A103FCD075707ACDBD"
+    },
+    {
+      "path": "hardware/dosing_cycle2_unload_valid/summary.json",
+      "length": 3895,
+      "sha256": "8BE7C8FEE5CA2F3AEE235FBDE7BC89B8F6AA05F19FDC7AAB377FC2E6CA8D92D9"
+    },
+    {
+      "path": "hardware/dosing_cycle3_load_valid/samples.csv",
+      "length": 126101,
+      "sha256": "ABF9997B0ACFAB9731A86A57E1FAAD473F2A909CD40B60201D88251B4F5E372E"
+    },
+    {
+      "path": "hardware/dosing_cycle3_load_valid/stop.request",
+      "length": 45,
+      "sha256": "918576091E1988477EE65D2C412E5D5A5DD638E57BC5326A12BA732AD40F78D4"
+    },
+    {
+      "path": "hardware/dosing_cycle3_load_valid/summary.json",
+      "length": 3895,
+      "sha256": "241505B5AB8605CDECE7EE8F4E354FBA3F1766282562AC4B7063B59688B252FD"
+    },
+    {
+      "path": "hardware/final_after_r5_reset.json",
+      "length": 2832,
+      "sha256": "227948F52D34C28AAC63266415BE3B38FE13C59BAA190CC61483DB60D4941DB3"
+    },
+    {
+      "path": "hardware/final_checkweigh.json",
+      "length": 364,
+      "sha256": "028C5011C60F5C55035EEB7C7103C71DE2BA2F3CC0B7440A08F7130E90BE8162"
+    },
+    {
+      "path": "hardware/final_config_parsed_reference.json",
+      "length": 2616,
+      "sha256": "A5A5D935EF66E5F217C937F6B2295081412EADDFD781BCC36769860377BCB765"
+    },
+    {
+      "path": "hardware/final_config_read.log",
+      "length": 1154,
+      "sha256": "19E6E0F9416BED41B79C03BE22B1DFFD51F2C7F711FA2EB74D4D04BEF618B252"
+    },
+    {
+      "path": "hardware/final_config_region.bin",
+      "length": 4096,
+      "sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4"
+    },
+    {
+      "path": "hardware/final_empty_checkweigh.json",
+      "length": 364,
+      "sha256": "312109C2E2A2A0C914CA2F86683A588BBEB7FF5DB98EB4306BFA99EEAC1DB2CB"
+    },
+    {
+      "path": "hardware/final_empty_r5.json",
+      "length": 2837,
+      "sha256": "E5CBA31DC4F7DDC1E7D46934151E5FD9FF5F16852473D12BBA6E030617774658"
+    },
+    {
+      "path": "hardware/final_r5.json",
+      "length": 2857,
+      "sha256": "D32996FB472EB7CD412591AEA142AA8CD90EA37B0B1DBE968A6C8C32AFC5C912"
+    },
+    {
+      "path": "hardware/flash_0517_verify.log",
+      "length": 1677,
+      "sha256": "D61DEF77C8050B99E8488F330E8F27B65C87C7E62CFA0FAE4BE1AD8BAA3357DA"
+    },
+    {
+      "path": "hardware/mechanical_disturbance/samples.csv",
+      "length": 38592,
+      "sha256": "254EFCDFFB93BFCD942DC9B1C717AC5EFC233E97FF376236C4AD053BD33BF67A"
+    },
+    {
+      "path": "hardware/mechanical_disturbance/summary.json",
+      "length": 3888,
+      "sha256": "56AD4D688540EFD8DDBB5D7FDD1F56A19F2712E6E8EC60F1E96A78FE74C8EF21"
+    },
+    {
+      "path": "hardware/net_gross_switch/samples.csv",
+      "length": 38504,
+      "sha256": "7A39FB1C59501FCF960E57A9D8FA379EFAAF9DA68580C9C35B7FC160ECBC401D"
+    },
+    {
+      "path": "hardware/net_gross_switch/summary.json",
+      "length": 3888,
+      "sha256": "2136CA14A260B38E07DBD23851572165D9E1F44EDCAB6EE75FD78A278BEF283A"
+    },
+    {
+      "path": "hardware/off_shadow_empty_60s/samples.csv",
+      "length": 35894,
+      "sha256": "49A9168DFE01E315A3DB132DAAE1FADCCBC5B5FD3A5196EFA5F8D8BB3845FEA4"
+    },
+    {
+      "path": "hardware/off_shadow_empty_60s/summary.json",
+      "length": 3858,
+      "sha256": "3EA92138B75C46FB0A071800BA7B34184C81611C47EFBE02FB082B19FC93F744"
+    },
+    {
+      "path": "hardware/off_shadow_load_500g/samples.csv",
+      "length": 185790,
+      "sha256": "7251803EE296840361087A4AA54C196EAF9273A1831272C79B502565A286FFD5"
+    },
+    {
+      "path": "hardware/off_shadow_load_500g/summary.json",
+      "length": 3860,
+      "sha256": "BB94666CCF063097BCF5DA9AD5F62216EED388C97995A1DB1DAEC3642F23F81A"
+    },
+    {
+      "path": "hardware/postflash_application/0x0517_readback.bin",
+      "length": 107084,
+      "sha256": "9D8C5881CD880D2C5D6A7D0C499A4EACF9495A550B08B237A81D4BB2F71641C5"
+    },
+    {
+      "path": "hardware/postflash_application/read.log",
+      "length": 1174,
+      "sha256": "A613E880A579612AFB53715F89629FB62EACBBB24DB46BC27B4C4FB61D641816"
+    },
+    {
+      "path": "hardware/postflash_checkweigh.json",
+      "length": 364,
+      "sha256": "DDB90CADD618C2E6173DD618E896DEA450816CCB28E50558E303AC4CF485EEF8"
+    },
+    {
+      "path": "hardware/postflash_config/config_region.bin",
+      "length": 4096,
+      "sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4"
+    },
+    {
+      "path": "hardware/postflash_config/read.log",
+      "length": 1165,
+      "sha256": "4603B88A46B4BF247CA78B90962B74DF99DE76549639558D493DD2019DBCED66"
+    },
+    {
+      "path": "hardware/postflash_r5.json",
+      "length": 2840,
+      "sha256": "A6C398243F0DF65E25E21127318B15DFAB88E318016E804D1D1F7FEC745FECA2"
+    },
+    {
+      "path": "hardware/preflash_application/0x0516_readback.bin",
+      "length": 106884,
+      "sha256": "759AF431C2F7379296817419090DA305C55D18110A6E1733312B8C5388BF98FE"
+    },
+    {
+      "path": "hardware/preflash_application/read.log",
+      "length": 1173,
+      "sha256": "8D81852C800AB7B289F3E0CF10BD863BC4E0E29B653A05CD1862EFBBBFE9B29B"
+    },
+    {
+      "path": "hardware/preflash_checkweigh.json",
+      "length": 364,
+      "sha256": "5B1A6FD9B31DF46B7FF7E5DCD2E23AA659CD68B065814586CE6CA621D3EAE6CA"
+    },
+    {
+      "path": "hardware/preflash_config/config_region.bin",
+      "length": 4096,
+      "sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4"
+    },
+    {
+      "path": "hardware/preflash_config/parsed.json",
+      "length": 2616,
+      "sha256": "A5A5D935EF66E5F217C937F6B2295081412EADDFD781BCC36769860377BCB765"
+    },
+    {
+      "path": "hardware/preflash_config/read.log",
+      "length": 1164,
+      "sha256": "65B4BC8B6E226DB24DC357057C52B989ECB93C94DE1F591CEFFBB31BBC79E230"
+    },
+    {
+      "path": "hardware/preflash_r5.json",
+      "length": 2841,
+      "sha256": "A5E67D49C2E886F81C55D95145C6E8ACA07934E4D37EF550816556DEC566740A"
+    },
+    {
+      "path": "hardware/r5_active_static_20m/environment.json",
+      "length": 578,
+      "sha256": "FA43CE8A5126895F013AD8AFF834206E3ECAB40BB93621F63BBD8DD1FE17DCF6"
+    },
+    {
+      "path": "hardware/r5_active_static_20m/events.jsonl",
+      "length": 112717,
+      "sha256": "5C14CFEF0C9950F80FF02629890070353644D5B36F6EA3642A1AD7C84F2B1487"
+    },
+    {
+      "path": "hardware/r5_active_static_20m/frames.jsonl",
+      "length": 1974000,
+      "sha256": "FAB709605B06EA5B5CD55B6996512B5A904B37A2EA19B1B1AFD730098081917B"
+    },
+    {
+      "path": "hardware/r5_active_static_20m/samples.csv",
+      "length": 250115,
+      "sha256": "53E9098D12B4A7DA621E52D44534AF0FD27E4AAD9E9A74ADB1EB8388D6C4BBB3"
+    },
+    {
+      "path": "hardware/r5_active_static_20m/summary.json",
+      "length": 2843,
+      "sha256": "18722F75DE5C6D3E04C68374FEA60A156A2B9B3BF71518D5D21F562E0DF6EEE7"
+    },
+    {
+      "path": "hardware/r5_dosing_pre_cycles.json",
+      "length": 2879,
+      "sha256": "989E7DB306FDE3CB602FE3584FDE6C29E16013A89F8E4FE1D21425783ED3221E"
+    },
+    {
+      "path": "hardware/r5_final_reset.json",
+      "length": 6306,
+      "sha256": "3144D30A802E32D89A776552E2A95B59D790C7796A0C400D4BDD6E18DBBA900E"
+    },
+    {
+      "path": "hardware/r5_final_set_off.json",
+      "length": 6380,
+      "sha256": "DB88A9D7E6DBEF39C5EF70066B4DE107F24BE87B2F3246B85095949F6B177F0E"
+    },
+    {
+      "path": "hardware/r5_final_set_shadow.json",
+      "length": 6404,
+      "sha256": "82B12D0073971AC3C2937530EDFECA875B285D49BC5B13F4DCFBA459AAA9F9E1"
+    },
+    {
+      "path": "hardware/r5_set_active_static.json",
+      "length": 6406,
+      "sha256": "CFAD920287F23D5FAE42170227740B826BBDE42C4D15B667D399243D3BD5E68A"
+    },
+    {
+      "path": "hardware/r5_set_dosing_active.json",
+      "length": 6408,
+      "sha256": "97E1C6FE343CE5C2BED943B08A509A9E388EB15F812563CEACED1FD21578E65F"
+    },
+    {
+      "path": "hardware/r5_set_static_shadow.json",
+      "length": 6351,
+      "sha256": "423175A1D086B3F2CC6404CF2FB274F9FEB0FAB37DB7A831E8447C31FA09DEAB"
+    },
+    {
+      "path": "hardware/r5_shadow_reference/environment.json",
+      "length": 578,
+      "sha256": "FA43CE8A5126895F013AD8AFF834206E3ECAB40BB93621F63BBD8DD1FE17DCF6"
+    },
+    {
+      "path": "hardware/r5_shadow_reference/events.jsonl",
+      "length": 90337,
+      "sha256": "46E4B8DCCD74C3AA4533EF7AD11090862C049B77ABD391DA9193AD751B69F1BB"
+    },
+    {
+      "path": "hardware/r5_shadow_reference/frames.jsonl",
+      "length": 1579200,
+      "sha256": "D62B55C204B2BE736B06729B83EC494DFE041AED5E0C3E06F4E37C3EF0E75135"
+    },
+    {
+      "path": "hardware/r5_shadow_reference/samples.csv",
+      "length": 178676,
+      "sha256": "4431507D311F69CEB66DE31B2384901F7D6FCD14B2816E25B905D8D60E341764"
+    },
+    {
+      "path": "hardware/r5_shadow_reference/summary.json",
+      "length": 2801,
+      "sha256": "4CA00DDF0E243A5508217CF3C590DC5535778F77083E06BA56FE5C288719D7DD"
+    },
+    {
+      "path": "hardware/tare_clear_tare/samples.csv",
+      "length": 76535,
+      "sha256": "D3B6A8EF83199C681F4426C1F6FD1060ECE676E815E762D3D68E57B0EBA31581"
+    },
+    {
+      "path": "hardware/tare_clear_tare/summary.json",
+      "length": 3889,
+      "sha256": "90319F8B44AF9FBBB65BBC2C65B8CABADBC0F85F020AE7493E3CBFAC4F359C18"
+    },
+    {
+      "path": "hardware_summary.json",
+      "length": 1783,
+      "sha256": "46307ED855C8E97CF50A54BECA7C03B204F31AFE680AB50DB15C41FA9E2EE34C"
+    },
+    {
       "path": "msvc_w4_wx_ctest.txt",
       "length": 514808,
       "sha256": "16ABC37AFFFA617FB58A9196F906ECB0ABB95DF96702B9C4F62552AF8FC8360E"
@@ -66,8 +456,8 @@
     },
     {
       "path": "qualification_summary.json",
-      "length": 1169,
-      "sha256": "9ED5767FDCDB3E66A262835613A374ED26C20FBF77A29BF0E7DB273AD3475FA9"
+      "length": 2509,
+      "sha256": "947310341751049E7DD9046A35DCC3E9BD84BA4F10E6BF55447F24DD0A1F8C3B"
     },
     {
       "path": "r5_parity.json",
