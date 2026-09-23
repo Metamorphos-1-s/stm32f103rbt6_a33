@@ -69,6 +69,30 @@ static MassValueUg MetrologyManager_DisplaySourceMass(
         snapshot->gross_mass_ug : snapshot->net_mass_ug;
 }
 
+#if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
+static uint8_t MetrologyManager_DisplayDivisionCode(uint8_t division)
+{
+    if (division == 1U) return 0U;
+    if (division == 2U) return 1U;
+    if (division == 5U) return 2U;
+    return 3U;
+}
+
+static uint16_t MetrologyManager_DisplaySource(
+    const SystemContext *context, const UnitDisplayConfig *display)
+{
+    uint16_t source = (context->runtime.weight_view == WEIGHT_VIEW_GROSS) ?
+        0x0100U : 0U;
+    source |= (uint16_t)(((uint16_t)context->config.metrology.active_unit &
+        0x03U) << 6U);
+    source |= (uint16_t)((display->decimal_places & 0x07U) << 3U);
+    source |= (uint16_t)(MetrologyManager_DisplayDivisionCode(
+        display->division_digit) << 1U);
+    if (s_r5_application == R5_BETA_APPLICATION_ACTIVE) source |= 1U;
+    return source;
+}
+#endif
+
 static bool MetrologyManager_UpdateDisplayConditioner(void)
 {
     const WeightSnapshot *snapshot = WeightEngine_GetSnapshot(&s_engine);
@@ -101,6 +125,13 @@ static bool MetrologyManager_UpdateDisplayConditioner(void)
     input.allow_lock = ((state == APP_STATE_RUN) ||
         (state == APP_STATE_MENU)) &&
         ((snapshot->status_flags & WEIGHT_STATUS_WEIGHT_VALID) != 0U);
+#if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
+    input.sample_sequence = snapshot->sample_sequence;
+    input.source = MetrologyManager_DisplaySource(context, display);
+    input.unit = context->config.metrology.active_unit;
+    input.decimal_places = display->decimal_places;
+    input.division_digit = display->division_digit;
+#endif
     return DisplayConditioner_Update(&s_display_conditioner, &input);
 }
 

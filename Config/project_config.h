@@ -19,6 +19,10 @@
 #define A33_ENABLE_STAGE5NB_BETA 0U
 #endif
 
+#ifndef A33_ENABLE_STAGE5MR5E_D1D_BETA
+#define A33_ENABLE_STAGE5MR5E_D1D_BETA 0U
+#endif
+
 #if (A33_ENABLE_STAGE5NA3_DIAGNOSTICS != 0U) && \
     (A33_ENABLE_STAGE5MR5_BETA == 0U)
 #error "Stage 5N-A3 diagnostics require Stage 5M-R5 Beta"
@@ -28,7 +32,13 @@
     (A33_ENABLE_STAGE5MR5_BETA == 0U)
 #error "Stage 5N-B Beta requires Stage 5M-R5 Beta"
 #endif
-#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+#if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U) && \
+    (A33_ENABLE_STAGE5NB_BETA == 0U)
+#error "Stage 5M-R5E-D1-D Beta requires Stage 5N-B Beta"
+#endif
+#if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
+#define FW_RELEASE_VERSION            0x0517U
+#elif (A33_ENABLE_STAGE5NB_BETA != 0U)
 #define FW_RELEASE_VERSION            0x0516U
 #elif (A33_ENABLE_STAGE5MR5_BETA != 0U)
 #define FW_RELEASE_VERSION            0x0515U

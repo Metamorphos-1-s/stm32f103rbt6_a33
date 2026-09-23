@@ -38,12 +38,17 @@ option(A33_ENABLE_STAGE5NA3_DIAGNOSTICS
     "Enable Stage 5N-A3 SWD-only invalid-input injection" OFF)
 option(A33_ENABLE_STAGE5NB_BETA
     "Enable Stage 5N-B guarded ACTIVE alarm engineering beta" OFF)
+option(A33_ENABLE_STAGE5MR5E_D1D_BETA
+    "Enable Stage 5M-R5E-D1-D unified display engineering beta" OFF)
 
 if(A33_ENABLE_STAGE5NA3_DIAGNOSTICS AND NOT A33_ENABLE_STAGE5MR5_BETA)
     message(FATAL_ERROR "Stage 5N-A3 diagnostics require Stage 5M-R5 Beta")
 endif()
 if(A33_ENABLE_STAGE5NB_BETA AND NOT A33_ENABLE_STAGE5MR5_BETA)
     message(FATAL_ERROR "Stage 5N-B Beta requires Stage 5M-R5 Beta")
+endif()
+if(A33_ENABLE_STAGE5MR5E_D1D_BETA AND NOT A33_ENABLE_STAGE5NB_BETA)
+    message(FATAL_ERROR "Stage 5M-R5E-D1-D Beta requires Stage 5N-B Beta")
 endif()
 
 # Enable CMake support for ASM and C languages
@@ -174,6 +179,14 @@ if(A33_ENABLE_STAGE5NB_BETA)
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         Services/guarded_checkweigh/guarded_checkweigh.c
         UI/checkweigh_local_control.c)
+endif()
+
+if(A33_ENABLE_STAGE5MR5E_D1D_BETA)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5MR5E_D1D_BETA=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5MR5E_D1D_BETA=0)
 endif()
 
 if(A33_ENABLE_STAGE5MR5_BETA)

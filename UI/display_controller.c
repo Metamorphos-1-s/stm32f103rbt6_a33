@@ -9,7 +9,8 @@
 #include "tm1628.h"
 #include "tm1628_board_map.h"
 #include "unit_converter.h"
-#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U) && \
+    (A33_ENABLE_STAGE5MR5E_D1D_BETA == 0U)
 #include "directional_display_follower.h"
 #endif
 
@@ -29,7 +30,8 @@ static bool s_text_override;
 static bool s_numeric_override;
 static bool s_message_active;
 static bool s_initialized;
-#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U) && \
+    (A33_ENABLE_STAGE5MR5E_D1D_BETA == 0U)
 static DirectionalDisplayFollower s_directional_follower;
 
 static uint8_t DisplayController_DivisionCode(uint8_t division)
@@ -169,7 +171,17 @@ static bool DisplayController_BuildModel(void)
     if (!UnitConverter_MassToDisplay(mass,
             context->config.metrology.active_unit, unit_display, &converted))
         return DisplayModel_SetText6("  Lo  ");
-#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
+    if ((((s_page == DISPLAY_PAGE_NET) &&
+          (context->runtime.weight_view == WEIGHT_VIEW_NET)) ||
+         ((s_page == DISPLAY_PAGE_GROSS) &&
+          (context->runtime.weight_view == WEIGHT_VIEW_GROSS))) &&
+        (conditioned != NULL) &&
+        conditioned->display_domain_valid)
+    {
+        converted.display_count = conditioned->display_count;
+    }
+#elif (A33_ENABLE_STAGE5MR5_BETA != 0U)
     if ((s_page == DISPLAY_PAGE_NET) || (s_page == DISPLAY_PAGE_GROSS))
     {
         DirectionalDisplayFollowerInput input;
@@ -404,7 +416,22 @@ DisplayPage DisplayController_GetPage(void)
 bool DisplayController_GetDirectionalDiagnostics(
     DirectionalDisplayFollowerDiagnostics *diagnostics)
 {
+#if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
+    const DisplayConditionSnapshot *snapshot =
+        MetrologyManager_GetDisplayConditionSnapshot();
+    if ((diagnostics == NULL) || (snapshot == NULL)) return false;
+    (void)memset(diagnostics, 0, sizeof(*diagnostics));
+    diagnostics->display_count = snapshot->display_count;
+    diagnostics->last_sample_sequence = snapshot->last_sample_sequence;
+    diagnostics->evidence = snapshot->evidence;
+    diagnostics->source = (uint8_t)snapshot->source;
+    diagnostics->initialized = snapshot->display_domain_valid;
+    diagnostics->locked = snapshot->locked;
+    diagnostics->last_large_step = snapshot->large_step;
+    return true;
+#else
     return DirectionalDisplayFollower_GetDiagnostics(
         &s_directional_follower, diagnostics);
+#endif
 }
 #endif

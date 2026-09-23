@@ -1,7 +1,11 @@
 #ifndef DISPLAY_CONDITIONER_H
 #define DISPLAY_CONDITIONER_H
 
+#include "project_config.h"
 #include "mass_types.h"
+#if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
+#include "unit_types.h"
+#endif
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -26,7 +30,13 @@ typedef enum
     DISPLAY_RELEASE_OVERLOAD,
     DISPLAY_RELEASE_CALIBRATION,
     DISPLAY_RELEASE_NOT_ALLOWED,
-    DISPLAY_RELEASE_FORCED
+    DISPLAY_RELEASE_FORCED,
+#if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
+    DISPLAY_RELEASE_SOURCE_CHANGE,
+    DISPLAY_RELEASE_LARGE_STEP,
+    DISPLAY_RELEASE_SLOW_FOLLOW,
+    DISPLAY_RELEASE_INVALID_DOMAIN
+#endif
 } DisplayConditionReleaseReason;
 
 typedef struct
@@ -41,6 +51,13 @@ typedef struct
     bool calibrating;
     bool allow_lock;
     bool force_reset;
+#if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
+    uint32_t sample_sequence;
+    uint16_t source;
+    MassUnit unit;
+    uint8_t decimal_places;
+    uint8_t division_digit;
+#endif
 } DisplayConditionInput;
 
 typedef struct
@@ -53,12 +70,26 @@ typedef struct
     DisplayConditionReleaseReason last_release_reason;
     bool locked;
     bool operator_zero_anchor;
+#if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
+    int32_t desired_display_count;
+    int32_t display_count;
+    uint32_t last_sample_sequence;
+    int8_t direction;
+    int8_t evidence;
+    uint16_t source;
+    bool display_domain_valid;
+    bool large_step;
+#endif
 } DisplayConditionSnapshot;
 
 typedef struct
 {
     DisplayConditionSnapshot snapshot;
+#if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
+    int32_t sample_buffer[DISPLAY_CONDITIONER_WINDOW_SIZE];
+#else
     MassValueUg sample_buffer[DISPLAY_CONDITIONER_WINDOW_SIZE];
+#endif
     uint32_t candidate_start_ms;
     uint32_t operator_anchor_start_ms;
     uint32_t last_update_ms;
