@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
-  "classification": "STAGE5PA1_SOFTWARE_PREFLASH_FREEZE",
+  "classification": "STAGE5PA1_FINAL_SOFTWARE_AND_POST_FAILURE_FIX",
   "run_id": "software",
-  "repository_commit": "9787109",
+  "repository_commit": "2015386",
   "files": [
     {
       "path": "artifacts/stage5pa1_0519_baseline_diagnostics.bin",
@@ -38,6 +38,21 @@
       "path": "artifacts/stage5pa1_0519_optimized_diagnostics.elf",
       "length": 2039220,
       "sha256": "B5A5C4D4C900577CEE5B3B139E6B366D6D7332B7C4399D9255761DB95550990A"
+    },
+    {
+      "path": "artifacts/stage5pa1_0519_post_failure_fix.bin",
+      "length": 107532,
+      "sha256": "2101D1F344B63AA9A6983B56A90EBFF3AF8167B838B506611776D71C37D3C6AA"
+    },
+    {
+      "path": "artifacts/stage5pa1_0519_post_failure_fix.elf",
+      "length": 2024160,
+      "sha256": "A2832B10FF9F815EACE61E7A13FE63E09987EA912EB781E6012ED55F338A72DE"
+    },
+    {
+      "path": "artifacts/stage5pa1_0519_post_failure_fix.map",
+      "length": 1430194,
+      "sha256": "4D223371DB0502622885976987AAFE8A8929C65FAAB99E8882D15EF598150756"
     },
     {
       "path": "d1d_parity.json",
@@ -76,8 +91,8 @@
     },
     {
       "path": "software_summary.json",
-      "length": 2218,
-      "sha256": "CD5CAEF414DF3B8ADAC49AF939D4F88AE7A947200621F764E8002271074114DD"
+      "length": 2327,
+      "sha256": "EACDC89BC2461A9AD58774720588C8333D4DD72BBF1A477B6DB2F439DCCE54E3"
     },
     {
       "path": "stage5na_parity.json",
