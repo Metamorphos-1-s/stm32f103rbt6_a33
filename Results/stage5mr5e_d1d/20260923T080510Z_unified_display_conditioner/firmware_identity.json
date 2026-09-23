@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "beta_0x0517": {
+    "bin_length": 107084,
+    "bin_sha256": "9D8C5881CD880D2C5D6A7D0C499A4EACF9495A550B08B237A81D4BB2F71641C5",
+    "elf_length": 2011496,
+    "elf_sha256": "DD1549D2AC80C023F2B3524AE4A742203072532CF4523F6A09B6891A15DC77BF",
+    "map_length": 1442742,
+    "map_sha256": "5C0F376997FB4538C6F987824DCBDF852CB580DBA7FA498B6F6202D98C41117B",
+    "application_pages": "0-104"
+  },
+  "rollback_0x0516": {
+    "length": 106884,
+    "sha256": "759AF431C2F7379296817419090DA305C55D18110A6E1733312B8C5388BF98FE"
+  },
+  "release_elf": {
+    "length": 172200,
+    "sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486"
+  },
+  "config_region": "0x0801F000-0x0801FFFF",
+  "map": "0x0104",
+  "schema": 2,
+  "persistent_format": 3
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "builds": {
+    "Debug": {"flash_bytes": 94116, "ram_bytes": 19392},
+    "Release": {"elf_bytes": 172200, "ram_bytes": 19352},
+    "beta_0x0516": {"flash_bytes": 106884, "ram_bytes": 19472},
+    "beta_0x0517": {"flash_bytes": 107084, "ram_bytes": 19448, "data_bytes": 12, "bss_bytes": 19432}
+  },
+  "static_to_estack_bytes": 2056,
+  "main_static_chain_bytes": 1144,
+  "largest_irq_chain_bytes": 72,
+  "conservative_stack_bytes": 1504,
+  "collision_margin_bytes": 552,
+  "baseline_collision_margin_bytes": 528,
+  "hard_gate_bytes": 512,
+  "display_conditioner_update_local_bytes": 72,
+  "dynamic_allocation": false,
+  "recursion": false,
+  "runtime_floating_point": false,
+  "worst_case": "bounded fixed nine-entry insertion sort only during lock acquisition; O(1) per locked sample",
+  "gate": "PASS"
+}

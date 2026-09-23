@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "classification": "DEVELOPMENT / OPENED REGRESSION",
+  "state_bytes": 120,
+  "cases": [
+    {
+      "case": "r5d_12h",
+      "samples": 43200,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "r5d_unload",
+      "samples": 1800,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "r5e_shadow",
+      "samples": 960,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "d1_cycle1",
+      "samples": 720,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "d1_cycle2",
+      "samples": 720,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "d1_cycle3",
+      "samples": 720,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "d1b_opened_regression",
+      "samples": 147,
+      "mismatches": 0,
+      "first_mismatches": []
+    },
+    {
+      "case": "synthetic_boundaries",
+      "samples": 1266,
+      "mismatches": 0,
+      "first_mismatches": []
+    }
+  ],
+  "samples": 49533,
+  "mismatches": 0
+}

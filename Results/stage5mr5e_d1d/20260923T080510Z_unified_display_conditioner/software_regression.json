@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "host_ctest": {"passed": 33, "failed": 0, "strict": "/W4 /WX"},
+  "arm": {"result": "PASS", "flags": "-Wall -Wextra -Werror"},
+  "python": {
+    "stage5b": "30/30 PASS",
+    "stage5c": "12/12 PASS",
+    "stage5l": "8/8 PASS",
+    "stage5lr_g2": "8/8 PASS",
+    "stage5mr2": "5/5 PASS",
+    "stage5mr3": "7/7 PASS",
+    "stage5mr4": "3/3 PASS",
+    "stage5mr": "5/5 PASS",
+    "stage5mr5b": "13/13 PASS",
+    "stage5mr5e_d1c": "10/10 PASS",
+    "stage5na": "27/27 PASS",
+    "stage5mr5e_d1d": "4/4 PASS"
+  },
+  "parity": {
+    "r5": "25057/0",
+    "d1c": "49105/0",
+    "stage5na": "45711/0",
+    "d1d": "49533/0"
+  },
+  "release_sha_unchanged": true,
+  "beta_0x0516_sha_unchanged": true,
+  "asan": "NOT RUN",
+  "ubsan": "NOT RUN"
+}

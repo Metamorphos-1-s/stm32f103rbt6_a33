@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "host_os": "Windows",
+  "timezone": "Asia/Shanghai",
+  "arm_gcc": "GNU Arm Embedded 13.3.1",
+  "msvc": "19.43.34810",
+  "cmake_generator": "Ninja",
+  "device_port": "COM5",
+  "swd_used": false,
+  "flash_written": false
+}

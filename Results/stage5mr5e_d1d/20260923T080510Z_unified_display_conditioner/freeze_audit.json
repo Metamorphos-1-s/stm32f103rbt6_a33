@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "baseline": "e6308a38796426296f2663831cefaefce5a0225a",
+  "r5_and_checkweigh_diff": [],
+  "git_blobs": {
+    "Domain/measurement/reference_lock_drift_compensator.c": "a4c88335be16d288d8d1bbe91bbfe7e32e4aea04",
+    "Domain/measurement/reference_lock_drift_compensator.h": "7a2b1b4ff9776a4f60891a2f74973b7c09bd9bfe",
+    "Experimental/stage5na/checkweigh_shadow.c": "5d5792033f9f5bc9f2b18dc720201b6d1e5602b0",
+    "Experimental/stage5na/checkweigh_shadow.h": "e30d1288caa38c312d925ace9fafcf6e247e047c",
+    "Services/guarded_checkweigh/guarded_checkweigh.c": "4d6dab13894111b53143629a81b69e98c300201e",
+    "Services/guarded_checkweigh/guarded_checkweigh.h": "ec14943f89668fa1a28d0893737262a55ec381bf"
+  },
+  "weight_engine_diff": [],
+  "r5_unchanged": true,
+  "checkweigh_unchanged": true,
+  "authoritative_weight_path_unchanged": true
+}
