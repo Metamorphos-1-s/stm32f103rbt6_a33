@@ -1,0 +1,48 @@
+{
+  "stage": "5P-A",
+  "result": "FAIL",
+  "reason": "40_HZ_TARGET_RATE_OUTSIDE_1_PERCENT_GATE",
+  "candidate_firmware": "0x0518",
+  "candidate_map": "0x0104",
+  "candidate_bin": {
+    "length": 107556,
+    "sha256": "7CD3DA2A8EC3A52E1A3B4EA07902668A4687183EF2A9739DD1F81D59F79C0501"
+  },
+  "rate_results": [
+    {"configured_hz": 10, "filter": 0, "measured_hz": 9.9834, "error_percent": -0.17, "overrun_delta": 0, "result": "PASS"},
+    {"configured_hz": 10, "filter": 1, "measured_hz": 9.9949, "error_percent": -0.05, "overrun_delta": 0, "result": "PASS"},
+    {"configured_hz": 10, "filter": 2, "measured_hz": 9.9834, "error_percent": -0.17, "overrun_delta": 0, "result": "PASS"},
+    {"configured_hz": 10, "filter": 3, "measured_hz": 9.9896, "error_percent": -0.10, "overrun_delta": 0, "result": "PASS"},
+    {"configured_hz": 40, "filter": 0, "measured_hz": 29.1940, "error_percent": -27.02, "overrun_delta": 0, "result": "FAIL"},
+    {"configured_hz": 40, "filter": 1, "measured_hz": 28.9673, "error_percent": -27.58, "overrun_delta": 0, "result": "FAIL"},
+    {"configured_hz": 40, "filter": 2, "measured_hz": 26.9211, "error_percent": -32.70, "overrun_delta": 0, "result": "FAIL"},
+    {"configured_hz": 40, "filter": 3, "measured_hz": 26.7006, "error_percent": -33.25, "overrun_delta": 0, "result": "FAIL"}
+  ],
+  "capture_load": "approximately 5 Hz Modbus polling",
+  "fault_mask": 0,
+  "hard_stop_applied": true,
+  "not_run_after_hard_stop": [
+    "R5 multi-mode hardware matrix",
+    "500 g load/unload filter matrix",
+    "persistent request power-cycle matrix",
+    "default filt1 detailed hardware test"
+  ],
+  "early_tracking": "REJECTED_OFFLINE_NOT_IN_BINARY",
+  "rollback": {
+    "firmware": "0x0517",
+    "verify": "PASS",
+    "bin_sha256": "9D8C5881CD880D2C5D6A7D0C499A4EACF9495A550B08B237A81D4BB2F71641C5",
+    "final_state": "OFF+SHADOW",
+    "revision_saved": "8/8",
+    "offset_ug": 0,
+    "reference_ug": 0,
+    "evaluation_count": 0,
+    "fault": 0,
+    "overrun": 0,
+    "dirty": 0
+  },
+  "config_sha256_before": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "config_sha256_after": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "save_issued": false,
+  "qualification_statement": "OWNER-ACCEPTED QUALIFICATION WAIVERS; NOT METROLOGICALLY OR CROSS-SENSOR QUALIFIED"
+}

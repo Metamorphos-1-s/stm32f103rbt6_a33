@@ -15,5 +15,5 @@
   "early_tracking": "REJECTED; excluded from product",
   "asan": "NOT RUN",
   "ubsan": "NOT RUN",
-  "hardware": "PENDING EXPLICIT AUTHORIZATION"
+  "hardware": "FAIL: 40 Hz target rate outside 1 percent gate; hard stop and rollback to 0x0517"
 }

@@ -79,9 +79,6 @@ static void App_UpdateAlarmOutputs(uint32_t now_ms);
 static bool s_device_manager_init_attempted;
 static bool s_fault_entry_applied;
 static uint32_t s_last_published_raw_count;
-#if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
-static bool s_restoring_checkweigh_request;
-#endif
 static StartupAutoZeroController s_startup_auto_zero;
 #if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
 static AlarmOutputManager s_alarm_output_manager;
@@ -177,7 +174,6 @@ bool App_Init(void)
   }
   (void)MetrologyManager_Init(&config, &SystemContext_Get()->runtime);
 #if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
-  s_restoring_checkweigh_request = true;
   (void)MetrologyManager_RestoreR5Request(
       (R5BetaApplication)config.system.requested_r5_application,
       (R5DriftMode)config.system.requested_r5_mode);
@@ -186,8 +182,6 @@ bool App_Init(void)
       (GuardedCheckweighMode)config.system.requested_checkweigh_mode,
       s_guarded_checkweigh.generation, true);
 #endif
-  s_restoring_checkweigh_request = false;
-  SystemContext_SetConfigDirty(false);
 #endif
 #if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
   Stage5LMeasurementDiagnostics_Init();
@@ -346,8 +340,7 @@ bool App_SetGuardedCheckweighMode(GuardedCheckweighMode mode,
       expected_generation, require_generation)) return false;
   AlarmOutputManager_AllOff(&s_alarm_output_manager);
 #if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
-  if (!s_restoring_checkweigh_request &&
-      !SystemContext_SetRequestedCheckweighMode((uint8_t)mode)) return false;
+  if (!SystemContext_SetRequestedCheckweighMode((uint8_t)mode)) return false;
 #endif
   return true;
 }
