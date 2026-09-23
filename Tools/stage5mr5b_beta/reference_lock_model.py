@@ -101,6 +101,13 @@ class ReferenceLock:
         self.limited = False
         self.evaluation_count = 0
         self.last_evaluation_second = None
+        self.have_sample = False
+        self.last_sample_sequence = 0
+        self.last_timestamp_ms = 0
+        self.second_bucket_ms = 0
+        self.logical_second = 0
+        self.second_samples = []
+        self.second_slot = None
 
     def snapshot(self, uncompensated_gross_ug):
         applied = 0 if self.mode == Mode.OFF else self.offset_ug
@@ -279,6 +286,44 @@ class ReferenceLock:
             self.last_rebase_reason = Reason.OFFSET_LIMIT
         self.offset_milli_ug = target
         self.offset_ug = trunc_div(self.offset_milli_ug, 1000)
+        return self.snapshot(uncompensated_gross_ug)
+
+    def process_sample(self, sequence, timestamp_ms, uncompensated_gross_ug,
+                       *, valid=True, fault=False, overload=False,
+                       near_rail=False):
+        sequence &= 0xFFFFFFFF
+        timestamp_ms &= 0xFFFFFFFF
+        if self.have_sample:
+            if ((sequence - self.last_sample_sequence) & 0xFFFFFFFF) != 1:
+                self.limit(Reason.SEQUENCE)
+            sample_elapsed = ((timestamp_ms - self.last_timestamp_ms) &
+                              0xFFFFFFFF)
+            if sample_elapsed == 0 or sample_elapsed > 250:
+                self.limit(Reason.TIMESTAMP)
+        else:
+            self.second_bucket_ms = timestamp_ms
+            self.have_sample = True
+        elapsed = ((timestamp_ms - self.second_bucket_ms) & 0xFFFFFFFF)
+        if elapsed >= 1000 and self.second_samples:
+            self.logical_second = (self.logical_second + 1) & 0xFFFFFFFF
+            self.process_second(self.logical_second,
+                median_int(self.second_samples), valid=valid, fault=fault,
+                overload=overload, near_rail=near_rail)
+            self.second_bucket_ms = timestamp_ms
+            self.second_samples.clear()
+            self.second_slot = None
+            elapsed = 0
+        slot = elapsed // 100
+        if self.second_slot != slot:
+            if len(self.second_samples) >= 16:
+                self.limit(Reason.TIMESTAMP)
+            else:
+                self.second_samples.append(uncompensated_gross_ug)
+                self.second_slot = slot
+        elif self.second_samples:
+            self.second_samples[-1] = uncompensated_gross_ug
+        self.last_timestamp_ms = timestamp_ms
+        self.last_sample_sequence = sequence
         return self.snapshot(uncompensated_gross_ug)
 
 

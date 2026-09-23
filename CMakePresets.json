@@ -109,6 +109,30 @@
             "cacheVariables": {
                 "A33_ENABLE_STAGE5PA_PRODUCT": "ON"
             }
+        },
+        {
+            "name": "Stage5PA1Candidate",
+            "inherits": "Stage5PABeta",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5PA1_CANDIDATE": "ON",
+                "A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION": "ON"
+            }
+        },
+        {
+            "name": "Stage5PA1BaselineDiagnostics",
+            "inherits": "Stage5PABeta",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5PA1_CANDIDATE": "ON",
+                "A33_ENABLE_STAGE5PA1_DIAGNOSTICS": "ON",
+                "A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION": "OFF"
+            }
+        },
+        {
+            "name": "Stage5PA1Diagnostics",
+            "inherits": "Stage5PA1Candidate",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5PA1_DIAGNOSTICS": "ON"
+            }
         }
     ],
     "buildPresets": [
@@ -155,6 +179,18 @@
         {
             "name": "Stage5PABeta",
             "configurePreset": "Stage5PABeta"
+        },
+        {
+            "name": "Stage5PA1Candidate",
+            "configurePreset": "Stage5PA1Candidate"
+        },
+        {
+            "name": "Stage5PA1BaselineDiagnostics",
+            "configurePreset": "Stage5PA1BaselineDiagnostics"
+        },
+        {
+            "name": "Stage5PA1Diagnostics",
+            "configurePreset": "Stage5PA1Diagnostics"
         }
     ]
 }

@@ -299,6 +299,36 @@ target_compile_definitions(stage5mr5_reference_lock_runner PRIVATE
 add_test(NAME stage5mr5_reference_lock_logic
     COMMAND stage5mr5_reference_lock_tests)
 
+add_executable(stage5pa_r5_admission_tests
+    test_stage5pa_r5_admission.c
+    ../../Domain/measurement/reference_lock_drift_compensator.c)
+target_compile_definitions(stage5pa_r5_admission_tests PRIVATE
+    A33_ENABLE_STAGE5PA_PRODUCT=1)
+target_include_directories(stage5pa_r5_admission_tests PRIVATE
+    ../../Domain/measurement)
+if(MSVC)
+    target_compile_options(stage5pa_r5_admission_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5pa_r5_admission_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5pa_r5_admission_logic
+    COMMAND stage5pa_r5_admission_tests)
+
+add_executable(stage5pa1_r5_sample_runner
+    stage5pa1_r5_sample_runner.c
+    ../../Domain/measurement/reference_lock_drift_compensator.c)
+target_compile_definitions(stage5pa1_r5_sample_runner PRIVATE
+    A33_ENABLE_STAGE5PA_PRODUCT=1 _CRT_SECURE_NO_WARNINGS)
+target_include_directories(stage5pa1_r5_sample_runner PRIVATE
+    ../../Domain/measurement)
+if(MSVC)
+    target_compile_options(stage5pa1_r5_sample_runner PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5pa1_r5_sample_runner PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+
 add_executable(stage5mr5_weight_engine_tests
     test_stage5mr5_weight_engine.c
     ../../Config/alarm_config_validation.c
@@ -695,6 +725,7 @@ target_include_directories(stage5b_host_tests PRIVATE
     ../../Domain/limit_checker ../../UI/key_service)
 target_compile_definitions(stage5b_host_tests PRIVATE
     STAGE5B_HOST_TEST=1
+    A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION=1
     A33_ENABLE_STAGE5I_USART3_BRINGUP=0
     ENABLE_STAGE2B_BOARD_DIAGNOSTICS=0)
 if(MSVC)

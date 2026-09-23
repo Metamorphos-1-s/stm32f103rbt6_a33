@@ -36,10 +36,74 @@ static bool s_staging_dirty;
 static CommunicationConfig s_pending_communication;
 static CommandSource s_pending_communication_owner;
 static bool s_pending_communication_owner_valid;
+#if defined(STAGE5B_HOST_TEST) && \
+    (A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION != 0U)
+static uint32_t s_display_conversion_count;
+#endif
 static ModbusRegisterResult ReadActive(uint16_t address,
     const DeviceConfig *config, uint16_t *value);
 static uint16_t Word32(uint32_t value, uint8_t index, ModbusWordOrder order);
 static uint16_t Word64(uint64_t value, uint8_t index, ModbusWordOrder order);
+
+#if (A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION != 0U)
+typedef struct
+{
+    DisplayWeightValue net;
+    DisplayWeightValue gross;
+    DisplayWeightValue tare;
+    DisplayWeightValue panel;
+} RegisterDisplayView;
+
+static void ConvertDisplay(MassValueUg mass, MassUnit unit,
+    const UnitDisplayConfig *config, DisplayWeightValue *value)
+{
+    (void)UnitConverter_MassToDisplay(mass, unit, config, value);
+#if defined(STAGE5B_HOST_TEST)
+    ++s_display_conversion_count;
+#endif
+}
+static bool RangeIntersects(uint16_t start, uint16_t count,
+    uint16_t first, uint16_t last)
+{
+    uint32_t end = (uint32_t)start + count - 1U;
+    return ((uint32_t)start <= last) && (end >= first);
+}
+
+static void BuildDisplayView(uint16_t start, uint16_t count,
+    const SystemContext *context, const MassSnapshot *snapshot,
+    const DisplayConditionSnapshot *condition, RegisterDisplayView *view)
+{
+    const DeviceConfig *config = &context->config;
+    const UnitDisplayConfig *display = &config->metrology.unit_display[
+        config->metrology.active_unit];
+    MassValueUg panel_mass = (condition != NULL) ? condition->display_mass_ug :
+        ((context->runtime.weight_view == WEIGHT_VIEW_GROSS) ?
+        snapshot->gross_mass_ug : snapshot->net_mass_ug);
+    (void)memset(view, 0, sizeof(*view));
+    if (RangeIntersects(start, count, 0U, 11U)) {
+        ConvertDisplay(snapshot->net_mass_ug, config->metrology.active_unit,
+            display, &view->net);
+        ConvertDisplay(snapshot->gross_mass_ug, config->metrology.active_unit,
+            display, &view->gross);
+        ConvertDisplay(snapshot->tare_mass_ug, config->metrology.active_unit,
+            display, &view->tare);
+        ConvertDisplay(panel_mass, config->metrology.active_unit,
+            display, &view->panel);
+        return;
+    }
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+    if (RangeIntersects(start, count, MODBUS_D1C_FIRST, MODBUS_D1C_LAST)) {
+        if (DisplayController_GetPage() == DISPLAY_PAGE_GROSS)
+            ConvertDisplay(snapshot->gross_mass_ug,
+                config->metrology.active_unit, display, &view->gross);
+        else
+            ConvertDisplay(snapshot->net_mass_ug,
+                config->metrology.active_unit, display, &view->net);
+    }
+#endif
+}
+
+#endif
 
 static uint64_t Join64(const uint16_t *words, ModbusWordOrder order)
 {
@@ -233,13 +297,18 @@ static ModbusRegisterResult ReadActive(uint16_t address,
 static ModbusRegisterResult ReadOne(uint16_t address,
     const SystemContext *context, const MassSnapshot *snapshot,
     const DisplayConditionSnapshot *condition,
-    const RuntimeDriftSnapshot *drift, uint16_t *value)
+    const RuntimeDriftSnapshot *drift,
+#if (A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION != 0U)
+    const RegisterDisplayView *display_view,
+#endif
+    uint16_t *value)
 {
     const DeviceConfig *config=&context->config;
     ModbusWordOrder order=config->communication.word_order;
-    DisplayWeightValue net={0},gross={0},tare={0};
     const UnitDisplayConfig *display=&config->metrology.unit_display[config->metrology.active_unit];
     uint32_t flags=(snapshot!=NULL)?snapshot->status_flags:0U;
+#if (A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION == 0U)
+    DisplayWeightValue net={0},gross={0},tare={0};
     MassValueUg panel_mass=(condition!=NULL)?condition->display_mass_ug:
         ((context->runtime.weight_view==WEIGHT_VIEW_GROSS)?
         ((snapshot!=NULL)?snapshot->gross_mass_ug:0):
@@ -249,6 +318,7 @@ static ModbusRegisterResult ReadOne(uint16_t address,
     (void)UnitConverter_MassToDisplay((snapshot!=NULL)?snapshot->gross_mass_ug:0,config->metrology.active_unit,display,&gross);
     (void)UnitConverter_MassToDisplay((snapshot!=NULL)?snapshot->tare_mass_ug:0,config->metrology.active_unit,display,&tare);
     (void)UnitConverter_MassToDisplay(panel_mass,config->metrology.active_unit,display,&panel);
+#endif
     *value=0U;
     if ((address>=MODBUS_MAILBOX_FIRST)&&(address<=MODBUS_MAILBOX_LAST))
         return ModbusCommandMailbox_Read(address,value);
@@ -294,15 +364,25 @@ static ModbusRegisterResult ReadOne(uint16_t address,
     }
     if (address<=0x001FU)
     {
+#if (A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION != 0U)
+        int32_t page=display_view->panel.display_count;
+#else
         int32_t page=panel.display_count;
+#endif
         if(address<=1U)*value=Word32((uint32_t)page,(uint8_t)address,order);
         else if(address==2U)*value=display->decimal_places;
         else if(address==3U)*value=(uint16_t)config->metrology.active_unit;
         else if(address==4U)*value=(uint16_t)flags;
         else if(address==5U)*value=(uint16_t)(flags>>16U);
+#if (A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION != 0U)
+        else if(address>=6U&&address<=7U)*value=Word32((uint32_t)display_view->net.display_count,(uint8_t)(address-6U),order);
+        else if(address>=8U&&address<=9U)*value=Word32((uint32_t)display_view->gross.display_count,(uint8_t)(address-8U),order);
+        else if(address>=10U&&address<=11U)*value=Word32((uint32_t)display_view->tare.display_count,(uint8_t)(address-10U),order);
+#else
         else if(address>=6U&&address<=7U)*value=Word32((uint32_t)net.display_count,(uint8_t)(address-6U),order);
         else if(address>=8U&&address<=9U)*value=Word32((uint32_t)gross.display_count,(uint8_t)(address-8U),order);
         else if(address>=10U&&address<=11U)*value=Word32((uint32_t)tare.display_count,(uint8_t)(address-10U),order);
+#endif
         else if(address==12U)*value=(uint16_t)display->division_digit;
         else if(address==13U)*value=(uint16_t)context->runtime.weight_view;
         else if(address==14U)*value=MODBUS_REGISTER_MAP_VERSION;
@@ -517,7 +597,12 @@ static ModbusRegisterResult ReadOne(uint16_t address,
         const R5DriftSnapshot *r5_live = MetrologyManager_GetR5Snapshot();
         const R5DriftSnapshot *r5 = (r5_live != NULL) ? r5_live : &r5_empty;
         DisplayPage page = DisplayController_GetPage();
+#if (A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION != 0U)
+        DisplayWeightValue desired = (page == DISPLAY_PAGE_GROSS) ?
+            display_view->gross : display_view->net;
+#else
         DisplayWeightValue desired = (page == DISPLAY_PAGE_GROSS) ? gross : net;
+#endif
         MassValueUg authoritative = (page == DISPLAY_PAGE_GROSS) ?
             snapshot->gross_mass_ug : snapshot->net_mass_ug;
         uint8_t division = display->division_digit;
@@ -790,19 +875,51 @@ ModbusRegisterResult ModbusRegisterModel_ReadHolding(uint16_t start_address,
     DisplayConditionSnapshot condition;
 #endif
     uint16_t i; ModbusRegisterResult result;
+#if (A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION != 0U)
+    RegisterDisplayView display_view;
+#endif
     if((count==0U)||(destination==NULL)||(live==NULL)||
        ((uint32_t)start_address+count>0x10000UL)) return MODBUS_REGISTER_ILLEGAL_VALUE;
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#if (A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION != 0U)
+    BuildDisplayView(start_address, count, live, snapshot, condition,
+        &display_view);
+#endif
     /* The register model runs synchronously in the single-threaded main loop.
        UART/DMA ISRs do not mutate configuration or measurement snapshots. */
-    for(i=0U;i<count;++i){result=ReadOne((uint16_t)(start_address+i),live,snapshot,condition,live_drift,&destination[i]);if(result!=MODBUS_REGISTER_OK)return result;}
+    for(i=0U;i<count;++i){result=ReadOne((uint16_t)(start_address+i),live,snapshot,condition,live_drift,
+#if (A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION != 0U)
+        &display_view,
+#endif
+        &destination[i]);if(result!=MODBUS_REGISTER_OK)return result;}
 #else
     copy=*live; if(live_snapshot!=NULL)snapshot=*live_snapshot; else (void)memset(&snapshot,0,sizeof(snapshot));
     if(live_condition!=NULL)condition=*live_condition; else (void)memset(&condition,0,sizeof(condition));
-    for(i=0U;i<count;++i){result=ReadOne((uint16_t)(start_address+i),&copy,&snapshot,&condition,live_drift,&destination[i]);if(result!=MODBUS_REGISTER_OK)return result;}
+#if (A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION != 0U)
+    BuildDisplayView(start_address, count, &copy, &snapshot, &condition,
+        &display_view);
+#endif
+    for(i=0U;i<count;++i){result=ReadOne((uint16_t)(start_address+i),&copy,&snapshot,&condition,live_drift,
+#if (A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION != 0U)
+        &display_view,
+#endif
+        &destination[i]);if(result!=MODBUS_REGISTER_OK)return result;}
 #endif
     return MODBUS_REGISTER_OK;
 }
+
+#if defined(STAGE5B_HOST_TEST) && \
+    (A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION != 0U)
+void ModbusRegisterModel_TestResetDisplayConversionCount(void)
+{
+    s_display_conversion_count = 0U;
+}
+
+uint32_t ModbusRegisterModel_TestGetDisplayConversionCount(void)
+{
+    return s_display_conversion_count;
+}
+#endif
 
 static bool CommunicationValueValid(uint16_t address,uint16_t value)
 {

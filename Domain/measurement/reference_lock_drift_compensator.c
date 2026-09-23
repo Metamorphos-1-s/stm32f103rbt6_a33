@@ -145,6 +145,17 @@ static void EnterLimited(R5DriftCompensator *compensator,
     compensator->last_rebase_reason = reason;
 }
 
+#if defined(A33_ENABLE_STAGE5PA_PRODUCT) && \
+    (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+static void ResetSampleAdmission(R5DriftCompensator *compensator)
+{
+    compensator->second_sample_count = 0U;
+    compensator->second_slot_index = 0U;
+    compensator->second_slot_valid = false;
+    compensator->have_sample = false;
+}
+#endif
+
 static void UpdateSnapshot(R5DriftCompensator *compensator, int64_t mass)
 {
     int64_t applied = (compensator->mode == R5_DRIFT_MODE_OFF) ? 0 :
@@ -274,6 +285,10 @@ bool R5Drift_SetMode(R5DriftCompensator *compensator, R5DriftMode mode)
         compensator->have_evaluation = false;
         compensator->state = R5_DRIFT_STATE_DOSING;
     } else ClearLearning(compensator, R5_DRIFT_REASON_MODE_CHANGE, true);
+#if defined(A33_ENABLE_STAGE5PA_PRODUCT) && \
+    (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    ResetSampleAdmission(compensator);
+#endif
     UpdateSnapshot(compensator,
         compensator->snapshot.uncompensated_gross_ug);
     return true;
@@ -289,6 +304,10 @@ void R5Drift_HandleEvent(R5DriftCompensator *compensator,
         (event == R5_DRIFT_EVENT_CALIBRATION_COMMIT) ||
         (event == R5_DRIFT_EVENT_POWER_ON)) {
         compensator->offset_milli_ug = 0;
+#if defined(A33_ENABLE_STAGE5PA_PRODUCT) && \
+    (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+        ResetSampleAdmission(compensator);
+#endif
         ClearLearning(compensator, (event == R5_DRIFT_EVENT_ZERO) ?
             R5_DRIFT_REASON_ZERO : R5_DRIFT_REASON_CALIBRATION,
             compensator->mode == R5_DRIFT_MODE_STATIC_COMPENSATION);
@@ -300,7 +319,19 @@ void R5Drift_HandleEvent(R5DriftCompensator *compensator,
         (void)R5Drift_SetMode(compensator, R5_DRIFT_MODE_OFF);
         compensator->last_rebase_reason = R5_DRIFT_REASON_CALIBRATION;
     } else if (event == R5_DRIFT_EVENT_PROFILE_CHANGE) {
+#if defined(A33_ENABLE_STAGE5PA_PRODUCT) && \
+    (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+        compensator->limited = false;
+        ResetSampleAdmission(compensator);
+        ClearLearning(compensator, R5_DRIFT_REASON_PROFILE,
+            compensator->mode == R5_DRIFT_MODE_STATIC_COMPENSATION);
+        if (compensator->mode == R5_DRIFT_MODE_OFF)
+            compensator->state = R5_DRIFT_STATE_OFF;
+        else if (compensator->mode == R5_DRIFT_MODE_DOSING_NO_COMPENSATION)
+            compensator->state = R5_DRIFT_STATE_DOSING;
+#else
         EnterLimited(compensator, R5_DRIFT_REASON_PROFILE);
+#endif
     }
     UpdateSnapshot(compensator,
         compensator->snapshot.uncompensated_gross_ug);
@@ -471,6 +502,10 @@ bool R5Drift_ProcessSample(R5DriftCompensator *compensator,
 {
     uint32_t elapsed;
     int64_t second_mass;
+#if defined(A33_ENABLE_STAGE5PA_PRODUCT) && \
+    (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    uint8_t slot;
+#endif
     if ((compensator == NULL) || (input == NULL) || !compensator->initialized)
         return false;
     if (compensator->have_sample) {
@@ -495,11 +530,32 @@ bool R5Drift_ProcessSample(R5DriftCompensator *compensator,
             input->overload, input->near_rail)) return false;
         compensator->second_bucket_ms = input->timestamp_ms;
         compensator->second_sample_count = 0U;
+        compensator->second_slot_valid = false;
     }
+#if defined(A33_ENABLE_STAGE5PA_PRODUCT) && \
+    (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+    elapsed = (uint32_t)(input->timestamp_ms - compensator->second_bucket_ms);
+    slot = (uint8_t)(elapsed / 100U);
+    if (!compensator->second_slot_valid ||
+        (slot != compensator->second_slot_index)) {
+        if (compensator->second_sample_count >= R5_SECOND_SAMPLE_CAPACITY) {
+            EnterLimited(compensator, R5_DRIFT_REASON_TIMESTAMP);
+        } else {
+            compensator->second_samples[compensator->second_sample_count++] =
+                input->uncompensated_gross_ug;
+            compensator->second_slot_index = slot;
+            compensator->second_slot_valid = true;
+        }
+    } else if (compensator->second_sample_count > 0U) {
+        compensator->second_samples[compensator->second_sample_count - 1U] =
+            input->uncompensated_gross_ug;
+    }
+#else
     if (compensator->second_sample_count >= R5_SECOND_SAMPLE_CAPACITY) {
         EnterLimited(compensator, R5_DRIFT_REASON_TIMESTAMP);
     } else compensator->second_samples[compensator->second_sample_count++] =
         input->uncompensated_gross_ug;
+#endif
     compensator->last_timestamp_ms = input->timestamp_ms;
     compensator->last_sample_sequence = input->sample_sequence;
     UpdateSnapshot(compensator, input->uncompensated_gross_ug);

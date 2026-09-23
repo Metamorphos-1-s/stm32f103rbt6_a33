@@ -34,6 +34,19 @@
 #define SWD_FIFO_POP(depth, index) ((void)0)
 #endif
 
+#if (A33_ENABLE_STAGE5PA1_DIAGNOSTICS != 0U)
+#include "stage5pa1_throughput_diagnostics.h"
+#define A1_READY() Stage5PA1Diagnostics_OnReady()
+#define A1_READ_RESULT(ok) Stage5PA1Diagnostics_OnReadResult(ok)
+#define A1_FIFO_PUSH(ok, depth) Stage5PA1Diagnostics_OnFifoPush(ok, depth)
+#define A1_FIFO_POP(depth) Stage5PA1Diagnostics_OnFifoPop(depth)
+#else
+#define A1_READY() ((void)0)
+#define A1_READ_RESULT(ok) ((void)(ok))
+#define A1_FIFO_PUSH(ok, depth) ((void)(ok), (void)(depth))
+#define A1_FIFO_POP(depth) ((void)(depth))
+#endif
+
 #define CS1237_WRITE_CONFIG_COMMAND  0x65U
 #define CS1237_READ_CONFIG_COMMAND   0x56U
 #define CS1237_CONFIG_RESERVED_MASK  0x80U
@@ -135,6 +148,7 @@ void CS1237_Process(void)
         return;
     }
     SWD_READY(trace_index);
+    A1_READY();
 
     if (s_state == CS1237_STATE_CONFIGURING)
     {
@@ -145,12 +159,14 @@ void CS1237_Process(void)
                 !CS1237_ConfigTransaction(true, &register_value))
             {
                 SWD_READ_CONFIG_RESULT(false);
+                A1_READ_RESULT(false);
                 ++s_read_error_count;
                 s_state = CS1237_STATE_ERROR;
                 return;
             }
             SWD_CONFIG_WRITE();
             SWD_READ_CONFIG_RESULT(true);
+            A1_READ_RESULT(true);
             s_config_phase = CS1237_CONFIG_PHASE_VERIFY;
         }
         else
@@ -159,6 +175,7 @@ void CS1237_Process(void)
             if (!CS1237_ConfigTransaction(false, &register_value))
             {
                 SWD_READ_CONFIG_RESULT(false);
+                A1_READ_RESULT(false);
                 ++s_read_error_count;
                 s_state = CS1237_STATE_ERROR;
                 return;
@@ -169,12 +186,14 @@ void CS1237_Process(void)
             {
                 SWD_CONFIG_READBACK(false);
                 SWD_READ_CONFIG_RESULT(true);
+                A1_READ_RESULT(true);
                 ++s_read_error_count;
                 s_state = CS1237_STATE_ERROR;
                 return;
             }
             SWD_CONFIG_READBACK(true);
             SWD_READ_CONFIG_RESULT(true);
+            A1_READ_RESULT(true);
             s_settling_samples = CS1237_GetSettlingCount(s_config.rate);
             s_state = CS1237_STATE_SETTLING;
         }
@@ -186,11 +205,13 @@ void CS1237_Process(void)
     {
         SWD_READ_RESULT(false, &sample, 27U,
             s_state == CS1237_STATE_SETTLING);
+        A1_READ_RESULT(false);
         ++s_read_error_count;
         return;
     }
     SWD_READ_RESULT(true, &sample, 27U,
         s_state == CS1237_STATE_SETTLING);
+    A1_READ_RESULT(true);
 #if (STAGE5L_SWD_DIAGNOSTICS != 0U)
     sample.trace_index = trace_index;
 #endif
@@ -235,6 +256,7 @@ bool CS1237_TryPopSample(CS1237_Sample *sample)
     s_head = (uint16_t)((s_head + 1U) % CS1237_SAMPLE_BUFFER_CAPACITY);
     --s_count;
     SWD_FIFO_POP(s_count, sample->trace_index);
+    A1_FIFO_POP(s_count);
     if (s_count == 0U)
     {
         s_sample_event_sent = false;
@@ -585,6 +607,7 @@ static bool CS1237_PushSample(const CS1237_Sample *sample)
     {
         ++s_buffer_overrun_count;
         SWD_FIFO_PUSH(false, s_count, sample->trace_index);
+        A1_FIFO_PUSH(false, s_count);
         return false;
     }
 
@@ -592,6 +615,7 @@ static bool CS1237_PushSample(const CS1237_Sample *sample)
     s_tail = (uint16_t)((s_tail + 1U) % CS1237_SAMPLE_BUFFER_CAPACITY);
     ++s_count;
     SWD_FIFO_PUSH(true, s_count, sample->trace_index);
+    A1_FIFO_PUSH(true, s_count);
     CS1237_NotifySamplesAvailable();
     return true;
 }

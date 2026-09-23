@@ -1,0 +1,13 @@
+{
+  "samples_total": 95200,
+  "real_samples": 0,
+  "synthetic_samples": 95200,
+  "mismatch_count": 0,
+  "first_mismatch": null,
+  "scenarios": [
+    "10 Hz 30 min",
+    "40 Hz 30 min",
+    "40 Hz DOSING steps",
+    "26-40 Hz and 99/101 ms jitter"
+  ]
+}

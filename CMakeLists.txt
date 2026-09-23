@@ -42,6 +42,12 @@ option(A33_ENABLE_STAGE5MR5E_D1D_BETA
     "Enable Stage 5M-R5E-D1-D unified display engineering beta" OFF)
 option(A33_ENABLE_STAGE5PA_PRODUCT
     "Enable Stage 5P-A controlled product candidate" OFF)
+option(A33_ENABLE_STAGE5PA1_DIAGNOSTICS
+    "Enable Stage 5P-A1 SWD-only throughput diagnostics" OFF)
+option(A33_ENABLE_STAGE5PA1_CANDIDATE
+    "Identify the Stage 5P-A1 engineering candidate as 0x0519" OFF)
+option(A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION
+    "Enable Stage 5P-A1 request-level Modbus read view" OFF)
 
 if(A33_ENABLE_STAGE5NA3_DIAGNOSTICS AND NOT A33_ENABLE_STAGE5MR5_BETA)
     message(FATAL_ERROR "Stage 5N-A3 diagnostics require Stage 5M-R5 Beta")
@@ -54,6 +60,12 @@ if(A33_ENABLE_STAGE5MR5E_D1D_BETA AND NOT A33_ENABLE_STAGE5NB_BETA)
 endif()
 if(A33_ENABLE_STAGE5PA_PRODUCT AND NOT A33_ENABLE_STAGE5MR5E_D1D_BETA)
     message(FATAL_ERROR "Stage 5P-A requires Stage 5M-R5E-D1-D")
+endif()
+if(A33_ENABLE_STAGE5PA1_DIAGNOSTICS AND NOT A33_ENABLE_STAGE5PA_PRODUCT)
+    message(FATAL_ERROR "Stage 5P-A1 diagnostics require Stage 5P-A")
+endif()
+if(A33_ENABLE_STAGE5PA1_CANDIDATE AND NOT A33_ENABLE_STAGE5PA_PRODUCT)
+    message(FATAL_ERROR "Stage 5P-A1 candidate requires Stage 5P-A")
 endif()
 
 # Enable CMake support for ASM and C languages
@@ -173,6 +185,30 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 if(A33_ENABLE_STAGE5L_DIAGNOSTICS)
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         Diagnostics/stage5l_measurement_diagnostics.c)
+endif()
+
+if(A33_ENABLE_STAGE5PA1_DIAGNOSTICS)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        Diagnostics/stage5pa1_throughput_diagnostics.c)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5PA1_DIAGNOSTICS=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5PA1_DIAGNOSTICS=0)
+endif()
+if(A33_ENABLE_STAGE5PA1_CANDIDATE)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5PA1_CANDIDATE=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5PA1_CANDIDATE=0)
+endif()
+if(A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION=0)
 endif()
 
 if(A33_ENABLE_STAGE5NA3_DIAGNOSTICS)

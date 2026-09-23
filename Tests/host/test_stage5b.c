@@ -867,6 +867,33 @@ static void TestDualMockTransportRouting(void)
     CHECK(mock3.tx_started && mock3.tx[1] == 3U);
 }
 
+static void TestRegisterReadDisplayConversionBudget(void)
+{
+    uint16_t words[40] = {0};
+    Stage5A_ModelAdaptersInit();
+    ModbusRegisterModel_Init();
+    Stage5A_ModelSnapshot()->net_mass_ug = INT64_C(123456789);
+    Stage5A_ModelSnapshot()->gross_mass_ug = INT64_C(223456789);
+    Stage5A_ModelSnapshot()->tare_mass_ug = INT64_C(100000000);
+    Stage5A_ModelDisplayCondition()->display_mass_ug = INT64_C(123450000);
+
+    ModbusRegisterModel_TestResetDisplayConversionCount();
+    CHECK(ModbusRegisterModel_ReadHolding(0x0000U, 32U, words) ==
+        MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_TestGetDisplayConversionCount() == 4U);
+
+    ModbusRegisterModel_TestResetDisplayConversionCount();
+    CHECK(ModbusRegisterModel_ReadHolding(0x0020U, 27U, words) ==
+        MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_TestGetDisplayConversionCount() == 0U);
+    CHECK(ModbusRegisterModel_ReadHolding(0x01C0U, 10U, words) ==
+        MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_TestGetDisplayConversionCount() == 0U);
+    CHECK(ModbusRegisterModel_ReadHolding(0x0103U, 1U, words) ==
+        MODBUS_REGISTER_OK);
+    CHECK(ModbusRegisterModel_TestGetDisplayConversionCount() == 0U);
+}
+
 int main(void)
 {
     TestCrcAndTiming();
@@ -881,6 +908,7 @@ int main(void)
     TestDeterministicBadFrames();
     TestDualPortInstances();
     TestDualMockTransportRouting();
+    TestRegisterReadDisplayConversionBudget();
     CHECK(checks >= 128U);
     if(failures==0U) printf("Stage 5B host tests passed (%u checks).\n",checks);
     return failures==0U?0:1;

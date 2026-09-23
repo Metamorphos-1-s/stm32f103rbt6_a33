@@ -3,6 +3,10 @@
 #include "bsp_time.h"
 #include "modbus_crc16.h"
 #include "modbus_register_model.h"
+#include "project_config.h"
+#if (A33_ENABLE_STAGE5PA1_DIAGNOSTICS != 0U)
+#include "stage5pa1_throughput_diagnostics.h"
+#endif
 
 #include <stddef.h>
 #include <string.h>
@@ -76,6 +80,9 @@ static bool HandleRead(ModbusRtuServer *server, const uint8_t *request,
     uint16_t index;
     uint8_t exception;
     ModbusRegisterResult result;
+#if (A33_ENABLE_STAGE5PA1_DIAGNOSTICS != 0U)
+    uint32_t read_start_cycles;
+#endif
     if (request_length != 8U)
     {
         ++server->statistics.length_error_count;
@@ -88,8 +95,14 @@ static bool HandleRead(ModbusRtuServer *server, const uint8_t *request,
         ((uint32_t)quantity * 2U + 5U > capacity))
         return BuildException(server, request[0], request[1],
             MODBUS_EXCEPTION_ILLEGAL_VALUE, response, capacity, length);
+#if (A33_ENABLE_STAGE5PA1_DIAGNOSTICS != 0U)
+    read_start_cycles = Stage5PA1Diagnostics_ModbusReadBegin();
+#endif
     result = ModbusRegisterModel_ReadHolding(start, quantity,
                                              server->registers);
+#if (A33_ENABLE_STAGE5PA1_DIAGNOSTICS != 0U)
+    Stage5PA1Diagnostics_ModbusReadEnd(read_start_cycles, quantity);
+#endif
     exception = MapException(result);
     if (exception != 0U)
         return BuildException(server, request[0], request[1], exception,

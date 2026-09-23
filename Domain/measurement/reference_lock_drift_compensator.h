@@ -128,6 +128,7 @@ typedef struct {
     uint8_t observation_block_count;
     uint8_t robust_block_fill;
     uint8_t second_sample_count;
+    uint8_t second_slot_index;
     uint8_t step_fill;
     uint8_t step_head;
     uint8_t step_count;
@@ -140,6 +141,7 @@ typedef struct {
     bool initialized;
     bool have_sample;
     bool have_evaluation;
+    bool second_slot_valid;
     R5DriftSnapshot snapshot;
 } R5DriftCompensator;
 

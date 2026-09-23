@@ -21,5 +21,9 @@ ModbusRegisterResult ModbusRegisterModel_WriteSingle(
 ModbusRegisterResult ModbusRegisterModel_WriteMultiple(
     uint16_t start_address, uint16_t count, const uint16_t *values,
     CommandSource source);
+#if defined(STAGE5B_HOST_TEST)
+void ModbusRegisterModel_TestResetDisplayConversionCount(void);
+uint32_t ModbusRegisterModel_TestGetDisplayConversionCount(void);
+#endif
 
 #endif

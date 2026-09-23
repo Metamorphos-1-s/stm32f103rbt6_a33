@@ -1,0 +1,51 @@
+{
+  "stage": "5P-A1",
+  "classification": "ENGINEERING SOFTWARE AND DIAGNOSTIC CANDIDATE",
+  "starting_head": "d91c79003baed98b07c1388e30dcf01f65afc05f",
+  "firmware": "0x0519",
+  "map": "0x0104",
+  "schema": 2,
+  "persistent_format": 3,
+  "root_cause_status": "CODE HYPOTHESIS SUPPORTED; TARGET DWT MATRIX PENDING",
+  "modbus_issue": "CONFIRMED IN CODE: four display conversions per register",
+  "r5_issue": "CONFIRMED IN CODE AND 5P-A CAPTURE: 17th sample caused TIMESTAMP LIMITED",
+  "candidate": {
+    "bin_length": 107516,
+    "bin_sha256": "74992D2F8C0537DFAD06C12C878C6791FD041C3F1798B4CC0981EDA2E5A0BB82",
+    "elf_length": 2024140,
+    "elf_sha256": "07026CC12DE030445F8D72EB2980C2D8FD8CAB8539DEC81EC76888C3295A0E17",
+    "map_length": 1444919,
+    "map_sha256": "D0854C49A9598A725A7FBAF3E37FFB725B48CAAFDAE72D8446E136AB6529086C"
+  },
+  "diagnostics": {
+    "baseline_bin_sha256": "81A601EE1618F5EE41E3C40F3AD54A57289B9F2E0CDB29E7EAC2FAC2F4F5823E",
+    "optimized_bin_sha256": "01B39FC5CCF7DEA7CF0EDEDA146EC510A512740A08D99AF6BE54EF86EB58D057",
+    "continuous_swd_polling": false
+  },
+  "gates": {
+    "debug": "PASS",
+    "release": "PASS",
+    "arm_wextra_werror": "PASS",
+    "msvc_w4_wx_ctest": "36/36 PASS",
+    "r5_legacy_parity": "25057 total / 22557 real / 0 mismatch",
+    "r5_sample_admission_parity": "95200 synthetic / 0 mismatch",
+    "d1d_parity": "49533 / 0 mismatch",
+    "stage5na_parity": "45711 / 0 mismatch",
+    "stage5b_python": "3/3 PASS",
+    "stage5c_python": "12/12 PASS",
+    "stage5l_python": "8/8 PASS",
+    "dynamic_allocation": "NONE",
+    "hardware": "PENDING EXPLICIT AUTHORIZATION"
+  },
+  "resources": {
+    "product_ram_bytes": 19464,
+    "static_to_estack_bytes": 2040,
+    "conservative_stack_bytes": 1504,
+    "collision_margin_bytes": 536,
+    "diagnostic_ram_bytes": 19744
+  },
+  "frozen_0517_sha256": "9D8C5881CD880D2C5D6A7D0C499A4EACF9495A550B08B237A81D4BB2F71641C5",
+  "formal_release_sha256": "82E726F5B32A0DE36A5E686F62A937EC4FD9CBB488DB9733E83D2062673EF486",
+  "device_preflight": "0x0517 OFF+SHADOW, 10 Hz, approximately 500 g loaded, fault/overrun/dirty 0, revision/saved 8/8",
+  "next_required_authorization": "授权读取配置并烧录5P-A1诊断固件"
+}

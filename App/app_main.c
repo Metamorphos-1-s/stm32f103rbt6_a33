@@ -45,6 +45,9 @@
 #if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
 #include "stage5l_measurement_diagnostics.h"
 #endif
+#if (A33_ENABLE_STAGE5PA1_DIAGNOSTICS != 0U)
+#include "stage5pa1_throughput_diagnostics.h"
+#endif
 #if (A33_ENABLE_STAGE5NA3_DIAGNOSTICS != 0U)
 #include "stage5na3_fault_injection.h"
 #endif
@@ -186,6 +189,9 @@ bool App_Init(void)
 #if (A33_ENABLE_STAGE5L_DIAGNOSTICS != 0U)
   Stage5LMeasurementDiagnostics_Init();
 #endif
+#if (A33_ENABLE_STAGE5PA1_DIAGNOSTICS != 0U)
+  Stage5PA1Diagnostics_Init();
+#endif
 #if (A33_ENABLE_STAGE5NA3_DIAGNOSTICS != 0U)
   Stage5NA3FaultInjection_Init();
 #endif
@@ -249,6 +255,10 @@ void App_Run(void)
   AppEvent event;
   uint8_t processed = 0U;
   static uint32_t observed_dropped_count;
+#if (A33_ENABLE_STAGE5PA1_DIAGNOSTICS != 0U)
+  uint32_t app_run_start = Stage5PA1Diagnostics_AppRunBegin();
+  uint32_t communication_start;
+#endif
 
   DeviceManager_ProcessFast();
   WeighingProfileManager_Process();
@@ -274,7 +284,13 @@ void App_Run(void)
       MeasurementBridge_GetConsumedCount(),
       MeasurementBridge_GetLastBacklog(),
       MeasurementBridge_GetObservedOverrunCount());
+#if (A33_ENABLE_STAGE5PA1_DIAGNOSTICS != 0U)
+  communication_start = Stage5PA1Diagnostics_CommunicationBegin();
+#endif
   CommunicationManager_Process();
+#if (A33_ENABLE_STAGE5PA1_DIAGNOSTICS != 0U)
+  Stage5PA1Diagnostics_CommunicationEnd(communication_start);
+#endif
   BleConnectionManager_Run(BSP_TimeNowMs());
   if (SystemContext_GetState() != APP_STATE_DIAGNOSTIC)
   {
@@ -304,6 +320,9 @@ void App_Run(void)
 
   Stage2B_DiagnosticsProcess();
   App_RunStateMachine();
+#if (A33_ENABLE_STAGE5PA1_DIAGNOSTICS != 0U)
+  Stage5PA1Diagnostics_AppRunEnd(app_run_start);
+#endif
 }
 
 bool App_ExitDiagnostics(void)

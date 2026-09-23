@@ -15,6 +15,14 @@
 #define SWD_BRIDGE_RESULT(ok, sequence) ((void)0)
 #endif
 
+#if (A33_ENABLE_STAGE5PA1_DIAGNOSTICS != 0U)
+#include "stage5pa1_throughput_diagnostics.h"
+#define A1_BRIDGE_RESULT(ok, sequence) \
+    Stage5PA1Diagnostics_OnBridgeResult(ok, sequence)
+#else
+#define A1_BRIDGE_RESULT(ok, sequence) ((void)(ok), (void)(sequence))
+#endif
+
 static uint32_t s_consumed_count;
 static uint32_t s_invalid_count;
 static uint16_t s_last_backlog;
@@ -55,14 +63,12 @@ uint8_t MeasurementBridge_Process(uint8_t maximum_samples)
         }
         else
         {
-#if (STAGE5L_SWD_DIAGNOSTICS != 0U)
             bool accepted = MetrologyManager_AcceptRawSample(&raw_sample);
             const MassSnapshot *snapshot = MetrologyManager_GetMassSnapshot();
             SWD_BRIDGE_RESULT(accepted,
                 (accepted && (snapshot != NULL)) ? snapshot->sample_sequence : 0U);
-#else
-            (void)MetrologyManager_AcceptRawSample(&raw_sample);
-#endif
+            A1_BRIDGE_RESULT(accepted,
+                (accepted && (snapshot != NULL)) ? snapshot->sample_sequence : 0U);
         }
         ++s_consumed_count;
         ++processed;
