@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
-  "classification": "STAGE5PA1B_SOFTWARE_PREFLASH_FREEZE",
+  "classification": "STAGE5PA1B_FINAL_SOFTWARE",
   "run_id": "software",
-  "repository_commit": "731e90b",
+  "repository_commit": "f7f3a43",
   "files": [
     {
       "path": "artifacts/stage5pa1b_0519_candidate.bin",
@@ -51,8 +51,8 @@
     },
     {
       "path": "software_summary.json",
-      "length": 1883,
-      "sha256": "C8850201B0127D16F8E86A6B836534D2DA2740F1F3EFFA3278365B7306DEEA96"
+      "length": 1862,
+      "sha256": "E9CF6A1732099D62B4062674C305C2BDAFB3D6771633F7021CB74410C25784AA"
     },
     {
       "path": "stage5na_parity.json",
