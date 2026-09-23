@@ -473,7 +473,7 @@ add_executable(display_conditioner_tests
     test_display_conditioner.c
     ../../Domain/measurement/display_conditioner.c)
 target_include_directories(display_conditioner_tests PRIVATE
-    ../../Domain/measurement)
+    ../../Config ../../Domain/measurement)
 if(MSVC)
     target_compile_options(display_conditioner_tests PRIVATE /W4 /WX)
 else()
