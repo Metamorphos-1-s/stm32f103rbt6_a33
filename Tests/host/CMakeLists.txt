@@ -170,6 +170,31 @@ else()
         -Wall -Wextra -Werror)
 endif()
 
+add_executable(stage5mr5e_d1d_display_tests
+    test_unified_display_conditioner.c
+    ../../Domain/measurement/display_conditioner.c
+    ../../Domain/measurement/mass_math.c
+    ../../Domain/measurement/unit_converter.c)
+add_executable(stage5mr5e_d1d_display_runner
+    stage5mr5e_d1d_display_runner.c
+    ../../Domain/measurement/display_conditioner.c
+    ../../Domain/measurement/mass_math.c
+    ../../Domain/measurement/unit_converter.c)
+foreach(target stage5mr5e_d1d_display_tests stage5mr5e_d1d_display_runner)
+    target_include_directories(${target} PRIVATE
+        ../../Config ../../Domain/measurement)
+    target_compile_definitions(${target} PRIVATE
+        A33_ENABLE_STAGE5MR5_BETA=1 A33_ENABLE_STAGE5NB_BETA=1
+        A33_ENABLE_STAGE5MR5E_D1D_BETA=1 _CRT_SECURE_NO_WARNINGS)
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /W4 /WX)
+    else()
+        target_compile_options(${target} PRIVATE -Wall -Wextra -Werror)
+    endif()
+endforeach()
+add_test(NAME stage5mr5e_d1d_display_logic
+    COMMAND stage5mr5e_d1d_display_tests)
+
 add_executable(stage5na_shadow_runner
     stage5na_shadow_runner.c
     ../../Experimental/stage5na/checkweigh_shadow.c)
