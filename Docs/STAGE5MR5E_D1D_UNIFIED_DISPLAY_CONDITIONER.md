@@ -9,6 +9,12 @@ CHECKWEIGH ALGORITHMS UNCHANGED.**
 No SWD connection, reset, configuration-region read or Flash write was
 performed. The device remains on 0x0516 in its measured clean default state.
 
+Start HEAD is `e6308a38796426296f2663831cefaefce5a0225a`. The frozen software
+and evidence HEAD is `4e16cd08e42a636febbef24e7e0500af76e173c4`; the final Manifest
+commit is recorded by the branch history and final handoff. Commits are
+`e12b766` (implementation), `2d0322d` (model/parity), `74fe051` (strict host
+closure) and `4e16cd0` (software evidence).
+
 ## Candidate
 
 The D1-D build integrates signed direction evidence into DisplayConditioner
@@ -101,4 +107,3 @@ offset/reference/evaluation and returning Checkweigh to OFF. Only application
 pages will be erased, the configuration area will not be written, programming
 will be verified, and rollback to 0x0516 would require a separate explicit
 authorization.
-

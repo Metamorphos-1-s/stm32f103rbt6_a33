@@ -4,6 +4,7 @@
   "result": "PASS",
   "statement": "STAGE 5M-R5E-D1-D UNIFIED DISPLAY CONDITIONER SOFTWARE READY; 0x0517 ARTIFACT BUILT; HARDWARE FLASH REQUIRES EXPLICIT AUTHORIZATION; R5 AND CHECKWEIGH ALGORITHMS UNCHANGED",
   "start_head": "e6308a38796426296f2663831cefaefce5a0225a",
+  "software_evidence_head": "4e16cd08e42a636febbef24e7e0500af76e173c4",
   "branch": "stage5mr5e-d1d-unified-display-conditioner",
   "firmware": "0x0517",
   "map": "0x0104",
