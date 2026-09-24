@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="41"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="0"
+	timestamp="2026-09-25T04:56:42"
+	>
+	<testcase name="stage4a_host_logic" classname="stage4a_host_logic" time="0.0489625" status="run">
+		<properties/>
+		<system-out>Alarm config/menu checks: 38
+Stage 4A host tests: all checks passed
+</system-out>
+	</testcase>
+	<testcase name="stage5pa2d_calibration_logic" classname="stage5pa2d_calibration_logic" time="0.0551281" status="run">
+		<properties/>
+		<system-out>Alarm config/menu checks: 38
+Stage 4A host tests: all checks passed
+</system-out>
+	</testcase>
+	<testcase name="stage5l_measurement_diagnostics" classname="stage5l_measurement_diagnostics" time="0.0148494" status="run">
+		<properties/>
+		<system-out>stage5l diagnostics tests passed
+</system-out>
+	</testcase>
+	<testcase name="stage5mr5e_d1d_display_logic" classname="stage5mr5e_d1d_display_logic" time="0.0171069" status="run">
+		<properties/>
+		<system-out>Unified display tests: all checks passed
+</system-out>
+	</testcase>
+	<testcase name="stage5ma_adaptive_logic" classname="stage5ma_adaptive_logic" time="0.011498" status="run">
+		<properties/>
+		<system-out>stage5ma adaptive tests passed
+</system-out>
+	</testcase>
+	<testcase name="stage5na3_fault_injection_logic" classname="stage5na3_fault_injection_logic" time="0.0151507" status="run">
+		<properties/>
+		<system-out>Stage 5N-A3 fault injection tests passed
+</system-out>
+	</testcase>
+	<testcase name="stage5nb_guarded_checkweigh_logic" classname="stage5nb_guarded_checkweigh_logic" time="0.0184514" status="run">
+		<properties/>
+		<system-out>guarded checkweigh tests passed
+</system-out>
+	</testcase>
+	<testcase name="stage5nb_local_control_logic" classname="stage5nb_local_control_logic" time="0.0144324" status="run">
+		<properties/>
+		<system-out>checkweigh local control tests passed
+</system-out>
+	</testcase>
+	<testcase name="stage5nb_output_safety_logic" classname="stage5nb_output_safety_logic" time="0.0208354" status="run">
+		<properties/>
+		<system-out>Stage 5N-B output safety tests passed
+</system-out>
+	</testcase>
+	<testcase name="stage5mr_drift_logic" classname="stage5mr_drift_logic" time="0.0097694" status="run">
+		<properties/>
+		<system-out>stage5mr drift tests passed
+</system-out>
+	</testcase>
+	<testcase name="stage5mr5_reference_lock_logic" classname="stage5mr5_reference_lock_logic" time="0.0144809" status="run">
+		<properties/>
+		<system-out>R5DriftCompensator size=856 bytes
+</system-out>
+	</testcase>
+	<testcase name="stage5pa_r5_admission_logic" classname="stage5pa_r5_admission_logic" time="0.0181115" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="stage5mr5_weight_engine_logic" classname="stage5mr5_weight_engine_logic" time="0.0134778" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="stage5mr5_beta_mailbox_logic" classname="stage5mr5_beta_mailbox_logic" time="0.0135241" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="stage5mr5e_local_control_logic" classname="stage5mr5e_local_control_logic" time="0.020636" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="stage5mr5e_standard_surface_logic" classname="stage5mr5e_standard_surface_logic" time="0.0119577" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="stage5mr5e_beta_surface_logic" classname="stage5mr5e_beta_surface_logic" time="0.012092" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="stage5mr5_ui_workspace_logic" classname="stage5mr5_ui_workspace_logic" time="0.0117842" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="stage5mr5_persistent_equal_logic" classname="stage5mr5_persistent_equal_logic" time="0.0114357" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="stage5pa_persistence_logic" classname="stage5pa_persistence_logic" time="0.0112963" status="run">
+		<properties/>
+		<system-out>Stage 5P-A persistence tests: all checks passed
+</system-out>
+	</testcase>
+	<testcase name="stage5pa2c_persistence_logic" classname="stage5pa2c_persistence_logic" time="0.0119908" status="run">
+		<properties/>
+		<system-out>Stage 5P-A2C persistence tests passed
+</system-out>
+	</testcase>
+	<testcase name="stage5pa2c_menu_logic" classname="stage5pa2c_menu_logic" time="0.0082749" status="run">
+		<properties/>
+		<system-out>Stage 5P-A2C menu transaction tests passed
+</system-out>
+	</testcase>
+	<testcase name="stage5pa2d_menu_logic" classname="stage5pa2d_menu_logic" time="0.0081696" status="run">
+		<properties/>
+		<system-out>Stage 5P-A2C menu transaction tests passed
+</system-out>
+	</testcase>
+	<testcase name="stage5pa_timing_logic" classname="stage5pa_timing_logic" time="0.0088091" status="run">
+		<properties/>
+		<system-out>Stage 5P-A timing tests: all checks passed
+</system-out>
+	</testcase>
+	<testcase name="stage5mr5_tare_revision_logic" classname="stage5mr5_tare_revision_logic" time="0.0119288" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="display_conditioner_logic" classname="display_conditioner_logic" time="0.0081499" status="run">
+		<properties/>
+		<system-out>Display conditioner tests: all checks passed
+</system-out>
+	</testcase>
+	<testcase name="runtime_drift_logic" classname="runtime_drift_logic" time="0.0196156" status="run">
+		<properties/>
+		<system-out>12h drift: offset=229500 ug final residual=10500 ug max hourly change=20000 ug
+runtime drift tests passed
+</system-out>
+	</testcase>
+	<testcase name="startup_auto_zero_logic" classname="startup_auto_zero_logic" time="0.0081522" status="run">
+		<properties/>
+		<system-out>Startup auto-zero tests passed
+</system-out>
+	</testcase>
+	<testcase name="stage4b_storage_logic" classname="stage4b_storage_logic" time="0.0110194" status="run">
+		<properties/>
+		<system-out>Stage 4B storage tests: all checks passed
+</system-out>
+	</testcase>
+	<testcase name="stage4br_persistence_logic" classname="stage4br_persistence_logic" time="0.0138407" status="run">
+		<properties/>
+		<system-out>Persistence manager tests: all checks passed
+</system-out>
+	</testcase>
+	<testcase name="stage5pa2d_persistence_logic" classname="stage5pa2d_persistence_logic" time="0.0121873" status="run">
+		<properties/>
+		<system-out>Persistence manager tests: all checks passed
+</system-out>
+	</testcase>
+	<testcase name="stage5a_host_logic" classname="stage5a_host_logic" time="0.0104215" status="run">
+		<properties/>
+		<system-out>Stage 5A host tests passed.
+</system-out>
+	</testcase>
+	<testcase name="stage5b_host_logic" classname="stage5b_host_logic" time="0.0124241" status="run">
+		<properties/>
+		<system-out>Stage 5B host tests passed (1280 checks).
+</system-out>
+	</testcase>
+	<testcase name="stage5c_host_logic" classname="stage5c_host_logic" time="0.008866" status="run">
+		<properties/>
+		<system-out>stage5c host tests passed
+</system-out>
+	</testcase>
+	<testcase name="stage5c_ble_telemetry_logic" classname="stage5c_ble_telemetry_logic" time="0.0143826" status="run">
+		<properties/>
+		<system-out>scheduler counts fast=5 slow=1 sent=7 builds=7\nBLE telemetry codec/scheduler tests passed
+</system-out>
+	</testcase>
+	<testcase name="stage5c_ble_command_protocol_logic" classname="stage5c_ble_command_protocol_logic" time="0.0234133" status="run">
+		<properties/>
+		<system-out>BLE command protocol tests passed
+</system-out>
+	</testcase>
+	<testcase name="stage5e_config_edit_no_menu_logic" classname="stage5e_config_edit_no_menu_logic" time="0.0123703" status="run">
+		<properties/>
+		<system-out>ConfigEdit alarm fields remain available without local menu
+</system-out>
+	</testcase>
+	<testcase name="stage5c_ble_command_service_logic" classname="stage5c_ble_command_service_logic" time="0.0118352" status="run">
+		<properties/>
+		<system-out>BLE command service tests passed
+</system-out>
+	</testcase>
+	<testcase name="uart2_dma_recovery_logic" classname="uart2_dma_recovery_logic" time="0.0092793" status="run">
+		<properties/>
+		<system-out>uart2 dma recovery host tests passed
+</system-out>
+	</testcase>
+	<testcase name="checkweigh_logic" classname="checkweigh_logic" time="0.0091278" status="run">
+		<properties/>
+		<system-out>AlarmConfig validation cases: 22
+LimitChecker cases: 85
+checkweigh tests passed
+</system-out>
+	</testcase>
+	<testcase name="alarm_output_manager_logic" classname="alarm_output_manager_logic" time="0.0129125" status="run">
+		<properties/>
+		<system-out>AlarmOutputManager checks: 283
+alarm output manager tests passed
+</system-out>
+	</testcase>
+</testsuite>
