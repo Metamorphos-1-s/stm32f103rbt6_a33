@@ -1,0 +1,48 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5PA2_SOFTWARE_PREFLASH_FREEZE",
+  "run_id": "software",
+  "repository_commit": "07ba09e",
+  "files": [
+    {
+      "path": "artifacts/stage5pa2_051a_candidate.bin",
+      "length": 107532,
+      "sha256": "32A3184D93A0E1CC92C1F786455623176223DC2FC2430748F924B020AEF428B8"
+    },
+    {
+      "path": "artifacts/stage5pa2_051a_candidate.elf",
+      "length": 2024200,
+      "sha256": "5937DF5E29E6B65A7595449B8E786A1B68F0BBD331A6EBCB1E4BDEE2DECC74DA"
+    },
+    {
+      "path": "artifacts/stage5pa2_051a_candidate.map",
+      "length": 1430194,
+      "sha256": "D7D4B062ED6724C7BDFD50B1B8CC371561BCA8A8F661433BB480574723BA6EE1"
+    },
+    {
+      "path": "frozen_blobs.json",
+      "length": 1316,
+      "sha256": "2D099DAE43F0519DA5450AB0E888B2BC545BEDB1E9ED1FCEAABAAD4A3019E428"
+    },
+    {
+      "path": "ram_stack/largest_ram_symbols.json",
+      "length": 14212,
+      "sha256": "B91F8AD3A28FEECDE8C206E096B8DBC09754C86C4ECC027EF4645C70B967F15D"
+    },
+    {
+      "path": "ram_stack/ram_layout.json",
+      "length": 7804,
+      "sha256": "DA35646CDB6CA088AEF197811553D135D2063AD70BCA22C687AEB03E9A9B46CA"
+    },
+    {
+      "path": "ram_stack/stack_watermark.json",
+      "length": 46301,
+      "sha256": "417916A576865BC0D4E2B2B2806E7AEA3C15CE04CF2DBCF96CB46C09ACBBABC7"
+    },
+    {
+      "path": "software_summary.json",
+      "length": 1111,
+      "sha256": "6762D521759893C205EEBCC66180F41B3D6A18EC2C0188EA31FA49B97069393B"
+    }
+  ]
+}
