@@ -48,7 +48,7 @@ def read_symbols(source, names):
     return sizes
 
 
-def map_geometry(source):
+def map_geometry(source, stack_bound=STACK_BOUND_B):
     end = re.search(r"0x(200[0-9a-f]{5})\s+_ebss =", source)
     top = re.search(r"0x(200[0-9a-f]{5})\s+_estack =", source)
     if not end or not top:
@@ -56,12 +56,14 @@ def map_geometry(source):
     static_end, ram_end = int(end.group(1), 16), int(top.group(1), 16)
     return {"static_end": hex(static_end), "ram_end": hex(ram_end),
             "physical_stack_room_b": ram_end - static_end,
-            "collision_margin_b": ram_end - static_end - STACK_BOUND_B}
+            "collision_margin_b": ram_end - static_end - stack_bound}
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--candidate-map", type=Path)
+    parser.add_argument("--stack-report", type=Path,
+                        help="actual candidate ARM call-graph stack report")
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     baseline = pinned_map()
@@ -81,12 +83,22 @@ def main():
               "candidate_target_build": "NOT RUN"}
     if args.candidate_map:
         candidate = args.candidate_map.read_text(encoding="utf-8")
-        candidate_geometry = map_geometry(candidate)
+        stack_bound = None
+        if args.stack_report:
+            stack = json.loads(args.stack_report.read_text(encoding="utf-8"))
+            stack_bound = stack["bounded_conservative_stack_bytes"]
+            if not isinstance(stack_bound, int) or stack_bound <= 0:
+                raise ValueError("invalid candidate stack bound")
+        candidate_geometry = map_geometry(candidate, stack_bound or STACK_BOUND_B)
+        report["classification"] = (
+            "TARGET_ARM_MAP_AND_STACK_MEASURED" if stack_bound else
+            "TARGET_ARM_MAP_STACK_PENDING")
         report["candidate_target_build"] = {
             "symbol_sizes_b": read_symbols(candidate, NEW_SYMBOLS),
             "geometry": candidate_geometry,
-            "collision_gate_pass":
-                candidate_geometry["collision_margin_b"] >= MIN_COLLISION_B,
+            "stack_bound_b": stack_bound,
+            "collision_gate_pass": (candidate_geometry["collision_margin_b"]
+                >= MIN_COLLISION_B) if stack_bound else None,
             "static_end_saving_b":
                 int(baseline_geometry["static_end"], 16) -
                 int(candidate_geometry["static_end"], 16)}

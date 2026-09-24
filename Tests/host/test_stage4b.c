@@ -198,6 +198,33 @@ static void TestBothValidWhenAIsNewer(void)
     CHECK(loaded.display.brightness == 5U);
 }
 
+static void TestOnlyBValidAfterACorruption(void)
+{
+    DeviceConfig config;
+    DeviceConfig loaded;
+    RuntimeState runtime;
+    RuntimeState loaded_runtime;
+    ConfigLoadInfo info;
+
+    MakeConfig(&config, &runtime);
+    FakeFlash_Reset();
+    ConfigStore_Init(FakeFlash_GetBackend());
+    CHECK(ConfigStore_RequestSave(&config, &runtime, 1U));
+    RunStore();
+    ConfigStore_AcknowledgeResult();
+    config.display.brightness = 4U;
+    CHECK(ConfigStore_RequestSave(&config, &runtime, 2U));
+    RunStore();
+    ConfigStore_AcknowledgeResult();
+    FakeFlash_Corrupt(CONFIG_FLASH_SLOT_A_ADDRESS + CONFIG_STORE_HEADER_SIZE,
+                      0xFFU);
+    ConfigStore_Init(FakeFlash_GetBackend());
+    CHECK(ConfigStore_Load(&loaded, &loaded_runtime, &info) ==
+          CONFIG_LOAD_RECOVERED_SLOT_B);
+    CHECK(info.active_slot == CONFIG_STORE_SLOT_B);
+    CHECK(loaded.display.brightness == 4U);
+}
+
 static void TestPowerCuts(void)
 {
     DeviceConfig old_config;
@@ -381,6 +408,7 @@ int main(void)
     TestCodec();
     TestStoreAndRecovery();
     TestBothValidWhenAIsNewer();
+    TestOnlyBValidAfterACorruption();
     TestPowerCuts();
     TestRevision();
     TestOddProgramLengths();

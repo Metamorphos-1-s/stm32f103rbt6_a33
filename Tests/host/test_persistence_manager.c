@@ -282,6 +282,44 @@ static void TestCandidateSaveAtomicPublishAndRollback(void)
     CHECK(loaded.display.brightness == original.display.brightness);
 }
 
+static void TestTransactionUnionRejectsOverlap(void)
+{
+    DeviceConfig original;
+    DeviceConfig candidate;
+    DeviceConfig loaded;
+    RuntimeState runtime;
+    RuntimeState loaded_runtime;
+    ConfigLoadInfo info;
+
+    SetupStored(&original, &runtime, 21U);
+    candidate = original;
+    candidate.display.brightness = 4U;
+    CHECK(PersistenceManager_RequestCandidateSave(&candidate, &original,
+        true, 21U) == COMMAND_RESULT_ACCEPTED);
+    CHECK(PersistenceManager_RequestFactoryReset() == COMMAND_RESULT_BUSY);
+    RunManager();
+    CHECK(PersistenceManager_GetStatus() == PERSISTENCE_STATUS_SUCCESS);
+    ConfigStore_Init(FakeFlash_GetBackend());
+    CHECK(ConfigStore_Load(&loaded, &loaded_runtime, &info) ==
+        CONFIG_LOAD_BOTH_VALID);
+    CHECK(loaded.display.brightness == 4U);
+
+    SetupStored(&original, &runtime, 31U);
+    CHECK(PersistenceManager_RequestFactoryReset() == COMMAND_RESULT_ACCEPTED);
+    candidate = original;
+    candidate.display.brightness = 5U;
+    CHECK(PersistenceManager_RequestCandidateSave(&candidate, &original,
+        true, 31U) != COMMAND_RESULT_ACCEPTED);
+    RunManager();
+    CHECK(PersistenceManager_GetFactoryResetResult() ==
+        FACTORY_RESET_RESULT_COMPLETED);
+    ConfigStore_Init(FakeFlash_GetBackend());
+    CHECK(ConfigStore_Load(&loaded, &loaded_runtime, &info) ==
+        CONFIG_LOAD_BOTH_VALID);
+    CHECK(loaded.display.brightness == original.display.brightness);
+    CHECK(!loaded.calibration.calibration_valid);
+}
+
 #if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
 static void TestCalibrationAutoSaveAndFailure(void)
 {
@@ -351,6 +389,7 @@ int main(void)
     TestUnsafeStart();
     TestPowerGuardStates();
     TestCandidateSaveAtomicPublishAndRollback();
+    TestTransactionUnionRejectsOverlap();
 #if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
     TestCalibrationAutoSaveAndFailure();
 #endif
