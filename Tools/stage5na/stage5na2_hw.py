@@ -153,7 +153,8 @@ def record(args):
                     shadow = decode_shadow(
                         client.read(SHADOW_FIRST, SHADOW_COUNT)[0], order)
                     if primary is None or cycle >= next_primary:
-                        primary = decode_primary(client.read(0, 64)[0], order)
+                        primary = decode_primary(client.read(0, 64)[0], order,
+                            args.expected_firmware)
                         next_primary = cycle + args.primary_interval_s
                     if cycle >= next_aux:
                         display = decode_display(client.read(0x01E0, 17)[0], order)
@@ -248,6 +249,8 @@ def main():
     capture.add_argument("--primary-interval-s", type=float, default=0.25)
     capture.add_argument("--aux-interval-s", type=float, default=1.0)
     capture.add_argument("--baud", type=int, default=115200)
+    capture.add_argument("--expected-firmware", type=lambda value: int(value, 0),
+                         default=0x0515)
     capture.add_argument("--timeout-ms", type=int, default=300)
     capture.add_argument("--max-errors", type=int, default=10)
     marker = sub.add_parser("mark-event")

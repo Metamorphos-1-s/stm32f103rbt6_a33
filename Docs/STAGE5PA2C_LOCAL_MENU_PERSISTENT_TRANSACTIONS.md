@@ -3,8 +3,11 @@
 ## Software Gate Result
 
 **STAGE 5P-A2C SOFTWARE CANDIDATE READY; LOCAL MENU SAVE/POWER-CYCLE
-HARDWARE CLOSURE INCOMPLETE; 0x051B REMAINS AN ENGINEERING CANDIDATE;
-DEVICE RESTORED TO FROZEN 0x0517.**
+HARDWARE CLOSURE INCOMPLETE; 0x051B REMAINS AN ENGINEERING CANDIDATE.**
+
+Hardware testing was stopped at the user's request before the full matrix.
+The device currently runs 0x051B with a saved SHADOW+STATIC request; final
+device disposition is pending an explicit user choice, not a qualification PASS.
 
 The A2B failure is preserved in `Docs/STAGE5PA2B_LOCAL_MENU_CLOSURE.md` and
 was not reused as a hardware result. A2B's 0x051A position remains:
@@ -99,7 +102,42 @@ The next hardware step requires the exact user authorization:
 授权读取配置并烧录0x051B
 ```
 
-Until that exact authorization is received, the device remains on 0x0517 and
-all local-menu H1-H8 tests are pending. Formal release, metrology, cross-sensor,
+The authorization was subsequently received, and the 0x051B application was
+programmed and verified without changing the pre-test configuration region.
+The pre-flash statement above is historical software-gate evidence, not the
+current device status. Formal release, metrology, cross-sensor,
 12-hour, D1-C long-duration, external DRDY, sensor-disconnect, ASan and UBSan
 qualifications remain deferred.
+
+## Hardware Partial Result And User Stop
+
+The 4096-byte pre-flash and immediate post-flash configuration images match:
+SHA-256 `A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4`.
+Both V3 slots were valid and committed, with active slot B sequence 8. The
+programmer erased application sectors 0-105, downloaded the exact Debug
+0x051B candidate, verified it, and reset the MCU. The 0x051B post-flash
+Modbus snapshot showed clean revision/saved 8/8 and no fault or overrun.
+
+H1 cancellation checks were performed for R5, Checkweigh, SPd, FILt, and
+StrEnG. Read-only snapshots retained rate 10 Hz, filt3/strength3, tare 0,
+dirty 0, revision/saved 8/8 and SAVE count 0. The first attempt to use the
+historical Stage 5N-A recorder for the A2C profile read failed because its
+identity check defaulted to 0x0515. The failed run directory was retained;
+the host tool gained an optional expected-firmware argument, default unchanged,
+and the subsequent 0x051B read-only capture passed.
+
+H2 SHAdO was applied through the local menu. The operator observed
+`SAUE` followed by `donE`. Readback showed SHADOW+STATIC, clean revision/saved
+9/9, SAVE count 1, active slot A sequence 9, and valid CRC/commit in both
+slots. The resulting configuration SHA-256 is
+`2143BAA0BBB8C8F4B446B6F34E3D2C7E5A8F8F69CA71C2A80154155EE736DC57`.
+
+The user then requested skipping the remaining review steps. H1 timeout,
+H2 OFF/ACTIVE+STATIC/ACTIVE+DOSING, and H3-H8 were **not performed** and are
+not PASS. No physical power-cycle persistence result exists for 0x051B.
+The stop snapshot reports 0x051B, Map 0x0104, SHADOW+STATIC, offset/reference/
+evaluation 0, clean revision/saved 9/9, SAVE count 1, and fault/overrun 0.
+No further menu action, SAVE, configuration restore, or rollback has been
+performed after the user's stop request. A user decision is required whether
+to retain this unqualified engineering state or restore 0x0517 and the exact
+pre-test configuration image.
