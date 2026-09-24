@@ -62,6 +62,8 @@ bool CommandService_GetCalibrationSnapshot(
 #if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
 bool CommandService_LocalCalibrationActive(uint16_t session_id);
 bool CommandService_LocalCalibrationApplied(uint16_t session_id);
+bool CommandService_TouchLocalCalibration(uint16_t session_id,
+    uint32_t now_ms);
 #endif
 bool CommandService_SetStagedConfig(const DeviceConfig *candidate);
 bool CommandService_SetStagedConfigForSource(const DeviceConfig *candidate,

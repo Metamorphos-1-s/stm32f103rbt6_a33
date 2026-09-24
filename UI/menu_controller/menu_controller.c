@@ -1131,6 +1131,42 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
     }
     if ((event->key == KEY_ID_FUNCTION) && (event->type == KEY_EVENT_LONG))
     {
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+        if (s_editing)
+        {
+            if (SystemContext_GetConfigRevision() != s_expected_revision)
+            {
+                ShowCode(DISPLAY_CODE_BUSY);
+                return true;
+            }
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+            if (s_edit_kind == MENU_EDIT_CHECKWEIGH_MODE)
+            {
+                CheckweighLocalControl_Confirm();
+                s_editing = false;
+                RequestCheckweighCandidateSave(event->timestamp_ms);
+                return true;
+            }
+#endif
+#if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+            if (s_edit_kind == MENU_EDIT_R5_DRIFT)
+            {
+                R5LocalControl_Confirm();
+                s_editing = false;
+                RequestR5CandidateSave(event->timestamp_ms);
+                return true;
+            }
+#endif
+            if (!SubmitEditValue())
+            {
+                ShowCode(DISPLAY_CODE_INVALID_CONFIG);
+                return true;
+            }
+            s_editing = false;
+            s_candidate_changed = !PersistentCodec_DeviceConfigEqual(
+                &s_candidate_config, &s_original_config);
+        }
+#endif
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
 #if (A33_ENABLE_STAGE5PA2C_PRODUCT == 0U)
         R5LocalResult r5_result;
@@ -1260,10 +1296,16 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                 Render();
                 return true;
             }
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+            /* Keep the cursor and typed value so the user can correct it. */
+            ShowCode(DISPLAY_CODE_INVALID_CONFIG);
+            return true;
+#else
             s_editing = false;
             Render();
             ShowCode(DISPLAY_CODE_INVALID_CONFIG);
             return true;
+#endif
         }
         else if ((event->key == KEY_ID_TARE) &&
                  (event->type == KEY_EVENT_SHORT))

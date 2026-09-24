@@ -27,6 +27,9 @@ static CommandResult save_result;
 static PersistenceStatus save_status;
 static bool save_busy;
 static bool invalid_config;
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+static bool edit_reject;
+#endif
 static uint32_t checkweigh_generation;
 static char last_message[7];
 static char last_page[7];
@@ -88,6 +91,9 @@ bool ConfigEdit_SetUnitDisplay(MassUnit unit, const UnitDisplayConfig *display)
 bool ConfigEdit_SetProfileField(WeighingProfileId profile,
     ConfigProfileFieldId field, int64_t value)
 {
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    if (edit_reject) return false;
+#endif
     WeighingProfileConfig *target = &working.metrology.profiles[profile];
     if (field == CONFIG_PROFILE_FIELD_SAMPLE_RATE)
         target->sample_rate = (Cs1237DataRate)value;
@@ -234,6 +240,9 @@ static void Reset(void)
     save_status = PERSISTENCE_STATUS_IDLE;
     save_busy = false;
     invalid_config = false;
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    edit_reject = false;
+#endif
     checkweigh_generation = 0U;
     now_ms = 100U;
 #if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
@@ -282,6 +291,65 @@ static int TestCalibrationMenuOwnership(void)
     CHECK(MenuController_Enter());
     CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_LONG));
     CHECK(save_requests == 1U);
+    return 0;
+}
+
+static int TestSaveCurrentEdit(void)
+{
+    DeviceConfig candidate;
+    Reset();
+    CHECK(EnterAdvanced(MENU_ITEM_FILTER) == 0);
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT));
+    CHECK(Key(KEY_ID_HASH, KEY_EVENT_SHORT));
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_LONG));
+    CHECK(save_requests == 1U);
+    CHECK(context.config.metrology.profiles[0].filter_mode == FILTER_MODE_NONE);
+    CHECK(!IsDone());
+    CHECK(MenuController_GetCandidate(&candidate));
+    CHECK(candidate.metrology.profiles[0].filter_mode == FILTER_MODE_NONE);
+
+    Reset();
+    CHECK(EnterAdvanced(MENU_ITEM_FILTER) == 0);
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT));
+    CHECK(Key(KEY_ID_HASH, KEY_EVENT_SHORT));
+    edit_reject = true;
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT));
+    CHECK(current_page == DISPLAY_PAGE_EDIT);
+    CHECK(save_requests == 0U);
+    CHECK(MenuController_GetCandidate(&candidate));
+    CHECK(candidate.metrology.profiles[0].filter_mode ==
+        FILTER_MODE_MEDIAN3_IIR);
+    edit_reject = false;
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_LONG));
+    CHECK(save_requests == 1U);
+    CHECK(context.config.metrology.profiles[0].filter_mode == FILTER_MODE_NONE);
+
+    Reset();
+    CHECK(EnterAdvanced(MENU_ITEM_FILTER) == 0);
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT));
+    CHECK(Key(KEY_ID_HASH, KEY_EVENT_SHORT));
+    ++context.config_revision;
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_LONG));
+    CHECK(save_requests == 0U);
+    CHECK(context.config.metrology.profiles[0].filter_mode ==
+        FILTER_MODE_MEDIAN3_IIR);
+    CHECK(current_page == DISPLAY_PAGE_EDIT);
+
+    Reset();
+    CHECK(EnterAdvanced(MENU_ITEM_R5_DRIFT) == 0);
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT));
+    CHECK(Key(KEY_ID_HASH, KEY_EVENT_SHORT));
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_LONG));
+    CHECK(save_requests == 1U);
+    CHECK(context.config.system.requested_r5_mode == 2U);
+
+    Reset();
+    CHECK(EnterAdvanced(MENU_ITEM_CHECKWEIGH_MODE) == 0);
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT));
+    CHECK(Key(KEY_ID_HASH, KEY_EVENT_SHORT));
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_LONG));
+    CHECK(save_requests == 1U);
+    CHECK(context.config.system.requested_checkweigh_mode != 0U);
     return 0;
 }
 #endif
@@ -447,6 +515,7 @@ int main(void)
 {
 #if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
     if (TestCalibrationMenuOwnership() != 0) return 1;
+    if (TestSaveCurrentEdit() != 0) return 1;
 #endif
     if (TestR5SaveTiming() != 0 || TestCancellationAndStale() != 0 ||
         TestProfileFields() != 0 || TestCheckweighAndSaveFailure() != 0 ||

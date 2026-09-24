@@ -1026,6 +1026,22 @@ bool CommandService_LocalCalibrationApplied(uint16_t session_id)
         (s_calibration.state == CAL_WORKFLOW_APPLIED) &&
         (s_calibration.session_id == session_id);
 }
+
+bool CommandService_TouchLocalCalibration(uint16_t session_id,
+    uint32_t now_ms)
+{
+    if (!CommandService_LocalCalibrationActive(session_id))
+        return false;
+    /* A queued key can predate the most recent sensor-driven command. Never
+       move the session clock backwards in that case. */
+    if ((int32_t)(now_ms - s_calibration.last_activity_ms) <= 0)
+        return true;
+    if ((uint32_t)(now_ms - s_calibration.last_activity_ms) >=
+        CALIBRATION_SESSION_TIMEOUT_MS)
+        return false;
+    s_calibration.last_activity_ms = now_ms;
+    return true;
+}
 #endif
 
 bool CommandService_SetStagedConfig(const DeviceConfig *candidate)

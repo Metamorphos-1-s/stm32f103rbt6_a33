@@ -372,6 +372,18 @@ bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
         CalibrationController_Cancel();
         return true;
     }
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    if ((s_session.state == CAL_STATE_INPUT_SPAN_WEIGHT) &&
+        ((event->key == KEY_ID_FUNCTION) || (event->key == KEY_ID_STAR) ||
+         (event->key == KEY_ID_HASH) || (event->key == KEY_ID_ZERO)) &&
+        !CommandService_TouchLocalCalibration(s_session.session_id,
+            event->timestamp_ms))
+    {
+        CalibrationController_SetState(CAL_STATE_ERROR,
+            DISPLAY_CODE_CALIBRATION_ERROR);
+        return true;
+    }
+#endif
     switch (s_session.state)
     {
         case CAL_STATE_CONFIRM_EMPTY:
@@ -431,6 +443,10 @@ bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
                         s_session.span_mass_ug) == COMMAND_RESULT_OK)
 #if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
                 {
+                    /* The command may have used the preceding 10 ms tick;
+                       keep the later physical key timestamp. */
+                    (void)CommandService_TouchLocalCalibration(
+                        s_session.session_id, event->timestamp_ms);
                     RawCalibrationStability_Reset(&s_raw_stability);
                     s_last_sample_sequence = 0U;
                     CalibrationController_SetState(CAL_STATE_WAIT_SPAN_STABLE,

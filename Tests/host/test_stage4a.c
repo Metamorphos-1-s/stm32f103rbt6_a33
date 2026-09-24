@@ -2465,6 +2465,42 @@ static void TestCalibrationSaveAndSessionFailures(void)
     CHECK4(!SystemContext_Get()->runtime.config_dirty);
     CHECK4(TestMock_GetSaveRequestCount() == 0U);
 }
+
+static void TestLocalCalibrationInputActivity(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+
+    Stage4A_InitRuntime(&config, false);
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
+    CHECK4(CalibrationController_Begin());
+    CHECK4(SystemContext_SetState(APP_STATE_CALIBRATION, 0U));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 1U);
+    CHECK4(CalibrationController_HandleKeyEvent(&event));
+    Stage4A_FeedCalibrationRaw(100000, 100U);
+    CHECK4(CalibrationController_GetState() == CAL_STATE_INPUT_SPAN_WEIGHT);
+
+    TestMock_SetTimeMs(119000U);
+    CommandService_Process(119000U);
+    event = Stage4A_Key(KEY_ID_ZERO, KEY_EVENT_SHORT, 119100U);
+    CHECK4(CalibrationController_HandleKeyEvent(&event));
+    CHECK4(CommandService_LocalCalibrationActive(
+        CalibrationController_GetSession()->session_id));
+    TestMock_SetTimeMs(235000U);
+    CommandService_Process(235000U);
+    event.timestamp_ms = 235100U;
+    CHECK4(CalibrationController_HandleKeyEvent(&event));
+    CHECK4(CalibrationController_GetState() == CAL_STATE_INPUT_SPAN_WEIGHT);
+    CHECK4(CommandService_LocalCalibrationActive(
+        CalibrationController_GetSession()->session_id));
+
+    TestMock_SetTimeMs(355100U);
+    CommandService_Process(355100U);
+    CalibrationController_Process10ms();
+    CHECK4(CalibrationController_GetState() == CAL_STATE_ERROR);
+    CHECK4(!SystemContext_Get()->runtime.config_dirty);
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
+}
 #endif
 
 static void TestAlarmConfigEditFields(void)
@@ -3526,6 +3562,7 @@ unsigned int Stage4A_RunTests(void)
     TestCalibrationSmallSpanError();
 #if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
     TestCalibrationSaveAndSessionFailures();
+    TestLocalCalibrationInputActivity();
 #endif
     TestAlarmConfigEditFields();
     TestNumericEditCursorCoreAndMapping();
