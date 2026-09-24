@@ -1,8 +1,8 @@
 {
   "schema_version": 2,
-  "classification": "STAGE5PA2_SOFTWARE_PREFLASH_FREEZE",
+  "classification": "STAGE5PA2_FINAL_SOFTWARE",
   "run_id": "software",
-  "repository_commit": "07ba09e",
+  "repository_commit": "b8da788",
   "files": [
     {
       "path": "artifacts/stage5pa2_051a_candidate.bin",
