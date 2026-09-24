@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5PA2C_SOFTWARE_CANDIDATE_READY_PREFLASH",
+  "run_id": "software",
+  "repository_commit": "HEAD",
+  "files": [
+    {
+      "path": "artifacts/firmware_0x051B_debug.bin",
+      "length": 107928,
+      "sha256": "2EA4F7AB549820AB6B0C3A020D99DA3FFB151E0B5C5648BE013A34B7AA11FEEE"
+    },
+    {
+      "path": "artifacts/firmware_0x051B_debug.elf",
+      "length": 2028772,
+      "sha256": "A0FB0936848374275C4E57C918DE0CA8BB8E2E467C90449CDF600BA1262B48D7"
+    },
+    {
+      "path": "artifacts/firmware_0x051B_debug.map",
+      "length": 1431473,
+      "sha256": "16D7AC13D21ADC668B32F5881914B8438985DAE2B8D68139F6A8B71CF33BAC2A"
+    },
+    {
+      "path": "artifacts/firmware_0x051B_strict_release.bin",
+      "length": 91668,
+      "sha256": "77D27C311F6D41F2A5E7D43F727B11A896B649B61274270CDE49FE45CAB7B59A"
+    },
+    {
+      "path": "device_preflight_0517.json",
+      "length": 2834,
+      "sha256": "31E824EA158811901824476D477C1C5C91E47C66DD7C961F3AD4861BE8AC7833"
+    },
+    {
+      "path": "software_summary.json",
+      "length": 1157,
+      "sha256": "03024FA615043AE38A6143559B356627BD86162DA82C8A77E6F8ACF16F1B924B"
+    }
+  ]
+}
