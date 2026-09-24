@@ -1,0 +1,13 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5PA2B_LOCAL_MENU_SOFTWARE_FAIL_PREFLASH",
+  "run_id": "software_failure",
+  "repository_commit": "ad1b400",
+  "files": [
+    {
+      "path": "preflight_0517.json",
+      "length": 2834,
+      "sha256": "5636F720C5EFF7B51E53732F2E84D81042262C90A49EB64A140704551537D288"
+    }
+  ]
+}
