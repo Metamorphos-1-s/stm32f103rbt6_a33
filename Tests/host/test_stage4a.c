@@ -2501,6 +2501,47 @@ static void TestLocalCalibrationInputActivity(void)
     CHECK4(!SystemContext_Get()->runtime.config_dirty);
     CHECK4(TestMock_GetSaveRequestCount() == 0U);
 }
+
+static void TestCalibrationCapacityLockAtCommit(void)
+{
+    DeviceConfig config;
+    DeviceConfig changed;
+    RawMeasurementSample sample = {1100000, 2000U, true};
+    KeyEvent event;
+    uint8_t index;
+
+    Stage4A_InitRuntime(&config, false);
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
+    CHECK4(CalibrationController_Begin());
+    CHECK4(SystemContext_SetState(APP_STATE_CALIBRATION, 0U));
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 1U);
+    CHECK4(CalibrationController_HandleKeyEvent(&event));
+    Stage4A_FeedCalibrationRaw(100000, 100U);
+    event.timestamp_ms = 1500U;
+    CHECK4(CalibrationController_HandleKeyEvent(&event));
+
+    /* Stop at the separate 10 ms commit tick, after the span capture. */
+    for (index = 0U; index < 14U; ++index)
+    {
+        sample.timestamp_ms = 2000U + (uint32_t)index * 100U;
+        CHECK4(MetrologyManager_AcceptRawSample(&sample));
+        TestMock_SetTimeMs(sample.timestamp_ms);
+        CommandService_Process(sample.timestamp_ms);
+        CalibrationController_Process10ms();
+        if (CalibrationController_GetState() == CAL_STATE_COMMIT_RAM) break;
+    }
+    CHECK4(index < 14U);
+    changed = SystemContext_Get()->config;
+    changed.metrology.capacity_ug += INT64_C(1000000);
+    /* Simulate a transient replacement with no revision increment. */
+    CHECK4(SystemContext_ReplaceConfig(&changed, false));
+    CHECK4(SystemContext_GetConfigRevision() ==
+        SystemContext_GetSavedRevision());
+    CalibrationController_Process10ms();
+    CHECK4(CalibrationController_GetState() == CAL_STATE_ERROR);
+    CHECK4(!SystemContext_Get()->runtime.config_dirty);
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
+}
 #endif
 
 static void TestAlarmConfigEditFields(void)
@@ -3563,6 +3604,7 @@ unsigned int Stage4A_RunTests(void)
 #if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
     TestCalibrationSaveAndSessionFailures();
     TestLocalCalibrationInputActivity();
+    TestCalibrationCapacityLockAtCommit();
 #endif
     TestAlarmConfigEditFields();
     TestNumericEditCursorCoreAndMapping();

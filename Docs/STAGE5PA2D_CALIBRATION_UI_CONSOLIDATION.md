@@ -2,7 +2,7 @@
 
 ## Scope and status
 
-`SOFTWARE CANDIDATE; ARM RESOURCE GATE AND TARGET HARDWARE CHECK PENDING`.
+`SOFTWARE CANDIDATE; ARM RESOURCE RETEST AND TARGET HARDWARE CHECK PENDING`.
 This branch starts at `d241f750b8f6420bfc5b6138531e2e7df614caf5`.
 The build preset `Stage5PA2DCalibration` identifies the *unflashed*
 engineering candidate as firmware `0x051C`. With the candidate flag disabled,
@@ -60,11 +60,23 @@ classification, Modbus mapping, or the V3 persistent layout.
   local session; a simulated interrupted write preserves the earlier record.
 - The five changed product C units compile on GCC host with candidate flags,
   `-Os -Wall -Wextra -Werror`; CMakePresets JSON and `git diff --check` pass.
-- ARM Debug/Release links, exact BIN identity and size, map RAM, ARM call graph
-  stack bound, and physical behavior are **NOT RUN** here: no ARM compiler or
-  connected serial/SWD programmer is present. Host `-fstack-usage` cannot
-  replace the STM32 stack margin requirement. Do not flash until the existing
-  conservative stack collision gate of at least 512 bytes is met.
+- The Windows bench built the first patch revision but stopped before hardware:
+  Debug RAM 19,472 B exceeded its 19,464 B ceiling by 8 B, although its
+  conservative stack collision margin was 528 B. The Debug BIN of that
+  *failed* revision was 108,880 B with SHA-256
+  `0036A42DB7FB7CF6CD4EE54FACC85111145A8786908B96BEE4F1113A37C99A3D`.
+  Do not reuse that artifact or cite its stack result for the RAM fix.
+- The subsequent fix removes the redundant 8-byte local capacity snapshot;
+  the existing CommandService calibration lock still rejects a capacity
+  change at commit. A host regression replaces capacity without advancing
+  revision after span capture and confirms zero SAVE and an error. On the host,
+  the candidate `CalibrationSession` is back to the legacy 112-byte size.
+- The **revised** ARM Debug/Release links, exact BIN identity and size, map
+  RAM and conservative stack bound are **NOT RETESTED** here: no ARM compiler
+  or connected serial/SWD programmer is present. Host object size is no
+  substitute for the STM32 linker map. Do not flash until Debug RAM is at
+  most 19,464 B and the conservative stack collision margin is at least
+  512 B; also satisfy the other existing software gates.
 
 ## Single focused target session
 
@@ -74,7 +86,8 @@ response matrices, or physical fault injection for this UI change.
 
 1. On the Windows bench, check out the exact branch/commit and build the
    `Stage5PA2DCalibration` preset. Run candidate and existing Host CTest,
-   Debug/Release ARM builds and the 512-byte collision-margin check. Record
+   Debug/Release ARM builds, the 19,464-byte Debug RAM ceiling and the
+   512-byte collision-margin check. Record
    the exact BIN SHA and verify identity `0x051C`. Stop before flashing if an
    ARM warning, memory, or regression gate fails.
 2. Take a read-only Modbus status snapshot and back up the two 2-KiB V3

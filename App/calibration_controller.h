@@ -38,7 +38,9 @@ typedef struct
     int32_t captured_raw_span;
     MassValueUg span_mass_ug;
     int64_t span_display_count;
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION == 0U)
     MassValueUg capacity_ug_at_begin;
+#endif
     MassUnit input_unit;
     uint8_t input_decimal_places;
     uint8_t input_division_digit;

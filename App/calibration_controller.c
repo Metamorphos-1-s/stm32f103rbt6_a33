@@ -166,7 +166,9 @@ bool CalibrationController_Begin(void)
     s_session.active = true;
     s_session.span_mass_ug = quantized_mass;
     s_session.span_display_count = initial.display_count;
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION == 0U)
     s_session.capacity_ug_at_begin = context->config.metrology.capacity_ug;
+#endif
     s_session.input_unit = context->config.metrology.active_unit;
     s_session.input_decimal_places = display->decimal_places;
     s_session.input_division_digit = display->division_digit;
@@ -184,8 +186,9 @@ static void CalibrationController_CommitAndSave(void)
     const SystemContext *context = SystemContext_Get();
     CommandResult result;
 
-    if ((context == NULL) || (context->config.metrology.capacity_ug !=
-        s_session.capacity_ug_at_begin) ||
+    /* COMMAND_CALIBRATION_COMMIT revalidates the capacity, unit, division,
+       rate and gain against the locked CommandService session. */
+    if ((context == NULL) ||
         (SystemContext_GetConfigRevision() != s_session.transaction_revision) ||
         (SystemContext_GetSavedRevision() != s_session.transaction_revision) ||
         context->runtime.config_dirty)
@@ -472,6 +475,7 @@ bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
             }
             break;
         case CAL_STATE_PREVIEW:
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION == 0U)
             if ((event->key == KEY_ID_FUNCTION) &&
                 (event->type == KEY_EVENT_SHORT))
             {
@@ -498,6 +502,7 @@ bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
                     CalibrationController_SetState(CAL_STATE_ERROR,
                                                    DISPLAY_CODE_ERROR);
             }
+#endif
             break;
         case CAL_STATE_WAIT_ZERO_STABLE:
         case CAL_STATE_CAPTURE_ZERO:
