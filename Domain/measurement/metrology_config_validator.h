@@ -2,6 +2,7 @@
 #define METROLOGY_CONFIG_VALIDATOR_H
 
 #include "device_config.h"
+#include "project_config.h"
 
 typedef enum
 {
@@ -26,5 +27,9 @@ MetrologyConfigResult MetrologyConfig_ValidateCanonical(
     const MetrologyConfig *metrology);
 MetrologyConfigResult MetrologyConfig_ValidateProductHardware(
     const MetrologyConfig *metrology);
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+bool MetrologyConfig_FilterStrengthBounds(FilterMode mode,
+    uint8_t *minimum, uint8_t *maximum);
+#endif
 
 #endif /* METROLOGY_CONFIG_VALIDATOR_H */

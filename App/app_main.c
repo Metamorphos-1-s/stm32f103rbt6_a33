@@ -370,6 +370,15 @@ bool App_GetGuardedCheckweighState(GuardedCheckweigh *state)
   *state = s_guarded_checkweigh;
   return true;
 }
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+bool App_RestoreGuardedCheckweighMode(GuardedCheckweighMode mode)
+{
+  bool result = GuardedCheckweigh_SetMode(&s_guarded_checkweigh, mode,
+      s_guarded_checkweigh.generation, true);
+  AlarmOutputManager_AllOff(&s_alarm_output_manager);
+  return result;
+}
+#endif
 #endif
 
 const StartupAutoZeroSnapshot *App_GetStartupAutoZeroSnapshot(void)

@@ -18,6 +18,9 @@ const StartupAutoZeroSnapshot *App_GetStartupAutoZeroSnapshot(void);
 bool App_SetGuardedCheckweighMode(GuardedCheckweighMode mode,
     uint32_t expected_generation, bool require_generation);
 bool App_GetGuardedCheckweighState(GuardedCheckweigh *state);
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+bool App_RestoreGuardedCheckweighMode(GuardedCheckweighMode mode);
+#endif
 #endif
 
 #endif /* APP_MAIN_H */

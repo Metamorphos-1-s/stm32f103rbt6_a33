@@ -4,6 +4,16 @@ project(stage4b_host_tests C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
+# Release host tests must still execute assertions; otherwise NDEBUG removes
+# test expressions and leaves their inputs unused under /W4 /WX.
+if(MSVC)
+    string(REPLACE "/DNDEBUG" "" CMAKE_C_FLAGS_RELEASE
+        "${CMAKE_C_FLAGS_RELEASE}")
+else()
+    string(REPLACE "-DNDEBUG" "" CMAKE_C_FLAGS_RELEASE
+        "${CMAKE_C_FLAGS_RELEASE}")
+endif()
+
 add_executable(stage4a_host_tests
     test_stage2a.c
     test_stage3.c
@@ -487,6 +497,55 @@ else()
         -Wall -Wextra -Werror)
 endif()
 add_test(NAME stage5pa_persistence_logic COMMAND stage5pa_persistence_tests)
+
+get_target_property(stage5pa_persistence_sources stage5pa_persistence_tests SOURCES)
+list(REMOVE_ITEM stage5pa_persistence_sources test_stage5pa_persistence.c)
+add_executable(stage5pa2c_persistence_tests
+    test_stage5pa2c_persistence.c ${stage5pa_persistence_sources})
+target_compile_definitions(stage5pa2c_persistence_tests PRIVATE
+    A33_ENABLE_STAGE5MR5_BETA=1 A33_ENABLE_STAGE5NB_BETA=1
+    A33_ENABLE_STAGE5MR5E_D1D_BETA=1 A33_ENABLE_STAGE5PA_PRODUCT=1
+    A33_ENABLE_STAGE5PA2_PRODUCT=1 A33_ENABLE_STAGE5PA2C_PRODUCT=1)
+target_include_directories(stage5pa2c_persistence_tests PRIVATE
+    ../../Config ../../Domain/calibration ../../Domain/filter
+    ../../Domain/measurement ../../Domain/stability
+    ../../Services/config_store)
+if(MSVC)
+    target_compile_options(stage5pa2c_persistence_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5pa2c_persistence_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5pa2c_persistence_logic
+    COMMAND stage5pa2c_persistence_tests)
+
+add_executable(stage5pa2c_menu_tests
+    test_stage5pa2c_menu.c
+    ../../UI/menu_controller/menu_controller.c
+    ../../UI/r5_local_control.c
+    ../../UI/checkweigh_local_control.c
+    ../../UI/ui_config_workspace.c
+    ../../UI/numeric_edit_cursor.c
+    ../../UI/display_model/display_codes.c
+    ../../Domain/measurement/mass_math.c)
+get_target_property(stage5pa2c_menu_includes stage4a_host_tests
+    INCLUDE_DIRECTORIES)
+target_include_directories(stage5pa2c_menu_tests PRIVATE
+    ${stage5pa2c_menu_includes}
+    ../../Domain/limit_checker ../../Experimental/stage5na
+    ../../Services/guarded_checkweigh)
+target_compile_definitions(stage5pa2c_menu_tests PRIVATE
+    STAGE2A_HOST_TEST=1 A33_ENABLE_STAGE5MR5_BETA=1
+    A33_ENABLE_STAGE5NB_BETA=1 A33_ENABLE_STAGE5MR5E_D1D_BETA=1
+    A33_ENABLE_STAGE5PA_PRODUCT=1
+    A33_ENABLE_STAGE5PA2_PRODUCT=1 A33_ENABLE_STAGE5PA2C_PRODUCT=1)
+if(MSVC)
+    target_compile_options(stage5pa2c_menu_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5pa2c_menu_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5pa2c_menu_logic COMMAND stage5pa2c_menu_tests)
 
 add_executable(stage5pa_timing_tests
     test_stage5pa_timing.c

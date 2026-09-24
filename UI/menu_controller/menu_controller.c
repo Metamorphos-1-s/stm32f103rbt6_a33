@@ -9,6 +9,7 @@
 #include "display_controller.h"
 #include "display_codes.h"
 #include "mass_math.h"
+#include "metrology_config_validator.h"
 #include "metrology_manager.h"
 #include "persistence_manager.h"
 #include "numeric_edit_cursor.h"
@@ -36,6 +37,10 @@ typedef enum
     MENU_EDIT_MASS,
     MENU_EDIT_UNIT_DISPLAY,
     MENU_EDIT_FILTER,
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+    MENU_EDIT_SAMPLE_RATE,
+    MENU_EDIT_FILTER_STRENGTH,
+#endif
     MENU_EDIT_STABILITY_HOLD,
     MENU_EDIT_BOOL
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
@@ -56,7 +61,11 @@ static const char s_labels[MENU_ITEM_COUNT][6] = {
     {'U','n','I','t',' ',' '}, {'P','r','O','F',' ',' '},
     {'C','A','L',' ',' ',' '}, {'C','A','P',' ',' ',' '},
     {'d','I','U',' ',' ',' '}, {'d','P',' ',' ',' ',' '},
-    {'F','I','L','t',' ',' '}, {'S','t','A','b',' ',' '},
+    {'F','I','L','t',' ',' '},
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+    {'S','t','r','E','n','G'},
+#endif
+    {'S','t','A','b',' ',' '},
     {'Z','r','n','G',' ',' '}, {'P','-','Z','r',' ',' '},
     {'O','L',' ',' ',' ',' '},
     {'b','r','I','G','H','t'}, {'S','P','d',' ',' ',' '},
@@ -205,6 +214,22 @@ static void Render(void)
             (s_value != 0) ? "    On" : "   OFF");
         return;
     }
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+    if (s_edit_kind == MENU_EDIT_SAMPLE_RATE)
+    {
+        (void)DisplayController_SetTextPage(DISPLAY_PAGE_EDIT,
+            (s_value == DEVICE_CS1237_DATA_RATE_10_HZ) ? "  10Hz" : "  40Hz");
+        return;
+    }
+    if (s_edit_kind == MENU_EDIT_FILTER)
+    {
+        static const char choices[FILTER_MODE_COUNT][7] = {
+            " FILt0", " FILt1", " FILt2", " FILt3"};
+        (void)DisplayController_SetTextPage(DISPLAY_PAGE_EDIT,
+            choices[(uint32_t)s_value < FILTER_MODE_COUNT ? s_value : 0]);
+        return;
+    }
+#endif
 #if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
     if (s_edit_kind == MENU_EDIT_ALARM_SOURCE)
     {
@@ -339,6 +364,14 @@ static void RequestSave(uint32_t now_ms)
         ShowCode(DISPLAY_CODE_BUSY);
         return;
     }
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+    if (PersistenceManager_IsBusy())
+    {
+        RestoreOriginalBrightness();
+        ShowCode(DISPLAY_CODE_BUSY);
+        return;
+    }
+#endif
     if (ConfigApplication_Validate(&s_candidate_config, true) !=
         CONFIG_APPLY_OK)
     {
@@ -362,6 +395,64 @@ static void RequestSave(uint32_t now_ms)
     ShowCode(DISPLAY_CODE_SAVE);
 }
 
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+static void RequestR5CandidateSave(uint32_t now_ms)
+{
+    R5LocalStatus status;
+    if ((SystemContext_GetConfigRevision() != s_expected_revision) ||
+        !R5LocalControl_GetStatus(&status) ||
+        (status.application != (R5LocalApplication)
+            s_original_config.system.requested_r5_application) ||
+        (status.mode != (R5DriftMode)
+            s_original_config.system.requested_r5_mode))
+    {
+        ShowCode(DISPLAY_CODE_BUSY);
+        return;
+    }
+    switch (R5LocalControl_GetChoice())
+    {
+        case R5_LOCAL_CHOICE_OFF:
+            s_candidate_config.system.requested_r5_application = 0U;
+            s_candidate_config.system.requested_r5_mode = 0U;
+            break;
+        case R5_LOCAL_CHOICE_SHADOW:
+            s_candidate_config.system.requested_r5_application = 0U;
+            s_candidate_config.system.requested_r5_mode = 2U;
+            break;
+        case R5_LOCAL_CHOICE_STATIC:
+            s_candidate_config.system.requested_r5_application = 1U;
+            s_candidate_config.system.requested_r5_mode = 2U;
+            break;
+        case R5_LOCAL_CHOICE_DOSING:
+            s_candidate_config.system.requested_r5_application = 1U;
+            s_candidate_config.system.requested_r5_mode = 1U;
+            break;
+        default:
+            ShowCode(DISPLAY_CODE_INVALID_CONFIG);
+            return;
+    }
+    s_candidate_changed = !PersistentCodec_DeviceConfigEqual(
+        &s_candidate_config, &s_original_config);
+    RequestSave(now_ms);
+}
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+static void RequestCheckweighCandidateSave(uint32_t now_ms)
+{
+    if ((SystemContext_GetConfigRevision() != s_expected_revision) ||
+        !CheckweighLocalControl_CandidateCurrent())
+    {
+        ShowCode(DISPLAY_CODE_BUSY);
+        return;
+    }
+    s_candidate_config.system.requested_checkweigh_mode =
+        (uint8_t)CheckweighLocalControl_GetChoice();
+    s_candidate_changed = !PersistentCodec_DeviceConfigEqual(
+        &s_candidate_config, &s_original_config);
+    RequestSave(now_ms);
+}
+#endif
+#endif
+
 static void Navigate(KeyId key)
 {
     if (s_advanced)
@@ -370,7 +461,10 @@ static void Navigate(KeyId key)
             (MenuItem)(((uint32_t)s_item + 1U) % MENU_ITEM_COUNT) :
             (MenuItem)(((uint32_t)s_item + MENU_ITEM_COUNT - 1U) %
                        MENU_ITEM_COUNT);
-        while ((s_item == MENU_ITEM_SAMPLE_RATE) ||
+        while (
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT == 0U)
+               (s_item == MENU_ITEM_SAMPLE_RATE) ||
+#endif
                (s_item == MENU_ITEM_GAIN) ||
                (s_item == MENU_ITEM_SAVE) ||
                (s_item == MENU_ITEM_EXIT))
@@ -530,6 +624,16 @@ static bool BeginEdit(MenuItem item, uint32_t now_ms)
             s_edit_kind = MENU_EDIT_FILTER;
             s_value = profile->filter_mode;
             break;
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+        case MENU_ITEM_FILTER_STRENGTH:
+            s_edit_kind = MENU_EDIT_FILTER_STRENGTH;
+            s_value = profile->filter_strength;
+            break;
+        case MENU_ITEM_SAMPLE_RATE:
+            s_edit_kind = MENU_EDIT_SAMPLE_RATE;
+            s_value = profile->sample_rate;
+            break;
+#endif
         case MENU_ITEM_STABILITY:
             s_edit_kind = MENU_EDIT_STABILITY_HOLD;
             s_value = profile->stability_hold_ms;
@@ -631,7 +735,9 @@ static bool BeginEdit(MenuItem item, uint32_t now_ms)
 static bool SubmitEditValue(void)
 {
     MassValueUg mass;
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT == 0U)
     uint8_t strength;
+#endif
     bool updated = false;
     if (s_edit_kind == MENU_EDIT_UNIT)
     {
@@ -678,13 +784,28 @@ static bool SubmitEditValue(void)
             updated = ConfigEdit_SetUnitDisplay(s_edit_unit, &s_edit_display);
             break;
         case MENU_EDIT_FILTER:
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT == 0U)
             strength = (s_value == FILTER_MODE_NONE) ? 0U :
                        (s_value == FILTER_MODE_AVERAGE) ? 2U : 1U;
             updated = ConfigEdit_SetProfileField(s_edit_profile,
                 CONFIG_PROFILE_FIELD_FILTER_MODE, s_value) &&
                 ConfigEdit_SetProfileField(s_edit_profile,
-                CONFIG_PROFILE_FIELD_FILTER_STRENGTH, strength);
+                    CONFIG_PROFILE_FIELD_FILTER_STRENGTH, strength);
+#else
+            updated = ConfigEdit_SetProfileField(s_edit_profile,
+                CONFIG_PROFILE_FIELD_FILTER_MODE, s_value);
+#endif
             break;
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+        case MENU_EDIT_FILTER_STRENGTH:
+            updated = ConfigEdit_SetProfileField(s_edit_profile,
+                CONFIG_PROFILE_FIELD_FILTER_STRENGTH, s_value);
+            break;
+        case MENU_EDIT_SAMPLE_RATE:
+            updated = ConfigEdit_SetProfileField(s_edit_profile,
+                CONFIG_PROFILE_FIELD_SAMPLE_RATE, s_value);
+            break;
+#endif
         case MENU_EDIT_STABILITY_HOLD:
             updated = ConfigEdit_SetProfileField(s_edit_profile,
                 CONFIG_PROFILE_FIELD_STABILITY_HOLD_MS, s_value);
@@ -779,6 +900,29 @@ static void AdjustEdit(KeyId key)
         s_value = (value + FILTER_MODE_COUNT) % FILTER_MODE_COUNT;
         return;
     }
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+    if (s_edit_kind == MENU_EDIT_SAMPLE_RATE)
+    {
+        s_value = (s_value == DEVICE_CS1237_DATA_RATE_10_HZ) ?
+            DEVICE_CS1237_DATA_RATE_40_HZ : DEVICE_CS1237_DATA_RATE_10_HZ;
+        return;
+    }
+    if (s_edit_kind == MENU_EDIT_FILTER_STRENGTH)
+    {
+        uint8_t minimum;
+        uint8_t maximum;
+        FilterMode mode = s_candidate_config.metrology.profiles[
+            s_edit_profile].filter_mode;
+        if (!MetrologyConfig_FilterStrengthBounds(mode, &minimum, &maximum))
+            return;
+        s_value = (key == KEY_ID_HASH) ?
+            ((s_value < minimum) || (s_value >= maximum) ? minimum :
+                s_value + 1) :
+            ((s_value <= minimum) || (s_value > maximum) ? maximum :
+                s_value - 1);
+        return;
+    }
+#endif
     if (s_edit_kind == MENU_EDIT_PROFILE)
     {
         s_value = (s_value == WEIGHING_PROFILE_HIGH_PRECISION) ?
@@ -979,15 +1123,20 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
     if ((event->key == KEY_ID_FUNCTION) && (event->type == KEY_EVENT_LONG))
     {
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT == 0U)
         R5LocalResult r5_result;
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
         CheckweighLocalResult checkweigh_result;
+#endif
 #endif
         if (s_editing && (s_edit_kind == MENU_EDIT_R5_DRIFT)) return true;
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
         if (s_editing && (s_edit_kind == MENU_EDIT_CHECKWEIGH_MODE)) return true;
         if (CheckweighLocalControl_HasCandidate())
         {
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+            RequestCheckweighCandidateSave(event->timestamp_ms);
+#else
             checkweigh_result = CheckweighLocalControl_Apply();
             if (checkweigh_result == CHECKWEIGH_LOCAL_OK)
             {
@@ -998,11 +1147,15 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
             }
             else ShowCode(checkweigh_result == CHECKWEIGH_LOCAL_BUSY ?
                 DISPLAY_CODE_BUSY : DISPLAY_CODE_ERROR);
+#endif
             return true;
         }
 #endif
         if (R5LocalControl_HasCandidate())
         {
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+            RequestR5CandidateSave(event->timestamp_ms);
+#else
             r5_result = R5LocalControl_Apply();
             if (r5_result == R5_LOCAL_RESULT_OK)
             {
@@ -1013,6 +1166,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
             }
             else ShowCode(r5_result == R5_LOCAL_RESULT_BUSY ?
                 DISPLAY_CODE_BUSY : DISPLAY_CODE_ERROR);
+#endif
             return true;
         }
 #endif
@@ -1147,7 +1301,10 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
             }
             return true;
         }
-        else if ((s_item == MENU_ITEM_SAMPLE_RATE) ||
+        else if (
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT == 0U)
+                 (s_item == MENU_ITEM_SAMPLE_RATE) ||
+#endif
                  (s_item == MENU_ITEM_GAIN) ||
                  ((s_item == MENU_ITEM_OVERLOAD) && (context != NULL) &&
                   (context->config.metrology.compliance_mode ==

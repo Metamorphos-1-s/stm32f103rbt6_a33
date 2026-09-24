@@ -11,6 +11,9 @@
 #include "fault_manager.h"
 #include "metrology_manager.h"
 #include "project_config.h"
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+#include "app_main.h"
+#endif
 #include "persistent_codec.h"
 #include "system_context.h"
 #include "stage4b_storage_diagnostics.h"
@@ -36,6 +39,33 @@ static RuntimeState s_candidate_original_runtime;
 static uint32_t s_candidate_original_revision;
 static uint32_t s_candidate_original_saved_revision;
 static bool s_candidate_allow_cs1237_change;
+
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+static bool ApplyRequestedModes(const DeviceConfig *from,
+    const DeviceConfig *to)
+{
+    if ((from->system.requested_r5_application !=
+         to->system.requested_r5_application) ||
+        (from->system.requested_r5_mode != to->system.requested_r5_mode))
+    {
+        if (!MetrologyManager_RestoreR5Request(
+            (R5BetaApplication)to->system.requested_r5_application,
+            (R5DriftMode)to->system.requested_r5_mode)) return false;
+    }
+#if (A33_ENABLE_STAGE5NB_BETA != 0U)
+    if (from->system.requested_checkweigh_mode !=
+        to->system.requested_checkweigh_mode)
+    {
+        GuardedCheckweigh current;
+        if (!App_GetGuardedCheckweighState(&current) ||
+            !App_RestoreGuardedCheckweighMode(
+                (GuardedCheckweighMode)to->system.requested_checkweigh_mode))
+            return false;
+    }
+#endif
+    return true;
+}
+#endif
 
 static void Publish(EventType type, uint32_t arg0, uint32_t arg1)
 {
@@ -201,6 +231,19 @@ CommandResult PersistenceManager_RequestCandidateSave(
         (void)DeviceManager_ExitStorageMaintenance();
         return COMMAND_RESULT_INTERNAL_ERROR;
     }
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+    if (!ApplyRequestedModes(original, candidate))
+    {
+        bool restored = ConfigApplication_ApplyTransient(original,
+            allow_cs1237_change,
+            s_candidate_original_runtime.config_dirty) == CONFIG_APPLY_OK;
+        restored = ApplyRequestedModes(candidate, original) && restored;
+        (void)ConfigStore_CancelPending();
+        (void)DeviceManager_ExitStorageMaintenance();
+        if (!restored) FaultManager_Set(FAULT_METROLOGY_CONFIG_INVALID);
+        return COMMAND_RESULT_INTERNAL_ERROR;
+    }
+#endif
     s_candidate_save = true;
     s_operation = CONFIG_OPERATION_SAVE;
     s_status = PERSISTENCE_STATUS_SAVING;
@@ -316,6 +359,10 @@ void PersistenceManager_Process(void)
             bool rollback_ok = ConfigApplication_ApplyTransient(
                 &s_candidate_original, s_candidate_allow_cs1237_change,
                 s_candidate_original_runtime.config_dirty) == CONFIG_APPLY_OK;
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+            rollback_ok = ApplyRequestedModes(&s_candidate_target,
+                &s_candidate_original) && rollback_ok;
+#endif
             rollback_ok = SystemContext_RestoreSnapshot(&s_candidate_original,
                 &s_candidate_original_runtime, s_candidate_original_revision,
                 s_candidate_original_saved_revision) && rollback_ok;

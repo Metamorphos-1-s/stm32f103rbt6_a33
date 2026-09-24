@@ -22,6 +22,9 @@ void CheckweighLocalControl_Adjust(bool increment);
 void CheckweighLocalControl_Confirm(void);
 void CheckweighLocalControl_Cancel(void);
 bool CheckweighLocalControl_HasCandidate(void);
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+bool CheckweighLocalControl_CandidateCurrent(void);
+#endif
 GuardedCheckweighMode CheckweighLocalControl_GetChoice(void);
 CheckweighLocalResult CheckweighLocalControl_Apply(void);
 const char *CheckweighLocalControl_ChoiceText(GuardedCheckweighMode choice);

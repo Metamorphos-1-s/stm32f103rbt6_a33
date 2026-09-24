@@ -80,6 +80,17 @@ void CheckweighLocalControl_Cancel(void)
 }
 
 bool CheckweighLocalControl_HasCandidate(void) { return s_candidate; }
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+bool CheckweighLocalControl_CandidateCurrent(void)
+{
+    CommandResponse current = {0};
+    return s_candidate && s_session_valid &&
+        (Execute(COMMAND_CHECKWEIGH_GET_STATUS, 0, 0, 0U, &current) ==
+            COMMAND_RESULT_OK) &&
+        ((GuardedCheckweighMode)current.value0 == s_expected_mode) &&
+        ((uint32_t)current.value1 == s_expected_generation);
+}
+#endif
 GuardedCheckweighMode CheckweighLocalControl_GetChoice(void) { return s_choice; }
 
 CheckweighLocalResult CheckweighLocalControl_Apply(void)

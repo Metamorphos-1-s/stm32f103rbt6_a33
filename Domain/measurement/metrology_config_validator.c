@@ -9,6 +9,33 @@
 #include <stddef.h>
 #include <limits.h>
 
+#if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
+bool MetrologyConfig_FilterStrengthBounds(FilterMode mode,
+    uint8_t *minimum, uint8_t *maximum)
+{
+    if ((minimum == NULL) || (maximum == NULL)) return false;
+    switch (mode)
+    {
+        case FILTER_MODE_NONE:
+            *minimum = 0U; *maximum = 8U; return true;
+        case FILTER_MODE_AVERAGE:
+            *minimum = 2U; *maximum = WEIGHT_FILTER_MAX_WINDOW; return true;
+        case FILTER_MODE_IIR:
+        case FILTER_MODE_MEDIAN3_IIR:
+            *minimum = 1U; *maximum = 8U; return true;
+        case FILTER_MODE_COUNT:
+        default: return false;
+    }
+}
+
+static bool FilterValid(FilterMode mode, uint8_t strength)
+{
+    uint8_t minimum;
+    uint8_t maximum;
+    return MetrologyConfig_FilterStrengthBounds(mode, &minimum, &maximum) &&
+        (strength >= minimum) && (strength <= maximum);
+}
+#else
 static bool FilterValid(FilterMode mode, uint8_t strength)
 {
     switch (mode)
@@ -23,6 +50,7 @@ static bool FilterValid(FilterMode mode, uint8_t strength)
         default: return false;
     }
 }
+#endif
 
 MetrologyConfigResult MetrologyConfig_ValidateCanonical(
     const MetrologyConfig *metrology)

@@ -50,6 +50,8 @@ option(A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION
     "Enable Stage 5P-A1 request-level Modbus read view" OFF)
 option(A33_ENABLE_STAGE5PA2_PRODUCT
     "Enable Stage 5P-A2 engineering product candidate" OFF)
+option(A33_ENABLE_STAGE5PA2C_PRODUCT
+    "Enable Stage 5P-A2C local-menu transaction candidate" OFF)
 
 if(A33_ENABLE_STAGE5NA3_DIAGNOSTICS AND NOT A33_ENABLE_STAGE5MR5_BETA)
     message(FATAL_ERROR "Stage 5N-A3 diagnostics require Stage 5M-R5 Beta")
@@ -71,6 +73,9 @@ if(A33_ENABLE_STAGE5PA1_CANDIDATE AND NOT A33_ENABLE_STAGE5PA_PRODUCT)
 endif()
 if(A33_ENABLE_STAGE5PA2_PRODUCT AND NOT A33_ENABLE_STAGE5PA_PRODUCT)
     message(FATAL_ERROR "Stage 5P-A2 requires Stage 5P-A product")
+endif()
+if(A33_ENABLE_STAGE5PA2C_PRODUCT AND NOT A33_ENABLE_STAGE5PA2_PRODUCT)
+    message(FATAL_ERROR "Stage 5P-A2C requires Stage 5P-A2 product")
 endif()
 
 # Enable CMake support for ASM and C languages
@@ -221,6 +226,13 @@ if(A33_ENABLE_STAGE5PA2_PRODUCT)
 else()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
         A33_ENABLE_STAGE5PA2_PRODUCT=0)
+endif()
+if(A33_ENABLE_STAGE5PA2C_PRODUCT)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5PA2C_PRODUCT=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5PA2C_PRODUCT=0)
 endif()
 
 if(A33_ENABLE_STAGE5NA3_DIAGNOSTICS)
