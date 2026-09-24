@@ -1,0 +1,58 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5PA2D_RAM_FIX_SOFTWARE_PASS",
+  "run_id": "ram_fix_gate",
+  "repository_commit": "HEAD",
+  "files": [
+    {
+      "path": "artifacts/firmware_0x051C_debug.bin",
+      "length": 108760,
+      "sha256": "6D88021729A47B8317919D3DF0A14D36228E5AB161CFC338BD7D2D381A99ADE3"
+    },
+    {
+      "path": "artifacts/firmware_0x051C_debug.elf",
+      "length": 2040836,
+      "sha256": "EB0740AA3D4EFB5EB5FE1048ADB00E033D2F92935F10487EFA59DDFA678438BC"
+    },
+    {
+      "path": "artifacts/firmware_0x051C_debug.map",
+      "length": 1433309,
+      "sha256": "84DB554B87A78AF028B57A4AADEB91BE4EC6370F0DAF63655416B09D48AEEB51"
+    },
+    {
+      "path": "artifacts/firmware_0x051C_release.bin",
+      "length": 92428,
+      "sha256": "F02458F073766D3A9E2C7F278DFFDF258277067D653D05593853EF4BF966D114"
+    },
+    {
+      "path": "ctest_debug.xml",
+      "length": 8722,
+      "sha256": "150D626D063367ACF5E694A428291F97D8579BD4520E8E6B98ACE90D96E4018C"
+    },
+    {
+      "path": "ctest_release.xml",
+      "length": 8722,
+      "sha256": "84C11F1FC7FA05CC2EE1F339A20DF8B45DC341DF6B19A61CBA4E7DE53E592938"
+    },
+    {
+      "path": "software_summary.json",
+      "length": 723,
+      "sha256": "FFB34E87A54C9818E1AEBFB00027E330290CF37DC83F70374B46AAE83371F59C"
+    },
+    {
+      "path": "stack/largest_ram_symbols.json",
+      "length": 14212,
+      "sha256": "0E57E8494DF072D8FA8AA828FAF062FC54828BCAC877F7FB37748A036D1C37B4"
+    },
+    {
+      "path": "stack/ram_layout.json",
+      "length": 7805,
+      "sha256": "45695630BAE75AEF268E7302B0A0D0C4A9E3610EADC8AAA0F9A0841DBFA87BF1"
+    },
+    {
+      "path": "stack/stack_watermark.json",
+      "length": 48773,
+      "sha256": "01F5541D98DD66860FC76EFFC1827D0C4F10A02CAE9ED8511C69B6C228CFE85F"
+    }
+  ]
+}
