@@ -40,8 +40,7 @@ static uint8_t s_body[CONFIG_STORE_HEADER_SIZE +
                       CONFIG_STORE_PAYLOAD_BUFFER_SIZE + 1U];
 static uint8_t s_verify_chunk[CONFIG_STORE_VERIFY_CHUNK_SIZE];
 static uint8_t s_active_payload[CONFIG_STORE_PAYLOAD_BUFFER_SIZE];
-static uint8_t s_slot_a_payload[CONFIG_STORE_PAYLOAD_BUFFER_SIZE];
-static uint8_t s_slot_b_payload[CONFIG_STORE_PAYLOAD_BUFFER_SIZE];
+static uint8_t s_slot_payload[CONFIG_STORE_PAYLOAD_BUFFER_SIZE];
 static uint16_t s_payload_length;
 static uint16_t s_logical_body_length;
 static uint16_t s_program_body_length;
@@ -264,19 +263,21 @@ ConfigLoadResult ConfigStore_Load(DeviceConfig *config, RuntimeState *runtime,
     SlotRecord a;
     SlotRecord b;
     SlotRecord *selected = NULL;
-    const uint8_t *selected_payload = NULL;
     ConfigLoadResult result;
 
     if ((config == NULL) || (runtime == NULL) || (info == NULL) ||
         (s_backend == NULL)) return CONFIG_LOAD_IO_ERROR;
     s_active_payload_valid = false;
     (void)memset(info, 0, sizeof(*info));
-    a.status = ReadSlot(CONFIG_FLASH_SLOT_A_ADDRESS, &a, s_slot_a_payload
+    a.status = ReadSlot(CONFIG_FLASH_SLOT_A_ADDRESS, &a, s_slot_payload
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
                         , config, runtime
 #endif
                         );
-    b.status = ReadSlot(CONFIG_FLASH_SLOT_B_ADDRESS, &b, s_slot_b_payload
+    /* Keep valid A while the single scratch buffer is reused to read B. */
+    if (a.status == SLOT_VALID)
+        (void)memcpy(s_active_payload, s_slot_payload, a.payload_length);
+    b.status = ReadSlot(CONFIG_FLASH_SLOT_B_ADDRESS, &b, s_slot_payload
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
                         , config, runtime
 #endif
@@ -307,9 +308,10 @@ ConfigLoadResult ConfigStore_Load(DeviceConfig *config, RuntimeState *runtime,
     else if ((a.status == SLOT_CORRUPT) || (b.status == SLOT_CORRUPT)) return CONFIG_LOAD_CORRUPT;
     else return CONFIG_LOAD_NOT_FOUND;
 
-    selected_payload = (selected == &a) ? s_slot_a_payload : s_slot_b_payload;
+    if (selected == &b)
+        (void)memcpy(s_active_payload, s_slot_payload, b.payload_length);
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
-    if (PersistentCodec_DecodeV3(selected_payload, selected->payload_length,
+    if (PersistentCodec_DecodeV3(s_active_payload, selected->payload_length,
         config, runtime) != PERSISTENT_CODEC_OK)
         return CONFIG_LOAD_VALIDATION_FAILED;
 #else
@@ -319,7 +321,6 @@ ConfigLoadResult ConfigStore_Load(DeviceConfig *config, RuntimeState *runtime,
     s_active_slot = (selected == &a) ? CONFIG_STORE_SLOT_A : CONFIG_STORE_SLOT_B;
     s_active_sequence = selected->sequence;
     s_active_payload_length = selected->payload_length;
-    (void)memcpy(s_active_payload, selected_payload, selected->payload_length);
     s_active_payload_valid = true;
     info->active_slot = s_active_slot;
     info->active_sequence = selected->sequence;
@@ -531,7 +532,7 @@ void ConfigStore_Process(void)
             DeviceConfig verify_config;
             RuntimeState verify_runtime;
 #endif
-            if (ReadSlot(s_target_address, &record, s_slot_b_payload
+            if (ReadSlot(s_target_address, &record, s_slot_payload
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
                 , &verify_config, &verify_runtime
 #endif

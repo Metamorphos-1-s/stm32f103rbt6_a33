@@ -1,0 +1,398 @@
+{
+  "channel_units": {
+    "conditioned_display_mass_ug": "ug",
+    "filtered_mass_ug": "ug",
+    "filtered_raw": "ADC counts",
+    "raw_adc": "ADC counts",
+    "raw_calibrated_mass_ug": "ug"
+  },
+  "classification": "OPENED DEVELOPMENT / NO QUALIFICATION",
+  "definition": "Relative to 15-45 s median; this is not a known true mass",
+  "frozen_early_candidate": {
+    "decision": "REJECT",
+    "failed_improvement_runs": [
+      "r4_cycles",
+      "filt2_load"
+    ]
+  },
+  "runs": {
+    "cold_empty_1h_5l": {
+      "checkpoints": {
+        "120": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 140810,
+          "raw_relative_to_initial_ug": 140810
+        },
+        "1500": {
+          "r5_offset_ug": 30825,
+          "r5_relative_to_initial_ug": 777774,
+          "raw_relative_to_initial_ug": 808249
+        },
+        "2700": {
+          "r5_offset_ug": 90825,
+          "r5_relative_to_initial_ug": 974473,
+          "raw_relative_to_initial_ug": 1065649
+        },
+        "300": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 284436,
+          "raw_relative_to_initial_ug": 284436
+        },
+        "60": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 79417,
+          "raw_relative_to_initial_ug": 79417
+        },
+        "600": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 475938,
+          "raw_relative_to_initial_ug": 475938
+        },
+        "900": {
+          "r5_offset_ug": 825,
+          "r5_relative_to_initial_ug": 613182,
+          "raw_relative_to_initial_ug": 613931
+        }
+      },
+      "classification": "OPENED DEVELOPMENT / NOT INDEPENDENT",
+      "duration_s": 3599,
+      "other_channel_change_300_360_vs_15_45_native_units": {
+        "conditioned_display_mass_ug": 254584,
+        "filtered_mass_ug": 286126,
+        "filtered_raw": -254,
+        "raw_adc": -252
+      },
+      "r5_rebase_count": 0,
+      "reference_15_45s_ug": -2166219,
+      "sample_count": 31439,
+      "single_exponential_diagnostic": {
+        "check_seconds": [
+          900,
+          1500
+        ],
+        "fit_seconds": [
+          60,
+          600
+        ],
+        "fitted_amplitude_ug": 1658147,
+        "out_of_fit_median_abs_error_ug": 85162,
+        "status": "OPENED_TEMPORAL_CHECK",
+        "tau_s": 1800,
+        "uncompensated_median_abs_change_ug": 723200
+      },
+      "source": "Results/stage5l_characterization/20260913T_cold_start_empty_60m/samples.csv"
+    },
+    "cold_empty_1h_r4": {
+      "checkpoints": {
+        "120": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": -34358,
+          "raw_relative_to_initial_ug": -34358
+        },
+        "1500": {
+          "r5_offset_ug": -19217,
+          "r5_relative_to_initial_ug": -77578,
+          "raw_relative_to_initial_ug": -96877
+        },
+        "2700": {
+          "r5_offset_ug": -48981,
+          "r5_relative_to_initial_ug": -69399,
+          "raw_relative_to_initial_ug": -118844
+        },
+        "300": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": -56887,
+          "raw_relative_to_initial_ug": -56887
+        },
+        "60": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": -25346,
+          "raw_relative_to_initial_ug": -25346
+        },
+        "600": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": -79417,
+          "raw_relative_to_initial_ug": -79417
+        },
+        "900": {
+          "r5_offset_ug": -518,
+          "r5_relative_to_initial_ug": -82796,
+          "raw_relative_to_initial_ug": -82796
+        }
+      },
+      "classification": "OPENED DEVELOPMENT / NOT INDEPENDENT",
+      "duration_s": 3595,
+      "other_channel_change_300_360_vs_15_45_native_units": {
+        "conditioned_display_mass_ug": -82233,
+        "filtered_mass_ug": -55760,
+        "filtered_raw": 49,
+        "raw_adc": 52
+      },
+      "r5_rebase_count": 0,
+      "reference_15_45s_ug": 74911,
+      "sample_count": 31429,
+      "single_exponential_diagnostic": {
+        "check_seconds": [
+          900,
+          1500
+        ],
+        "fit_seconds": [
+          60,
+          600
+        ],
+        "fitted_amplitude_ug": -79925,
+        "out_of_fit_median_abs_error_ug": 15100,
+        "status": "OPENED_TEMPORAL_CHECK",
+        "tau_s": 240,
+        "uncompensated_median_abs_change_ug": 94061
+      },
+      "source": "Results/stage5mr4/20260915T_r4_cold_empty_1/samples.csv"
+    },
+    "loaded_500g_1h_a": {
+      "checkpoints": {
+        "120": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 11828,
+          "raw_relative_to_initial_ug": 11828
+        },
+        "1500": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 11828,
+          "raw_relative_to_initial_ug": 11828
+        },
+        "2700": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 34358,
+          "raw_relative_to_initial_ug": 34358
+        },
+        "300": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 19713,
+          "raw_relative_to_initial_ug": 19713
+        },
+        "60": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 12955,
+          "raw_relative_to_initial_ug": 12955
+        },
+        "600": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 8449,
+          "raw_relative_to_initial_ug": 8449
+        },
+        "900": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 14081,
+          "raw_relative_to_initial_ug": 14081
+        }
+      },
+      "classification": "OPENED DEVELOPMENT / NOT INDEPENDENT",
+      "duration_s": 3600,
+      "other_channel_change_300_360_vs_15_45_native_units": {
+        "conditioned_display_mass_ug": 0,
+        "filtered_mass_ug": 19150,
+        "filtered_raw": -17,
+        "raw_adc": -19
+      },
+      "r5_rebase_count": 0,
+      "reference_15_45s_ug": 499901433,
+      "sample_count": 31217,
+      "single_exponential_diagnostic": {
+        "check_seconds": [
+          900,
+          1500
+        ],
+        "fit_seconds": [
+          60,
+          600
+        ],
+        "fitted_amplitude_ug": 15672,
+        "out_of_fit_median_abs_error_ug": 6097,
+        "status": "OPENED_TEMPORAL_CHECK",
+        "tau_s": 30,
+        "uncompensated_median_abs_change_ug": 11265
+      },
+      "source": "Results/stage5mr4/20260916T_r4_500g_constant_1/samples.csv"
+    },
+    "loaded_500g_1h_b": {
+      "checkpoints": {
+        "120": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": -1127,
+          "raw_relative_to_initial_ug": -1127
+        },
+        "1500": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": -9012,
+          "raw_relative_to_initial_ug": -9012
+        },
+        "2700": {
+          "r5_offset_ug": 2326,
+          "r5_relative_to_initial_ug": 4497,
+          "raw_relative_to_initial_ug": 6758
+        },
+        "300": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 1126,
+          "raw_relative_to_initial_ug": 1126
+        },
+        "60": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": -2817,
+          "raw_relative_to_initial_ug": -2817
+        },
+        "600": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 2252,
+          "raw_relative_to_initial_ug": 2252
+        },
+        "900": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": -3380,
+          "raw_relative_to_initial_ug": -3380
+        }
+      },
+      "classification": "OPENED DEVELOPMENT / NOT INDEPENDENT",
+      "duration_s": 3599,
+      "other_channel_change_300_360_vs_15_45_native_units": {
+        "conditioned_display_mass_ug": 0,
+        "filtered_mass_ug": 2816,
+        "filtered_raw": -2,
+        "raw_adc": -3
+      },
+      "r5_rebase_count": 0,
+      "reference_15_45s_ug": 500104763,
+      "sample_count": 31132,
+      "single_exponential_diagnostic": {
+        "check_seconds": [
+          900,
+          1500
+        ],
+        "fit_seconds": [
+          60,
+          600
+        ],
+        "fitted_amplitude_ug": 6585,
+        "out_of_fit_median_abs_error_ug": 9928,
+        "status": "OPENED_TEMPORAL_CHECK",
+        "tau_s": 240,
+        "uncompensated_median_abs_change_ug": 5069
+      },
+      "source": "Results/stage5mr4/20260916T_r4_500g_constant_2/samples.csv"
+    },
+    "loaded_500g_30m": {
+      "checkpoints": {
+        "120": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 25909,
+          "raw_relative_to_initial_ug": 25909
+        },
+        "1500": {
+          "r5_offset_ug": 8213,
+          "r5_relative_to_initial_ug": 30659,
+          "raw_relative_to_initial_ug": 38864
+        },
+        "300": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 46186,
+          "raw_relative_to_initial_ug": 46186
+        },
+        "60": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 17461,
+          "raw_relative_to_initial_ug": 17461
+        },
+        "600": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": 51255,
+          "raw_relative_to_initial_ug": 51255
+        },
+        "900": {
+          "r5_offset_ug": 286,
+          "r5_relative_to_initial_ug": 56983,
+          "raw_relative_to_initial_ug": 57451
+        }
+      },
+      "classification": "OPENED DEVELOPMENT / NOT INDEPENDENT",
+      "duration_s": 1799,
+      "other_channel_change_300_360_vs_15_45_native_units": {
+        "conditioned_display_mass_ug": 81107,
+        "filtered_mass_ug": 48439,
+        "filtered_raw": -43,
+        "raw_adc": -40
+      },
+      "r5_rebase_count": 0,
+      "reference_15_45s_ug": 500031541,
+      "sample_count": 15547,
+      "single_exponential_diagnostic": {
+        "check_seconds": [
+          900,
+          1500
+        ],
+        "fit_seconds": [
+          60,
+          600
+        ],
+        "fitted_amplitude_ug": 60635,
+        "out_of_fit_median_abs_error_ug": 10869,
+        "status": "OPENED_TEMPORAL_CHECK",
+        "tau_s": 240,
+        "uncompensated_median_abs_change_ug": 49284
+      },
+      "source": "Results/stage5l_characterization/20260913T064617Z_creep_500g_30m/samples.csv"
+    },
+    "unloaded_zero_15m": {
+      "checkpoints": {
+        "120": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": -13518,
+          "raw_relative_to_initial_ug": -13518
+        },
+        "300": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": -33513,
+          "raw_relative_to_initial_ug": -33513
+        },
+        "60": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": -3380,
+          "raw_relative_to_initial_ug": -3380
+        },
+        "600": {
+          "r5_offset_ug": 0,
+          "r5_relative_to_initial_ug": -63083,
+          "raw_relative_to_initial_ug": -63083
+        }
+      },
+      "classification": "OPENED DEVELOPMENT / NOT INDEPENDENT",
+      "duration_s": 899,
+      "other_channel_change_300_360_vs_15_45_native_units": {
+        "conditioned_display_mass_ug": 0,
+        "filtered_mass_ug": -33513,
+        "filtered_raw": 29,
+        "raw_adc": 31
+      },
+      "r5_rebase_count": 0,
+      "reference_15_45s_ug": 20277,
+      "sample_count": 7878,
+      "single_exponential_diagnostic": {
+        "check_seconds": [
+          600,
+          840
+        ],
+        "fit_seconds": [
+          60,
+          300
+        ],
+        "fitted_amplitude_ug": -433231,
+        "out_of_fit_median_abs_error_ug": 12902,
+        "status": "OPENED_TEMPORAL_CHECK",
+        "tau_s": 3600,
+        "uncompensated_median_abs_change_ug": 64210
+      },
+      "source": "Results/stage5l_characterization/20260913T072000Z_zero_return_15m/samples.csv"
+    }
+  },
+  "schema_version": 1,
+  "source_commit": "d6312dd9898ba8f01a43cd83a76fa41546d88275"
+}

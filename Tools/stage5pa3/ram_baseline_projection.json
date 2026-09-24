@@ -1,0 +1,20 @@
+{
+  "baseline": {
+    "collision_margin_b": 536,
+    "physical_stack_room_b": 2040,
+    "ram_end": "0x20005000",
+    "static_end": "0x20004808"
+  },
+  "baseline_commit": "d6312dd9898ba8f01a43cd83a76fa41546d88275",
+  "baseline_symbols_b": {
+    "s_candidate_target": 344,
+    "s_factory_config": 344,
+    "s_slot_a_payload": 281,
+    "s_slot_b_payload": 281
+  },
+  "candidate_target_build": "NOT RUN",
+  "classification": "SOFTWARE PROJECTION / ARM RETEST REQUIRED",
+  "minimum_collision_margin_b": 512,
+  "projected_collision_margin_b_if_stack_and_padding_unchanged": 1161,
+  "projected_object_saving_b": 625
+}

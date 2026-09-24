@@ -29,7 +29,12 @@ static PersistenceStatus s_status;
 static ConfigLoadResult s_load_result;
 static ConfigLoadInfo s_load_info;
 static ConfigOperationType s_operation;
-static DeviceConfig s_factory_config;
+/* Factory reset and candidate SAVE cannot overlap (s_operation gate). */
+static union
+{
+    DeviceConfig factory_config;
+    DeviceConfig candidate_target;
+} s_config_transaction;
 #if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
 static RuntimeState s_factory_runtime;
 #endif
@@ -37,7 +42,6 @@ static uint32_t s_requested_revision;
 static FactoryResetResult s_factory_result;
 static bool s_candidate_save;
 static DeviceConfig s_candidate_original;
-static DeviceConfig s_candidate_target;
 static RuntimeState s_candidate_original_runtime;
 static uint32_t s_candidate_original_revision;
 static uint32_t s_candidate_original_saved_revision;
@@ -137,11 +141,12 @@ static CommandResult Start(ConfigOperationType operation,
     s_requested_revision = SystemContext_GetConfigRevision();
     if (operation == CONFIG_OPERATION_FACTORY_RESET)
     {
-        DefaultConfig_Load(&s_factory_config);
+        DefaultConfig_Load(&s_config_transaction.factory_config);
         (void)memset(&s_factory_runtime, 0, sizeof(s_factory_runtime));
         s_factory_runtime.weight_view = WEIGHT_VIEW_NET;
         s_factory_result = FACTORY_RESET_RESULT_NONE;
-        if (ConfigApplication_Validate(&s_factory_config, true) !=
+        if (ConfigApplication_Validate(&s_config_transaction.factory_config,
+                                       true) !=
             CONFIG_APPLY_OK)
         {
             s_factory_result = FACTORY_RESET_RESULT_FAILED;
@@ -149,7 +154,8 @@ static CommandResult Start(ConfigOperationType operation,
             return COMMAND_RESULT_INVALID_ARGUMENT;
         }
         accepted = ConfigStore_RequestFactoryReset(
-            &s_factory_config, &s_factory_runtime, s_requested_revision);
+            &s_config_transaction.factory_config, &s_factory_runtime,
+            s_requested_revision);
         s_status = PERSISTENCE_STATUS_FACTORY_RESETTING;
     }
     else
@@ -230,7 +236,7 @@ CommandResult PersistenceManager_RequestCandidateSave(
     if (!StoragePowerGuard_CanStartFlashOperation())
         return COMMAND_RESULT_POWER_UNSAFE;
     s_candidate_original = *original;
-    s_candidate_target = *candidate;
+    s_config_transaction.candidate_target = *candidate;
     s_candidate_original_runtime = context->runtime;
     s_candidate_original_revision = expected_revision;
     s_candidate_original_saved_revision = SystemContext_GetSavedRevision();
@@ -309,11 +315,12 @@ void PersistenceManager_Process(void)
                 (SystemContext_GetConfigRevision() ==
                  s_candidate_original_revision) &&
                 PersistentCodec_DeviceConfigEqual(&context->config,
-                        &s_candidate_target) &&
+                        &s_config_transaction.candidate_target) &&
                 SystemContext_FinalizeSavedRevision(s_requested_revision);
         }
         else if ((s_operation == CONFIG_OPERATION_FACTORY_RESET) &&
-            (ConfigApplication_ApplyFactoryDefaults(&s_factory_config) !=
+            (ConfigApplication_ApplyFactoryDefaults(
+                &s_config_transaction.factory_config) !=
              CONFIG_APPLY_OK))
         {
             runtime_ok = false;
@@ -379,7 +386,7 @@ void PersistenceManager_Process(void)
                 &s_candidate_original, s_candidate_allow_cs1237_change,
                 s_candidate_original_runtime.config_dirty) == CONFIG_APPLY_OK;
 #if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
-            rollback_ok = ApplyRequestedModes(&s_candidate_target,
+            rollback_ok = ApplyRequestedModes(&s_config_transaction.candidate_target,
                 &s_candidate_original) && rollback_ok;
 #endif
             rollback_ok = SystemContext_RestoreSnapshot(&s_candidate_original,

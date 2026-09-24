@@ -172,6 +172,32 @@ static void TestStoreAndRecovery(void)
     CHECK(!ConfigStore_IsSequenceNewer(0U, 0xFFFFFFFFUL));
 }
 
+static void TestBothValidWhenAIsNewer(void)
+{
+    DeviceConfig config;
+    DeviceConfig loaded;
+    RuntimeState runtime;
+    RuntimeState loaded_runtime;
+    ConfigLoadInfo info;
+    uint8_t brightness;
+
+    MakeConfig(&config, &runtime);
+    FakeFlash_Reset();
+    ConfigStore_Init(FakeFlash_GetBackend());
+    for (brightness = 3U; brightness <= 5U; ++brightness)
+    {
+        config.display.brightness = brightness;
+        CHECK(ConfigStore_RequestSave(&config, &runtime, brightness));
+        RunStore();
+        ConfigStore_AcknowledgeResult();
+    }
+    ConfigStore_Init(FakeFlash_GetBackend());
+    CHECK(ConfigStore_Load(&loaded, &loaded_runtime, &info) ==
+          CONFIG_LOAD_BOTH_VALID);
+    CHECK(info.active_slot == CONFIG_STORE_SLOT_A);
+    CHECK(loaded.display.brightness == 5U);
+}
+
 static void TestPowerCuts(void)
 {
     DeviceConfig old_config;
@@ -354,6 +380,7 @@ int main(void)
     TestCrc();
     TestCodec();
     TestStoreAndRecovery();
+    TestBothValidWhenAIsNewer();
     TestPowerCuts();
     TestRevision();
     TestOddProgramLengths();
