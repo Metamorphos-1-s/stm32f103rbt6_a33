@@ -1,0 +1,93 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5PA3_TARGET_RAM_PASS_OPENED_MODEL_SELECTION_INCOMPLETE",
+  "run_id": "stage5pa3",
+  "repository_commit": "HEAD",
+  "files": [
+    {
+      "path": "artifacts/ram_candidate_debug_0x051C_unflashed.bin",
+      "length": 108776,
+      "sha256": "5A1F26784DD9729954EC0115137FD2871F670684F5726C7A65E63368AEB60F2E"
+    },
+    {
+      "path": "artifacts/ram_candidate_debug_0x051C_unflashed.elf",
+      "length": 2039928,
+      "sha256": "6FEAB924C4D50823E367901504B9E2FFBAC76CD676D2F4F8982D40211133D881"
+    },
+    {
+      "path": "artifacts/ram_candidate_debug_0x051C_unflashed.map",
+      "length": 1433011,
+      "sha256": "49BCF7F60A006DF999C3FC5CDCD8295D33A7DDFDDB8EE144D82FB1F20FB20172"
+    },
+    {
+      "path": "artifacts/ram_candidate_release_0x051C_unflashed.bin",
+      "length": 92420,
+      "sha256": "A1F3D5C7F604A9CB79F0CA540DC8C664898135C803E2529FD3047C56E5D4A410"
+    },
+    {
+      "path": "ctest_asan.xml",
+      "length": 831,
+      "sha256": "1A73DA5F057A5700FA1D347303462A13402D1A7E44DBCA97C8519C9A0990358C"
+    },
+    {
+      "path": "ctest_debug.xml",
+      "length": 8721,
+      "sha256": "F97E6B7653825A5A08FE671E87DFD781D57525FF0F046432828F87082AE52BC5"
+    },
+    {
+      "path": "ctest_release.xml",
+      "length": 8722,
+      "sha256": "FF15CC671202532F1F61490A91B85CF9CD97FED3316DDD8D3CD717051E05E92F"
+    },
+    {
+      "path": "opened_creep_reproduced.json",
+      "length": 11836,
+      "sha256": "F3711D12C6FC05F94CD6480A3F5FFFDA6FCC0FB56E10FC7E1F4FEBE78EBBAC47"
+    },
+    {
+      "path": "opened_model_comparison.json",
+      "length": 11073,
+      "sha256": "0AC925453725497E5C9EE1A5129070640DF855628D2C4F926392903ED7B01A24"
+    },
+    {
+      "path": "ram_baseline_reproduced.json",
+      "length": 611,
+      "sha256": "ED9EAADE12C80911E595D1D1FABB3FC29BAEE6597330262DC3699753C6427130"
+    },
+    {
+      "path": "ram_map_candidate.json",
+      "length": 925,
+      "sha256": "E9170EFE344768175668151E43048C0EC7E183686BD9A923E0E2C6BBF0B4078E"
+    },
+    {
+      "path": "ram_map_measured.json",
+      "length": 944,
+      "sha256": "1643DA01CBE1A3AB747B896913FA284250D127806D43F72AB4AEAED9BB74A53F"
+    },
+    {
+      "path": "ram_map_without_stack.json",
+      "length": 939,
+      "sha256": "00F13DCECC667F7114EB3E87C3CE59F6C0AEDC6ACE25DBBAC380BB6D762A0748"
+    },
+    {
+      "path": "software_gate_summary.json",
+      "length": 1426,
+      "sha256": "CEDB2E8D9DF73B9BA21D2E22AC53D16F8AD44E179FD1BF3DD9DFDB45B6FCFBFD"
+    },
+    {
+      "path": "stack/largest_ram_symbols.json",
+      "length": 14211,
+      "sha256": "9566D849E278661A140ABFD30C51DDB30A1AD0486E12404D21494D298E22B0EF"
+    },
+    {
+      "path": "stack/ram_layout.json",
+      "length": 7803,
+      "sha256": "1E9FA65F6D1F1DC6B1D0E308B770C0EA82AAC3D0D3378025D4F4863691399F6E"
+    },
+    {
+      "path": "stack/stack_watermark.json",
+      "length": 48546,
+      "sha256": "2009898253A2EF8D08326854D750C91C697141A39CEEE575669CF6037652C4A1"
+    }
+  ]
+}
