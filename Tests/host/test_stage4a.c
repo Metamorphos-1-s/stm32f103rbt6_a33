@@ -1039,7 +1039,11 @@ static void TestFirmwareIdentityAndStatusDisplay(void)
 
     Stage4A_InitRuntime(&config, false);
     StatusController_Init();
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    CHECK4(firmware == 0x051CU);
+#else
     CHECK4(firmware == 0x0510U);
+#endif
     CHECK4(map == 0x0104U);
     CHECK4(schema == 2U);
     CHECK4(StatusController_Enter());
@@ -2245,6 +2249,11 @@ static void TestCalibrationControllerDirection(bool reverse)
     Stage4A_InitRuntime(&config, false);
     CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
     CHECK4(CalibrationController_Begin());
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    CHECK4(SystemContext_SetState(APP_STATE_CALIBRATION, 0U));
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+        PERSISTENCE_STATUS_SAVING);
+#endif
     event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 1U);
     CHECK4(CalibrationController_HandleKeyEvent(&event));
     Stage4A_FeedCalibrationRaw(zero_raw, 100U);
@@ -2252,10 +2261,31 @@ static void TestCalibrationControllerDirection(bool reverse)
     CHECK4(CalibrationController_GetSession()->captured_raw_zero == zero_raw);
     event.timestamp_ms = 1500U;
     CHECK4(CalibrationController_HandleKeyEvent(&event));
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    CHECK4(CalibrationController_GetState() == CAL_STATE_WAIT_SPAN_STABLE);
+#else
     CHECK4(CalibrationController_GetState() == CAL_STATE_PROMPT_LOAD_WEIGHT);
     event.timestamp_ms = 1600U;
     CHECK4(CalibrationController_HandleKeyEvent(&event));
+#endif
     Stage4A_FeedCalibrationRaw(span_raw, 2000U);
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    CHECK4(CalibrationController_GetState() == CAL_STATE_SAVE_WAIT);
+    CHECK4(CalibrationController_GetSession()->candidate.calibration_valid);
+    CHECK4(SystemContext_Get()->runtime.config_dirty);
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    CHECK4(SystemContext_GetSavedRevision() !=
+        SystemContext_GetConfigRevision());
+    event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, 3400U);
+    CHECK4(!CalibrationController_HandleKeyEvent(&event));
+    CHECK4(CalibrationController_GetState() == CAL_STATE_SAVE_WAIT);
+    TestMock_CompletePersistence(PERSISTENCE_STATUS_SUCCESS, true);
+    CalibrationController_Process10ms();
+    CHECK4(CalibrationController_GetState() == CAL_STATE_COMPLETE);
+    CHECK4(!SystemContext_Get()->runtime.config_dirty);
+    CHECK4(SystemContext_GetSavedRevision() ==
+        SystemContext_GetConfigRevision());
+#else
     CHECK4(CalibrationController_GetState() == CAL_STATE_PREVIEW);
     CHECK4(!SystemContext_Get()->config.calibration.calibration_valid);
     CHECK4(CalibrationController_GetSession()->candidate.calibration_valid);
@@ -2264,6 +2294,7 @@ static void TestCalibrationControllerDirection(bool reverse)
     CHECK4(CalibrationController_GetState() == CAL_STATE_COMPLETE);
     CHECK4(SystemContext_Get()->config.calibration.calibration_valid);
     CHECK4(SystemContext_Get()->runtime.config_dirty);
+#endif
     CHECK4(reverse ?
         (SystemContext_Get()->config.calibration.scale_denominator < 0) :
         (SystemContext_Get()->config.calibration.scale_denominator > 0));
@@ -2303,17 +2334,25 @@ static void TestCalibrationCancelAndGuards(void)
         COMMAND_SOURCE_DIAGNOSTIC, 0, 0, &response);
 
     CHECK4(CalibrationController_Begin());
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    CHECK4(SystemContext_SetState(APP_STATE_CALIBRATION, 0U));
+#endif
     event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 10U);
     CHECK4(CalibrationController_HandleKeyEvent(&event));
     Stage4A_FeedCalibrationRaw(200000, 100U);
     event.timestamp_ms = 1600U;
     CHECK4(CalibrationController_HandleKeyEvent(&event));
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION == 0U)
     event.timestamp_ms = 1700U;
     CHECK4(CalibrationController_HandleKeyEvent(&event));
     Stage4A_FeedCalibrationRaw(1200000, 2000U);
     CHECK4(CalibrationController_GetState() == CAL_STATE_PREVIEW);
+#else
+    CHECK4(CalibrationController_GetState() == CAL_STATE_WAIT_SPAN_STABLE);
+#endif
     event = Stage4A_Key(KEY_ID_TARE, KEY_EVENT_SHORT, 3500U);
     CHECK4(CalibrationController_HandleKeyEvent(&event));
+    CHECK4(CalibrationController_GetState() == CAL_STATE_CANCELLED);
     CHECK4(SystemContext_Get()->config.calibration.raw_zero == 100000);
 }
 
@@ -2325,18 +2364,108 @@ static void TestCalibrationSmallSpanError(void)
     Stage4A_InitRuntime(&config, false);
     CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
     CHECK4(CalibrationController_Begin());
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    CHECK4(SystemContext_SetState(APP_STATE_CALIBRATION, 0U));
+#endif
     event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 1U);
     CHECK4(CalibrationController_HandleKeyEvent(&event));
     Stage4A_FeedCalibrationRaw(100000, 100U);
     event.timestamp_ms = 1600U;
     CHECK4(CalibrationController_HandleKeyEvent(&event));
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION == 0U)
     event.timestamp_ms = 1700U;
     CHECK4(CalibrationController_HandleKeyEvent(&event));
+#endif
     Stage4A_FeedCalibrationRaw(100500, 2000U);
     CHECK4(CalibrationController_GetState() == CAL_STATE_ERROR);
     CHECK4(!SystemContext_Get()->config.calibration.calibration_valid);
     CalibrationController_Cancel();
 }
+
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+static void TestCalibrationSaveAndSessionFailures(void)
+{
+    DeviceConfig config;
+    KeyEvent event;
+
+    Stage4A_InitRuntime(&config, false);
+    CHECK4(SystemContext_SetConfigDirty(true));
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
+    CHECK4(!CalibrationController_Begin());
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
+
+    Stage4A_InitRuntime(&config, false);
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
+    CHECK4(CalibrationController_Begin());
+    CHECK4(SystemContext_SetState(APP_STATE_CALIBRATION, 0U));
+    TestMock_SetPersistenceResult(COMMAND_RESULT_POWER_UNSAFE,
+        PERSISTENCE_STATUS_IDLE);
+    event = Stage4A_Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT, 1U);
+    CHECK4(CalibrationController_HandleKeyEvent(&event));
+    Stage4A_FeedCalibrationRaw(100000, 100U);
+    event.timestamp_ms = 1500U;
+    CHECK4(CalibrationController_HandleKeyEvent(&event));
+    Stage4A_FeedCalibrationRaw(1100000, 2000U);
+    CHECK4(CalibrationController_GetState() == CAL_STATE_SAVE_FAILED);
+    CHECK4(SystemContext_Get()->config.calibration.calibration_valid);
+    CHECK4(SystemContext_Get()->runtime.config_dirty);
+    CHECK4(SystemContext_GetSavedRevision() !=
+        SystemContext_GetConfigRevision());
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+
+    Stage4A_InitRuntime(&config, false);
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
+    CHECK4(CalibrationController_Begin());
+    CHECK4(SystemContext_SetState(APP_STATE_CALIBRATION, 0U));
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+        PERSISTENCE_STATUS_SAVING);
+    event.timestamp_ms = 1U;
+    CHECK4(CalibrationController_HandleKeyEvent(&event));
+    Stage4A_FeedCalibrationRaw(100000, 100U);
+    event.timestamp_ms = 1500U;
+    CHECK4(CalibrationController_HandleKeyEvent(&event));
+    Stage4A_FeedCalibrationRaw(1100000, 2000U);
+    CHECK4(CalibrationController_GetState() == CAL_STATE_SAVE_WAIT);
+    TestMock_CompletePersistence(PERSISTENCE_STATUS_FAILED, false);
+    CalibrationController_Process10ms();
+    CHECK4(CalibrationController_GetState() == CAL_STATE_SAVE_FAILED);
+    CHECK4(SystemContext_Get()->runtime.config_dirty);
+
+    Stage4A_InitRuntime(&config, false);
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
+    CHECK4(CalibrationController_Begin());
+    CHECK4(SystemContext_SetState(APP_STATE_CALIBRATION, 0U));
+    TestMock_SetPersistenceResult(COMMAND_RESULT_ACCEPTED,
+        PERSISTENCE_STATUS_SAVING);
+    event.timestamp_ms = 1U;
+    CHECK4(CalibrationController_HandleKeyEvent(&event));
+    Stage4A_FeedCalibrationRaw(100000, 100U);
+    event.timestamp_ms = 1500U;
+    CHECK4(CalibrationController_HandleKeyEvent(&event));
+    Stage4A_FeedCalibrationRaw(1100000, 2000U);
+    CHECK4(CalibrationController_GetState() == CAL_STATE_SAVE_WAIT);
+    TestMock_SetTimeMs(CalibrationController_GetSession()->state_enter_ms +
+        STATUS_TRANSACTION_TIMEOUT_MS);
+    CalibrationController_Process10ms();
+    CHECK4(CalibrationController_GetState() == CAL_STATE_SAVE_UNCERTAIN);
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+    TestMock_CompletePersistence(PERSISTENCE_STATUS_SUCCESS, true);
+    CalibrationController_Process10ms();
+    CHECK4(CalibrationController_GetState() == CAL_STATE_COMPLETE);
+    CHECK4(TestMock_GetSaveRequestCount() == 1U);
+
+    Stage4A_InitRuntime(&config, false);
+    CHECK4(SystemContext_SetState(APP_STATE_MENU, 0U));
+    CHECK4(CalibrationController_Begin());
+    CHECK4(SystemContext_SetState(APP_STATE_CALIBRATION, 0U));
+    CommandService_Process(CALIBRATION_SESSION_TIMEOUT_MS);
+    CalibrationController_Process10ms();
+    CHECK4(CalibrationController_GetState() == CAL_STATE_ERROR);
+    CHECK4(!CalibrationController_GetSession()->active);
+    CHECK4(!SystemContext_Get()->runtime.config_dirty);
+    CHECK4(TestMock_GetSaveRequestCount() == 0U);
+}
+#endif
 
 static void TestAlarmConfigEditFields(void)
 {
@@ -3395,6 +3524,9 @@ unsigned int Stage4A_RunTests(void)
     TestCalibrationControllerDirection(true);
     TestCalibrationCancelAndGuards();
     TestCalibrationSmallSpanError();
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    TestCalibrationSaveAndSessionFailures();
+#endif
     TestAlarmConfigEditFields();
     TestNumericEditCursorCoreAndMapping();
     if (false)

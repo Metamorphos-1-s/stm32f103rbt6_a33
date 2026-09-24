@@ -5,6 +5,9 @@
 #include "bsp_time.h"
 #include "event_queue.h"
 #include "command_types.h"
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+#include "command_service.h"
+#endif
 #include "communication_manager.h"
 #include "persistence_manager.h"
 #include "system_context.h"
@@ -128,6 +131,16 @@ CommandResult PersistenceManager_RequestSave(void)
             SystemContext_GetConfigRevision());
     return s_save_request_result;
 }
+
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+CommandResult PersistenceManager_RequestCalibrationSave(uint16_t session_id)
+{
+    if ((SystemContext_GetState() != APP_STATE_CALIBRATION) ||
+        !CommandService_LocalCalibrationApplied(session_id))
+        return COMMAND_RESULT_INVALID_STATE;
+    return PersistenceManager_RequestSave();
+}
+#endif
 
 CommandResult PersistenceManager_RequestFactoryReset(void)
 {

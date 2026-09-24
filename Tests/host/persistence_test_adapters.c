@@ -19,6 +19,19 @@ static bool s_maintenance;
 static uint32_t s_maintenance_enter_count;
 static ConfigApplyResult s_validation_result;
 static ConfigApplyResult s_apply_result;
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+static uint16_t s_applied_session_id;
+
+void PersistenceAdapters_SetCalibrationAppliedSession(uint16_t session_id)
+{
+    s_applied_session_id = session_id;
+}
+
+bool CommandService_LocalCalibrationApplied(uint16_t session_id)
+{
+    return (session_id != 0U) && (session_id == s_applied_session_id);
+}
+#endif
 
 void PersistenceAdapters_Reset(void)
 {
@@ -28,6 +41,9 @@ void PersistenceAdapters_Reset(void)
     s_maintenance_enter_count = 0U;
     s_validation_result = CONFIG_APPLY_OK;
     s_apply_result = CONFIG_APPLY_OK;
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    s_applied_session_id = 0U;
+#endif
 }
 
 void PersistenceAdapters_SetTime(uint32_t now_ms) { s_now_ms = now_ms; }

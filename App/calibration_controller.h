@@ -1,6 +1,7 @@
 #ifndef CALIBRATION_CONTROLLER_H
 #define CALIBRATION_CONTROLLER_H
 
+#include "project_config.h"
 #include "calibration_model.h"
 #include "key_types.h"
 #include "numeric_edit_cursor.h"
@@ -23,6 +24,11 @@ typedef enum
     CAL_STATE_COMPLETE,
     CAL_STATE_CANCELLED,
     CAL_STATE_ERROR
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    , CAL_STATE_SAVE_WAIT,
+    CAL_STATE_SAVE_FAILED,
+    CAL_STATE_SAVE_UNCERTAIN
+#endif
 } CalibrationState;
 
 typedef struct
@@ -43,6 +49,10 @@ typedef struct
     CalibrationResult result;
     CalibrationConfig candidate;
     uint32_t state_enter_ms;
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    /* Expected revision before commit, then the revision being saved. */
+    uint32_t transaction_revision;
+#endif
     bool active;
 } CalibrationSession;
 

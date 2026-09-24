@@ -1,4 +1,5 @@
 #include "config_store.h"
+#include "calibration_model.h"
 #include "default_config.h"
 #include "fake_flash_backend.h"
 #include "persistence_manager.h"
@@ -281,6 +282,65 @@ static void TestCandidateSaveAtomicPublishAndRollback(void)
     CHECK(loaded.display.brightness == original.display.brightness);
 }
 
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+static void TestCalibrationAutoSaveAndFailure(void)
+{
+    DeviceConfig original;
+    DeviceConfig changed;
+    DeviceConfig loaded;
+    RuntimeState runtime;
+    RuntimeState loaded_runtime;
+    ConfigLoadInfo info;
+
+    SetupStored(&original, &runtime, 9U);
+    changed = original;
+    CHECK(CalibrationModel_BuildMass(100000, 1100000,
+        INT64_C(500000000), 1U, &changed.calibration) ==
+        CALIBRATION_RESULT_OK);
+    CHECK(SystemContext_ApplyConfig(&changed, true));
+    CHECK(SystemContext_SetState(APP_STATE_CALIBRATION, 0U));
+    CHECK(PersistenceManager_RequestSave() == COMMAND_RESULT_INVALID_STATE);
+    CHECK(PersistenceManager_RequestCalibrationSave(42U) ==
+        COMMAND_RESULT_INVALID_STATE);
+    PersistenceAdapters_SetCalibrationAppliedSession(42U);
+    CHECK(PersistenceManager_RequestCalibrationSave(41U) ==
+        COMMAND_RESULT_INVALID_STATE);
+    CHECK(PersistenceManager_RequestCalibrationSave(42U) ==
+        COMMAND_RESULT_ACCEPTED);
+    RunManager();
+    CHECK(PersistenceManager_GetStatus() == PERSISTENCE_STATUS_SUCCESS);
+    CHECK(SystemContext_GetSavedRevision() == 10U);
+    CHECK(!SystemContext_Get()->runtime.config_dirty);
+    ConfigStore_Init(FakeFlash_GetBackend());
+    CHECK(ConfigStore_Load(&loaded, &loaded_runtime, &info) ==
+        CONFIG_LOAD_BOTH_VALID);
+    CHECK(loaded.calibration.calibration_valid);
+    CHECK(loaded.calibration.raw_zero == 100000);
+    CHECK(loaded.calibration.raw_span == 1100000);
+
+    SetupStored(&original, &runtime, 9U);
+    changed = original;
+    CHECK(CalibrationModel_BuildMass(100000, 1100000,
+        INT64_C(500000000), 1U, &changed.calibration) ==
+        CALIBRATION_RESULT_OK);
+    CHECK(SystemContext_ApplyConfig(&changed, true));
+    CHECK(SystemContext_SetState(APP_STATE_CALIBRATION, 0U));
+    PersistenceAdapters_SetCalibrationAppliedSession(42U);
+    CHECK(PersistenceManager_RequestCalibrationSave(42U) ==
+        COMMAND_RESULT_ACCEPTED);
+    FakeFlash_CutPowerAfter(1U);
+    RunManager();
+    CHECK(PersistenceManager_GetStatus() == PERSISTENCE_STATUS_FAILED);
+    CHECK(SystemContext_GetSavedRevision() == 9U);
+    CHECK(SystemContext_Get()->runtime.config_dirty);
+    FakeFlash_Reboot();
+    ConfigStore_Init(FakeFlash_GetBackend());
+    CHECK(ConfigStore_Load(&loaded, &loaded_runtime, &info) == CONFIG_LOAD_OK);
+    CHECK(loaded.calibration.calibration_valid ==
+        original.calibration.calibration_valid);
+}
+#endif
+
 int main(void)
 {
     TestRevisionDuringSave();
@@ -291,6 +351,9 @@ int main(void)
     TestUnsafeStart();
     TestPowerGuardStates();
     TestCandidateSaveAtomicPublishAndRollback();
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    TestCalibrationAutoSaveAndFailure();
+#endif
     if (s_failures != 0U)
     {
         (void)printf("Persistence manager tests: %u failure(s)\n", s_failures);

@@ -1,6 +1,7 @@
 #ifndef COMMAND_SERVICE_H
 #define COMMAND_SERVICE_H
 
+#include "project_config.h"
 #include "command_types.h"
 #include "device_config.h"
 
@@ -58,6 +59,10 @@ CommandResult CommandService_Execute(const CommandRequest *request,
 const CalibrationConfig *CommandService_GetCalibrationCandidate(void);
 bool CommandService_GetCalibrationSnapshot(
     CalibrationSessionSnapshot *snapshot);
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+bool CommandService_LocalCalibrationActive(uint16_t session_id);
+bool CommandService_LocalCalibrationApplied(uint16_t session_id);
+#endif
 bool CommandService_SetStagedConfig(const DeviceConfig *candidate);
 bool CommandService_SetStagedConfigForSource(const DeviceConfig *candidate,
                                              CommandSource source);

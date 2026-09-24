@@ -52,6 +52,8 @@ option(A33_ENABLE_STAGE5PA2_PRODUCT
     "Enable Stage 5P-A2 engineering product candidate" OFF)
 option(A33_ENABLE_STAGE5PA2C_PRODUCT
     "Enable Stage 5P-A2C local-menu transaction candidate" OFF)
+option(A33_ENABLE_STAGE5PA2D_CALIBRATION
+    "Enable Stage 5P-A2D calibration workflow candidate" OFF)
 
 if(A33_ENABLE_STAGE5NA3_DIAGNOSTICS AND NOT A33_ENABLE_STAGE5MR5_BETA)
     message(FATAL_ERROR "Stage 5N-A3 diagnostics require Stage 5M-R5 Beta")
@@ -76,6 +78,9 @@ if(A33_ENABLE_STAGE5PA2_PRODUCT AND NOT A33_ENABLE_STAGE5PA_PRODUCT)
 endif()
 if(A33_ENABLE_STAGE5PA2C_PRODUCT AND NOT A33_ENABLE_STAGE5PA2_PRODUCT)
     message(FATAL_ERROR "Stage 5P-A2C requires Stage 5P-A2 product")
+endif()
+if(A33_ENABLE_STAGE5PA2D_CALIBRATION AND NOT A33_ENABLE_STAGE5PA2C_PRODUCT)
+    message(FATAL_ERROR "Stage 5P-A2D requires Stage 5P-A2C product")
 endif()
 
 # Enable CMake support for ASM and C languages
@@ -233,6 +238,13 @@ if(A33_ENABLE_STAGE5PA2C_PRODUCT)
 else()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
         A33_ENABLE_STAGE5PA2C_PRODUCT=0)
+endif()
+if(A33_ENABLE_STAGE5PA2D_CALIBRATION)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5PA2D_CALIBRATION=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5PA2D_CALIBRATION=0)
 endif()
 
 if(A33_ENABLE_STAGE5NA3_DIAGNOSTICS)

@@ -112,6 +112,27 @@ endif()
 enable_testing()
 add_test(NAME stage4a_host_logic COMMAND stage4a_host_tests)
 
+# Execute the calibration workflow against the real command service and
+# metrology controller, with an asynchronous Flash result supplied by mocks.
+get_target_property(stage5pa2d_calibration_sources stage4a_host_tests SOURCES)
+add_executable(stage5pa2d_calibration_tests
+    ${stage5pa2d_calibration_sources})
+get_target_property(stage5pa2d_calibration_includes stage4a_host_tests
+    INCLUDE_DIRECTORIES)
+target_include_directories(stage5pa2d_calibration_tests PRIVATE
+    ${stage5pa2d_calibration_includes})
+target_compile_definitions(stage5pa2d_calibration_tests PRIVATE
+    STAGE2A_HOST_TEST=1 ENABLE_STAGE2B_BOARD_DIAGNOSTICS=1
+    A33_ENABLE_STAGE5PA2D_CALIBRATION=1)
+if(MSVC)
+    target_compile_options(stage5pa2d_calibration_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5pa2d_calibration_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5pa2d_calibration_logic
+    COMMAND stage5pa2d_calibration_tests)
+
 add_executable(stage5l_measurement_diagnostics_tests
     test_stage5l_measurement_diagnostics.c
     ../../Diagnostics/stage5l_measurement_diagnostics.c)
@@ -547,6 +568,24 @@ else()
 endif()
 add_test(NAME stage5pa2c_menu_logic COMMAND stage5pa2c_menu_tests)
 
+get_target_property(stage5pa2d_menu_sources stage5pa2c_menu_tests SOURCES)
+add_executable(stage5pa2d_menu_tests ${stage5pa2d_menu_sources})
+target_include_directories(stage5pa2d_menu_tests PRIVATE
+    ${stage5pa2c_menu_includes}
+    ../../Domain/limit_checker ../../Experimental/stage5na
+    ../../Services/guarded_checkweigh)
+target_compile_definitions(stage5pa2d_menu_tests PRIVATE
+    STAGE2A_HOST_TEST=1 A33_ENABLE_STAGE5MR5_BETA=1
+    A33_ENABLE_STAGE5NB_BETA=1 A33_ENABLE_STAGE5MR5E_D1D_BETA=1
+    A33_ENABLE_STAGE5PA_PRODUCT=1 A33_ENABLE_STAGE5PA2_PRODUCT=1
+    A33_ENABLE_STAGE5PA2C_PRODUCT=1 A33_ENABLE_STAGE5PA2D_CALIBRATION=1)
+if(MSVC)
+    target_compile_options(stage5pa2d_menu_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5pa2d_menu_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5pa2d_menu_logic COMMAND stage5pa2d_menu_tests)
+
 add_executable(stage5pa_timing_tests
     test_stage5pa_timing.c
     ../../Domain/filter/weight_filter.c
@@ -708,6 +747,26 @@ else()
     target_compile_options(stage4br_persistence_tests PRIVATE -Wall -Wextra -Werror)
 endif()
 add_test(NAME stage4br_persistence_logic COMMAND stage4br_persistence_tests)
+
+get_target_property(stage5pa2d_persistence_sources stage4br_persistence_tests
+    SOURCES)
+add_executable(stage5pa2d_persistence_tests
+    ${stage5pa2d_persistence_sources})
+get_target_property(stage5pa2d_persistence_includes stage4br_persistence_tests
+    INCLUDE_DIRECTORIES)
+target_include_directories(stage5pa2d_persistence_tests PRIVATE
+    ${stage5pa2d_persistence_includes})
+target_compile_definitions(stage5pa2d_persistence_tests PRIVATE
+    ENABLE_STAGE2B_BOARD_DIAGNOSTICS=0
+    A33_ENABLE_STAGE5PA2D_CALIBRATION=1)
+if(MSVC)
+    target_compile_options(stage5pa2d_persistence_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5pa2d_persistence_tests PRIVATE
+        -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5pa2d_persistence_logic
+    COMMAND stage5pa2d_persistence_tests)
 
 add_executable(stage5a_host_tests
     test_stage5a.c

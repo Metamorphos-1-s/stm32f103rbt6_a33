@@ -7,6 +7,9 @@
 #include "metrology_manager.h"
 #include "mass_math.h"
 #include "project_config.h"
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+#include "persistence_manager.h"
+#endif
 #include "raw_calibration_stability.h"
 #include "system_context.h"
 #include "unit_converter.h"
@@ -66,6 +69,13 @@ static void CalibrationController_ShowCode(DisplayCode code)
 static void CalibrationController_SetState(CalibrationState state,
                                            DisplayCode code)
 {
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    if ((state == CAL_STATE_ERROR) && s_session.active)
+    {
+        (void)CalibrationController_Command(COMMAND_CALIBRATION_CANCEL, 0);
+        s_session.active = false;
+    }
+#endif
     s_session.state = state;
     s_session.state_enter_ms = BSP_TimeNowMs();
     CalibrationController_ShowCode(code);
@@ -106,6 +116,10 @@ bool CalibrationController_Begin(void)
     uint16_t session_id;
 
     if (s_session.active || (context == NULL) ||
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+        context->runtime.config_dirty ||
+        (SystemContext_GetConfigRevision() != SystemContext_GetSavedRevision()) ||
+#endif
         (SystemContext_GetState() != APP_STATE_MENU) ||
         (CalibrationController_BeginSession(&session_id) !=
          COMMAND_RESULT_OK))
@@ -126,6 +140,9 @@ bool CalibrationController_Begin(void)
     }
     (void)memset(&s_session, 0, sizeof(s_session));
     s_session.session_id = session_id;
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    s_session.transaction_revision = SystemContext_GetConfigRevision();
+#endif
     display = &context->config.metrology.unit_display[
         context->config.metrology.active_unit];
     initial_mass = (context->config.calibration.calibration_valid &&
@@ -160,6 +177,41 @@ bool CalibrationController_Begin(void)
                                    DISPLAY_CODE_UNLOAD);
     return true;
 }
+
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+static void CalibrationController_CommitAndSave(void)
+{
+    const SystemContext *context = SystemContext_Get();
+    CommandResult result;
+
+    if ((context == NULL) || (context->config.metrology.capacity_ug !=
+        s_session.capacity_ug_at_begin) ||
+        (SystemContext_GetConfigRevision() != s_session.transaction_revision) ||
+        (SystemContext_GetSavedRevision() != s_session.transaction_revision) ||
+        context->runtime.config_dirty)
+    {
+        CalibrationController_SetState(CAL_STATE_ERROR, DISPLAY_CODE_BUSY);
+        return;
+    }
+    result = CalibrationController_Command(COMMAND_CALIBRATION_COMMIT, 0);
+    if (result != COMMAND_RESULT_OK)
+    {
+        CalibrationController_SetState(CAL_STATE_ERROR, DISPLAY_CODE_ERROR);
+        return;
+    }
+    s_session.active = false;
+    s_session.transaction_revision = SystemContext_GetConfigRevision();
+    result = PersistenceManager_RequestCalibrationSave(s_session.session_id);
+    if (result != COMMAND_RESULT_ACCEPTED)
+    {
+        /* RAM is dirty. Never claim that this calibration reached Flash. */
+        CalibrationController_SetState(CAL_STATE_SAVE_FAILED,
+            DISPLAY_CODE_SAVE_ERROR);
+        return;
+    }
+    CalibrationController_SetState(CAL_STATE_SAVE_WAIT, DISPLAY_CODE_SAVE);
+}
+#endif
 
 static void CalibrationController_CaptureStable(bool zero_capture,
                                                 const WeightSnapshot *snapshot)
@@ -204,8 +256,15 @@ static void CalibrationController_CaptureStable(bool zero_capture,
             s_session.span_sample_sequence = calibration.sample_sequence;
             s_session.candidate = *candidate;
             s_session.result = CALIBRATION_RESULT_OK;
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+            /* Finish the large capture frame before applying the new config
+               and starting a Flash transaction on the next 10 ms tick. */
+            CalibrationController_SetState(CAL_STATE_COMMIT_RAM,
+                DISPLAY_CODE_APPLYING);
+#else
             CalibrationController_SetState(CAL_STATE_PREVIEW,
                                            DISPLAY_CODE_DONE);
+#endif
         }
         else
         {
@@ -221,7 +280,51 @@ void CalibrationController_Process10ms(void)
 {
     const WeightSnapshot *snapshot;
 
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    if (s_session.state == CAL_STATE_COMMIT_RAM)
+    {
+        CalibrationController_CommitAndSave();
+        return;
+    }
+    if ((s_session.state == CAL_STATE_SAVE_WAIT) ||
+        (s_session.state == CAL_STATE_SAVE_UNCERTAIN))
+    {
+        PersistenceStatus status = PersistenceManager_GetStatus();
+        if (((status == PERSISTENCE_STATUS_SUCCESS) ||
+             (status == PERSISTENCE_STATUS_NO_CHANGE)) &&
+            (SystemContext_GetSavedRevision() ==
+             s_session.transaction_revision) &&
+            (SystemContext_GetConfigRevision() ==
+             s_session.transaction_revision))
+            CalibrationController_SetState(CAL_STATE_COMPLETE,
+                DISPLAY_CODE_DONE);
+        else if (status == PERSISTENCE_STATUS_FAILED)
+            CalibrationController_SetState(CAL_STATE_SAVE_FAILED,
+                DISPLAY_CODE_SAVE_ERROR);
+        else if ((status == PERSISTENCE_STATUS_REBOOT_REQUIRED) ||
+            ((s_session.state == CAL_STATE_SAVE_WAIT) &&
+             ((uint32_t)(BSP_TimeNowMs() - s_session.state_enter_ms) >=
+              STATUS_TRANSACTION_TIMEOUT_MS)))
+        {
+            /* Flash completion is uncertain; do not permit another SAVE. */
+            if (s_session.state != CAL_STATE_SAVE_UNCERTAIN)
+                CalibrationController_SetState(CAL_STATE_SAVE_UNCERTAIN,
+                    DISPLAY_CODE_SAVE_ERROR);
+        }
+        return;
+    }
+#endif
     if (!s_session.active) return;
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    {
+        if (!CommandService_LocalCalibrationActive(s_session.session_id))
+        {
+            CalibrationController_SetState(CAL_STATE_ERROR,
+                DISPLAY_CODE_CALIBRATION_ERROR);
+            return;
+        }
+    }
+#endif
     if (s_session.state == CAL_STATE_INPUT_SPAN_WEIGHT)
     {
         if (s_unit_hint_active &&
@@ -326,8 +429,17 @@ bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
                 if (CalibrationController_CommandMass(
                         COMMAND_CALIBRATION_SET_SPAN_MASS,
                         s_session.span_mass_ug) == COMMAND_RESULT_OK)
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+                {
+                    RawCalibrationStability_Reset(&s_raw_stability);
+                    s_last_sample_sequence = 0U;
+                    CalibrationController_SetState(CAL_STATE_WAIT_SPAN_STABLE,
+                                                   DISPLAY_CODE_CAL_SPAN);
+                }
+#else
                     CalibrationController_SetState(
                         CAL_STATE_PROMPT_LOAD_WEIGHT, DISPLAY_CODE_LOAD);
+#endif
                 else
                     CalibrationController_SetState(CAL_STATE_ERROR,
                                                    DISPLAY_CODE_ERROR);
@@ -379,6 +491,11 @@ bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
         case CAL_STATE_COMPLETE:
         case CAL_STATE_CANCELLED:
         case CAL_STATE_ERROR:
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+        case CAL_STATE_SAVE_WAIT:
+        case CAL_STATE_SAVE_FAILED:
+        case CAL_STATE_SAVE_UNCERTAIN:
+#endif
         case CAL_STATE_IDLE:
         default:
             break;

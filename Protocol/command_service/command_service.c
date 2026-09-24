@@ -1011,6 +1011,23 @@ bool CommandService_GetCalibrationSnapshot(
     return true;
 }
 
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+bool CommandService_LocalCalibrationActive(uint16_t session_id)
+{
+    return (session_id != 0U) && s_calibration.active &&
+        (s_calibration.owner == CAL_OWNER_LOCAL_UI) &&
+        (s_calibration.session_id == session_id);
+}
+
+bool CommandService_LocalCalibrationApplied(uint16_t session_id)
+{
+    return (session_id != 0U) && !s_calibration.active &&
+        (s_calibration.owner == CAL_OWNER_NONE) &&
+        (s_calibration.state == CAL_WORKFLOW_APPLIED) &&
+        (s_calibration.session_id == session_id);
+}
+#endif
+
 bool CommandService_SetStagedConfig(const DeviceConfig *candidate)
 {
     return CommandService_SetStagedConfigForSource(candidate,

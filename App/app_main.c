@@ -466,7 +466,11 @@ static void App_ReconcileUiOwnership(void)
   const SystemContext *context = SystemContext_Get();
   DisplayPage page = DisplayController_GetPage();
   bool overlay_page = (page == DISPLAY_PAGE_MENU) ||
-      (page == DISPLAY_PAGE_EDIT) || (page == DISPLAY_PAGE_STATUS);
+      (page == DISPLAY_PAGE_EDIT) || (page == DISPLAY_PAGE_STATUS)
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+      || (page == DISPLAY_PAGE_CALIBRATION)
+#endif
+      ;
 
   if ((context == NULL) || (SystemContext_GetState() != APP_STATE_RUN) ||
       MenuController_IsActive() || StatusController_IsActive() ||
@@ -768,6 +772,26 @@ static void App_RunStateMachine(void)
       case APP_STATE_CALIBRATION:
       {
         const CalibrationSession *session = CalibrationController_GetSession();
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+        if (((session->state == CAL_STATE_COMPLETE) ||
+             (session->state == CAL_STATE_CANCELLED) ||
+             (session->state == CAL_STATE_SAVE_FAILED) ||
+             (session->state == CAL_STATE_ERROR)) &&
+            ((uint32_t)(BSP_TimeNowMs() - session->state_enter_ms) >=
+             UI_MESSAGE_DEFAULT_MS))
+        {
+          if ((session->state == CAL_STATE_SAVE_FAILED) &&
+              (context != NULL) && context->runtime.config_dirty &&
+              (SystemContext_GetConfigRevision() ==
+               session->transaction_revision))
+            MenuController_AllowCurrentDirtySave();
+          next_state = APP_STATE_RUN;
+          if (context != NULL)
+            DisplayController_SetPage(
+                context->runtime.weight_view == WEIGHT_VIEW_GROSS ?
+                DISPLAY_PAGE_GROSS : DISPLAY_PAGE_NET);
+        }
+#else
         if (((session->state == CAL_STATE_COMPLETE) ||
              (session->state == CAL_STATE_CANCELLED)) &&
             ((uint32_t)(BSP_TimeNowMs() - session->state_enter_ms) >=
@@ -777,6 +801,7 @@ static void App_RunStateMachine(void)
           MenuController_AllowCurrentDirtySave();
           (void)MenuController_Enter();
         }
+#endif
         break;
       }
       case APP_STATE_FAULT:
@@ -910,7 +935,11 @@ static void App_ProcessKeyEvent(const KeyEvent *event)
      it arrived in the same scheduling window. */
   if ((DisplayController_GetPage() == DISPLAY_PAGE_MENU) ||
       (DisplayController_GetPage() == DISPLAY_PAGE_EDIT) ||
-      (DisplayController_GetPage() == DISPLAY_PAGE_STATUS))
+      (DisplayController_GetPage() == DISPLAY_PAGE_STATUS)
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+      || (DisplayController_GetPage() == DISPLAY_PAGE_CALIBRATION)
+#endif
+      )
   {
     App_ReconcileUiOwnership();
     return;

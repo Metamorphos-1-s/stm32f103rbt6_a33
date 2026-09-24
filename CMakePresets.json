@@ -147,6 +147,13 @@
             "cacheVariables": {
                 "A33_ENABLE_STAGE5PA2C_PRODUCT": "ON"
             }
+        },
+        {
+            "name": "Stage5PA2DCalibration",
+            "inherits": "Stage5PA2CCandidate",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5PA2D_CALIBRATION": "ON"
+            }
         }
     ],
     "buildPresets": [
@@ -213,6 +220,10 @@
         {
             "name": "Stage5PA2CCandidate",
             "configurePreset": "Stage5PA2CCandidate"
+        },
+        {
+            "name": "Stage5PA2DCalibration",
+            "configurePreset": "Stage5PA2DCalibration"
         }
     ]
 }

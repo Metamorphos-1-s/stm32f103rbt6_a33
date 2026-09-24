@@ -2,6 +2,9 @@
 #include "revision_helper.h"
 
 #include "bsp_time.h"
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+#include "command_service.h"
+#endif
 #include "config_application.h"
 #include "default_config.h"
 #include "device_manager.h"
@@ -101,10 +104,12 @@ ConfigLoadResult PersistenceManager_LoadStartup(DeviceConfig *config,
     return s_load_result;
 }
 
-static CommandResult Start(ConfigOperationType operation)
+static CommandResult Start(ConfigOperationType operation,
+    bool allow_calibration)
 {
 #if (ENABLE_STAGE2B_BOARD_DIAGNOSTICS != 0U)
     (void)operation;
+    (void)allow_calibration;
     return COMMAND_RESULT_INVALID_STATE;
 #else
     const SystemContext *context = SystemContext_Get();
@@ -112,7 +117,8 @@ static CommandResult Start(ConfigOperationType operation)
     bool request_error;
 
     if ((context == NULL) || PersistenceManager_IsBusy() ||
-        (SystemContext_GetState() == APP_STATE_CALIBRATION) ||
+        ((SystemContext_GetState() == APP_STATE_CALIBRATION) &&
+         !allow_calibration) ||
         (SystemContext_GetState() == APP_STATE_DIAGNOSTIC))
     {
         return PersistenceManager_IsBusy() ? COMMAND_RESULT_BUSY :
@@ -188,8 +194,21 @@ static CommandResult Start(ConfigOperationType operation)
 
 CommandResult PersistenceManager_RequestSave(void)
 {
-    return Start(CONFIG_OPERATION_SAVE);
+    return Start(CONFIG_OPERATION_SAVE, false);
 }
+
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+CommandResult PersistenceManager_RequestCalibrationSave(uint16_t session_id)
+{
+    const SystemContext *context = SystemContext_Get();
+    if ((SystemContext_GetState() != APP_STATE_CALIBRATION) ||
+        (context == NULL) || !context->runtime.config_dirty ||
+        (SystemContext_GetConfigRevision() == SystemContext_GetSavedRevision()) ||
+        !CommandService_LocalCalibrationApplied(session_id))
+        return COMMAND_RESULT_INVALID_STATE;
+    return Start(CONFIG_OPERATION_SAVE, true);
+}
+#endif
 
 CommandResult PersistenceManager_RequestCandidateSave(
     const DeviceConfig *candidate, const DeviceConfig *original,
@@ -255,7 +274,7 @@ CommandResult PersistenceManager_RequestCandidateSave(
 
 CommandResult PersistenceManager_RequestFactoryReset(void)
 {
-    return Start(CONFIG_OPERATION_FACTORY_RESET);
+    return Start(CONFIG_OPERATION_FACTORY_RESET, false);
 }
 
 void PersistenceManager_Process(void)

@@ -2,6 +2,7 @@
 #define PERSISTENCE_TEST_ADAPTERS_H
 
 #include "config_application.h"
+#include "project_config.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -12,5 +13,8 @@ void PersistenceAdapters_SetSupplySafe(bool safe);
 void PersistenceAdapters_SetValidationResult(ConfigApplyResult result);
 void PersistenceAdapters_SetApplyResult(ConfigApplyResult result);
 uint32_t PersistenceAdapters_GetMaintenanceEnterCount(void);
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+void PersistenceAdapters_SetCalibrationAppliedSession(uint16_t session_id);
+#endif
 
 #endif /* PERSISTENCE_TEST_ADAPTERS_H */

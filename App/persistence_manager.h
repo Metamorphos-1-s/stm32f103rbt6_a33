@@ -1,6 +1,7 @@
 #ifndef PERSISTENCE_MANAGER_H
 #define PERSISTENCE_MANAGER_H
 
+#include "project_config.h"
 #include "command_types.h"
 #include "config_store.h"
 
@@ -30,6 +31,10 @@ bool PersistenceManager_Init(void);
 ConfigLoadResult PersistenceManager_LoadStartup(DeviceConfig *config,
                                                 RuntimeState *runtime);
 CommandResult PersistenceManager_RequestSave(void);
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+/* Only the completed local calibration transaction may save from CALIBRATION. */
+CommandResult PersistenceManager_RequestCalibrationSave(uint16_t session_id);
+#endif
 CommandResult PersistenceManager_RequestCandidateSave(
     const DeviceConfig *candidate, const DeviceConfig *original,
     bool allow_cs1237_change, uint32_t expected_revision);

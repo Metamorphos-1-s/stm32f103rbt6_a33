@@ -1017,6 +1017,15 @@ bool MenuController_Enter(void)
     s_original_config = context->config;
     s_candidate_config = s_original_config;
     s_previous_page = DisplayController_GetPage();
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    /* Calibration returns through MENU, but that page is not a RUN page. */
+    if ((s_previous_page != DISPLAY_PAGE_NET) &&
+        (s_previous_page != DISPLAY_PAGE_GROSS) &&
+        (s_previous_page != DISPLAY_PAGE_TARE) &&
+        (s_previous_page != DISPLAY_PAGE_BATTERY))
+        s_previous_page = context->runtime.weight_view == WEIGHT_VIEW_GROSS ?
+            DISPLAY_PAGE_GROSS : DISPLAY_PAGE_NET;
+#endif
     s_candidate_changed = false;
     s_brightness_previewed = false;
     s_save_waiting = false;
@@ -1289,6 +1298,18 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         }
         else if (s_item == MENU_ITEM_CALIBRATION)
         {
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+            /* Calibrate only from a clean snapshot. Never discard a pending
+               local edit or write another owner's dirty config to Flash. */
+            if (s_candidate_changed || (context == NULL) ||
+                context->runtime.config_dirty ||
+                (SystemContext_GetConfigRevision() !=
+                 SystemContext_GetSavedRevision()))
+            {
+                ShowCode(DISPLAY_CODE_BUSY);
+                return true;
+            }
+#endif
             s_calibration_request = true;
         }
         else if (s_item == MENU_ITEM_FACTORY_RESET)

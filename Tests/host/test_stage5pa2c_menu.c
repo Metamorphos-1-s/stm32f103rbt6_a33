@@ -30,6 +30,9 @@ static bool invalid_config;
 static uint32_t checkweigh_generation;
 static char last_message[7];
 static char last_page[7];
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+static DisplayPage current_page;
+#endif
 
 static bool IsDone(void)
 {
@@ -138,8 +141,22 @@ CommandResult PersistenceManager_RequestCandidateSave(
     return COMMAND_RESULT_ACCEPTED;
 }
 
-void DisplayController_SetPage(DisplayPage page) { (void)page; }
-DisplayPage DisplayController_GetPage(void) { return DISPLAY_PAGE_NET; }
+void DisplayController_SetPage(DisplayPage page)
+{
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    current_page = page;
+#else
+    (void)page;
+#endif
+}
+DisplayPage DisplayController_GetPage(void)
+{
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    return current_page;
+#else
+    return DISPLAY_PAGE_NET;
+#endif
+}
 void DisplayController_ShowMessage(const char text[6], uint32_t duration_ms)
 {
     (void)duration_ms;
@@ -148,7 +165,7 @@ void DisplayController_ShowMessage(const char text[6], uint32_t duration_ms)
 }
 bool DisplayController_SetTextPage(DisplayPage page, const char text[6])
 {
-    (void)page;
+    DisplayController_SetPage(page);
     (void)memcpy(last_page, text, 6U);
     last_page[6] = '\0';
     return true;
@@ -219,8 +236,55 @@ static void Reset(void)
     invalid_config = false;
     checkweigh_generation = 0U;
     now_ms = 100U;
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    current_page = DISPLAY_PAGE_NET;
+#endif
     MenuController_Init();
 }
+
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+static int TestCalibrationMenuOwnership(void)
+{
+    unsigned guard = 0U;
+    Reset();
+    current_page = DISPLAY_PAGE_CALIBRATION;
+    CHECK(MenuController_Enter());
+    CHECK(Key(KEY_ID_TARE, KEY_EVENT_SHORT));
+    CHECK(!MenuController_IsActive());
+    CHECK(current_page == DISPLAY_PAGE_NET);
+    CHECK(save_requests == 0U);
+
+    Reset();
+    CHECK(EnterAdvanced(MENU_ITEM_SAMPLE_RATE) == 0);
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT));
+    CHECK(Key(KEY_ID_HASH, KEY_EVENT_SHORT));
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT));
+    while ((MenuController_GetItem() != MENU_ITEM_CALIBRATION) &&
+           (guard++ < MENU_ITEM_COUNT))
+        CHECK(Key(KEY_ID_STAR, KEY_EVENT_SHORT));
+    CHECK(MenuController_GetItem() == MENU_ITEM_CALIBRATION);
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_SHORT));
+    CHECK(!MenuController_TakeCalibrationRequest());
+    CHECK(MenuController_IsActive());
+    CHECK(context.config.metrology.profiles[0].sample_rate ==
+        DEVICE_CS1237_DATA_RATE_10_HZ);
+    CHECK(save_requests == 0U);
+
+    Reset();
+    context.config_revision = 9U;
+    context.saved_revision = 8U;
+    context.runtime.config_dirty = true;
+    CHECK(MenuController_Enter());
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_LONG));
+    CHECK(save_requests == 0U);
+    CHECK(Key(KEY_ID_TARE, KEY_EVENT_SHORT));
+    MenuController_AllowCurrentDirtySave();
+    CHECK(MenuController_Enter());
+    CHECK(Key(KEY_ID_FUNCTION, KEY_EVENT_LONG));
+    CHECK(save_requests == 1U);
+    return 0;
+}
+#endif
 
 static int TestR5SaveTiming(void)
 {
@@ -381,6 +445,9 @@ static int TestSaveRejectionAndNoChange(void)
 
 int main(void)
 {
+#if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
+    if (TestCalibrationMenuOwnership() != 0) return 1;
+#endif
     if (TestR5SaveTiming() != 0 || TestCancellationAndStale() != 0 ||
         TestProfileFields() != 0 || TestCheckweighAndSaveFailure() != 0 ||
         TestSaveRejectionAndNoChange() != 0)
