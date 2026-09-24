@@ -1,0 +1,149 @@
+{
+  "result": "PASS",
+  "cases": [
+    {
+      "case": "h6_10_filt0_30s",
+      "rate_hz": 9.98425302375448,
+      "records": 300,
+      "read_errors": 0,
+      "poll_gaps": 0,
+      "overrun_delta": 0,
+      "fault": 0,
+      "limited": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ],
+      "profile": 0,
+      "sample_rate": 0
+    },
+    {
+      "case": "h6_10_filt1_30s",
+      "rate_hz": 9.983972218512088,
+      "records": 300,
+      "read_errors": 0,
+      "poll_gaps": 0,
+      "overrun_delta": 0,
+      "fault": 0,
+      "limited": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ],
+      "profile": 0,
+      "sample_rate": 0
+    },
+    {
+      "case": "h6_10_filt2_30s",
+      "rate_hz": 9.98425302375448,
+      "records": 300,
+      "read_errors": 0,
+      "poll_gaps": 0,
+      "overrun_delta": 0,
+      "fault": 0,
+      "limited": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ],
+      "profile": 0,
+      "sample_rate": 0
+    },
+    {
+      "case": "h6_10_filt3_30s",
+      "rate_hz": 9.983972218512088,
+      "records": 300,
+      "read_errors": 0,
+      "poll_gaps": 0,
+      "overrun_delta": 0,
+      "fault": 0,
+      "limited": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ],
+      "profile": 0,
+      "sample_rate": 0
+    },
+    {
+      "case": "h6_40_filt0_30s",
+      "rate_hz": 39.935781657635964,
+      "records": 300,
+      "read_errors": 0,
+      "poll_gaps": 0,
+      "overrun_delta": 0,
+      "fault": 0,
+      "limited": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ],
+      "profile": 1,
+      "sample_rate": 1
+    },
+    {
+      "case": "h6_40_filt1_30s",
+      "rate_hz": 39.93316624895572,
+      "records": 300,
+      "read_errors": 0,
+      "poll_gaps": 0,
+      "overrun_delta": 0,
+      "fault": 0,
+      "limited": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ],
+      "profile": 1,
+      "sample_rate": 1
+    },
+    {
+      "case": "h6_40_filt2_30s",
+      "rate_hz": 39.931774857028195,
+      "records": 300,
+      "read_errors": 0,
+      "poll_gaps": 0,
+      "overrun_delta": 0,
+      "fault": 0,
+      "limited": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ],
+      "profile": 1,
+      "sample_rate": 1
+    },
+    {
+      "case": "h6_40_filt3_30s",
+      "rate_hz": 39.93845330478994,
+      "records": 300,
+      "read_errors": 0,
+      "poll_gaps": 0,
+      "overrun_delta": 0,
+      "fault": 0,
+      "limited": 0,
+      "application": 1,
+      "mode": 1,
+      "offset_first_last": [
+        0,
+        0
+      ],
+      "profile": 1,
+      "sample_rate": 1
+    }
+  ]
+}

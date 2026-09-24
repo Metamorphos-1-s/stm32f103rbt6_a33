@@ -1,0 +1,94 @@
+{
+  "state": {
+    "utc": "2026-09-24T07:16:05.136Z",
+    "firmware": "0x051A",
+    "map": "0x0104",
+    "display_count": 50009,
+    "display_decimals": 2,
+    "status_flags": 31,
+    "net_mass_ug": 500097991,
+    "gross_mass_ug": 500097991,
+    "tare_mass_ug": 0,
+    "sample_sequence": 1226,
+    "uptime_ms": 31195,
+    "profile": 1,
+    "sample_rate": 1,
+    "gain": 3,
+    "overrun_count": 0,
+    "storage_state": 0,
+    "power_safe": 1,
+    "dirty": 0,
+    "revision": 10,
+    "saved_revision": 10,
+    "fault_mask": 0,
+    "persistent_format": 3,
+    "active_slot": 2,
+    "storage_sequence": 10,
+    "word_order": "high",
+    "signature": "0x55B5",
+    "application": 0,
+    "mode": 2,
+    "state": 3,
+    "limited": 0,
+    "reason": 1,
+    "offset_ug": 0,
+    "uncompensated_gross_ug": 500087854,
+    "corrected_gross_ug": 500087854,
+    "reference_ug": 0,
+    "current_window_ug": 0,
+    "reference_error_ug": 0,
+    "correction_rate_milli_ug_per_s": 0,
+    "holdoff_remaining": 0,
+    "reference_fill": 15,
+    "observation_fill": 0,
+    "automatic_rebase_count": 0,
+    "evaluation_count": 0,
+    "save_request_count_low": 0
+  },
+  "started_utc": "2026-09-24T07:16:05Z",
+  "ended_utc": "2026-09-24T07:16:05Z",
+  "writes": 0,
+  "flash_operations": 0,
+  "frames": [
+    {
+      "monotonic_ns": 405345078000000,
+      "frame": "TX 01 03 00 00 00 20 44 12"
+    },
+    {
+      "monotonic_ns": 405345093000000,
+      "frame": "RX 01 03 40 00 00 C3 59 00 02 00 01 00 1F 00 00 00 00 C3 5A 00 00 C3 5A 00 00 00 00 00 01 00 00 01 04 05 1A 00 00 00 00 1D CE E3 C7 00 00 00 00 1D CE E3 C7 00 00 00 00 00 00 00 00 FF F8 8D 82 FF F8 8D 8C 76 40"
+    },
+    {
+      "monotonic_ns": 405345093000000,
+      "frame": "TX 01 03 00 20 00 1B 04 0B"
+    },
+    {
+      "monotonic_ns": 405345109000000,
+      "frame": "RX 01 03 36 00 00 04 CA 00 00 79 DB 00 00 00 00 00 00 91 31 00 01 00 01 00 03 00 04 00 00 00 00 00 00 00 0A 00 00 00 01 00 00 00 00 00 0A 00 00 00 0A 00 00 00 00 00 00 00 00 D0 DE"
+    },
+    {
+      "monotonic_ns": 405345109000000,
+      "frame": "TX 01 03 01 C0 00 0A C4 0D"
+    },
+    {
+      "monotonic_ns": 405345109000000,
+      "frame": "RX 01 03 14 00 03 00 02 00 00 00 0A 00 00 00 00 00 00 00 04 00 00 00 00 AF 89"
+    },
+    {
+      "monotonic_ns": 405345125000000,
+      "frame": "TX 01 03 01 03 00 01 75 F6"
+    },
+    {
+      "monotonic_ns": 405345125000000,
+      "frame": "RX 01 03 02 00 00 B8 44"
+    },
+    {
+      "monotonic_ns": 405345125000000,
+      "frame": "TX 01 03 02 80 00 28 45 84"
+    },
+    {
+      "monotonic_ns": 405345140000000,
+      "frame": "RX 01 03 50 55 B5 00 00 00 02 00 03 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 1D CE BC 2E 00 00 00 00 1D CE BC 2E 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0F 00 00 00 00 00 00 00 00 00 00 00 00 DD 41"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "stage": "5P-A2",
+  "result": "PARTIAL_PASS",
+  "software": "PASS",
+  "plc_save_power_cycle": "PASS",
+  "local_menu": "NOT_RUN",
+  "candidate_firmware": "0x051A",
+  "candidate_bin_sha256": "32A3184D93A0E1CC92C1F786455623176223DC2FC2430748F924B020AEF428B8",
+  "h1_upgrade_start": "PASS",
+  "h2_unsaved_power_cycle": "PASS",
+  "h3_saved_requests": [
+    "40Hz/filt1",
+    "R5 SHADOW+STATIC",
+    "R5 ACTIVE+STATIC",
+    "R5 ACTIVE+DOSING",
+    "Checkweigh STATIC",
+    "Checkweigh DYNAMIC"
+  ],
+  "save_results": "all SUCCESS; revisions 9-14; slot/sequence advanced 6 times",
+  "h6_matrix": {
+    "10_filt0": 9.984253,
+    "10_filt1": 9.983972,
+    "10_filt2": 9.984253,
+    "10_filt3": 9.983972,
+    "40_filt0": 39.935782,
+    "40_filt1": 39.933166,
+    "40_filt2": 39.931775,
+    "40_filt3": 39.938453
+  },
+  "h6_errors": "read=0, poll_gap=0, overrun=0, fault=0, LIMITED=0",
+  "config_sha256_before": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "config_sha256_after_final_restore": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "final_device": "0x0517, 10Hz/filt3, OFF+SHADOW, Checkweigh OFF, offset/reference/evaluation 0, fault/overrun/dirty/SAVE 0, revision/saved 8/8",
+  "deferred": ["local menu H4", "formal release", "metrology", "cross-sensor", "12-hour", "external DRDY", "physical sensor fault", "ASan", "UBSan"]
+}

@@ -1,10 +1,10 @@
 # Stage 5P-A2 Engineering Product Consolidation
 
-## Software Result
+## Final Result
 
-**STAGE 5P-A2 SOFTWARE CONSOLIDATION READY; SAVE/POWER-CYCLE HARDWARE
-CLOSURE INCOMPLETE; 0x051A REMAINS AN ENGINEERING CANDIDATE; DEVICE RESTORED
-TO FROZEN 0x0517.**
+**STAGE 5P-A2 SOFTWARE CONSOLIDATION READY; SAVE/POWER-CYCLE PLC HARDWARE
+CLOSURE PASS; LOCAL MENU CLOSURE NOT RUN; 0x051A REMAINS AN ENGINEERING
+CANDIDATE; DEVICE RESTORED TO FROZEN 0x0517.**
 
 No new algorithm was introduced. A2 only formalizes the already implemented
 10/40 Hz product path, default contract, and V3 request-state persistence.
@@ -65,21 +65,46 @@ Candidate artifacts:
 | ELF | 2,024,200 | `5937DF5E29E6B65A7595449B8E786A1B68F0BBD331A6EBCB1E4BDEE2DECC74DA` |
 | MAP | 1,444,959 | `96A4129C0A37E51032761A91B5DFBBD20D4C26F0AFC554EDF78A1972961918B8` |
 
-## Hardware Stop Point
+## Hardware Evidence
 
 The current read-only device preflight is Firmware 0x0517, Map 0x0104,
 10 Hz/filt3, R5 OFF+SHADOW, offset/reference/evaluation zero, fault/overrun/
 dirty zero, revision/saved 8/8, and approximately 500 g loaded.
 
-No SWD configuration read, application erase, 0x051A flash, SAVE, physical
-power-cycle or persistent configuration write has been performed in A2.
-The intended application range for 0x051A is pages 0-105
-(`0x08000000-0x0801A7FF`); the 4 KB V3 region at `0x0801F000` will be backed
-up before any authorized test.
+The authorized 0x051A application-only flash and Verify succeeded. The V3
+configuration region was backed up before testing; A/B were valid, active B,
+sequence 8, SHA-256
+`A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4`.
 
-Hardware execution is waiting for the exact authorization:
+H2 unsaved APPLY and physical power-cycle restored the prior 10 Hz/filt3,
+OFF+SHADOW/OFF request and left the Flash SHA unchanged. H3 explicitly saved:
 
-`授权烧录0x051A并执行受控SAVE/断电恢复测试`
+- 40 Hz + filt1: revision/saved 9/9, active slot A, sequence 9;
+- R5 SHADOW+STATIC: revision/saved 10/10, slot B, sequence 10;
+- R5 ACTIVE+STATIC: revision/saved 11/11, slot A, sequence 11;
+- R5 ACTIVE+DOSING: revision/saved 12/12, slot B, sequence 12;
+- Checkweigh STATIC: revision/saved 13/13, slot A, sequence 13;
+- Checkweigh DYNAMIC: revision/saved 14/14, slot B, sequence 14.
+
+Each SAVE returned SUCCESS with a Modbus token/source/revision; CRC and
+commit markers were valid. Each requested state was confirmed after a real
+physical power cycle. Startup outputs stayed off and volatile R5 state began
+from zero. H6 then passed all 10/40 Hz × filt0-filt3 30-second combinations
+under normal five-block polling; 10 Hz measured 9.98397-9.98425 Hz and 40 Hz
+39.93177-39.93845 Hz, with zero read errors, polling gaps, overrun, fault or
+LIMITED. R5 ACTIVE+DOSING remained frozen during H6.
+
+H4 local keypad/menu transaction coverage was not run in this session. The
+Modbus/PLC owner, SAVE and physical power-cycle closure is therefore complete;
+local menu closure remains deferred.
+
+Per the prompt's default choice C, the exact pretest configuration backup was
+restored after the final evidence. Application-only 0x0517 rollback Verify
+passed and final configuration readback SHA is again
+`A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4`.
+Final device is 0x0517, 10 Hz/filt3/strength3, R5 OFF+SHADOW, Checkweigh OFF,
+offset/reference/evaluation zero, fault/overrun/dirty/SAVE zero and revision/
+saved 8/8.
 
 Formal Release, metrology, cross-sensor, new 12-hour, external DRDY, physical
 sensor fault, D1-C nonzero-offset, ASan and UBSan qualifications remain
