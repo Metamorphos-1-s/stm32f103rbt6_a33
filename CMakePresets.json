@@ -133,6 +133,13 @@
             "cacheVariables": {
                 "A33_ENABLE_STAGE5PA1_DIAGNOSTICS": "ON"
             }
+        },
+        {
+            "name": "Stage5PA2Candidate",
+            "inherits": "Stage5PA1Candidate",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5PA2_PRODUCT": "ON"
+            }
         }
     ],
     "buildPresets": [
@@ -191,6 +198,10 @@
         {
             "name": "Stage5PA1Diagnostics",
             "configurePreset": "Stage5PA1Diagnostics"
+        },
+        {
+            "name": "Stage5PA2Candidate",
+            "configurePreset": "Stage5PA2Candidate"
         }
     ]
 }

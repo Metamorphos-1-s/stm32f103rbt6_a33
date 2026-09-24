@@ -1,0 +1,745 @@
+{
+  "schema_version": 1,
+  "symbols": [
+    {
+      "name": "s_rx",
+      "address": "0x20002658",
+      "size": 1024,
+      "section": "bss"
+    },
+    {
+      "name": "s_rx_dma_buffer",
+      "address": "0x2000221C",
+      "size": 1024,
+      "section": "bss"
+    },
+    {
+      "name": "s_cache",
+      "address": "0x20003E68",
+      "size": 968,
+      "section": "bss"
+    },
+    {
+      "name": "s_server2",
+      "address": "0x20000784",
+      "size": 888,
+      "section": "bss"
+    },
+    {
+      "name": "s_server3",
+      "address": "0x2000040C",
+      "size": 888,
+      "section": "bss"
+    },
+    {
+      "name": "s_engine",
+      "address": "0x20001408",
+      "size": 864,
+      "section": "bss"
+    },
+    {
+      "name": "s_r5_drift",
+      "address": "0x20001028",
+      "size": 848,
+      "section": "bss"
+    },
+    {
+      "name": "s_rx_buffer",
+      "address": "0x20003B28",
+      "size": 512,
+      "section": "bss"
+    },
+    {
+      "name": "s_priority_queue",
+      "address": "0x200037D8",
+      "size": 448,
+      "section": "bss"
+    },
+    {
+      "name": "s_system_context",
+      "address": "0x20001BE8",
+      "size": 392,
+      "section": "bss"
+    },
+    {
+      "name": "s_candidate",
+      "address": "0x20004558",
+      "size": 344,
+      "section": "bss"
+    },
+    {
+      "name": "s_candidate_original",
+      "address": "0x200018E8",
+      "size": 344,
+      "section": "bss"
+    },
+    {
+      "name": "s_candidate_target",
+      "address": "0x20001790",
+      "size": 344,
+      "section": "bss"
+    },
+    {
+      "name": "s_device_config",
+      "address": "0x20000E68",
+      "size": 344,
+      "section": "bss"
+    },
+    {
+      "name": "s_factory_config",
+      "address": "0x20001A60",
+      "size": 344,
+      "section": "bss"
+    },
+    {
+      "name": "s_framer2",
+      "address": "0x20000C54",
+      "size": 344,
+      "section": "bss"
+    },
+    {
+      "name": "s_framer3",
+      "address": "0x20000AFC",
+      "size": 344,
+      "section": "bss"
+    },
+    {
+      "name": "s_original",
+      "address": "0x200046B0",
+      "size": 344,
+      "section": "bss"
+    },
+    {
+      "name": "s_staged_config",
+      "address": "0x20002BA0",
+      "size": 344,
+      "section": "bss"
+    },
+    {
+      "name": "s_working",
+      "address": "0x20002F08",
+      "size": 344,
+      "section": "bss"
+    },
+    {
+      "name": "s_queue",
+      "address": "0x20003590",
+      "size": 320,
+      "section": "bss"
+    },
+    {
+      "name": "s_body",
+      "address": "0x20003420",
+      "size": 314,
+      "section": "bss"
+    },
+    {
+      "name": "s_active_payload",
+      "address": "0x200032C4",
+      "size": 281,
+      "section": "bss"
+    },
+    {
+      "name": "s_slot_a_payload",
+      "address": "0x200031A8",
+      "size": 281,
+      "section": "bss"
+    },
+    {
+      "name": "s_slot_b_payload",
+      "address": "0x2000308C",
+      "size": 281,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_buffer",
+      "address": "0x20002A8C",
+      "size": 256,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_buffer",
+      "address": "0x20003A28",
+      "size": 256,
+      "section": "bss"
+    },
+    {
+      "name": "s_calibration",
+      "address": "0x20002D00",
+      "size": 248,
+      "section": "bss"
+    },
+    {
+      "name": "s_buffer",
+      "address": "0x20002024",
+      "size": 192,
+      "section": "bss"
+    },
+    {
+      "name": "s_events",
+      "address": "0x2000433C",
+      "size": 192,
+      "section": "bss"
+    },
+    {
+      "name": "s_parser",
+      "address": "0x20004230",
+      "size": 172,
+      "section": "bss"
+    },
+    {
+      "name": "s_raw_stability",
+      "address": "0x200002B8",
+      "size": 160,
+      "section": "bss"
+    },
+    {
+      "name": "s_tasks",
+      "address": "0x200036DC",
+      "size": 160,
+      "section": "bss"
+    },
+    {
+      "name": "s_snapshot",
+      "address": "0x20003D68",
+      "size": 128,
+      "section": "bss"
+    },
+    {
+      "name": "s_staging",
+      "address": "0x20002E80",
+      "size": 128,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_staging",
+      "address": "0x200039A8",
+      "size": 128,
+      "section": "bss"
+    },
+    {
+      "name": "s_display_conditioner",
+      "address": "0x20001380",
+      "size": 120,
+      "section": "bss"
+    },
+    {
+      "name": "s_session",
+      "address": "0x20000358",
+      "size": 112,
+      "section": "bss"
+    },
+    {
+      "name": "s_idle_events",
+      "address": "0x20001E1C",
+      "size": 96,
+      "section": "bss"
+    },
+    {
+      "name": "s_idle_events",
+      "address": "0x2000210C",
+      "size": 96,
+      "section": "bss"
+    },
+    {
+      "name": "s_keys",
+      "address": "0x200043FC",
+      "size": 80,
+      "section": "bss"
+    },
+    {
+      "name": "s_scheduler",
+      "address": "0x20003DE8",
+      "size": 76,
+      "section": "bss"
+    },
+    {
+      "name": "s_snapshot",
+      "address": "0x20001F54",
+      "size": 76,
+      "section": "bss"
+    },
+    {
+      "name": "htim4",
+      "address": "0x20000080",
+      "size": 72,
+      "section": "bss"
+    },
+    {
+      "name": "huart1",
+      "address": "0x20000268",
+      "size": 72,
+      "section": "bss"
+    },
+    {
+      "name": "huart2",
+      "address": "0x20000220",
+      "size": 72,
+      "section": "bss"
+    },
+    {
+      "name": "huart3",
+      "address": "0x200001D8",
+      "size": 72,
+      "section": "bss"
+    },
+    {
+      "name": "s_snapshot",
+      "address": "0x20001F08",
+      "size": 72,
+      "section": "bss"
+    },
+    {
+      "name": "hdma_usart2_rx",
+      "address": "0x20000194",
+      "size": 68,
+      "section": "bss"
+    },
+    {
+      "name": "hdma_usart2_tx",
+      "address": "0x20000150",
+      "size": 68,
+      "section": "bss"
+    },
+    {
+      "name": "hdma_usart3_rx",
+      "address": "0x2000010C",
+      "size": 68,
+      "section": "bss"
+    },
+    {
+      "name": "hdma_usart3_tx",
+      "address": "0x200000C8",
+      "size": 68,
+      "section": "bss"
+    },
+    {
+      "name": "s_statistics",
+      "address": "0x200021D8",
+      "size": 68,
+      "section": "bss"
+    },
+    {
+      "name": "s_idle_events",
+      "address": "0x20001DA4",
+      "size": 64,
+      "section": "bss"
+    },
+    {
+      "name": "s_verify_chunk",
+      "address": "0x200033E0",
+      "size": 64,
+      "section": "bss"
+    },
+    {
+      "name": "s_mailbox",
+      "address": "0x20002DFC",
+      "size": 60,
+      "section": "bss"
+    },
+    {
+      "name": "s_diagnostics",
+      "address": "0x20003D2C",
+      "size": 56,
+      "section": "bss"
+    },
+    {
+      "name": "s_diagnostics",
+      "address": "0x20003794",
+      "size": 52,
+      "section": "bss"
+    },
+    {
+      "name": "s_snapshot",
+      "address": "0x20001ED4",
+      "size": 52,
+      "section": "bss"
+    },
+    {
+      "name": "hadc1",
+      "address": "0x20000050",
+      "size": 48,
+      "section": "bss"
+    },
+    {
+      "name": "s_event_baseline",
+      "address": "0x20002178",
+      "size": 48,
+      "section": "bss"
+    },
+    {
+      "name": "s_events",
+      "address": "0x20001DE4",
+      "size": 48,
+      "section": "bss"
+    },
+    {
+      "name": "s_events",
+      "address": "0x20001E7C",
+      "size": 48,
+      "section": "bss"
+    },
+    {
+      "name": "s_observed_events",
+      "address": "0x200021A8",
+      "size": 48,
+      "section": "bss"
+    },
+    {
+      "name": "s_state",
+      "address": "0x20001FA0",
+      "size": 44,
+      "section": "bss"
+    },
+    {
+      "name": "s_diagnostics",
+      "address": "0x20003E3C",
+      "size": 40,
+      "section": "bss"
+    },
+    {
+      "name": "s_snapshot",
+      "address": "0x20001EAC",
+      "size": 40,
+      "section": "bss"
+    },
+    {
+      "name": "s_alarm_staging",
+      "address": "0x20002E5C",
+      "size": 34,
+      "section": "bss"
+    },
+    {
+      "name": "pFlash",
+      "address": "0x20000030",
+      "size": 32,
+      "section": "bss"
+    },
+    {
+      "name": "s_config",
+      "address": "0x20001FE8",
+      "size": 32,
+      "section": "bss"
+    },
+    {
+      "name": "s_startup_auto_zero",
+      "address": "0x20000E40",
+      "size": 32,
+      "section": "bss"
+    },
+    {
+      "name": "s_statistics",
+      "address": "0x2000355C",
+      "size": 32,
+      "section": "bss"
+    },
+    {
+      "name": "s_statistics",
+      "address": "0x2000261C",
+      "size": 32,
+      "section": "bss"
+    },
+    {
+      "name": "s_active",
+      "address": "0x20000DE4",
+      "size": 28,
+      "section": "bss"
+    },
+    {
+      "name": "s_alarm_shadow",
+      "address": "0x20001004",
+      "size": 28,
+      "section": "bss"
+    },
+    {
+      "name": "s_applied_candidate",
+      "address": "0x200044C0",
+      "size": 28,
+      "section": "bss"
+    },
+    {
+      "name": "s_candidate",
+      "address": "0x200044F8",
+      "size": 28,
+      "section": "bss"
+    },
+    {
+      "name": "s_candidate",
+      "address": "0x20000DC8",
+      "size": 28,
+      "section": "bss"
+    },
+    {
+      "name": "s_edit",
+      "address": "0x200044DC",
+      "size": 28,
+      "section": "bss"
+    },
+    {
+      "name": "s_load_info",
+      "address": "0x20001BBC",
+      "size": 28,
+      "section": "bss"
+    }
+  ],
+  "r5_state": {
+    "name": "s_r5_drift",
+    "address": "0x20001028",
+    "size": 848,
+    "section": "bss"
+  },
+  "weight_engine": {
+    "name": "s_engine",
+    "address": "0x20001408",
+    "size": 864,
+    "section": "bss"
+  },
+  "critical_buffers": [
+    {
+      "name": "s_rx",
+      "address": "0x20002658",
+      "size": 1024,
+      "section": "bss"
+    },
+    {
+      "name": "s_rx_dma_buffer",
+      "address": "0x2000221C",
+      "size": 1024,
+      "section": "bss"
+    },
+    {
+      "name": "s_cache",
+      "address": "0x20003E68",
+      "size": 968,
+      "section": "bss"
+    },
+    {
+      "name": "s_server2",
+      "address": "0x20000784",
+      "size": 888,
+      "section": "bss"
+    },
+    {
+      "name": "s_server3",
+      "address": "0x2000040C",
+      "size": 888,
+      "section": "bss"
+    },
+    {
+      "name": "s_rx_buffer",
+      "address": "0x20003B28",
+      "size": 512,
+      "section": "bss"
+    },
+    {
+      "name": "s_priority_queue",
+      "address": "0x200037D8",
+      "size": 448,
+      "section": "bss"
+    },
+    {
+      "name": "s_queue",
+      "address": "0x20003590",
+      "size": 320,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_buffer",
+      "address": "0x20002A8C",
+      "size": 256,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_buffer",
+      "address": "0x20003A28",
+      "size": 256,
+      "section": "bss"
+    },
+    {
+      "name": "s_buffer",
+      "address": "0x20002024",
+      "size": 192,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_staging",
+      "address": "0x200039A8",
+      "size": 128,
+      "section": "bss"
+    },
+    {
+      "name": "hdma_usart2_rx",
+      "address": "0x20000194",
+      "size": 68,
+      "section": "bss"
+    },
+    {
+      "name": "hdma_usart2_tx",
+      "address": "0x20000150",
+      "size": 68,
+      "section": "bss"
+    },
+    {
+      "name": "hdma_usart3_rx",
+      "address": "0x2000010C",
+      "size": 68,
+      "section": "bss"
+    },
+    {
+      "name": "hdma_usart3_tx",
+      "address": "0x200000C8",
+      "size": 68,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_frame_lengths",
+      "address": "0x20003998",
+      "size": 16,
+      "section": "bss"
+    },
+    {
+      "name": "s_buffer_overrun_count",
+      "address": "0x20002014",
+      "size": 4,
+      "section": "bss"
+    },
+    {
+      "name": "s_observed_rx_bytes",
+      "address": "0x20003784",
+      "size": 4,
+      "section": "bss"
+    },
+    {
+      "name": "s_rx_error_total",
+      "address": "0x20002648",
+      "size": 4,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_error_total",
+      "address": "0x20002644",
+      "size": 4,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_start_cycles",
+      "address": "0x200020F4",
+      "size": 4,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_start_ms",
+      "address": "0x2000264C",
+      "size": 4,
+      "section": "bss"
+    },
+    {
+      "name": "s_rx_head",
+      "address": "0x200037D6",
+      "size": 2,
+      "section": "bss"
+    },
+    {
+      "name": "s_rx_length",
+      "address": "0x20001E16",
+      "size": 2,
+      "section": "bss"
+    },
+    {
+      "name": "s_rx_length",
+      "address": "0x20001D9E",
+      "size": 2,
+      "section": "bss"
+    },
+    {
+      "name": "s_rx_tail",
+      "address": "0x200037D4",
+      "size": 2,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_frame_remaining",
+      "address": "0x200037CE",
+      "size": 2,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_head",
+      "address": "0x200037D2",
+      "size": 2,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_tail",
+      "address": "0x200037D0",
+      "size": 2,
+      "section": "bss"
+    },
+    {
+      "name": "s_cache_next",
+      "address": "0x20003E67",
+      "size": 1,
+      "section": "bss"
+    },
+    {
+      "name": "s_dma_irq_context",
+      "address": "0x20001E18",
+      "size": 1,
+      "section": "bss"
+    },
+    {
+      "name": "s_rx_byte",
+      "address": "0x20002B8C",
+      "size": 1,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_busy",
+      "address": "0x2000263F",
+      "size": 1,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_busy",
+      "address": "0x20002A88",
+      "size": 1,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_completed",
+      "address": "0x2000263E",
+      "size": 1,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_error",
+      "address": "0x2000263D",
+      "size": 1,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_frame_count",
+      "address": "0x200037CB",
+      "size": 1,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_frame_head",
+      "address": "0x200037CD",
+      "size": 1,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_frame_tail",
+      "address": "0x200037CC",
+      "size": 1,
+      "section": "bss"
+    },
+    {
+      "name": "s_tx_timeout",
+      "address": "0x2000263C",
+      "size": 1,
+      "section": "bss"
+    }
+  ]
+}
