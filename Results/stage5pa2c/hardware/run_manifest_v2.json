@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "classification": "STAGE5PA2C_HARDWARE_PARTIAL_USER_STOP",
+  "classification": "STAGE5PA2C_PARTIAL_TEST_EXACT_0517_ROLLBACK",
   "run_id": "hardware",
   "repository_commit": "HEAD",
   "files": [
@@ -163,6 +163,61 @@
       "path": "preflight_0517.json",
       "length": 2834,
       "sha256": "3E9CD149F1470A1524F24632AD26C7168F067A7C8F8A229BBDF227D47954C23E"
+    },
+    {
+      "path": "rollback_0517/application_readback_108544.bin",
+      "length": 108544,
+      "sha256": "D9CD42FD27B57FD2E16F6F91D20D0B9260677158AFB236702F647DB7727B48DD"
+    },
+    {
+      "path": "rollback_0517/before_probe.json",
+      "length": 2855,
+      "sha256": "4694F4F793CF32BF509EF8512B8F32750FB59BA5A4C9351849FB7DD3555F4E42"
+    },
+    {
+      "path": "rollback_0517/config_after_restore/config_region.bin",
+      "length": 4096,
+      "sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4"
+    },
+    {
+      "path": "rollback_0517/config_after_restore/slot_a.bin",
+      "length": 2048,
+      "sha256": "412BCED9DA8923381B0FDE954A2ECD1A2B0D8E28EC574539B2A723ADE86895F0"
+    },
+    {
+      "path": "rollback_0517/config_after_restore/slot_b.bin",
+      "length": 2048,
+      "sha256": "90700066CCD01F06667D231902D60E6EB3C501F4100C529F1F035E1C571B127D"
+    },
+    {
+      "path": "rollback_0517/config_after_restore/slots.json",
+      "length": 2481,
+      "sha256": "5D27587C2904AAF91833A1173711FD4A480A7906758CBD84B8FA802F936F7677"
+    },
+    {
+      "path": "rollback_0517/config_before_restore/config_region.bin",
+      "length": 4096,
+      "sha256": "2143BAA0BBB8C8F4B446B6F34E3D2C7E5A8F8F69CA71C2A80154155EE736DC57"
+    },
+    {
+      "path": "rollback_0517/config_before_restore/slot_a.bin",
+      "length": 2048,
+      "sha256": "BDEE288C9EDD4B9DD9EBC3BC2F6365CD5EB705CD226AC220FE1038B824CA9620"
+    },
+    {
+      "path": "rollback_0517/config_before_restore/slot_b.bin",
+      "length": 2048,
+      "sha256": "90700066CCD01F06667D231902D60E6EB3C501F4100C529F1F035E1C571B127D"
+    },
+    {
+      "path": "rollback_0517/final_probe_0517.json",
+      "length": 2840,
+      "sha256": "FD19383DF50B02ACEE148BDBF2119A3E9D19BD7B7ED70905CD86D4A229F5C42C"
+    },
+    {
+      "path": "rollback_0517/rollback_summary.json",
+      "length": 1366,
+      "sha256": "354A91599991CD86CFDAEBB7F30A97EBCDFC5A507009C41BA18D296BF466A543"
     },
     {
       "path": "stop_after_skipped_h2.json",
