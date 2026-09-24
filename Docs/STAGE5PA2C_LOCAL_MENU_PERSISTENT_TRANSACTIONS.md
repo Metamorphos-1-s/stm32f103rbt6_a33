@@ -6,8 +6,9 @@
 HARDWARE CLOSURE INCOMPLETE; 0x051B REMAINS AN ENGINEERING CANDIDATE.**
 
 Hardware testing was stopped at the user's request before the full matrix.
-The device currently runs 0x051B with a saved SHADOW+STATIC request; final
-device disposition is pending an explicit user choice, not a qualification PASS.
+The user selected rollback. The device was restored to frozen 0x0517 and its
+exact pre-test configuration image; no A2C hardware qualification PASS is
+claimed.
 
 The A2B failure is preserved in `Docs/STAGE5PA2B_LOCAL_MENU_CLOSURE.md` and
 was not reused as a hardware result. A2B's 0x051A position remains:
@@ -137,7 +138,16 @@ H2 OFF/ACTIVE+STATIC/ACTIVE+DOSING, and H3-H8 were **not performed** and are
 not PASS. No physical power-cycle persistence result exists for 0x051B.
 The stop snapshot reports 0x051B, Map 0x0104, SHADOW+STATIC, offset/reference/
 evaluation 0, clean revision/saved 9/9, SAVE count 1, and fault/overrun 0.
-No further menu action, SAVE, configuration restore, or rollback has been
-performed after the user's stop request. A user decision is required whether
-to retain this unqualified engineering state or restore 0x0517 and the exact
-pre-test configuration image.
+The user then explicitly selected 0x0517 rollback. The frozen 107,084-byte
+application SHA-256
+`9D8C5881CD880D2C5D6A7D0C499A4EACF9495A550B08B237A81D4BB2F71641C5`
+was programmed and verified in sectors 0-104. Sector 105, previously occupied
+by the longer 0x051B image, was erased separately. An independent 108,544-byte
+application readback matches every frozen 0x0517 byte and has only `0xFF` in
+the remaining tail. The pre-test 4096-byte configuration image was programmed
+and verified in sectors 124-127. Its independent readback SHA-256 is again
+`A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4`.
+Both V3 slots remain valid; active B sequence 8. Final Modbus read reports
+firmware 0x0517, Map 0x0104, Persistent Format 3, clean revision/saved 8/8,
+R5 OFF+SHADOW, offset/reference/evaluation zero, fault/overrun/SAVE zero.
+No physical power cycle after rollback was requested or performed.
