@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5PA2D_SOFTWARE_RAM_GATE_FAILED_PREFLASH",
+  "run_id": "software_gate",
+  "repository_commit": "HEAD",
+  "files": [
+    {
+      "path": "artifacts/firmware_0x051C_debug.bin",
+      "length": 108880,
+      "sha256": "0036A42DB7FB7CF6CD4EE54FACC85111145A8786908B96BEE4F1113A37C99A3D"
+    },
+    {
+      "path": "artifacts/firmware_0x051C_release.bin",
+      "length": 92532,
+      "sha256": "11CE5DF326FE099C0C64E2184C21C310A3781C7F3FD8635F08527D6F177C6F89"
+    },
+    {
+      "path": "ctest_debug.xml",
+      "length": 8722,
+      "sha256": "86711DB7F01026AA3CF8A613E34631DA00F72F0BECC87E27C00C839E3FB8337D"
+    },
+    {
+      "path": "ctest_release.xml",
+      "length": 8722,
+      "sha256": "D88B42A0A1B137E252D7750CADCF325F76A8159552293882266AF3B044364470"
+    },
+    {
+      "path": "stack/largest_ram_symbols.json",
+      "length": 14212,
+      "sha256": "EE39E9801431429B8F0C2CA298EF412845A8171DCEB9D5E7443479FE29A4BAC3"
+    },
+    {
+      "path": "stack/ram_layout.json",
+      "length": 7805,
+      "sha256": "0365A365FAE3AE6300E4F9AFB2F894CE8125B26EB60D388E2785442B79188C0F"
+    },
+    {
+      "path": "stack/stack_watermark.json",
+      "length": 48773,
+      "sha256": "032A00D26C4046ECCA042140C271A189E7AE9A06A6F1224E322D001AFF4EB198"
+    }
+  ]
+}
