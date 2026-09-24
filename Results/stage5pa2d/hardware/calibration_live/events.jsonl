@@ -1,0 +1,7 @@
+{"utc":"2026-09-24T18:50:07.561Z","event":"RECORDER_STARTED"}
+{"utc":"2026-09-24T18:51:29.890Z","host_monotonic_ns":19192562000000,"event":"CALIBRATION_ZERO_OPERATOR_INSTRUCTIONS","note":"Empty platform; operator will enter CAL and short FUNCTION for zero acquisition"}
+{"utc":"2026-09-24T18:53:08.540Z","host_monotonic_ns":19291203000000,"event":"ZERO_CAPTURE_COMPLETE_SPAN_INPUT_500G","note":"Operator reports displayed value 500.00; no load and no span confirmation yet"}
+{"utc":"2026-09-24T18:54:48.519Z","host_monotonic_ns":19391187000000,"event":"OBSERVED_SAVE_BEFORE_OPERATOR_CONFIRMATION","note":"Recorder shows 500 g loaded at 18:52:48Z and one save by 18:52:59Z; earlier event note was based on text only and is superseded pending operator clarification"}
+{"utc":"2026-09-24T18:56:12.488Z","host_monotonic_ns":19475156000000,"event":"OPERATOR_CONFIRMED_SPAN_AND_SAVE","note":"Operator reports placed 500 g, short FUNCTION, CAL SP then donE, automatic return; load remains on scale"}
+{"utc":"2026-09-24T18:58:35.761Z","host_monotonic_ns":19618421000000,"event":"OPERATOR_UNLOADED_500G","note":"Operator confirms 500 g removed and empty platform stable"}
+{"utc":"2026-09-24T18:58:42.092Z","event":"RECORDER_STOPPED","records":1027}

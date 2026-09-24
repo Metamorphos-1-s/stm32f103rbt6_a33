@@ -1,0 +1,21 @@
+{
+  "classification": "STAGE5PA2D_RAM_FIX_SOFTWARE_GATE_PASS",
+  "firmware": "0x051C",
+  "map": "0x0104",
+  "host_debug_ctest": "41/41 PASS",
+  "host_release_ctest": "41/41 PASS",
+  "arm_debug": "PASS",
+  "arm_release": "PASS",
+  "arm_strict_wextra_werror": "PASS",
+  "debug_ram_bytes": 19464,
+  "release_ram_bytes": 19408,
+  "ram_ceiling_bytes": 19464,
+  "minimum_stack_bytes": 1024,
+  "heap_bytes": 0,
+  "bounded_conservative_stack_bytes": 1504,
+  "collision_margin_bytes": 536,
+  "debug_bin_bytes": 108760,
+  "debug_bin_sha256": "6D88021729A47B8317919D3DF0A14D36228E5AB161CFC338BD7D2D381A99ADE3",
+  "release_bin_bytes": 92428,
+  "release_bin_sha256": "F02458F073766D3A9E2C7F278DFFDF258277067D653D05593853EF4BF966D114"
+}

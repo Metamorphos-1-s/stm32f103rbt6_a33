@@ -1,0 +1,5 @@
+{"utc":"2026-09-24T19:23:33.254Z","event":"RECORDER_STARTED"}
+{"utc":"2026-09-24T19:23:35.269Z","host_monotonic_ns":21117937000000,"event":"FINAL_BRIGHTNESS_RESTORE_INSTRUCTIONS","note":"User chose retain 0x051C and restore briGHt 4->3 with direct long FUNCTION save"}
+{"utc":"2026-09-24T19:24:19.202Z","event":"READ_ERROR","error":"Modbus response timeout"}
+{"utc":"2026-09-24T19:24:57.560Z","host_monotonic_ns":21200234000000,"event":"FINAL_BRIGHTNESS_RESTORE_DONE","note":"Operator reports SAUE then donE"}
+{"utc":"2026-09-24T19:24:59.882Z","event":"RECORDER_STOPPED","records":172}

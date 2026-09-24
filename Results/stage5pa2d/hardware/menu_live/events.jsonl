@@ -1,0 +1,8 @@
+{"utc":"2026-09-24T19:05:28.502Z","event":"RECORDER_STARTED"}
+{"utc":"2026-09-24T19:05:53.722Z","host_monotonic_ns":20056390000000,"event":"BRIGHTNESS_CANCEL_AND_DIRECT_LONG_INSTRUCTIONS","note":"First session: briGHt 3->4 then TARE cancel twice. Second session: briGHt 3->4, long FUNCTION while editing, expect SAUE then donE"}
+{"utc":"2026-09-24T19:10:41.864Z","host_monotonic_ns":20344531000000,"event":"BRIGHTNESS_DIRECT_LONG_DONE","note":"Operator reports SAUE then donE, auto exit, no timeout"}
+{"utc":"2026-09-24T19:11:07.192Z","host_monotonic_ns":20369859000000,"event":"R5_DIRECT_LONG_AND_RESTORE_INSTRUCTIONS","note":"OFF -> SHAdO direct-long save, then SHAdO -> OFF direct-long save; stop on error"}
+{"utc":"2026-09-24T19:13:34.100Z","host_monotonic_ns":20516765000000,"event":"R5_DIRECT_LONG_AND_RESTORE_DONE","note":"Operator reports both SAUE/donE sequences as expected; final display OFF"}
+{"utc":"2026-09-24T19:14:15.716Z","host_monotonic_ns":20558390000000,"event":"CHECKWEIGH_DIRECT_LONG_AND_RESTORE_INSTRUCTIONS","note":"OFF -> StAtIC direct-long save, then StAtIC -> OFF direct-long save; stop on error"}
+{"utc":"2026-09-24T19:16:35.250Z","host_monotonic_ns":20697921000000,"event":"CHECKWEIGH_DIRECT_LONG_AND_RESTORE_DONE","note":"Operator reports both sequences as expected and final OFF"}
+{"utc":"2026-09-24T19:16:38.382Z","event":"RECORDER_STOPPED","records":1336}

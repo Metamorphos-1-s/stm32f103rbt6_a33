@@ -1,5 +1,8 @@
 # Stage 5P-A2D Calibration and Menu Interaction Candidate
 
+> Historical patch-authoring note. The Windows retest and final 0x051C board
+> result are recorded in `Docs/STAGE5PA2D_FOCUSED_HARDWARE_VALIDATION.md`.
+
 ## Scope and status
 
 `SOFTWARE CANDIDATE; ARM RESOURCE RETEST AND TARGET HARDWARE CHECK PENDING`.

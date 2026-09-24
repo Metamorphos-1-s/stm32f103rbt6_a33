@@ -1,0 +1,21 @@
+{
+  "classification": "STAGE5PA2D_EXACT_0x051C_APPLICATION_FLASH",
+  "programmer": "STM32CubeProgrammer 2.19.0",
+  "connection": "ST-LINK SWD Under Reset",
+  "target_voltage_v": 3.29,
+  "firmware_before": "0x0517",
+  "firmware_after": "0x051C",
+  "application_start": "0x08000000",
+  "erased_application_sectors": "0-106",
+  "mass_erase": false,
+  "candidate_bin_bytes": 108760,
+  "candidate_bin_sha256": "6D88021729A47B8317919D3DF0A14D36228E5AB161CFC338BD7D2D381A99ADE3",
+  "programmer_verify": "PASS",
+  "preflash_config_region_bytes": 4096,
+  "preflash_config_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "immediate_postflash_config_sha256": "A615A475C2D7B5D64126EAEB3AAE9E3D094348FA4C4AEC7BDB8EF0010D4A3BB4",
+  "configuration_byte_identical_immediately_after_flash": true,
+  "preflash_saved_revision": 8,
+  "postflash_saved_revision": 8,
+  "preflash_application_124k_sha256": "0BFEC08EF3E3E2BF8D00209E95F3BF0203C30134EDCF75BF19E83FB4B0C28297"
+}
