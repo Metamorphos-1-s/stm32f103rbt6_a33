@@ -30,6 +30,7 @@ class HotCycleTests(unittest.TestCase):
         result = replay_r5(rows, edges)
         self.assertEqual(result["reset_count"], 0)
         self.assertEqual(result["max_dosing_offset_change_ug"], 0)
+        self.assertIn("NOT RUN", result["event_relative_checkpoints"]["unload1"]["10"]["status"])
         for event in result["mode_switches"][1:]:
             self.assertEqual(event["offset_before_ug"], event["offset_after_ug"])
 

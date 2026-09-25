@@ -178,7 +178,7 @@ def panel_transient(rows, edge, is_load):
             "note": "2 Hz host polls and 0.01 g quantization; not DRDY-level lag"}
 
 
-def replay_r5(rows, edges):
+def replay_r5(rows, edges, trace_path=None):
     """Retrospective schedule, one continuous state; not real firmware execution."""
     start = ns(rows[0])
     by_second = defaultdict(list)
@@ -197,6 +197,7 @@ def replay_r5(rows, edges):
     index = 0
     maximum_dosing_change = 0
     last_dosing = None
+    trace = []
     for second, masses in sorted(by_second.items()):
         while index < len(schedule) and second >= schedule[index][0]:
             planned, mode, reason = schedule[index]
@@ -206,14 +207,44 @@ def replay_r5(rows, edges):
                                 "offset_before_ug": before, "offset_after_ug": model.offset_ug})
             last_dosing = None
             index += 1
-        snap = model.process_second(second, round(statistics.median(masses)))
+        mass = round(statistics.median(masses))
+        snap = model.process_second(second, mass)
+        trace.append({"second": second, "mode": mode_name(model),
+                      "input_ug": mass, "corrected_ug": snap["corrected_gross_ug"],
+                      "offset_ug": snap["offset_ug"], "state": snap["state"],
+                      "automatic_rebuild_count": snap["automatic_rebase_count"]})
         if mode_name(model) == "DOSING":
             if last_dosing is not None:
                 maximum_dosing_change = max(maximum_dosing_change,
                                             abs(last_dosing-snap["offset_ug"]))
             last_dosing = snap["offset_ug"]
+    if trace_path is not None:
+        with trace_path.open("w", encoding="utf-8", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=list(trace[0]), lineterminator="\n")
+            writer.writeheader()
+            writer.writerows(trace)
+    checkpoints = {}
+    for pos, (name, _, _) in enumerate(EVENTS):
+        edge_s = (edges[name]["edge_center_monotonic_ns"]-start)/1e9
+        phase_end = ((edges[EVENTS[pos+1][0]]["edge_center_monotonic_ns"]-start)/1e9
+                     if pos+1 < len(EVENTS) else trace[-1]["second"]+1)
+        early = [item for item in trace if 15 <= item["second"]-edge_s < 45
+                 and item["second"] < phase_end]
+        base = statistics.median(item["corrected_ug"] for item in early)
+        checkpoints[name] = {}
+        for minute in (1, 2, 5, 10, 15, 30):
+            selected = [item for item in trace if minute*60 <= item["second"]-edge_s < (minute+1)*60
+                        and item["second"] < phase_end]
+            checkpoints[name][str(minute)] = (
+                {"corrected_change_from_15_45s_ug": round(statistics.median(
+                    item["corrected_ug"] for item in selected)-base),
+                 "offset_median_ug": statistics.median(item["offset_ug"] for item in selected),
+                 "seconds": len(selected)} if len(selected) >= 50 else
+                {"status": "NOT RUN: incomplete 60-second window", "seconds": len(selected)})
     return {"actual_r5": "OFF, offset 0 throughout; this is counterfactual only",
             "mode_switches": transitions, "reset_count": 0,
+            "one_second_trace_file": trace_path.name if trace_path is not None else None,
+            "event_relative_checkpoints": checkpoints,
             "max_dosing_offset_change_ug": maximum_dosing_change,
             "automatic_rebuild_count": model.automatic_rebase_count,
             "final_mode": mode_name(model), "final_offset_ug": model.offset_ug,
@@ -274,7 +305,8 @@ def main():
         "edges": {name: {key: item for key, item in data.items() if key != "row_index"}
                   for name, data in edges.items()},
         "event_relative_stages": stages,
-        "counterfactual_r5": replay_r5(continuous, edges),
+        "counterfactual_r5": replay_r5(continuous, edges,
+            args.output.with_name("r5_counterfactual_trace.csv")),
         "measured_filtered_weight_ug": None,
         "independent_uncompensated_diagnostic_ug": None,
         "authoritative_mass_column": "gross_ug; R5 remained OFF",

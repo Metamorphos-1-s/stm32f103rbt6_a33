@@ -122,6 +122,21 @@ simulated offset is +30,274 ug. Because those switches are chosen *after* seeing
 the edges and 10 Hz individual samples were not replayed, this is a contract
 exercise, **not** a causal live-controller comparison or hardware PASS. No
 ZERO, calibration, filter or rate switch took place to validate transitions.
+The reproducible `r5_counterfactual_trace.csv` includes every replayed second's
+mode, uncorrected input, corrected output, offset, state and rebuild count;
+`analysis.json` reports 1/2/5/10/15/30 minute corrected-window checkpoints.
+Checkpoints are clipped to each physical phase, so the incomplete first-unload
+30-minute window is explicitly NOT RUN rather than contaminated by load 2.
+
+A unified robust reference could potentially follow the loaded and unloaded
+baselines without load-event metadata, but on these records it could also
+cancel true low-rate mass changes or common zero drift. An event-history
+controller can explicitly preserve the 500 g step, but cannot reconstruct the
+missing first placement time and cannot uniquely attribute post-unload
+recovery to load history. Neither model has an independently identified
+temperature/zero component here; no candidate constants are chosen. Any later
+comparison must preserve DOSING offset freeze, exact physical span, ZERO and
+calibration resets, profile/rate transitions and the correction-speed bound.
 
 Evidence favoring an event-associated component: the sign reverses after
 placement/removal and appears in ADC counts as well as gross; a full ~500 g

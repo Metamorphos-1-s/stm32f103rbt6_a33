@@ -768,6 +768,103 @@
       }
     ],
     "reset_count": 0,
+    "one_second_trace_file": "r5_counterfactual_trace.csv",
+    "event_relative_checkpoints": {
+      "unload1": {
+        "1": {
+          "corrected_change_from_15_45s_ug": -14642,
+          "offset_median_ug": 0.0,
+          "seconds": 60
+        },
+        "2": {
+          "corrected_change_from_15_45s_ug": -29848,
+          "offset_median_ug": 0.0,
+          "seconds": 60
+        },
+        "5": {
+          "corrected_change_from_15_45s_ug": -38296,
+          "offset_median_ug": 0.0,
+          "seconds": 60
+        },
+        "10": {
+          "corrected_change_from_15_45s_ug": -56880,
+          "offset_median_ug": 0.0,
+          "seconds": 60
+        },
+        "15": {
+          "corrected_change_from_15_45s_ug": -58570,
+          "offset_median_ug": 0.0,
+          "seconds": 60
+        },
+        "30": {
+          "status": "NOT RUN: incomplete 60-second window",
+          "seconds": 20
+        }
+      },
+      "load2": {
+        "1": {
+          "corrected_change_from_15_45s_ug": 36324,
+          "offset_median_ug": -5308.0,
+          "seconds": 60
+        },
+        "2": {
+          "corrected_change_from_15_45s_ug": 52092,
+          "offset_median_ug": -5308.0,
+          "seconds": 60
+        },
+        "5": {
+          "corrected_change_from_15_45s_ug": 52938,
+          "offset_median_ug": -5308.0,
+          "seconds": 60
+        },
+        "10": {
+          "corrected_change_from_15_45s_ug": 35479,
+          "offset_median_ug": -5308.0,
+          "seconds": 60
+        },
+        "15": {
+          "corrected_change_from_15_45s_ug": 143044,
+          "offset_median_ug": -5308.0,
+          "seconds": 60
+        },
+        "30": {
+          "corrected_change_from_15_45s_ug": 113345,
+          "offset_median_ug": 31499.0,
+          "seconds": 60
+        }
+      },
+      "unload2": {
+        "1": {
+          "corrected_change_from_15_45s_ug": -18302,
+          "offset_median_ug": 40674.0,
+          "seconds": 60
+        },
+        "2": {
+          "corrected_change_from_15_45s_ug": -35198,
+          "offset_median_ug": 40674.0,
+          "seconds": 60
+        },
+        "5": {
+          "corrected_change_from_15_45s_ug": -77998,
+          "offset_median_ug": 40674.0,
+          "seconds": 60
+        },
+        "10": {
+          "corrected_change_from_15_45s_ug": -108408,
+          "offset_median_ug": 40674.0,
+          "seconds": 60
+        },
+        "15": {
+          "corrected_change_from_15_45s_ug": -142481,
+          "offset_median_ug": 40674.0,
+          "seconds": 60
+        },
+        "30": {
+          "status": "NOT RUN: incomplete 60-second window",
+          "seconds": 0
+        }
+      }
+    },
     "max_dosing_offset_change_ug": 0,
     "automatic_rebuild_count": 0,
     "final_mode": "STATIC",
