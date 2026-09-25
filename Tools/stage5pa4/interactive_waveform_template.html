@@ -80,7 +80,7 @@ const colors = {gross:"#63c6ff", display:"#ffc36d", conditioned:"#79d6b9",
 const series = {gross:1, display:2, conditioned:3, raw:4, filtered:5};
 const active = {gross:true, display:true, conditioned:false, raw:true, filtered:true};
 const bounds = {left:86, right:25, top:34, bottom:40, gap:40};
-const fullEnd = points[points.length - 1][0];
+let fullEnd = Math.max(2000, points.length ? points[points.length - 1][0] : 0);
 const quickView = document.getElementById("quickView");
 let viewStart = 0, viewEnd = fullEnd, width = 1, height = 1;
 let pointerX = null, drag = null;
@@ -232,10 +232,64 @@ document.getElementById("zoomIn").addEventListener("click",()=>zoom(.5,width/2))
 document.getElementById("zoomOut").addEventListener("click",()=>zoom(2,width/2));
 for(const box of document.querySelectorAll("input[data-series]"))box.addEventListener("change",()=>{active[box.dataset.series]=box.checked;render();});
 document.getElementById("markers").addEventListener("change",render);
-document.getElementById("meta").textContent=`${points.length.toLocaleString()} 个记录点 · ${utc(0)} 至 ${utc(fullEnd)}`;
+function updateMeta() {
+  document.getElementById("meta").textContent=`${points.length.toLocaleString()} 个记录点 · ${utc(0)} 至 ${utc(fullEnd)}`;
+}
+updateMeta();
 document.getElementById("warning").textContent=`注意：首次装载边沿未被记录；边沿标记由约 0.5 秒轮询推定，人工确认晚于真实动作。记录器没有独立的滤波重量（g）列。${DATA.missing.length?"缺失可选列："+DATA.missing.join("、")+"。":""}`;
 new ResizeObserver(render).observe(canvas);
 render();
+if (location.protocol !== "file:" && new URLSearchParams(location.search).get("realtime") === "1") {
+  const status = document.createElement("span");
+  status.id = "realtimeStatus";
+  status.style.cssText = "color:#9be3b1;font-size:12px;margin-left:auto";
+  status.textContent = "实时连接中…";
+  document.querySelector(".toolbar").appendChild(status);
+  let follow = true;
+  const followLabel = document.createElement("label");
+  followLabel.innerHTML = '<input type="checkbox" id="followLive" checked> 跟随最新';
+  document.querySelector(".toolbar").appendChild(followLabel);
+  const followControl = followLabel.querySelector("input");
+  followControl.addEventListener("change", () => {
+    follow = followControl.checked;
+    if (follow) setView(Math.max(0, fullEnd - 300000), fullEnd);
+  });
+  const pauseFollow = () => { follow = false; followControl.checked = false; };
+  const stream = new EventSource("/events");
+  stream.addEventListener("init", event => {
+    const init = JSON.parse(event.data);
+    DATA.baseUtcMs = init.baseUtcMs;
+    points.length = 0;
+    points.push(...(init.points || []));
+    fullEnd = Math.max(2000, points.length ? points[points.length - 1][0] : 0);
+    status.textContent = `实时连接 · ${init.port}`;
+    status.style.color = "#9be3b1";
+    updateMeta();
+    if (follow) setView(Math.max(0, fullEnd - 300000), fullEnd);
+    else render();
+  });
+  stream.onmessage = event => {
+    const message = JSON.parse(event.data);
+    if (!message.point) return;
+    if (points.length && message.point[0] <= points[points.length - 1][0]) return;
+    points.push(message.point);
+    fullEnd = Math.max(2000, message.point[0]);
+    updateMeta();
+    if (follow) setView(Math.max(0, fullEnd - 300000), fullEnd);
+    else render();
+  };
+  stream.onerror = () => { status.textContent = "实时连接中断，等待重连…"; status.style.color="#f2c98d"; };
+  stream.addEventListener("fatal", event => {
+    status.textContent = `采集已停止：${JSON.parse(event.data).error}`;
+    status.style.color = "#f2a59d";
+    stream.close();
+  });
+  canvas.addEventListener("pointerdown", pauseFollow);
+  canvas.addEventListener("wheel", pauseFollow, {passive:true});
+  quickView.addEventListener("change", pauseFollow);
+  document.getElementById("zoomIn").addEventListener("click", pauseFollow);
+  document.getElementById("zoomOut").addEventListener("click", pauseFollow);
+}
 </script>
 </body>
 </html>

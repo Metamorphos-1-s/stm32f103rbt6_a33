@@ -41,3 +41,29 @@ node Tools/stage5pa4/qa_interactive_waveform.cjs Results/stage5pa4/interactive_w
 
 The optional browser QA command requires an installed Playwright module and
 Microsoft Edge; the viewer itself has no such dependency.
+
+## 实时模式
+
+启动只读 COM5 采集器和本地页面：
+
+```powershell
+python Tools/stage5pa4/realtime_waveform.py --port COM5 --expected-firmware 0x051C
+```
+
+然后打开 `http://127.0.0.1:8765/?realtime=1`。实时服务通过 SSE 推送新
+记录，页面默认跟随最近 5 分钟；用户滚轮缩放或拖动后会停止自动跟随，
+点击“全时段”可恢复。采集同时写入
+`Results/stage5pa4/realtime/samples.csv`、`events.jsonl` 和 `frames.jsonl`。
+
+默认每次在 `Results/stage5pa4/realtime_runs/` 下创建新的 UTC 会话；若手动
+传入 `--output`，目标必须不存在，防止覆盖上次 CSV。服务是只读的：如果
+固件身份、Map 或 Modbus 读取异常，页面会显示连接状态，采集错误写入事件
+文件，不会执行 SAVE、配置写入、TARE 或设备复位。`/status` 返回采集健康信息。
+可按 Ctrl+C，或从另一个终端执行：
+
+```powershell
+Invoke-WebRequest -Method Post -Uri http://127.0.0.1:8765/stop
+```
+
+上述 `/stop` 只停止本地服务和串口采集，不向仪表发送指令；CSV 保留已采样
+数据。浏览器关闭或暂停跟随也不会停止服务端采集。
