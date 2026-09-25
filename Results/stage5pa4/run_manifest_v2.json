@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "classification": "STAGE5PA4_HOT_LOAD_UNLOAD_WITH_INTERACTIVE_WAVEFORM",
+  "classification": "STAGE5PA4_WITH_LOCAL_REALTIME_WAVEFORM",
   "run_id": "stage5pa4",
   "repository_commit": "HEAD",
   "files": [
@@ -16,8 +16,8 @@
     },
     {
       "path": "interactive_waveform.html",
-      "length": 543560,
-      "sha256": "DC7E26D38572E64418A3CA58EA4A3328F2C24723EB5DCE5881A523E65EB07F4D"
+      "length": 546048,
+      "sha256": "5FA4712A6A09B28DA2117E3F9ADF734F8C14F504ED1C2966FD0B484BC4FFB987"
     },
     {
       "path": "interactive_waveform_preview.png",
@@ -73,6 +73,11 @@
       "path": "r5_counterfactual_trace.csv",
       "length": 192440,
       "sha256": "7A59F06B00C8245571A808D3CE27918D4C5C46242B425633C8013DF2900BDEF0"
+    },
+    {
+      "path": "realtime_live_final_preview.png",
+      "length": 131297,
+      "sha256": "C7722A82FF7EF857B1DEBE0E56710CF729B6693FCE2CAFD90684CEB374D59000"
     },
     {
       "path": "thermal_cycle/continuous_3h/environment.json",
