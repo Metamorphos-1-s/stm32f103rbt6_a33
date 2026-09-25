@@ -1,0 +1,138 @@
+{
+  "schema_version": 2,
+  "classification": "STAGE5PA4_HOT_LOAD_UNLOAD_DEVELOPMENT_EVIDENCE_MODEL_SELECTION_INCOMPLETE",
+  "run_id": "stage5pa4",
+  "repository_commit": "HEAD",
+  "files": [
+    {
+      "path": "analysis.json",
+      "length": 25471,
+      "sha256": "14D0F7395AFF016E0271E127E25D864ADD01FA4CB7BED0D959EC8BBCA0D95A86"
+    },
+    {
+      "path": "event_timeline.csv",
+      "length": 767,
+      "sha256": "CE41CC48AFBACD1D9595B5A30E745940F592DC330869BECB751255ACF26CD2FD"
+    },
+    {
+      "path": "postflight_051C.json",
+      "length": 2839,
+      "sha256": "D2DB84B0BBD498674AE721D74FE34BD6FDB3FA094E5AEAF11B1A1A915F0A0C5E"
+    },
+    {
+      "path": "pre_record_10s/environment.json",
+      "length": 1052,
+      "sha256": "2253E9B633F3C7CC662334022FBD7994F8328E0C0C7D49A5151D0EACF01843F8"
+    },
+    {
+      "path": "pre_record_10s/events.jsonl",
+      "length": 137,
+      "sha256": "7050FE5BEA009C18BBFD1DAAD4A56ABE2313FC6AC2C9831562140EB331EA40F8"
+    },
+    {
+      "path": "pre_record_10s/samples.csv",
+      "length": 6223,
+      "sha256": "E9F558FEF8E80EEF7199964A6133AD73C972CDEE753879B1240D031ADE19DB6B"
+    },
+    {
+      "path": "pre_record_10s/summary.json",
+      "length": 3980,
+      "sha256": "BBDAC1A45F399B77D5C5B29FFE20C41F2E59D212E751C8843B9467F3DDB208FC"
+    },
+    {
+      "path": "preflight_051C.json",
+      "length": 2829,
+      "sha256": "E1FF3ABD54696B1F806C650BBA7C76626EA243DB00280488A92E9DAB8C17F7DE"
+    },
+    {
+      "path": "thermal_cycle/continuous_3h/environment.json",
+      "length": 1052,
+      "sha256": "EB640B6627A44ABC05991A8D1A2279D35189D5F99CD7ED5A76411E51277EB9A0"
+    },
+    {
+      "path": "thermal_cycle/continuous_3h/events.jsonl",
+      "length": 784,
+      "sha256": "C595FF52FC228CC831EC0392B6871290DBAC6C265300DB65A6F2BE7D6A433A9A"
+    },
+    {
+      "path": "thermal_cycle/continuous_3h/samples.csv",
+      "length": 2910875,
+      "sha256": "57615391E0D63C8A4492DA5AFA175B0A3DDC7A63B460CEC66E117666503889CE"
+    },
+    {
+      "path": "thermal_cycle/continuous_3h/summary.json",
+      "length": 4039,
+      "sha256": "F12E64C5367CD97442DA84FCB30571632E22D836005760D26748E18D6FB0111D"
+    },
+    {
+      "path": "thermal_cycle/continuous_stderr.log",
+      "length": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "thermal_cycle/continuous_stdout.log",
+      "length": 4039,
+      "sha256": "F12E64C5367CD97442DA84FCB30571632E22D836005760D26748E18D6FB0111D"
+    },
+    {
+      "path": "thermal_cycle/empty_30m/environment.json",
+      "length": 1052,
+      "sha256": "2E72FC5E5651CA9CD4D053BDE1CD42EAA9ECAF01A1DBCAE6E0EBF245E369816B"
+    },
+    {
+      "path": "thermal_cycle/empty_30m/events.jsonl",
+      "length": 558,
+      "sha256": "1967C910C539DC7F8C8D7B189FF53D44A9A075CF799919B541790E0D2785F02D"
+    },
+    {
+      "path": "thermal_cycle/empty_30m/samples.csv",
+      "length": 949353,
+      "sha256": "A8B097B6736B3592785111005BC1938AADD87431EE1EAD08E711E6660F9DF443"
+    },
+    {
+      "path": "thermal_cycle/empty_30m/summary.json",
+      "length": 3997,
+      "sha256": "606AFC505494F8229A115417228E5F04584EECB53911B1999581889D2BEA40EC"
+    },
+    {
+      "path": "thermal_cycle/empty_recorder_stderr.log",
+      "length": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "thermal_cycle/empty_recorder_stdout.log",
+      "length": 3997,
+      "sha256": "606AFC505494F8229A115417228E5F04584EECB53911B1999581889D2BEA40EC"
+    },
+    {
+      "path": "thermal_cycle/load1_30m/environment.json",
+      "length": 1052,
+      "sha256": "AE219D1EDF67F00C4CE9D9D941B4F76EC850F08CA869F05C1DB1753CA35EB4BE"
+    },
+    {
+      "path": "thermal_cycle/load1_30m/events.jsonl",
+      "length": 359,
+      "sha256": "85C0B725DC4CE5CE51A0FD02F34DE51736EC529BA1C3E98ACA7E4DC71109BC2E"
+    },
+    {
+      "path": "thermal_cycle/load1_30m/samples.csv",
+      "length": 964347,
+      "sha256": "C13F4D4B77FDD3B59C09191D0277F0942E822AF19208EABC66BA287432730942"
+    },
+    {
+      "path": "thermal_cycle/load1_30m/summary.json",
+      "length": 4058,
+      "sha256": "20C0CEAB07FB5482ACA77C359A9E92ED5A8E0F724C662CB0FC15AB78FBBC6DC1"
+    },
+    {
+      "path": "thermal_cycle/load1_stderr.log",
+      "length": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "thermal_cycle/load1_stdout.log",
+      "length": 4058,
+      "sha256": "20C0CEAB07FB5482ACA77C359A9E92ED5A8E0F724C662CB0FC15AB78FBBC6DC1"
+    }
+  ]
+}
