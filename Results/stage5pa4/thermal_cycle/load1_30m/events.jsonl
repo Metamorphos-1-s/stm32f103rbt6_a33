@@ -1,0 +1,3 @@
+{"utc":"2026-09-25T07:38:10.864Z","event":"RECORDER_STARTED"}
+{"utc":"2026-09-25T08:05:02.865Z","host_monotonic_ns":66801515000000,"event":"SEGMENT_STOPPED_FOR_CONTINUOUS_RECORDER","note":"First segment cannot capture exact load edge because recorder started after operator event"}
+{"utc":"2026-09-25T08:05:02.996Z","event":"RECORDER_STOPPED","records":3222}

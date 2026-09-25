@@ -1,0 +1,6 @@
+{"utc":"2026-09-25T08:05:05.286Z","event":"RECORDER_STARTED"}
+{"utc":"2026-09-25T08:07:20.207Z","host_monotonic_ns":66938859000000,"event":"UNLOAD_1_OPERATOR_CONFIRMED","note":"User reports first unload completed"}
+{"utc":"2026-09-25T08:37:46.857Z","host_monotonic_ns":68765500000000,"event":"LOAD_2_OPERATOR_CONFIRMED","note":"User reports next 500 g placement completed"}
+{"utc":"2026-09-25T09:11:29.888Z","host_monotonic_ns":70788531000000,"event":"UNLOAD_2_OPERATOR_CONFIRMED","note":"User reports second unload completed"}
+{"utc":"2026-09-25T09:30:31.041Z","host_monotonic_ns":71929687000000,"event":"OPERATOR_REQUESTED_STOP","note":"User states continuous recording complete; request graceful stop"}
+{"utc":"2026-09-25T09:30:31.423Z","event":"RECORDER_STOPPED","records":10244}

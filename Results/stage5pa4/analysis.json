@@ -1,0 +1,782 @@
+{
+  "schema_version": 1,
+  "classification": "STAGE5PA4_NEW_DEVELOPMENT_MECHANISM_EVIDENCE_NOT_HOLDOUT",
+  "units": "ADC counts; mass micrograms; panel integer display_count; UTC and monotonic nanoseconds",
+  "quality": {
+    "empty_30m": {
+      "recorder": {
+        "status": "COMPLETE",
+        "records": 3596,
+        "duration_s": 1800.4118978977203,
+        "duplicates": 0,
+        "read_errors": 0,
+        "maximum_host_gap_s": 0.5470000000059372,
+        "writes": 0,
+        "flash_operations": 0
+      },
+      "poll_gaps_over_2s": 0,
+      "max_adjacent_poll_gap_s": 0.547,
+      "sample_sequence_regressions": 0,
+      "mcu_uptime_regressions": 0,
+      "invariant_failures": {},
+      "static_profile": {
+        "sample_rate": 0,
+        "filter_mode": 3,
+        "filter_strength": 3,
+        "calibration": {
+          "raw_zero": -44003,
+          "raw_span": -487921,
+          "span_mass_ug": 500000000,
+          "sequence": 3
+        }
+      }
+    },
+    "load1_30m": {
+      "recorder": {
+        "status": "COMPLETE",
+        "records": 3222,
+        "duration_s": 1612.1296210289001,
+        "duplicates": 0,
+        "read_errors": 0,
+        "maximum_host_gap_s": 0.5470000000059372,
+        "writes": 0,
+        "flash_operations": 0
+      },
+      "poll_gaps_over_2s": 0,
+      "max_adjacent_poll_gap_s": 0.547,
+      "sample_sequence_regressions": 0,
+      "mcu_uptime_regressions": 0,
+      "invariant_failures": {},
+      "static_profile": {
+        "sample_rate": 0,
+        "filter_mode": 3,
+        "filter_strength": 3,
+        "calibration": {
+          "raw_zero": -44003,
+          "raw_span": -487921,
+          "span_mass_ug": 500000000,
+          "sequence": 3
+        }
+      }
+    },
+    "continuous_3h": {
+      "recorder": {
+        "status": "COMPLETE",
+        "records": 10244,
+        "duration_s": 5126.13458275795,
+        "duplicates": 0,
+        "read_errors": 0,
+        "maximum_host_gap_s": 0.5470000000059372,
+        "writes": 0,
+        "flash_operations": 0
+      },
+      "poll_gaps_over_2s": 0,
+      "max_adjacent_poll_gap_s": 0.547,
+      "sample_sequence_regressions": 0,
+      "mcu_uptime_regressions": 0,
+      "invariant_failures": {},
+      "static_profile": {
+        "sample_rate": 0,
+        "filter_mode": 3,
+        "filter_strength": 3,
+        "calibration": {
+          "raw_zero": -44003,
+          "raw_span": -487921,
+          "span_mass_ug": 500000000,
+          "sequence": 3
+        }
+      }
+    }
+  },
+  "first_load": {
+    "edge": "NOT OBSERVED",
+    "operator_report": "LOAD_1_OPERATOR_CONFIRMED",
+    "empty_segment_last_utc": "2026-09-25T07:32:11.741Z",
+    "loaded_segment_first_utc": "2026-09-25T07:38:11.078Z",
+    "loaded_segment_last_utc": "2026-09-25T08:05:02.567Z",
+    "continuous_first_utc": "2026-09-25T08:05:05.507Z",
+    "event_relative_1_2_5_10_15_30min": "NOT SCORABLE",
+    "segment_start_relative_only": {
+      "duration_s": 1611.500000001,
+      "samples": 3222,
+      "early_15_45s_samples": 60,
+      "early_medians": {
+        "raw_adc": -487909.5,
+        "filtered_raw": -487912.0,
+        "gross_ug": 499989863.0,
+        "display_count": 49998.0,
+        "conditioned_display_ug": 499980000.0,
+        "display_anchor_ug": 499980000.0
+      },
+      "checkpoints": {
+        "1": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -487928.5,
+            "filtered_raw": -487928.0,
+            "gross_ug": 500007884.0,
+            "display_count": 50001.0,
+            "conditioned_display_ug": 500010000.0,
+            "display_anchor_ug": 500010000.0
+          },
+          "delta_from_early": {
+            "raw_adc": -19.0,
+            "filtered_raw": -16.0,
+            "gross_ug": 18021.0,
+            "display_count": 3.0,
+            "conditioned_display_ug": 30000.0,
+            "display_anchor_ug": 30000.0
+          },
+          "gross_after_linear_empty_control_ug": 19102,
+          "linear_control_change_ug": -1081
+        },
+        "2": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -487937.0,
+            "filtered_raw": -487936.0,
+            "gross_ug": 500016895.0,
+            "display_count": 50002.0,
+            "conditioned_display_ug": 500020000.0,
+            "display_anchor_ug": 500020000.0
+          },
+          "delta_from_early": {
+            "raw_adc": -27.5,
+            "filtered_raw": -24.0,
+            "gross_ug": 27032.0,
+            "display_count": 4.0,
+            "conditioned_display_ug": 40000.0,
+            "display_anchor_ug": 40000.0
+          },
+          "gross_after_linear_empty_control_ug": 29195,
+          "linear_control_change_ug": -2163
+        },
+        "5": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -487932.0,
+            "filtered_raw": -487933.0,
+            "gross_ug": 500013516.0,
+            "display_count": 50001.0,
+            "conditioned_display_ug": 500010000.0,
+            "display_anchor_ug": 500010000.0
+          },
+          "delta_from_early": {
+            "raw_adc": -22.5,
+            "filtered_raw": -21.0,
+            "gross_ug": 23653.0,
+            "display_count": 3.0,
+            "conditioned_display_ug": 30000.0,
+            "display_anchor_ug": 30000.0
+          },
+          "gross_after_linear_empty_control_ug": 29060,
+          "linear_control_change_ug": -5407
+        },
+        "10": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -487922.5,
+            "filtered_raw": -487923.5,
+            "gross_ug": 500002816.0,
+            "display_count": 50000.0,
+            "conditioned_display_ug": 500000000.0,
+            "display_anchor_ug": 500000000.0
+          },
+          "delta_from_early": {
+            "raw_adc": -13.0,
+            "filtered_raw": -11.5,
+            "gross_ug": 12953.0,
+            "display_count": 2.0,
+            "conditioned_display_ug": 20000.0,
+            "display_anchor_ug": 20000.0
+          },
+          "gross_after_linear_empty_control_ug": 23767,
+          "linear_control_change_ug": -10814
+        },
+        "15": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -487916.0,
+            "filtered_raw": -487915.0,
+            "gross_ug": 499993242.0,
+            "display_count": 50000.0,
+            "conditioned_display_ug": 500000000.0,
+            "display_anchor_ug": 500000000.0
+          },
+          "delta_from_early": {
+            "raw_adc": -6.5,
+            "filtered_raw": -3.0,
+            "gross_ug": 3379.0,
+            "display_count": 2.0,
+            "conditioned_display_ug": 20000.0,
+            "display_anchor_ug": 20000.0
+          },
+          "gross_after_linear_empty_control_ug": 19601,
+          "linear_control_change_ug": -16222
+        },
+        "30": {
+          "status": "NOT RUN: missing full 60-second window",
+          "samples": 0
+        }
+      },
+      "filtered_weight_ug": null,
+      "filtered_weight_note": "not available from this device register map; filtered_raw is ADC counts"
+    }
+  },
+  "empty_control": {
+    "initial_5min_median_ug": 9011.0,
+    "final_5min_median_ug": -18021.0,
+    "observed_change_ug": -27032.0,
+    "linear_slope_ug_per_min": -1081.4494270769087,
+    "assumption": "earlier empty-only run; not contemporaneous control; slope extrapolation not causal"
+  },
+  "edges": {
+    "unload1": {
+      "operator_confirmation_utc": "2026-09-25T08:07:20.207Z",
+      "gross_midpoint_bracket_utc": [
+        "2026-09-25T08:06:52.630Z",
+        "2026-09-25T08:06:53.104Z"
+      ],
+      "bracket_width_s": 0.469,
+      "operator_message_lag_after_bracket_s": 27.109,
+      "raw_largest_jump_bracket_utc": [
+        "2026-09-25T08:06:52.114Z",
+        "2026-09-25T08:06:52.630Z"
+      ],
+      "raw_jump_counts": 316387,
+      "raw_note": "primary block asynchronous with mass/status block; not an ADC DRDY timestamp",
+      "pre_step_ug": 499981979.0,
+      "post_15_45s_ug": -27032.0,
+      "physical_step_ug": -500009011.0,
+      "edge_center_monotonic_ns": 66911515500000,
+      "panel_transient": {
+        "pre_count": 49998.0,
+        "post_15_45s_count": -2.0,
+        "panel_midpoint_utc": "2026-09-25T08:06:53.104Z",
+        "panel_midpoint_vs_gross_center_s": 0.234,
+        "panel_90pct_utc": "2026-09-25T08:06:54.113Z",
+        "panel_90pct_vs_gross_center_s": 1.25,
+        "max_panel_single_poll_jump_counts_10s": 7190,
+        "note": "2 Hz host polls and 0.01 g quantization; not DRDY-level lag"
+      }
+    },
+    "load2": {
+      "operator_confirmation_utc": "2026-09-25T08:37:46.857Z",
+      "gross_midpoint_bracket_utc": [
+        "2026-09-25T08:37:12.762Z",
+        "2026-09-25T08:37:13.237Z"
+      ],
+      "bracket_width_s": 0.469,
+      "operator_message_lag_after_bracket_s": 33.625,
+      "raw_largest_jump_bracket_utc": [
+        "2026-09-25T08:37:12.231Z",
+        "2026-09-25T08:37:12.762Z"
+      ],
+      "raw_jump_counts": 454493,
+      "raw_note": "primary block asynchronous with mass/status block; not an ADC DRDY timestamp",
+      "pre_step_ug": -72085.0,
+      "post_15_45s_ug": 499924536.0,
+      "physical_step_ug": 499996621.0,
+      "edge_center_monotonic_ns": 68731640500000,
+      "panel_transient": {
+        "pre_count": -7.0,
+        "post_15_45s_count": 49992.0,
+        "panel_midpoint_utc": "2026-09-25T08:37:13.237Z",
+        "panel_midpoint_vs_gross_center_s": 0.234,
+        "panel_90pct_utc": "2026-09-25T08:37:14.766Z",
+        "panel_90pct_vs_gross_center_s": 1.766,
+        "max_panel_single_poll_jump_counts_10s": 10569,
+        "note": "2 Hz host polls and 0.01 g quantization; not DRDY-level lag"
+      }
+    },
+    "unload2": {
+      "operator_confirmation_utc": "2026-09-25T09:11:29.888Z",
+      "gross_midpoint_bracket_utc": [
+        "2026-09-25T09:10:49.382Z",
+        "2026-09-25T09:10:49.857Z"
+      ],
+      "bracket_width_s": 0.469,
+      "operator_message_lag_after_bracket_s": 40.031,
+      "raw_largest_jump_bracket_utc": [
+        "2026-09-25T09:10:48.865Z",
+        "2026-09-25T09:10:49.382Z"
+      ],
+      "raw_jump_counts": 443909,
+      "raw_note": "primary block asynchronous with mass/status block; not an ADC DRDY timestamp",
+      "pre_step_ug": 500050685.0,
+      "post_15_45s_ug": 33790.0,
+      "physical_step_ug": -500016895.0,
+      "edge_center_monotonic_ns": 70748265500000,
+      "panel_transient": {
+        "pre_count": 50005.0,
+        "post_15_45s_count": 4.0,
+        "panel_midpoint_utc": "2026-09-25T09:10:49.857Z",
+        "panel_midpoint_vs_gross_center_s": 0.234,
+        "panel_90pct_utc": "2026-09-25T09:10:51.383Z",
+        "panel_90pct_vs_gross_center_s": 1.766,
+        "max_panel_single_poll_jump_counts_10s": 9314,
+        "note": "2 Hz host polls and 0.01 g quantization; not DRDY-level lag"
+      }
+    }
+  },
+  "event_relative_stages": {
+    "unload1": {
+      "duration_s": 1820.125,
+      "samples": 3638,
+      "early_15_45s_samples": 60,
+      "early_medians": {
+        "raw_adc": -43981.5,
+        "filtered_raw": -43979.0,
+        "gross_ug": -27032.0,
+        "display_count": -2.0,
+        "conditioned_display_ug": -20000.0,
+        "display_anchor_ug": -20000.0
+      },
+      "checkpoints": {
+        "1": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -43964.5,
+            "filtered_raw": -43965.0,
+            "gross_ug": -42801.0,
+            "display_count": -5.0,
+            "conditioned_display_ug": -50000.0,
+            "display_anchor_ug": -50000.0
+          },
+          "delta_from_early": {
+            "raw_adc": 17.0,
+            "filtered_raw": 14.0,
+            "gross_ug": -15769.0,
+            "display_count": -3.0,
+            "conditioned_display_ug": -30000.0,
+            "display_anchor_ug": -30000.0
+          },
+          "gross_after_linear_empty_control_ug": -14688,
+          "linear_control_change_ug": -1081
+        },
+        "2": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -43950.0,
+            "filtered_raw": -43951.0,
+            "gross_ug": -58569.0,
+            "display_count": -6.0,
+            "conditioned_display_ug": -60000.0,
+            "display_anchor_ug": -60000.0
+          },
+          "delta_from_early": {
+            "raw_adc": 31.5,
+            "filtered_raw": 28.0,
+            "gross_ug": -31537.0,
+            "display_count": -4.0,
+            "conditioned_display_ug": -40000.0,
+            "display_anchor_ug": -40000.0
+          },
+          "gross_after_linear_empty_control_ug": -29374,
+          "linear_control_change_ug": -2163
+        },
+        "5": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -43942.5,
+            "filtered_raw": -43944.0,
+            "gross_ug": -66454.0,
+            "display_count": -7.0,
+            "conditioned_display_ug": -70000.0,
+            "display_anchor_ug": -70000.0
+          },
+          "delta_from_early": {
+            "raw_adc": 39.0,
+            "filtered_raw": 35.0,
+            "gross_ug": -39422.0,
+            "display_count": -5.0,
+            "conditioned_display_ug": -50000.0,
+            "display_anchor_ug": -50000.0
+          },
+          "gross_after_linear_empty_control_ug": -34015,
+          "linear_control_change_ug": -5407
+        },
+        "10": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -43928.0,
+            "filtered_raw": -43927.0,
+            "gross_ug": -85601.0,
+            "display_count": -8.0,
+            "conditioned_display_ug": -80000.0,
+            "display_anchor_ug": -80000.0
+          },
+          "delta_from_early": {
+            "raw_adc": 53.5,
+            "filtered_raw": 52.0,
+            "gross_ug": -58569.0,
+            "display_count": -6.0,
+            "conditioned_display_ug": -60000.0,
+            "display_anchor_ug": -60000.0
+          },
+          "gross_after_linear_empty_control_ug": -47755,
+          "linear_control_change_ug": -10814
+        },
+        "15": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -43924.5,
+            "filtered_raw": -43926.0,
+            "gross_ug": -86728.0,
+            "display_count": -9.0,
+            "conditioned_display_ug": -90000.0,
+            "display_anchor_ug": -90000.0
+          },
+          "delta_from_early": {
+            "raw_adc": 57.0,
+            "filtered_raw": 53.0,
+            "gross_ug": -59696.0,
+            "display_count": -7.0,
+            "conditioned_display_ug": -70000.0,
+            "display_anchor_ug": -70000.0
+          },
+          "gross_after_linear_empty_control_ug": -43474,
+          "linear_control_change_ug": -16222
+        },
+        "30": {
+          "status": "NOT RUN: missing full 60-second window",
+          "samples": 40
+        }
+      },
+      "filtered_weight_ug": null,
+      "filtered_weight_note": "not available from this device register map; filtered_raw is ADC counts"
+    },
+    "load2": {
+      "duration_s": 2016.625,
+      "samples": 4030,
+      "early_15_45s_samples": 60,
+      "early_medians": {
+        "raw_adc": -487854.0,
+        "filtered_raw": -487854.0,
+        "gross_ug": 499924536.0,
+        "display_count": 49992.0,
+        "conditioned_display_ug": 499920000.0,
+        "display_anchor_ug": 499920000.0
+      },
+      "checkpoints": {
+        "1": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -487886.0,
+            "filtered_raw": -487886.0,
+            "gross_ug": 499960578.0,
+            "display_count": 49996.0,
+            "conditioned_display_ug": 499960000.0,
+            "display_anchor_ug": 499960000.0
+          },
+          "delta_from_early": {
+            "raw_adc": -32.0,
+            "filtered_raw": -32.0,
+            "gross_ug": 36042.0,
+            "display_count": 4.0,
+            "conditioned_display_ug": 40000.0,
+            "display_anchor_ug": 40000.0
+          },
+          "gross_after_linear_empty_control_ug": 37123,
+          "linear_control_change_ug": -1081
+        },
+        "2": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -487899.5,
+            "filtered_raw": -487900.0,
+            "gross_ug": 499976347.0,
+            "display_count": 49997.0,
+            "conditioned_display_ug": 499970000.0,
+            "display_anchor_ug": 499970000.0
+          },
+          "delta_from_early": {
+            "raw_adc": -45.5,
+            "filtered_raw": -46.0,
+            "gross_ug": 51811.0,
+            "display_count": 5.0,
+            "conditioned_display_ug": 50000.0,
+            "display_anchor_ug": 50000.0
+          },
+          "gross_after_linear_empty_control_ug": 53974,
+          "linear_control_change_ug": -2163
+        },
+        "5": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -487902.5,
+            "filtered_raw": -487901.0,
+            "gross_ug": 499977473.0,
+            "display_count": 49998.0,
+            "conditioned_display_ug": 499980000.0,
+            "display_anchor_ug": 499980000.0
+          },
+          "delta_from_early": {
+            "raw_adc": -48.5,
+            "filtered_raw": -47.0,
+            "gross_ug": 52937.0,
+            "display_count": 6.0,
+            "conditioned_display_ug": 60000.0,
+            "display_anchor_ug": 60000.0
+          },
+          "gross_after_linear_empty_control_ug": 58344,
+          "linear_control_change_ug": -5407
+        },
+        "10": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -487886.0,
+            "filtered_raw": -487886.0,
+            "gross_ug": 499960578.0,
+            "display_count": 49996.0,
+            "conditioned_display_ug": 499960000.0,
+            "display_anchor_ug": 499960000.0
+          },
+          "delta_from_early": {
+            "raw_adc": -32.0,
+            "filtered_raw": -32.0,
+            "gross_ug": 36042.0,
+            "display_count": 4.0,
+            "conditioned_display_ug": 40000.0,
+            "display_anchor_ug": 40000.0
+          },
+          "gross_after_linear_empty_control_ug": 46856,
+          "linear_control_change_ug": -10814
+        },
+        "15": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -487982.0,
+            "filtered_raw": -487981.0,
+            "gross_ug": 500067580.0,
+            "display_count": 50006.0,
+            "conditioned_display_ug": 500060000.0,
+            "display_anchor_ug": 500060000.0
+          },
+          "delta_from_early": {
+            "raw_adc": -128.0,
+            "filtered_raw": -127.0,
+            "gross_ug": 143044.0,
+            "display_count": 14.0,
+            "conditioned_display_ug": 140000.0,
+            "display_anchor_ug": 140000.0
+          },
+          "gross_after_linear_empty_control_ug": 159266,
+          "linear_control_change_ug": -16222
+        },
+        "30": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -487988.0,
+            "filtered_raw": -487987.5,
+            "gross_ug": 500074901.0,
+            "display_count": 50008.0,
+            "conditioned_display_ug": 500080000.0,
+            "display_anchor_ug": 500080000.0
+          },
+          "delta_from_early": {
+            "raw_adc": -134.0,
+            "filtered_raw": -133.5,
+            "gross_ug": 150365.0,
+            "display_count": 16.0,
+            "conditioned_display_ug": 160000.0,
+            "display_anchor_ug": 160000.0
+          },
+          "gross_after_linear_empty_control_ug": 182808,
+          "linear_control_change_ug": -32443
+        }
+      },
+      "filtered_weight_ug": null,
+      "filtered_weight_note": "not available from this device register map; filtered_raw is ADC counts"
+    },
+    "unload2": {
+      "duration_s": 1181.3435,
+      "samples": 2360,
+      "early_15_45s_samples": 60,
+      "early_medians": {
+        "raw_adc": -44032.5,
+        "filtered_raw": -44033.0,
+        "gross_ug": 33790.0,
+        "display_count": 4.0,
+        "conditioned_display_ug": 40000.0,
+        "display_anchor_ug": 40000.0
+      },
+      "checkpoints": {
+        "1": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -44015.5,
+            "filtered_raw": -44017.0,
+            "gross_ug": 15769.0,
+            "display_count": 2.0,
+            "conditioned_display_ug": 20000.0,
+            "display_anchor_ug": 20000.0
+          },
+          "delta_from_early": {
+            "raw_adc": 17.0,
+            "filtered_raw": 16.0,
+            "gross_ug": -18021.0,
+            "display_count": -2.0,
+            "conditioned_display_ug": -20000.0,
+            "display_anchor_ug": -20000.0
+          },
+          "gross_after_linear_empty_control_ug": -16940,
+          "linear_control_change_ug": -1081
+        },
+        "2": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -44001.0,
+            "filtered_raw": -44002.0,
+            "gross_ug": -1126.0,
+            "display_count": 0.0,
+            "conditioned_display_ug": 0.0,
+            "display_anchor_ug": 0.0
+          },
+          "delta_from_early": {
+            "raw_adc": 31.5,
+            "filtered_raw": 31.0,
+            "gross_ug": -34916.0,
+            "display_count": -4.0,
+            "conditioned_display_ug": -40000.0,
+            "display_anchor_ug": -40000.0
+          },
+          "gross_after_linear_empty_control_ug": -32753,
+          "linear_control_change_ug": -2163
+        },
+        "5": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -43965.0,
+            "filtered_raw": -43965.0,
+            "gross_ug": -42801.0,
+            "display_count": -4.0,
+            "conditioned_display_ug": -40000.0,
+            "display_anchor_ug": -40000.0
+          },
+          "delta_from_early": {
+            "raw_adc": 67.5,
+            "filtered_raw": 68.0,
+            "gross_ug": -76591.0,
+            "display_count": -8.0,
+            "conditioned_display_ug": -80000.0,
+            "display_anchor_ug": -80000.0
+          },
+          "gross_after_linear_empty_control_ug": -71184,
+          "linear_control_change_ug": -5407
+        },
+        "10": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -43939.0,
+            "filtered_raw": -43937.5,
+            "gross_ug": -73775.0,
+            "display_count": -7.0,
+            "conditioned_display_ug": -70000.0,
+            "display_anchor_ug": -70000.0
+          },
+          "delta_from_early": {
+            "raw_adc": 93.5,
+            "filtered_raw": 95.5,
+            "gross_ug": -107565.0,
+            "display_count": -11.0,
+            "conditioned_display_ug": -110000.0,
+            "display_anchor_ug": -110000.0
+          },
+          "gross_after_linear_empty_control_ug": -96751,
+          "linear_control_change_ug": -10814
+        },
+        "15": {
+          "samples": 120,
+          "medians": {
+            "raw_adc": -43907.5,
+            "filtered_raw": -43908.0,
+            "gross_ug": -107002.0,
+            "display_count": -11.0,
+            "conditioned_display_ug": -110000.0,
+            "display_anchor_ug": -110000.0
+          },
+          "delta_from_early": {
+            "raw_adc": 125.0,
+            "filtered_raw": 125.0,
+            "gross_ug": -140792.0,
+            "display_count": -15.0,
+            "conditioned_display_ug": -150000.0,
+            "display_anchor_ug": -150000.0
+          },
+          "gross_after_linear_empty_control_ug": -124570,
+          "linear_control_change_ug": -16222
+        },
+        "30": {
+          "status": "NOT RUN: missing full 60-second window",
+          "samples": 0
+        }
+      },
+      "filtered_weight_ug": null,
+      "filtered_weight_note": "not available from this device register map; filtered_raw is ADC counts"
+    }
+  },
+  "counterfactual_r5": {
+    "actual_r5": "OFF, offset 0 throughout; this is counterfactual only",
+    "mode_switches": [
+      {
+        "second": 0,
+        "mode": "STATIC",
+        "context": "already loaded at recorder start"
+      },
+      {
+        "second": 105,
+        "mode": "DOSING",
+        "reason": "unload1_before_step",
+        "offset_before_ug": 0,
+        "offset_after_ug": 0
+      },
+      {
+        "second": 167,
+        "mode": "STATIC",
+        "reason": "unload1_after_60s",
+        "offset_before_ug": 0,
+        "offset_after_ug": 0
+      },
+      {
+        "second": 1925,
+        "mode": "DOSING",
+        "reason": "load2_before_step",
+        "offset_before_ug": -5308,
+        "offset_after_ug": -5308
+      },
+      {
+        "second": 1987,
+        "mode": "STATIC",
+        "reason": "load2_after_60s",
+        "offset_before_ug": -5308,
+        "offset_after_ug": -5308
+      },
+      {
+        "second": 3942,
+        "mode": "DOSING",
+        "reason": "unload2_before_step",
+        "offset_before_ug": 40674,
+        "offset_after_ug": 40674
+      },
+      {
+        "second": 4004,
+        "mode": "STATIC",
+        "reason": "unload2_after_60s",
+        "offset_before_ug": 40674,
+        "offset_after_ug": 40674
+      }
+    ],
+    "reset_count": 0,
+    "max_dosing_offset_change_ug": 0,
+    "automatic_rebuild_count": 0,
+    "final_mode": "STATIC",
+    "final_offset_ug": 30274,
+    "limitations": "one-second median, not 10 Hz sample admission; retrospective edge-based schedule not a live control policy"
+  },
+  "measured_filtered_weight_ug": null,
+  "independent_uncompensated_diagnostic_ug": null,
+  "authoritative_mass_column": "gross_ug; R5 remained OFF",
+  "measured_temperature_c": null,
+  "model_decision": "MODEL SELECTION INCOMPLETE"
+}

@@ -1,0 +1,4 @@
+{"utc":"2026-09-25T07:02:11.788Z","event":"RECORDER_STARTED"}
+{"utc":"2026-09-25T07:32:12.202Z","event":"RECORDER_STOPPED","records":3596}
+{"utc":"2026-09-25T07:38:10.706Z","host_monotonic_ns":65189343000000,"event":"LOAD_1_OPERATOR_CONFIRMED","note":"Operator reports first 500 g standard placed; recorder segment starts immediately after empty baseline"}
+{"utc":"2026-09-25T08:05:05.136Z","host_monotonic_ns":66803781000000,"event":"CONTINUOUS_RECORDER_STARTING","note":"Continuous recorder will start; current state is first 500 g load already on scale"}
