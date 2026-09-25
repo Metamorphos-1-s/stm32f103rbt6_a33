@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "classification": "STAGE5PA4_HOT_LOAD_UNLOAD_DEVELOPMENT_EVIDENCE_MODEL_SELECTION_INCOMPLETE",
+  "classification": "STAGE5PA4_HOT_LOAD_UNLOAD_WITH_INTERACTIVE_WAVEFORM",
   "run_id": "stage5pa4",
   "repository_commit": "HEAD",
   "files": [
@@ -13,6 +13,31 @@
       "path": "event_timeline.csv",
       "length": 767,
       "sha256": "CE41CC48AFBACD1D9595B5A30E745940F592DC330869BECB751255ACF26CD2FD"
+    },
+    {
+      "path": "interactive_waveform.html",
+      "length": 543560,
+      "sha256": "DC7E26D38572E64418A3CA58EA4A3328F2C24723EB5DCE5881A523E65EB07F4D"
+    },
+    {
+      "path": "interactive_waveform_preview.png",
+      "length": 89022,
+      "sha256": "AC85AC2F2587D2A340EF17E464CA08644133783825B7BE7D1E731BE66FB13BF7"
+    },
+    {
+      "path": "interactive_waveform_preview_narrow.png",
+      "length": 64331,
+      "sha256": "728B943DA041060EDA1A6A35E6AFF0AA98C664482D8F5C66BA46EFC78C49C88E"
+    },
+    {
+      "path": "interactive_waveform_preview_plateau.png",
+      "length": 175023,
+      "sha256": "A5CDF5ED8DCCE43060C015D17714121F9DAD34408B05541A0D46BB32E1DFD668"
+    },
+    {
+      "path": "interactive_waveform_preview_zoom.png",
+      "length": 82031,
+      "sha256": "A325C3364B00A4C1877FB131391167CAAB23BA5184232E0F63AAB21664F5F16C"
     },
     {
       "path": "postflight_051C.json",
