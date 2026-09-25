@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stage 5P-A4 · 重量波形</title>
+<style>
+  :root { font: 14px/1.45 system-ui,"Microsoft YaHei",sans-serif; color:#dce7f2; background:#0b1420; }
+  * { box-sizing:border-box; }
+  body { margin:0; }
+  .shell { height:100vh; min-height:510px; display:flex; flex-direction:column; padding:16px 20px 14px; gap:10px; }
+  header { display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  h1 { font-size:21px; font-weight:650; margin:0; letter-spacing:.01em; }
+  .subtitle { color:#9bacc0; font-size:12px; }
+  .toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; background:#142234; border:1px solid #293d52; border-radius:11px; padding:10px 12px; }
+  .checks { display:flex; flex-wrap:wrap; align-items:center; gap:6px 13px; }
+  label { white-space:nowrap; cursor:pointer; user-select:none; }
+  input { accent-color:#5db1f2; vertical-align:-2px; }
+  button,select { color:#e1ecf6; border:1px solid #466079; background:#263a50; padding:5px 11px; border-radius:6px; font:inherit; cursor:pointer; }
+  button:hover,button:focus-visible { background:#345774; outline-color:#86cbfa; }
+  .legend { display:flex; flex-wrap:wrap; gap:6px 18px; color:#a8b9ca; font-size:12px; }
+  .key:before { content:""; display:inline-block; width:16px; height:3px; vertical-align:4px; margin-right:6px; border-radius:5px; background:var(--key); }
+  .warning { color:#f2c98d; font-size:12px; }
+  .plot-wrap { position:relative; flex:1; min-height:210px; border:1px solid #293d52; border-radius:11px; background:#101d2c; overflow:hidden; }
+  canvas { display:block; width:100%; height:100%; cursor:grab; touch-action:none; }
+  canvas.dragging { cursor:grabbing; }
+  .readout { background:#152638; border:1px solid #2c4259; border-radius:8px; padding:8px 11px; min-height:40px; font-variant-numeric:tabular-nums; color:#cbd9e8; }
+  .range { font-variant-numeric:tabular-nums; font-size:12px; color:#acbfd0; }
+  .help { color:#8ea5ba; font-size:12px; }
+  @media (max-width:750px) { .shell { padding:10px; gap:7px; } h1 { font-size:17px; } .toolbar { gap:7px; } .readout { font-size:12px; } }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header><h1>Stage 5P-A4 · 重量随时间波形</h1><span class="subtitle" id="meta"></span></header>
+  <div class="toolbar">
+    <div class="checks" aria-label="显示曲线">
+      <label><input type="checkbox" data-series="gross" checked> 权威重量</label>
+      <label><input type="checkbox" data-series="display" checked> 面板示值</label>
+      <label><input type="checkbox" data-series="conditioned"> 显示保持值</label>
+      <label><input type="checkbox" data-series="raw" checked> 原始 ADC</label>
+      <label><input type="checkbox" data-series="filtered" checked> 滤波 ADC</label>
+      <label><input type="checkbox" id="markers" checked> 装卸标记</label>
+    </div>
+    <button id="fit" title="显示完整时间范围">全时段</button>
+    <label for="quickView">快捷窗口</label>
+    <select id="quickView" aria-label="快捷时间窗口">
+      <option value="all">全时段</option>
+      <option value="empty1">第一次卸载后空载</option>
+      <option value="load2">第二次装载恒载</option>
+      <option value="empty2">第二次卸载后空载</option>
+    </select>
+    <button id="zoomIn" title="以当前窗口中心放大">放大</button>
+    <button id="zoomOut" title="以当前窗口中心缩小">缩小</button>
+  </div>
+  <div class="legend" aria-label="曲线图例">
+    <span class="key" style="--key:#63c6ff">权威重量（g）</span>
+    <span class="key" style="--key:#ffc36d">面板示值（g，量化）</span>
+    <span class="key" style="--key:#79d6b9">显示保持值（g）</span>
+    <span class="key" style="--key:#f58faf">raw ADC（counts）</span>
+    <span class="key" style="--key:#ad9ef5">filtered ADC（counts）</span>
+    <span style="color:#fda68c">│采样边沿</span><span style="color:#ffda85">┆人工确认</span>
+  </div>
+  <div class="warning" id="warning"></div>
+  <div class="plot-wrap"><canvas id="waveform" role="img" aria-label="重量、ADC 随 UTC 时间的交互式曲线"></canvas></div>
+  <div class="range" id="range"></div>
+  <div class="readout" id="readout" aria-live="off">将鼠标移到曲线上读取该位置的原始记录。</div>
+  <div class="help">在图上滚动滚轮：以指针为中心缩放时间；按住鼠标左键左右拖动：平移时间；“全时段”：复位。纵轴随可见窗口自动缩放。人工确认不是实际装卸边沿。</div>
+</div>
+<script>
+"use strict";
+const DATA = __WAVEFORM_DATA__;
+const points = DATA.points;
+const canvas = document.getElementById("waveform");
+const ctx = canvas.getContext("2d");
+const rangeLabel = document.getElementById("range");
+const readout = document.getElementById("readout");
+const colors = {gross:"#63c6ff", display:"#ffc36d", conditioned:"#79d6b9",
+                raw:"#f58faf", filtered:"#ad9ef5"};
+const series = {gross:1, display:2, conditioned:3, raw:4, filtered:5};
+const active = {gross:true, display:true, conditioned:false, raw:true, filtered:true};
+const bounds = {left:86, right:25, top:34, bottom:40, gap:40};
+const fullEnd = points[points.length - 1][0];
+const quickView = document.getElementById("quickView");
+let viewStart = 0, viewEnd = fullEnd, width = 1, height = 1;
+let pointerX = null, drag = null;
+const clamp = (n, low, high) => Math.max(low, Math.min(high, n));
+const utc = ms => new Date(DATA.baseUtcMs + ms).toISOString().replace("T", " ").replace("Z", " UTC");
+const canvasX = t => bounds.left + (t-viewStart)/(viewEnd-viewStart)*(width-bounds.left-bounds.right);
+const timeX = x => viewStart + (x-bounds.left)/(width-bounds.left-bounds.right)*(viewEnd-viewStart);
+
+function setView(start, end) {
+  let span = clamp(end-start, 2000, fullEnd);
+  let first = clamp(start, 0, fullEnd-span);
+  viewStart = first; viewEnd = first+span;
+  render();
+}
+function edgeTime(name) {
+  const event=DATA.events.find(e=>e.kind==="edge" && e.label===name);
+  return event?.t ?? null;
+}
+function chooseQuickWindow(name) {
+  const u1=edgeTime("unload1"), l2=edgeTime("load2"), u2=edgeTime("unload2");
+  if(name==="empty1" && u1!==null && l2!==null) setView(u1+45000,l2-15000);
+  else if(name==="load2" && l2!==null && u2!==null) setView(l2+45000,u2-15000);
+  else if(name==="empty2" && u2!==null) setView(u2+45000,fullEnd);
+  else setView(0,fullEnd);
+}
+function zoom(factor, anchor) {
+  const t = clamp(timeX(anchor), viewStart, viewEnd);
+  const ratio = (t-viewStart)/(viewEnd-viewStart);
+  const span = clamp((viewEnd-viewStart)*factor, 2000, fullEnd);
+  setView(t-ratio*span, t+(1-ratio)*span);
+}
+function lowerBound(t) {
+  let lo=0, hi=points.length;
+  while (lo<hi) { const mid=(lo+hi)>>1; if (points[mid][0]<t) lo=mid+1; else hi=mid; }
+  return lo;
+}
+function labelNumber(value, digits=3) { return value === null ? "—" : Number(value).toFixed(digits); }
+function panelLimits(first, last, names) {
+  let low=Infinity, high=-Infinity;
+  for (let i=first;i<last;i++) for (const name of names) {
+    if (!active[name]) continue;
+    const y=points[i][series[name]];
+    if (y !== null) { low=Math.min(low,y); high=Math.max(high,y); }
+  }
+  if (!Number.isFinite(low)) return [-1,1];
+  const extra=Math.max((high-low)*0.09, names.includes("gross") ? .008 : 10);
+  return [low-extra,high+extra];
+}
+function render() {
+  const pixelRatio=window.devicePixelRatio || 1;
+  const box=canvas.getBoundingClientRect();
+  width=Math.max(1,box.width); height=Math.max(1,box.height);
+  const physicalWidth=Math.round(width*pixelRatio), physicalHeight=Math.round(height*pixelRatio);
+  if (canvas.width!==physicalWidth || canvas.height!==physicalHeight) {
+    canvas.width=physicalWidth;canvas.height=physicalHeight;
+  }
+  ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0);
+  ctx.clearRect(0,0,width,height);
+  const plotWidth=width-bounds.left-bounds.right;
+  const usable=height-bounds.top-bounds.bottom-bounds.gap;
+  const topPanel={y:bounds.top,h:usable*.64};
+  const adcPanel={y:bounds.top+usable*.64+bounds.gap,h:usable*.36};
+  const first=Math.max(0,lowerBound(viewStart)-1), last=Math.min(points.length,lowerBound(viewEnd)+2);
+  const massRange=panelLimits(first,last,["gross","display","conditioned"]);
+  const adcRange=panelLimits(first,last,["raw","filtered"]);
+  function yFor(v,panel,limits){return panel.y+panel.h-(v-limits[0])/(limits[1]-limits[0])*panel.h;}
+  ctx.font="11px system-ui";ctx.textBaseline="middle";
+  for (const [panel,limits,unit,precision] of [[topPanel,massRange,"g",3],[adcPanel,adcRange,"counts",0]]) {
+    ctx.fillStyle="#12243a";ctx.fillRect(bounds.left,panel.y,plotWidth,panel.h);
+    for (let i=0;i<=4;i++) {
+      const y=panel.y+panel.h*i/4;
+      ctx.strokeStyle="#294057";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(bounds.left,y);ctx.lineTo(width-bounds.right,y);ctx.stroke();
+      const tick=limits[1]-(limits[1]-limits[0])*i/4;
+      ctx.fillStyle="#a6bace";ctx.textAlign="right";
+      ctx.fillText(tick.toFixed(precision),bounds.left-9,y);
+    }
+    ctx.fillStyle="#b1c6da";ctx.textAlign="left";ctx.fillText(unit,bounds.left+8,panel.y+11);
+  }
+  const ticks=5;
+  for(let i=0;i<=ticks;i++){
+    const x=bounds.left+plotWidth*i/ticks;
+    ctx.strokeStyle="#23384f";ctx.beginPath();ctx.moveTo(x,topPanel.y);ctx.lineTo(x,adcPanel.y+adcPanel.h);ctx.stroke();
+    ctx.fillStyle="#a3bad1";ctx.textAlign=i===0?"left":i===ticks?"right":"center";
+    ctx.fillText(new Date(DATA.baseUtcMs+viewStart+(viewEnd-viewStart)*i/ticks).toISOString().slice(11,19),x,height-18);
+  }
+  ctx.save();ctx.beginPath();ctx.rect(bounds.left,topPanel.y,plotWidth,adcPanel.y+adcPanel.h-topPanel.y);ctx.clip();
+  if (document.getElementById("markers").checked) {
+    for(const event of DATA.events){
+      if(event.t<viewStart || event.t>viewEnd) continue;
+      const x=canvasX(event.t);
+      ctx.strokeStyle=event.kind==="edge"?"#fd9b82":"#f4d58c";
+      ctx.lineWidth=1.3;ctx.setLineDash(event.kind==="edge"?[]:[4,5]);
+      ctx.beginPath();ctx.moveTo(x,topPanel.y);ctx.lineTo(x,adcPanel.y+adcPanel.h);ctx.stroke();
+      ctx.setLineDash([]);ctx.fillStyle=ctx.strokeStyle;ctx.font="11px system-ui";ctx.textAlign="left";
+      const identifier=event.label.toLowerCase().replace("_operator_confirmed","").replace("_","");
+      const readable={unload1:"卸载 1",load2:"装载 2",unload2:"卸载 2"}[identifier] || identifier;
+      ctx.fillText(readable+(event.kind==="edge"?" · 边沿":" · 确认"),
+                   Math.min(x+4,width-110),topPanel.y+(event.kind==="edge"?17:34));
+    }
+  }
+  function line(name,panel,limits){
+    if(!active[name])return;
+    ctx.beginPath();let started=false;
+    for(let i=first;i<last;i++){
+      const v=points[i][series[name]];
+      if(v===null){started=false;continue;}
+      const x=canvasX(points[i][0]);const y=yFor(v,panel,limits);
+      if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y);
+    }
+    ctx.strokeStyle=colors[name];ctx.lineWidth=name==="gross"?1.7:1.1;ctx.globalAlpha=name==="gross"?1:.78;ctx.stroke();ctx.globalAlpha=1;
+  }
+  for(const name of ["gross","conditioned","display"])line(name,topPanel,massRange);
+  for(const name of ["raw","filtered"])line(name,adcPanel,adcRange);
+  if(pointerX!==null && pointerX>=bounds.left && pointerX<width-bounds.right){
+    ctx.strokeStyle="#c9deee";ctx.lineWidth=1;ctx.setLineDash([3,4]);ctx.beginPath();ctx.moveTo(pointerX,topPanel.y);ctx.lineTo(pointerX,adcPanel.y+adcPanel.h);ctx.stroke();ctx.setLineDash([]);
+  }
+  ctx.restore();
+  rangeLabel.textContent=`时间范围：${utc(viewStart)} — ${utc(viewEnd)} · ${(viewEnd-viewStart)/60000<2?((viewEnd-viewStart)/1000).toFixed(1)+" 秒":((viewEnd-viewStart)/60000).toFixed(1)+" 分钟"} · ${last-first} 条可见记录`;
+}
+function updateHover(x){
+  pointerX=x;
+  if(x<bounds.left || x>width-bounds.right){readout.textContent="将鼠标移到曲线上读取该位置的原始记录。";render();return;}
+  const t=clamp(timeX(x),0,fullEnd);
+  const i=lowerBound(t);
+  const row=points[clamp(i>0 && (i===points.length || t-points[i-1][0]<points[i][0]-t)?i-1:i,0,points.length-1)];
+  const near=DATA.events.filter(e=>Math.abs(e.t-row[0])<5000).map(e=>e.label).join(" · ");
+  readout.textContent=`${utc(row[0])}  |  权威 ${labelNumber(row[1],6)} g  ·  面板 ${labelNumber(row[2],2)} g  ·  显示保持 ${labelNumber(row[3],3)} g  ·  raw ${row[4]??"—"} counts  ·  filtered ${row[5]??"—"} counts${near?"  |  "+near:""}`;
+  render();
+}
+canvas.addEventListener("wheel",event=>{
+  event.preventDefault();const box=canvas.getBoundingClientRect();
+  zoom(Math.exp(clamp(event.deltaY,-500,500)*.002),event.clientX-box.left);
+},{passive:false});
+canvas.addEventListener("pointerdown",event=>{
+  if(event.button!==0)return;
+  canvas.setPointerCapture(event.pointerId);drag={x:event.clientX,start:viewStart,end:viewEnd};canvas.classList.add("dragging");
+});
+canvas.addEventListener("pointermove",event=>{
+  const box=canvas.getBoundingClientRect();const x=event.clientX-box.left;
+  if(drag){const shift=(event.clientX-drag.x)*(drag.end-drag.start)/(width-bounds.left-bounds.right);setView(drag.start-shift,drag.end-shift);}
+  updateHover(x);
+});
+function endDrag(){drag=null;canvas.classList.remove("dragging");}
+canvas.addEventListener("pointerup",endDrag);canvas.addEventListener("pointercancel",endDrag);
+canvas.addEventListener("pointerleave",()=>{if(!drag){pointerX=null;readout.textContent="将鼠标移到曲线上读取该位置的原始记录。";render();}});
+document.getElementById("fit").addEventListener("click",()=>{quickView.value="all";setView(0,fullEnd);});
+quickView.addEventListener("change",()=>chooseQuickWindow(quickView.value));
+document.getElementById("zoomIn").addEventListener("click",()=>zoom(.5,width/2));
+document.getElementById("zoomOut").addEventListener("click",()=>zoom(2,width/2));
+for(const box of document.querySelectorAll("input[data-series]"))box.addEventListener("change",()=>{active[box.dataset.series]=box.checked;render();});
+document.getElementById("markers").addEventListener("change",render);
+document.getElementById("meta").textContent=`${points.length.toLocaleString()} 个记录点 · ${utc(0)} 至 ${utc(fullEnd)}`;
+document.getElementById("warning").textContent=`注意：首次装载边沿未被记录；边沿标记由约 0.5 秒轮询推定，人工确认晚于真实动作。记录器没有独立的滤波重量（g）列。${DATA.missing.length?"缺失可选列："+DATA.missing.join("、")+"。":""}`;
+new ResizeObserver(render).observe(canvas);
+render();
+</script>
+</body>
+</html>

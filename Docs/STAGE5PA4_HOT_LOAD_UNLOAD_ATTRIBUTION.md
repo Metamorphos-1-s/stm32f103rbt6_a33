@@ -169,6 +169,14 @@ python Tools/stage5pa4/analyze_hot_cycles.py --input Results/stage5pa4/thermal_c
 python Tools/stage5pa4/test_analyze_hot_cycles.py
 ```
 
+For a standalone interactive plot of the continuous record, run
+`python Tools/stage5pa4/build_interactive_waveform.py` and open
+`Results/stage5pa4/interactive_waveform.html`. The viewer supports mouse-wheel
+time zoom, horizontal drag, independent mass/ADC axes, nearest-sample hover,
+inferred-vs-operator event markers and quick loaded/unloaded windows. Its
+generation and optional browser QA are documented in
+`Tools/stage5pa4/INTERACTIVE_WAVEFORM.md`; original CSVs are unchanged.
+
 All raw CSVs, events, failed first-load boundary assumption and partial
 segments remain archived. No 12-hour, 10/40 Hz/filter, alarm or new RAM
 hardware qualification was run; no merge, tag or PR was created.
