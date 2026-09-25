@@ -6,8 +6,8 @@
   "files": [
     {
       "path": "analysis.json",
-      "length": 25471,
-      "sha256": "14D0F7395AFF016E0271E127E25D864ADD01FA4CB7BED0D959EC8BBCA0D95A86"
+      "length": 28130,
+      "sha256": "968CD4F594B52C45B4357CE7F966840946579063BB95E23438CF0D7ADF8C134C"
     },
     {
       "path": "event_timeline.csv",
@@ -43,6 +43,11 @@
       "path": "preflight_051C.json",
       "length": 2829,
       "sha256": "E1FF3ABD54696B1F806C650BBA7C76626EA243DB00280488A92E9DAB8C17F7DE"
+    },
+    {
+      "path": "r5_counterfactual_trace.csv",
+      "length": 192440,
+      "sha256": "7A59F06B00C8245571A808D3CE27918D4C5C46242B425633C8013DF2900BDEF0"
     },
     {
       "path": "thermal_cycle/continuous_3h/environment.json",
