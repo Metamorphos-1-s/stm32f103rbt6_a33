@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "classification": "STAGE5PA4_WITH_LOCAL_REALTIME_WAVEFORM",
+  "classification": "STAGE5PA4_WITH_REALTIME_185910_RECORD_ARCHIVE",
   "run_id": "stage5pa4",
   "repository_commit": "HEAD",
   "files": [
@@ -78,6 +78,31 @@
       "path": "realtime_live_final_preview.png",
       "length": 131297,
       "sha256": "C7722A82FF7EF857B1DEBE0E56710CF729B6693FCE2CAFD90684CEB374D59000"
+    },
+    {
+      "path": "realtime_runs/20260925T121451Z_0x051C/README.md",
+      "length": 744,
+      "sha256": "E965C8CE94F8646E63AF0DA2F327DD4F4446F716CE90DE8EA532864524AC81ED"
+    },
+    {
+      "path": "realtime_runs/20260925T121451Z_0x051C/events.jsonl",
+      "length": 214,
+      "sha256": "67CA2340DF5FE7DFE0312DAA9E019D5460F89E309A65A0BCDD5A80BD66DBAD95"
+    },
+    {
+      "path": "realtime_runs/20260925T121451Z_0x051C/frames.jsonl.7z",
+      "length": 10690762,
+      "sha256": "1A8843511A7EA063DCCEE0058D0743BB1B18FDBDCDE9C91BE053833813E5D281"
+    },
+    {
+      "path": "realtime_runs/20260925T121451Z_0x051C/samples.csv",
+      "length": 28493408,
+      "sha256": "10545968A92A23688162A68D82DCFCF20C10FDD0ABDF3EC58203F6E549D0C3D2"
+    },
+    {
+      "path": "realtime_runs/20260925T121451Z_0x051C/session_summary.json",
+      "length": 1120,
+      "sha256": "F47FF2FB36DB22C1E4DDDA8AD28950F16CA6C866FED4A1F623FE3F0CED238064"
     },
     {
       "path": "thermal_cycle/continuous_3h/environment.json",
