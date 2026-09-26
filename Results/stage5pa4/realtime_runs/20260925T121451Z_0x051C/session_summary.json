@@ -1,0 +1,35 @@
+{
+  "classification": "STAGE5PA4_REALTIME_READ_ONLY_SESSION_ARCHIVE",
+  "firmware": "0x051C",
+  "map": "0x0104",
+  "port": "COM5",
+  "first_record_utc": "2026-09-25T12:14:51.214000+00:00",
+  "last_record_utc": "2026-09-26T14:08:07.015000+00:00",
+  "records": 185910,
+  "stop_event_utc": "2026-09-26T14:08:07.472920+00:00",
+  "consecutive_read_errors_at_stop": 0,
+  "writes": 0,
+  "flash_operations": 0,
+  "revision_saved": "19/19",
+  "dirty": 0,
+  "fault_mask": 0,
+  "overrun_count": 0,
+  "files": {
+    "samples.csv": {
+      "sha256": "10545968A92A23688162A68D82DCFCF20C10FDD0ABDF3EC58203F6E549D0C3D",
+      "bytes": 28493408
+    },
+    "events.jsonl": {
+      "sha256": "009C260D88F7DE7B4513004C3DBEF996CDD55413E195D43B5CB02BBBCFF11E5E",
+      "bytes": 216
+    },
+    "frames.jsonl": {
+      "sha256": "75A87B361F293170042C564D6432EF58C577CCD784D4918B3EB7C9CE583F4FBC",
+      "bytes": 223649867,
+      "archive": "frames.jsonl.7z",
+      "archive_sha256": "1A8843511A7EA063DCCEE0058D0743BB1B18FDBDCDE9C91BE053833813E5D281",
+      "archive_bytes": 10690762,
+      "restore_command": "7z x frames.jsonl.7z"
+    }
+  }
+}
