@@ -538,6 +538,46 @@ static ModbusRegisterResult ReadOne(uint16_t address,
         return MODBUS_REGISTER_OK;
     }
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+    if ((address >= MODBUS_A13C_FIRST) &&
+        (address <= MODBUS_A13C_LAST))
+    {
+        const A13CSnapshot *candidate = MetrologyManager_GetA13CSnapshot();
+        uint32_t metric = 0U;
+        if (candidate == NULL) return MODBUS_REGISTER_ILLEGAL_ADDRESS;
+        if (address == 0x0300U) *value = 0xA13CU;
+        else if (address == 0x0301U) *value = (uint16_t)candidate->mode;
+        else if (address == 0x0302U) *value = (uint16_t)candidate->state;
+        else if (address == 0x0303U) *value = (uint16_t)candidate->reason;
+        else if (address == 0x0304U) *value = candidate->limited ? 1U : 0U;
+        else if ((address >= 0x0305U) && (address <= 0x0308U))
+            *value = Word64((uint64_t)candidate->offset_ug,
+                (uint8_t)(address - 0x0305U), order);
+        else if ((address >= 0x0309U) && (address <= 0x030CU))
+            *value = Word64((uint64_t)candidate->corrected_ug,
+                (uint8_t)(address - 0x0309U), order);
+        else if ((address >= 0x030DU) && (address <= 0x0310U))
+            *value = Word64((uint64_t)candidate->uncompensated_ug,
+                (uint8_t)(address - 0x030DU), order);
+        else {
+            uint8_t index = (uint8_t)((address - 0x0311U) / 2U);
+            uint16_t first = (uint16_t)(0x0311U + (uint16_t)(2U * index));
+            if (index == 0U) metric = candidate->sample_sequence;
+            else if (index == 1U) metric = candidate->timestamp_ms;
+            else if (index == 2U) metric = candidate->gate_count;
+            else if (index == 3U) metric = candidate->rebuild_count;
+            else if (index == 4U) metric = candidate->boost_samples;
+            else if (index == 5U) metric = candidate->obvious_step_sequence;
+            else if (index == 6U) metric = candidate->robust_step_sequence;
+            else if (index == 7U) metric = candidate->quiet_sequence;
+            else if (index == 8U) metric = candidate->reference_lock_sequence;
+            else if (index == 9U) metric = candidate->first_correction_sequence;
+            else return MODBUS_REGISTER_ILLEGAL_ADDRESS;
+            *value = Word32(metric, (uint8_t)(address - first), order);
+        }
+        return MODBUS_REGISTER_OK;
+    }
+#endif
     if ((address >= MODBUS_R5_BETA_FIRST) &&
         (address <= MODBUS_R5_BETA_LAST))
     {

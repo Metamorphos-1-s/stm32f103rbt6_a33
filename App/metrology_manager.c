@@ -8,6 +8,9 @@
 #include "system_context.h"
 #include "unit_converter.h"
 #include "weight_engine.h"
+#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+#include "a13c_shadow_compensator.h"
+#endif
 #if (A33_ENABLE_STAGE5NA3_DIAGNOSTICS != 0U)
 #include "bsp_time.h"
 #include "stage5na3_fault_injection.h"
@@ -24,7 +27,107 @@ static bool s_last_published_stable;
 static DisplayConditioner s_display_conditioner;
 static bool s_runtime_drift_fault_latched;
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+/* The engineering image reuses the legacy state storage. The frozen
+ * release and the original R5 path are not built through this adapter. */
+static A13CCompensator s_r5_drift;
+static R5DriftSnapshot s_a13c_diagnostics;
+
+static bool A13CCompat_Init(A13CCompensator *candidate,
+                             const R5DriftConfig *config)
+{
+    if ((candidate == NULL) || (config == NULL)) return false;
+    A13C_Init(candidate);
+    return true;
+}
+
+static bool A13CCompat_SetMode(A13CCompensator *candidate, R5DriftMode mode)
+{
+    if ((uint32_t)mode > (uint32_t)R5_DRIFT_MODE_STATIC_COMPENSATION)
+        return false;
+    return A13C_SetMode(candidate, (A13CMode)mode);
+}
+
+static void A13CCompat_HandleEvent(A13CCompensator *candidate,
+                                    R5DriftEvent event)
+{
+    A13CReason reason = A13C_REASON_NONE;
+    if (event == R5_DRIFT_EVENT_ZERO) reason = A13C_REASON_ZERO;
+    else if ((event == R5_DRIFT_EVENT_CALIBRATION_BEGIN) ||
+             (event == R5_DRIFT_EVENT_CALIBRATION_COMMIT))
+        reason = A13C_REASON_CALIBRATION;
+    else if (event == R5_DRIFT_EVENT_PROFILE_CHANGE)
+        reason = A13C_REASON_PROFILE;
+    else if (event == R5_DRIFT_EVENT_POWER_ON) {
+        A13C_Init(candidate);
+        return;
+    }
+    if (reason != A13C_REASON_NONE) A13C_Reset(candidate, reason);
+}
+
+static bool A13CCompat_ProcessSample(A13CCompensator *candidate,
+                                      const R5DriftInput *input)
+{
+    const SystemContext *context = SystemContext_Get();
+    const WeighingProfileConfig *profile;
+    if ((context == NULL) ||
+        ((uint32_t)context->config.metrology.active_profile >=
+         WEIGHING_PROFILE_COUNT)) return false;
+    profile = &context->config.metrology.profiles[
+        context->config.metrology.active_profile];
+    /* No output outside the one frozen 10 Hz/filt1/strength3 envelope. */
+    return A13C_Feed(candidate, input->sample_sequence, input->timestamp_ms,
+        input->uncompensated_gross_ug, input->calibration_valid &&
+        (profile->sample_rate == DEVICE_CS1237_DATA_RATE_10_HZ) &&
+        (profile->filter_mode == FILTER_MODE_AVERAGE) &&
+        (profile->filter_strength == 3U),
+        input->fault_active, input->overload, input->near_rail);
+}
+
+static const R5DriftSnapshot *A13CCompat_GetSnapshot(
+    const A13CCompensator *candidate)
+{
+    const A13CSnapshot *source = A13C_GetSnapshot(candidate);
+    R5DriftSnapshot *destination = &s_a13c_diagnostics;
+    if (source == NULL) return NULL;
+    (void)memset(destination, 0, sizeof(*destination));
+    destination->mode = (R5DriftMode)source->mode;
+    if (source->state == A13C_STATE_OFF) destination->state = R5_DRIFT_STATE_OFF;
+    else if (source->state == A13C_STATE_DOSING)
+        destination->state = R5_DRIFT_STATE_DOSING;
+    else if ((source->state == A13C_STATE_STEP_SETTLING) ||
+             (source->state == A13C_STATE_STEP_PENDING) ||
+             (source->state == A13C_STATE_HOLDOFF))
+        destination->state = R5_DRIFT_STATE_HOLDOFF;
+    else if (source->state == A13C_STATE_REFERENCE_FILL)
+        destination->state = R5_DRIFT_STATE_REFERENCE_FILL;
+    else if (source->state == A13C_STATE_OBSERVATION_FILL)
+        destination->state = R5_DRIFT_STATE_OBSERVATION_FILL;
+    else if (source->state == A13C_STATE_TRACKING)
+        destination->state = R5_DRIFT_STATE_TRACKING;
+    else destination->state = R5_DRIFT_STATE_LIMITED;
+    destination->uncompensated_gross_ug = source->uncompensated_ug;
+    destination->corrected_gross_ug = source->corrected_ug;
+    destination->offset_ug = source->offset_ug;
+    destination->reference_ug = source->reference_twice_ug / 2;
+    destination->automatic_rebase_count = source->rebuild_count;
+    /* Old R5 reason codes are not the A13C reason vocabulary. Use the
+     * 0x0300 engineering register range for lossless A13C diagnostics. */
+    destination->last_rebase_reason = R5_DRIFT_REASON_NONE;
+    destination->reference_fill = candidate->reference_count;
+    destination->observation_fill = candidate->observation_count;
+    destination->limited = source->limited;
+    return destination;
+}
+
+#define R5Drift_Init A13CCompat_Init
+#define R5Drift_SetMode A13CCompat_SetMode
+#define R5Drift_HandleEvent A13CCompat_HandleEvent
+#define R5Drift_ProcessSample A13CCompat_ProcessSample
+#define R5Drift_GetSnapshot A13CCompat_GetSnapshot
+#else
 static R5DriftCompensator s_r5_drift;
+#endif
 static R5BetaApplication s_r5_application;
 #if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
 static bool s_restoring_r5_request;
@@ -275,7 +378,12 @@ static bool MetrologyManager_ProcessAlarmShadow(void)
 #endif
     input.stable = (snapshot->status_flags & WEIGHT_STATUS_STABLE) != 0U;
     input.process_active =
-        s_r5_drift.mode == R5_DRIFT_MODE_DOSING_NO_COMPENSATION;
+#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+        false;
+#else
+        (uint32_t)s_r5_drift.mode ==
+        (uint32_t)R5_DRIFT_MODE_DOSING_NO_COMPENSATION;
+#endif
     input.valid =
         ((snapshot->status_flags & WEIGHT_STATUS_WEIGHT_VALID) != 0U) &&
         fast_valid;
@@ -307,6 +415,13 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
     AppState state;
     if (!s_initialized || (sample == NULL) || !sample->valid)
     {
+#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+        if (s_initialized)
+            (void)A13C_Feed(&s_r5_drift, s_r5_drift.last_sequence,
+                (sample != NULL) ? sample->timestamp_ms :
+                s_r5_drift.last_timestamp_ms, s_r5_drift.last_mass_ug,
+                false, false, false, false);
+#endif
         if (s_initialized && (sample != NULL))
             WeightEngine_FreezeRuntimeDrift(&s_engine, sample->timestamp_ms,
                 RUNTIME_DRIFT_FREEZE_TRANSIENT_SAMPLE);
@@ -327,6 +442,13 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
         (FaultManager_GetActiveMask() == 0U));
     if (!WeightEngine_ProcessRawSample(&s_engine, sample))
     {
+#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+        /* A rejected measurement invalidates the candidate's history;
+         * it must not resume boosted correction from an unseen sample. */
+        (void)A13C_Feed(&s_r5_drift, s_r5_drift.last_sequence,
+            sample->timestamp_ms, s_r5_drift.last_mass_ug,
+            false, false, false, false);
+#endif
         ++s_rejected_sample_count;
         FaultManager_Set(FAULT_WEIGHT_MATH_OVERFLOW);
         return false;
@@ -337,13 +459,24 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
         R5DriftInput input = {0};
         const R5DriftSnapshot *r5_snapshot;
         if (snapshot == NULL) return false;
-        if ((snapshot->status_flags & WEIGHT_STATUS_WEIGHT_VALID) == 0U)
+        if ((snapshot->status_flags & WEIGHT_STATUS_WEIGHT_VALID) == 0U) {
+#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+            (void)A13C_Feed(&s_r5_drift, snapshot->sample_sequence,
+                snapshot->sample_timestamp_ms,
+                snapshot->uncompensated_gross_mass_ug,
+                false, false, false, false);
+#endif
             goto r5_sample_complete;
+        }
         input.uncompensated_gross_ug = snapshot->uncompensated_gross_mass_ug;
         input.timestamp_ms = snapshot->sample_timestamp_ms;
         input.sample_sequence = snapshot->sample_sequence;
         input.calibration_valid = (snapshot->status_flags &
             WEIGHT_STATUS_CALIBRATION_VALID) != 0U;
+#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+        if (state == APP_STATE_CALIBRATION)
+            input.calibration_valid = false;
+#endif
         input.fault_active = FaultManager_GetActiveMask() != 0U;
         input.overload = (snapshot->status_flags & WEIGHT_STATUS_OVERLOAD) != 0U;
         input.near_rail = (snapshot->raw_value >= 8323072) ||
@@ -351,8 +484,13 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
         if (!R5Drift_ProcessSample(&s_r5_drift, &input)) return false;
         r5_snapshot = R5Drift_GetSnapshot(&s_r5_drift);
         if ((r5_snapshot == NULL) || !WeightEngine_SetBetaExternalDrift(
-            &s_engine, r5_snapshot->offset_ug,
+            &s_engine,
+#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+            0, false)) return false;
+#else
+            r5_snapshot->offset_ug,
             s_r5_application == R5_BETA_APPLICATION_ACTIVE)) return false;
+#endif
 r5_sample_complete:
         (void)0;
     }
@@ -844,13 +982,21 @@ bool MetrologyManager_SetR5Mode(R5DriftMode mode)
         return false;
     snapshot = R5Drift_GetSnapshot(&s_r5_drift);
     if ((snapshot == NULL) || !WeightEngine_SetBetaExternalDrift(&s_engine,
+#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+        0, false)) return false;
+#else
         snapshot->offset_ug,
         s_r5_application == R5_BETA_APPLICATION_ACTIVE)) return false;
+#endif
+#if (A33_ENABLE_STAGE5PA13C_SHADOW == 0U)
     CheckweighShadow_RequestReset(&s_alarm_shadow,
         ALARM_SHADOW_RESET_R5_MODE);
+#endif
 #if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+#if (A33_ENABLE_STAGE5PA13C_SHADOW == 0U)
     if (!s_restoring_r5_request)
         (void)SystemContext_SetRequestedR5Mode((uint8_t)mode);
+#endif
 #endif
     return true;
 }
@@ -858,6 +1004,9 @@ bool MetrologyManager_SetR5Mode(R5DriftMode mode)
 bool MetrologyManager_SetR5Application(R5BetaApplication application)
 {
     const R5DriftSnapshot *snapshot;
+#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+    if (application != R5_BETA_APPLICATION_SHADOW) return false;
+#endif
     if (!s_initialized || ((uint32_t)application >
         (uint32_t)R5_BETA_APPLICATION_ACTIVE)) return false;
     snapshot = R5Drift_GetSnapshot(&s_r5_drift);
@@ -865,8 +1014,10 @@ bool MetrologyManager_SetR5Application(R5BetaApplication application)
     s_r5_application = application;
     if (!WeightEngine_SetBetaExternalDrift(&s_engine, snapshot->offset_ug,
         application == R5_BETA_APPLICATION_ACTIVE)) return false;
+#if (A33_ENABLE_STAGE5PA13C_SHADOW == 0U)
     CheckweighShadow_RequestReset(&s_alarm_shadow,
         ALARM_SHADOW_RESET_R5_APPLICATION);
+#endif
 #if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
     if (!s_restoring_r5_request)
         (void)SystemContext_SetRequestedR5Application((uint8_t)application);
@@ -878,12 +1029,25 @@ bool MetrologyManager_SetR5Application(R5BetaApplication application)
 bool MetrologyManager_RestoreR5Request(R5BetaApplication application,
     R5DriftMode mode)
 {
+#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+    /* Never restore a persisted ACTIVE request into an engineering image. */
+    bool result;
+    (void)application;
+    (void)mode;
+    s_restoring_r5_request = true;
+    result = s_initialized &&
+        MetrologyManager_SetR5Application(R5_BETA_APPLICATION_SHADOW) &&
+        MetrologyManager_SetR5Mode(R5_DRIFT_MODE_OFF);
+    s_restoring_r5_request = false;
+    return result;
+#else
     bool result;
     s_restoring_r5_request = true;
     result = MetrologyManager_SetR5Application(application) &&
         MetrologyManager_SetR5Mode(mode);
     s_restoring_r5_request = false;
     return result;
+#endif
 }
 #endif
 
@@ -891,7 +1055,7 @@ void MetrologyManager_ResetR5(void)
 {
     R5DriftMode mode;
     if (!s_initialized) return;
-    mode = s_r5_drift.mode;
+    mode = (R5DriftMode)s_r5_drift.mode;
     R5Drift_HandleEvent(&s_r5_drift, R5_DRIFT_EVENT_POWER_ON);
     if (mode == R5_DRIFT_MODE_OFF)
         (void)R5Drift_SetMode(&s_r5_drift, R5_DRIFT_MODE_OFF);
@@ -905,6 +1069,13 @@ const R5DriftSnapshot *MetrologyManager_GetR5Snapshot(void)
 {
     return s_initialized ? R5Drift_GetSnapshot(&s_r5_drift) : NULL;
 }
+
+#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+const A13CSnapshot *MetrologyManager_GetA13CSnapshot(void)
+{
+    return s_initialized ? A13C_GetSnapshot(&s_r5_drift) : NULL;
+}
+#endif
 
 R5BetaApplication MetrologyManager_GetR5Application(void)
 {
@@ -968,7 +1139,12 @@ bool MetrologyManager_GetAlarmShadowDiagnostics(
     diagnostics->dynamic_confirm_count = s_alarm_shadow.dynamic_confirm_count;
     diagnostics->dynamic_reason = s_alarm_shadow.last_dynamic_reason;
     diagnostics->process_active =
-        s_r5_drift.mode == R5_DRIFT_MODE_DOSING_NO_COMPENSATION;
+#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+        false;
+#else
+        (uint32_t)s_r5_drift.mode ==
+        (uint32_t)R5_DRIFT_MODE_DOSING_NO_COMPENSATION;
+#endif
     diagnostics->valid =
         (snapshot->status_flags & WEIGHT_STATUS_WEIGHT_VALID) != 0U;
     return true;

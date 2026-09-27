@@ -995,3 +995,7 @@ else()
         -Wall -Wextra -Werror)
 endif()
 add_test(NAME alarm_output_manager_logic COMMAND alarm_output_manager_tests)
+
+# Isolated, opt-in engineering controller tests. The existing release
+# regression executables remain built against the frozen product R5 path.
+add_subdirectory(stage5pa13c)

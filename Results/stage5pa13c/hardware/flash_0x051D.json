@@ -1,0 +1,11 @@
+﻿{
+    "timestamp":  "2026-09-28T04:16:15.9810536+08:00",
+    "git_sha":  "b402288c827b67d43e567d5209619b935dfa3e01",
+    "git_status":  " M App/metrology_manager.c\n M App/metrology_manager.h\n M CMakeLists.txt\n M Config/project_config.h\n M Protocol/modbus/modbus_register_map.h\n M Protocol/modbus/modbus_register_model.c\n M Tests/host/CMakeLists.txt\n M Tools/stage5b_hw/__pycache__/hw_common.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/modbus_crc.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/modbus_frame.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/register_map.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/register_map_check.cpython-38.pyc\n M Tools/stage5b_hw/__pycache__/serial_transport.cpython-38.pyc\n?? Domain/measurement/a13c_shadow_compensator.c\n?? Domain/measurement/a13c_shadow_compensator.h\n?? Results/stage5pa13c/\n?? Tests/host/stage5pa13c/\n?? Tools/stage5pa13c/",
+    "elf":  "D:\\Documents\\stm32f103rbt6_a33_stage5pa13c\\Results\\stage5pa13c\\software\\arm_candidate_strict\\stm32f103rbt6_a33.elf",
+    "elf_sha256":  "C60769E83CEDD2D210208D7B9FD2FF863BF53DF7A39F8D245DBFBA5367B84573",
+    "programmer":  "E:\\ST\\STM32CubeCLT_1.18.0\\STM32CubeProgrammer\\bin\\STM32_Programmer_CLI.exe",
+    "mass_erase":  false,
+    "config_region_preserved":  true,
+    "nrst_connected":  true
+}

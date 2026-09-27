@@ -54,6 +54,8 @@ option(A33_ENABLE_STAGE5PA2C_PRODUCT
     "Enable Stage 5P-A2C local-menu transaction candidate" OFF)
 option(A33_ENABLE_STAGE5PA2D_CALIBRATION
     "Enable Stage 5P-A2D calibration workflow candidate" OFF)
+option(A33_ENABLE_STAGE5PA13C_SHADOW
+    "Enable isolated 10 Hz A13C automatic STATIC SHADOW candidate" OFF)
 
 if(A33_ENABLE_STAGE5NA3_DIAGNOSTICS AND NOT A33_ENABLE_STAGE5MR5_BETA)
     message(FATAL_ERROR "Stage 5N-A3 diagnostics require Stage 5M-R5 Beta")
@@ -81,6 +83,9 @@ if(A33_ENABLE_STAGE5PA2C_PRODUCT AND NOT A33_ENABLE_STAGE5PA2_PRODUCT)
 endif()
 if(A33_ENABLE_STAGE5PA2D_CALIBRATION AND NOT A33_ENABLE_STAGE5PA2C_PRODUCT)
     message(FATAL_ERROR "Stage 5P-A2D requires Stage 5P-A2C product")
+endif()
+if(A33_ENABLE_STAGE5PA13C_SHADOW AND NOT A33_ENABLE_STAGE5PA2D_CALIBRATION)
+    message(FATAL_ERROR "Stage 5P-A13C requires Stage 5P-A2D product baseline")
 endif()
 
 # Enable CMake support for ASM and C languages
@@ -280,6 +285,15 @@ if(A33_ENABLE_STAGE5MR5_BETA)
         UI/display_model/directional_display_follower.c
         UI/r5_local_control.c
         UI/ui_config_workspace.c)
+endif()
+if(A33_ENABLE_STAGE5PA13C_SHADOW)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+        Domain/measurement/a13c_shadow_compensator.c)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5PA13C_SHADOW=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        A33_ENABLE_STAGE5PA13C_SHADOW=0)
 endif()
 
 if(A33_ENABLE_STAGE5NA3_DIAGNOSTICS)

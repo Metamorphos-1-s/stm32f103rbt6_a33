@@ -8,6 +8,9 @@
 #include "runtime_drift_compensator.h"
 #if defined(A33_ENABLE_STAGE5MR5_BETA) && (A33_ENABLE_STAGE5MR5_BETA != 0U)
 #include "reference_lock_drift_compensator.h"
+#if defined(A33_ENABLE_STAGE5PA13C_SHADOW) && (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+#include "a13c_shadow_compensator.h"
+#endif
 #include "checkweigh_shadow.h"
 typedef enum {
     R5_BETA_APPLICATION_SHADOW = 0,
@@ -81,6 +84,9 @@ bool MetrologyManager_RestoreR5Request(R5BetaApplication application,
 #endif
 void MetrologyManager_ResetR5(void);
 const R5DriftSnapshot *MetrologyManager_GetR5Snapshot(void);
+#if defined(A33_ENABLE_STAGE5PA13C_SHADOW) && (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+const A13CSnapshot *MetrologyManager_GetA13CSnapshot(void);
+#endif
 R5BetaApplication MetrologyManager_GetR5Application(void);
 bool MetrologyManager_SetAlarmShadowThresholds(int64_t low_ug,
     int64_t high_ug);

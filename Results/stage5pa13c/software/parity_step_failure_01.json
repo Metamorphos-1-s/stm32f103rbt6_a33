@@ -1,0 +1,75 @@
+{
+  "classification": "A13C_PYTHON_C_SAMPLE_PARITY",
+  "candidate": "auto_static_350_5m",
+  "samples": 4000,
+  "runner_exit_code": 0,
+  "python_gates": [
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "event_detected_seq": 1001315,
+      "settled_seq": 1001350,
+      "obvious_step_seq": 1001300,
+      "net_step_ug": 500007300.0,
+      "offset_at_detection_ug": 3255
+    }
+  ],
+  "python_rebases": [
+    {
+      "seq": 1001315,
+      "reason": "STATIC_STEP_PENDING",
+      "offset_ug": 3255
+    },
+    {
+      "seq": 1001350,
+      "reason": "STATIC_STEP_FAST",
+      "offset_ug": 3255
+    }
+  ],
+  "python_max_10s_offset_ug": 3500,
+  "first_mismatch": {
+    "index": 1465,
+    "sequence": 1001465,
+    "mass_ug": 500293000,
+    "c": [
+      1001465,
+      500289745,
+      3255,
+      4,
+      1,
+      2,
+      0,
+      5,
+      1001300,
+      1001315,
+      1001350,
+      0,
+      0,
+      0
+    ],
+    "py": [
+      1001465,
+      500289745,
+      3255,
+      "REFERENCE_FILL"
+    ],
+    "expected_rebuild_count": 2,
+    "expected_gate_count": 1,
+    "defects": [
+      "state"
+    ]
+  },
+  "mismatch_count": 2106,
+  "c_max_10s_offset_ug": 3500,
+  "c_gate_details": [
+    {
+      "seq": 1001350,
+      "source": "STATIC_OBVIOUS_STEP",
+      "c_obvious_seq": 1001300,
+      "c_robust_seq": 1001315,
+      "c_quiet_seq": 1001350,
+      "c_reference_lock_seq": 0,
+      "c_correction_seq": 0
+    }
+  ],
+  "status": "FAIL"
+}

@@ -1,0 +1,75 @@
+{
+  "classification": "A13C_PYTHON_C_SAMPLE_PARITY",
+  "candidate": "auto_static_350_5m",
+  "samples": 3500,
+  "runner_exit_code": 0,
+  "python_gates": [
+    {
+      "event_detected_seq": null,
+      "mode_confirmed_seq": 1001800,
+      "age_samples": null,
+      "prefill_reference_count": 0,
+      "offset_at_confirmation_ug": 1755,
+      "source": "DOSING_EXIT"
+    }
+  ],
+  "python_rebases": [
+    {
+      "seq": 1001000,
+      "reason": "DOSING_ENTRY",
+      "offset_ug": 1755
+    },
+    {
+      "seq": 1001800,
+      "reason": "DOSING_EXIT_STATIC",
+      "offset_ug": 1755
+    }
+  ],
+  "python_max_10s_offset_ug": 3500,
+  "first_mismatch": {
+    "index": 1000,
+    "sequence": 1001000,
+    "mass_ug": 200000,
+    "c": [
+      1001000,
+      198245,
+      1755,
+      1,
+      0,
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      1000449,
+      1000649,
+      0
+    ],
+    "py": [
+      1001000,
+      198245,
+      1755,
+      "DOSING"
+    ],
+    "expected_rebuild_count": 1,
+    "expected_gate_count": 0,
+    "defects": [
+      "rebuild_count"
+    ]
+  },
+  "mismatch_count": 2500,
+  "c_max_10s_offset_ug": 3500,
+  "c_gate_details": [
+    {
+      "seq": 1001800,
+      "source": "DOSING_EXIT",
+      "c_obvious_seq": 0,
+      "c_robust_seq": 0,
+      "c_quiet_seq": 1001800,
+      "c_reference_lock_seq": 0,
+      "c_correction_seq": 0
+    }
+  ],
+  "status": "FAIL"
+}
