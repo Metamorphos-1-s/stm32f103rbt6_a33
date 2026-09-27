@@ -75,7 +75,7 @@ def operator_ns(path: Path):
 
 
 class SampleController:
-    """Reference-error feedback with a temporary operation-qualified rate."""
+    """Reference-error feedback; A13 may enable auto STATIC on a subclass policy."""
 
     def __init__(self, policy: SamplePolicy):
         self.p = policy
@@ -91,6 +91,8 @@ class SampleController:
         self.last_seq = self.last_ms = self.last_mass = None
         self.hold_until = self.freeze_until = 0
         self.event_seq = self.obvious_seq = None
+        self.pending_auto_seq = None
+        self.pre_step_mass = None
         self.event_reference: list[int] = []
         self.event_observation: list[int] = []
         self.boost_until = 0
@@ -136,12 +138,15 @@ class SampleController:
 
     def feed(self, seq: int, ms: int, mass: int, dosing: bool):
         p = self.p
+        auto_static = getattr(p, "auto_static", False)
         if self.last_seq is None:
             self.reset_reference(seq, "INITIAL")
         elif seq != self.last_seq + 1 or not 0 < ms - self.last_ms <= 250:
             self.reset_reference(seq, "TIME_GAP")
             self.clear_step()
             self.event_seq = self.obvious_seq = None
+            self.pending_auto_seq = None
+            self.pre_step_mass = None
             self.event_reference.clear()
             self.event_observation.clear()
             self.boost_until = 0
@@ -151,30 +156,40 @@ class SampleController:
             self.reset_reference(seq, "DOSING_ENTRY")
             self.clear_step()
             self.event_seq = self.obvious_seq = None
+            self.pending_auto_seq = None
+            self.pre_step_mass = None
             self.event_reference.clear()
             self.event_observation.clear()
             self.boost_until = 0
         elif not dosing and self.dosing:
             age = seq - self.event_seq if self.event_seq is not None else None
-            qualifies = age is not None and 0 <= age <= 120 * p.hz
-            self.reset_reference(seq, "CONFIRMED_EVENT" if qualifies else "NO_RECENT_EVENT")
+            recent = age is not None and 0 <= age <= 120 * p.hz
+            qualifies = recent or auto_static
+            reason = ("CONFIRMED_EVENT" if recent else
+                      "DOSING_EXIT_STATIC" if auto_static else "NO_RECENT_EVENT")
+            self.reset_reference(seq, reason)
             self.clear_step()
             self.freeze_until = seq
             if qualifies:
-                self.boost_until = self.event_seq + p.boost_samples
-                if p.prefill:
+                self.boost_until = (self.event_seq if recent else seq) + p.boost_samples
+                if recent and p.prefill:
                     self.hold_until = self.event_seq + 15 * p.hz
                     self.ref_samples = list(self.event_reference)
                     if len(self.ref_samples) == 30 * p.hz:
                         self.reference = statistics.median(self.ref_samples)
                         self.obs = deque(self.event_observation, maxlen=20 * p.hz)
-                self.gates.append({"event_detected_seq": self.event_seq,
-                                   "mode_confirmed_seq": seq, "age_samples": age,
-                                   "prefill_reference_count": len(self.ref_samples),
-                                   "offset_at_confirmation_ug": self.offset})
+                record = {"event_detected_seq": self.event_seq,
+                          "mode_confirmed_seq": seq, "age_samples": age,
+                          "prefill_reference_count": len(self.ref_samples),
+                          "offset_at_confirmation_ug": self.offset}
+                if auto_static:
+                    record["source"] = "DOSING_RECENT_STEP" if recent else "DOSING_EXIT"
+                self.gates.append(record)
             else:
                 self.boost_until = 0
             self.event_seq = self.obvious_seq = None
+            self.pending_auto_seq = None
+            self.pre_step_mass = None
             self.event_reference.clear()
             self.event_observation.clear()
         self.dosing = dosing
@@ -197,10 +212,55 @@ class SampleController:
         else:
             if self.last_mass is not None and abs(mass - self.last_mass) >= p.obvious_step_ug:
                 self.freeze_until = max(self.freeze_until, seq + 5 * p.hz)
+                if auto_static:
+                    if (self.pending_auto_seq is None
+                            and (self.obvious_seq is None
+                                 or seq - self.obvious_seq > 5 * p.hz)):
+                        self.pre_step_mass = self.last_mass
+                    self.obvious_seq = seq
+                    self.boost_until = 0
             if self.robust_step(mass):
-                self.reset_reference(seq, "STATIC_STEP_BASELINE_ONLY")
+                recent_obvious = (self.obvious_seq is not None
+                                  and 0 <= seq - self.obvious_seq <= 5 * p.hz)
+                fast = auto_static and recent_obvious
+                if fast:
+                    self.reset_reference(seq, "STATIC_STEP_PENDING")
+                    self.pending_auto_seq = seq
+                else:
+                    self.reset_reference(seq, "STATIC_STEP_BASELINE_ONLY")
+                    self.pending_auto_seq = None
+                    self.obvious_seq = None
+                    self.pre_step_mass = None
                 self.boost_until = 0
-            if seq < self.freeze_until:
+            if self.pending_auto_seq is not None:
+                quiet = (self.obvious_seq is not None
+                         and seq - self.obvious_seq >= 5 * p.hz)
+                recent = list(self.step_values)[-3 * p.hz:]
+                settled = (len(recent) == 3 * p.hz
+                           and max(recent) - min(recent) <= 50_000)
+                if quiet and settled:
+                    net_change = abs(statistics.median(recent) - self.pre_step_mass)
+                    if net_change >= p.obvious_step_ug:
+                        self.reset_reference(seq, "STATIC_STEP_FAST")
+                        self.hold_until = max(seq, self.pending_auto_seq + 15 * p.hz)
+                        self.boost_until = self.pending_auto_seq + p.boost_samples
+                        self.gates.append({"source": "STATIC_OBVIOUS_STEP",
+                                           "event_detected_seq": self.pending_auto_seq,
+                                           "settled_seq": seq,
+                                           "obvious_step_seq": self.obvious_seq,
+                                           "net_step_ug": net_change,
+                                           "offset_at_detection_ug": self.offset})
+                    else:
+                        self.reset_reference(seq, "STATIC_STEP_RETURNED")
+                    self.pending_auto_seq = self.obvious_seq = None
+                    self.pre_step_mass = None
+                elif seq - self.pending_auto_seq >= 30 * p.hz:
+                    self.reset_reference(seq, "STATIC_STEP_UNSETTLED")
+                    self.pending_auto_seq = self.obvious_seq = None
+                    self.pre_step_mass = None
+            if self.pending_auto_seq is not None:
+                state = "STEP_SETTLING"
+            elif seq < self.freeze_until:
                 state = "STEP_PENDING"
             elif seq < self.hold_until:
                 state = "HOLDOFF"
