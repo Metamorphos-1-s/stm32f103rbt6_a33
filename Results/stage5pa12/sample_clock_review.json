@@ -1,0 +1,668 @@
+{
+  "classification": "OPENED_DEVELOPMENT_ONLY_NOT_HOLDOUT",
+  "source_sha256": "E683609BA0DB7EA090D101CE38569A432EC319982E7D41A9D2176A62B623128C",
+  "operator_log_sha256": "68FA680C88465A645F0FB8E79270C333DF864D3E29C640D19E2F3F46315A9863",
+  "samples": 107491,
+  "clock": "device sample_sequence/timestamp_ms; operator markers aligned by host_monotonic_ns",
+  "operator_logs_were_not_device_mode_commands": true,
+  "physical_edges_scoring_only": true,
+  "model": "new Python 10 Hz research controller, not frozen R5 or product C",
+  "policies": {
+    "baseline_50": {
+      "name": "baseline_50",
+      "boosted_ug_per_sample": 5,
+      "boost_samples": 0,
+      "prefill": false,
+      "baseline_ug_per_sample": 5,
+      "hz": 10,
+      "step_ug": 100000,
+      "obvious_step_ug": 2000000,
+      "deadband_ug": 10000,
+      "offset_cap_ug": 500000
+    },
+    "confirmed_350_5m_prefill": {
+      "name": "confirmed_350_5m_prefill",
+      "boosted_ug_per_sample": 35,
+      "boost_samples": 3000,
+      "prefill": true,
+      "baseline_ug_per_sample": 5,
+      "hz": 10,
+      "step_ug": 100000,
+      "obvious_step_ug": 2000000,
+      "deadband_ug": 10000,
+      "offset_cap_ug": 500000
+    },
+    "confirmed_350_10m_prefill": {
+      "name": "confirmed_350_10m_prefill",
+      "boosted_ug_per_sample": 35,
+      "boost_samples": 6000,
+      "prefill": true,
+      "baseline_ug_per_sample": 5,
+      "hz": 10,
+      "step_ug": 100000,
+      "obvious_step_ug": 2000000,
+      "deadband_ug": 10000,
+      "offset_cap_ug": 500000
+    },
+    "confirmed_350_10m_no_prefill": {
+      "name": "confirmed_350_10m_no_prefill",
+      "boosted_ug_per_sample": 35,
+      "boost_samples": 6000,
+      "prefill": false,
+      "baseline_ug_per_sample": 5,
+      "hz": 10,
+      "step_ug": 100000,
+      "obvious_step_ug": 2000000,
+      "deadband_ug": 10000,
+      "offset_cap_ug": 500000
+    }
+  },
+  "cases": {
+    "baseline_50": {
+      "max_10s_offset_ug": 495,
+      "gates": [
+        {
+          "event_detected_seq": 1514891,
+          "mode_confirmed_seq": 1515129,
+          "age_samples": 238,
+          "prefill_reference_count": 0,
+          "offset_at_confirmation_ug": 17781
+        },
+        {
+          "event_detected_seq": 1548676,
+          "mode_confirmed_seq": 1548894,
+          "age_samples": 218,
+          "prefill_reference_count": 0,
+          "offset_at_confirmation_ug": 82933
+        },
+        {
+          "event_detected_seq": 1567428,
+          "mode_confirmed_seq": 1567640,
+          "age_samples": 212,
+          "prefill_reference_count": 0,
+          "offset_at_confirmation_ug": 11955
+        },
+        {
+          "event_detected_seq": 1586480,
+          "mode_confirmed_seq": 1586690,
+          "age_samples": 210,
+          "prefill_reference_count": 0,
+          "offset_at_confirmation_ug": 54425
+        }
+      ],
+      "boost_samples": 0,
+      "rebases": [
+        {
+          "seq": 1513365,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 17781
+        },
+        {
+          "seq": 1515129,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 17781
+        },
+        {
+          "seq": 1533179,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 82933
+        },
+        {
+          "seq": 1548894,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 82933
+        },
+        {
+          "seq": 1567102,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 11955
+        },
+        {
+          "seq": 1567640,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 11955
+        },
+        {
+          "seq": 1586254,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 54425
+        },
+        {
+          "seq": 1586690,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 54425
+        }
+      ],
+      "final_offset_ug": -17799,
+      "scores": [
+        {
+          "kind": "load",
+          "duration_s": 3384.414,
+          "early_corrected_g": 500.142161,
+          "end_corrected_g": 500.145716,
+          "span_early_g": 500.023019,
+          "relative_change_g": {
+            "1": 0.059616,
+            "2": 0.075787,
+            "5": 0.090517,
+            "10": 0.080264,
+            "30": 0.037345,
+            "45": null
+          }
+        },
+        {
+          "kind": "unload",
+          "duration_s": 1878.5784999999996,
+          "early_corrected_g": 0.11981,
+          "end_corrected_g": 0.106132,
+          "span_early_g": -500.025906,
+          "relative_change_g": {
+            "1": -0.017967,
+            "2": -0.02357,
+            "5": -0.030274,
+            "10": null,
+            "30": -0.012552,
+            "45": null
+          }
+        },
+        {
+          "kind": "load",
+          "duration_s": 1908.1480000000001,
+          "early_corrected_g": 500.128839,
+          "end_corrected_g": 500.143812,
+          "span_early_g": 500.022707,
+          "relative_change_g": {
+            "1": 0.029285,
+            "2": 0.046473,
+            "5": 0.049838,
+            "10": 0.029262,
+            "30": 0.020605,
+            "45": null
+          }
+        },
+        {
+          "kind": "unload",
+          "duration_s": 2817.4609999999993,
+          "early_corrected_g": 0.126917,
+          "end_corrected_g": 0.119539,
+          "span_early_g": -500.016895,
+          "relative_change_g": {
+            "1": -0.015769,
+            "2": -0.02637,
+            "5": -0.034705,
+            "10": null,
+            "30": -0.008009,
+            "45": -0.005494
+          }
+        }
+      ]
+    },
+    "confirmed_350_5m_prefill": {
+      "max_10s_offset_ug": 3465,
+      "gates": [
+        {
+          "event_detected_seq": 1514891,
+          "mode_confirmed_seq": 1515129,
+          "age_samples": 238,
+          "prefill_reference_count": 88,
+          "offset_at_confirmation_ug": 17781
+        },
+        {
+          "event_detected_seq": 1548676,
+          "mode_confirmed_seq": 1548894,
+          "age_samples": 218,
+          "prefill_reference_count": 68,
+          "offset_at_confirmation_ug": 114129
+        },
+        {
+          "event_detected_seq": 1567428,
+          "mode_confirmed_seq": 1567640,
+          "age_samples": 212,
+          "prefill_reference_count": 62,
+          "offset_at_confirmation_ug": 36274
+        },
+        {
+          "event_detected_seq": 1586480,
+          "mode_confirmed_seq": 1586690,
+          "age_samples": 210,
+          "prefill_reference_count": 60,
+          "offset_at_confirmation_ug": 95076
+        }
+      ],
+      "boost_samples": 9404,
+      "rebases": [
+        {
+          "seq": 1513365,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 17781
+        },
+        {
+          "seq": 1515129,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 17781
+        },
+        {
+          "seq": 1533179,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 114129
+        },
+        {
+          "seq": 1548894,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 114129
+        },
+        {
+          "seq": 1567102,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 36274
+        },
+        {
+          "seq": 1567640,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 36274
+        },
+        {
+          "seq": 1586254,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 95076
+        },
+        {
+          "seq": 1586690,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 95076
+        }
+      ],
+      "final_offset_ug": 17221,
+      "scores": [
+        {
+          "kind": "load",
+          "duration_s": 3384.414,
+          "early_corrected_g": 500.142161,
+          "end_corrected_g": 500.11452,
+          "span_early_g": 500.023019,
+          "relative_change_g": {
+            "1": 0.050179,
+            "2": 0.04935,
+            "5": 0.018797,
+            "10": 0.014409,
+            "30": 0.006149,
+            "45": null
+          }
+        },
+        {
+          "kind": "unload",
+          "duration_s": 1878.5784999999996,
+          "early_corrected_g": 0.088614,
+          "end_corrected_g": 0.081837,
+          "span_early_g": -500.025906,
+          "relative_change_g": {
+            "1": -0.013516,
+            "2": -0.01,
+            "5": -0.007152,
+            "10": null,
+            "30": -0.005651,
+            "45": null
+          }
+        },
+        {
+          "kind": "load",
+          "duration_s": 1908.1480000000001,
+          "early_corrected_g": 500.10452,
+          "end_corrected_g": 500.103161,
+          "span_early_g": 500.022683,
+          "relative_change_g": {
+            "1": 0.021235,
+            "2": 0.019615,
+            "5": 0.012484,
+            "10": 0.004254,
+            "30": 0.004273,
+            "45": null
+          }
+        },
+        {
+          "kind": "unload",
+          "duration_s": 2817.4609999999993,
+          "early_corrected_g": 0.086266,
+          "end_corrected_g": 0.084519,
+          "span_early_g": -500.016895,
+          "relative_change_g": {
+            "1": -0.012558,
+            "2": -0.010941,
+            "5": -0.010496,
+            "10": null,
+            "30": -0.002352,
+            "45": 0.000137
+          }
+        }
+      ]
+    },
+    "confirmed_350_10m_prefill": {
+      "max_10s_offset_ug": 3465,
+      "gates": [
+        {
+          "event_detected_seq": 1514891,
+          "mode_confirmed_seq": 1515129,
+          "age_samples": 238,
+          "prefill_reference_count": 88,
+          "offset_at_confirmation_ug": 17781
+        },
+        {
+          "event_detected_seq": 1548676,
+          "mode_confirmed_seq": 1548894,
+          "age_samples": 218,
+          "prefill_reference_count": 68,
+          "offset_at_confirmation_ug": 114674
+        },
+        {
+          "event_detected_seq": 1567428,
+          "mode_confirmed_seq": 1567640,
+          "age_samples": 212,
+          "prefill_reference_count": 62,
+          "offset_at_confirmation_ug": 36819
+        },
+        {
+          "event_detected_seq": 1586480,
+          "mode_confirmed_seq": 1586690,
+          "age_samples": 210,
+          "prefill_reference_count": 60,
+          "offset_at_confirmation_ug": 95621
+        }
+      ],
+      "boost_samples": 21404,
+      "rebases": [
+        {
+          "seq": 1513365,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 17781
+        },
+        {
+          "seq": 1515129,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 17781
+        },
+        {
+          "seq": 1533179,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 114674
+        },
+        {
+          "seq": 1548894,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 114674
+        },
+        {
+          "seq": 1567102,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 36819
+        },
+        {
+          "seq": 1567640,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 36819
+        },
+        {
+          "seq": 1586254,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 95621
+        },
+        {
+          "seq": 1586690,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 95621
+        }
+      ],
+      "final_offset_ug": 17766,
+      "scores": [
+        {
+          "kind": "load",
+          "duration_s": 3384.414,
+          "early_corrected_g": 500.142161,
+          "end_corrected_g": 500.113975,
+          "span_early_g": 500.023019,
+          "relative_change_g": {
+            "1": 0.050179,
+            "2": 0.04935,
+            "5": 0.013241,
+            "10": 0.011515,
+            "30": 0.005604,
+            "45": null
+          }
+        },
+        {
+          "kind": "unload",
+          "duration_s": 1878.5784999999996,
+          "early_corrected_g": 0.088069,
+          "end_corrected_g": 0.081292,
+          "span_early_g": -500.025906,
+          "relative_change_g": {
+            "1": -0.013516,
+            "2": -0.01,
+            "5": -0.006621,
+            "10": null,
+            "30": -0.005651,
+            "45": null
+          }
+        },
+        {
+          "kind": "load",
+          "duration_s": 1908.1480000000001,
+          "early_corrected_g": 500.103975,
+          "end_corrected_g": 500.102616,
+          "span_early_g": 500.022683,
+          "relative_change_g": {
+            "1": 0.021235,
+            "2": 0.019615,
+            "5": 0.011126,
+            "10": 0.003101,
+            "30": 0.004273,
+            "45": null
+          }
+        },
+        {
+          "kind": "unload",
+          "duration_s": 2817.4609999999993,
+          "early_corrected_g": 0.085721,
+          "end_corrected_g": 0.083974,
+          "span_early_g": -500.016895,
+          "relative_change_g": {
+            "1": -0.012558,
+            "2": -0.010941,
+            "5": -0.01,
+            "10": null,
+            "30": -0.002342,
+            "45": 0.000137
+          }
+        }
+      ]
+    },
+    "confirmed_350_10m_no_prefill": {
+      "max_10s_offset_ug": 3465,
+      "gates": [
+        {
+          "event_detected_seq": 1514891,
+          "mode_confirmed_seq": 1515129,
+          "age_samples": 238,
+          "prefill_reference_count": 0,
+          "offset_at_confirmation_ug": 17781
+        },
+        {
+          "event_detected_seq": 1548676,
+          "mode_confirmed_seq": 1548894,
+          "age_samples": 218,
+          "prefill_reference_count": 0,
+          "offset_at_confirmation_ug": 85046
+        },
+        {
+          "event_detected_seq": 1567428,
+          "mode_confirmed_seq": 1567640,
+          "age_samples": 212,
+          "prefill_reference_count": 0,
+          "offset_at_confirmation_ug": 13949
+        },
+        {
+          "event_detected_seq": 1586480,
+          "mode_confirmed_seq": 1586690,
+          "age_samples": 210,
+          "prefill_reference_count": 0,
+          "offset_at_confirmation_ug": 56419
+        }
+      ],
+      "boost_samples": 20526,
+      "rebases": [
+        {
+          "seq": 1513365,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 17781
+        },
+        {
+          "seq": 1515129,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 17781
+        },
+        {
+          "seq": 1533179,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 85046
+        },
+        {
+          "seq": 1548894,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 85046
+        },
+        {
+          "seq": 1567102,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 13949
+        },
+        {
+          "seq": 1567640,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 13949
+        },
+        {
+          "seq": 1586254,
+          "reason": "DOSING_ENTRY",
+          "offset_ug": 56419
+        },
+        {
+          "seq": 1586690,
+          "reason": "CONFIRMED_EVENT",
+          "offset_ug": 56419
+        }
+      ],
+      "final_offset_ug": -15805,
+      "scores": [
+        {
+          "kind": "load",
+          "duration_s": 3384.414,
+          "early_corrected_g": 500.142161,
+          "end_corrected_g": 500.143603,
+          "span_early_g": 500.023019,
+          "relative_change_g": {
+            "1": 0.05703,
+            "2": 0.05768,
+            "5": 0.038232,
+            "10": 0.041083,
+            "30": 0.035232,
+            "45": null
+          }
+        },
+        {
+          "kind": "unload",
+          "duration_s": 1878.5784999999996,
+          "early_corrected_g": 0.117697,
+          "end_corrected_g": 0.104162,
+          "span_early_g": -500.025906,
+          "relative_change_g": {
+            "1": -0.016895,
+            "2": -0.016758,
+            "5": -0.013379,
+            "10": null,
+            "30": -0.012409,
+            "45": null
+          }
+        },
+        {
+          "kind": "load",
+          "duration_s": 1908.1480000000001,
+          "early_corrected_g": 500.126845,
+          "end_corrected_g": 500.141818,
+          "span_early_g": 500.022683,
+          "relative_change_g": {
+            "1": 0.028158,
+            "2": 0.035326,
+            "5": 0.027458,
+            "10": 0.019433,
+            "30": 0.020605,
+            "45": null
+          }
+        },
+        {
+          "kind": "unload",
+          "duration_s": 2817.4609999999993,
+          "early_corrected_g": 0.124923,
+          "end_corrected_g": 0.117545,
+          "span_early_g": -500.016895,
+          "relative_change_g": {
+            "1": -0.014642,
+            "2": -0.016458,
+            "5": -0.015631,
+            "10": null,
+            "30": -0.007973,
+            "45": -0.005494
+          }
+        }
+      ]
+    }
+  },
+  "synthetic_misdeclared_static": [
+    {
+      "feed_rate_ug_s": 100,
+      "pause_s_per_minute": 5,
+      "policy": "confirmed_350_5m_prefill",
+      "actual_added_ug": 55000,
+      "premature_static_absorbed_ug": 30425,
+      "continued_dosing_absorbed_ug": 0
+    },
+    {
+      "feed_rate_ug_s": 100,
+      "pause_s_per_minute": 5,
+      "policy": "confirmed_350_10m_prefill",
+      "actual_added_ug": 55000,
+      "premature_static_absorbed_ug": 42925,
+      "continued_dosing_absorbed_ug": 0
+    },
+    {
+      "feed_rate_ug_s": 500,
+      "pause_s_per_minute": 5,
+      "policy": "confirmed_350_5m_prefill",
+      "actual_added_ug": 275000,
+      "premature_static_absorbed_ug": 98710,
+      "continued_dosing_absorbed_ug": 0
+    },
+    {
+      "feed_rate_ug_s": 500,
+      "pause_s_per_minute": 5,
+      "policy": "confirmed_350_10m_prefill",
+      "actual_added_ug": 275000,
+      "premature_static_absorbed_ug": 188710,
+      "continued_dosing_absorbed_ug": 0
+    },
+    {
+      "feed_rate_ug_s": 2000,
+      "pause_s_per_minute": 5,
+      "policy": "confirmed_350_5m_prefill",
+      "actual_added_ug": 1100000,
+      "premature_static_absorbed_ug": 98710,
+      "continued_dosing_absorbed_ug": 0
+    },
+    {
+      "feed_rate_ug_s": 2000,
+      "pause_s_per_minute": 5,
+      "policy": "confirmed_350_10m_prefill",
+      "actual_added_ug": 1100000,
+      "premature_static_absorbed_ug": 188710,
+      "continued_dosing_absorbed_ug": 0
+    }
+  ]
+}
