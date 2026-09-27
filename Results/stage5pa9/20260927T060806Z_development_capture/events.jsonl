@@ -1,0 +1,10 @@
+{"utc":"2026-09-27T06:08:06.310Z","event":"RECORDER_STARTED"}
+{"utc":"2026-09-27T06:18:34.278Z","host_monotonic_ns":233204234000000,"event":"LOAD_1_START","note":"Operator asked to place 500g after >10m empty baseline"}
+{"utc":"2026-09-27T06:21:30.937Z","host_monotonic_ns":233380890000000,"event":"LOAD_1_COMPLETE","note":"Operator confirmed first 500 g placement; confirmation time is not physical edge"}
+{"utc":"2026-09-27T06:51:39.245Z","host_monotonic_ns":235189203000000,"event":"UNLOAD_1_START","note":"Operator asked to remove 500 g after first loaded hold exceeded 30 minutes"}
+{"utc":"2026-09-27T07:17:53.539Z","host_monotonic_ns":236763500000000,"event":"UNLOAD_1_COMPLETE","note":"Operator confirmed first 500 g removal; confirmation time is not physical edge"}
+{"utc":"2026-09-27T07:48:17.594Z","host_monotonic_ns":238587546000000,"event":"LOAD_2_START","note":"Second 500 g placement requested after more than 30 min empty recovery"}
+{"utc":"2026-09-27T07:49:11.486Z","host_monotonic_ns":238641437000000,"event":"LOAD_2_COMPLETE","note":"Operator confirmed second 500 g placement; confirmation is not physical edge"}
+{"utc":"2026-09-27T08:20:15.871Z","host_monotonic_ns":240505828000000,"event":"UNLOAD_2_START","note":"Operator asked to remove second 500 g after >31 min loaded, including full 30th-minute checkpoint"}
+{"utc":"2026-09-27T08:20:59.500Z","host_monotonic_ns":240549453000000,"event":"UNLOAD_2_COMPLETE","note":"Operator confirmed second 500 g removal; confirmation is not physical edge"}
+{"utc":"2026-09-27T09:07:33.737Z","event":"RECORDER_STOPPED","records":107491}

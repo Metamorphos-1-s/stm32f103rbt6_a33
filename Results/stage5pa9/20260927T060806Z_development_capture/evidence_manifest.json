@@ -1,0 +1,56 @@
+{
+  "classification": "STAGE5PA9_MODEL_DEVELOPMENT_ATTRIBUTION_NOT_HOLDOUT",
+  "base_head": "58938bd4e2049e6d32bdb35bcb58f4e904217152",
+  "capture_directory": "Results/stage5pa9/20260927T060806Z_development_capture",
+  "capture_files": [
+    {
+      "name": "samples.csv",
+      "bytes": 31001524,
+      "sha256": "E683609BA0DB7EA090D101CE38569A432EC319982E7D41A9D2176A62B623128C"
+    },
+    {
+      "name": "events.jsonl",
+      "bytes": 1596,
+      "sha256": "68FA680C88465A645F0FB8E79270C333DF864D3E29C640D19E2F3F46315A9863"
+    },
+    {
+      "name": "environment.json",
+      "bytes": 1141,
+      "sha256": "FF804AE6197892B6402AFDBB9965E2DEE14F1DE28109702F0F14812393CB9B00"
+    },
+    {
+      "name": "summary.json",
+      "bytes": 4175,
+      "sha256": "2428F7A69D6B696426F0A2922C072D30D56AD62AE0AD2BD486398956DB88E652"
+    },
+    {
+      "name": "attribution_analysis.json",
+      "bytes": 51890,
+      "sha256": "39790F89F739A601C224F4C0862B07DC19FCAC0799A4D5B56B65A3BB48D6F9C5"
+    }
+  ],
+  "preflight_directory": "Results/stage5pa9/preflight_readonly_20260927",
+  "preflight_files": [
+    {
+      "name": "samples.csv",
+      "bytes": 22136,
+      "sha256": "42D62FCE972805C0972EA0F4752E4F81B687EC42ECAE0AADD40C3AE6FA4C917C"
+    },
+    {
+      "name": "events.jsonl",
+      "bytes": 137,
+      "sha256": "DB49B301090FD74BF1A3F11755DE5771A0067D763ED480060E163A51F2D41CAD"
+    },
+    {
+      "name": "environment.json",
+      "bytes": 1141,
+      "sha256": "3DA93734E4D59E0986087B472260F5FA7CED7F8B0B6F80B3B12E2C09EF1A3CF7"
+    },
+    {
+      "name": "summary.json",
+      "bytes": 4165,
+      "sha256": "A19F9CA924EFA23E8B4A6ECB9DDF8DD9D6C0C9A111C4C86DC9C64B43F72693E3"
+    }
+  ],
+  "notes": "No device writes; timestamps and provenance in events.jsonl and attribution_analysis.json. Hashes exclude this manifest."
+}

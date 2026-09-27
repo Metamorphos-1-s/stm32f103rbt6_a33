@@ -64,7 +64,3 @@ def test_slow_change_is_not_classified_as_mechanism():
 if __name__=='__main__':
     for test in (test_two_round_oracle,test_frozen_static_rebuild_preserves_offset,test_real_window_clipping,test_slow_change_is_not_classified_as_mechanism):test()
     print('A9 FOUR NUMERICAL STATE/WINDOW TESTS PASS')
-
-
-
-

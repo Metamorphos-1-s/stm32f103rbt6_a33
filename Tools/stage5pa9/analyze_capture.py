@@ -3,7 +3,7 @@
 import argparse,csv,hashlib,json,statistics
 from datetime import datetime
 from pathlib import Path
-from a9_model_review import FIELDS,direct,edges
+from a9_model_review import FIELDS,direct,edges,sec_series,frozen_r5,oracle,trace_scores
 
 def checksum(path):
     h=hashlib.sha256()
@@ -18,8 +18,9 @@ def read(path):
         for k in FIELDS:r[k]=int(r[k]) if r.get(k) not in (None,'') else None
     return rows
 
-def edge_bracket(rows, edge, field):
+def edge_bracket(rows, edge, field, next_edge_s=None):
     idx=edge['index'];base=rows[0]['t'];mid=edge['center_s']; before=[];after=[]
+    if next_edge_s is not None and next_edge_s<mid+45:return {'status':'NOT AVAILABLE: next edge before full 15–45 s reference'}
     for r in rows[max(0,idx-800):min(len(rows),idx+800)]:
         dt=(r['t']-base)/1e9-mid
         if -30<=dt<-5:before.append(r[field])
@@ -69,10 +70,12 @@ def quality(rows):
 def analyze(directory):
     path=directory/'samples.csv';rows=read(path); events=[json.loads(line) for line in (directory/'events.jsonl').read_text(encoding='utf-8').splitlines() if line]
     ed=edges(rows);phases=direct(rows,ed)
-    for edge in ed:
-        edge['raw_adc_edge']=edge_bracket(rows,edge,'raw_adc')
-        edge['filtered_adc_edge']=edge_bracket(rows,edge,'filtered_raw')
-        edge['gross_edge']=edge_bracket(rows,edge,'gross_ug')
+    seconds=sec_series(rows);frozen=frozen_r5(seconds);oracle_trace,oracle_max10,oracle_events=oracle(seconds,ed)
+    for i,edge in enumerate(ed):
+        next_edge=ed[i+1]['center_s'] if i+1<len(ed) else None
+        edge['raw_adc_edge']=edge_bracket(rows,edge,'raw_adc',next_edge)
+        edge['filtered_adc_edge']=edge_bracket(rows,edge,'filtered_raw',next_edge)
+        edge['gross_edge']=edge_bracket(rows,edge,'gross_ug',next_edge)
         target='LOAD' if edge['kind']=='load' else 'UNLOAD'
         completion=next((x for x in events if x.get('event')==target+'_'+str(sum(z['kind']==edge['kind'] for z in ed[:ed.index(edge)+1]))+'_COMPLETE'),None)
         if completion:
@@ -81,11 +84,17 @@ def analyze(directory):
     return {'classification':'STAGE5PA9_MODEL_DEVELOPMENT_ATTRIBUTION_NOT_HOLDOUT',
         'input_csv':str(path),'input_sha256':checksum(path),'environment':json.loads((directory/'environment.json').read_text(encoding='utf-8')),
         'first_utc':rows[0]['utc'],'last_utc':rows[-1]['utc'],'monotonic_span_s':(rows[-1]['t']-rows[0]['t'])/1e9,
-        'quality':quality(rows),'events':events,'edges':ed,'phases':phases,'temperature_c':'NOT MEASURED unless manually supplied',
+        'quality':quality(rows),'events':events,'edges':ed,'phases':phases,
+        'model_replay':{'classification':'OPENED_A9_DEVELOPMENT_NOT_HOLDOUT',
+            'frozen_r5':{'scores':trace_scores(frozen,ed),'automatic_rebuilds':frozen[-1][7],
+                'max_10s_offset_ug':max((max(abs(frozen[j][2]-frozen[i][2]) for j in range(i,min(i+11,len(frozen))) if frozen[j][0]-frozen[i][0]<=10) for i in range(len(frozen))),default=0)},
+            'oracle_event_feedback':{'scores':trace_scores(oracle_trace,ed),
+                'max_10s_offset_ug':oracle_max10,'events':oracle_events,
+                'warning':'retrospective foreknowledge; not deployable and not an independent holdout'}},
+        'temperature_c':'NOT MEASURED unless manually supplied',
         'uncompensated_identity':'R5 SHADOW/OFF offset=0: authoritative gross_ug equals uncompensated weight; no independent filtered mass register'}
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('directory',type=Path); ap.add_argument('--output',type=Path);a=ap.parse_args()
     result=analyze(a.directory); target=a.output or a.directory/'attribution_analysis.json';target.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print(json.dumps({'rows':result['quality']['rows'],'coverage':result['quality']['estimated_sequence_coverage'],'events':len(result['edges']),'sha256':result['input_sha256']},indent=2))
 if __name__=='__main__':main()
-

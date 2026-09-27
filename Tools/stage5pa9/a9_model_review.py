@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stage 5P-A8R offline errata; never accesses hardware."""
+"""Stage 5P-A9 opened-data model development; never accesses hardware."""
 import argparse,csv,hashlib,json,statistics
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
@@ -34,7 +34,7 @@ def direct(r,e):
  for i,x in enumerate(e):
   start=x['center_s'];end=phase_end(e,i,total)
   def q(a,b):return [z for z in r if a<= (z['t']-base)/1e9 < min(b,end)]
-  pre=q(max(0,start-300),start);early=q(start+15,start+45);end5=q(max(start,end-300),end)
+  pre=q(max(0,start-300),start);early=q(start+15,start+45) if start+45<=end else [];end5=q(max(start,end-300),end)
   d={'event':x,'phase_duration_s':end-start,'pre5':{},'early':{},'phase_end5':{},'checkpoints':{}}
   for k in ('pre5','early','phase_end5'):
    block={'pre5':pre,'early':early,'phase_end5':end5}[k];d[k]={f:med([z[f] for z in block if z[f] is not None]) for f in FIELDS}
@@ -129,12 +129,3 @@ def main():
  result={'classification':'STAGE5PA9_OPENED_DATA_MODEL_DEVELOPMENT_NOT_HOLDOUT','input':str(a.input),'sha256':sha(a.input),'expected_sha256':EXPECTED,'sha_match':sha(a.input)==EXPECTED,'records':len(r),'host_monotonic_span_s':total,'utc_span_s':(r[-1]['u'],r[0]['u']),'utc_span_note':'UTC label span differs from monotonic span; UTC labels had a clock jump and are not used for timing','edges':e,'loads':sum(x['kind']=='load' for x in e),'unloads':sum(x['kind']=='unload' for x in e),'longest_load_s':max((phase_end(e,i,total)-x['center_s'] for i,x in enumerate(e) if x['kind']=='load'),default=0),'direct':ds,'frozen_r5':{'max_10s_offset_change_ug':max((max(abs(fr[j][2]-fr[i][2]) for j in range(i,min(i+11,len(fr))) if fr[j][0]-fr[i][0]<=10) for i in range(len(fr))),default=0),'scores':trace_scores(fr,e),'automatic_rebuild_count':fr[-1][7], 'final_offset_ug':fr[-1][2]},'oracle_event_feedback':{'rate_ug_s':50,'hold_s':60,'initial_offset_ug':0,'max_10s_offset_change_ug':om,'events':events_oracle,'scores':trace_scores(ot,e),'final_offset_ug':ot[-1][2]},'decision':'MODEL SELECTION INCOMPLETE','model_boundary':'Oracle uses retrospectively known edges; frozen R5 uses one real ReferenceLock instance across all periods; neither is an independent holdout.'}
  a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');write_trajectory(a.output.parent/'opened_replay_trajectory.csv',ss,fr,ot);print(json.dumps({'sha_match':result['sha_match'],'monotonic_s':total,'utc_label_span_s':93195.801,'loads':result['loads'],'unloads':result['unloads'],'longest_load_s':result['longest_load_s'],'decision':result['decision']},ensure_ascii=False,indent=2))
 if __name__=='__main__':main()
-
-
-
-
-
-
-
-
-

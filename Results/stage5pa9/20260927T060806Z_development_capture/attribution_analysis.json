@@ -1,0 +1,1664 @@
+{
+  "classification": "STAGE5PA9_MODEL_DEVELOPMENT_ATTRIBUTION_NOT_HOLDOUT",
+  "input_csv": "Results\\stage5pa9\\20260927T060806Z_development_capture\\samples.csv",
+  "input_sha256": "E683609BA0DB7EA090D101CE38569A432EC319982E7D41A9D2176A62B623128C",
+  "environment": {
+    "started_utc": "2026-09-27T06:08:06.392Z",
+    "port": "COM5",
+    "baud": 115200,
+    "word_order": "high",
+    "repository_head": "58938bd4e2049e6d32bdb35bcb58f4e904217152",
+    "read_only": true,
+    "writes": 0,
+    "flash_operations": 0,
+    "schema": 2,
+    "persistent_format": 3,
+    "active_slot": 1,
+    "storage_sequence": 19,
+    "profile": 0,
+    "sample_rate": 0,
+    "gain": 3,
+    "filter_mode": 1,
+    "filter_strength": 3,
+    "calibration": {
+      "raw_zero": 41868,
+      "raw_span": 485780,
+      "span_mass_ug": 500000000,
+      "sequence": 5
+    },
+    "active_config": [
+      0,
+      1,
+      7,
+      0,
+      0,
+      0,
+      45776,
+      24064,
+      0,
+      0,
+      15,
+      16960,
+      0,
+      0,
+      0,
+      0,
+      3,
+      1,
+      2,
+      1,
+      3,
+      1,
+      3,
+      1,
+      0,
+      0,
+      45776,
+      24064,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      1,
+      3,
+      8,
+      1000,
+      0,
+      0,
+      0,
+      50000,
+      0,
+      0,
+      1,
+      34464,
+      1,
+      3,
+      0,
+      0,
+      8,
+      500,
+      0,
+      0,
+      30,
+      33920,
+      0,
+      0,
+      61,
+      2304,
+      0,
+      0,
+      2,
+      0
+    ]
+  },
+  "first_utc": "2026-09-27T06:08:06.508Z",
+  "last_utc": "2026-09-27T09:07:33.730Z",
+  "monotonic_span_s": 10767.219,
+  "quality": {
+    "rows": 107491,
+    "distinct_sample_sequences": 107491,
+    "unobserved_sequences": 0,
+    "estimated_sequence_coverage": 1.0,
+    "duplicate_sequences": 0,
+    "sequence_regressions": 0,
+    "uptime_regressions": 0,
+    "maximum_host_gap_s": 0.157,
+    "utc_clock_jumps": [],
+    "first_sequence": 1507098,
+    "last_sequence": 1614588,
+    "first_uptime_ms": 212802510,
+    "last_uptime_ms": 223570552,
+    "faults": [
+      0
+    ],
+    "save_request_count_low_min_max": [
+      10,
+      10
+    ],
+    "calibration_valid_values": [
+      1
+    ],
+    "official_stable_fraction": 0.9985208063930934,
+    "overrun_min_max": [
+      0,
+      0
+    ],
+    "dirty_values": [
+      0
+    ],
+    "revision_saved": [
+      [
+        19,
+        19
+      ]
+    ],
+    "application_mode": [
+      [
+        0,
+        0
+      ]
+    ],
+    "offset_min_max_ug": [
+      0,
+      0
+    ]
+  },
+  "events": [
+    {
+      "utc": "2026-09-27T06:08:06.310Z",
+      "event": "RECORDER_STARTED"
+    },
+    {
+      "utc": "2026-09-27T06:18:34.278Z",
+      "host_monotonic_ns": 233204234000000,
+      "event": "LOAD_1_START",
+      "note": "Operator asked to place 500g after >10m empty baseline"
+    },
+    {
+      "utc": "2026-09-27T06:21:30.937Z",
+      "host_monotonic_ns": 233380890000000,
+      "event": "LOAD_1_COMPLETE",
+      "note": "Operator confirmed first 500 g placement; confirmation time is not physical edge"
+    },
+    {
+      "utc": "2026-09-27T06:51:39.245Z",
+      "host_monotonic_ns": 235189203000000,
+      "event": "UNLOAD_1_START",
+      "note": "Operator asked to remove 500 g after first loaded hold exceeded 30 minutes"
+    },
+    {
+      "utc": "2026-09-27T07:17:53.539Z",
+      "host_monotonic_ns": 236763500000000,
+      "event": "UNLOAD_1_COMPLETE",
+      "note": "Operator confirmed first 500 g removal; confirmation time is not physical edge"
+    },
+    {
+      "utc": "2026-09-27T07:48:17.594Z",
+      "host_monotonic_ns": 238587546000000,
+      "event": "LOAD_2_START",
+      "note": "Second 500 g placement requested after more than 30 min empty recovery"
+    },
+    {
+      "utc": "2026-09-27T07:49:11.486Z",
+      "host_monotonic_ns": 238641437000000,
+      "event": "LOAD_2_COMPLETE",
+      "note": "Operator confirmed second 500 g placement; confirmation is not physical edge"
+    },
+    {
+      "utc": "2026-09-27T08:20:15.871Z",
+      "host_monotonic_ns": 240505828000000,
+      "event": "UNLOAD_2_START",
+      "note": "Operator asked to remove second 500 g after >31 min loaded, including full 30th-minute checkpoint"
+    },
+    {
+      "utc": "2026-09-27T08:20:59.500Z",
+      "host_monotonic_ns": 240549453000000,
+      "event": "UNLOAD_2_COMPLETE",
+      "note": "Operator confirmed second 500 g removal; confirmation is not physical edge"
+    },
+    {
+      "utc": "2026-09-27T09:07:33.737Z",
+      "event": "RECORDER_STOPPED",
+      "records": 107491
+    }
+  ],
+  "edges": [
+    {
+      "kind": "load",
+      "index": 7783,
+      "lo_s": 779.578,
+      "hi_s": 779.657,
+      "center_s": 779.6175,
+      "width_s": 0.079,
+      "before_g": 240.628773,
+      "after_g": 387.777307,
+      "raw_adc_edge": {
+        "field": "raw_adc",
+        "before_median": 41987.0,
+        "after_median": 485924,
+        "bracket_monotonic_ns": [
+          233355937000000,
+          233356046000000
+        ],
+        "bracket_width_s": 0.109,
+        "host_utc_labels": [
+          "2026-09-27T06:21:05.975Z",
+          "2026-09-27T06:21:06.094Z"
+        ],
+        "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+      },
+      "filtered_adc_edge": {
+        "field": "filtered_raw",
+        "before_median": 41988.0,
+        "after_median": 485922,
+        "bracket_monotonic_ns": [
+          233356046000000,
+          233356125000000
+        ],
+        "bracket_width_s": 0.079,
+        "host_utc_labels": [
+          "2026-09-27T06:21:06.094Z",
+          "2026-09-27T06:21:06.172Z"
+        ],
+        "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+      },
+      "gross_edge": {
+        "field": "gross_ug",
+        "before_median": 135162.0,
+        "after_median": 500159942,
+        "bracket_monotonic_ns": [
+          233356046000000,
+          233356125000000
+        ],
+        "bracket_width_s": 0.079,
+        "host_utc_labels": [
+          "2026-09-27T06:21:06.094Z",
+          "2026-09-27T06:21:06.172Z"
+        ],
+        "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+      },
+      "operator_complete_mark": {
+        "utc": "2026-09-27T06:21:30.937Z",
+        "host_monotonic_ns": 233380890000000,
+        "event": "LOAD_1_COMPLETE",
+        "note": "Operator confirmed first 500 g placement; confirmation time is not physical edge"
+      },
+      "operator_confirmation_lag_s": 24.804500000000075
+    },
+    {
+      "kind": "unload",
+      "index": 41566,
+      "lo_s": 4163.985,
+      "hi_s": 4164.078,
+      "center_s": 4164.0315,
+      "width_s": 0.093,
+      "before_g": 268.939565,
+      "after_g": 105.950053,
+      "raw_adc_edge": {
+        "field": "raw_adc",
+        "before_median": 485984.0,
+        "after_median": 42048.0,
+        "bracket_monotonic_ns": [
+          236740359000000,
+          236740453000000
+        ],
+        "bracket_width_s": 0.094,
+        "host_utc_labels": [
+          "2026-09-27T07:17:30.409Z",
+          "2026-09-27T07:17:30.489Z"
+        ],
+        "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+      },
+      "filtered_adc_edge": {
+        "field": "filtered_raw",
+        "before_median": 485984.0,
+        "after_median": 42048.0,
+        "bracket_monotonic_ns": [
+          236740453000000,
+          236740546000000
+        ],
+        "bracket_width_s": 0.093,
+        "host_utc_labels": [
+          "2026-09-27T07:17:30.489Z",
+          "2026-09-27T07:17:30.593Z"
+        ],
+        "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+      },
+      "gross_edge": {
+        "field": "gross_ug",
+        "before_median": 500229775.0,
+        "after_median": 202743.0,
+        "bracket_monotonic_ns": [
+          236740453000000,
+          236740546000000
+        ],
+        "bracket_width_s": 0.093,
+        "host_utc_labels": [
+          "2026-09-27T07:17:30.489Z",
+          "2026-09-27T07:17:30.593Z"
+        ],
+        "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+      },
+      "operator_complete_mark": {
+        "utc": "2026-09-27T07:17:53.539Z",
+        "host_monotonic_ns": 236763500000000,
+        "event": "UNLOAD_1_COMPLETE",
+        "note": "Operator confirmed first 500 g removal; confirmation time is not physical edge"
+      },
+      "operator_confirmation_lag_s": 23.000500000000102
+    },
+    {
+      "kind": "load",
+      "index": 60319,
+      "lo_s": 6042.563,
+      "hi_s": 6042.657,
+      "center_s": 6042.61,
+      "width_s": 0.094,
+      "before_g": 202.949008,
+      "after_g": 332.256168,
+      "raw_adc_edge": {
+        "field": "raw_adc",
+        "before_median": 41975.0,
+        "after_median": 485904.5,
+        "bracket_monotonic_ns": [
+          238618953000000,
+          238619031000000
+        ],
+        "bracket_width_s": 0.078,
+        "host_utc_labels": [
+          "2026-09-27T07:48:48.988Z",
+          "2026-09-27T07:48:49.069Z"
+        ],
+        "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+      },
+      "filtered_adc_edge": {
+        "field": "filtered_raw",
+        "before_median": 41975.0,
+        "after_median": 485905.0,
+        "bracket_monotonic_ns": [
+          238619031000000,
+          238619125000000
+        ],
+        "bracket_width_s": 0.094,
+        "host_utc_labels": [
+          "2026-09-27T07:48:49.069Z",
+          "2026-09-27T07:48:49.175Z"
+        ],
+        "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+      },
+      "gross_edge": {
+        "field": "gross_ug",
+        "before_median": 120519.0,
+        "after_median": 500140794.0,
+        "bracket_monotonic_ns": [
+          238619031000000,
+          238619125000000
+        ],
+        "bracket_width_s": 0.094,
+        "host_utc_labels": [
+          "2026-09-27T07:48:49.069Z",
+          "2026-09-27T07:48:49.175Z"
+        ],
+        "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+      },
+      "operator_complete_mark": {
+        "utc": "2026-09-27T07:49:11.486Z",
+        "host_monotonic_ns": 238641437000000,
+        "event": "LOAD_2_COMPLETE",
+        "note": "Operator confirmed second 500 g placement; confirmation is not physical edge"
+      },
+      "operator_confirmation_lag_s": 22.35900000000038
+    },
+    {
+      "kind": "unload",
+      "index": 79370,
+      "lo_s": 7950.719,
+      "hi_s": 7950.797,
+      "center_s": 7950.758,
+      "width_s": 0.078,
+      "before_g": 319.080133,
+      "after_g": 152.919948,
+      "raw_adc_edge": {
+        "field": "raw_adc",
+        "before_median": 485954,
+        "after_median": 42029,
+        "bracket_monotonic_ns": [
+          240527109000000,
+          240527187000000
+        ],
+        "bracket_width_s": 0.078,
+        "host_utc_labels": [
+          "2026-09-27T08:20:37.150Z",
+          "2026-09-27T08:20:37.228Z"
+        ],
+        "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+      },
+      "filtered_adc_edge": {
+        "field": "filtered_raw",
+        "before_median": 485954,
+        "after_median": 42029,
+        "bracket_monotonic_ns": [
+          240527187000000,
+          240527265000000
+        ],
+        "bracket_width_s": 0.078,
+        "host_utc_labels": [
+          "2026-09-27T08:20:37.228Z",
+          "2026-09-27T08:20:37.306Z"
+        ],
+        "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+      },
+      "gross_edge": {
+        "field": "gross_ug",
+        "before_median": 500195985,
+        "after_median": 181342,
+        "bracket_monotonic_ns": [
+          240527187000000,
+          240527265000000
+        ],
+        "bracket_width_s": 0.078,
+        "host_utc_labels": [
+          "2026-09-27T08:20:37.228Z",
+          "2026-09-27T08:20:37.306Z"
+        ],
+        "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+      },
+      "operator_complete_mark": {
+        "utc": "2026-09-27T08:20:59.500Z",
+        "host_monotonic_ns": 240549453000000,
+        "event": "UNLOAD_2_COMPLETE",
+        "note": "Operator confirmed second 500 g removal; confirmation is not physical edge"
+      },
+      "operator_confirmation_lag_s": 22.22699999999986
+    }
+  ],
+  "phases": [
+    {
+      "event": {
+        "kind": "load",
+        "index": 7783,
+        "lo_s": 779.578,
+        "hi_s": 779.657,
+        "center_s": 779.6175,
+        "width_s": 0.079,
+        "before_g": 240.628773,
+        "after_g": 387.777307,
+        "raw_adc_edge": {
+          "field": "raw_adc",
+          "before_median": 41987.0,
+          "after_median": 485924,
+          "bracket_monotonic_ns": [
+            233355937000000,
+            233356046000000
+          ],
+          "bracket_width_s": 0.109,
+          "host_utc_labels": [
+            "2026-09-27T06:21:05.975Z",
+            "2026-09-27T06:21:06.094Z"
+          ],
+          "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+        },
+        "filtered_adc_edge": {
+          "field": "filtered_raw",
+          "before_median": 41988.0,
+          "after_median": 485922,
+          "bracket_monotonic_ns": [
+            233356046000000,
+            233356125000000
+          ],
+          "bracket_width_s": 0.079,
+          "host_utc_labels": [
+            "2026-09-27T06:21:06.094Z",
+            "2026-09-27T06:21:06.172Z"
+          ],
+          "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+        },
+        "gross_edge": {
+          "field": "gross_ug",
+          "before_median": 135162.0,
+          "after_median": 500159942,
+          "bracket_monotonic_ns": [
+            233356046000000,
+            233356125000000
+          ],
+          "bracket_width_s": 0.079,
+          "host_utc_labels": [
+            "2026-09-27T06:21:06.094Z",
+            "2026-09-27T06:21:06.172Z"
+          ],
+          "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+        },
+        "operator_complete_mark": {
+          "utc": "2026-09-27T06:21:30.937Z",
+          "host_monotonic_ns": 233380890000000,
+          "event": "LOAD_1_COMPLETE",
+          "note": "Operator confirmed first 500 g placement; confirmation time is not physical edge"
+        },
+        "operator_confirmation_lag_s": 24.804500000000075
+      },
+      "phase_duration_s": 3384.414,
+      "pre5": {
+        "gross_ug": 135162,
+        "raw_adc": 41988,
+        "filtered_raw": 41988,
+        "display_count": 14,
+        "conditioned_display_ug": 140000,
+        "display_anchor_ug": 140000
+      },
+      "early": {
+        "gross_ug": 500159942,
+        "raw_adc": 485924,
+        "filtered_raw": 485922,
+        "display_count": 50015,
+        "conditioned_display_ug": 500150000,
+        "display_anchor_ug": 500150000,
+        "display_minus_gross_g": -0.009942000000023654
+      },
+      "phase_end5": {
+        "gross_ug": 500228649,
+        "raw_adc": 485983,
+        "filtered_raw": 485983,
+        "display_count": 50023,
+        "conditioned_display_ug": 500230000,
+        "display_anchor_ug": 500230000,
+        "display_minus_gross_g": 0.001350999999999658
+      },
+      "checkpoints": {
+        "1": {
+          "gross_ug": 500219638,
+          "raw_adc": 485974,
+          "filtered_raw": 485975,
+          "display_count": 50022,
+          "conditioned_display_ug": 500220000,
+          "display_anchor_ug": 500220000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": 59696,
+            "raw_adc": 50,
+            "filtered_raw": 53,
+            "display_count": 7,
+            "conditioned_display_ug": 70000,
+            "display_anchor_ug": 70000
+          },
+          "display_minus_gross_g": 0.000362000000052376
+        },
+        "2": {
+          "gross_ug": 500238786.0,
+          "raw_adc": 485992.0,
+          "filtered_raw": 485992.0,
+          "display_count": 50024.0,
+          "conditioned_display_ug": 500240000.0,
+          "display_anchor_ug": 500240000.0,
+          "samples": 598,
+          "delta_from_early": {
+            "gross_ug": 78844.0,
+            "raw_adc": 68.0,
+            "filtered_raw": 70.0,
+            "display_count": 9.0,
+            "conditioned_display_ug": 90000.0,
+            "display_anchor_ug": 90000.0
+          },
+          "display_minus_gross_g": 0.0012140000000044893
+        },
+        "5": {
+          "gross_ug": 500262439,
+          "raw_adc": 486013,
+          "filtered_raw": 486013,
+          "display_count": 50026,
+          "conditioned_display_ug": 500260000,
+          "display_anchor_ug": 500260000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": 102497,
+            "raw_adc": 89,
+            "filtered_raw": 91,
+            "display_count": 11,
+            "conditioned_display_ug": 110000,
+            "display_anchor_ug": 110000
+          },
+          "display_minus_gross_g": -0.002438999999981206
+        },
+        "10": {
+          "gross_ug": 500266945,
+          "raw_adc": 486017,
+          "filtered_raw": 486017,
+          "display_count": 50027,
+          "conditioned_display_ug": 500270000,
+          "display_anchor_ug": 500270000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": 107003,
+            "raw_adc": 93,
+            "filtered_raw": 95,
+            "display_count": 12,
+            "conditioned_display_ug": 120000,
+            "display_anchor_ug": 120000
+          },
+          "display_minus_gross_g": 0.003054999999960728
+        },
+        "15": {
+          "gross_ug": 500260187,
+          "raw_adc": 486011,
+          "filtered_raw": 486011,
+          "display_count": 50026,
+          "conditioned_display_ug": 500260000,
+          "display_anchor_ug": 500260000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": 100245,
+            "raw_adc": 87,
+            "filtered_raw": 89,
+            "display_count": 11,
+            "conditioned_display_ug": 110000,
+            "display_anchor_ug": 110000
+          },
+          "display_minus_gross_g": -0.00018699999998261774
+        },
+        "30": {
+          "gross_ug": 500262439,
+          "raw_adc": 486014,
+          "filtered_raw": 486013,
+          "display_count": 50026,
+          "conditioned_display_ug": 500260000,
+          "display_anchor_ug": 500260000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": 102497,
+            "raw_adc": 90,
+            "filtered_raw": 91,
+            "display_count": 11,
+            "conditioned_display_ug": 110000,
+            "display_anchor_ug": 110000
+          },
+          "display_minus_gross_g": -0.002438999999981206
+        },
+        "45": {
+          "gross_ug": 500247797,
+          "raw_adc": 486001,
+          "filtered_raw": 486000,
+          "display_count": 50025,
+          "conditioned_display_ug": 500250000,
+          "display_anchor_ug": 500250000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": 87855,
+            "raw_adc": 77,
+            "filtered_raw": 78,
+            "display_count": 10,
+            "conditioned_display_ug": 100000,
+            "display_anchor_ug": 100000
+          },
+          "display_minus_gross_g": 0.0022030000000086147
+        }
+      },
+      "span_early_g": 500.02478,
+      "span_end_g": 500.093487
+    },
+    {
+      "event": {
+        "kind": "unload",
+        "index": 41566,
+        "lo_s": 4163.985,
+        "hi_s": 4164.078,
+        "center_s": 4164.0315,
+        "width_s": 0.093,
+        "before_g": 268.939565,
+        "after_g": 105.950053,
+        "raw_adc_edge": {
+          "field": "raw_adc",
+          "before_median": 485984.0,
+          "after_median": 42048.0,
+          "bracket_monotonic_ns": [
+            236740359000000,
+            236740453000000
+          ],
+          "bracket_width_s": 0.094,
+          "host_utc_labels": [
+            "2026-09-27T07:17:30.409Z",
+            "2026-09-27T07:17:30.489Z"
+          ],
+          "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+        },
+        "filtered_adc_edge": {
+          "field": "filtered_raw",
+          "before_median": 485984.0,
+          "after_median": 42048.0,
+          "bracket_monotonic_ns": [
+            236740453000000,
+            236740546000000
+          ],
+          "bracket_width_s": 0.093,
+          "host_utc_labels": [
+            "2026-09-27T07:17:30.489Z",
+            "2026-09-27T07:17:30.593Z"
+          ],
+          "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+        },
+        "gross_edge": {
+          "field": "gross_ug",
+          "before_median": 500229775.0,
+          "after_median": 202743.0,
+          "bracket_monotonic_ns": [
+            236740453000000,
+            236740546000000
+          ],
+          "bracket_width_s": 0.093,
+          "host_utc_labels": [
+            "2026-09-27T07:17:30.489Z",
+            "2026-09-27T07:17:30.593Z"
+          ],
+          "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+        },
+        "operator_complete_mark": {
+          "utc": "2026-09-27T07:17:53.539Z",
+          "host_monotonic_ns": 236763500000000,
+          "event": "UNLOAD_1_COMPLETE",
+          "note": "Operator confirmed first 500 g removal; confirmation time is not physical edge"
+        },
+        "operator_confirmation_lag_s": 23.000500000000102
+      },
+      "phase_duration_s": 1878.5784999999996,
+      "pre5": {
+        "gross_ug": 500228649,
+        "raw_adc": 485983,
+        "filtered_raw": 485983,
+        "display_count": 50023,
+        "conditioned_display_ug": 500230000,
+        "display_anchor_ug": 500230000
+      },
+      "early": {
+        "gross_ug": 202743.0,
+        "raw_adc": 42048.0,
+        "filtered_raw": 42048.0,
+        "display_count": 20.0,
+        "conditioned_display_ug": 200000.0,
+        "display_anchor_ug": 200000.0,
+        "display_minus_gross_g": -0.0027429999999999954
+      },
+      "phase_end5": {
+        "gross_ug": 119393,
+        "raw_adc": 41974,
+        "filtered_raw": 41974,
+        "display_count": 12,
+        "conditioned_display_ug": 120000,
+        "display_anchor_ug": 120000,
+        "display_minus_gross_g": 0.0006069999999999964
+      },
+      "checkpoints": {
+        "1": {
+          "gross_ug": 184721,
+          "raw_adc": 42032,
+          "filtered_raw": 42032,
+          "display_count": 19,
+          "conditioned_display_ug": 190000,
+          "display_anchor_ug": 190000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": -18022.0,
+            "raw_adc": -16.0,
+            "filtered_raw": -16.0,
+            "display_count": -1.0,
+            "conditioned_display_ug": -10000.0,
+            "display_anchor_ug": -10000.0
+          },
+          "display_minus_gross_g": 0.005279000000000006
+        },
+        "2": {
+          "gross_ug": 176837,
+          "raw_adc": 42025,
+          "filtered_raw": 42025,
+          "display_count": 18,
+          "conditioned_display_ug": 180000,
+          "display_anchor_ug": 180000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": -25906.0,
+            "raw_adc": -23.0,
+            "filtered_raw": -23.0,
+            "display_count": -2.0,
+            "conditioned_display_ug": -20000.0,
+            "display_anchor_ug": -20000.0
+          },
+          "display_minus_gross_g": 0.003162999999999999
+        },
+        "5": {
+          "gross_ug": 161068,
+          "raw_adc": 42011,
+          "filtered_raw": 42011,
+          "display_count": 16,
+          "conditioned_display_ug": 160000,
+          "display_anchor_ug": 160000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": -41675.0,
+            "raw_adc": -37.0,
+            "filtered_raw": -37.0,
+            "display_count": -4.0,
+            "conditioned_display_ug": -40000.0,
+            "display_anchor_ug": -40000.0
+          },
+          "display_minus_gross_g": -0.0010679999999999856
+        },
+        "10": {
+          "gross_ug": 145299,
+          "raw_adc": 41997,
+          "filtered_raw": 41997,
+          "display_count": 15,
+          "conditioned_display_ug": 150000,
+          "display_anchor_ug": 150000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": -57444.0,
+            "raw_adc": -51.0,
+            "filtered_raw": -51.0,
+            "display_count": -5.0,
+            "conditioned_display_ug": -50000.0,
+            "display_anchor_ug": -50000.0
+          },
+          "display_minus_gross_g": 0.004700999999999983
+        },
+        "15": {
+          "gross_ug": 140794.0,
+          "raw_adc": 41993.0,
+          "filtered_raw": 41993.0,
+          "display_count": 15.0,
+          "conditioned_display_ug": 150000.0,
+          "display_anchor_ug": 150000.0,
+          "samples": 600,
+          "delta_from_early": {
+            "gross_ug": -61949.0,
+            "raw_adc": -55.0,
+            "filtered_raw": -55.0,
+            "display_count": -5.0,
+            "conditioned_display_ug": -50000.0,
+            "display_anchor_ug": -50000.0
+          },
+          "display_minus_gross_g": 0.009205999999999992
+        },
+        "30": {
+          "gross_ug": 119393,
+          "raw_adc": 41974,
+          "filtered_raw": 41974,
+          "display_count": 12,
+          "conditioned_display_ug": 120000,
+          "display_anchor_ug": 120000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": -83350.0,
+            "raw_adc": -74.0,
+            "filtered_raw": -74.0,
+            "display_count": -8.0,
+            "conditioned_display_ug": -80000.0,
+            "display_anchor_ug": -80000.0
+          },
+          "display_minus_gross_g": 0.0006069999999999964
+        },
+        "45": {
+          "status": "NOT AVAILABLE"
+        }
+      },
+      "span_early_g": -500.025906,
+      "span_end_g": -500.109256
+    },
+    {
+      "event": {
+        "kind": "load",
+        "index": 60319,
+        "lo_s": 6042.563,
+        "hi_s": 6042.657,
+        "center_s": 6042.61,
+        "width_s": 0.094,
+        "before_g": 202.949008,
+        "after_g": 332.256168,
+        "raw_adc_edge": {
+          "field": "raw_adc",
+          "before_median": 41975.0,
+          "after_median": 485904.5,
+          "bracket_monotonic_ns": [
+            238618953000000,
+            238619031000000
+          ],
+          "bracket_width_s": 0.078,
+          "host_utc_labels": [
+            "2026-09-27T07:48:48.988Z",
+            "2026-09-27T07:48:49.069Z"
+          ],
+          "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+        },
+        "filtered_adc_edge": {
+          "field": "filtered_raw",
+          "before_median": 41975.0,
+          "after_median": 485905.0,
+          "bracket_monotonic_ns": [
+            238619031000000,
+            238619125000000
+          ],
+          "bracket_width_s": 0.094,
+          "host_utc_labels": [
+            "2026-09-27T07:48:49.069Z",
+            "2026-09-27T07:48:49.175Z"
+          ],
+          "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+        },
+        "gross_edge": {
+          "field": "gross_ug",
+          "before_median": 120519.0,
+          "after_median": 500140794.0,
+          "bracket_monotonic_ns": [
+            238619031000000,
+            238619125000000
+          ],
+          "bracket_width_s": 0.094,
+          "host_utc_labels": [
+            "2026-09-27T07:48:49.069Z",
+            "2026-09-27T07:48:49.175Z"
+          ],
+          "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+        },
+        "operator_complete_mark": {
+          "utc": "2026-09-27T07:49:11.486Z",
+          "host_monotonic_ns": 238641437000000,
+          "event": "LOAD_2_COMPLETE",
+          "note": "Operator confirmed second 500 g placement; confirmation is not physical edge"
+        },
+        "operator_confirmation_lag_s": 22.35900000000038
+      },
+      "phase_duration_s": 1908.1480000000001,
+      "pre5": {
+        "gross_ug": 119393,
+        "raw_adc": 41974,
+        "filtered_raw": 41974,
+        "display_count": 12,
+        "conditioned_display_ug": 120000,
+        "display_anchor_ug": 120000
+      },
+      "early": {
+        "gross_ug": 500140794.0,
+        "raw_adc": 485904.5,
+        "filtered_raw": 485905.0,
+        "display_count": 50013.0,
+        "conditioned_display_ug": 500130000.0,
+        "display_anchor_ug": 500130000.0,
+        "display_minus_gross_g": -0.01079400000003261
+      },
+      "phase_end5": {
+        "gross_ug": 500198237,
+        "raw_adc": 485956,
+        "filtered_raw": 485956,
+        "display_count": 50020,
+        "conditioned_display_ug": 500200000,
+        "display_anchor_ug": 500200000,
+        "display_minus_gross_g": 0.0017629999999826396
+      },
+      "checkpoints": {
+        "1": {
+          "gross_ug": 500171205,
+          "raw_adc": 485932,
+          "filtered_raw": 485932,
+          "display_count": 50017,
+          "conditioned_display_ug": 500170000,
+          "display_anchor_ug": 500170000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": 30411.0,
+            "raw_adc": 27.5,
+            "filtered_raw": 27.0,
+            "display_count": 4.0,
+            "conditioned_display_ug": 40000.0,
+            "display_anchor_ug": 40000.0
+          },
+          "display_minus_gross_g": -0.0012049999999703687
+        },
+        "2": {
+          "gross_ug": 500190353,
+          "raw_adc": 485949,
+          "filtered_raw": 485949,
+          "display_count": 50019,
+          "conditioned_display_ug": 500190000,
+          "display_anchor_ug": 500190000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": 49559.0,
+            "raw_adc": 44.5,
+            "filtered_raw": 44.0,
+            "display_count": 6.0,
+            "conditioned_display_ug": 60000.0,
+            "display_anchor_ug": 60000.0
+          },
+          "display_minus_gross_g": -0.0003530000000182554
+        },
+        "5": {
+          "gross_ug": 500202743,
+          "raw_adc": 485960,
+          "filtered_raw": 485960,
+          "display_count": 50020,
+          "conditioned_display_ug": 500200000,
+          "display_anchor_ug": 500200000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": 61949.0,
+            "raw_adc": 55.5,
+            "filtered_raw": 55.0,
+            "display_count": 7.0,
+            "conditioned_display_ug": 70000.0,
+            "display_anchor_ug": 70000.0
+          },
+          "display_minus_gross_g": -0.002743000000009488
+        },
+        "10": {
+          "gross_ug": 500197111,
+          "raw_adc": 485954,
+          "filtered_raw": 485955,
+          "display_count": 50019,
+          "conditioned_display_ug": 500190000,
+          "display_anchor_ug": 500190000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": 56317.0,
+            "raw_adc": 49.5,
+            "filtered_raw": 50.0,
+            "display_count": 6.0,
+            "conditioned_display_ug": 60000.0,
+            "display_anchor_ug": 60000.0
+          },
+          "display_minus_gross_g": -0.007111000000008971
+        },
+        "15": {
+          "gross_ug": 500211754,
+          "raw_adc": 485967,
+          "filtered_raw": 485968,
+          "display_count": 50021,
+          "conditioned_display_ug": 500210000,
+          "display_anchor_ug": 500210000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": 70960.0,
+            "raw_adc": 62.5,
+            "filtered_raw": 63.0,
+            "display_count": 8.0,
+            "conditioned_display_ug": 80000.0,
+            "display_anchor_ug": 80000.0
+          },
+          "display_minus_gross_g": -0.0017540000000053624
+        },
+        "30": {
+          "gross_ug": 500203869,
+          "raw_adc": 485961,
+          "filtered_raw": 485961,
+          "display_count": 50020,
+          "conditioned_display_ug": 500200000,
+          "display_anchor_ug": 500200000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": 63075.0,
+            "raw_adc": 56.5,
+            "filtered_raw": 56.0,
+            "display_count": 7.0,
+            "conditioned_display_ug": 70000.0,
+            "display_anchor_ug": 70000.0
+          },
+          "display_minus_gross_g": -0.003869000000008782
+        },
+        "45": {
+          "status": "NOT AVAILABLE"
+        }
+      },
+      "span_early_g": 500.021401,
+      "span_end_g": 500.078844
+    },
+    {
+      "event": {
+        "kind": "unload",
+        "index": 79370,
+        "lo_s": 7950.719,
+        "hi_s": 7950.797,
+        "center_s": 7950.758,
+        "width_s": 0.078,
+        "before_g": 319.080133,
+        "after_g": 152.919948,
+        "raw_adc_edge": {
+          "field": "raw_adc",
+          "before_median": 485954,
+          "after_median": 42029,
+          "bracket_monotonic_ns": [
+            240527109000000,
+            240527187000000
+          ],
+          "bracket_width_s": 0.078,
+          "host_utc_labels": [
+            "2026-09-27T08:20:37.150Z",
+            "2026-09-27T08:20:37.228Z"
+          ],
+          "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+        },
+        "filtered_adc_edge": {
+          "field": "filtered_raw",
+          "before_median": 485954,
+          "after_median": 42029,
+          "bracket_monotonic_ns": [
+            240527187000000,
+            240527265000000
+          ],
+          "bracket_width_s": 0.078,
+          "host_utc_labels": [
+            "2026-09-27T08:20:37.228Z",
+            "2026-09-27T08:20:37.306Z"
+          ],
+          "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+        },
+        "gross_edge": {
+          "field": "gross_ug",
+          "before_median": 500195985,
+          "after_median": 181342,
+          "bracket_monotonic_ns": [
+            240527187000000,
+            240527265000000
+          ],
+          "bracket_width_s": 0.078,
+          "host_utc_labels": [
+            "2026-09-27T08:20:37.228Z",
+            "2026-09-27T08:20:37.306Z"
+          ],
+          "warning": "asynchronous Modbus registers, not physical ADC DRDY"
+        },
+        "operator_complete_mark": {
+          "utc": "2026-09-27T08:20:59.500Z",
+          "host_monotonic_ns": 240549453000000,
+          "event": "UNLOAD_2_COMPLETE",
+          "note": "Operator confirmed second 500 g removal; confirmation is not physical edge"
+        },
+        "operator_confirmation_lag_s": 22.22699999999986
+      },
+      "phase_duration_s": 2816.4609999999993,
+      "pre5": {
+        "gross_ug": 500198237,
+        "raw_adc": 485956,
+        "filtered_raw": 485956,
+        "display_count": 50020,
+        "conditioned_display_ug": 500200000,
+        "display_anchor_ug": 500200000
+      },
+      "early": {
+        "gross_ug": 181342,
+        "raw_adc": 42029,
+        "filtered_raw": 42029,
+        "display_count": 19,
+        "conditioned_display_ug": 190000,
+        "display_anchor_ug": 190000,
+        "display_minus_gross_g": 0.008657999999999999
+      },
+      "phase_end5": {
+        "gross_ug": 102498,
+        "raw_adc": 41959,
+        "filtered_raw": 41959,
+        "display_count": 10,
+        "conditioned_display_ug": 100000,
+        "display_anchor_ug": 100000,
+        "display_minus_gross_g": -0.0024980000000000002
+      },
+      "checkpoints": {
+        "1": {
+          "gross_ug": 165573,
+          "raw_adc": 42015,
+          "filtered_raw": 42015,
+          "display_count": 16,
+          "conditioned_display_ug": 160000,
+          "display_anchor_ug": 160000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": -15769,
+            "raw_adc": -14,
+            "filtered_raw": -14,
+            "display_count": -3,
+            "conditioned_display_ug": -30000,
+            "display_anchor_ug": -30000
+          },
+          "display_minus_gross_g": -0.005572999999999995
+        },
+        "2": {
+          "gross_ug": 152057,
+          "raw_adc": 42003,
+          "filtered_raw": 42003,
+          "display_count": 15,
+          "conditioned_display_ug": 150000,
+          "display_anchor_ug": 150000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": -29285,
+            "raw_adc": -26,
+            "filtered_raw": -26,
+            "display_count": -4,
+            "conditioned_display_ug": -40000,
+            "display_anchor_ug": -40000
+          },
+          "display_minus_gross_g": -0.0020570000000000033
+        },
+        "5": {
+          "gross_ug": 135162,
+          "raw_adc": 41988,
+          "filtered_raw": 41988,
+          "display_count": 14,
+          "conditioned_display_ug": 140000,
+          "display_anchor_ug": 140000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": -46180,
+            "raw_adc": -41,
+            "filtered_raw": -41,
+            "display_count": -5,
+            "conditioned_display_ug": -50000,
+            "display_anchor_ug": -50000
+          },
+          "display_minus_gross_g": 0.004838000000000009
+        },
+        "10": {
+          "gross_ug": 127277,
+          "raw_adc": 41981,
+          "filtered_raw": 41981,
+          "display_count": 13,
+          "conditioned_display_ug": 130000,
+          "display_anchor_ug": 130000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": -54065,
+            "raw_adc": -48,
+            "filtered_raw": -48,
+            "display_count": -6,
+            "conditioned_display_ug": -60000,
+            "display_anchor_ug": -60000
+          },
+          "display_minus_gross_g": 0.002723000000000003
+        },
+        "15": {
+          "gross_ug": 120519,
+          "raw_adc": 41975,
+          "filtered_raw": 41975,
+          "display_count": 12,
+          "conditioned_display_ug": 120000,
+          "display_anchor_ug": 120000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": -60823,
+            "raw_adc": -54,
+            "filtered_raw": -54,
+            "display_count": -7,
+            "conditioned_display_ug": -70000,
+            "display_anchor_ug": -70000
+          },
+          "display_minus_gross_g": -0.0005190000000000056
+        },
+        "30": {
+          "gross_ug": 107003,
+          "raw_adc": 41962,
+          "filtered_raw": 41963,
+          "display_count": 10,
+          "conditioned_display_ug": 100000,
+          "display_anchor_ug": 100000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": -74339,
+            "raw_adc": -67,
+            "filtered_raw": -66,
+            "display_count": -9,
+            "conditioned_display_ug": -90000,
+            "display_anchor_ug": -90000
+          },
+          "display_minus_gross_g": -0.007002999999999995
+        },
+        "45": {
+          "gross_ug": 103624,
+          "raw_adc": 41960,
+          "filtered_raw": 41960,
+          "display_count": 11,
+          "conditioned_display_ug": 110000,
+          "display_anchor_ug": 110000,
+          "samples": 599,
+          "delta_from_early": {
+            "gross_ug": -77718,
+            "raw_adc": -69,
+            "filtered_raw": -69,
+            "display_count": -8,
+            "conditioned_display_ug": -80000,
+            "display_anchor_ug": -80000
+          },
+          "display_minus_gross_g": 0.006376000000000007
+        }
+      },
+      "span_early_g": -500.016895,
+      "span_end_g": -500.095739
+    }
+  ],
+  "model_replay": {
+    "classification": "OPENED_A9_DEVELOPMENT_NOT_HOLDOUT",
+    "frozen_r5": {
+      "scores": [
+        {
+          "kind": "load",
+          "duration_s": 3384.414,
+          "early_corrected_g": 500.1638835,
+          "pre5_corrected_g": 0.135725,
+          "phase_end5_corrected_g": 500.2225185,
+          "span_early_g": 500.0281585,
+          "span_end_g": 500.0867935,
+          "checkpoints": {
+            "1": {
+              "corrected_g": 500.220764,
+              "change_from_early_g": 0.0568805,
+              "offset_ug": 0.0
+            },
+            "2": {
+              "corrected_g": 500.2390675,
+              "change_from_early_g": 0.075184,
+              "offset_ug": 0.0
+            },
+            "5": {
+              "corrected_g": 500.261313,
+              "change_from_early_g": 0.0974295,
+              "offset_ug": 0.0
+            },
+            "10": {
+              "corrected_g": 500.265818,
+              "change_from_early_g": 0.1019345,
+              "offset_ug": 0.0
+            },
+            "30": {
+              "corrected_g": 500.256283,
+              "change_from_early_g": 0.0923995,
+              "offset_ug": 6186.0
+            }
+          }
+        },
+        {
+          "kind": "unload",
+          "duration_s": 1878.5784999999996,
+          "early_corrected_g": 0.198353,
+          "pre5_corrected_g": 500.2225185,
+          "phase_end5_corrected_g": 0.133046,
+          "span_early_g": -500.0241655,
+          "span_end_g": -500.0894725,
+          "checkpoints": {
+            "1": {
+              "corrected_g": 0.1783605,
+              "change_from_early_g": -0.0199925,
+              "offset_ug": 6079.0
+            },
+            "2": {
+              "corrected_g": 0.1699135,
+              "change_from_early_g": -0.0284395,
+              "offset_ug": 6079.0
+            },
+            "5": {
+              "corrected_g": 0.154989,
+              "change_from_early_g": -0.043364,
+              "offset_ug": 6079.0
+            },
+            "15": {
+              "corrected_g": 0.135277,
+              "change_from_early_g": -0.063076,
+              "offset_ug": 5785.5
+            },
+            "30": {
+              "corrected_g": 0.1351415,
+              "change_from_early_g": -0.0632115,
+              "offset_ug": -15926.5
+            },
+            "45": {
+              "status": "NOT AVAILABLE"
+            }
+          }
+        },
+        {
+          "kind": "load",
+          "duration_s": 1908.1480000000001,
+          "early_corrected_g": 500.156262,
+          "pre5_corrected_g": 0.133046,
+          "phase_end5_corrected_g": 500.212379,
+          "span_early_g": 500.023216,
+          "span_end_g": 500.079333,
+          "checkpoints": {
+            "1": {
+              "corrected_g": 500.188363,
+              "change_from_early_g": 0.032101,
+              "offset_ug": -17158.0
+            },
+            "2": {
+              "corrected_g": 500.205821,
+              "change_from_early_g": 0.049559,
+              "offset_ug": -17158.0
+            },
+            "5": {
+              "corrected_g": 500.219901,
+              "change_from_early_g": 0.063639,
+              "offset_ug": -17158.0
+            },
+            "10": {
+              "corrected_g": 500.213424,
+              "change_from_early_g": 0.057162,
+              "offset_ug": -17158.0
+            },
+            "30": {
+              "corrected_g": 500.216885,
+              "change_from_early_g": 0.060623,
+              "offset_ug": -13579.0
+            }
+          }
+        },
+        {
+          "kind": "unload",
+          "duration_s": 2817.242,
+          "early_corrected_g": 0.1940765,
+          "pre5_corrected_g": 500.212379,
+          "phase_end5_corrected_g": 0.145399,
+          "span_early_g": -500.0183025,
+          "span_end_g": -500.06698,
+          "checkpoints": {
+            "1": {
+              "corrected_g": 0.1777445,
+              "change_from_early_g": -0.016332,
+              "offset_ug": -13579.0
+            },
+            "2": {
+              "corrected_g": 0.1647915,
+              "change_from_early_g": -0.029285,
+              "offset_ug": -13579.0
+            },
+            "5": {
+              "corrected_g": 0.1484595,
+              "change_from_early_g": -0.045617,
+              "offset_ug": -13579.0
+            },
+            "15": {
+              "corrected_g": 0.1336315,
+              "change_from_early_g": -0.060445,
+              "offset_ug": -13828.0
+            },
+            "30": {
+              "corrected_g": 0.1374045,
+              "change_from_early_g": -0.056672,
+              "offset_ug": -30295.0
+            },
+            "45": {
+              "corrected_g": 0.1478225,
+              "change_from_early_g": -0.046254,
+              "offset_ug": -44262.5
+            }
+          }
+        }
+      ],
+      "automatic_rebuilds": 4,
+      "max_10s_offset_ug": 287
+    },
+    "oracle_event_feedback": {
+      "scores": [
+        {
+          "kind": "load",
+          "duration_s": 3384.414,
+          "early_corrected_g": 500.1370535,
+          "pre5_corrected_g": 0.1139455,
+          "phase_end5_corrected_g": 500.1333975,
+          "span_early_g": 500.023108,
+          "span_end_g": 500.019452,
+          "checkpoints": {
+            "1": {
+              "corrected_g": 500.192259,
+              "change_from_early_g": 0.0552055,
+              "offset_ug": 28355.0
+            },
+            "2": {
+              "corrected_g": 500.208231,
+              "change_from_early_g": 0.0711775,
+              "offset_ug": 31355.0
+            },
+            "5": {
+              "corrected_g": 500.2216775,
+              "change_from_early_g": 0.084624,
+              "offset_ug": 40355.0
+            },
+            "10": {
+              "corrected_g": 500.211126,
+              "change_from_early_g": 0.0740725,
+              "offset_ug": 55355.0
+            },
+            "30": {
+              "corrected_g": 500.147859,
+              "change_from_early_g": 0.0108055,
+              "offset_ug": 114855.0
+            }
+          }
+        },
+        {
+          "kind": "unload",
+          "duration_s": 1878.5784999999996,
+          "early_corrected_g": 0.1111475,
+          "pre5_corrected_g": 500.1333975,
+          "phase_end5_corrected_g": 0.106601,
+          "span_early_g": -500.02225,
+          "span_end_g": -500.0267965,
+          "checkpoints": {
+            "1": {
+              "corrected_g": 0.0927475,
+              "change_from_early_g": -0.0184,
+              "offset_ug": 91709.5
+            },
+            "2": {
+              "corrected_g": 0.0872145,
+              "change_from_early_g": -0.023933,
+              "offset_ug": 88709.5
+            },
+            "5": {
+              "corrected_g": 0.0813965,
+              "change_from_early_g": -0.029751,
+              "offset_ug": 79709.5
+            },
+            "15": {
+              "corrected_g": 0.090909,
+              "change_from_early_g": -0.0202385,
+              "offset_ug": 49709.5
+            },
+            "30": {
+              "corrected_g": 0.108512,
+              "change_from_early_g": -0.0026355,
+              "offset_ug": 10718.0
+            },
+            "45": {
+              "status": "NOT AVAILABLE"
+            }
+          }
+        },
+        {
+          "kind": "load",
+          "duration_s": 1908.1480000000001,
+          "early_corrected_g": 500.129161,
+          "pre5_corrected_g": 0.106601,
+          "phase_end5_corrected_g": 500.130903,
+          "span_early_g": 500.02256,
+          "span_end_g": 500.024302,
+          "checkpoints": {
+            "1": {
+              "corrected_g": 500.1592615,
+              "change_from_early_g": 0.0301005,
+              "offset_ug": 11468.0
+            },
+            "2": {
+              "corrected_g": 500.1744885,
+              "change_from_early_g": 0.0453275,
+              "offset_ug": 14468.0
+            },
+            "5": {
+              "corrected_g": 500.179738,
+              "change_from_early_g": 0.050577,
+              "offset_ug": 23468.0
+            },
+            "10": {
+              "corrected_g": 500.158948,
+              "change_from_early_g": 0.029787,
+              "offset_ug": 38468.0
+            },
+            "30": {
+              "corrected_g": 500.133877,
+              "change_from_early_g": 0.004716,
+              "offset_ug": 69479.0
+            }
+          }
+        },
+        {
+          "kind": "unload",
+          "duration_s": 2817.242,
+          "early_corrected_g": 0.1109085,
+          "pre5_corrected_g": 500.130903,
+          "phase_end5_corrected_g": 0.111651,
+          "span_early_g": -500.0199945,
+          "span_end_g": -500.019252,
+          "checkpoints": {
+            "1": {
+              "corrected_g": 0.095883,
+              "change_from_early_g": -0.0150255,
+              "offset_ug": 68464.0
+            },
+            "2": {
+              "corrected_g": 0.0859665,
+              "change_from_early_g": -0.024942,
+              "offset_ug": 65464.0
+            },
+            "5": {
+              "corrected_g": 0.077816,
+              "change_from_early_g": -0.0330925,
+              "offset_ug": 56464.0
+            },
+            "15": {
+              "corrected_g": 0.0935235,
+              "change_from_early_g": -0.017385,
+              "offset_ug": 26564.0
+            },
+            "30": {
+              "corrected_g": 0.1114715,
+              "change_from_early_g": 0.000563,
+              "offset_ug": -4441.0
+            },
+            "45": {
+              "corrected_g": 0.113534,
+              "change_from_early_g": 0.0026255,
+              "offset_ug": -9803.5
+            }
+          }
+        }
+      ],
+      "max_10s_offset_ug": 500,
+      "events": [
+        {
+          "edge_s": 780,
+          "offset_at_edge_ug": 26830,
+          "locked_reference_ug": 500137053.5,
+          "reference_window_ug": 500137053.5,
+          "reason": "EVENT_DOSING"
+        },
+        {
+          "edge_s": 4164,
+          "offset_at_edge_ug": 93284.5,
+          "locked_reference_ug": 110866.0,
+          "reference_window_ug": 110866.0,
+          "reason": "EVENT_DOSING"
+        },
+        {
+          "edge_s": 6043,
+          "offset_at_edge_ug": 9943.0,
+          "locked_reference_ug": 500129161.0,
+          "reference_window_ug": 500129161.0,
+          "reason": "EVENT_DOSING"
+        },
+        {
+          "edge_s": 7951,
+          "offset_at_edge_ug": 69589.0,
+          "locked_reference_ug": 110908.5,
+          "reference_window_ug": 110908.5,
+          "reason": "EVENT_DOSING"
+        }
+      ],
+      "warning": "retrospective foreknowledge; not deployable and not an independent holdout"
+    }
+  },
+  "temperature_c": "NOT MEASURED unless manually supplied",
+  "uncompensated_identity": "R5 SHADOW/OFF offset=0: authoritative gross_ug equals uncompensated weight; no independent filtered mass register"
+}

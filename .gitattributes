@@ -83,3 +83,5 @@ Results/stage5na/**/*.txt text eol=lf
 Results/stage5na/**/*.map text eol=lf
 Results/stage5na/**/*.bin -text
 Docs/evidence/*.json text eol=lf
+Results/stage5pa9/**/*.csv text eol=lf
+Results/stage5pa9/**/*.jsonl text eol=lf
