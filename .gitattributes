@@ -85,3 +85,8 @@ Results/stage5na/**/*.bin -text
 Docs/evidence/*.json text eol=lf
 Results/stage5pa9/**/*.csv text eol=lf
 Results/stage5pa9/**/*.jsonl text eol=lf
+Results/stage5pa13b/**/*.csv text eol=lf
+Results/stage5pa13b/**/*.jsonl text eol=lf
+Results/stage5pa13b/**/*.json -text -eol -diff
+Results/stage5pa13b/opened_a9_smoke.json text eol=lf diff
+Docs/STAGE5PA13B_*.md text eol=lf

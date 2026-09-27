@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "classification": "STAGE5PA13B_INDEPENDENT_HOLDOUT_SAFETY_PASS_EFFICACY_INCONCLUSIVE",
+  "source_branch": "stage5pa13-auto-static-creep-development",
+  "source_head": "14a711882eba2a05a0f805507485177728150ee1",
+  "source_tree": "c11577b63ba638b274ac06b045863341da37876a",
+  "pre_capture_freeze_head": "074af8c08746680b81cb614b232d1fbe265243ec",
+  "a13_policy_blob": "148fa72aa1438291945ba6eb367d5bce971773d8",
+  "a12_sample_clock_blob": "f81953a141706b3118f5637cdfd53e5d26dd3846",
+  "independent_adjudicator_blob": "4187fc6e7069acf7473216d730fff33fb24c54f7",
+  "raw_sha256": "6D11B9A3D44C6E8DC658EB1F41B99975EC339DD7DBD0D3E61791DCA75B777612",
+  "utc_first": "2026-09-27T15:43:14.397Z",
+  "utc_last": "2026-09-27T18:11:25.477Z",
+  "distinct_device_samples": 88765,
+  "replay_verdict": "SAFETY PASS; EFFICACY INCONCLUSIVE",
+  "notes": [
+    "Host/device monotonic times determine windows; original UTC labels unchanged.",
+    "This manifest excludes itself and the historic pre-capture software document; its Git freeze commit and tree are separately pinned.",
+    "A13B CSV/JSONL retain LF. Captured JSON stays byte-for-byte original via Git -text -eol; opened A9 smoke retains its old LF attribute.",
+    "The separate one-shot preflight was hours before capture; at-capture environment and first rows are contemporaneous readback."
+  ],
+  "files": [
+    {
+      "path": "Results/stage5pa13b/20260927T154314Z_independent_10hz_500g/samples.csv",
+      "bytes": 25558906,
+      "sha256": "6D11B9A3D44C6E8DC658EB1F41B99975EC339DD7DBD0D3E61791DCA75B777612"
+    },
+    {
+      "path": "Results/stage5pa13b/20260927T154314Z_independent_10hz_500g/events.jsonl",
+      "bytes": 1921,
+      "sha256": "7C52EDD33D60A40B2420C02AD7AFF548DD8E2B17C7EE259EC6A6766CE099A5C9"
+    },
+    {
+      "path": "Results/stage5pa13b/20260927T154314Z_independent_10hz_500g/environment.json",
+      "bytes": 1141,
+      "sha256": "DD2A5E07DDCD7015E76828A4E2A369F16C0411E45ED477F475C61732F839A371"
+    },
+    {
+      "path": "Results/stage5pa13b/20260927T154314Z_independent_10hz_500g/summary.json",
+      "bytes": 4165,
+      "sha256": "70493E23E769DCF04B6371AC9DE3A325CB470BFF8BDC63FBB273FE841C5DA1C7"
+    },
+    {
+      "path": "Results/stage5pa13b/20260927T154314Z_independent_10hz_500g/qualification.json",
+      "bytes": 21382,
+      "sha256": "D268A65412045D8F43CA30339B30132C1FE66351F48B5BC1219436A58842104F"
+    },
+    {
+      "path": "Results/stage5pa13b/preflight_readonly.json",
+      "bytes": 4182,
+      "sha256": "87D08D2CE4934395CD5946B62D59CEBB7F1AA5013ABC93152A3CCD03A26D1812"
+    },
+    {
+      "path": "Results/stage5pa13b/postflight_readonly_20260927T1811Z/samples.csv",
+      "bytes": 22221,
+      "sha256": "5BC8FDCD8FEEE38A0E542A0A4DBC46724E1F17D91336A9AA64AB650EDD31ABFC"
+    },
+    {
+      "path": "Results/stage5pa13b/postflight_readonly_20260927T1811Z/events.jsonl",
+      "bytes": 137,
+      "sha256": "13E17CBCBE309D474872531DE6F16B429864982585CD460CB26FB0C0A2F9C249"
+    },
+    {
+      "path": "Results/stage5pa13b/postflight_readonly_20260927T1811Z/environment.json",
+      "bytes": 1141,
+      "sha256": "5417E0EACAA833B7D94A411D956D662D71966B102C9D39DF28AFCF9BB60E580E"
+    },
+    {
+      "path": "Results/stage5pa13b/postflight_readonly_20260927T1811Z/summary.json",
+      "bytes": 4165,
+      "sha256": "A8629ACCB8811D1C9A7C7AF1180044BFF8379BCADA87E04515B2A84150F976F6"
+    },
+    {
+      "path": "Docs/STAGE5PA13B_INDEPENDENT_10HZ_HARDWARE_REPORT.md",
+      "bytes": 12485,
+      "sha256": "E82E2FA8691E6BE41A9B4FBD3B66A66971EFFB4389474DB4ACCC5B278744294F"
+    }
+  ]
+}

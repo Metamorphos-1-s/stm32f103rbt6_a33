@@ -1,0 +1,11 @@
+{"utc":"2026-09-27T15:43:14.177Z","event":"RECORDER_STARTED"}
+{"utc":"2026-09-27T15:44:08.698Z","host_monotonic_ns":267138656000000,"event":"EMPTY_BASELINE_START","note":"User confirmed wiring corrected, scale empty and 500g available before recorder start; marker is host receipt, not physical event"}
+{"utc":"2026-09-27T15:55:18.796Z","host_monotonic_ns":267808750000000,"event":"LOAD_1_START","note":"Assistant instruction to place standard 500g after >10 min empty marker; not a physical-edge timestamp"}
+{"utc":"2026-09-27T15:56:31.920Z","host_monotonic_ns":267881875000000,"event":"LOAD_1_COMPLETE","note":"User confirms first 500g placement; reply time is not the physical load edge"}
+{"utc":"2026-09-27T16:27:43.160Z","host_monotonic_ns":269753125000000,"event":"UNLOAD_1_START","note":"Assistant instruction to remove standard 500g after >31 min loaded; not a physical-edge timestamp"}
+{"utc":"2026-09-27T16:28:46.920Z","host_monotonic_ns":269816875000000,"event":"UNLOAD_1_COMPLETE","note":"User confirms first 500g removal; reply time is not physical edge"}
+{"utc":"2026-09-27T16:59:51.716Z","host_monotonic_ns":271681671000000,"event":"LOAD_2_START","note":"Assistant instruction for second standard 500g placement after >30 min empty recovery; not actual physical edge"}
+{"utc":"2026-09-27T17:01:01.750Z","host_monotonic_ns":271751703000000,"event":"LOAD_2_COMPLETE","note":"User confirms second standard 500g placement; reply is not physical edge"}
+{"utc":"2026-09-27T17:32:30.916Z","host_monotonic_ns":273640875000000,"event":"UNLOAD_2_START","note":"Assistant instruction to remove second standard 500g after full 30-31 min window; not physical edge"}
+{"utc":"2026-09-27T17:40:25.335Z","host_monotonic_ns":274115296000000,"event":"UNLOAD_2_COMPLETE","note":"User confirms second 500g removal; reply time is not physical edge"}
+{"utc":"2026-09-27T18:11:25.486Z","event":"RECORDER_STOPPED","records":88765}
