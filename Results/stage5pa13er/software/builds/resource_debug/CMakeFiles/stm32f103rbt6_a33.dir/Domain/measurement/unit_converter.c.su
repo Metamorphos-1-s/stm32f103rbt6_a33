@@ -1,0 +1,6 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/unit_converter.c:9:13:ScaleForDecimals	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/unit_converter.c:17:13:UnitFactor	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/unit_converter.c:30:6:UnitConverter_CountToMass	48	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/unit_converter.c:41:6:UnitConverter_MassToCountUnbounded	64	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/unit_converter.c:59:6:UnitConverter_MassToDisplay	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/unit_converter.c:86:6:UnitConverter_ValidateDisplayConfig	32	static

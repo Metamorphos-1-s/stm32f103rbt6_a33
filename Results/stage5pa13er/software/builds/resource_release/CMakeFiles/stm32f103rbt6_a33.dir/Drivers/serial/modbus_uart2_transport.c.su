@@ -1,0 +1,12 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/modbus_uart2_transport.c:67:13:AbortTx	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/modbus_uart2_transport.c:52:13:TakeTxCompleted	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/modbus_uart2_transport.c:46:13:StartTx	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/modbus_uart2_transport.c:40:17:GetRxPosition	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/modbus_uart2_transport.c:34:13:DiscardPending	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/modbus_uart2_transport.c:28:13:TakeReceiveError	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/modbus_uart2_transport.c:21:13:TakeIdleEvent	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/modbus_uart2_transport.c:15:13:TryReadByte	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/modbus_uart2_transport.c:8:13:Process	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/modbus_uart2_transport.c:58:13:TakeTxError	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/modbus_uart2_transport.c:79:6:ModbusUart2Transport_Init	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/modbus_uart2_transport.c:84:27:ModbusUart2Transport_Get	0	static

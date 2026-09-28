@@ -1,0 +1,6 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:14:13:PublishStateChange	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:22:6:BleConnectionManager_Init	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:32:6:BleConnectionManager_Run	64	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:67:6:BleConnectionManager_IsReady	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:73:6:BleConnectionManager_IsConnected	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:75:6:BleConnectionManager_GetDiagnostics	4	static

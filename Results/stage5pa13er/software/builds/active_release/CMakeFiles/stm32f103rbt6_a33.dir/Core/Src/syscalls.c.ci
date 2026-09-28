@@ -1,0 +1,32 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c"
+node: { title: "initialise_monitor_handles" label: "initialise_monitor_handles\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:44:6\n0 bytes (static)" }
+node: { title: "_getpid" label: "_getpid\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:48:5\n0 bytes (static)" }
+node: { title: "_kill" label: "_kill\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:53:5\n8 bytes (static)" }
+node: { title: "__errno" label: "__errno\nE:\ST\STM32CubeCLT_1.18.0\GNU-tools-for-STM32\bin\../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/sys/errno.h:19:13" shape : ellipse }
+edge: { sourcename: "_kill" targetname: "__errno" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:57:3" }
+node: { title: "_exit" label: "_exit\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:61:6\n8 bytes (static)" }
+edge: { sourcename: "_exit" targetname: "__errno" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:57:3" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:_read" label: "_read\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:67:27\n16 bytes (static)" }
+node: { title: "__io_getchar" label: "__io_getchar\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:36:12" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:_read" targetname: "__io_getchar" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:74:14" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:_write" label: "_write\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:80:27\n16 bytes (static)" }
+node: { title: "__io_putchar" label: "__io_putchar\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:35:12" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:_write" targetname: "__io_putchar" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:87:5" }
+node: { title: "_close" label: "_close\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:92:5\n0 bytes (static)" }
+node: { title: "_fstat" label: "_fstat\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:99:5\n0 bytes (static)" }
+node: { title: "_isatty" label: "_isatty\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:106:5\n0 bytes (static)" }
+node: { title: "_lseek" label: "_lseek\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:112:5\n0 bytes (static)" }
+node: { title: "_open" label: "_open\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:120:5\n0 bytes (static)" }
+node: { title: "_wait" label: "_wait\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:128:5\n8 bytes (static)" }
+edge: { sourcename: "_wait" targetname: "__errno" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:131:3" }
+node: { title: "_unlink" label: "_unlink\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:135:5\n8 bytes (static)" }
+edge: { sourcename: "_unlink" targetname: "__errno" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:138:3" }
+node: { title: "_times" label: "_times\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:142:9\n0 bytes (static)" }
+node: { title: "_stat" label: "_stat\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:148:5\n0 bytes (static)" }
+node: { title: "_link" label: "_link\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:155:5\n8 bytes (static)" }
+edge: { sourcename: "_link" targetname: "__errno" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:159:3" }
+node: { title: "_fork" label: "_fork\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:163:5\n8 bytes (static)" }
+edge: { sourcename: "_fork" targetname: "__errno" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:165:3" }
+node: { title: "_execve" label: "_execve\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:169:5\n8 bytes (static)" }
+edge: { sourcename: "_execve" targetname: "__errno" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/syscalls.c:174:3" }
+}

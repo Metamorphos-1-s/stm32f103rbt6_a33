@@ -1,0 +1,12 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/uart2_dma_transport.c:32:13:ClearIdleEvents	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/uart2_dma_transport.c:68:6:Uart2DmaTransport_Init	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/uart2_dma_transport.c:94:6:Uart2DmaTransport_Process	192	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/uart2_dma_transport.c:180:6:Uart2DmaTransport_TryReadByte	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/uart2_dma_transport.c:198:6:Uart2DmaTransport_StartTx	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/uart2_dma_transport.c:206:6:Uart2DmaTransport_IsTxBusy	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/uart2_dma_transport.c:211:6:Uart2DmaTransport_Suspend	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/uart2_dma_transport.c:217:6:Uart2DmaTransport_Resume	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/uart2_dma_transport.c:223:6:Uart2DmaTransport_TakeIdleEvent	20	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/uart2_dma_transport.c:238:6:Uart2DmaTransport_TakeReceiveError	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/uart2_dma_transport.c:245:6:Uart2DmaTransport_DiscardPending	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/serial/uart2_dma_transport.c:252:36:Uart2DmaTransport_GetStatistics	0	static

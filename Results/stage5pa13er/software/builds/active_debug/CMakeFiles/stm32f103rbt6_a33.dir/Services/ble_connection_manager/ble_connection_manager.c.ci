@@ -1,0 +1,23 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:PublishStateChange" label: "PublishStateChange\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:14:13\n32 bytes (static)" }
+node: { title: "EventQueue_Push" label: "EventQueue_Push\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/event_queue/event_queue.h:60:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:PublishStateChange" targetname: "EventQueue_Push" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:19:11" }
+node: { title: "BleConnectionManager_Init" label: "BleConnectionManager_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:22:6\n16 bytes (static)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "BleConnectionManager_Init" targetname: "memset" }
+node: { title: "BleConnectionManager_Run" label: "BleConnectionManager_Run\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:32:6\n64 bytes (static)" }
+node: { title: "BleTransport_Run" label: "BleTransport_Run\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_transport/ble_transport.h:34:6" shape : ellipse }
+edge: { sourcename: "BleConnectionManager_Run" targetname: "BleTransport_Run" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:36:5" }
+node: { title: "BleTransport_GetDiagnostics" label: "BleTransport_GetDiagnostics\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_transport/ble_transport.h:40:6" shape : ellipse }
+edge: { sourcename: "BleConnectionManager_Run" targetname: "BleTransport_GetDiagnostics" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:37:5" }
+node: { title: "W02PwrKey_GetState" label: "W02PwrKey_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/w02/w02_pwrkey.h:18:16" shape : ellipse }
+edge: { sourcename: "BleConnectionManager_Run" targetname: "W02PwrKey_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:45:9" }
+node: { title: "W02PwrKey_IsBusy" label: "W02PwrKey_IsBusy\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/w02/w02_pwrkey.h:17:6" shape : ellipse }
+edge: { sourcename: "BleConnectionManager_Run" targetname: "W02PwrKey_IsBusy" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:47:14" }
+node: { title: "BleTransport_IsReady" label: "BleTransport_IsReady\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_transport/ble_transport.h:35:6" shape : ellipse }
+edge: { sourcename: "BleConnectionManager_Run" targetname: "BleTransport_IsReady" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:50:22" }
+edge: { sourcename: "BleConnectionManager_Run" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:PublishStateChange" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:63:9" }
+node: { title: "BleConnectionManager_IsReady" label: "BleConnectionManager_IsReady\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:67:6\n0 bytes (static)" }
+node: { title: "BleConnectionManager_IsConnected" label: "BleConnectionManager_IsConnected\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:73:6\n0 bytes (static)" }
+node: { title: "BleConnectionManager_GetDiagnostics" label: "BleConnectionManager_GetDiagnostics\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_connection_manager/ble_connection_manager.c:75:6\n4 bytes (static)" }
+}

@@ -1,0 +1,279 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Supported" label: "A13E_Supported\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:175:13\n0 bytes (static)" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_SyncTare" label: "MetrologyManager_SyncTare\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:322:13\n8 bytes (static)" }
+node: { title: "WeightEngine_GetSnapshot" label: "WeightEngine_GetSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:55:23" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_SyncTare" targetname: "WeightEngine_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:324:38" }
+node: { title: "SystemContext_SetTareStateMass" label: "SystemContext_SetTareStateMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.h:33:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_SyncTare" targetname: "SystemContext_SetTareStateMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:331:19" }
+node: { title: "SystemContext_SyncTareStateMass" label: "SystemContext_SyncTareStateMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.h:36:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_SyncTare" targetname: "SystemContext_SyncTareStateMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:333:19" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" label: "A13E_Stop\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:181:13\n16 bytes (static)" }
+node: { title: "A13C_Reset" label: "A13C_Reset\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/a13c_shadow_compensator.h:123:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" targetname: "A13C_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:187:5" }
+node: { title: "A13C_SetMode" label: "A13C_SetMode\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/a13c_shadow_compensator.h:122:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" targetname: "A13C_SetMode" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:188:11" }
+node: { title: "WeightEngine_SetBetaExternalDrift" label: "WeightEngine_SetBetaExternalDrift\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:78:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" targetname: "WeightEngine_SetBetaExternalDrift" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:189:11" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RequestOperatorZeroAnchor" label: "MetrologyManager_RequestOperatorZeroAnchor\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:695:13\n8 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RequestOperatorZeroAnchor" targetname: "WeightEngine_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:697:38" }
+node: { title: "DisplayConditioner_RequestOperatorZeroAnchor" label: "DisplayConditioner_RequestOperatorZeroAnchor\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/display_conditioner.h:113:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RequestOperatorZeroAnchor" targetname: "DisplayConditioner_RequestOperatorZeroAnchor" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:701:15" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13CCompat_GetSnapshot.constprop.0" label: "A13CCompat_GetSnapshot.constprop\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:126:31\n8 bytes (static)" }
+node: { title: "A13C_GetSnapshot" label: "A13C_GetSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/a13c_shadow_compensator.h:127:21" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13CCompat_GetSnapshot.constprop.0" targetname: "A13C_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:129:34" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13CCompat_GetSnapshot.constprop.0" targetname: "memset" }
+node: { title: "MetrologyManager_FaultInvalidatesRuntimeDrift" label: "MetrologyManager_FaultInvalidatesRuntimeDrift\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:224:6\n0 bytes (static)" }
+node: { title: "FaultManager_FaultInvalidatesWeight" label: "FaultManager_FaultInvalidatesWeight\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/fault_manager/fault_manager.h:51:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_FaultInvalidatesRuntimeDrift" targetname: "FaultManager_FaultInvalidatesWeight" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:226:12" }
+node: { title: "MetrologyManager_Init" label: "MetrologyManager_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:337:6\n72 bytes (static)" }
+edge: { sourcename: "MetrologyManager_Init" targetname: "memset" }
+node: { title: "CheckweighShadow_Reset" label: "CheckweighShadow_Reset\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Experimental/stage5na/checkweigh_shadow.h:78:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_Init" targetname: "CheckweighShadow_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:356:5" }
+edge: { sourcename: "MetrologyManager_Init" targetname: "memset" }
+edge: { sourcename: "MetrologyManager_Init" targetname: "memset" }
+node: { title: "MetrologyConfig_ValidateCanonical" label: "MetrologyConfig_ValidateCanonical\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_config_validator.h:26:23" shape : ellipse }
+edge: { sourcename: "MetrologyManager_Init" targetname: "MetrologyConfig_ValidateCanonical" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:370:9" }
+node: { title: "FaultManager_Set" label: "FaultManager_Set\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/fault_manager/fault_manager.h:47:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_Init" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:373:9" }
+node: { title: "CalibrationModel_Validate" label: "CalibrationModel_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/calibration/calibration_model.h:26:19" shape : ellipse }
+edge: { sourcename: "MetrologyManager_Init" targetname: "CalibrationModel_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:377:10" }
+edge: { sourcename: "MetrologyManager_Init" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:380:9" }
+node: { title: "WeightEngine_InitMass" label: "WeightEngine_InitMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:43:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_Init" targetname: "WeightEngine_InitMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:386:21" }
+node: { title: "R5Drift_DefaultConfig" label: "R5Drift_DefaultConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/reference_lock_drift_compensator.h:148:15" shape : ellipse }
+edge: { sourcename: "MetrologyManager_Init" targetname: "R5Drift_DefaultConfig" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:396:35" }
+node: { title: "A13C_Init" label: "A13C_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/a13c_shadow_compensator.h:121:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_Init" targetname: "A13C_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:66:5" }
+edge: { sourcename: "MetrologyManager_Init" targetname: "WeightEngine_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:403:42" }
+node: { title: "SystemContext_Get" label: "SystemContext_Get\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.h:29:22" shape : ellipse }
+edge: { sourcename: "MetrologyManager_Init" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:404:9" }
+edge: { sourcename: "MetrologyManager_Init" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:391:9" }
+node: { title: "DisplayConditioner_Init" label: "DisplayConditioner_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/display_conditioner.h:108:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_Init" targetname: "DisplayConditioner_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:404:9" }
+edge: { sourcename: "MetrologyManager_Init" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_SyncTare" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:407:9" }
+node: { title: "MetrologyManager_GetSnapshot" label: "MetrologyManager_GetSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:665:23\n0 bytes (static)" }
+edge: { sourcename: "MetrologyManager_GetSnapshot" targetname: "WeightEngine_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:667:28" }
+node: { title: "MetrologyManager_GetMassSnapshot" label: "MetrologyManager_GetMassSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:670:21\n0 bytes (static)" }
+edge: { sourcename: "MetrologyManager_GetMassSnapshot" targetname: "MetrologyManager_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:672:12" }
+node: { title: "MetrologyManager_GetDisplayConditionSnapshot" label: "MetrologyManager_GetDisplayConditionSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:675:33\n0 bytes (static)" }
+node: { title: "DisplayConditioner_GetSnapshot" label: "DisplayConditioner_GetSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/display_conditioner.h:117:33" shape : ellipse }
+edge: { sourcename: "MetrologyManager_GetDisplayConditionSnapshot" targetname: "DisplayConditioner_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:678:9" }
+node: { title: "MetrologyManager_ForceDisplayTracking" label: "MetrologyManager_ForceDisplayTracking\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:681:6\n24 bytes (static)" }
+edge: { sourcename: "MetrologyManager_ForceDisplayTracking" targetname: "WeightEngine_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:683:38" }
+edge: { sourcename: "MetrologyManager_ForceDisplayTracking" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:684:36" }
+node: { title: "DisplayConditioner_ForceTracking" label: "DisplayConditioner_ForceTracking\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/display_conditioner.h:110:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_ForceDisplayTracking" targetname: "DisplayConditioner_ForceTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:690:5" }
+node: { title: "MetrologyManager_Process20ms" label: "MetrologyManager_Process20ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:612:6\n40 bytes (static)" }
+node: { title: "FaultManager_GetActiveMask" label: "FaultManager_GetActiveMask\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/fault_manager/fault_manager.h:50:10" shape : ellipse }
+edge: { sourcename: "MetrologyManager_Process20ms" targetname: "FaultManager_GetActiveMask" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:624:10" }
+edge: { sourcename: "MetrologyManager_Process20ms" targetname: "FaultManager_GetActiveMask" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:626:19" }
+node: { title: "SystemContext_GetState" label: "SystemContext_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.h:30:10" shape : ellipse }
+edge: { sourcename: "MetrologyManager_Process20ms" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:624:42" }
+edge: { sourcename: "MetrologyManager_Process20ms" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Supported" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:625:54" }
+edge: { sourcename: "MetrologyManager_Process20ms" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:627:13" }
+edge: { sourcename: "MetrologyManager_Process20ms" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:626:9" }
+edge: { sourcename: "MetrologyManager_Process20ms" targetname: "MetrologyManager_ForceDisplayTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:628:9" }
+edge: { sourcename: "MetrologyManager_Process20ms" targetname: "WeightEngine_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:631:16" }
+node: { title: "EventQueue_Push" label: "EventQueue_Push\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/event_queue/event_queue.h:60:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_Process20ms" targetname: "EventQueue_Push" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:644:13" }
+edge: { sourcename: "MetrologyManager_Process20ms" targetname: "EventQueue_Push" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:658:13" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RebuildEngine" label: "MetrologyManager_RebuildEngine\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:907:13\n56 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RebuildEngine" targetname: "MetrologyConfig_ValidateCanonical" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:922:10" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RebuildEngine" targetname: "CalibrationModel_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:925:11" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RebuildEngine" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:933:5" }
+node: { title: "WeightEngine_ReinitializeMassBeta" label: "WeightEngine_ReinitializeMassBeta\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:48:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RebuildEngine" targetname: "WeightEngine_ReinitializeMassBeta" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:948:10" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RebuildEngine" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13CCompat_GetSnapshot.constprop.0" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:988:43" }
+node: { title: "WeightEngine_ProcessRawSample" label: "WeightEngine_ProcessRawSample\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:53:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RebuildEngine" targetname: "WeightEngine_ProcessRawSample" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:967:14" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RebuildEngine" targetname: "WeightEngine_SetBetaExternalDrift" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:989:36" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RebuildEngine" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_SyncTare" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:996:5" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RebuildEngine" targetname: "MetrologyManager_ForceDisplayTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:997:5" }
+node: { title: "MetrologyManager_SetDisplayUnit" label: "MetrologyManager_SetDisplayUnit\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:707:6\n176 bytes (static)" }
+edge: { sourcename: "MetrologyManager_SetDisplayUnit" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:709:36" }
+node: { title: "memcpy" label: "__builtin_memcpy\n<built-in>" shape : ellipse }
+edge: { sourcename: "MetrologyManager_SetDisplayUnit" targetname: "memcpy" }
+edge: { sourcename: "MetrologyManager_SetDisplayUnit" targetname: "MetrologyConfig_ValidateCanonical" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:723:9" }
+node: { title: "WeightEngine_UpdateDisplayConfig" label: "WeightEngine_UpdateDisplayConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:66:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_SetDisplayUnit" targetname: "WeightEngine_UpdateDisplayConfig" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:725:10" }
+node: { title: "SystemContext_SetActiveUnitConfig" label: "SystemContext_SetActiveUnitConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.h:47:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_SetDisplayUnit" targetname: "SystemContext_SetActiveUnitConfig" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:726:10" }
+edge: { sourcename: "MetrologyManager_SetDisplayUnit" targetname: "WeightEngine_UpdateDisplayConfig" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:728:14" }
+edge: { sourcename: "MetrologyManager_SetDisplayUnit" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:730:13" }
+edge: { sourcename: "MetrologyManager_SetDisplayUnit" targetname: "MetrologyManager_ForceDisplayTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:749:5" }
+node: { title: "CheckweighShadow_RequestReset" label: "CheckweighShadow_RequestReset\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Experimental/stage5na/checkweigh_shadow.h:79:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_SetDisplayUnit" targetname: "CheckweighShadow_RequestReset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:751:5" }
+node: { title: "MetrologyManager_GetDisplayUnit" label: "MetrologyManager_GetDisplayUnit\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:756:10\n8 bytes (static)" }
+edge: { sourcename: "MetrologyManager_GetDisplayUnit" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:758:36" }
+node: { title: "MetrologyManager_Zero" label: "MetrologyManager_Zero\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:763:20\n16 bytes (static)" }
+node: { title: "WeightEngine_Zero" label: "WeightEngine_Zero\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:58:20" shape : ellipse }
+edge: { sourcename: "MetrologyManager_Zero" targetname: "WeightEngine_Zero" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:765:49" }
+edge: { sourcename: "MetrologyManager_Zero" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:770:9" }
+edge: { sourcename: "MetrologyManager_Zero" targetname: "A13C_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:91:37" }
+edge: { sourcename: "MetrologyManager_Zero" targetname: "WeightEngine_SetBetaExternalDrift" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:776:15" }
+edge: { sourcename: "MetrologyManager_Zero" targetname: "CheckweighShadow_RequestReset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:778:9" }
+edge: { sourcename: "MetrologyManager_Zero" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RequestOperatorZeroAnchor" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:781:9" }
+node: { title: "MetrologyManager_ResetZero" label: "MetrologyManager_ResetZero\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:786:20\n8 bytes (static)" }
+node: { title: "WeightEngine_ResetZero" label: "WeightEngine_ResetZero\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:59:20" shape : ellipse }
+edge: { sourcename: "MetrologyManager_ResetZero" targetname: "WeightEngine_ResetZero" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:789:9" }
+edge: { sourcename: "MetrologyManager_ResetZero" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:793:9" }
+edge: { sourcename: "MetrologyManager_ResetZero" targetname: "MetrologyManager_ForceDisplayTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:797:9" }
+edge: { sourcename: "MetrologyManager_ResetZero" targetname: "CheckweighShadow_RequestReset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:799:9" }
+node: { title: "MetrologyManager_Tare" label: "MetrologyManager_Tare\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:806:20\n8 bytes (static)" }
+node: { title: "WeightEngine_Tare" label: "WeightEngine_Tare\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:60:20" shape : ellipse }
+edge: { sourcename: "MetrologyManager_Tare" targetname: "WeightEngine_Tare" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:808:49" }
+edge: { sourcename: "MetrologyManager_Tare" targetname: "CheckweighShadow_RequestReset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:814:9" }
+edge: { sourcename: "MetrologyManager_Tare" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_SyncTare" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:817:9" }
+edge: { sourcename: "MetrologyManager_Tare" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:818:14" }
+edge: { sourcename: "MetrologyManager_Tare" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:819:14" }
+edge: { sourcename: "MetrologyManager_Tare" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RequestOperatorZeroAnchor" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:821:13" }
+edge: { sourcename: "MetrologyManager_Tare" targetname: "MetrologyManager_ForceDisplayTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:825:13" }
+edge: { sourcename: "MetrologyManager_Tare" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:830:9" }
+node: { title: "MetrologyManager_ClearTare" label: "MetrologyManager_ClearTare\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:835:20\n8 bytes (static)" }
+node: { title: "WeightEngine_ClearTare" label: "WeightEngine_ClearTare\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:61:20" shape : ellipse }
+edge: { sourcename: "MetrologyManager_ClearTare" targetname: "WeightEngine_ClearTare" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:838:9" }
+edge: { sourcename: "MetrologyManager_ClearTare" targetname: "CheckweighShadow_RequestReset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:843:9" }
+edge: { sourcename: "MetrologyManager_ClearTare" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_SyncTare" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:846:9" }
+edge: { sourcename: "MetrologyManager_ClearTare" targetname: "MetrologyManager_ForceDisplayTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:847:9" }
+edge: { sourcename: "MetrologyManager_ClearTare" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:851:9" }
+node: { title: "MetrologyManager_ApplyCalibration" label: "MetrologyManager_ApplyCalibration\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:856:6\n8 bytes (static)" }
+edge: { sourcename: "MetrologyManager_ApplyCalibration" targetname: "CalibrationModel_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:860:10" }
+node: { title: "WeightEngine_ApplyCalibration" label: "WeightEngine_ApplyCalibration\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:62:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_ApplyCalibration" targetname: "WeightEngine_ApplyCalibration" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:864:10" }
+edge: { sourcename: "MetrologyManager_ApplyCalibration" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:866:9" }
+edge: { sourcename: "MetrologyManager_ApplyCalibration" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:870:5" }
+edge: { sourcename: "MetrologyManager_ApplyCalibration" targetname: "A13C_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:91:37" }
+edge: { sourcename: "MetrologyManager_ApplyCalibration" targetname: "CheckweighShadow_RequestReset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:874:5" }
+node: { title: "SystemContext_SetConfigDirty" label: "SystemContext_SetConfigDirty\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.h:38:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_ApplyCalibration" targetname: "SystemContext_SetConfigDirty" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:877:11" }
+edge: { sourcename: "MetrologyManager_ApplyCalibration" targetname: "MetrologyManager_ForceDisplayTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:878:5" }
+node: { title: "MetrologyManager_ReconfigureFilter" label: "MetrologyManager_ReconfigureFilter\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:882:6\n8 bytes (static)" }
+node: { title: "WeightEngine_ReconfigureFilter" label: "WeightEngine_ReconfigureFilter\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:64:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_ReconfigureFilter" targetname: "WeightEngine_ReconfigureFilter" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:885:10" }
+edge: { sourcename: "MetrologyManager_ReconfigureFilter" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:890:5" }
+edge: { sourcename: "MetrologyManager_ReconfigureFilter" targetname: "A13C_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:91:37" }
+edge: { sourcename: "MetrologyManager_ReconfigureFilter" targetname: "CheckweighShadow_RequestReset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:894:5" }
+edge: { sourcename: "MetrologyManager_ReconfigureFilter" targetname: "SystemContext_SetConfigDirty" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:896:11" }
+edge: { sourcename: "MetrologyManager_ReconfigureFilter" targetname: "MetrologyManager_ForceDisplayTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:897:5" }
+node: { title: "MetrologyManager_Reconfigure" label: "MetrologyManager_Reconfigure\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1001:6\n8 bytes (static)" }
+edge: { sourcename: "MetrologyManager_Reconfigure" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RebuildEngine" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1003:19" }
+edge: { sourcename: "MetrologyManager_Reconfigure" targetname: "A13C_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:91:37" }
+edge: { sourcename: "MetrologyManager_Reconfigure" targetname: "CheckweighShadow_RequestReset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1008:9" }
+node: { title: "MetrologyManager_RestartAfterStorage" label: "MetrologyManager_RestartAfterStorage\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1038:6\n0 bytes (static)" }
+edge: { sourcename: "MetrologyManager_RestartAfterStorage" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:MetrologyManager_RebuildEngine" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1040:12" }
+node: { title: "MetrologyManager_GetRejectedSampleCount" label: "MetrologyManager_GetRejectedSampleCount\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1043:10\n0 bytes (static)" }
+node: { title: "MetrologyManager_GetZeroOffsetRaw" label: "MetrologyManager_GetZeroOffsetRaw\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1048:9\n0 bytes (static)" }
+node: { title: "MetrologyManager_IsInitialized" label: "MetrologyManager_IsInitialized\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1053:6\n0 bytes (static)" }
+node: { title: "MetrologyManager_SetRuntimeDriftEnabled" label: "MetrologyManager_SetRuntimeDriftEnabled\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1058:6\n8 bytes (static)" }
+edge: { sourcename: "MetrologyManager_SetRuntimeDriftEnabled" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1060:22" }
+node: { title: "WeightEngine_SetRuntimeDriftEnabled" label: "WeightEngine_SetRuntimeDriftEnabled\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:68:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_SetRuntimeDriftEnabled" targetname: "WeightEngine_SetRuntimeDriftEnabled" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1063:9" }
+node: { title: "MetrologyManager_ResetRuntimeDrift" label: "MetrologyManager_ResetRuntimeDrift\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1066:6\n0 bytes (static)" }
+node: { title: "WeightEngine_ResetRuntimeDrift" label: "WeightEngine_ResetRuntimeDrift\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:71:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_ResetRuntimeDrift" targetname: "WeightEngine_ResetRuntimeDrift" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1068:24" }
+node: { title: "MetrologyManager_HandleFaultState" label: "MetrologyManager_HandleFaultState\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1071:6\n16 bytes (static)" }
+edge: { sourcename: "MetrologyManager_HandleFaultState" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1076:9" }
+edge: { sourcename: "MetrologyManager_HandleFaultState" targetname: "WeightEngine_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1079:16" }
+node: { title: "FaultManager_HasWeightInvalidFault" label: "FaultManager_HasWeightInvalidFault\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/fault_manager/fault_manager.h:52:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_HandleFaultState" targetname: "FaultManager_HasWeightInvalidFault" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:231:12" }
+edge: { sourcename: "MetrologyManager_HandleFaultState" targetname: "MetrologyManager_ResetRuntimeDrift" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1081:9" }
+node: { title: "WeightEngine_FreezeRuntimeDrift" label: "WeightEngine_FreezeRuntimeDrift\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:73:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_HandleFaultState" targetname: "WeightEngine_FreezeRuntimeDrift" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1084:9" }
+node: { title: "MetrologyManager_AcceptRawSample" label: "MetrologyManager_AcceptRawSample\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:481:6\n200 bytes (static)" }
+node: { title: "A13C_Feed" label: "A13C_Feed\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/a13c_shadow_compensator.h:124:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "A13C_Feed" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:488:19" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:494:13" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "WeightEngine_FreezeRuntimeDrift" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:498:13" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:503:13" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "MetrologyManager_HandleFaultState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:506:9" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "FaultManager_GetActiveMask" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:514:10" }
+node: { title: "WeightEngine_SetRuntimeDriftLearningAllowed" label: "WeightEngine_SetRuntimeDriftLearningAllowed\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:69:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "WeightEngine_SetRuntimeDriftLearningAllowed" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:512:5" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "WeightEngine_SetBetaExternalDrift" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:521:10" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:522:9" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "WeightEngine_ProcessRawSample" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:526:10" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "A13C_Feed" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:531:15" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:536:13" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:540:9" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "WeightEngine_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:545:42" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "memset" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:552:17" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "A13C_Feed" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:555:19" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "FaultManager_GetActiveMask" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:571:30" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:97:36" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:577:13" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "A13C_Feed" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:113:12" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13CCompat_GetSnapshot.constprop.0" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:581:23" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:587:13" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13CCompat_GetSnapshot.constprop.0" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:588:27" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Supported" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:585:15" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "WeightEngine_SetBetaExternalDrift" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:591:39" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "WeightEngine_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:415:38" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:416:36" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "memset" }
+node: { title: "WeightEngine_GetFastCalibratedMass" label: "WeightEngine_GetFastCalibratedMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:56:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "WeightEngine_GetFastCalibratedMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:424:18" }
+node: { title: "SystemContext_GetConfigRevision" label: "SystemContext_GetConfigRevision\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.h:55:10" shape : ellipse }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "SystemContext_GetConfigRevision" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:430:26" }
+node: { title: "MassMath_Subtract" label: "MassMath_Subtract\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/mass_math.h:10:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "MassMath_Subtract" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:428:10" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "CheckweighShadow_RequestReset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:433:9" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "FaultManager_HasWeightInvalidFault" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:462:19" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:465:26" }
+node: { title: "CheckweighShadow_Process" label: "CheckweighShadow_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Experimental/stage5na/checkweigh_shadow.h:81:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "CheckweighShadow_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:467:10" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "WeightEngine_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:271:38" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:272:36" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "memset" }
+node: { title: "UnitConverter_CountToMass" label: "UnitConverter_CountToMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/unit_converter.h:6:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "UnitConverter_CountToMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:286:11" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:289:13" }
+node: { title: "DisplayConditioner_Update" label: "DisplayConditioner_Update\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/display_conditioner.h:115:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "DisplayConditioner_Update" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:308:12" }
+edge: { sourcename: "MetrologyManager_AcceptRawSample" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:606:9" }
+node: { title: "MetrologyManager_GetRuntimeDriftSnapshot" label: "MetrologyManager_GetRuntimeDriftSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1090:29\n0 bytes (static)" }
+node: { title: "WeightEngine_GetRuntimeDriftSnapshot" label: "WeightEngine_GetRuntimeDriftSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.h:75:29" shape : ellipse }
+edge: { sourcename: "MetrologyManager_GetRuntimeDriftSnapshot" targetname: "WeightEngine_GetRuntimeDriftSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1092:28" }
+node: { title: "MetrologyManager_GetA13Generation" label: "MetrologyManager_GetA13Generation\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1165:10\n0 bytes (static)" }
+node: { title: "MetrologyManager_SetA13Pair" label: "MetrologyManager_SetA13Pair\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1166:6\n40 bytes (static)" }
+edge: { sourcename: "MetrologyManager_SetA13Pair" targetname: "WeightEngine_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1169:36" }
+edge: { sourcename: "MetrologyManager_SetA13Pair" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1170:22" }
+edge: { sourcename: "MetrologyManager_SetA13Pair" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1175:9" }
+edge: { sourcename: "MetrologyManager_SetA13Pair" targetname: "MetrologyManager_ForceDisplayTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1176:9" }
+edge: { sourcename: "MetrologyManager_SetA13Pair" targetname: "A13C_SetMode" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:74:12" }
+edge: { sourcename: "MetrologyManager_SetA13Pair" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Supported" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1182:11" }
+edge: { sourcename: "MetrologyManager_SetA13Pair" targetname: "FaultManager_GetActiveMask" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1182:49" }
+node: { title: "App_A13CheckweighIsOff" label: "App_A13CheckweighIsOff\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/app_main.h:22:6" shape : ellipse }
+edge: { sourcename: "MetrologyManager_SetA13Pair" targetname: "App_A13CheckweighIsOff" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1188:11" }
+edge: { sourcename: "MetrologyManager_SetA13Pair" targetname: "WeightEngine_SetBetaExternalDrift" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1190:10" }
+edge: { sourcename: "MetrologyManager_SetA13Pair" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1192:9" }
+edge: { sourcename: "MetrologyManager_SetA13Pair" targetname: "MetrologyManager_ForceDisplayTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1197:5" }
+node: { title: "MetrologyManager_SetR5Mode" label: "MetrologyManager_SetR5Mode\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1097:6\n0 bytes (static)" }
+edge: { sourcename: "MetrologyManager_SetR5Mode" targetname: "MetrologyManager_SetA13Pair" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1100:12" }
+node: { title: "MetrologyManager_SetR5Application" label: "MetrologyManager_SetR5Application\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1136:6\n0 bytes (static)" }
+edge: { sourcename: "MetrologyManager_SetR5Application" targetname: "MetrologyManager_SetA13Pair" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1139:12" }
+node: { title: "MetrologyManager_ReadA13ActiveMetric" label: "MetrologyManager_ReadA13ActiveMetric\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1200:10\n8 bytes (static)" }
+edge: { sourcename: "MetrologyManager_ReadA13ActiveMetric" targetname: "WeightEngine_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1202:31" }
+node: { title: "MetrologyManager_RestoreR5Request" label: "MetrologyManager_RestoreR5Request\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1227:6\n8 bytes (static)" }
+edge: { sourcename: "MetrologyManager_RestoreR5Request" targetname: "MetrologyManager_SetR5Application" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1237:9" }
+edge: { sourcename: "MetrologyManager_RestoreR5Request" targetname: "MetrologyManager_SetR5Mode" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1238:9" }
+node: { title: "MetrologyManager_ResetR5" label: "MetrologyManager_ResetR5\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1252:6\n8 bytes (static)" }
+edge: { sourcename: "MetrologyManager_ResetR5" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13E_Stop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1256:9" }
+edge: { sourcename: "MetrologyManager_ResetR5" targetname: "MetrologyManager_ForceDisplayTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1257:9" }
+node: { title: "MetrologyManager_GetR5Snapshot" label: "MetrologyManager_GetR5Snapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1273:24\n0 bytes (static)" }
+edge: { sourcename: "MetrologyManager_GetR5Snapshot" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:A13CCompat_GetSnapshot.constprop.0" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1275:28" }
+node: { title: "MetrologyManager_GetA13CSnapshot" label: "MetrologyManager_GetA13CSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1279:21\n0 bytes (static)" }
+edge: { sourcename: "MetrologyManager_GetA13CSnapshot" targetname: "A13C_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1281:28" }
+node: { title: "MetrologyManager_GetR5Application" label: "MetrologyManager_GetR5Application\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1285:19\n0 bytes (static)" }
+node: { title: "MetrologyManager_SetAlarmShadowThresholds" label: "MetrologyManager_SetAlarmShadowThresholds\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1290:6\n16 bytes (static)" }
+edge: { sourcename: "MetrologyManager_SetAlarmShadowThresholds" targetname: "CheckweighShadow_RequestReset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1295:5" }
+node: { title: "MetrologyManager_GetAlarmShadowDiagnostics" label: "MetrologyManager_GetAlarmShadowDiagnostics\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1300:6\n64 bytes (static)" }
+edge: { sourcename: "MetrologyManager_GetAlarmShadowDiagnostics" targetname: "WeightEngine_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1303:38" }
+edge: { sourcename: "MetrologyManager_GetAlarmShadowDiagnostics" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1304:36" }
+edge: { sourcename: "MetrologyManager_GetAlarmShadowDiagnostics" targetname: "WeightEngine_GetFastCalibratedMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1308:10" }
+edge: { sourcename: "MetrologyManager_GetAlarmShadowDiagnostics" targetname: "MassMath_Subtract" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1312:10" }
+node: { title: "CheckweighShadow_Classify" label: "CheckweighShadow_Classify\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Experimental/stage5na/checkweigh_shadow.h:80:9" shape : ellipse }
+edge: { sourcename: "MetrologyManager_GetAlarmShadowDiagnostics" targetname: "CheckweighShadow_Classify" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1328:37" }
+edge: { sourcename: "MetrologyManager_GetAlarmShadowDiagnostics" targetname: "CheckweighShadow_Classify" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.c:1335:38" }
+}

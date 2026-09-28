@@ -1,0 +1,8 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_power_monitor.c"
+node: { title: "BSP_PvdInit" label: "BSP_PvdInit\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_power_monitor.c:6:6\n24 bytes (static)" }
+node: { title: "HAL_PWR_ConfigPVD" label: "HAL_PWR_ConfigPVD\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:341:6" shape : ellipse }
+edge: { sourcename: "BSP_PvdInit" targetname: "HAL_PWR_ConfigPVD" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_power_monitor.c:16:5" }
+node: { title: "HAL_PWR_EnablePVD" label: "HAL_PWR_EnablePVD\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:343:6" shape : ellipse }
+edge: { sourcename: "BSP_PvdInit" targetname: "HAL_PWR_EnablePVD" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_power_monitor.c:17:5" }
+node: { title: "BSP_PvdIsSupplySafe" label: "BSP_PvdIsSupplySafe\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_power_monitor.c:21:6\n0 bytes (static)" }
+}

@@ -1,0 +1,7 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/guarded_checkweigh/guarded_checkweigh.c:10:13:IsCandidateValid	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/guarded_checkweigh/guarded_checkweigh.c:17:24:MapCandidate	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/guarded_checkweigh/guarded_checkweigh.c:25:13:SafeResult	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/guarded_checkweigh/guarded_checkweigh.c:35:13:RequireReacquisition	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/guarded_checkweigh/guarded_checkweigh.c:42:6:GuardedCheckweigh_Init	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/guarded_checkweigh/guarded_checkweigh.c:51:6:GuardedCheckweigh_SetMode	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/guarded_checkweigh/guarded_checkweigh.c:69:6:GuardedCheckweigh_Process	32	static

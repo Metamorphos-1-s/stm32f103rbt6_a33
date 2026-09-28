@@ -1,0 +1,16 @@
+{
+  "status": "FAIL",
+  "error": "atomic pair rejected: {'token': 1601, 'result': 4, 'result_name': 'INVALID_STATE', 'state': 0, 'last_command': 36}",
+  "polls": 1800,
+  "host_gap_events": [
+    {
+      "previous": 969,
+      "current": 971,
+      "calls_not_seen_as_individual_polls": 1,
+      "note": "retained in MCU maxima/counts; not interpolated"
+    }
+  ],
+  "snapshots_sha256": "F9975FB109AC26A1BA77158317AB2632C2ABEFFAA29CDD5FEB826C3779373931",
+  "polls_sha256": "EDC013634C50CE3CBBBE3E6604F25112C802586917E3C96A6C7CA93949F73DDD",
+  "note": "target cumulative maxima survive host gaps; earlier weight read blocks are not same sample"
+}

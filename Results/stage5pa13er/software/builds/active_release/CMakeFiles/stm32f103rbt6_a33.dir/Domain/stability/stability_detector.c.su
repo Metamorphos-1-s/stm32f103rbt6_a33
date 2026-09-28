@@ -1,0 +1,8 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/stability/stability_detector.c:25:6:StabilityDetector_InitMass	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/stability/stability_detector.c:45:6:StabilityDetector_Init	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/stability/stability_detector.c:53:6:StabilityDetector_Reset	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/stability/stability_detector.c:67:16:StabilityDetector_ProcessMass	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/stability/stability_detector.c:102:16:StabilityDetector_Process	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/stability/stability_detector.c:109:16:StabilityDetector_GetState	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/stability/stability_detector.c:115:13:StabilityDetector_GetSpreadMass	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/stability/stability_detector.c:120:10:StabilityDetector_GetSpread	8	static

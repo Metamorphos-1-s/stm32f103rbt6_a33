@@ -1,0 +1,13 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/scheduler/scheduler.c"
+node: { title: "Scheduler_Init" label: "Scheduler_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/scheduler/scheduler.c:16:6\n0 bytes (static)" }
+node: { title: "Scheduler_AddPeriodicTask" label: "Scheduler_AddPeriodicTask\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/scheduler/scheduler.c:32:9\n24 bytes (static)" }
+node: { title: "BSP_TimeNowMs" label: "BSP_TimeNowMs\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_time.h:22:15" shape : ellipse }
+edge: { sourcename: "Scheduler_AddPeriodicTask" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/scheduler/scheduler.c:50:23" }
+node: { title: "Scheduler_SetTaskEnabled" label: "Scheduler_SetTaskEnabled\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/scheduler/scheduler.c:57:6\n24 bytes (static)" }
+edge: { sourcename: "Scheduler_SetTaskEnabled" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/scheduler/scheduler.c:69:25" }
+node: { title: "Scheduler_RunPending" label: "Scheduler_RunPending\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/scheduler/scheduler.c:75:6\n32 bytes (static)" }
+edge: { sourcename: "Scheduler_RunPending" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/scheduler/scheduler.c:91:14" }
+node: { title: "__indirect_call" label: "Indirect Call Placeholder" shape : ellipse }
+edge: { sourcename: "Scheduler_RunPending" targetname: "__indirect_call" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/scheduler/scheduler.c:100:5" }
+node: { title: "Scheduler_GetTaskCount" label: "Scheduler_GetTaskCount\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/scheduler/scheduler.c:104:9\n0 bytes (static)" }
+}

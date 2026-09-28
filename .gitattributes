@@ -95,6 +95,9 @@ Results/stage5pa13c_r/** -text -eol -diff
 Results/stage5pa13d/** -text -eol -diff
 Results/stage5pa13dr/** -text -eol -diff
 Results/stage5pa13e/** -text -eol -diff
+Results/stage5pa13er/** -text -eol -diff
+Tools/stage5pa13er/*.py text eol=lf
+Docs/STAGE5PA13ER*.md text eol=lf
 Tools/stage5pa13e/* text eol=lf
 Tests/host/stage5pa13e/* text eol=lf
 Docs/STAGE5PA13E* text eol=lf

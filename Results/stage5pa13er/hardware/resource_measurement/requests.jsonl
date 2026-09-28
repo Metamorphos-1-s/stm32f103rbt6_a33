@@ -1,0 +1,2 @@
+{"utc": "2026-09-28T12:02:17.149374+00:00", "host_monotonic_ns": 340221171000000, "event": "RESOURCE_EMPTY_SHADOW_STATIC", "mode": 2, "application": 0, "stop": false}
+{"utc": "2026-09-28T12:03:46.728052+00:00", "host_monotonic_ns": 340310750000000, "event": "RESOURCE_ZERO_OFFSET_EXPLICIT_ACTIVE_STATIC", "mode": 2, "application": 1, "stop": false}

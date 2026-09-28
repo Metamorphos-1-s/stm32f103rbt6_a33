@@ -1,0 +1,17 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:48:6:Stage2B_DiagnosticsInit	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:65:6:Stage2B_DiagnosticsProcess	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:181:6:Stage2B_DiagnosticsIsActive	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:190:24:Stage2B_DiagnosticsGetState	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:195:6:Stage2B_DiagnosticsRequestLampTest	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:205:6:Stage2B_DiagnosticsRequestOutputTest	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:228:6:Stage2B_DiagnosticsRequestW02Pulse	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:238:6:Stage2B_DiagnosticsStopAllOutputs	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:249:6:Stage2B_DiagnosticsStop	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:260:6:Stage2B_DiagnosticsEnterFault	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:271:6:Stage2B_DiagnosticsSelectState	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:287:6:Stage2B_DiagnosticsSetRawKeyMask	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:302:6:Stage2B_DiagnosticsUpdateCs1237Stats	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:309:34:Stage2B_DiagnosticsGetSnapshot	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:314:6:Stage2B_DisplayText6	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:351:6:Stage2B_DisplayHex24	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Diagnostics/stage2b_board_diagnostics.c:359:6:Stage2B_DisplayBatteryMv	24	static

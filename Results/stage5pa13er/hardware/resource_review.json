@@ -1,0 +1,52 @@
+{
+  "classification": "HISTORICAL_ABORTED_RECORD_NOT_RESOURCE_PASS",
+  "original_status": "FAIL",
+  "original_error": "atomic pair rejected: {'token': 1601, 'result': 4, 'result_name': 'INVALID_STATE', 'state': 0, 'last_command': 36}",
+  "host_polls": 1800,
+  "first_utc": "2026-09-28T12:01:13.128409+00:00",
+  "last_utc": "2026-09-28T12:03:46.772560+00:00",
+  "monotonic_span_s": 153.64,
+  "host_gap_events": [
+    {
+      "previous": 969,
+      "current": 971,
+      "calls_not_seen_as_individual_polls": 1,
+      "note": "retained in MCU maxima/counts; not interpolated"
+    }
+  ],
+  "resource_coverage": 31,
+  "required_coverage": 511,
+  "path_calls": {
+    "OFF": 970,
+    "HOLDOFF": 150,
+    "REFERENCE_FILL": 300,
+    "OBSERVATION_FILL": 199,
+    "TRACKING": 244,
+    "FAST_TRACKING": 0,
+    "STEP_PENDING": 0,
+    "STEP_SETTLING": 0,
+    "DOSING": 0,
+    "INVALID": 0
+  },
+  "target_first": 1,
+  "target_last": 1863,
+  "target_produced": 1863,
+  "target_consumed": 1863,
+  "target_engine": 1863,
+  "target_fifo": 0,
+  "feed_peak_cycles": 610620,
+  "feed_peak_ms": 8.480833333333333,
+  "loop_peak_ms": 12.711069444444444,
+  "loop_interval_peak_ms": 12.711791666666667,
+  "observed_untouched_ram_bytes": 1364,
+  "last_observed_shadow_offset_ug": -215,
+  "target_fault": 0,
+  "target_overrun": 0,
+  "read_errors": 0,
+  "recovery_full_application_equal": true,
+  "recovery_config_equal": true,
+  "restored_application_sha256": "6279F17AB9E987BF8156F5F9F805B8DB41CDBDA2951603DC1B55CE559D4B34B5",
+  "restored_config_sha256": "856BD8F5C14760561FC4BFEC4274FE0C5480C19BC4422046617C2450F8439733",
+  "qualification": "INCOMPLETE; boot/empty STATIC only, resource recorder aborted on ACTIVE admission",
+  "no_active_bin_flashed": true
+}

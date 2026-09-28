@@ -1,0 +1,123 @@
+适用于 .NET Framework MSBuild 版本 17.13.19+0d9f5a35a
+
+  1>Checking Build System
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  alarm_output_manager_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\alarm_output_manager_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  checkweigh_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\checkweigh_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  display_conditioner_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\display_conditioner_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  runtime_drift_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\runtime_drift_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage4a_host_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage4a_host_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage4b_storage_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage4b_storage_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage4br_persistence_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage4br_persistence_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5a_host_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5a_host_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5b_host_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5b_host_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5c_ble_command_protocol_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5c_ble_command_protocol_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5c_ble_command_service_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5c_ble_command_service_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5c_ble_telemetry_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5c_ble_telemetry_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5c_host_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5c_host_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5e_config_edit_no_menu_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5e_config_edit_no_menu_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5l_measurement_diagnostics_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5l_measurement_diagnostics_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5ma_adaptive_runner.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5ma_adaptive_runner.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5ma_adaptive_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5ma_adaptive_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr5_beta_mailbox_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr5_beta_mailbox_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr5_persistent_equal_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr5_persistent_equal_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr5_reference_lock_runner.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr5_reference_lock_runner.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr5_reference_lock_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr5_reference_lock_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr5_tare_revision_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr5_tare_revision_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr5_ui_workspace_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr5_ui_workspace_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr5_weight_engine_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr5_weight_engine_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr5e_beta_surface_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr5e_beta_surface_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr5e_d1b_display_runner.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr5e_d1b_display_runner.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr5e_d1c_display_runner.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr5e_d1c_display_runner.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr5e_d1d_display_runner.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr5e_d1d_display_runner.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr5e_d1d_display_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr5e_d1d_display_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr5e_local_control_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr5e_local_control_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr5e_standard_surface_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr5e_standard_surface_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr_drift_runner.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr_drift_runner.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5mr_drift_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5mr_drift_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5na3_fault_injection_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5na3_fault_injection_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5na_shadow_runner.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5na_shadow_runner.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5nb_guarded_checkweigh_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5nb_guarded_checkweigh_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5nb_local_control_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5nb_local_control_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5nb_output_safety_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5nb_output_safety_tests.exe
+  benchmark.c
+  a13c_shadow_compensator.c
+  正在生成代码...
+  stage5pa13c_host_benchmark.vcxproj -> D:\Downloads\a13er_builds\host\stage5pa13c\Release\stage5pa13c_host_benchmark.exe
+  replay_runner.c
+  a13c_shadow_compensator.c
+  正在生成代码...
+  stage5pa13c_replay_runner.vcxproj -> D:\Downloads\a13er_builds\host\stage5pa13c\Release\stage5pa13c_replay_runner.exe
+  test_safety.c
+  a13c_shadow_compensator.c
+  正在生成代码...
+  stage5pa13c_safety_tests.vcxproj -> D:\Downloads\a13er_builds\host\stage5pa13c\Release\stage5pa13c_safety_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5pa13d_resource_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5pa13d_resource_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5pa13dr_accumulator_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5pa13dr_accumulator_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5pa13dr_storage_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5pa13dr_storage_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  a13c_shadow_compensator.c
+  stage5pa13e_active_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5pa13e_active_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5pa1_r5_sample_runner.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5pa1_r5_sample_runner.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5pa2c_menu_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5pa2c_menu_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5pa2c_persistence_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5pa2c_persistence_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5pa2d_calibration_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5pa2d_calibration_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5pa2d_menu_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5pa2d_menu_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5pa2d_persistence_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5pa2d_persistence_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5pa_persistence_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5pa_persistence_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5pa_r5_admission_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5pa_r5_admission_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  stage5pa_timing_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\stage5pa_timing_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  startup_auto_zero_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\startup_auto_zero_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt
+  uart2_dma_recovery_tests.vcxproj -> D:\Downloads\a13er_builds\host\Release\uart2_dma_recovery_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13er/Tests/host/CMakeLists.txt

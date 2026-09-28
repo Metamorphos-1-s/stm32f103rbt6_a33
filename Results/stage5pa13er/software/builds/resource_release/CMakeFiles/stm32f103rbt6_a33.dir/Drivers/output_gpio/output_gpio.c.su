@@ -1,0 +1,5 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/output_gpio/output_gpio.c:58:13:OutputGpio_Apply	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/output_gpio/output_gpio.c:17:6:OutputGpio_Set	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/output_gpio/output_gpio.c:33:6:OutputGpio_Get	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/output_gpio/output_gpio.c:42:6:OutputGpio_AllOff	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/output_gpio/output_gpio.c:12:6:OutputGpio_Init	0	static

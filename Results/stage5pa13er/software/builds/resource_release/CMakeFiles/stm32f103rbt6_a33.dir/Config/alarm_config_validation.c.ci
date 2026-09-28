@@ -1,0 +1,4 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Config/alarm_config_validation.c"
+node: { title: "AlarmConfig_Validate" label: "AlarmConfig_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Config/alarm_config_validation.c:11:6\n16 bytes (static)" }
+node: { title: "AlarmConfig_ClassificationChanged" label: "AlarmConfig_ClassificationChanged\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Config/alarm_config_validation.c:35:6\n12 bytes (static)" }
+}

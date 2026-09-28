@@ -1,0 +1,6 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/startup_auto_zero_controller.c:7:13:IsOutsideRange	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/startup_auto_zero_controller.c:14:13:SetTerminal	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/startup_auto_zero_controller.c:22:6:StartupAutoZeroController_Init	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/startup_auto_zero_controller.c:40:6:StartupAutoZeroController_Process	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/startup_auto_zero_controller.c:89:6:StartupAutoZeroController_CompleteZero	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/startup_auto_zero_controller.c:105:32:StartupAutoZeroController_GetSnapshot	0	static

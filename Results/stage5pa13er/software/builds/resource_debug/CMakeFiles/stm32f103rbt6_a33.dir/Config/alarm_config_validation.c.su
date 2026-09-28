@@ -1,0 +1,3 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Config/alarm_config_validation.c:6:17:AlarmConfig_Span	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Config/alarm_config_validation.c:11:6:AlarmConfig_Validate	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Config/alarm_config_validation.c:35:6:AlarmConfig_ClassificationChanged	8	static

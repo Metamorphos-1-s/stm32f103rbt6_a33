@@ -1,0 +1,31 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c"
+node: { title: "ConfigApplication_Validate" label: "ConfigApplication_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:14:19\n16 bytes (static)" }
+node: { title: "SystemContext_Get" label: "SystemContext_Get\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.h:29:22" shape : ellipse }
+edge: { sourcename: "ConfigApplication_Validate" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:17:36" }
+node: { title: "DeviceConfig_Validate" label: "DeviceConfig_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Config/device_config_validator.h:9:6" shape : ellipse }
+edge: { sourcename: "ConfigApplication_Validate" targetname: "DeviceConfig_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:20:10" }
+node: { title: "MetrologyConfig_ValidateProductHardware" label: "MetrologyConfig_ValidateProductHardware\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_config_validator.h:28:23" shape : ellipse }
+edge: { sourcename: "ConfigApplication_Validate" targetname: "MetrologyConfig_ValidateProductHardware" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:21:10" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:ConfigApplication_ApplyInternal" label: "ConfigApplication_ApplyInternal\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:43:26\n24 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:ConfigApplication_ApplyInternal" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:47:36" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:ConfigApplication_ApplyInternal" targetname: "ConfigApplication_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:53:36" }
+node: { title: "DisplayController_SetBrightness" label: "DisplayController_SetBrightness\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_controller.h:24:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:ConfigApplication_ApplyInternal" targetname: "DisplayController_SetBrightness" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:60:10" }
+node: { title: "MetrologyManager_Reconfigure" label: "MetrologyManager_Reconfigure\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/metrology_manager.h:65:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:ConfigApplication_ApplyInternal" targetname: "MetrologyManager_Reconfigure" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:70:10" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:ConfigApplication_ApplyInternal" targetname: "DisplayController_SetBrightness" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:78:15" }
+node: { title: "SystemContext_ApplyConfig" label: "SystemContext_ApplyConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.h:49:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:ConfigApplication_ApplyInternal" targetname: "SystemContext_ApplyConfig" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:81:30" }
+node: { title: "SystemContext_ReplaceConfig" label: "SystemContext_ReplaceConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.h:50:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:ConfigApplication_ApplyInternal" targetname: "SystemContext_ReplaceConfig" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:87:24" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:ConfigApplication_ApplyInternal" targetname: "MetrologyManager_Reconfigure" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:95:28" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:ConfigApplication_ApplyInternal" targetname: "DisplayController_SetBrightness" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:96:23" }
+node: { title: "FaultManager_Set" label: "FaultManager_Set\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/fault_manager/fault_manager.h:47:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:ConfigApplication_ApplyInternal" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:100:13" }
+node: { title: "ConfigApplication_Apply" label: "ConfigApplication_Apply\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:107:19\n8 bytes (static)" }
+edge: { sourcename: "ConfigApplication_Apply" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:ConfigApplication_ApplyInternal" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:109:12" }
+node: { title: "ConfigApplication_ApplyFactoryDefaults" label: "ConfigApplication_ApplyFactoryDefaults\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:112:19\n8 bytes (static)" }
+edge: { sourcename: "ConfigApplication_ApplyFactoryDefaults" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:ConfigApplication_ApplyInternal" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:115:12" }
+node: { title: "ConfigApplication_ApplyTransient" label: "ConfigApplication_ApplyTransient\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:118:19\n8 bytes (static)" }
+edge: { sourcename: "ConfigApplication_ApplyTransient" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:ConfigApplication_ApplyInternal" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/config_application.c:121:12" }
+}

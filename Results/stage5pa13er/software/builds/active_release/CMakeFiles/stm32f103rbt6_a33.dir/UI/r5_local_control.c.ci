@@ -1,0 +1,23 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c"
+node: { title: "R5LocalControl_GetStatus" label: "R5LocalControl_GetStatus\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:28:6\n56 bytes (static)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "R5LocalControl_GetStatus" targetname: "memset" }
+edge: { sourcename: "R5LocalControl_GetStatus" targetname: "memset" }
+node: { title: "CommandService_Execute" label: "CommandService_Execute\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/command_service/command_service.h:57:15" shape : ellipse }
+edge: { sourcename: "R5LocalControl_GetStatus" targetname: "CommandService_Execute" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:25:12" }
+node: { title: "R5LocalControl_BeginSession" label: "R5LocalControl_BeginSession\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:59:6\n8 bytes (static)" }
+edge: { sourcename: "R5LocalControl_BeginSession" targetname: "R5LocalControl_GetStatus" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:63:23" }
+node: { title: "R5LocalControl_EndSession" label: "R5LocalControl_EndSession\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:67:6\n0 bytes (static)" }
+node: { title: "R5LocalControl_Begin" label: "R5LocalControl_Begin\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:74:6\n0 bytes (static)" }
+node: { title: "R5LocalControl_Adjust" label: "R5LocalControl_Adjust\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:83:6\n0 bytes (static)" }
+node: { title: "R5LocalControl_Confirm" label: "R5LocalControl_Confirm\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:91:6\n0 bytes (static)" }
+node: { title: "R5LocalControl_Cancel" label: "R5LocalControl_Cancel\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:100:6\n0 bytes (static)" }
+node: { title: "R5LocalControl_HasCandidate" label: "R5LocalControl_HasCandidate\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:106:6\n0 bytes (static)" }
+node: { title: "R5LocalControl_GetChoice" label: "R5LocalControl_GetChoice\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:107:15\n0 bytes (static)" }
+node: { title: "R5LocalControl_Apply" label: "R5LocalControl_Apply\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:148:15\n64 bytes (static)" }
+edge: { sourcename: "R5LocalControl_Apply" targetname: "R5LocalControl_GetStatus" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:158:10" }
+edge: { sourcename: "R5LocalControl_Apply" targetname: "CommandService_Execute" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:197:18" }
+node: { title: "R5LocalControl_ChoiceText" label: "R5LocalControl_ChoiceText\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:225:13\n0 bytes (static)" }
+node: { title: "R5LocalControl_StateText" label: "R5LocalControl_StateText\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:233:13\n0 bytes (static)" }
+node: { title: "R5LocalControl_GetFailureCount" label: "R5LocalControl_GetFailureCount\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/r5_local_control.c:251:10\n0 bytes (static)" }
+}

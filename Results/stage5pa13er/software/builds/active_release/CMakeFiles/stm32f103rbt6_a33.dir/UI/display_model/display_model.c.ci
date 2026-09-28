@@ -1,0 +1,31 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:DisplayModel_UpdateSegments" label: "DisplayModel_UpdateSegments\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:10:13\n16 bytes (static)" }
+node: { title: "memcmp" label: "memcmp\nE:\ST\STM32CubeCLT_1.18.0\GNU-tools-for-STM32\bin\../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/string.h:30:7" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:DisplayModel_UpdateSegments" targetname: "memcmp" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:12:9" }
+node: { title: "DisplayModel_Init" label: "DisplayModel_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:23:6\n8 bytes (static)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "DisplayModel_Init" targetname: "memset" }
+node: { title: "DisplayModel_SetText6" label: "DisplayModel_SetText6\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:50:6\n24 bytes (static)" }
+node: { title: "DisplayFormatter_FormatText6" label: "DisplayFormatter_FormatText6\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_formatter.h:13:6" shape : ellipse }
+edge: { sourcename: "DisplayModel_SetText6" targetname: "DisplayFormatter_FormatText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:54:12" }
+edge: { sourcename: "DisplayModel_SetText6" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:DisplayModel_UpdateSegments" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:55:12" }
+node: { title: "DisplayModel_SetWeight" label: "DisplayModel_SetWeight\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:32:6\n24 bytes (static)" }
+edge: { sourcename: "DisplayModel_SetWeight" targetname: "DisplayModel_SetText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:39:16" }
+edge: { sourcename: "DisplayModel_SetWeight" targetname: "DisplayModel_SetText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:43:16" }
+node: { title: "DisplayFormatter_FormatWeight" label: "DisplayFormatter_FormatWeight\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_formatter.h:11:6" shape : ellipse }
+edge: { sourcename: "DisplayModel_SetWeight" targetname: "DisplayFormatter_FormatWeight" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:45:12" }
+edge: { sourcename: "DisplayModel_SetWeight" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:DisplayModel_UpdateSegments" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:47:12" }
+node: { title: "DisplayModel_SetBatteryMv" label: "DisplayModel_SetBatteryMv\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:58:6\n24 bytes (static)" }
+node: { title: "DisplayFormatter_FormatBatteryMv" label: "DisplayFormatter_FormatBatteryMv\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_formatter.h:14:6" shape : ellipse }
+edge: { sourcename: "DisplayModel_SetBatteryMv" targetname: "DisplayFormatter_FormatBatteryMv" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:62:12" }
+edge: { sourcename: "DisplayModel_SetBatteryMv" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:DisplayModel_UpdateSegments" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:63:12" }
+node: { title: "DisplayModel_SetMessage" label: "DisplayModel_SetMessage\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:66:6\n0 bytes (static)" }
+edge: { sourcename: "DisplayModel_SetMessage" targetname: "DisplayModel_SetText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:70:12" }
+node: { title: "DisplayModel_SetPage" label: "DisplayModel_SetPage\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:73:6\n0 bytes (static)" }
+node: { title: "DisplayModel_SetIndicators" label: "DisplayModel_SetIndicators\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:87:6\n0 bytes (static)" }
+node: { title: "DisplayModel_SetBrightness" label: "DisplayModel_SetBrightness\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:104:6\n0 bytes (static)" }
+node: { title: "DisplayModel_SetEnabled" label: "DisplayModel_SetEnabled\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:118:6\n0 bytes (static)" }
+node: { title: "DisplayModel_SetRawSegments" label: "DisplayModel_SetRawSegments\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:128:6\n8 bytes (static)" }
+edge: { sourcename: "DisplayModel_SetRawSegments" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:DisplayModel_UpdateSegments" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:130:34" }
+node: { title: "DisplayModel_Get" label: "DisplayModel_Get\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_model.c:133:21\n0 bytes (static)" }
+}

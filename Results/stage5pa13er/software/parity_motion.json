@@ -1,0 +1,26 @@
+{
+  "classification": "A13C_PYTHON_C_SAMPLE_PARITY",
+  "candidate": "auto_static_350_5m",
+  "samples": 2200,
+  "runner_exit_code": 0,
+  "python_gates": [],
+  "python_rebases": [
+    {
+      "seq": 1001315,
+      "reason": "STATIC_STEP_PENDING",
+      "offset_ug": 0
+    },
+    {
+      "seq": 1001615,
+      "reason": "STATIC_STEP_UNSETTLED",
+      "offset_ug": 0
+    }
+  ],
+  "python_max_10s_offset_ug": 0,
+  "first_mismatch": null,
+  "mismatch_count": 0,
+  "gate_timing": [],
+  "c_max_10s_offset_ug": 0,
+  "c_gate_details": [],
+  "status": "PASS"
+}

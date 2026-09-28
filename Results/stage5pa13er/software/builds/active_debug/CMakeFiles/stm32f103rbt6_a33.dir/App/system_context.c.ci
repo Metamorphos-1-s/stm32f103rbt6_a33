@@ -1,0 +1,49 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c"
+node: { title: "SystemContext_InitRestored" label: "SystemContext_InitRestored\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:25:6\n24 bytes (static)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "SystemContext_InitRestored" targetname: "memset" }
+node: { title: "memcpy" label: "__builtin_memcpy\n<built-in>" shape : ellipse }
+edge: { sourcename: "SystemContext_InitRestored" targetname: "memcpy" }
+node: { title: "SystemContext_Init" label: "SystemContext_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:11:6\n40 bytes (static)" }
+edge: { sourcename: "SystemContext_Init" targetname: "SystemContext_InitRestored" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:22:10" }
+node: { title: "SystemContext_Get" label: "SystemContext_Get\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:56:22\n0 bytes (static)" }
+node: { title: "SystemContext_GetState" label: "SystemContext_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:61:10\n0 bytes (static)" }
+node: { title: "SystemContext_SetState" label: "SystemContext_SetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:66:6\n0 bytes (static)" }
+node: { title: "SystemContext_SyncTareStateMass" label: "SystemContext_SyncTareStateMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:109:6\n8 bytes (static)" }
+node: { title: "SystemContext_SetConfigDirty" label: "SystemContext_SetConfigDirty\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:122:6\n0 bytes (static)" }
+node: { title: "SystemContext_SetRuntimeWeightView" label: "SystemContext_SetRuntimeWeightView\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:147:6\n0 bytes (static)" }
+node: { title: "SystemContext_ReplaceConfig" label: "SystemContext_ReplaceConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:221:6\n16 bytes (static)" }
+edge: { sourcename: "SystemContext_ReplaceConfig" targetname: "memcpy" }
+node: { title: "SystemContext_FinalizeSavedRevision" label: "SystemContext_FinalizeSavedRevision\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:229:6\n8 bytes (static)" }
+node: { title: "Revision_IsValid" label: "Revision_IsValid\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/revision_helper.h:10:6" shape : ellipse }
+edge: { sourcename: "SystemContext_FinalizeSavedRevision" targetname: "Revision_IsValid" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:231:41" }
+node: { title: "SystemContext_RestoreSnapshot" label: "SystemContext_RestoreSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:239:6\n24 bytes (static)" }
+edge: { sourcename: "SystemContext_RestoreSnapshot" targetname: "memcpy" }
+node: { title: "SystemContext_GetConfigRevision" label: "SystemContext_GetConfigRevision\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:253:10\n0 bytes (static)" }
+node: { title: "SystemContext_GetSavedRevision" label: "SystemContext_GetSavedRevision\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:258:10\n0 bytes (static)" }
+node: { title: "SystemContext_MarkConfigChanged" label: "SystemContext_MarkConfigChanged\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:263:6\n16 bytes (static)" }
+node: { title: "Revision_Next" label: "Revision_Next\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/revision_helper.h:9:10" shape : ellipse }
+edge: { sourcename: "SystemContext_MarkConfigChanged" targetname: "Revision_Next" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:270:10" }
+node: { title: "SystemContext_SetTareStateMass" label: "SystemContext_SetTareStateMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:83:6\n16 bytes (static)" }
+edge: { sourcename: "SystemContext_SetTareStateMass" targetname: "SystemContext_MarkConfigChanged" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:101:13" }
+node: { title: "SystemContext_SetTareState" label: "SystemContext_SetTareState\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:78:6\n8 bytes (static)" }
+edge: { sourcename: "SystemContext_SetTareState" targetname: "SystemContext_SetTareStateMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:80:10" }
+node: { title: "SystemContext_SetWeightView" label: "SystemContext_SetWeightView\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:132:6\n8 bytes (static)" }
+edge: { sourcename: "SystemContext_SetWeightView" targetname: "SystemContext_MarkConfigChanged" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:142:11" }
+node: { title: "SystemContext_SetRequestedR5Mode" label: "SystemContext_SetRequestedR5Mode\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:158:6\n8 bytes (static)" }
+edge: { sourcename: "SystemContext_SetRequestedR5Mode" targetname: "SystemContext_MarkConfigChanged" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:163:10" }
+node: { title: "SystemContext_SetRequestedR5Application" label: "SystemContext_SetRequestedR5Application\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:165:6\n8 bytes (static)" }
+edge: { sourcename: "SystemContext_SetRequestedR5Application" targetname: "SystemContext_MarkConfigChanged" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:171:10" }
+node: { title: "SystemContext_SetRequestedCheckweighMode" label: "SystemContext_SetRequestedCheckweighMode\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:173:6\n8 bytes (static)" }
+edge: { sourcename: "SystemContext_SetRequestedCheckweighMode" targetname: "SystemContext_MarkConfigChanged" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:179:10" }
+node: { title: "SystemContext_SetActiveUnitConfig" label: "SystemContext_SetActiveUnitConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:184:6\n8 bytes (static)" }
+edge: { sourcename: "SystemContext_SetActiveUnitConfig" targetname: "SystemContext_MarkConfigChanged" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:193:12" }
+node: { title: "SystemContext_ApplyConfig" label: "SystemContext_ApplyConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:199:6\n16 bytes (static)" }
+node: { title: "PersistentCodec_DeviceConfigEqual" label: "PersistentCodec_DeviceConfigEqual\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/config_store/persistent_codec.h:34:6" shape : ellipse }
+edge: { sourcename: "SystemContext_ApplyConfig" targetname: "PersistentCodec_DeviceConfigEqual" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:205:8" }
+edge: { sourcename: "SystemContext_ApplyConfig" targetname: "memcpy" }
+edge: { sourcename: "SystemContext_ApplyConfig" targetname: "SystemContext_MarkConfigChanged" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:210:13" }
+node: { title: "SystemContext_MarkRevisionSaved" label: "SystemContext_MarkRevisionSaved\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:277:6\n8 bytes (static)" }
+edge: { sourcename: "SystemContext_MarkRevisionSaved" targetname: "Revision_IsValid" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:279:41" }
+node: { title: "SystemContext_HasStorageRecord" label: "SystemContext_HasStorageRecord\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/system_context.c:290:6\n0 bytes (static)" }
+}

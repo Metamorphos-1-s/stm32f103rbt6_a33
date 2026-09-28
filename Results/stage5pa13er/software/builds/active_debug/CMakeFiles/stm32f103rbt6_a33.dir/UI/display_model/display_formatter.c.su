@@ -1,0 +1,4 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_formatter.c:17:6:DisplayFormatter_EncodeCharacter	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_formatter.c:68:6:DisplayFormatter_FormatText6	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_formatter.c:86:6:DisplayFormatter_FormatWeight	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/UI/display_model/display_formatter.c:151:6:DisplayFormatter_FormatBatteryMv	8	static

@@ -1,0 +1,38 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c"
+node: { title: "SystemClock_Config" label: "SystemClock_Config\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:154:6\n88 bytes (static,ignoring_inline_asm)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "SystemClock_Config" targetname: "memset" }
+edge: { sourcename: "SystemClock_Config" targetname: "memset" }
+edge: { sourcename: "SystemClock_Config" targetname: "memset" }
+node: { title: "HAL_RCC_OscConfig" label: "HAL_RCC_OscConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h:1155:19" shape : ellipse }
+edge: { sourcename: "SystemClock_Config" targetname: "HAL_RCC_OscConfig" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:170:7" }
+node: { title: "HAL_RCC_ClockConfig" label: "HAL_RCC_ClockConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h:1156:19" shape : ellipse }
+edge: { sourcename: "SystemClock_Config" targetname: "HAL_RCC_ClockConfig" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:184:7" }
+node: { title: "HAL_RCCEx_PeriphCLKConfig" label: "HAL_RCCEx_PeriphCLKConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc_ex.h:1857:19" shape : ellipse }
+edge: { sourcename: "SystemClock_Config" targetname: "HAL_RCCEx_PeriphCLKConfig" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:190:7" }
+node: { title: "main" label: "main\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:74:5\n8 bytes (static,ignoring_inline_asm)" }
+node: { title: "HAL_Init" label: "HAL_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:282:19" shape : ellipse }
+edge: { sourcename: "main" targetname: "HAL_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:84:3" }
+edge: { sourcename: "main" targetname: "SystemClock_Config" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:91:3" }
+node: { title: "MX_GPIO_Init" label: "MX_GPIO_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Core/Inc/gpio.h:39:6" shape : ellipse }
+edge: { sourcename: "main" targetname: "MX_GPIO_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:100:3" }
+node: { title: "MX_DMA_Init" label: "MX_DMA_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Core/Inc/dma.h:41:6" shape : ellipse }
+edge: { sourcename: "main" targetname: "MX_DMA_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:101:3" }
+node: { title: "MX_USART1_UART_Init" label: "MX_USART1_UART_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Core/Inc/usart.h:45:6" shape : ellipse }
+edge: { sourcename: "main" targetname: "MX_USART1_UART_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:102:3" }
+node: { title: "MX_USART2_UART_Init" label: "MX_USART2_UART_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Core/Inc/usart.h:46:6" shape : ellipse }
+edge: { sourcename: "main" targetname: "MX_USART2_UART_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:103:3" }
+node: { title: "MX_USART3_UART_Init" label: "MX_USART3_UART_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Core/Inc/usart.h:47:6" shape : ellipse }
+edge: { sourcename: "main" targetname: "MX_USART3_UART_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:104:3" }
+node: { title: "MX_ADC1_Init" label: "MX_ADC1_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Core/Inc/adc.h:41:6" shape : ellipse }
+edge: { sourcename: "main" targetname: "MX_ADC1_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:105:3" }
+node: { title: "MX_TIM4_Init" label: "MX_TIM4_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Core/Inc/tim.h:41:6" shape : ellipse }
+edge: { sourcename: "main" targetname: "MX_TIM4_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:106:3" }
+node: { title: "HAL_ADCEx_Calibration_Start" label: "HAL_ADCEx_Calibration_Start\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc_ex.h:646:25" shape : ellipse }
+edge: { sourcename: "main" targetname: "HAL_ADCEx_Calibration_Start" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:109:7" }
+node: { title: "App_Init" label: "App_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/app_main.h:12:6" shape : ellipse }
+edge: { sourcename: "main" targetname: "App_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:114:8" }
+node: { title: "App_Run" label: "App_Run\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/App/app_main.h:13:6" shape : ellipse }
+edge: { sourcename: "main" targetname: "App_Run" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:140:5" }
+node: { title: "Error_Handler" label: "Error_Handler\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Core/Src/main.c:204:6\n0 bytes (static,ignoring_inline_asm)" }
+}

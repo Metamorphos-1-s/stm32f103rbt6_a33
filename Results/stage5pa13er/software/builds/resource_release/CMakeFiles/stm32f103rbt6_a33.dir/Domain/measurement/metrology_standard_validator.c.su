@@ -1,0 +1,4 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:8:13:DisplayDivisionMass	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:19:25:MetrologyStandardValidator_Validate	56	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:53:13:MetrologyStandardValidator_GetMinimumLoad	40	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:62:13:MetrologyStandardValidator_GetDisplayOverload	48	static

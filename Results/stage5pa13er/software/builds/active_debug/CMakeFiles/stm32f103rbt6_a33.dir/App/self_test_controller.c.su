@@ -1,0 +1,6 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/self_test_controller.c:15:13:SelfTestController_SetState	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/self_test_controller.c:22:6:SelfTestController_Init	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/self_test_controller.c:29:6:SelfTestController_Begin	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/self_test_controller.c:47:6:SelfTestController_Process10ms	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/self_test_controller.c:117:6:SelfTestController_Cancel	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/self_test_controller.c:123:15:SelfTestController_GetState	0	static

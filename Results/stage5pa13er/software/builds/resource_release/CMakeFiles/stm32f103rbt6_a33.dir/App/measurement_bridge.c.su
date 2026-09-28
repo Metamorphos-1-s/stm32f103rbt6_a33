@@ -1,0 +1,7 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/measurement_bridge.c:31:6:MeasurementBridge_Init	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/measurement_bridge.c:40:9:MeasurementBridge_Process	48	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/measurement_bridge.c:82:10:MeasurementBridge_GetConsumedCount	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/measurement_bridge.c:87:10:MeasurementBridge_GetInvalidCount	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/measurement_bridge.c:92:10:MeasurementBridge_GetLastBacklog	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/measurement_bridge.c:97:10:MeasurementBridge_GetObservedOverrunCount	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/App/measurement_bridge.c:102:6:MeasurementBridge_BuildUpdateEvent	16	static

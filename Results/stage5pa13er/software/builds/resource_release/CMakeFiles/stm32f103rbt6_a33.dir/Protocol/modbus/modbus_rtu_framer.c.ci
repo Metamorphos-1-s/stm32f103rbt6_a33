@@ -1,0 +1,57 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:IntervalElapsed" label: "IntervalElapsed\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:8:13\n16 bytes (static)" }
+node: { title: "BSP_TimeUsToCycles" label: "BSP_TimeUsToCycles\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_time.h:29:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:IntervalElapsed" targetname: "BSP_TimeUsToCycles" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:11:12" }
+node: { title: "BSP_TimeNowCycles" label: "BSP_TimeNowCycles\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_time.h:27:10" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:IntervalElapsed" targetname: "BSP_TimeNowCycles" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:12:9" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:StartTimer" label: "StartTimer\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:21:13\n16 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:StartTimer" targetname: "BSP_TimeUsToCycles" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:24:10" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:StartTimer" targetname: "BSP_TimeNowCycles" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:30:34" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:DiscardUntilSilence" label: "DiscardUntilSilence\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:50:13\n0 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:DiscardUntilSilence" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:StartTimer" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:55:5" }
+node: { title: "ModbusRtuFramer_OnByte" label: "ModbusRtuFramer_OnByte\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:78:6\n4 bytes (static)" }
+edge: { sourcename: "ModbusRtuFramer_OnByte" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:DiscardUntilSilence" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:85:9" }
+edge: { sourcename: "ModbusRtuFramer_OnByte" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:StartTimer" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:90:9" }
+edge: { sourcename: "ModbusRtuFramer_OnByte" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:DiscardUntilSilence" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:97:9" }
+node: { title: "ModbusRtuFramer_Reset" label: "ModbusRtuFramer_Reset\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:214:6\n0 bytes (static)" }
+node: { title: "ModbusRtuFramer_Init" label: "ModbusRtuFramer_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:65:6\n24 bytes (static)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "ModbusRtuFramer_Init" targetname: "memset" }
+edge: { sourcename: "ModbusRtuFramer_Init" targetname: "ModbusRtuFramer_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:73:5" }
+edge: { sourcename: "ModbusRtuFramer_Init" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:DiscardUntilSilence" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:74:5" }
+node: { title: "ModbusRtuFramer_TryGetFrame" label: "ModbusRtuFramer_TryGetFrame\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:201:6\n16 bytes (static)" }
+node: { title: "memcpy" label: "__builtin_memcpy\n<built-in>" shape : ellipse }
+edge: { sourcename: "ModbusRtuFramer_TryGetFrame" targetname: "memcpy" }
+edge: { sourcename: "ModbusRtuFramer_TryGetFrame" targetname: "ModbusRtuFramer_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:210:5" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:CompleteReceivedFrame" label: "CompleteReceivedFrame\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:35:13\n0 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:CompleteReceivedFrame" targetname: "ModbusRtuFramer_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:41:9" }
+node: { title: "ModbusRtuFramer_OnIdleEvent" label: "ModbusRtuFramer_OnIdleEvent\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:133:6\n16 bytes (static)" }
+edge: { sourcename: "ModbusRtuFramer_OnIdleEvent" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:IntervalElapsed" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:142:13" }
+edge: { sourcename: "ModbusRtuFramer_OnIdleEvent" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:CompleteReceivedFrame" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:145:13" }
+edge: { sourcename: "ModbusRtuFramer_OnIdleEvent" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:StartTimer" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:149:9" }
+edge: { sourcename: "ModbusRtuFramer_OnIdleEvent" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:IntervalElapsed" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:154:13" }
+edge: { sourcename: "ModbusRtuFramer_OnIdleEvent" targetname: "ModbusRtuFramer_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:157:13" }
+edge: { sourcename: "ModbusRtuFramer_OnIdleEvent" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:StartTimer" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:160:9" }
+node: { title: "ModbusRtuFramer_OnTimerEvent" label: "ModbusRtuFramer_OnTimerEvent\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:165:6\n8 bytes (static)" }
+edge: { sourcename: "ModbusRtuFramer_OnTimerEvent" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:DiscardUntilSilence" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:177:13" }
+edge: { sourcename: "ModbusRtuFramer_OnTimerEvent" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:StartTimer" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:182:13" }
+edge: { sourcename: "ModbusRtuFramer_OnTimerEvent" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:StartTimer" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:189:9" }
+edge: { sourcename: "ModbusRtuFramer_OnTimerEvent" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:CompleteReceivedFrame" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:195:9" }
+edge: { sourcename: "ModbusRtuFramer_OnTimerEvent" targetname: "ModbusRtuFramer_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:198:9" }
+node: { title: "ModbusRtuFramer_Process" label: "ModbusRtuFramer_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:105:6\n24 bytes (static)" }
+node: { title: "ModbusRtuTransport_IsValid" label: "ModbusRtuTransport_IsValid\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_transport.h:23:6" shape : ellipse }
+edge: { sourcename: "ModbusRtuFramer_Process" targetname: "ModbusRtuTransport_IsValid" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:112:30" }
+node: { title: "__indirect_call" label: "Indirect Call Placeholder" shape : ellipse }
+edge: { sourcename: "ModbusRtuFramer_Process" targetname: "__indirect_call" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:113:9" }
+edge: { sourcename: "ModbusRtuFramer_Process" targetname: "__indirect_call" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:116:9" }
+edge: { sourcename: "ModbusRtuFramer_Process" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:DiscardUntilSilence" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:117:9" }
+edge: { sourcename: "ModbusRtuFramer_Process" targetname: "ModbusRtuFramer_OnByte" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:122:9" }
+edge: { sourcename: "ModbusRtuFramer_Process" targetname: "__indirect_call" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:125:9" }
+edge: { sourcename: "ModbusRtuFramer_Process" targetname: "__indirect_call" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:120:12" }
+edge: { sourcename: "ModbusRtuFramer_Process" targetname: "ModbusRtuFramer_OnIdleEvent" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:126:9" }
+edge: { sourcename: "ModbusRtuFramer_Process" targetname: "BSP_TimeNowCycles" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:127:33" }
+edge: { sourcename: "ModbusRtuFramer_Process" targetname: "__indirect_call" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:129:9" }
+edge: { sourcename: "ModbusRtuFramer_Process" targetname: "ModbusRtuFramer_OnTimerEvent" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:129:9" }
+node: { title: "ModbusRtuFramer_GetState" label: "ModbusRtuFramer_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:225:19\n0 bytes (static)" }
+node: { title: "ModbusRtuFramer_GetStatistics" label: "ModbusRtuFramer_GetStatistics\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_framer.c:230:34\n0 bytes (static)" }
+}

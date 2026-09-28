@@ -1,0 +1,12 @@
+[1/2] Building C object CMakeFiles/stm32f103rbt6_a33.dir/Domain/measurement/a13c_shadow_compensator.c.obj
+[2/2] Linking C executable stm32f103rbt6_a33.elf
+Memory region         Used Size  Region Size  %age Used
+
+             RAM:       19432 B        20 KB     94.88%
+
+           FLASH:      112888 B       124 KB     88.90%
+
+        CONFIG_A:           0 B         2 KB      0.00%
+
+        CONFIG_B:           0 B         2 KB      0.00%
+

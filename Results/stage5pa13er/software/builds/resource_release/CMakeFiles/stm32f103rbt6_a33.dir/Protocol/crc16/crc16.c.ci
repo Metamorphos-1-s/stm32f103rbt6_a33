@@ -1,0 +1,5 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/crc16/crc16.c"
+node: { title: "ProtocolCrc16_Update" label: "ProtocolCrc16_Update\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/crc16/crc16.c:5:10\n12 bytes (static)" }
+node: { title: "ProtocolCrc16_Calculate" label: "ProtocolCrc16_Calculate\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/crc16/crc16.c:22:10\n0 bytes (static)" }
+edge: { sourcename: "ProtocolCrc16_Calculate" targetname: "ProtocolCrc16_Update" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/crc16/crc16.c:24:12" }
+}

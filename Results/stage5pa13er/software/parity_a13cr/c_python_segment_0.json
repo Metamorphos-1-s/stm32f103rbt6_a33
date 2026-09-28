@@ -1,0 +1,142 @@
+{
+  "classification": "A13C_PYTHON_C_SAMPLE_PARITY",
+  "candidate": "auto_static_350_5m",
+  "samples": 10774,
+  "runner_exit_code": 0,
+  "python_gates": [
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "event_detected_seq": 80450,
+      "settled_seq": 80491,
+      "obvious_step_seq": 80441,
+      "net_step_ug": 499100046.0,
+      "offset_at_detection_ug": 0
+    },
+    {
+      "event_detected_seq": null,
+      "mode_confirmed_seq": 85212,
+      "age_samples": null,
+      "prefill_reference_count": 0,
+      "offset_at_confirmation_ug": 85320,
+      "source": "DOSING_EXIT"
+    },
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "event_detected_seq": 86466,
+      "settled_seq": 86505,
+      "obvious_step_seq": 86455,
+      "net_step_ug": 500105877.0,
+      "offset_at_detection_ug": 87710
+    }
+  ],
+  "python_rebases": [
+    {
+      "seq": 80450,
+      "reason": "STATIC_STEP_PENDING",
+      "offset_ug": 0
+    },
+    {
+      "seq": 80491,
+      "reason": "STATIC_STEP_FAST",
+      "offset_ug": 0
+    },
+    {
+      "seq": 84057,
+      "reason": "DOSING_ENTRY",
+      "offset_ug": 85320
+    },
+    {
+      "seq": 85212,
+      "reason": "DOSING_EXIT_STATIC",
+      "offset_ug": 85320
+    },
+    {
+      "seq": 86466,
+      "reason": "STATIC_STEP_PENDING",
+      "offset_ug": 87710
+    },
+    {
+      "seq": 86505,
+      "reason": "STATIC_STEP_FAST",
+      "offset_ug": 87710
+    }
+  ],
+  "python_max_10s_offset_ug": 3465,
+  "first_mismatch": null,
+  "mismatch_count": 0,
+  "gate_timing": [
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "emitted_seq": 80491,
+      "expected_obvious_seq": 80441,
+      "expected_robust_seq": 80450,
+      "expected_quiet_seq": 80491,
+      "actual_obvious_seq": 80441,
+      "actual_robust_seq": 80450,
+      "actual_quiet_seq": 80491,
+      "expected_reference_lock_seq": 80899,
+      "actual_reference_lock_seq": 80899,
+      "expected_first_correction_seq": 81099,
+      "actual_first_correction_seq": 81099
+    },
+    {
+      "source": "DOSING_EXIT",
+      "emitted_seq": 85212,
+      "expected_obvious_seq": null,
+      "expected_robust_seq": null,
+      "expected_quiet_seq": 85212,
+      "actual_obvious_seq": 0,
+      "actual_robust_seq": 0,
+      "actual_quiet_seq": 85212,
+      "expected_reference_lock_seq": 85661,
+      "actual_reference_lock_seq": 85661,
+      "expected_first_correction_seq": 86334,
+      "actual_first_correction_seq": 86334
+    },
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "emitted_seq": 86505,
+      "expected_obvious_seq": 86455,
+      "expected_robust_seq": 86466,
+      "expected_quiet_seq": 86505,
+      "actual_obvious_seq": 86455,
+      "actual_robust_seq": 86466,
+      "actual_quiet_seq": 86505,
+      "expected_reference_lock_seq": 86915,
+      "actual_reference_lock_seq": 86915,
+      "expected_first_correction_seq": 87146,
+      "actual_first_correction_seq": 87146
+    }
+  ],
+  "c_max_10s_offset_ug": 3465,
+  "c_gate_details": [
+    {
+      "seq": 80491,
+      "source": "STATIC_OBVIOUS_STEP",
+      "c_obvious_seq": 80441,
+      "c_robust_seq": 80450,
+      "c_quiet_seq": 80491,
+      "c_reference_lock_seq": 0,
+      "c_correction_seq": 0
+    },
+    {
+      "seq": 85212,
+      "source": "DOSING_EXIT",
+      "c_obvious_seq": 0,
+      "c_robust_seq": 0,
+      "c_quiet_seq": 85212,
+      "c_reference_lock_seq": 0,
+      "c_correction_seq": 0
+    },
+    {
+      "seq": 86505,
+      "source": "STATIC_OBVIOUS_STEP",
+      "c_obvious_seq": 86455,
+      "c_robust_seq": 86466,
+      "c_quiet_seq": 86505,
+      "c_reference_lock_seq": 0,
+      "c_correction_seq": 0
+    }
+  ],
+  "status": "PASS"
+}

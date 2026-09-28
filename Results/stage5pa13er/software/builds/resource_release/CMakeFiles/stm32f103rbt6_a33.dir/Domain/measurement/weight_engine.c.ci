@@ -1,0 +1,118 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:ConvertCompatibility" label: "ConvertCompatibility\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:20:13\n32 bytes (static)" }
+node: { title: "UnitConverter_MassToCountUnbounded" label: "UnitConverter_MassToCountUnbounded\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/unit_converter.h:9:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:ConvertCompatibility" targetname: "UnitConverter_MassToCountUnbounded" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:28:31" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateCompatibility" label: "UpdateCompatibility\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:35:13\n16 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateCompatibility" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:ConvertCompatibility" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:38:10" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateCompatibility" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:ConvertCompatibility" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:41:10" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateCompatibility" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:ConvertCompatibility" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:44:10" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:ClearDerived" label: "ClearDerived\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:84:13\n8 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:ClearDerived" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateCompatibility" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:95:5" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" label: "UpdateDerived\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:98:13\n64 bytes (static)" }
+node: { title: "StabilityDetector_GetState" label: "StabilityDetector_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/stability/stability_detector.h:51:16" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" targetname: "StabilityDetector_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:109:38" }
+node: { title: "CalibrationModel_Validate" label: "CalibrationModel_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/calibration/calibration_model.h:26:19" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" targetname: "CalibrationModel_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:115:10" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:ClearDerived" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:117:9" }
+node: { title: "WeightFilter_IsReady" label: "WeightFilter_IsReady\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/filter/weight_filter.h:35:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" targetname: "WeightFilter_IsReady" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:121:10" }
+node: { title: "CalibrationModel_ConvertMass" label: "CalibrationModel_ConvertMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/calibration/calibration_model.h:31:19" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" targetname: "CalibrationModel_ConvertMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:126:9" }
+node: { title: "MassMath_Subtract" label: "MassMath_Subtract\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/mass_math.h:10:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" targetname: "MassMath_Subtract" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:129:10" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" targetname: "MassMath_Subtract" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:137:10" }
+node: { title: "StabilityDetector_ProcessMass" label: "StabilityDetector_ProcessMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/stability/stability_detector.h:48:16" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" targetname: "StabilityDetector_ProcessMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:146:27" }
+node: { title: "StabilityDetector_GetSpreadMass" label: "StabilityDetector_GetSpreadMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/stability/stability_detector.h:53:13" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" targetname: "StabilityDetector_GetSpreadMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:149:9" }
+node: { title: "MetrologyStandardValidator_GetDisplayOverload" label: "MetrologyStandardValidator_GetDisplayOverload\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.h:21:13" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" targetname: "MetrologyStandardValidator_GetDisplayOverload" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:152:16" }
+node: { title: "MassMath_Abs" label: "MassMath_Abs\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/mass_math.h:12:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" targetname: "MassMath_Abs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:153:10" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" targetname: "MassMath_Abs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:173:10" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" targetname: "MassMath_Abs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:176:10" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateCompatibility" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:179:5" }
+node: { title: "WeightEngine_UpdateDisplayConfig" label: "WeightEngine_UpdateDisplayConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:53:6\n272 bytes (static)" }
+node: { title: "memcpy" label: "__builtin_memcpy\n<built-in>" shape : ellipse }
+edge: { sourcename: "WeightEngine_UpdateDisplayConfig" targetname: "memcpy" }
+edge: { sourcename: "WeightEngine_UpdateDisplayConfig" targetname: "memcpy" }
+edge: { sourcename: "WeightEngine_UpdateDisplayConfig" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:ConvertCompatibility" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:68:10" }
+edge: { sourcename: "WeightEngine_UpdateDisplayConfig" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:ConvertCompatibility" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:70:10" }
+edge: { sourcename: "WeightEngine_UpdateDisplayConfig" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:ConvertCompatibility" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:72:10" }
+edge: { sourcename: "WeightEngine_UpdateDisplayConfig" targetname: "memcpy" }
+node: { title: "WeightEngine_InitMass" label: "WeightEngine_InitMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:183:6\n40 bytes (static)" }
+node: { title: "MetrologyConfig_Validate" label: "MetrologyConfig_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_config_validator.h:24:23" shape : ellipse }
+edge: { sourcename: "WeightEngine_InitMass" targetname: "MetrologyConfig_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:191:10" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "WeightEngine_InitMass" targetname: "memset" }
+edge: { sourcename: "WeightEngine_InitMass" targetname: "memcpy" }
+node: { title: "WeightFilter_Init" label: "WeightFilter_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/filter/weight_filter.h:28:6" shape : ellipse }
+edge: { sourcename: "WeightEngine_InitMass" targetname: "WeightFilter_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:200:10" }
+edge: { sourcename: "WeightEngine_InitMass" targetname: "CalibrationModel_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:193:11" }
+node: { title: "StabilityDetector_InitMass" label: "StabilityDetector_InitMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/stability/stability_detector.h:39:6" shape : ellipse }
+edge: { sourcename: "WeightEngine_InitMass" targetname: "StabilityDetector_InitMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:202:10" }
+node: { title: "ZeroTare_InitMass" label: "ZeroTare_InitMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/zero_tare/zero_tare.h:21:6" shape : ellipse }
+edge: { sourcename: "WeightEngine_InitMass" targetname: "ZeroTare_InitMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:206:5" }
+edge: { sourcename: "WeightEngine_InitMass" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateCompatibility" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:218:5" }
+node: { title: "WeightEngine_Init" label: "WeightEngine_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:225:6\n40 bytes (static)" }
+edge: { sourcename: "WeightEngine_Init" targetname: "WeightEngine_InitMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:232:10" }
+node: { title: "WeightEngine_ProcessRawSample" label: "WeightEngine_ProcessRawSample\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:238:6\n24 bytes (static)" }
+node: { title: "WeightFilter_Process" label: "WeightFilter_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/filter/weight_filter.h:33:6" shape : ellipse }
+edge: { sourcename: "WeightEngine_ProcessRawSample" targetname: "WeightFilter_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:248:10" }
+node: { title: "WeightFilter_GetAcceptedCount" label: "WeightFilter_GetAcceptedCount\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/filter/weight_filter.h:36:10" shape : ellipse }
+edge: { sourcename: "WeightEngine_ProcessRawSample" targetname: "WeightFilter_GetAcceptedCount" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:251:44" }
+edge: { sourcename: "WeightEngine_ProcessRawSample" targetname: "WeightFilter_IsReady" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:252:9" }
+edge: { sourcename: "WeightEngine_ProcessRawSample" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:255:10" }
+node: { title: "WeightEngine_GetSnapshot" label: "WeightEngine_GetSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:260:23\n0 bytes (static)" }
+node: { title: "WeightEngine_GetFastCalibratedMass" label: "WeightEngine_GetFastCalibratedMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:265:6\n8 bytes (static)" }
+edge: { sourcename: "WeightEngine_GetFastCalibratedMass" targetname: "CalibrationModel_ConvertMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:270:12" }
+node: { title: "WeightEngine_Zero" label: "WeightEngine_Zero\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:275:20\n40 bytes (static)" }
+edge: { sourcename: "WeightEngine_Zero" targetname: "WeightFilter_IsReady" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:280:10" }
+node: { title: "ZeroTare_ApplyZeroMass" label: "ZeroTare_ApplyZeroMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/zero_tare/zero_tare.h:27:20" shape : ellipse }
+edge: { sourcename: "WeightEngine_Zero" targetname: "ZeroTare_ApplyZeroMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:281:14" }
+node: { title: "StabilityDetector_Reset" label: "StabilityDetector_Reset\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/stability/stability_detector.h:44:6" shape : ellipse }
+edge: { sourcename: "WeightEngine_Zero" targetname: "StabilityDetector_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:293:9" }
+edge: { sourcename: "WeightEngine_Zero" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:294:14" }
+node: { title: "WeightEngine_ResetZero" label: "WeightEngine_ResetZero\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:299:20\n16 bytes (static)" }
+node: { title: "ZeroTare_ResetZero" label: "ZeroTare_ResetZero\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/zero_tare/zero_tare.h:31:20" shape : ellipse }
+edge: { sourcename: "WeightEngine_ResetZero" targetname: "ZeroTare_ResetZero" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:303:14" }
+edge: { sourcename: "WeightEngine_ResetZero" targetname: "StabilityDetector_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:309:5" }
+edge: { sourcename: "WeightEngine_ResetZero" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:310:36" }
+node: { title: "WeightEngine_Tare" label: "WeightEngine_Tare\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:315:20\n32 bytes (static)" }
+edge: { sourcename: "WeightEngine_Tare" targetname: "WeightFilter_IsReady" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:320:10" }
+node: { title: "ZeroTare_ApplyTareMass" label: "ZeroTare_ApplyTareMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/zero_tare/zero_tare.h:35:20" shape : ellipse }
+edge: { sourcename: "WeightEngine_Tare" targetname: "ZeroTare_ApplyTareMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:321:14" }
+edge: { sourcename: "WeightEngine_Tare" targetname: "StabilityDetector_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:328:9" }
+edge: { sourcename: "WeightEngine_Tare" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:329:14" }
+node: { title: "WeightEngine_ClearTare" label: "WeightEngine_ClearTare\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:339:20\n16 bytes (static)" }
+node: { title: "ZeroTare_ClearTare" label: "ZeroTare_ClearTare\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/zero_tare/zero_tare.h:38:20" shape : ellipse }
+edge: { sourcename: "WeightEngine_ClearTare" targetname: "ZeroTare_ClearTare" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:343:14" }
+edge: { sourcename: "WeightEngine_ClearTare" targetname: "StabilityDetector_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:344:5" }
+edge: { sourcename: "WeightEngine_ClearTare" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:345:36" }
+node: { title: "WeightEngine_ApplyCalibration" label: "WeightEngine_ApplyCalibration\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:355:6\n24 bytes (static)" }
+edge: { sourcename: "WeightEngine_ApplyCalibration" targetname: "CalibrationModel_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:359:10" }
+edge: { sourcename: "WeightEngine_ApplyCalibration" targetname: "StabilityDetector_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:367:5" }
+edge: { sourcename: "WeightEngine_ApplyCalibration" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:368:39" }
+node: { title: "WeightEngine_ReconfigureFilter" label: "WeightEngine_ReconfigureFilter\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:371:6\n200 bytes (static)" }
+node: { title: "WeightFilter_InitForRate" label: "WeightFilter_InitForRate\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/filter/weight_filter.h:30:6" shape : ellipse }
+edge: { sourcename: "WeightEngine_ReconfigureFilter" targetname: "WeightFilter_InitForRate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:377:10" }
+edge: { sourcename: "WeightEngine_ReconfigureFilter" targetname: "memcpy" }
+edge: { sourcename: "WeightEngine_ReconfigureFilter" targetname: "StabilityDetector_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:391:5" }
+edge: { sourcename: "WeightEngine_ReconfigureFilter" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:ClearDerived" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:395:5" }
+node: { title: "WeightEngine_SetRuntimeDriftEnabled" label: "WeightEngine_SetRuntimeDriftEnabled\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:399:6\n0 bytes (static)" }
+node: { title: "WeightEngine_ReinitializeMassBeta" label: "WeightEngine_ReinitializeMassBeta\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:419:6\n48 bytes (static)" }
+edge: { sourcename: "WeightEngine_ReinitializeMassBeta" targetname: "MetrologyConfig_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:427:10" }
+edge: { sourcename: "WeightEngine_ReinitializeMassBeta" targetname: "memset" }
+edge: { sourcename: "WeightEngine_ReinitializeMassBeta" targetname: "memcpy" }
+edge: { sourcename: "WeightEngine_ReinitializeMassBeta" targetname: "WeightFilter_InitForRate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:439:10" }
+edge: { sourcename: "WeightEngine_ReinitializeMassBeta" targetname: "CalibrationModel_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:429:11" }
+edge: { sourcename: "WeightEngine_ReinitializeMassBeta" targetname: "StabilityDetector_InitMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:450:10" }
+edge: { sourcename: "WeightEngine_ReinitializeMassBeta" targetname: "ZeroTare_InitMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:455:5" }
+edge: { sourcename: "WeightEngine_ReinitializeMassBeta" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateCompatibility" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:458:5" }
+node: { title: "WeightEngine_SetRuntimeDriftLearningAllowed" label: "WeightEngine_SetRuntimeDriftLearningAllowed\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:466:6\n0 bytes (static)" }
+node: { title: "WeightEngine_ResetRuntimeDrift" label: "WeightEngine_ResetRuntimeDrift\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:478:6\n0 bytes (static)" }
+node: { title: "WeightEngine_FreezeRuntimeDrift" label: "WeightEngine_FreezeRuntimeDrift\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:491:6\n0 bytes (static)" }
+node: { title: "WeightEngine_GetRuntimeDriftSnapshot" label: "WeightEngine_GetRuntimeDriftSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:504:29\n0 bytes (static)" }
+node: { title: "WeightEngine_SetBetaExternalDrift" label: "WeightEngine_SetBetaExternalDrift\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:517:6\n8 bytes (static)" }
+edge: { sourcename: "WeightEngine_SetBetaExternalDrift" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:UpdateDerived" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/weight_engine.c:523:39" }
+}

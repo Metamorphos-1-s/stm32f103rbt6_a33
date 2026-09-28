@@ -1,0 +1,19 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:DisplayDivisionMass" label: "DisplayDivisionMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:8:13\n16 bytes (static)" }
+node: { title: "UnitConverter_CountToMass" label: "UnitConverter_CountToMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/unit_converter.h:6:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:DisplayDivisionMass" targetname: "UnitConverter_CountToMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:15:12" }
+node: { title: "MetrologyStandardValidator_Validate" label: "MetrologyStandardValidator_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:19:25\n56 bytes (static)" }
+edge: { sourcename: "MetrologyStandardValidator_Validate" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:DisplayDivisionMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:33:10" }
+node: { title: "__aeabi_ldivmod" label: "__aeabi_ldivmod\n<built-in>" shape : ellipse }
+edge: { sourcename: "MetrologyStandardValidator_Validate" targetname: "__aeabi_ldivmod" }
+node: { title: "MassMath_MulDivRound" label: "MassMath_MulDivRound\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/mass_math.h:13:6" shape : ellipse }
+edge: { sourcename: "MetrologyStandardValidator_Validate" targetname: "MassMath_MulDivRound" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:44:14" }
+node: { title: "MetrologyStandardValidator_GetMinimumLoad" label: "MetrologyStandardValidator_GetMinimumLoad\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:53:13\n40 bytes (static)" }
+edge: { sourcename: "MetrologyStandardValidator_GetMinimumLoad" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:DisplayDivisionMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:58:12" }
+edge: { sourcename: "MetrologyStandardValidator_GetMinimumLoad" targetname: "MassMath_MulDivRound" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:59:12" }
+node: { title: "MetrologyStandardValidator_GetDisplayOverload" label: "MetrologyStandardValidator_GetDisplayOverload\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:62:13\n48 bytes (static)" }
+edge: { sourcename: "MetrologyStandardValidator_GetDisplayOverload" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:DisplayDivisionMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:72:12" }
+edge: { sourcename: "MetrologyStandardValidator_GetDisplayOverload" targetname: "MassMath_MulDivRound" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:73:12" }
+node: { title: "MassMath_Add" label: "MassMath_Add\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/mass_math.h:9:6" shape : ellipse }
+edge: { sourcename: "MetrologyStandardValidator_GetDisplayOverload" targetname: "MassMath_Add" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/metrology_standard_validator.c:74:12" }
+}

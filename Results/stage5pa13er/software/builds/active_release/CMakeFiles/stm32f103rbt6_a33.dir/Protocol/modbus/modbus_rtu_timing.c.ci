@@ -1,0 +1,11 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_timing.c"
+node: { title: "ModbusRtuTiming_Calculate" label: "ModbusRtuTiming_Calculate\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/Protocol/modbus/modbus_rtu_timing.c:10:6\n48 bytes (static)" }
+node: { title: "__aeabi_uldivmod" label: "__aeabi_uldivmod\n<built-in>" shape : ellipse }
+edge: { sourcename: "ModbusRtuTiming_Calculate" targetname: "__aeabi_uldivmod" }
+node: { title: "__aeabi_ldivmod" label: "__aeabi_ldivmod\n<built-in>" shape : ellipse }
+edge: { sourcename: "ModbusRtuTiming_Calculate" targetname: "__aeabi_ldivmod" }
+edge: { sourcename: "ModbusRtuTiming_Calculate" targetname: "__aeabi_uldivmod" }
+edge: { sourcename: "ModbusRtuTiming_Calculate" targetname: "__aeabi_ldivmod" }
+edge: { sourcename: "ModbusRtuTiming_Calculate" targetname: "__aeabi_uldivmod" }
+edge: { sourcename: "ModbusRtuTiming_Calculate" targetname: "__aeabi_ldivmod" }
+}

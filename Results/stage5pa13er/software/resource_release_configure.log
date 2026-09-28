@@ -1,0 +1,32 @@
+Preset CMake variables:
+
+  A33_DEBUG_OPTIMIZATION="-Og"
+  A33_ENABLE_STAGE5MR5E_D1D_BETA="ON"
+  A33_ENABLE_STAGE5MR5_BETA="ON"
+  A33_ENABLE_STAGE5NB_BETA="ON"
+  A33_ENABLE_STAGE5PA1_CANDIDATE="ON"
+  A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION="ON"
+  A33_ENABLE_STAGE5PA2C_PRODUCT="ON"
+  A33_ENABLE_STAGE5PA2D_CALIBRATION="ON"
+  A33_ENABLE_STAGE5PA2_PRODUCT="ON"
+  A33_ENABLE_STAGE5PA_PRODUCT="ON"
+  CMAKE_TOOLCHAIN_FILE:FILEPATH="D:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/gcc-arm-none-eabi.cmake"
+
+-- The C compiler identification is GNU 13.3.1
+-- The CXX compiler identification is GNU 13.3.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-gcc.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-g++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+Build type: Release
+-- The ASM compiler identification is GNU
+-- Found assembler: E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-gcc.exe
+-- Configuring done (1.5s)
+-- Generating done (0.0s)
+-- Build files have been written to: D:/Downloads/a13er_builds/resource_release

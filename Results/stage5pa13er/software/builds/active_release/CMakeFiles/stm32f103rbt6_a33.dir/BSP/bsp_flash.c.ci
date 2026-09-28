@@ -1,0 +1,39 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c"
+node: { title: "BSP_FlashGetLastOperationInfo" label: "BSP_FlashGetLastOperationInfo\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:37:34\n0 bytes (static)" }
+node: { title: "BSP_FlashReinitialize" label: "BSP_FlashReinitialize\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:42:6\n16 bytes (static)" }
+node: { title: "HAL_FLASH_Lock" label: "HAL_FLASH_Lock\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h:275:19" shape : ellipse }
+edge: { sourcename: "BSP_FlashReinitialize" targetname: "HAL_FLASH_Lock" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:45:9" }
+node: { title: "HAL_FLASH_GetError" label: "HAL_FLASH_GetError\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h:288:10" shape : ellipse }
+edge: { sourcename: "BSP_FlashReinitialize" targetname: "HAL_FLASH_GetError" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:48:38" }
+node: { title: "BSP_FlashValidateLayout" label: "BSP_FlashValidateLayout\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:56:6\n0 bytes (static)" }
+node: { title: "BSP_FlashIsConfigRange" label: "BSP_FlashIsConfigRange\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:69:6\n0 bytes (static)" }
+node: { title: "BSP_FlashRead" label: "BSP_FlashRead\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:79:20\n16 bytes (static)" }
+edge: { sourcename: "BSP_FlashRead" targetname: "BSP_FlashIsConfigRange" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:86:10" }
+node: { title: "memcpy" label: "__builtin_memcpy\n<built-in>" shape : ellipse }
+edge: { sourcename: "BSP_FlashRead" targetname: "memcpy" }
+node: { title: "BSP_FlashIsErased" label: "BSP_FlashIsErased\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:97:6\n8 bytes (static)" }
+edge: { sourcename: "BSP_FlashIsErased" targetname: "BSP_FlashIsConfigRange" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:102:10" }
+node: { title: "BSP_FlashErasePage" label: "BSP_FlashErasePage\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:117:20\n48 bytes (static)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "BSP_FlashErasePage" targetname: "memset" }
+edge: { sourcename: "BSP_FlashErasePage" targetname: "BSP_FlashIsConfigRange" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:136:10" }
+node: { title: "HAL_FLASH_Unlock" label: "HAL_FLASH_Unlock\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h:274:19" shape : ellipse }
+edge: { sourcename: "BSP_FlashErasePage" targetname: "HAL_FLASH_Unlock" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:141:9" }
+edge: { sourcename: "BSP_FlashErasePage" targetname: "HAL_FLASH_GetError" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:144:38" }
+node: { title: "HAL_FLASHEx_Erase" label: "HAL_FLASHEx_Erase\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h:748:20" shape : ellipse }
+edge: { sourcename: "BSP_FlashErasePage" targetname: "HAL_FLASHEx_Erase" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:150:14" }
+edge: { sourcename: "BSP_FlashErasePage" targetname: "HAL_FLASH_GetError" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:154:38" }
+edge: { sourcename: "BSP_FlashErasePage" targetname: "BSP_FlashIsErased" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:156:15" }
+edge: { sourcename: "BSP_FlashErasePage" targetname: "HAL_FLASH_Lock" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:160:9" }
+edge: { sourcename: "BSP_FlashErasePage" targetname: "HAL_FLASH_GetError" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:163:38" }
+node: { title: "BSP_FlashProgramHalfWord" label: "BSP_FlashProgramHalfWord\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:170:20\n24 bytes (static)" }
+edge: { sourcename: "BSP_FlashProgramHalfWord" targetname: "BSP_FlashIsConfigRange" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:186:10" }
+edge: { sourcename: "BSP_FlashProgramHalfWord" targetname: "HAL_FLASH_Unlock" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:191:9" }
+edge: { sourcename: "BSP_FlashProgramHalfWord" targetname: "HAL_FLASH_GetError" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:194:38" }
+node: { title: "HAL_FLASH_Program" label: "HAL_FLASH_Program\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h:257:19" shape : ellipse }
+edge: { sourcename: "BSP_FlashProgramHalfWord" targetname: "HAL_FLASH_Program" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:197:9" }
+edge: { sourcename: "BSP_FlashProgramHalfWord" targetname: "HAL_FLASH_GetError" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:200:38" }
+edge: { sourcename: "BSP_FlashProgramHalfWord" targetname: "HAL_FLASH_Lock" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:206:9" }
+edge: { sourcename: "BSP_FlashProgramHalfWord" targetname: "HAL_FLASH_GetError" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:209:38" }
+node: { title: "BSP_FlashGetBackend" label: "BSP_FlashGetBackend\nD:/Documents/stm32f103rbt6_a33_stage5pa13er/BSP/bsp_flash.c:225:24\n0 bytes (static)" }
+}

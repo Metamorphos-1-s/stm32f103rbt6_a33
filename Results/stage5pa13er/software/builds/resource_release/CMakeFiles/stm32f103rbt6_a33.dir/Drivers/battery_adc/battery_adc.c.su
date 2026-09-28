@@ -1,0 +1,5 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/battery_adc/battery_adc.c:22:6:BatteryAdc_Init	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/battery_adc/battery_adc.c:80:24:BatteryAdc_GetState	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/battery_adc/battery_adc.c:85:10:BatteryAdc_GetErrorCount	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/battery_adc/battery_adc.c:90:10:BatteryAdc_ConvertAdcMv	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Drivers/battery_adc/battery_adc.c:36:6:BatteryAdc_Process500ms	40	static

@@ -1,0 +1,8 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/display_conditioner.c:30:13:ClearCandidate	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/display_conditioner.c:191:13:DisplayConditioner_ComputeReleaseThreshold	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/display_conditioner.c:214:6:DisplayConditioner_Init	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/display_conditioner.c:228:6:DisplayConditioner_ForceTracking	12	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/display_conditioner.c:140:13:ForceTrackingDomain	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/display_conditioner.c:250:6:DisplayConditioner_RequestOperatorZeroAnchor	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/display_conditioner.c:275:6:DisplayConditioner_Update	96	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Domain/measurement/display_conditioner.c:549:33:DisplayConditioner_GetSnapshot	0	static

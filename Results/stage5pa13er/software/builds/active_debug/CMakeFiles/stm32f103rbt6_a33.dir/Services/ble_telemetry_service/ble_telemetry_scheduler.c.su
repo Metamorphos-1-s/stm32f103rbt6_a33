@@ -1,0 +1,5 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_telemetry_service/ble_telemetry_scheduler.c:8:13:Due	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_telemetry_service/ble_telemetry_scheduler.c:13:13:RunOne	128	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_telemetry_service/ble_telemetry_scheduler.c:62:6:BleTelemetryScheduler_Init	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_telemetry_service/ble_telemetry_scheduler.c:72:6:BleTelemetryScheduler_Process	56	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13er/Services/ble_telemetry_service/ble_telemetry_scheduler.c:96:6:BleTelemetryScheduler_GetCounters	4	static
