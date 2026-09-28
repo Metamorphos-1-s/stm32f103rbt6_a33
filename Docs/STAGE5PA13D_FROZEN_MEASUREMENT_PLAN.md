@@ -60,7 +60,7 @@ stack guard change or reset. Static conservative collision margin and actual
 untouched region from static end to deepest observed stack >=512 B each.
 Required state coverage and missing dynamic fields => INCOMPLETE, not PASS.
 Throughput qualification starts at the first positive, weight-valid device
-sequence whose resource last-call sequence matches the candidate sequence,
+sequence whose resource last-call sequence matches the authoritative engine sequence,
 with driver RUNNING and valid calibration. Earlier ADC/filter startup polls
 remain raw evidence but are not a claimed steady-stream coverage interval.
 Once this boundary is reached, every sequence through stop must be captured.
