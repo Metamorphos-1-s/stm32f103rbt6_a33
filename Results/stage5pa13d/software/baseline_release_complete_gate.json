@@ -1,0 +1,20 @@
+{
+  "classification": "STATIC_NOT_RUNTIME_WATERMARK",
+  "legacy_one_irq_bound_bytes": 1408,
+  "extra_nested_systick_bytes": 40,
+  "systick_chain": {
+    "function": "SysTick_Handler",
+    "local_stack_bytes": 0,
+    "static_chain_bytes": 0,
+    "path": [
+      "SysTick_Handler"
+    ]
+  },
+  "extra_exception_alignment_padding_bytes": 8,
+  "complete_conservative_stack_bytes": 1448,
+  "collision_margin_bytes": 696,
+  "required_margin_bytes": 512,
+  "static_ram_bytes": 19360,
+  "result": "PASS",
+  "irq_priority_basis": "UART/DMA/TIM4 priority5; SysTick priority15; no other enabled nonfatal priorities"
+}

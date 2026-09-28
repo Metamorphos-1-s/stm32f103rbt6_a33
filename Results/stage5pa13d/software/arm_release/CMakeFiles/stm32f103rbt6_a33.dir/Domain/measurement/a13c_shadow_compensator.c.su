@@ -1,0 +1,14 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/a13c_shadow_compensator.c:24:16:ReadDelta	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/a13c_shadow_compensator.c:244:13:Refresh	20	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/a13c_shadow_compensator.c:218:13:ClearReference	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/a13c_shadow_compensator.c:140:16:SelectStep.constprop	48	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/a13c_shadow_compensator.c:162:16:MedianStepTwice	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/a13c_shadow_compensator.c:190:13:RobustStep	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/a13c_shadow_compensator.c:90:16:SelectHistory	64	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/a13c_shadow_compensator.c:112:16:MedianHistoryTwice	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/a13c_shadow_compensator.c:51:13:PutHistory	64	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/a13c_shadow_compensator.c:264:6:A13C_Init	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/a13c_shadow_compensator.c:286:6:A13C_Reset	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/a13c_shadow_compensator.c:274:6:A13C_SetMode	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/a13c_shadow_compensator.c:509:6:A13C_Feed	80	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/a13c_shadow_compensator.c:571:21:A13C_GetSnapshot	0	static

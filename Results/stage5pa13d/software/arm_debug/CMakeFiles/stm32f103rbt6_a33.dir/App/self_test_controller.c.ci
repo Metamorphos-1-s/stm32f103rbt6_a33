@@ -1,0 +1,32 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:SelfTestController_SetState" label: "SelfTestController_SetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:15:13\n0 bytes (static)" }
+node: { title: "SelfTestController_Init" label: "SelfTestController_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:22:6\n0 bytes (static)" }
+node: { title: "SelfTestController_Begin" label: "SelfTestController_Begin\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:29:6\n24 bytes (static)" }
+node: { title: "OutputGpio_Set" label: "OutputGpio_Set\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Drivers/output_gpio/output_gpio.h:17:6" shape : ellipse }
+edge: { sourcename: "SelfTestController_Begin" targetname: "OutputGpio_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:37:11" }
+node: { title: "DisplayController_SetTestPattern" label: "DisplayController_SetTestPattern\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/display_controller.h:25:6" shape : ellipse }
+edge: { sourcename: "SelfTestController_Begin" targetname: "DisplayController_SetTestPattern" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:38:10" }
+node: { title: "BSP_TimeNowMs" label: "BSP_TimeNowMs\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/BSP/bsp_time.h:22:15" shape : ellipse }
+edge: { sourcename: "SelfTestController_Begin" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:43:5" }
+edge: { sourcename: "SelfTestController_Begin" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:SelfTestController_SetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:43:5" }
+node: { title: "SelfTestController_Process10ms" label: "SelfTestController_Process10ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:47:6\n32 bytes (static)" }
+edge: { sourcename: "SelfTestController_Process10ms" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:49:20" }
+edge: { sourcename: "SelfTestController_Process10ms" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:SelfTestController_SetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:58:17" }
+node: { title: "DisplayFormatter_EncodeCharacter" label: "DisplayFormatter_EncodeCharacter\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/display_model/display_formatter.h:9:6" shape : ellipse }
+edge: { sourcename: "SelfTestController_Process10ms" targetname: "DisplayFormatter_EncodeCharacter" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:63:23" }
+edge: { sourcename: "SelfTestController_Process10ms" targetname: "DisplayController_SetTestPattern" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:65:23" }
+edge: { sourcename: "SelfTestController_Process10ms" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:SelfTestController_SetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:68:21" }
+edge: { sourcename: "SelfTestController_Process10ms" targetname: "DisplayController_SetTestPattern" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:74:23" }
+edge: { sourcename: "SelfTestController_Process10ms" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:SelfTestController_SetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:78:21" }
+edge: { sourcename: "SelfTestController_Process10ms" targetname: "DisplayController_SetTestPattern" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:84:23" }
+edge: { sourcename: "SelfTestController_Process10ms" targetname: "OutputGpio_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:90:27" }
+edge: { sourcename: "SelfTestController_Process10ms" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:SelfTestController_SetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:92:21" }
+edge: { sourcename: "SelfTestController_Process10ms" targetname: "OutputGpio_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:99:23" }
+node: { title: "DisplayController_SetTextPage" label: "DisplayController_SetTextPage\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/display_controller.h:16:6" shape : ellipse }
+edge: { sourcename: "SelfTestController_Process10ms" targetname: "DisplayController_SetTextPage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:100:23" }
+edge: { sourcename: "SelfTestController_Process10ms" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:SelfTestController_SetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:102:17" }
+edge: { sourcename: "SelfTestController_Process10ms" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:SelfTestController_SetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:107:17" }
+node: { title: "SelfTestController_Cancel" label: "SelfTestController_Cancel\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:117:6\n8 bytes (static)" }
+edge: { sourcename: "SelfTestController_Cancel" targetname: "OutputGpio_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:119:11" }
+node: { title: "SelfTestController_GetState" label: "SelfTestController_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/self_test_controller.c:123:15\n0 bytes (static)" }
+}

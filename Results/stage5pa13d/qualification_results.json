@@ -1,0 +1,66 @@
+{
+  "stage": "A13D",
+  "result": "A13D TARGET RESOURCE GATE FAIL",
+  "classification": "DIAGNOSTIC_IMAGE_DIRECT_MEASUREMENTS_NOT_EXACT_UNMODIFIED_BIN_TIMING",
+  "raw_sha256": "7E32ECD20929517542E4EAB4C9611D8E853F51EF372B385FE01660841B669851",
+  "raw_poll_rows": 1936,
+  "accepted_before_abort_unique_samples": 1586,
+  "raw_unique_qualified_domain_including_failure": 1587,
+  "first_sequence": 4,
+  "last_observed_sequence": 1591,
+  "gaps": [
+    {
+      "previous_sequence": 1589,
+      "sequence": 1591,
+      "missing_sequences": [
+        1590
+      ],
+      "delta_mcu_ms": 200,
+      "previous_host_monotonic_ns": 325354671000000,
+      "host_monotonic_ns": 325354875000000,
+      "realtime_diagnostic_sequence": 1590
+    }
+  ],
+  "conservation_or_safety_bad_sequences": [],
+  "resource_rule_failure": {
+    "utc": "2026-09-28T07:54:30.853279+00:00",
+    "host_monotonic_ns": 325354875000000,
+    "kind": "MEASUREMENT_FAILURE",
+    "error": "unobserved sequence/reset/time gap"
+  },
+  "state_cycle_maxima": {
+    "OFF": {
+      "observed_calls": 1586,
+      "maximum_cycles": 378,
+      "corresponding_sequence": 1021,
+      "microseconds": 5.25
+    },
+    "HOLDOFF": {
+      "observed_calls": 1,
+      "maximum_cycles": 477,
+      "corresponding_sequence": 1591,
+      "microseconds": 6.625
+    }
+  },
+  "main_loop_max_cycles": 413346,
+  "main_loop_interval_max_cycles": 413394,
+  "actual_read_hclk_hz": 72000000,
+  "overhead_empty_bracket_max_cycles": 20,
+  "overhead_subtracted": false,
+  "lowest_touched_address": "0x20004D0C",
+  "static_end_address": "0x200047B8",
+  "stack_top_address": "0x20005000",
+  "minimum_untouched_bytes": 1364,
+  "observed_stack_top_to_touched_bytes": 756,
+  "missing_state_coverage": [
+    "DOSING",
+    "OBSERVATION_FILL",
+    "REFERENCE_FILL",
+    "STEP_SETTLING",
+    "TRACKING"
+  ],
+  "fast_tracking_coverage": "NOT RUN",
+  "hardware_adc_loss_supported": false,
+  "failure_interpretation": "one timed-call record overwritten before host read at mode-command/five-block handoff; ordinary block saw1590; do not relabel as complete",
+  "a13b_efficacy": "INCONCLUSIVE; owner deferral unchanged"
+}

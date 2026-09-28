@@ -1,0 +1,3 @@
+graph: { title: "CMakeCXXCompilerId.cpp"
+node: { title: "main" label: "int main(int, char**)\nCMakeCXXCompilerId.cpp:844:5\n24 bytes (static)" }
+}

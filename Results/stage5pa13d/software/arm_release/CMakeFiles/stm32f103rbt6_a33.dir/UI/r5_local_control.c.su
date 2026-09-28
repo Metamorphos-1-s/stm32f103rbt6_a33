@@ -1,0 +1,15 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:119:13:SetMode	48	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:113:13:SetApplication	48	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:28:6:R5LocalControl_GetStatus	56	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:56:6:R5LocalControl_BeginSession	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:64:6:R5LocalControl_EndSession	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:71:6:R5LocalControl_Begin	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:80:6:R5LocalControl_Adjust	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:88:6:R5LocalControl_Confirm	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:97:6:R5LocalControl_Cancel	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:103:6:R5LocalControl_HasCandidate	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:104:15:R5LocalControl_GetChoice	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:140:15:R5LocalControl_Apply	40	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:197:13:R5LocalControl_ChoiceText	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:205:13:R5LocalControl_StateText	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:223:10:R5LocalControl_GetFailureCount	0	static

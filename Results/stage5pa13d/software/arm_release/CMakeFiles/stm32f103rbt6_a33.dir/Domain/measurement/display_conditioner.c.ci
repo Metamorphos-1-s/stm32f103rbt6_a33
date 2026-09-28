@@ -1,0 +1,36 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:ClearCandidate" label: "ClearCandidate\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:30:13\n16 bytes (static)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:ClearCandidate" targetname: "memset" }
+node: { title: "DisplayConditioner_ComputeReleaseThreshold" label: "DisplayConditioner_ComputeReleaseThreshold\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:191:13\n16 bytes (static)" }
+node: { title: "__aeabi_ldivmod" label: "__aeabi_ldivmod\n<built-in>" shape : ellipse }
+edge: { sourcename: "DisplayConditioner_ComputeReleaseThreshold" targetname: "__aeabi_ldivmod" }
+node: { title: "DisplayConditioner_Init" label: "DisplayConditioner_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:214:6\n16 bytes (static)" }
+edge: { sourcename: "DisplayConditioner_Init" targetname: "memset" }
+node: { title: "DisplayConditioner_ForceTracking" label: "DisplayConditioner_ForceTracking\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:228:6\n12 bytes (static)" }
+edge: { sourcename: "DisplayConditioner_ForceTracking" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:ClearCandidate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:247:5" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:ForceTrackingDomain" label: "ForceTrackingDomain\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:140:13\n24 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:ForceTrackingDomain" targetname: "DisplayConditioner_ForceTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:144:5" }
+node: { title: "DisplayConditioner_RequestOperatorZeroAnchor" label: "DisplayConditioner_RequestOperatorZeroAnchor\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:250:6\n16 bytes (static)" }
+edge: { sourcename: "DisplayConditioner_RequestOperatorZeroAnchor" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:ClearCandidate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:257:5" }
+node: { title: "DisplayConditioner_Update" label: "DisplayConditioner_Update\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:275:6\n96 bytes (static)" }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "DisplayConditioner_ComputeReleaseThreshold" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:291:9" }
+node: { title: "UnitConverter_MassToCountUnbounded" label: "UnitConverter_MassToCountUnbounded\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/unit_converter.h:9:6" shape : ellipse }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "UnitConverter_MassToCountUnbounded" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:115:10" }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:ForceTrackingDomain" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:300:13" }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "DisplayConditioner_ForceTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:304:9" }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:ForceTrackingDomain" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:316:13" }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "DisplayConditioner_ForceTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:320:9" }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "DisplayConditioner_ForceTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:327:9" }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "DisplayConditioner_ForceTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:336:9" }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:ClearCandidate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:358:13" }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:ForceTrackingDomain" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:380:13" }
+node: { title: "UnitConverter_CountToMass" label: "UnitConverter_CountToMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/unit_converter.h:6:6" shape : ellipse }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "UnitConverter_CountToMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:129:10" }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "DisplayConditioner_ForceTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:411:17" }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:ForceTrackingDomain" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:437:9" }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "UnitConverter_CountToMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:129:10" }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "DisplayConditioner_ForceTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:507:17" }
+edge: { sourcename: "DisplayConditioner_Update" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:ForceTrackingDomain" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:533:13" }
+node: { title: "DisplayConditioner_GetSnapshot" label: "DisplayConditioner_GetSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/display_conditioner.c:549:33\n0 bytes (static)" }
+}

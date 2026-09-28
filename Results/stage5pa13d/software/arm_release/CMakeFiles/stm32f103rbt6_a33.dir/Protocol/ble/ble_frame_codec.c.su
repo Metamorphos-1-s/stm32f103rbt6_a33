@@ -1,0 +1,7 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/ble/ble_frame_codec.c:18:6:BleFrameCodec_PutU8	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/ble/ble_frame_codec.c:24:6:BleFrameCodec_PutU16	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/ble/ble_frame_codec.c:31:6:BleFrameCodec_PutU32	12	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/ble/ble_frame_codec.c:41:6:BleFrameCodec_PutI32	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/ble/ble_frame_codec.c:46:6:BleFrameCodec_PutI64	20	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/ble/ble_frame_codec.c:51:10:BleFrameCodec_Crc	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/ble/ble_frame_codec.c:56:6:BleFrameCodec_Encode	24	static

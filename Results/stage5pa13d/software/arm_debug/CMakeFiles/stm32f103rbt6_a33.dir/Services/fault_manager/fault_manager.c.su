@@ -1,0 +1,8 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/fault_manager/fault_manager.c:5:17:FaultManager_Bit	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/fault_manager/fault_manager.c:16:6:FaultManager_Init	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/fault_manager/fault_manager.c:21:6:FaultManager_Set	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/fault_manager/fault_manager.c:26:6:FaultManager_Clear	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/fault_manager/fault_manager.c:31:6:FaultManager_IsActive	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/fault_manager/fault_manager.c:37:10:FaultManager_GetActiveMask	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/fault_manager/fault_manager.c:43:6:FaultManager_FaultInvalidatesWeight	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/fault_manager/fault_manager.c:62:6:FaultManager_HasWeightInvalidFault	8	static

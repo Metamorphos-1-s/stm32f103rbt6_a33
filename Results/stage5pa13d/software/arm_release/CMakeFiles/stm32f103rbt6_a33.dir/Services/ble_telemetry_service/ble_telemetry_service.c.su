@@ -1,0 +1,5 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/ble_telemetry_service/ble_telemetry_service.c:189:13:TryWrite	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/ble_telemetry_service/ble_telemetry_service.c:127:13:BuildFrame	128	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/ble_telemetry_service/ble_telemetry_service.c:195:6:BleTelemetryService_Init	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/ble_telemetry_service/ble_telemetry_service.c:202:6:BleTelemetryService_Process	64	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/ble_telemetry_service/ble_telemetry_service.c:209:6:BleTelemetryService_GetCounters	0	static

@@ -1,0 +1,182 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_RequireConfigOwner" label: "CommandService_RequireConfigOwner\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:278:22\n0 bytes (static)" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_ResetCalibrationSession" label: "CommandService_ResetCalibrationSession\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:104:13\n16 bytes (static)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_ResetCalibrationSession" targetname: "memset" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_CalibrationConfigMatches" label: "CommandService_CalibrationConfigMatches\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:117:13\n16 bytes (static)" }
+node: { title: "SystemContext_Get" label: "SystemContext_Get\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/system_context.h:29:22" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_CalibrationConfigMatches" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:119:36" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_CalibrationMassValid" label: "CommandService_CalibrationMassValid\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:144:13\n56 bytes (static)" }
+node: { title: "UnitConverter_MassToDisplay" label: "UnitConverter_MassToDisplay\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/unit_converter.h:11:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_CalibrationMassValid" targetname: "UnitConverter_MassToDisplay" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:152:9" }
+node: { title: "UnitConverter_CountToMass" label: "UnitConverter_CountToMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/unit_converter.h:6:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_CalibrationMassValid" targetname: "UnitConverter_CountToMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:157:9" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_RequireCalibrationOwner" label: "CommandService_RequireCalibrationOwner\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:163:22\n8 bytes (static)" }
+node: { title: "CommandService_Init" label: "CommandService_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:211:6\n8 bytes (static)" }
+node: { title: "ConfigEdit_Init" label: "ConfigEdit_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_edit/config_edit.h:67:6" shape : ellipse }
+edge: { sourcename: "CommandService_Init" targetname: "ConfigEdit_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:213:11" }
+edge: { sourcename: "CommandService_Init" targetname: "memset" }
+node: { title: "CommandService_Process" label: "CommandService_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:226:6\n16 bytes (static)" }
+node: { title: "ConfigEdit_Cancel" label: "ConfigEdit_Cancel\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_edit/config_edit.h:78:6" shape : ellipse }
+edge: { sourcename: "CommandService_Process" targetname: "ConfigEdit_Cancel" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:236:9" }
+edge: { sourcename: "CommandService_Process" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_ResetCalibrationSession" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:245:9" }
+node: { title: "MetrologyManager_GetSnapshot" label: "MetrologyManager_GetSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/metrology_manager.h:52:23" shape : ellipse }
+edge: { sourcename: "CommandService_Process" targetname: "MetrologyManager_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:255:16" }
+node: { title: "RawCalibrationStability_Process" label: "RawCalibrationStability_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/calibration/raw_calibration_stability.h:29:6" shape : ellipse }
+edge: { sourcename: "CommandService_Process" targetname: "RawCalibrationStability_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:263:14" }
+node: { title: "CommandService_Execute" label: "CommandService_Execute\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:388:15\n64 bytes (static)" }
+edge: { sourcename: "CommandService_Execute" targetname: "memset" }
+node: { title: "PersistenceManager_IsBusy" label: "PersistenceManager_IsBusy\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.h:43:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "PersistenceManager_IsBusy" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:406:10" }
+node: { title: "WeighingProfileManager_IsBusy" label: "WeighingProfileManager_IsBusy\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/weighing_profile_manager.h:28:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "WeighingProfileManager_IsBusy" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:406:41" }
+node: { title: "CommunicationManager_GetState" label: "CommunicationManager_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/communication_manager.h:63:27" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "CommunicationManager_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:61:39" }
+node: { title: "ConfigEdit_GetState" label: "ConfigEdit_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_edit/config_edit.h:79:17" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:446:10" }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:294:38" }
+node: { title: "MetrologyManager_Zero" label: "MetrologyManager_Zero\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/metrology_manager.h:58:20" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_Zero" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:460:22" }
+node: { title: "MetrologyManager_ResetZero" label: "MetrologyManager_ResetZero\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/metrology_manager.h:59:20" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_ResetZero" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:463:22" }
+node: { title: "MetrologyManager_Tare" label: "MetrologyManager_Tare\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/metrology_manager.h:60:20" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_Tare" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:467:22" }
+node: { title: "MetrologyManager_ClearTare" label: "MetrologyManager_ClearTare\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/metrology_manager.h:61:20" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_ClearTare" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:470:22" }
+edge: { sourcename: "CommandService_Execute" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:474:23" }
+edge: { sourcename: "CommandService_Execute" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:489:23" }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:491:18" }
+node: { title: "ConfigEdit_Begin" label: "ConfigEdit_Begin\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_edit/config_edit.h:68:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_Begin" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:495:43" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_RequireConfigOwner" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:508:22" }
+node: { title: "ConfigEdit_SetIntegerField" label: "ConfigEdit_SetIntegerField\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_edit/config_edit.h:70:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_SetIntegerField" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:510:26" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_RequireConfigOwner" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:515:22" }
+node: { title: "ConfigEdit_SetMassField" label: "ConfigEdit_SetMassField\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_edit/config_edit.h:71:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_SetMassField" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:517:26" }
+node: { title: "ConfigEdit_GetWorkingCopy" label: "ConfigEdit_GetWorkingCopy\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_edit/config_edit.h:80:21" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_GetWorkingCopy" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:523:43" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_RequireConfigOwner" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:525:22" }
+node: { title: "ConfigEdit_SetUnitDisplay" label: "ConfigEdit_SetUnitDisplay\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_edit/config_edit.h:72:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_SetUnitDisplay" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:539:22" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_RequireConfigOwner" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:545:22" }
+node: { title: "ConfigEdit_SetProfileField" label: "ConfigEdit_SetProfileField\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_edit/config_edit.h:74:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_SetProfileField" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:547:26" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_RequireConfigOwner" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:554:22" }
+node: { title: "ConfigApplication_Apply" label: "ConfigApplication_Apply\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/config_application.h:15:19" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigApplication_Apply" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:311:43" }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_Cancel" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:315:13" }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_GetWorkingCopy" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:322:35" }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:326:11" }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:328:11" }
+node: { title: "ConfigEdit_Validate" label: "ConfigEdit_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_edit/config_edit.h:76:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:327:11" }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:329:11" }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_GetWorkingCopy" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:333:15" }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigApplication_Apply" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:334:14" }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_Cancel" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:337:9" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_RequireConfigOwner" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:559:22" }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_Cancel" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:562:17" }
+node: { title: "CommunicationManager_RequestDeferredSave" label: "CommunicationManager_RequestDeferredSave\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/communication_manager.h:56:15" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "CommunicationManager_RequestDeferredSave" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:570:17" }
+node: { title: "PersistenceManager_RequestSave" label: "PersistenceManager_RequestSave\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.h:33:15" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "PersistenceManager_RequestSave" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:571:17" }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:576:18" }
+edge: { sourcename: "CommandService_Execute" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:585:27" }
+edge: { sourcename: "CommandService_Execute" targetname: "memset" }
+node: { title: "RawCalibrationStability_Init" label: "RawCalibrationStability_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/calibration/raw_calibration_stability.h:25:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "RawCalibrationStability_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:613:40" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_ResetCalibrationSession" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:619:21" }
+node: { title: "MetrologyManager_ForceDisplayTracking" label: "MetrologyManager_ForceDisplayTracking\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/metrology_manager.h:55:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_ForceDisplayTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:626:17" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_RequireCalibrationOwner" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:632:22" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_CalibrationConfigMatches" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:636:22" }
+node: { title: "RawCalibrationStability_GetAverage" label: "RawCalibrationStability_GetAverage\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/calibration/raw_calibration_stability.h:33:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "RawCalibrationStability_GetAverage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:643:27" }
+node: { title: "RawCalibrationStability_Reset" label: "RawCalibrationStability_Reset\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/calibration/raw_calibration_stability.h:28:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "RawCalibrationStability_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:655:25" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_RequireCalibrationOwner" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:669:22" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_CalibrationConfigMatches" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:672:22" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_CalibrationMassValid" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:675:27" }
+edge: { sourcename: "CommandService_Execute" targetname: "RawCalibrationStability_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:685:25" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_RequireCalibrationOwner" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:693:22" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_CalibrationConfigMatches" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:701:27" }
+edge: { sourcename: "CommandService_Execute" targetname: "RawCalibrationStability_GetAverage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:708:27" }
+edge: { sourcename: "CommandService_Execute" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:713:31" }
+node: { title: "CalibrationModel_BuildMass" label: "CalibrationModel_BuildMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/calibration/calibration_model.h:23:19" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "CalibrationModel_BuildMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:715:36" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_RequireCalibrationOwner" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:737:22" }
+edge: { sourcename: "CommandService_Execute" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:351:36" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_CalibrationConfigMatches" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:363:10" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_CalibrationMassValid" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:364:10" }
+node: { title: "CalibrationModel_Validate" label: "CalibrationModel_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/calibration/calibration_model.h:26:19" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "CalibrationModel_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:365:10" }
+node: { title: "memcpy" label: "__builtin_memcpy\n<built-in>" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "memcpy" }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigApplication_Apply" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:373:9" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_RequireCalibrationOwner" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:742:22" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_ResetCalibrationSession" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:745:17" }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_ForceDisplayTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:746:17" }
+node: { title: "SystemContext_SetRuntimeWeightView" label: "SystemContext_SetRuntimeWeightView\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/system_context.h:40:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "SystemContext_SetRuntimeWeightView" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:750:22" }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_ForceDisplayTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:753:17" }
+edge: { sourcename: "CommandService_Execute" targetname: "PersistenceManager_IsBusy" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:759:17" }
+node: { title: "PersistenceManager_RequestFactoryReset" label: "PersistenceManager_RequestFactoryReset\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.h:41:15" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "PersistenceManager_RequestFactoryReset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:773:26" }
+node: { title: "MetrologyManager_SetDisplayUnit" label: "MetrologyManager_SetDisplayUnit\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/metrology_manager.h:56:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_SetDisplayUnit" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:781:22" }
+node: { title: "WeighingProfileManager_Request" label: "WeighingProfileManager_Request\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/weighing_profile_manager.h:26:15" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "WeighingProfileManager_Request" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:785:22" }
+edge: { sourcename: "CommandService_Execute" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:CommandService_RequireConfigOwner" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:789:22" }
+node: { title: "ConfigApplication_Validate" label: "ConfigApplication_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/config_application.h:16:19" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigApplication_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:793:31" }
+edge: { sourcename: "CommandService_Execute" targetname: "ConfigEdit_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:797:30" }
+node: { title: "CommunicationManager_RequestApplyForSource" label: "CommunicationManager_RequestApplyForSource\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/communication_manager.h:52:15" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "CommunicationManager_RequestApplyForSource" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:802:22" }
+node: { title: "MetrologyManager_SetRuntimeDriftEnabled" label: "MetrologyManager_SetRuntimeDriftEnabled\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/metrology_manager.h:73:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_SetRuntimeDriftEnabled" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:807:17" }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_SetRuntimeDriftEnabled" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:817:22" }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_SetRuntimeDriftEnabled" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:827:22" }
+node: { title: "SystemContext_GetState" label: "SystemContext_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/system_context.h:30:10" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:837:18" }
+node: { title: "MetrologyManager_ResetRuntimeDrift" label: "MetrologyManager_ResetRuntimeDrift\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/metrology_manager.h:74:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_ResetRuntimeDrift" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:840:17" }
+edge: { sourcename: "CommandService_Execute" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:838:18" }
+node: { title: "MetrologyManager_SetR5Mode" label: "MetrologyManager_SetR5Mode\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/metrology_manager.h:79:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_SetR5Mode" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:854:27" }
+node: { title: "MetrologyManager_ResetR5" label: "MetrologyManager_ResetR5\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/metrology_manager.h:85:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_ResetR5" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:864:17" }
+node: { title: "MetrologyManager_GetR5Snapshot" label: "MetrologyManager_GetR5Snapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/metrology_manager.h:86:24" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_GetR5Snapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:870:45" }
+node: { title: "MetrologyManager_GetR5Application" label: "MetrologyManager_GetR5Application\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/metrology_manager.h:90:19" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_GetR5Application" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:874:25" }
+node: { title: "MetrologyManager_SetR5Application" label: "MetrologyManager_SetR5Application\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/metrology_manager.h:80:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_SetR5Application" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:892:27" }
+node: { title: "MetrologyManager_SetAlarmShadowThresholds" label: "MetrologyManager_SetAlarmShadowThresholds\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/metrology_manager.h:91:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "MetrologyManager_SetAlarmShadowThresholds" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:900:27" }
+node: { title: "App_SetGuardedCheckweighMode" label: "App_SetGuardedCheckweighMode\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/app_main.h:18:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "App_SetGuardedCheckweighMode" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:912:27" }
+node: { title: "App_GetGuardedCheckweighState" label: "App_GetGuardedCheckweighState\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/app_main.h:20:6" shape : ellipse }
+edge: { sourcename: "CommandService_Execute" targetname: "App_GetGuardedCheckweighState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:922:22" }
+node: { title: "CommandService_GetCalibrationCandidate" label: "CommandService_GetCalibrationCandidate\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:951:26\n0 bytes (static)" }
+node: { title: "CommandService_GetCalibrationSnapshot" label: "CommandService_GetCalibrationSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:957:6\n24 bytes (static)" }
+edge: { sourcename: "CommandService_GetCalibrationSnapshot" targetname: "memset" }
+edge: { sourcename: "CommandService_GetCalibrationSnapshot" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:965:15" }
+node: { title: "CommandService_LocalCalibrationActive" label: "CommandService_LocalCalibrationActive\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1015:6\n0 bytes (static)" }
+node: { title: "CommandService_LocalCalibrationApplied" label: "CommandService_LocalCalibrationApplied\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1022:6\n0 bytes (static)" }
+node: { title: "CommandService_TouchLocalCalibration" label: "CommandService_TouchLocalCalibration\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1030:6\n8 bytes (static)" }
+edge: { sourcename: "CommandService_TouchLocalCalibration" targetname: "CommandService_LocalCalibrationActive" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1033:10" }
+node: { title: "CommandService_SetStagedConfigForSource" label: "CommandService_SetStagedConfigForSource\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1053:6\n16 bytes (static)" }
+edge: { sourcename: "CommandService_SetStagedConfigForSource" targetname: "memcpy" }
+node: { title: "CommandService_SetStagedConfig" label: "CommandService_SetStagedConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1047:6\n0 bytes (static)" }
+edge: { sourcename: "CommandService_SetStagedConfig" targetname: "CommandService_SetStagedConfigForSource" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1049:12" }
+node: { title: "CommandService_CommitStagedConfigWrite" label: "CommandService_CommitStagedConfigWrite\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1078:6\n0 bytes (static)" }
+node: { title: "CommandService_ReserveConfigOwner" label: "CommandService_ReserveConfigOwner\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1087:15\n16 bytes (static)" }
+edge: { sourcename: "CommandService_ReserveConfigOwner" targetname: "ConfigEdit_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1096:9" }
+node: { title: "CommandService_BeginStagedConfigWrite" label: "CommandService_BeginStagedConfigWrite\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1069:15\n8 bytes (static)" }
+edge: { sourcename: "CommandService_BeginStagedConfigWrite" targetname: "CommandService_ReserveConfigOwner" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1071:10" }
+node: { title: "CommandService_ClearStagedConfigForSource" label: "CommandService_ClearStagedConfigForSource\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1109:6\n8 bytes (static)" }
+edge: { sourcename: "CommandService_ClearStagedConfigForSource" targetname: "ConfigEdit_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1115:13" }
+node: { title: "CommandService_ClearStagedConfig" label: "CommandService_ClearStagedConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1104:6\n0 bytes (static)" }
+edge: { sourcename: "CommandService_ClearStagedConfig" targetname: "CommandService_ClearStagedConfigForSource" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.c:1106:5" }
+}

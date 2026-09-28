@@ -1,0 +1,32 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c"
+node: { title: "Stage4BStorageDiagnostics_Update" label: "Stage4BStorageDiagnostics_Update\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c:10:6\n24 bytes (static)" }
+node: { title: "ConfigStore_GetStatistics" label: "ConfigStore_GetStatistics\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_store/config_store.h:109:30" shape : ellipse }
+edge: { sourcename: "Stage4BStorageDiagnostics_Update" targetname: "ConfigStore_GetStatistics" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c:12:47" }
+node: { title: "PersistenceManager_GetLoadInfo" label: "PersistenceManager_GetLoadInfo\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.h:46:23" shape : ellipse }
+edge: { sourcename: "Stage4BStorageDiagnostics_Update" targetname: "PersistenceManager_GetLoadInfo" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c:13:34" }
+node: { title: "SystemContext_Get" label: "SystemContext_Get\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/system_context.h:29:22" shape : ellipse }
+edge: { sourcename: "Stage4BStorageDiagnostics_Update" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c:14:36" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "Stage4BStorageDiagnostics_Update" targetname: "memset" }
+node: { title: "PersistenceManager_GetLoadResult" label: "PersistenceManager_GetLoadResult\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.h:45:18" shape : ellipse }
+edge: { sourcename: "Stage4BStorageDiagnostics_Update" targetname: "PersistenceManager_GetLoadResult" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c:17:30" }
+node: { title: "ConfigStore_GetActiveSlot" label: "ConfigStore_GetActiveSlot\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_store/config_store.h:107:9" shape : ellipse }
+edge: { sourcename: "Stage4BStorageDiagnostics_Update" targetname: "ConfigStore_GetActiveSlot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c:22:30" }
+node: { title: "ConfigStore_GetState" label: "ConfigStore_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_store/config_store.h:102:18" shape : ellipse }
+edge: { sourcename: "Stage4BStorageDiagnostics_Update" targetname: "ConfigStore_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c:23:30" }
+node: { title: "ConfigStore_GetOperation" label: "ConfigStore_GetOperation\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_store/config_store.h:103:21" shape : ellipse }
+edge: { sourcename: "Stage4BStorageDiagnostics_Update" targetname: "ConfigStore_GetOperation" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c:24:28" }
+node: { title: "SystemContext_GetConfigRevision" label: "SystemContext_GetConfigRevision\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/system_context.h:55:10" shape : ellipse }
+edge: { sourcename: "Stage4BStorageDiagnostics_Update" targetname: "SystemContext_GetConfigRevision" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c:25:35" }
+node: { title: "SystemContext_GetSavedRevision" label: "SystemContext_GetSavedRevision\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/system_context.h:56:10" shape : ellipse }
+edge: { sourcename: "Stage4BStorageDiagnostics_Update" targetname: "SystemContext_GetSavedRevision" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c:26:33" }
+node: { title: "ConfigStore_GetLastError" label: "ConfigStore_GetLastError\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_store/config_store.h:108:10" shape : ellipse }
+edge: { sourcename: "Stage4BStorageDiagnostics_Update" targetname: "ConfigStore_GetLastError" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c:36:29" }
+node: { title: "ConfigStore_GetLastPrimaryFlashError" label: "ConfigStore_GetLastPrimaryFlashError\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_store/config_store.h:119:20" shape : ellipse }
+edge: { sourcename: "Stage4BStorageDiagnostics_Update" targetname: "ConfigStore_GetLastPrimaryFlashError" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c:38:9" }
+node: { title: "ConfigStore_GetLastLockError" label: "ConfigStore_GetLastLockError\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_store/config_store.h:120:20" shape : ellipse }
+edge: { sourcename: "Stage4BStorageDiagnostics_Update" targetname: "ConfigStore_GetLastLockError" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c:39:34" }
+node: { title: "ConfigStore_GetLastFlashAddress" label: "ConfigStore_GetLastFlashAddress\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/config_store/config_store.h:121:10" shape : ellipse }
+edge: { sourcename: "Stage4BStorageDiagnostics_Update" targetname: "ConfigStore_GetLastFlashAddress" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c:40:37" }
+node: { title: "Stage4BStorageDiagnostics_GetSnapshot" label: "Stage4BStorageDiagnostics_GetSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage4b_storage_diagnostics.c:44:1\n0 bytes (static)" }
+}

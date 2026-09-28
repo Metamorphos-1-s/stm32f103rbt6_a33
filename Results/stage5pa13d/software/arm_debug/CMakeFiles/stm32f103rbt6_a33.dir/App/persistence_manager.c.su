@@ -1,0 +1,16 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:77:13:Publish	40	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:83:13:Show	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:51:13:ApplyRequestedModes	40	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:92:6:PersistenceManager_Init	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:104:18:PersistenceManager_LoadStartup	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:286:6:PersistenceManager_Process	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:412:6:PersistenceManager_IsBusy	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:111:22:Start	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:201:15:PersistenceManager_RequestSave	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:207:15:PersistenceManager_RequestCalibrationSave	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:281:15:PersistenceManager_RequestFactoryReset	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:219:15:PersistenceManager_RequestCandidateSave	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:417:19:PersistenceManager_GetStatus	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:418:18:PersistenceManager_GetLoadResult	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:419:23:PersistenceManager_GetLoadInfo	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/persistence_manager.c:420:20:PersistenceManager_GetFactoryResetResult	0	static

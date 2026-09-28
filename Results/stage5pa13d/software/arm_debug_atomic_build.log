@@ -1,0 +1,16 @@
+[1/6] Building C object CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_command_mailbox.c.obj
+[2/6] Building C object CMakeFiles/stm32f103rbt6_a33.dir/Services/ble_command_service/ble_command_service.c.obj
+[3/6] Building C object CMakeFiles/stm32f103rbt6_a33.dir/UI/status_controller/status_controller.c.obj
+[4/6] Building C object CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage5pa13d_resources.c.obj
+[5/6] Building C object CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+[6/6] Linking C executable stm32f103rbt6_a33.elf
+Memory region         Used Size  Region Size  %age Used
+
+             RAM:       19440 B        20 KB     94.92%
+
+           FLASH:      110632 B       124 KB     87.13%
+
+        CONFIG_A:           0 B         2 KB      0.00%
+
+        CONFIG_B:           0 B         2 KB      0.00%
+

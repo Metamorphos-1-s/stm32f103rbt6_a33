@@ -1,0 +1,5 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/ui_config_workspace.c:10:6:UiConfigWorkspace_Acquire	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/ui_config_workspace.c:19:6:UiConfigWorkspace_Release	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/ui_config_workspace.c:27:15:UiConfigWorkspace_Original	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/ui_config_workspace.c:32:15:UiConfigWorkspace_Candidate	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/ui_config_workspace.c:37:24:UiConfigWorkspace_GetOwner	0	static

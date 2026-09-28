@@ -1,0 +1,8 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/alarm_output_manager/alarm_output_manager.c:10:13:AlarmOutputManager_IsAlarmState	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/alarm_output_manager/alarm_output_manager.c:17:13:AlarmOutputManager_SetMode	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/alarm_output_manager/alarm_output_manager.c:27:13:AlarmOutputManager_Apply	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/alarm_output_manager/alarm_output_manager.c:50:6:AlarmOutputManager_Init	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/alarm_output_manager/alarm_output_manager.c:69:6:AlarmOutputManager_Update	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/alarm_output_manager/alarm_output_manager.c:122:6:AlarmOutputManager_Run	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/alarm_output_manager/alarm_output_manager.c:165:6:AlarmOutputManager_AllOff	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/alarm_output_manager/alarm_output_manager.c:183:6:AlarmOutputManager_GetDiagnostics	4	static

@@ -1,0 +1,21 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:Execute" label: "Execute\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:16:22\n56 bytes (static)" }
+node: { title: "CommandService_Execute" label: "CommandService_Execute\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.h:57:15" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:Execute" targetname: "CommandService_Execute" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:26:12" }
+node: { title: "CheckweighLocalControl_BeginSession" label: "CheckweighLocalControl_BeginSession\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:30:6\n32 bytes (static)" }
+edge: { sourcename: "CheckweighLocalControl_BeginSession" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:Execute" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:35:23" }
+node: { title: "CheckweighLocalControl_EndSession" label: "CheckweighLocalControl_EndSession\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:45:6\n0 bytes (static)" }
+node: { title: "CheckweighLocalControl_Begin" label: "CheckweighLocalControl_Begin\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:52:6\n0 bytes (static)" }
+node: { title: "CheckweighLocalControl_Adjust" label: "CheckweighLocalControl_Adjust\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:61:6\n0 bytes (static)" }
+node: { title: "CheckweighLocalControl_Confirm" label: "CheckweighLocalControl_Confirm\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:69:6\n0 bytes (static)" }
+node: { title: "CheckweighLocalControl_Cancel" label: "CheckweighLocalControl_Cancel\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:76:6\n0 bytes (static)" }
+node: { title: "CheckweighLocalControl_HasCandidate" label: "CheckweighLocalControl_HasCandidate\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:82:6\n0 bytes (static)" }
+node: { title: "CheckweighLocalControl_CandidateCurrent" label: "CheckweighLocalControl_CandidateCurrent\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:84:6\n32 bytes (static)" }
+edge: { sourcename: "CheckweighLocalControl_CandidateCurrent" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:Execute" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:88:10" }
+node: { title: "CheckweighLocalControl_GetChoice" label: "CheckweighLocalControl_GetChoice\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:94:23\n0 bytes (static)" }
+node: { title: "CheckweighLocalControl_Apply" label: "CheckweighLocalControl_Apply\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:96:23\n32 bytes (static)" }
+edge: { sourcename: "CheckweighLocalControl_Apply" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:Execute" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:100:25" }
+edge: { sourcename: "CheckweighLocalControl_Apply" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:Execute" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:105:14" }
+edge: { sourcename: "CheckweighLocalControl_Apply" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:Execute" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:110:9" }
+node: { title: "CheckweighLocalControl_ChoiceText" label: "CheckweighLocalControl_ChoiceText\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:117:13\n0 bytes (static)" }
+}

@@ -1,0 +1,5 @@
+{"utc": "2026-09-28T07:38:58.371280+00:00", "host_monotonic_ns": 324422390000000, "kind": "CAPTURE_BEGIN", "five_blocks": [[0, 32], [32, 28], [448, 10], [640, 40], [768, 108]]}
+{"utc": "2026-09-28T07:38:59.519857+00:00", "host_monotonic_ns": 324423546000000, "kind": "QUALIFICATION_START", "sequence": 4, "mcu_ms": 1217}
+{"utc": "2026-09-28T07:40:56.443583+00:00", "host_monotonic_ns": 324540468000000, "kind": "HOST_REQUEST", "request": {"utc": "2026-09-28T07:40:56.394777+00:00", "host_monotonic_ns": 324540421000000, "event": "OFF_PREFLIGHT_TIMING_END_FOR_OUT_OF_BAND_FLASH_CHECK", "mode": null, "stop": true}}
+{"utc": "2026-09-28T07:40:56.447584+00:00", "host_monotonic_ns": 324540468000000, "kind": "CAPTURE_END", "failure": null}
+{"utc": "2026-09-28T07:41:13.377612+00:00", "host_monotonic_ns": 324557406000000, "kind": "EXACT_051D_RESTORATION_VERIFIED"}

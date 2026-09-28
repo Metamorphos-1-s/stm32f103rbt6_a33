@@ -1,0 +1,8 @@
+{
+  "status": "STOPPED_RESTORED_PENDING_SCORING",
+  "failure": null,
+  "raw_polls": 1437,
+  "qualified_unique_samples": 1168,
+  "read_errors": 0,
+  "csv_sha256": "C5115340A8A6CEA009631A89B6AA64F2DC80BB58F86C7026D517B39D022B714A"
+}

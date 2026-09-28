@@ -1,0 +1,8 @@
+{
+  "status": "FAIL",
+  "failure": "unobserved sequence/reset/time gap",
+  "raw_polls": 1936,
+  "qualified_unique_samples": 1586,
+  "read_errors": 0,
+  "csv_sha256": "7E32ECD20929517542E4EAB4C9611D8E853F51EF372B385FE01660841B669851"
+}

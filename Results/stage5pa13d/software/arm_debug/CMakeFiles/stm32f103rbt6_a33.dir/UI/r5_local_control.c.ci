@@ -1,0 +1,43 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:ChoiceFromStatus" label: "ChoiceFromStatus\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:47:22\n0 bytes (static)" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SamePublicState" label: "SamePublicState\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:106:13\n0 bytes (static)" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:Execute" label: "Execute\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:16:22\n48 bytes (static)" }
+node: { title: "CommandService_Execute" label: "CommandService_Execute\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/command_service/command_service.h:57:15" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:Execute" targetname: "CommandService_Execute" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:25:12" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetMode" label: "SetMode\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:119:13\n8 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetMode" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:Execute" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:121:12" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetApplication" label: "SetApplication\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:113:13\n8 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetApplication" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:Execute" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:115:12" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetPair" label: "SetPair\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:125:13\n16 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetPair" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetApplication" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:129:16" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetPair" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetMode" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:129:47" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetPair" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetMode" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:130:12" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetPair" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetApplication" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:130:29" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:Restore" label: "Restore\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:133:13\n8 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:Restore" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetPair" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:135:9" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:Restore" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetApplication" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:136:12" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:Restore" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetMode" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:137:12" }
+node: { title: "R5LocalControl_GetStatus" label: "R5LocalControl_GetStatus\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:28:6\n24 bytes (static)" }
+edge: { sourcename: "R5LocalControl_GetStatus" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:Execute" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:33:10" }
+node: { title: "R5LocalControl_BeginSession" label: "R5LocalControl_BeginSession\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:56:6\n8 bytes (static)" }
+edge: { sourcename: "R5LocalControl_BeginSession" targetname: "R5LocalControl_GetStatus" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:60:23" }
+node: { title: "R5LocalControl_EndSession" label: "R5LocalControl_EndSession\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:64:6\n0 bytes (static)" }
+node: { title: "R5LocalControl_Begin" label: "R5LocalControl_Begin\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:71:6\n8 bytes (static)" }
+edge: { sourcename: "R5LocalControl_Begin" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:ChoiceFromStatus" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:74:16" }
+node: { title: "R5LocalControl_Adjust" label: "R5LocalControl_Adjust\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:80:6\n0 bytes (static)" }
+node: { title: "R5LocalControl_Confirm" label: "R5LocalControl_Confirm\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:88:6\n0 bytes (static)" }
+node: { title: "R5LocalControl_Cancel" label: "R5LocalControl_Cancel\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:97:6\n0 bytes (static)" }
+node: { title: "R5LocalControl_HasCandidate" label: "R5LocalControl_HasCandidate\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:103:6\n0 bytes (static)" }
+node: { title: "R5LocalControl_GetChoice" label: "R5LocalControl_GetChoice\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:104:15\n0 bytes (static)" }
+node: { title: "R5LocalControl_Apply" label: "R5LocalControl_Apply\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:140:15\n24 bytes (static)" }
+edge: { sourcename: "R5LocalControl_Apply" targetname: "R5LocalControl_GetStatus" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:148:10" }
+edge: { sourcename: "R5LocalControl_Apply" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SamePublicState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:149:10" }
+edge: { sourcename: "R5LocalControl_Apply" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetApplication" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:179:20" }
+edge: { sourcename: "R5LocalControl_Apply" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetMode" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:180:33" }
+edge: { sourcename: "R5LocalControl_Apply" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetMode" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:184:20" }
+edge: { sourcename: "R5LocalControl_Apply" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:SetApplication" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:185:33" }
+edge: { sourcename: "R5LocalControl_Apply" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:Restore" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:193:25" }
+node: { title: "R5LocalControl_ChoiceText" label: "R5LocalControl_ChoiceText\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:197:13\n0 bytes (static)" }
+node: { title: "R5LocalControl_StateText" label: "R5LocalControl_StateText\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:205:13\n0 bytes (static)" }
+node: { title: "R5LocalControl_GetFailureCount" label: "R5LocalControl_GetFailureCount\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/r5_local_control.c:223:10\n0 bytes (static)" }
+}

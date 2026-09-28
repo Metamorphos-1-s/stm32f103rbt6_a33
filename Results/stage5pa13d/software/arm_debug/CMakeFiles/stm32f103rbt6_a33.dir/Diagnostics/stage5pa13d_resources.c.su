@@ -1,0 +1,7 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5pa13d_resources.c:14:18:StaticEnd	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5pa13d_resources.c:19:6:A13D_Init	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5pa13d_resources.c:37:39:A13D_PaintStack	0	static,ignoring_inline_asm
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5pa13d_resources.c:80:10:A13D_LoopBegin	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5pa13d_resources.c:90:6:A13D_LoopEnd	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5pa13d_resources.c:111:6:A13D_FeedEnd	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5pa13d_resources.c:122:10:A13D_ReadMetric	16	static,ignoring_inline_asm

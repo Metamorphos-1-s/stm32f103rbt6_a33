@@ -1,0 +1,12 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/display_model/display_formatter.c"
+node: { title: "DisplayFormatter_EncodeCharacter" label: "DisplayFormatter_EncodeCharacter\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/display_model/display_formatter.c:17:6\n0 bytes (static)" }
+node: { title: "DisplayFormatter_FormatText6" label: "DisplayFormatter_FormatText6\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/display_model/display_formatter.c:68:6\n16 bytes (static)" }
+edge: { sourcename: "DisplayFormatter_FormatText6" targetname: "DisplayFormatter_EncodeCharacter" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/display_model/display_formatter.c:78:14" }
+node: { title: "DisplayFormatter_FormatWeight" label: "DisplayFormatter_FormatWeight\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/display_model/display_formatter.c:86:6\n24 bytes (static)" }
+edge: { sourcename: "DisplayFormatter_FormatWeight" targetname: "DisplayFormatter_FormatText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/display_model/display_formatter.c:121:16" }
+edge: { sourcename: "DisplayFormatter_FormatWeight" targetname: "DisplayFormatter_EncodeCharacter" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/display_model/display_formatter.c:131:15" }
+edge: { sourcename: "DisplayFormatter_FormatWeight" targetname: "DisplayFormatter_EncodeCharacter" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/display_model/display_formatter.c:140:15" }
+node: { title: "DisplayFormatter_FormatBatteryMv" label: "DisplayFormatter_FormatBatteryMv\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/display_model/display_formatter.c:151:6\n8 bytes (static)" }
+edge: { sourcename: "DisplayFormatter_FormatBatteryMv" targetname: "DisplayFormatter_FormatText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/display_model/display_formatter.c:156:16" }
+edge: { sourcename: "DisplayFormatter_FormatBatteryMv" targetname: "DisplayFormatter_FormatWeight" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/display_model/display_formatter.c:158:12" }
+}

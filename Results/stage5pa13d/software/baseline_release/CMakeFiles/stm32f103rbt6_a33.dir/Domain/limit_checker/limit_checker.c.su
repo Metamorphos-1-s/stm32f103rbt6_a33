@@ -1,0 +1,3 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/limit_checker/limit_checker.c:58:6:LimitChecker_Reset	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/limit_checker/limit_checker.c:53:6:LimitChecker_Init	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/limit_checker/limit_checker.c:68:6:LimitChecker_Process	40	static

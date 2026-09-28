@@ -1,0 +1,9 @@
+[1/3] Building C object CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage5pa13d_resources.c.obj
+[2/3] Building C object CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+[3/3] Linking C executable stm32f103rbt6_a33.elf
+Memory region         Used Size  Region Size  %age Used
+             RAM:       19408 B        20 KB     94.77%
+           FLASH:       94212 B       124 KB     74.20%
+        CONFIG_A:           0 B         2 KB      0.00%
+        CONFIG_B:           0 B         2 KB      0.00%
+

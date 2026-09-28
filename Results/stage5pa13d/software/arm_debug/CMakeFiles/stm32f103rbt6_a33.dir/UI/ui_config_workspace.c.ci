@@ -1,0 +1,10 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/ui_config_workspace.c"
+node: { title: "UiConfigWorkspace_Acquire" label: "UiConfigWorkspace_Acquire\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/ui_config_workspace.c:10:6\n0 bytes (static)" }
+node: { title: "UiConfigWorkspace_Release" label: "UiConfigWorkspace_Release\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/ui_config_workspace.c:19:6\n8 bytes (static)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "UiConfigWorkspace_Release" targetname: "memset" }
+edge: { sourcename: "UiConfigWorkspace_Release" targetname: "memset" }
+node: { title: "UiConfigWorkspace_Original" label: "UiConfigWorkspace_Original\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/ui_config_workspace.c:27:15\n0 bytes (static)" }
+node: { title: "UiConfigWorkspace_Candidate" label: "UiConfigWorkspace_Candidate\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/ui_config_workspace.c:32:15\n0 bytes (static)" }
+node: { title: "UiConfigWorkspace_GetOwner" label: "UiConfigWorkspace_GetOwner\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/ui_config_workspace.c:37:24\n0 bytes (static)" }
+}

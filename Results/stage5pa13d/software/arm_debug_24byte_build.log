@@ -1,0 +1,14 @@
+[1/5] Building C object CMakeFiles/stm32f103rbt6_a33.dir/App/metrology_manager.c.obj
+[2/5] Building C object CMakeFiles/stm32f103rbt6_a33.dir/Core/Src/main.c.obj
+[3/5] Building C object CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage5pa13d_resources.c.obj
+[4/5] Building C object CMakeFiles/stm32f103rbt6_a33.dir/Protocol/modbus/modbus_register_model.c.obj
+[5/5] Linking C executable stm32f103rbt6_a33.elf
+Memory region         Used Size  Region Size  %age Used
+             RAM:       19440 B        20 KB     94.92%
+
+           FLASH:      110552 B       124 KB     87.07%
+
+        CONFIG_A:           0 B         2 KB      0.00%
+
+        CONFIG_B:           0 B         2 KB      0.00%
+

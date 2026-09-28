@@ -1,0 +1,10 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/modbus/modbus_command_mailbox.c:36:16:Join32	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/modbus/modbus_command_mailbox.c:41:16:BitsToInt64	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/modbus/modbus_command_mailbox.c:48:13:MapCommand	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/modbus/modbus_command_mailbox.c:78:29:Execute	64	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/modbus/modbus_command_mailbox.c:128:6:ModbusCommandMailbox_Init	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/modbus/modbus_command_mailbox.c:130:6:ModbusCommandMailbox_Process	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/modbus/modbus_command_mailbox.c:141:22:ModbusCommandMailbox_Read	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/modbus/modbus_command_mailbox.c:169:22:ModbusCommandMailbox_Write	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/modbus/modbus_command_mailbox.c:204:10:ModbusCommandMailbox_GetLastResult	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/modbus/modbus_command_mailbox.c:205:10:ModbusCommandMailbox_GetBusyRejectCount	0	static

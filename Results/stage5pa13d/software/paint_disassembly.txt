@@ -1,0 +1,38 @@
+
+Results/stage5pa13d/software/arm_release/stm32f103rbt6_a33.elf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+08016614 <A13D_PaintStack>:
+ 8016614:	f3ef 8310 	mrs	r3, PRIMASK
+ 8016618:	b672      	cpsid	i
+ 801661a:	f3ef 8014 	mrs	r0, CONTROL
+ 801661e:	f010 0f02 	tst.w	r0, #2
+ 8016622:	d11a      	bne.n	801665a <A13D_PaintStack+0x46>
+ 8016624:	f3ef 8005 	mrs	r0, IPSR
+ 8016628:	2800      	cmp	r0, #0
+ 801662a:	d116      	bne.n	801665a <A13D_PaintStack+0x46>
+ 801662c:	f3ef 8008 	mrs	r0, MSP
+ 8016630:	3840      	subs	r0, #64	@ 0x40
+ 8016632:	490f      	ldr	r1, [pc, #60]	@ (8016670 <A13D_PaintStack+0x5c>)
+ 8016634:	3107      	adds	r1, #7
+ 8016636:	f021 0107 	bic.w	r1, r1, #7
+ 801663a:	4281      	cmp	r1, r0
+ 801663c:	d20d      	bcs.n	801665a <A13D_PaintStack+0x46>
+ 801663e:	4a0d      	ldr	r2, [pc, #52]	@ (8016674 <A13D_PaintStack+0x60>)
+ 8016640:	6290      	str	r0, [r2, #40]	@ 0x28
+ 8016642:	f8d2 c02c 	ldr.w	ip, [r2, #44]	@ 0x2c
+ 8016646:	f04c 0c01 	orr.w	ip, ip, #1
+ 801664a:	f8c2 c02c 	str.w	ip, [r2, #44]	@ 0x2c
+ 801664e:	4a0a      	ldr	r2, [pc, #40]	@ (8016678 <A13D_PaintStack+0x64>)
+ 8016650:	4281      	cmp	r1, r0
+ 8016652:	d209      	bcs.n	8016668 <A13D_PaintStack+0x54>
+ 8016654:	f841 2b04 	str.w	r2, [r1], #4
+ 8016658:	e7fa      	b.n	8016650 <A13D_PaintStack+0x3c>
+ 801665a:	4a06      	ldr	r2, [pc, #24]	@ (8016674 <A13D_PaintStack+0x60>)
+ 801665c:	f8d2 c02c 	ldr.w	ip, [r2, #44]	@ 0x2c
+ 8016660:	f04c 0c04 	orr.w	ip, ip, #4
+ 8016664:	f8c2 c02c 	str.w	ip, [r2, #44]	@ 0x2c
+ 8016668:	f383 8810 	msr	PRIMASK, r3
+ 801666c:	4770      	bx	lr

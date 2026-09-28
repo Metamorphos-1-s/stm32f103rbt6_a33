@@ -1,0 +1,4 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/startup_auto_zero_controller.c:22:6:StartupAutoZeroController_Init	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/startup_auto_zero_controller.c:40:6:StartupAutoZeroController_Process	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/startup_auto_zero_controller.c:89:6:StartupAutoZeroController_CompleteZero	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/App/startup_auto_zero_controller.c:105:32:StartupAutoZeroController_GetSnapshot	0	static

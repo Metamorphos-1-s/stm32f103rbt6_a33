@@ -1,0 +1,4 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/raw_measurement.c:8:6:RawMeasurement_Init	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/raw_measurement.c:13:6:RawMeasurement_Accept	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/raw_measurement.c:64:28:RawMeasurement_GetState	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/raw_measurement.c:69:6:RawMeasurement_ResetStatistics	0	static

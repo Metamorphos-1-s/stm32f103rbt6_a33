@@ -1,0 +1,12 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:16:22:Execute	64	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:30:6:CheckweighLocalControl_BeginSession	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:45:6:CheckweighLocalControl_EndSession	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:52:6:CheckweighLocalControl_Begin	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:61:6:CheckweighLocalControl_Adjust	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:69:6:CheckweighLocalControl_Confirm	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:76:6:CheckweighLocalControl_Cancel	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:82:6:CheckweighLocalControl_HasCandidate	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:84:6:CheckweighLocalControl_CandidateCurrent	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:94:23:CheckweighLocalControl_GetChoice	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:96:23:CheckweighLocalControl_Apply	48	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/UI/checkweigh_local_control.c:117:13:CheckweighLocalControl_ChoiceText	0	static

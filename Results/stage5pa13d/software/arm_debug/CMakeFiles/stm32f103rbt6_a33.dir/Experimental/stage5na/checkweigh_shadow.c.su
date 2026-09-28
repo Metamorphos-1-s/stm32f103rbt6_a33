@@ -1,0 +1,7 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Experimental/stage5na/checkweigh_shadow.c:36:13:IsValidClass	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Experimental/stage5na/checkweigh_shadow.c:43:16:Suppression	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Experimental/stage5na/checkweigh_shadow.c:28:9:CheckweighShadow_Classify	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Experimental/stage5na/checkweigh_shadow.c:57:16:Hysteresis	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Experimental/stage5na/checkweigh_shadow.c:83:6:CheckweighShadow_Reset	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Experimental/stage5na/checkweigh_shadow.c:92:6:CheckweighShadow_RequestReset	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13d/Experimental/stage5na/checkweigh_shadow.c:99:6:CheckweighShadow_Process	72	static

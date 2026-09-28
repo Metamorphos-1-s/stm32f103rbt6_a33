@@ -1,0 +1,29 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5b_modbus_diagnostics.c"
+node: { title: "Stage5BModbusDiagnostics_Get" label: "Stage5BModbusDiagnostics_Get\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5b_modbus_diagnostics.c:9:6\n48 bytes (static)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "Stage5BModbusDiagnostics_Get" targetname: "memset" }
+node: { title: "CommunicationManager_GetActiveConfig" label: "CommunicationManager_GetActiveConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/communication_manager.h:64:28" shape : ellipse }
+edge: { sourcename: "Stage5BModbusDiagnostics_Get" targetname: "CommunicationManager_GetActiveConfig" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5b_modbus_diagnostics.c:18:14" }
+node: { title: "Uart2DmaTransport_GetStatistics" label: "Uart2DmaTransport_GetStatistics\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Drivers/serial/uart2_dma_transport.h:46:36" shape : ellipse }
+edge: { sourcename: "Stage5BModbusDiagnostics_Get" targetname: "Uart2DmaTransport_GetStatistics" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5b_modbus_diagnostics.c:19:17" }
+node: { title: "CommunicationManager_GetFramer" label: "CommunicationManager_GetFramer\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/communication_manager.h:65:24" shape : ellipse }
+edge: { sourcename: "Stage5BModbusDiagnostics_Get" targetname: "CommunicationManager_GetFramer" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5b_modbus_diagnostics.c:20:14" }
+node: { title: "ModbusRtuFramer_GetStatistics" label: "ModbusRtuFramer_GetStatistics\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/modbus/modbus_rtu_framer.h:70:34" shape : ellipse }
+edge: { sourcename: "Stage5BModbusDiagnostics_Get" targetname: "ModbusRtuFramer_GetStatistics" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5b_modbus_diagnostics.c:20:14" }
+node: { title: "CommunicationManager_GetServer" label: "CommunicationManager_GetServer\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/communication_manager.h:66:24" shape : ellipse }
+edge: { sourcename: "Stage5BModbusDiagnostics_Get" targetname: "CommunicationManager_GetServer" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5b_modbus_diagnostics.c:22:14" }
+node: { title: "ModbusRtuServer_GetStatistics" label: "ModbusRtuServer_GetStatistics\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/modbus/modbus_rtu_server.h:83:34" shape : ellipse }
+edge: { sourcename: "Stage5BModbusDiagnostics_Get" targetname: "ModbusRtuServer_GetStatistics" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5b_modbus_diagnostics.c:22:14" }
+node: { title: "CommunicationManager_GetState" label: "CommunicationManager_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/App/communication_manager.h:63:27" shape : ellipse }
+edge: { sourcename: "Stage5BModbusDiagnostics_Get" targetname: "CommunicationManager_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5b_modbus_diagnostics.c:24:31" }
+edge: { sourcename: "Stage5BModbusDiagnostics_Get" targetname: "CommunicationManager_GetServer" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5b_modbus_diagnostics.c:25:30" }
+node: { title: "ModbusRtuServer_GetState" label: "ModbusRtuServer_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/modbus/modbus_rtu_server.h:82:22" shape : ellipse }
+edge: { sourcename: "Stage5BModbusDiagnostics_Get" targetname: "ModbusRtuServer_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5b_modbus_diagnostics.c:25:30" }
+edge: { sourcename: "Stage5BModbusDiagnostics_Get" targetname: "CommunicationManager_GetFramer" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5b_modbus_diagnostics.c:27:30" }
+node: { title: "ModbusRtuFramer_GetState" label: "ModbusRtuFramer_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/modbus/modbus_rtu_framer.h:69:19" shape : ellipse }
+edge: { sourcename: "Stage5BModbusDiagnostics_Get" targetname: "ModbusRtuFramer_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5b_modbus_diagnostics.c:27:30" }
+node: { title: "Rs485TxController_GetState" label: "Rs485TxController_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Drivers/serial/rs485_tx_controller.h:35:14" shape : ellipse }
+edge: { sourcename: "Stage5BModbusDiagnostics_Get" targetname: "Rs485TxController_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5b_modbus_diagnostics.c:29:26" }
+node: { title: "ModbusRtuTiming_Calculate" label: "ModbusRtuTiming_Calculate\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Protocol/modbus/modbus_rtu_timing.h:20:6" shape : ellipse }
+edge: { sourcename: "Stage5BModbusDiagnostics_Get" targetname: "ModbusRtuTiming_Calculate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Diagnostics/stage5b_modbus_diagnostics.c:30:29" }
+}

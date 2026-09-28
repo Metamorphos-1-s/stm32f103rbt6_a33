@@ -1,0 +1,18 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:Magnitude" label: "Magnitude\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:12:17\n0 bytes (static)" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:MultiplyWide" label: "MultiplyWide\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:18:21\n48 bytes (static)" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:DivideWideRounded" label: "DivideWideRounded\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:40:13\n56 bytes (static)" }
+node: { title: "MassMath_Add" label: "MassMath_Add\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:76:6\n8 bytes (static)" }
+node: { title: "MassMath_Subtract" label: "MassMath_Subtract\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:84:6\n8 bytes (static)" }
+node: { title: "MassMath_Abs" label: "MassMath_Abs\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:93:6\n8 bytes (static)" }
+edge: { sourcename: "MassMath_Abs" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:Magnitude" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:96:18" }
+node: { title: "MassMath_MulDivRound" label: "MassMath_MulDivRound\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:100:6\n80 bytes (static)" }
+edge: { sourcename: "MassMath_MulDivRound" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:Magnitude" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:109:15" }
+edge: { sourcename: "MassMath_MulDivRound" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:Magnitude" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:109:15" }
+edge: { sourcename: "MassMath_MulDivRound" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:MultiplyWide" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:109:15" }
+edge: { sourcename: "MassMath_MulDivRound" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:Magnitude" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:110:10" }
+edge: { sourcename: "MassMath_MulDivRound" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:DivideWideRounded" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:110:10" }
+node: { title: "MassMath_Quantize" label: "MassMath_Quantize\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:125:6\n40 bytes (static)" }
+edge: { sourcename: "MassMath_Quantize" targetname: "MassMath_MulDivRound" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:130:10" }
+edge: { sourcename: "MassMath_Quantize" targetname: "MassMath_MulDivRound" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Domain/measurement/mass_math.c:132:12" }
+}

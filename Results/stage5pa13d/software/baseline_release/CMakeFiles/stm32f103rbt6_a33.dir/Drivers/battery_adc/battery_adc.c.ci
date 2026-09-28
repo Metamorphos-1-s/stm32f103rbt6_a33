@@ -1,0 +1,23 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Drivers/battery_adc/battery_adc.c"
+node: { title: "BatteryAdc_Init" label: "BatteryAdc_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Drivers/battery_adc/battery_adc.c:22:6\n16 bytes (static)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "BatteryAdc_Init" targetname: "memset" }
+node: { title: "BatteryAdc_GetState" label: "BatteryAdc_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Drivers/battery_adc/battery_adc.c:80:24\n0 bytes (static)" }
+node: { title: "BatteryAdc_GetErrorCount" label: "BatteryAdc_GetErrorCount\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Drivers/battery_adc/battery_adc.c:85:10\n0 bytes (static)" }
+node: { title: "BatteryAdc_ConvertAdcMv" label: "BatteryAdc_ConvertAdcMv\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Drivers/battery_adc/battery_adc.c:90:10\n24 bytes (static)" }
+node: { title: "__aeabi_uldivmod" label: "__aeabi_uldivmod\n<built-in>" shape : ellipse }
+edge: { sourcename: "BatteryAdc_ConvertAdcMv" targetname: "__aeabi_uldivmod" }
+node: { title: "__aeabi_ldivmod" label: "__aeabi_ldivmod\n<built-in>" shape : ellipse }
+edge: { sourcename: "BatteryAdc_ConvertAdcMv" targetname: "__aeabi_ldivmod" }
+edge: { sourcename: "BatteryAdc_ConvertAdcMv" targetname: "__aeabi_ldivmod" }
+node: { title: "BatteryAdc_Process500ms" label: "BatteryAdc_Process500ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Drivers/battery_adc/battery_adc.c:36:6\n40 bytes (static)" }
+node: { title: "BSP_BatteryAdcReadRaw" label: "BSP_BatteryAdcReadRaw\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/BSP/bsp_adc.h:16:6" shape : ellipse }
+edge: { sourcename: "BatteryAdc_Process500ms" targetname: "BSP_BatteryAdcReadRaw" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Drivers/battery_adc/battery_adc.c:50:14" }
+node: { title: "BSP_BatteryRawToAdcMv" label: "BSP_BatteryRawToAdcMv\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/BSP/bsp_adc.h:17:10" shape : ellipse }
+edge: { sourcename: "BatteryAdc_Process500ms" targetname: "BSP_BatteryRawToAdcMv" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Drivers/battery_adc/battery_adc.c:61:22" }
+edge: { sourcename: "BatteryAdc_Process500ms" targetname: "BatteryAdc_ConvertAdcMv" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Drivers/battery_adc/battery_adc.c:63:26" }
+node: { title: "BSP_TimeNowMs" label: "BSP_TimeNowMs\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/BSP/bsp_time.h:22:15" shape : ellipse }
+edge: { sourcename: "BatteryAdc_Process500ms" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Drivers/battery_adc/battery_adc.c:64:28" }
+node: { title: "EventQueue_Push" label: "EventQueue_Push\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/Services/event_queue/event_queue.h:60:6" shape : ellipse }
+edge: { sourcename: "BatteryAdc_Process500ms" targetname: "EventQueue_Push" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/Drivers/battery_adc/battery_adc.c:74:10" }
+}

@@ -1,0 +1,22 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/BSP/bsp_adc.c"
+node: { title: "BSP_BatteryAdcCalibrate" label: "BSP_BatteryAdcCalibrate\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/BSP/bsp_adc.c:8:6\n8 bytes (static)" }
+node: { title: "HAL_ADCEx_Calibration_Start" label: "HAL_ADCEx_Calibration_Start\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc_ex.h:646:25" shape : ellipse }
+edge: { sourcename: "BSP_BatteryAdcCalibrate" targetname: "HAL_ADCEx_Calibration_Start" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/BSP/bsp_adc.c:10:12" }
+node: { title: "BSP_BatteryAdcReadRaw" label: "BSP_BatteryAdcReadRaw\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/BSP/bsp_adc.c:13:6\n16 bytes (static)" }
+node: { title: "HAL_ADC_Start" label: "HAL_ADC_Start\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc.h:918:25" shape : ellipse }
+edge: { sourcename: "BSP_BatteryAdcReadRaw" targetname: "HAL_ADC_Start" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/BSP/bsp_adc.c:22:9" }
+node: { title: "HAL_ADC_PollForConversion" label: "HAL_ADC_PollForConversion\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc.h:920:25" shape : ellipse }
+edge: { sourcename: "BSP_BatteryAdcReadRaw" targetname: "HAL_ADC_PollForConversion" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/BSP/bsp_adc.c:27:9" }
+node: { title: "HAL_ADC_GetValue" label: "HAL_ADC_GetValue\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc.h:932:25" shape : ellipse }
+edge: { sourcename: "BSP_BatteryAdcReadRaw" targetname: "HAL_ADC_GetValue" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/BSP/bsp_adc.c:29:26" }
+node: { title: "HAL_ADC_Stop" label: "HAL_ADC_Stop\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/cmake/stm32cubemx/../../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc.h:919:25" shape : ellipse }
+edge: { sourcename: "BSP_BatteryAdcReadRaw" targetname: "HAL_ADC_Stop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13d/BSP/bsp_adc.c:33:9" }
+node: { title: "BSP_BatteryRawToAdcMv" label: "BSP_BatteryRawToAdcMv\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/BSP/bsp_adc.c:41:10\n16 bytes (static)" }
+node: { title: "__aeabi_uldivmod" label: "__aeabi_uldivmod\n<built-in>" shape : ellipse }
+edge: { sourcename: "BSP_BatteryRawToAdcMv" targetname: "__aeabi_uldivmod" }
+node: { title: "__aeabi_ldivmod" label: "__aeabi_ldivmod\n<built-in>" shape : ellipse }
+edge: { sourcename: "BSP_BatteryRawToAdcMv" targetname: "__aeabi_ldivmod" }
+node: { title: "BSP_BatteryAdcMvToBatteryMv" label: "BSP_BatteryAdcMvToBatteryMv\nD:/Documents/stm32f103rbt6_a33_stage5pa13d/BSP/bsp_adc.c:48:10\n16 bytes (static)" }
+edge: { sourcename: "BSP_BatteryAdcMvToBatteryMv" targetname: "__aeabi_uldivmod" }
+edge: { sourcename: "BSP_BatteryAdcMvToBatteryMv" targetname: "__aeabi_ldivmod" }
+}

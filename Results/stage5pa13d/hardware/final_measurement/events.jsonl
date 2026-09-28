@@ -1,0 +1,7 @@
+{"utc": "2026-09-28T07:51:50.743484+00:00", "host_monotonic_ns": 325194765000000, "kind": "CAPTURE_BEGIN", "five_blocks": [[0, 32], [32, 28], [448, 10], [640, 40], [768, 112]]}
+{"utc": "2026-09-28T07:51:51.891297+00:00", "host_monotonic_ns": 325195921000000, "kind": "QUALIFICATION_START", "sequence": 4, "mcu_ms": 1217}
+{"utc": "2026-09-28T07:54:30.735988+00:00", "host_monotonic_ns": 325354765000000, "kind": "HOST_REQUEST", "request": {"utc": "2026-09-28T07:54:30.719214+00:00", "host_monotonic_ns": 325354750000000, "event": "EMPTY_CONFIRMED_BY_USER_STATIC_TIMING_BEGIN", "mode": 2, "stop": false}}
+{"utc": "2026-09-28T07:54:30.764097+00:00", "host_monotonic_ns": 325354781000000, "kind": "MODE_RESULT", "result": {"token": 1200, "result": 0, "result_name": "OK", "state": 0, "last_command": 29}}
+{"utc": "2026-09-28T07:54:30.853279+00:00", "host_monotonic_ns": 325354875000000, "kind": "MEASUREMENT_FAILURE", "error": "unobserved sequence/reset/time gap"}
+{"utc": "2026-09-28T07:54:30.853279+00:00", "host_monotonic_ns": 325354875000000, "kind": "CAPTURE_END", "failure": "unobserved sequence/reset/time gap"}
+{"utc": "2026-09-28T07:54:47.747274+00:00", "host_monotonic_ns": 325371765000000, "kind": "EXACT_051D_RESTORATION_VERIFIED"}
