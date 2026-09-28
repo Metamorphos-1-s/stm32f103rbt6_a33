@@ -1,0 +1,96 @@
+Internal ctest changing into directory: D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Results/stage5pa13dr/software/host
+Test project D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Results/stage5pa13dr/software/host
+      Start  1: stage4a_host_logic
+ 1/45 Test  #1: stage4a_host_logic ...................   Passed    0.05 sec
+      Start  2: stage5pa2d_calibration_logic
+ 2/45 Test  #2: stage5pa2d_calibration_logic .........   Passed    0.05 sec
+      Start  3: stage5l_measurement_diagnostics
+ 3/45 Test  #3: stage5l_measurement_diagnostics ......   Passed    0.01 sec
+      Start  4: stage5mr5e_d1d_display_logic
+ 4/45 Test  #4: stage5mr5e_d1d_display_logic .........   Passed    0.01 sec
+      Start  5: stage5ma_adaptive_logic
+ 5/45 Test  #5: stage5ma_adaptive_logic ..............   Passed    0.01 sec
+      Start  6: stage5na3_fault_injection_logic
+ 6/45 Test  #6: stage5na3_fault_injection_logic ......   Passed    0.01 sec
+      Start  7: stage5nb_guarded_checkweigh_logic
+ 7/45 Test  #7: stage5nb_guarded_checkweigh_logic ....   Passed    0.01 sec
+      Start  8: stage5nb_local_control_logic
+ 8/45 Test  #8: stage5nb_local_control_logic .........   Passed    0.01 sec
+      Start  9: stage5nb_output_safety_logic
+ 9/45 Test  #9: stage5nb_output_safety_logic .........   Passed    0.02 sec
+      Start 10: stage5mr_drift_logic
+10/45 Test #10: stage5mr_drift_logic .................   Passed    0.01 sec
+      Start 11: stage5mr5_reference_lock_logic
+11/45 Test #11: stage5mr5_reference_lock_logic .......   Passed    0.02 sec
+      Start 12: stage5pa_r5_admission_logic
+12/45 Test #12: stage5pa_r5_admission_logic ..........   Passed    0.02 sec
+      Start 13: stage5mr5_weight_engine_logic
+13/45 Test #13: stage5mr5_weight_engine_logic ........   Passed    0.02 sec
+      Start 14: stage5mr5_beta_mailbox_logic
+14/45 Test #14: stage5mr5_beta_mailbox_logic .........   Passed    0.02 sec
+      Start 15: stage5mr5e_local_control_logic
+15/45 Test #15: stage5mr5e_local_control_logic .......   Passed    0.02 sec
+      Start 16: stage5mr5e_standard_surface_logic
+16/45 Test #16: stage5mr5e_standard_surface_logic ....   Passed    0.02 sec
+      Start 17: stage5mr5e_beta_surface_logic
+17/45 Test #17: stage5mr5e_beta_surface_logic ........   Passed    0.02 sec
+      Start 18: stage5mr5_ui_workspace_logic
+18/45 Test #18: stage5mr5_ui_workspace_logic .........   Passed    0.01 sec
+      Start 19: stage5mr5_persistent_equal_logic
+19/45 Test #19: stage5mr5_persistent_equal_logic .....   Passed    0.02 sec
+      Start 20: stage5pa_persistence_logic
+20/45 Test #20: stage5pa_persistence_logic ...........   Passed    0.01 sec
+      Start 21: stage5pa2c_persistence_logic
+21/45 Test #21: stage5pa2c_persistence_logic .........   Passed    0.01 sec
+      Start 22: stage5pa2c_menu_logic
+22/45 Test #22: stage5pa2c_menu_logic ................   Passed    0.01 sec
+      Start 23: stage5pa2d_menu_logic
+23/45 Test #23: stage5pa2d_menu_logic ................   Passed    0.01 sec
+      Start 24: stage5pa_timing_logic
+24/45 Test #24: stage5pa_timing_logic ................   Passed    0.01 sec
+      Start 25: stage5mr5_tare_revision_logic
+25/45 Test #25: stage5mr5_tare_revision_logic ........   Passed    0.01 sec
+      Start 26: display_conditioner_logic
+26/45 Test #26: display_conditioner_logic ............   Passed    0.01 sec
+      Start 27: runtime_drift_logic
+27/45 Test #27: runtime_drift_logic ..................   Passed    0.02 sec
+      Start 28: startup_auto_zero_logic
+28/45 Test #28: startup_auto_zero_logic ..............   Passed    0.01 sec
+      Start 29: stage4b_storage_logic
+29/45 Test #29: stage4b_storage_logic ................   Passed    0.01 sec
+      Start 30: stage4br_persistence_logic
+30/45 Test #30: stage4br_persistence_logic ...........   Passed    0.01 sec
+      Start 31: stage5pa2d_persistence_logic
+31/45 Test #31: stage5pa2d_persistence_logic .........   Passed    0.01 sec
+      Start 32: stage5a_host_logic
+32/45 Test #32: stage5a_host_logic ...................   Passed    0.01 sec
+      Start 33: stage5b_host_logic
+33/45 Test #33: stage5b_host_logic ...................   Passed    0.01 sec
+      Start 34: stage5c_host_logic
+34/45 Test #34: stage5c_host_logic ...................   Passed    0.01 sec
+      Start 35: stage5c_ble_telemetry_logic
+35/45 Test #35: stage5c_ble_telemetry_logic ..........   Passed    0.01 sec
+      Start 36: stage5c_ble_command_protocol_logic
+36/45 Test #36: stage5c_ble_command_protocol_logic ...   Passed    0.01 sec
+      Start 37: stage5e_config_edit_no_menu_logic
+37/45 Test #37: stage5e_config_edit_no_menu_logic ....   Passed    0.03 sec
+      Start 38: stage5c_ble_command_service_logic
+38/45 Test #38: stage5c_ble_command_service_logic ....   Passed    0.02 sec
+      Start 39: uart2_dma_recovery_logic
+39/45 Test #39: uart2_dma_recovery_logic .............   Passed    0.01 sec
+      Start 40: checkweigh_logic
+40/45 Test #40: checkweigh_logic .....................   Passed    0.01 sec
+      Start 41: alarm_output_manager_logic
+41/45 Test #41: alarm_output_manager_logic ...........   Passed    0.02 sec
+      Start 42: stage5pa13d_resource_logic
+42/45 Test #42: stage5pa13d_resource_logic ...........   Passed    0.01 sec
+      Start 43: stage5pa13dr_accumulator
+43/45 Test #43: stage5pa13dr_accumulator .............   Passed    0.02 sec
+      Start 44: stage5pa13dr_storage_lease
+44/45 Test #44: stage5pa13dr_storage_lease ...........   Passed    0.02 sec
+      Start 45: stage5pa13c_safety
+45/45 Test #45: stage5pa13c_safety ...................   Passed    0.19 sec
+
+100% tests passed, 0 tests failed out of 45
+
+Total Test time (real) =   0.93 sec

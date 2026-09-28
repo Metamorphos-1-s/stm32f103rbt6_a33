@@ -1,0 +1,5 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/weight_math.c:6:17:WeightMath_UnsignedMagnitude	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/weight_math.c:13:6:WeightMath_DivideRoundNearest	56	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/weight_math.c:51:6:WeightMath_ClampInt64ToInt32	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/weight_math.c:61:6:WeightMath_AbsInt32	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/weight_math.c:71:6:WeightMath_Quantize	32	static

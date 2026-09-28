@@ -1,0 +1,578 @@
+适用于 .NET Framework MSBuild 版本 17.13.19+0d9f5a35a
+
+  1>Checking Build System
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  test_display_conditioner.c
+  test_stage2a.c
+  test_checkweigh.c
+  test_alarm_output_manager.c
+  test_stage4b.c
+  display_conditioner.c
+  alarm_output_manager.c
+  alarm_config_validation.c
+  test_stage3.c
+  fake_flash_backend.c
+  正在生成代码...
+  limit_checker.c
+  正在生成代码...
+  system_context.c
+  fault_manager.c
+  正在生成代码...
+  revision_helper.c
+  test_stage4a.c
+  alarm_config_validation.c
+  test_persistence_manager.c
+  device_config_validator.c
+  default_config.c
+  calibration_model.c
+  persistence_test_adapters.c
+  synthetic_scale_source.c
+  metrology_config_validator.c
+  mocks.c
+  fake_flash_backend.c
+  mass_math.c
+  persistence_manager.c
+  metrology_standard_validator.c
+  measurement_bridge.c
+  calibration_controller.c
+  unit_converter.c
+  system_context.c
+  weight_math.c
+  config_application.c
+  revision_helper.c
+  config_store.c
+  alarm_config_validation.c
+  metrology_manager.c
+  persistent_codec.c
+  device_config_validator.c
+  self_test_controller.c
+  default_config.c
+  crc32.c
+  正在生成代码...
+  system_context.c
+  calibration_model.c
+  metrology_config_validator.c
+  revision_helper.c
+  mass_math.c
+  test_runtime_drift_compensator.c
+  weighing_profile_manager.c
+  metrology_standard_validator.c
+  alarm_config_validation.c
+  device_config_validator.c
+  unit_converter.c
+  mass_math.c
+  default_config.c
+  runtime_drift_compensator.c
+  weight_math.c
+  config_store.c
+  stage2b_board_diagnostics.c
+  正在生成代码...
+  persistent_codec.c
+  stage2b_display_font.c
+  alarm_output_manager_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\alarm_output_manager_tests.exe
+  display_conditioner_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\display_conditioner_tests.exe
+  crc32.c
+  stage3_metrology_diagnostics.c
+  storage_power_guard.c
+  calibration_model.c
+  正在生成代码...
+  test_stage5a.c
+  正在生成代码...
+  checkweigh_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\checkweigh_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  stage5a_model_adapters.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  alarm_config_validation.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  device_config_validator.c
+  default_config.c
+  calibration_model.c
+  mass_math.c
+  runtime_drift_compensator.c
+  metrology_config_validator.c
+  metrology_standard_validator.c
+  unit_converter.c
+  test_ble_command_protocol.c
+  test_stage5b.c
+  weight_math.c
+  persistent_codec.c
+  crc16.c
+  modbus_command_mailbox.c
+  ble_frame_codec.c
+  test_ble_command_service.c
+  stage5a_model_adapters.c
+  test_ble_telemetry.c
+  modbus_register_model.c
+  ble_command_protocol.c
+  stage5b_transport_adapters.c
+  正在生成代码...
+  ble_command_service.c
+  crc16.c
+  key_map.c
+  ble_frame_codec.c
+  ble_command_protocol.c
+  ble_frame_codec.c
+  communication_manager.c
+  ble_checkweigh_codec.c
+  crc16.c
+  key_service.c
+  ble_telemetry_scheduler.c
+  正在生成代码...
+  alarm_config_validation.c
+  正在生成代码...
+  正在生成代码...
+  device_config_validator.c
+  default_config.c
+  calibration_model.c
+  mass_math.c
+  runtime_drift_compensator.c
+  metrology_config_validator.c
+  metrology_standard_validator.c
+  unit_converter.c
+  正在编译...
+  raw_calibration_stability.c
+  runtime_drift_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\runtime_drift_tests.exe
+  weight_math.c
+  weight_filter.c
+  modbus_crc16.c
+  crc16.c
+  metrology_config_validator.c
+  modbus_command_mailbox.c
+  modbus_register_model.c
+  display_conditioner.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  mass_math.c
+  modbus_rtu_server.c
+  metrology_standard_validator.c
+  modbus_rtu_framer.c
+  raw_measurement.c
+  正在生成代码...
+  runtime_drift_compensator.c
+  stage5c_ble_command_protocol_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5c_ble_command_protocol_tests.exe
+  unit_converter.c
+  weight_engine.c
+  weight_math.c
+  stage4br_persistence_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage4br_persistence_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  stability_detector.c
+  zero_tare.c
+  stage5c_ble_command_service_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5c_ble_command_service_tests.exe
+  battery_adc.c
+  test_stage5c.c
+  cs1237.c
+  output_gpio.c
+  tm1628.c
+  stage5c_transport_adapters.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  stage4b_storage_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage4b_storage_tests.exe
+  ble_transport.c
+  tm1628_board_map.c
+  w02_pwrkey.c
+  ble_connection_manager.c
+  command_service.c
+  event_queue.c
+  正在生成代码...
+  stage5c_ble_diagnostics.c
+  test_config_edit_no_menu.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  正在生成代码...
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  config_edit.c
+  device_config_validator.c
+  default_config.c
+  test_stage5l_measurement_diagnostics.c
+  unit_converter.c
+  stage5c_ble_telemetry_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5c_ble_telemetry_tests.exe
+  mass_math.c
+  正在生成代码...
+  stage5l_measurement_diagnostics.c
+  正在编译...
+  modbus_rtu_timing.c
+  正在生成代码...
+  stage5ma_adaptive_runner.c
+  modbus_rtu_transport.c
+  modbus_uart2_transport.c
+  adaptive_measurement.c
+  uart3_modbus_transport.c
+  正在生成代码...
+  test_stage5ma_adaptive.c
+  rs485_tx_controller.c
+  uart2_dma_position.c
+  adaptive_measurement.c
+  key_service.c
+  正在生成代码...
+  key_map.c
+  正在生成代码...
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  正在编译...
+  persistent_codec.c
+  config_edit.c
+  fault_manager.c
+  display_controller.c
+  stage5c_host_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5c_host_tests.exe
+  display_codes.c
+  stage5a_host_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5a_host_tests.exe
+  display_formatter.c
+  display_model.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  stage5l_measurement_diagnostics_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5l_measurement_diagnostics_tests.exe
+  numeric_edit_cursor.c
+  test_stage5mr5_beta_mailbox.c
+  stage5e_config_edit_no_menu_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5e_config_edit_no_menu_tests.exe
+  key_map.c
+  key_service.c
+  modbus_command_mailbox.c
+  menu_controller.c
+  正在生成代码...
+  status_controller.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  stage5ma_adaptive_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5ma_adaptive_tests.exe
+  run_key_policy.c
+  正在生成代码...
+  test_stage5mr5_persistent_equal.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  alarm_config_validation.c
+  default_config.c
+  device_config_validator.c
+  calibration_model.c
+  stage5ma_adaptive_runner.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5ma_adaptive_runner.exe
+  mass_math.c
+  stage5mr5_reference_lock_runner.c
+  test_stage5mr5_reference_lock.c
+  metrology_config_validator.c
+  reference_lock_drift_compensator.c
+  reference_lock_drift_compensator.c
+  metrology_standard_validator.c
+  正在生成代码...
+  unit_converter.c
+  正在生成代码...
+  weight_math.c
+  persistent_codec.c
+  stage5b_host_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5b_host_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  正在生成代码...
+  test_stage5mr5_tare_revision.c
+  revision_helper.c
+  system_context.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  stage5mr5_beta_mailbox_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr5_beta_mailbox_tests.exe
+  alarm_config_validation.c
+  default_config.c
+  device_config_validator.c
+  calibration_model.c
+  mass_math.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  metrology_config_validator.c
+  metrology_standard_validator.c
+  test_ui_config_workspace.c
+  unit_converter.c
+  weight_math.c
+  ui_config_workspace.c
+  persistent_codec.c
+  正在生成代码...
+  test_stage5mr5_weight_engine.c
+  正在生成代码...
+  alarm_config_validation.c
+  default_config.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  calibration_model.c
+  test_stage5mr5e_surface.c
+  weight_filter.c
+  stage5mr5_reference_lock_runner.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr5_reference_lock_runner.exe
+  stage5mr5_reference_lock_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr5_reference_lock_tests.exe
+  mass_math.c
+  metrology_config_validator.c
+  metrology_standard_validator.c
+  runtime_drift_compensator.c
+  unit_converter.c
+  weight_engine.c
+  weight_math.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  stability_detector.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  zero_tare.c
+  stage5mr5e_d1b_display_runner.c
+  正在生成代码...
+  active_display_follower.c
+  正在生成代码...
+  stage5mr5_ui_workspace_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr5_ui_workspace_tests.exe
+  stage5mr5_persistent_equal_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr5_persistent_equal_tests.exe
+  stage5mr5e_d1d_display_runner.c
+  stage5mr5e_d1c_display_runner.c
+  display_conditioner.c
+  directional_display_follower.c
+  正在生成代码...
+  mass_math.c
+  unit_converter.c
+  正在生成代码...
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  stage5mr5_tare_revision_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr5_tare_revision_tests.exe
+  stage5mr5e_d1b_display_runner.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr5e_d1b_display_runner.exe
+  stage5mr5e_beta_surface_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr5e_beta_surface_tests.exe
+  test_unified_display_conditioner.c
+  display_conditioner.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  mass_math.c
+  stage4a_host_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage4a_host_tests.exe
+  test_stage5mr5e_local_control.c
+  unit_converter.c
+  正在生成代码...
+  display_formatter.c
+  r5_local_control.c
+  正在生成代码...
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  stage5mr5e_d1c_display_runner.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr5e_d1c_display_runner.exe
+  test_stage5mr5e_surface.c
+  stage5mr_drift_runner.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  static_drift_compensator.c
+  stage5mr5e_d1d_display_runner.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr5e_d1d_display_runner.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  正在生成代码...
+  test_stage5mr_drift.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  stage5mr5_weight_engine_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr5_weight_engine_tests.exe
+  static_drift_compensator.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  正在生成代码...
+  test_stage5na3_fault_injection.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  stage5na3_fault_injection.c
+  stage5na_shadow_runner.c
+  checkweigh_shadow.c
+  checkweigh_shadow.c
+  正在生成代码...
+  正在生成代码...
+  test_guarded_checkweigh.c
+  stage5mr5e_local_control_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr5e_local_control_tests.exe
+  test_checkweigh_local_control.c
+  guarded_checkweigh.c
+  正在生成代码...
+  checkweigh_local_control.c
+  正在生成代码...
+  test_stage5nb_output_safety.c
+  stage5mr5e_d1d_display_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr5e_d1d_display_tests.exe
+  guarded_checkweigh.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/stage5pa13c/CMakeLists.txt
+  alarm_output_manager.c
+  正在生成代码...
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/stage5pa13c/CMakeLists.txt
+  stage5mr_drift_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr_drift_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/stage5pa13c/CMakeLists.txt
+  stage5mr5e_standard_surface_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr5e_standard_surface_tests.exe
+  benchmark.c
+  a13c_shadow_compensator.c
+  stage5mr_drift_runner.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5mr_drift_runner.exe
+  正在生成代码...
+  replay_runner.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  a13c_shadow_compensator.c
+  正在生成代码...
+  stage5na3_fault_injection_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5na3_fault_injection_tests.exe
+  test_safety.c
+  a13c_shadow_compensator.c
+  正在生成代码...
+  stage5na_shadow_runner.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5na_shadow_runner.exe
+  stage5nb_local_control_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5nb_local_control_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  test_resources.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  stage5nb_output_safety_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5nb_output_safety_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  test_accumulator.c
+  stage5nb_guarded_checkweigh_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5nb_guarded_checkweigh_tests.exe
+  test_storage_lease.c
+  stage5pa1_r5_sample_runner.c
+  fake_flash_backend.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  reference_lock_drift_compensator.c
+  system_context.c
+  正在生成代码...
+  stage5pa13c_replay_runner.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\stage5pa13c\Release\stage5pa13c_replay_runner.exe
+  revision_helper.c
+  alarm_config_validation.c
+  device_config_validator.c
+  default_config.c
+  test_stage5pa2c_menu.c
+  calibration_model.c
+  metrology_config_validator.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  mass_math.c
+  menu_controller.c
+  metrology_standard_validator.c
+  stage5pa13d_resource_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5pa13d_resource_tests.exe
+  unit_converter.c
+  r5_local_control.c
+  weight_math.c
+  stage5pa13c_host_benchmark.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\stage5pa13c\Release\stage5pa13c_host_benchmark.exe
+  checkweigh_local_control.c
+  config_store.c
+  ui_config_workspace.c
+  test_stage5pa2c_persistence.c
+  numeric_edit_cursor.c
+  persistent_codec.c
+  display_codes.c
+  crc32.c
+  alarm_config_validation.c
+  mass_math.c
+  正在生成代码...
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  default_config.c
+  正在生成代码...
+  device_config_validator.c
+  calibration_model.c
+  mass_math.c
+  metrology_config_validator.c
+  metrology_standard_validator.c
+  stage5pa13dr_accumulator_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5pa13dr_accumulator_tests.exe
+  unit_converter.c
+  test_stage2a.c
+  weight_math.c
+  persistent_codec.c
+  正在生成代码...
+  test_stage3.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  test_stage5pa2c_menu.c
+  test_stage4a.c
+  stage5pa1_r5_sample_runner.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5pa1_r5_sample_runner.exe
+  menu_controller.c
+  stage5pa13c_safety_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\stage5pa13c\Release\stage5pa13c_safety_tests.exe
+  synthetic_scale_source.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  mocks.c
+  r5_local_control.c
+  checkweigh_local_control.c
+  measurement_bridge.c
+  ui_config_workspace.c
+  calibration_controller.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  numeric_edit_cursor.c
+  config_application.c
+  display_codes.c
+  test_persistence_manager.c
+  mass_math.c
+  metrology_manager.c
+  正在生成代码...
+  persistence_test_adapters.c
+  self_test_controller.c
+  system_context.c
+  fake_flash_backend.c
+  persistence_manager.c
+  revision_helper.c
+  weighing_profile_manager.c
+  test_stage5pa_persistence.c
+  alarm_config_validation.c
+  system_context.c
+  device_config_validator.c
+  revision_helper.c
+  stage5pa2c_menu_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5pa2c_menu_tests.exe
+  default_config.c
+  alarm_config_validation.c
+  alarm_config_validation.c
+  device_config_validator.c
+  default_config.c
+  test_stage5pa_r5_admission.c
+  stage2b_board_diagnostics.c
+  default_config.c
+  device_config_validator.c
+  stage2b_display_font.c
+  reference_lock_drift_compensator.c
+  calibration_model.c
+  calibration_model.c
+  stage3_metrology_diagnostics.c
+  正在生成代码...
+  metrology_config_validator.c
+  mass_math.c
+  mass_math.c
+  calibration_model.c
+  metrology_config_validator.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  metrology_standard_validator.c
+  metrology_standard_validator.c
+  正在生成代码...
+  unit_converter.c
+  unit_converter.c
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  weight_math.c
+  weight_math.c
+  persistent_codec.c
+  config_store.c
+  正在生成代码...
+  persistent_codec.c
+  crc32.c
+  stage5pa13dr_storage_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5pa13dr_storage_tests.exe
+  storage_power_guard.c
+  正在生成代码...
+  test_stage5pa_timing.c
+  stage5pa2c_persistence_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5pa2c_persistence_tests.exe
+  weight_filter.c
+  test_startup_auto_zero.c
+  weight_math.c
+  startup_auto_zero_controller.c
+  checkweigh_shadow.c
+  正在生成代码...
+  正在生成代码...
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt
+  stage5pa2d_menu_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5pa2d_menu_tests.exe
+  stage5pa_r5_admission_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5pa_r5_admission_tests.exe
+  test_uart2_dma_transport.c
+  uart2_dma_transport_adapters.c
+  正在编译...
+  raw_calibration_stability.c
+  uart2_dma_transport.c
+  weight_filter.c
+  uart2_dma_position.c
+  metrology_config_validator.c
+  正在生成代码...
+  display_conditioner.c
+  mass_math.c
+  startup_auto_zero_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\startup_auto_zero_tests.exe
+  metrology_standard_validator.c
+  raw_measurement.c
+  runtime_drift_compensator.c
+  unit_converter.c
+  stage5pa_persistence_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5pa_persistence_tests.exe
+  weight_engine.c
+  stage5pa_timing_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5pa_timing_tests.exe
+  weight_math.c
+  stability_detector.c
+  zero_tare.c
+  battery_adc.c
+  cs1237.c
+  output_gpio.c
+  tm1628.c
+  tm1628_board_map.c
+  w02_pwrkey.c
+  command_service.c
+  stage5pa2d_persistence_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5pa2d_persistence_tests.exe
+  正在生成代码...
+  uart2_dma_recovery_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\uart2_dma_recovery_tests.exe
+  正在编译...
+  persistent_codec.c
+  config_edit.c
+  fault_manager.c
+  display_controller.c
+  display_codes.c
+  display_formatter.c
+  display_model.c
+  numeric_edit_cursor.c
+  key_map.c
+  key_service.c
+  menu_controller.c
+  status_controller.c
+  run_key_policy.c
+  正在生成代码...
+  stage5pa2d_calibration_tests.vcxproj -> D:\Documents\stm32f103rbt6_a33_stage5pa13dr\Results\stage5pa13dr\software\host\Release\stage5pa2d_calibration_tests.exe
+  Building Custom Rule D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Tests/host/CMakeLists.txt

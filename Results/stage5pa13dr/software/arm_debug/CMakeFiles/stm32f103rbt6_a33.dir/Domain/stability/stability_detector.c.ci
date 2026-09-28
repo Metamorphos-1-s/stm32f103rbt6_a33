@@ -1,0 +1,20 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:UpdateRange" label: "UpdateRange\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:9:13\n16 bytes (static)" }
+node: { title: "MassMath_Subtract" label: "MassMath_Subtract\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/mass_math.h:10:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:UpdateRange" targetname: "MassMath_Subtract" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:21:12" }
+node: { title: "StabilityDetector_InitMass" label: "StabilityDetector_InitMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:25:6\n32 bytes (static)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "StabilityDetector_InitMass" targetname: "memset" }
+node: { title: "StabilityDetector_Init" label: "StabilityDetector_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:45:6\n24 bytes (static)" }
+edge: { sourcename: "StabilityDetector_Init" targetname: "StabilityDetector_InitMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:48:32" }
+node: { title: "StabilityDetector_Reset" label: "StabilityDetector_Reset\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:53:6\n24 bytes (static)" }
+edge: { sourcename: "StabilityDetector_Reset" targetname: "StabilityDetector_InitMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:64:11" }
+node: { title: "StabilityDetector_ProcessMass" label: "StabilityDetector_ProcessMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:67:16\n8 bytes (static)" }
+edge: { sourcename: "StabilityDetector_ProcessMass" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:UpdateRange" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:76:10" }
+node: { title: "StabilityDetector_Process" label: "StabilityDetector_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:102:16\n16 bytes (static)" }
+edge: { sourcename: "StabilityDetector_Process" targetname: "StabilityDetector_ProcessMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:106:12" }
+node: { title: "StabilityDetector_GetState" label: "StabilityDetector_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:109:16\n0 bytes (static)" }
+node: { title: "StabilityDetector_GetSpreadMass" label: "StabilityDetector_GetSpreadMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:115:13\n0 bytes (static)" }
+node: { title: "StabilityDetector_GetSpread" label: "StabilityDetector_GetSpread\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:120:10\n8 bytes (static)" }
+edge: { sourcename: "StabilityDetector_GetSpread" targetname: "StabilityDetector_GetSpreadMass" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/stability/stability_detector.c:122:26" }
+}

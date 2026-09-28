@@ -1,0 +1,6 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/alarm_config_validation.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/alarm_config_validation.c:AlarmConfig_Span" label: "AlarmConfig_Span\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/alarm_config_validation.c:6:17\n0 bytes (static)" }
+node: { title: "AlarmConfig_Validate" label: "AlarmConfig_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/alarm_config_validation.c:11:6\n16 bytes (static)" }
+edge: { sourcename: "AlarmConfig_Validate" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/alarm_config_validation.c:AlarmConfig_Span" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/alarm_config_validation.c:30:12" }
+node: { title: "AlarmConfig_ClassificationChanged" label: "AlarmConfig_ClassificationChanged\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/alarm_config_validation.c:35:6\n8 bytes (static)" }
+}

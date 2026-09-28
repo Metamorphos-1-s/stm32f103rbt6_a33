@@ -1,0 +1,5 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/storage_power_guard/storage_power_guard.c:10:6:StoragePowerGuard_Init	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/storage_power_guard/storage_power_guard.c:20:6:StoragePowerGuard_Process100ms	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/storage_power_guard/storage_power_guard.c:42:19:StoragePowerGuard_GetState	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/storage_power_guard/storage_power_guard.c:55:6:StoragePowerGuard_CanStartFlashOperation	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/storage_power_guard/storage_power_guard.c:60:6:StoragePowerGuard_CanContinueFlashOperation	0	static

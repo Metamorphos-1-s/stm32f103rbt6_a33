@@ -1,0 +1,6 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c:86:6:Stage5C_BleDiagnosticsProcess	64	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c:124:20:Stage5C_BleDiagnosticsRequestHello	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c:170:6:Stage5C_BleDiagnosticsStartSoak	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c:204:6:Stage5C_BleDiagnosticsStopSoak	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c:69:6:Stage5C_BleDiagnosticsInit	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c:210:39:Stage5C_BleDiagnosticsGetSnapshot	0	static

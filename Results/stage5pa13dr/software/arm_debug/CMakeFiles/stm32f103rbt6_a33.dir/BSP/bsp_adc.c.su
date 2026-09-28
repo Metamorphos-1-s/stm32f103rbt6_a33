@@ -1,0 +1,4 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_adc.c:8:6:BSP_BatteryAdcCalibrate	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_adc.c:13:6:BSP_BatteryAdcReadRaw	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_adc.c:41:10:BSP_BatteryRawToAdcMv	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_adc.c:48:10:BSP_BatteryAdcMvToBatteryMv	8	static

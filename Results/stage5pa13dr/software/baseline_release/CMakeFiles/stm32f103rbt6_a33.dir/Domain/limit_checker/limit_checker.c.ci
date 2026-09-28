@@ -1,0 +1,8 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/limit_checker/limit_checker.c"
+node: { title: "LimitChecker_Reset" label: "LimitChecker_Reset\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/limit_checker/limit_checker.c:58:6\n0 bytes (static)" }
+node: { title: "LimitChecker_Init" label: "LimitChecker_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/limit_checker/limit_checker.c:53:6\n0 bytes (static)" }
+edge: { sourcename: "LimitChecker_Init" targetname: "LimitChecker_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/limit_checker/limit_checker.c:55:5" }
+node: { title: "LimitChecker_Process" label: "LimitChecker_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/limit_checker/limit_checker.c:68:6\n40 bytes (static)" }
+node: { title: "AlarmConfig_Validate" label: "AlarmConfig_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/alarm_config_validation.h:8:6" shape : ellipse }
+edge: { sourcename: "LimitChecker_Process" targetname: "AlarmConfig_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/limit_checker/limit_checker.c:97:28" }
+}

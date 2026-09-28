@@ -1,0 +1,82 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:DisplayController_ApplyEditCursor" label: "DisplayController_ApplyEditCursor\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:55:13\n16 bytes (static)" }
+node: { title: "DisplayFormatter_EncodeCharacter" label: "DisplayFormatter_EncodeCharacter\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/display_formatter.h:9:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:DisplayController_ApplyEditCursor" targetname: "DisplayFormatter_EncodeCharacter" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:72:14" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:DisplayController_ApplyModel.isra.0" label: "DisplayController_ApplyModel.isra\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:220:13\n32 bytes (static)" }
+node: { title: "DisplayModel_Get" label: "DisplayModel_Get\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/display_model.h:22:21" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:DisplayController_ApplyModel.isra.0" targetname: "DisplayModel_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:222:33" }
+node: { title: "TM1628_SetBrightness" label: "TM1628_SetBrightness\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/tm1628/tm1628.h:12:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:DisplayController_ApplyModel.isra.0" targetname: "TM1628_SetBrightness" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:229:10" }
+node: { title: "TM1628_SetDisplayEnabled" label: "TM1628_SetDisplayEnabled\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/tm1628/tm1628.h:13:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:DisplayController_ApplyModel.isra.0" targetname: "TM1628_SetDisplayEnabled" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:230:10" }
+node: { title: "TM1628_BoardMapSegments" label: "TM1628_BoardMapSegments\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/tm1628/tm1628_board_map.h:24:10" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:DisplayController_ApplyModel.isra.0" targetname: "TM1628_BoardMapSegments" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:241:14" }
+node: { title: "TM1628_SetGridSegments" label: "TM1628_SetGridSegments\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/tm1628/tm1628.h:14:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:DisplayController_ApplyModel.isra.0" targetname: "TM1628_SetGridSegments" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:241:14" }
+node: { title: "DisplayController_Init" label: "DisplayController_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:251:6\n8 bytes (static)" }
+node: { title: "SystemContext_Get" label: "SystemContext_Get\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:29:22" shape : ellipse }
+edge: { sourcename: "DisplayController_Init" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:253:36" }
+node: { title: "DisplayModel_Init" label: "DisplayModel_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/display_model.h:10:6" shape : ellipse }
+edge: { sourcename: "DisplayController_Init" targetname: "DisplayModel_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:255:5" }
+node: { title: "DisplayModel_SetBrightness" label: "DisplayModel_SetBrightness\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/display_model.h:19:6" shape : ellipse }
+edge: { sourcename: "DisplayController_Init" targetname: "DisplayModel_SetBrightness" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:264:10" }
+node: { title: "DisplayController_Process20ms" label: "DisplayController_Process20ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:272:6\n56 bytes (static)" }
+node: { title: "SystemContext_GetState" label: "SystemContext_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:30:10" shape : ellipse }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:274:22" }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:DisplayController_ApplyModel.isra.0" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:282:15" }
+node: { title: "BSP_TimeNowMs" label: "BSP_TimeNowMs\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_time.h:22:15" shape : ellipse }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:286:21" }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:105:36" }
+node: { title: "MetrologyManager_GetSnapshot" label: "MetrologyManager_GetSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/metrology_manager.h:52:23" shape : ellipse }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "MetrologyManager_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:106:38" }
+node: { title: "MetrologyManager_GetDisplayConditionSnapshot" label: "MetrologyManager_GetDisplayConditionSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/metrology_manager.h:54:33" shape : ellipse }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "MetrologyManager_GetDisplayConditionSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:108:9" }
+node: { title: "BatteryAdc_GetState" label: "BatteryAdc_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/battery_adc/battery_adc.h:21:24" shape : ellipse }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "BatteryAdc_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:109:38" }
+node: { title: "DisplayModel_SetPage" label: "DisplayModel_SetPage\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/display_model.h:16:6" shape : ellipse }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "DisplayModel_SetPage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:117:11" }
+node: { title: "DisplayModel_SetIndicators" label: "DisplayModel_SetIndicators\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/display_model.h:17:6" shape : ellipse }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "DisplayModel_SetIndicators" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:119:10" }
+node: { title: "DisplayModel_SetText6" label: "DisplayModel_SetText6\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/display_model.h:13:6" shape : ellipse }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "DisplayModel_SetText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:125:16" }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "DisplayModel_SetText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:129:16" }
+node: { title: "DisplayModel_SetRawSegments" label: "DisplayModel_SetRawSegments\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/display_model.h:21:6" shape : ellipse }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "DisplayModel_SetRawSegments" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:133:16" }
+node: { title: "DisplayModel_SetBatteryMv" label: "DisplayModel_SetBatteryMv\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/display_model.h:14:6" shape : ellipse }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "DisplayModel_SetBatteryMv" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:154:17" }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "DisplayModel_SetText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:155:17" }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "DisplayModel_SetText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:157:20" }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "DisplayModel_SetText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:159:20" }
+node: { title: "UnitConverter_MassToDisplay" label: "UnitConverter_MassToDisplay\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.h:11:6" shape : ellipse }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "UnitConverter_MassToDisplay" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:171:10" }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "DisplayModel_SetText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:173:16" }
+node: { title: "DisplayModel_SetWeight" label: "DisplayModel_SetWeight\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/display_model.h:11:6" shape : ellipse }
+edge: { sourcename: "DisplayController_Process20ms" targetname: "DisplayModel_SetWeight" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:216:12" }
+node: { title: "DisplayController_SetPage" label: "DisplayController_SetPage\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:298:6\n0 bytes (static)" }
+node: { title: "DisplayController_ShowMessage" label: "DisplayController_ShowMessage\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:309:6\n32 bytes (static)" }
+node: { title: "DisplayFormatter_FormatText6" label: "DisplayFormatter_FormatText6\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/display_formatter.h:13:6" shape : ellipse }
+edge: { sourcename: "DisplayController_ShowMessage" targetname: "DisplayFormatter_FormatText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:316:10" }
+edge: { sourcename: "DisplayController_ShowMessage" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:319:26" }
+node: { title: "DisplayController_SetTextPage" label: "DisplayController_SetTextPage\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:323:6\n32 bytes (static)" }
+edge: { sourcename: "DisplayController_SetTextPage" targetname: "DisplayFormatter_FormatText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:330:10" }
+node: { title: "DisplayController_SetNumericPage" label: "DisplayController_SetNumericPage\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:339:6\n32 bytes (static)" }
+node: { title: "DisplayFormatter_FormatWeight" label: "DisplayFormatter_FormatWeight\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/display_formatter.h:11:6" shape : ellipse }
+edge: { sourcename: "DisplayController_SetNumericPage" targetname: "DisplayFormatter_FormatWeight" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:344:10" }
+node: { title: "DisplayController_SetTextEditPage" label: "DisplayController_SetTextEditPage\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:357:6\n32 bytes (static)" }
+edge: { sourcename: "DisplayController_SetTextEditPage" targetname: "DisplayFormatter_FormatText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:362:10" }
+edge: { sourcename: "DisplayController_SetTextEditPage" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:DisplayController_ApplyEditCursor" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:363:10" }
+node: { title: "DisplayController_SetNumericEditPage" label: "DisplayController_SetNumericEditPage\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:374:6\n32 bytes (static)" }
+edge: { sourcename: "DisplayController_SetNumericEditPage" targetname: "DisplayFormatter_FormatWeight" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:380:10" }
+edge: { sourcename: "DisplayController_SetNumericEditPage" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:DisplayController_ApplyEditCursor" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:382:10" }
+node: { title: "DisplayController_SetBrightness" label: "DisplayController_SetBrightness\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:393:6\n8 bytes (static)" }
+edge: { sourcename: "DisplayController_SetBrightness" targetname: "DisplayModel_SetBrightness" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:395:12" }
+edge: { sourcename: "DisplayController_SetBrightness" targetname: "TM1628_SetBrightness" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:396:12" }
+node: { title: "DisplayController_SetTestPattern" label: "DisplayController_SetTestPattern\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:399:6\n16 bytes (static)" }
+edge: { sourcename: "DisplayController_SetTestPattern" targetname: "DisplayModel_SetRawSegments" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:406:12" }
+edge: { sourcename: "DisplayController_SetTestPattern" targetname: "DisplayModel_SetIndicators" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:407:12" }
+node: { title: "DisplayController_GetPage" label: "DisplayController_GetPage\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:410:13\n0 bytes (static)" }
+node: { title: "DisplayController_GetDirectionalDiagnostics" label: "DisplayController_GetDirectionalDiagnostics\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:416:6\n16 bytes (static)" }
+edge: { sourcename: "DisplayController_GetDirectionalDiagnostics" targetname: "MetrologyManager_GetDisplayConditionSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:421:9" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "DisplayController_GetDirectionalDiagnostics" targetname: "memset" }
+}

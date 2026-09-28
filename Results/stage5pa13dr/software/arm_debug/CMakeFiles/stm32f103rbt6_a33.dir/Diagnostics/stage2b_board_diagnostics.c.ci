@@ -1,0 +1,28 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c"
+node: { title: "Stage2B_DiagnosticsInit" label: "Stage2B_DiagnosticsInit\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:48:6\n8 bytes (static)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "Stage2B_DiagnosticsInit" targetname: "memset" }
+node: { title: "Stage2B_DiagnosticsProcess" label: "Stage2B_DiagnosticsProcess\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:65:6\n0 bytes (static)" }
+node: { title: "Stage2B_DiagnosticsIsActive" label: "Stage2B_DiagnosticsIsActive\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:181:6\n0 bytes (static)" }
+node: { title: "Stage2B_DiagnosticsGetState" label: "Stage2B_DiagnosticsGetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:190:24\n0 bytes (static)" }
+node: { title: "Stage2B_DiagnosticsRequestOutputTest" label: "Stage2B_DiagnosticsRequestOutputTest\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:205:6\n0 bytes (static)" }
+node: { title: "Stage2B_DiagnosticsRequestLampTest" label: "Stage2B_DiagnosticsRequestLampTest\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:195:6\n8 bytes (static)" }
+edge: { sourcename: "Stage2B_DiagnosticsRequestLampTest" targetname: "Stage2B_DiagnosticsRequestOutputTest" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:202:12" }
+node: { title: "Stage2B_DiagnosticsRequestW02Pulse" label: "Stage2B_DiagnosticsRequestW02Pulse\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:228:6\n0 bytes (static)" }
+node: { title: "Stage2B_DiagnosticsStopAllOutputs" label: "Stage2B_DiagnosticsStopAllOutputs\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:238:6\n0 bytes (static)" }
+node: { title: "Stage2B_DiagnosticsStop" label: "Stage2B_DiagnosticsStop\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:249:6\n0 bytes (static)" }
+node: { title: "Stage2B_DiagnosticsEnterFault" label: "Stage2B_DiagnosticsEnterFault\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:260:6\n0 bytes (static)" }
+node: { title: "Stage2B_DiagnosticsSelectState" label: "Stage2B_DiagnosticsSelectState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:271:6\n0 bytes (static)" }
+node: { title: "Stage2B_DiagnosticsSetRawKeyMask" label: "Stage2B_DiagnosticsSetRawKeyMask\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:287:6\n0 bytes (static)" }
+node: { title: "Stage2B_DiagnosticsUpdateCs1237Stats" label: "Stage2B_DiagnosticsUpdateCs1237Stats\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:302:6\n0 bytes (static)" }
+node: { title: "Stage2B_DiagnosticsGetSnapshot" label: "Stage2B_DiagnosticsGetSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:309:34\n0 bytes (static)" }
+node: { title: "Stage2B_DisplayText6" label: "Stage2B_DisplayText6\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:314:6\n0 bytes (static)" }
+node: { title: "Stage2B_DisplayHex24" label: "Stage2B_DisplayHex24\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:351:6\n16 bytes (static)" }
+node: { title: "Stage2B_FormatHex24" label: "Stage2B_FormatHex24\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_display_font.h:8:6" shape : ellipse }
+edge: { sourcename: "Stage2B_DisplayHex24" targetname: "Stage2B_FormatHex24" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:355:12" }
+edge: { sourcename: "Stage2B_DisplayHex24" targetname: "Stage2B_DisplayText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:356:12" }
+node: { title: "Stage2B_DisplayBatteryMv" label: "Stage2B_DisplayBatteryMv\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:359:6\n24 bytes (static)" }
+node: { title: "Stage2B_FormatBatteryMv" label: "Stage2B_FormatBatteryMv\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_display_font.h:9:6" shape : ellipse }
+edge: { sourcename: "Stage2B_DisplayBatteryMv" targetname: "Stage2B_FormatBatteryMv" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:364:12" }
+edge: { sourcename: "Stage2B_DisplayBatteryMv" targetname: "Stage2B_DisplayText6" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.c:366:12" }
+}

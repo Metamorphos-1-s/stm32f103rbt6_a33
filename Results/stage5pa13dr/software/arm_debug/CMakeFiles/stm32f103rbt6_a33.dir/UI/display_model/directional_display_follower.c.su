@@ -1,0 +1,7 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/directional_display_follower.c:15:15:Direction	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/directional_display_follower.c:20:17:Magnitude	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/directional_display_follower.c:25:13:Publish	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/directional_display_follower.c:49:13:Accumulate	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/directional_display_follower.c:43:6:DirectionalDisplayFollower_Reset	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/directional_display_follower.c:78:6:DirectionalDisplayFollower_Process	40	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/directional_display_follower.c:139:6:DirectionalDisplayFollower_GetDiagnostics	0	static

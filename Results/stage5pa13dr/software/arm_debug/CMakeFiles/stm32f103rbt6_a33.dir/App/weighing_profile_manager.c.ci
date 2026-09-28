@@ -1,0 +1,37 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:MakeConfig" label: "MakeConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:17:22\n16 bytes (static)" }
+node: { title: "SystemContext_Get" label: "SystemContext_Get\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:29:22" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:MakeConfig" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:19:36" }
+node: { title: "WeighingProfileManager_Init" label: "WeighingProfileManager_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:29:6\n0 bytes (static)" }
+node: { title: "WeighingProfileManager_Process" label: "WeighingProfileManager_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:56:6\n376 bytes (static)" }
+node: { title: "CS1237_TryPopSample" label: "CS1237_TryPopSample\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/cs1237/cs1237.h:12:6" shape : ellipse }
+edge: { sourcename: "WeighingProfileManager_Process" targetname: "CS1237_TryPopSample" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:67:17" }
+edge: { sourcename: "WeighingProfileManager_Process" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:MakeConfig" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:72:36" }
+node: { title: "CS1237_WriteConfig" label: "CS1237_WriteConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/cs1237/cs1237.h:22:6" shape : ellipse }
+edge: { sourcename: "WeighingProfileManager_Process" targetname: "CS1237_WriteConfig" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:73:23" }
+node: { title: "CS1237_GetState" label: "CS1237_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/cs1237/cs1237.h:20:14" shape : ellipse }
+edge: { sourcename: "WeighingProfileManager_Process" targetname: "CS1237_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:78:28" }
+edge: { sourcename: "WeighingProfileManager_Process" targetname: "CS1237_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:85:28" }
+edge: { sourcename: "WeighingProfileManager_Process" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:92:23" }
+node: { title: "SystemContext_GetConfigRevision" label: "SystemContext_GetConfigRevision\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:55:10" shape : ellipse }
+edge: { sourcename: "WeighingProfileManager_Process" targetname: "SystemContext_GetConfigRevision" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:94:18" }
+node: { title: "memcpy" label: "__builtin_memcpy\n<built-in>" shape : ellipse }
+edge: { sourcename: "WeighingProfileManager_Process" targetname: "memcpy" }
+node: { title: "ConfigApplication_ApplyFactoryDefaults" label: "ConfigApplication_ApplyFactoryDefaults\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/config_application.h:18:19" shape : ellipse }
+edge: { sourcename: "WeighingProfileManager_Process" targetname: "ConfigApplication_ApplyFactoryDefaults" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:98:17" }
+edge: { sourcename: "WeighingProfileManager_Process" targetname: "SystemContext_GetConfigRevision" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:100:37" }
+edge: { sourcename: "WeighingProfileManager_Process" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:MakeConfig" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:108:36" }
+edge: { sourcename: "WeighingProfileManager_Process" targetname: "CS1237_WriteConfig" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:109:18" }
+node: { title: "FaultManager_Set" label: "FaultManager_Set\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/fault_manager/fault_manager.h:47:6" shape : ellipse }
+edge: { sourcename: "WeighingProfileManager_Process" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:111:17" }
+edge: { sourcename: "WeighingProfileManager_Process" targetname: "CS1237_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:123:28" }
+edge: { sourcename: "WeighingProfileManager_Process" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:126:17" }
+node: { title: "WeighingProfileManager_IsBusy" label: "WeighingProfileManager_IsBusy\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:134:6\n0 bytes (static)" }
+node: { title: "WeighingProfileManager_Request" label: "WeighingProfileManager_Request\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:39:15\n16 bytes (static)" }
+edge: { sourcename: "WeighingProfileManager_Request" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:41:36" }
+edge: { sourcename: "WeighingProfileManager_Request" targetname: "WeighingProfileManager_IsBusy" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:44:9" }
+edge: { sourcename: "WeighingProfileManager_Request" targetname: "SystemContext_GetConfigRevision" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:49:26" }
+node: { title: "WeighingProfileManager_GetState" label: "WeighingProfileManager_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:140:28\n0 bytes (static)" }
+node: { title: "WeighingProfileManager_GetLastResult" label: "WeighingProfileManager_GetLastResult\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:141:15\n0 bytes (static)" }
+node: { title: "WeighingProfileManager_GetResultRevision" label: "WeighingProfileManager_GetResultRevision\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.c:142:10\n0 bytes (static)" }
+}

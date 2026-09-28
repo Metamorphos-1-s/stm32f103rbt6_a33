@@ -1,0 +1,369 @@
+
+Results/stage5pa13dr/software/arm_release/stm32f103rbt6_a33.elf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+08005464 <MetrologyManager_AcceptRawSample>:
+ 8005464:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
+ 8005468:	4da1      	ldr	r5, [pc, #644]	@ (80056f0 <MetrologyManager_AcceptRawSample+0x28c>)
+ 800546a:	4604      	mov	r4, r0
+ 800546c:	782b      	ldrb	r3, [r5, #0]
+ 800546e:	b0a3      	sub	sp, #140	@ 0x8c
+ 8005470:	b1bb      	cbz	r3, 80054a2 <MetrologyManager_AcceptRawSample+0x3e>
+ 8005472:	b9f0      	cbnz	r0, 80054b2 <MetrologyManager_AcceptRawSample+0x4e>
+ 8005474:	4b9f      	ldr	r3, [pc, #636]	@ (80056f4 <MetrologyManager_AcceptRawSample+0x290>)
+ 8005476:	f8d3 04a8 	ldr.w	r0, [r3, #1192]	@ 0x4a8
+ 800547a:	f8d3 14ac 	ldr.w	r1, [r3, #1196]	@ 0x4ac
+ 800547e:	2300      	movs	r3, #0
+ 8005480:	e9cd 3302 	strd	r3, r3, [sp, #8]
+ 8005484:	e9cd 3300 	strd	r3, r3, [sp]
+ 8005488:	4b9b      	ldr	r3, [pc, #620]	@ (80056f8 <MetrologyManager_AcceptRawSample+0x294>)
+ 800548a:	e953 2302 	ldrd	r2, r3, [r3, #-8]
+ 800548e:	f7ff fc7f 	bl	8004d90 <A13DR_TimedFeed.constprop.0>
+ 8005492:	782b      	ldrb	r3, [r5, #0]
+ 8005494:	b12b      	cbz	r3, 80054a2 <MetrologyManager_AcceptRawSample+0x3e>
+ 8005496:	b124      	cbz	r4, 80054a2 <MetrologyManager_AcceptRawSample+0x3e>
+ 8005498:	2205      	movs	r2, #5
+ 800549a:	6861      	ldr	r1, [r4, #4]
+ 800549c:	4897      	ldr	r0, [pc, #604]	@ (80056fc <MetrologyManager_AcceptRawSample+0x298>)
+ 800549e:	f004 fa21 	bl	80098e4 <WeightEngine_FreezeRuntimeDrift>
+ 80054a2:	4a97      	ldr	r2, [pc, #604]	@ (8005700 <MetrologyManager_AcceptRawSample+0x29c>)
+ 80054a4:	6813      	ldr	r3, [r2, #0]
+ 80054a6:	3301      	adds	r3, #1
+ 80054a8:	6013      	str	r3, [r2, #0]
+ 80054aa:	2000      	movs	r0, #0
+ 80054ac:	b023      	add	sp, #140	@ 0x8c
+ 80054ae:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
+ 80054b2:	7a03      	ldrb	r3, [r0, #8]
+ 80054b4:	b923      	cbnz	r3, 80054c0 <MetrologyManager_AcceptRawSample+0x5c>
+ 80054b6:	4b8f      	ldr	r3, [pc, #572]	@ (80056f4 <MetrologyManager_AcceptRawSample+0x290>)
+ 80054b8:	6861      	ldr	r1, [r4, #4]
+ 80054ba:	f8d3 04a8 	ldr.w	r0, [r3, #1192]	@ 0x4a8
+ 80054be:	e7de      	b.n	800547e <MetrologyManager_AcceptRawSample+0x1a>
+ 80054c0:	f001 f83a 	bl	8006538 <SystemContext_GetState>
+ 80054c4:	2809      	cmp	r0, #9
+ 80054c6:	4682      	mov	sl, r0
+ 80054c8:	d120      	bne.n	800550c <MetrologyManager_AcceptRawSample+0xa8>
+ 80054ca:	f7ff ffa7 	bl	800541c <MetrologyManager_HandleFaultState>
+ 80054ce:	2100      	movs	r1, #0
+ 80054d0:	488a      	ldr	r0, [pc, #552]	@ (80056fc <MetrologyManager_AcceptRawSample+0x298>)
+ 80054d2:	f004 fa05 	bl	80098e0 <WeightEngine_SetRuntimeDriftLearningAllowed>
+ 80054d6:	4621      	mov	r1, r4
+ 80054d8:	4888      	ldr	r0, [pc, #544]	@ (80056fc <MetrologyManager_AcceptRawSample+0x298>)
+ 80054da:	f004 f86d 	bl	80095b8 <WeightEngine_ProcessRawSample>
+ 80054de:	bb10      	cbnz	r0, 8005526 <MetrologyManager_AcceptRawSample+0xc2>
+ 80054e0:	e9cd 0002 	strd	r0, r0, [sp, #8]
+ 80054e4:	e9cd 0000 	strd	r0, r0, [sp]
+ 80054e8:	4d82      	ldr	r5, [pc, #520]	@ (80056f4 <MetrologyManager_AcceptRawSample+0x290>)
+ 80054ea:	6861      	ldr	r1, [r4, #4]
+ 80054ec:	f505 6394 	add.w	r3, r5, #1184	@ 0x4a0
+ 80054f0:	e953 2302 	ldrd	r2, r3, [r3, #-8]
+ 80054f4:	f8d5 04a8 	ldr.w	r0, [r5, #1192]	@ 0x4a8
+ 80054f8:	f7ff fc4a 	bl	8004d90 <A13DR_TimedFeed.constprop.0>
+ 80054fc:	4a80      	ldr	r2, [pc, #512]	@ (8005700 <MetrologyManager_AcceptRawSample+0x29c>)
+ 80054fe:	6813      	ldr	r3, [r2, #0]
+ 8005500:	3301      	adds	r3, #1
+ 8005502:	6013      	str	r3, [r2, #0]
+ 8005504:	2013      	movs	r0, #19
+ 8005506:	f00b fb55 	bl	8010bb4 <FaultManager_Set>
+ 800550a:	e7ce      	b.n	80054aa <MetrologyManager_AcceptRawSample+0x46>
+ 800550c:	2200      	movs	r2, #0
+ 800550e:	4b7d      	ldr	r3, [pc, #500]	@ (8005704 <MetrologyManager_AcceptRawSample+0x2a0>)
+ 8005510:	701a      	strb	r2, [r3, #0]
+ 8005512:	f000 03fd 	and.w	r3, r0, #253	@ 0xfd
+ 8005516:	2b05      	cmp	r3, #5
+ 8005518:	d1d9      	bne.n	80054ce <MetrologyManager_AcceptRawSample+0x6a>
+ 800551a:	f00b fb83 	bl	8010c24 <FaultManager_GetActiveMask>
+ 800551e:	fab0 f180 	clz	r1, r0
+ 8005522:	0949      	lsrs	r1, r1, #5
+ 8005524:	e7d4      	b.n	80054d0 <MetrologyManager_AcceptRawSample+0x6c>
+ 8005526:	4875      	ldr	r0, [pc, #468]	@ (80056fc <MetrologyManager_AcceptRawSample+0x298>)
+ 8005528:	f004 f88e 	bl	8009648 <WeightEngine_GetSnapshot>
+ 800552c:	4605      	mov	r5, r0
+ 800552e:	2800      	cmp	r0, #0
+ 8005530:	d0bb      	beq.n	80054aa <MetrologyManager_AcceptRawSample+0x46>
+ 8005532:	e9d0 670e 	ldrd	r6, r7, [r0, #56]	@ 0x38
+ 8005536:	e9d0 9808 	ldrd	r9, r8, [r0, #32]
+ 800553a:	69c4      	ldr	r4, [r0, #28]
+ 800553c:	f014 0308 	ands.w	r3, r4, #8
+ 8005540:	f040 8082 	bne.w	8005648 <MetrologyManager_AcceptRawSample+0x1e4>
+ 8005544:	e9cd 3302 	strd	r3, r3, [sp, #8]
+ 8005548:	e9cd 3300 	strd	r3, r3, [sp]
+ 800554c:	4632      	mov	r2, r6
+ 800554e:	463b      	mov	r3, r7
+ 8005550:	4649      	mov	r1, r9
+ 8005552:	4640      	mov	r0, r8
+ 8005554:	f7ff fc1c 	bl	8004d90 <A13DR_TimedFeed.constprop.0>
+ 8005558:	4868      	ldr	r0, [pc, #416]	@ (80056fc <MetrologyManager_AcceptRawSample+0x298>)
+ 800555a:	f004 f875 	bl	8009648 <WeightEngine_GetSnapshot>
+ 800555e:	4607      	mov	r7, r0
+ 8005560:	f000 ffe0 	bl	8006524 <SystemContext_Get>
+ 8005564:	2230      	movs	r2, #48	@ 0x30
+ 8005566:	4680      	mov	r8, r0
+ 8005568:	2100      	movs	r1, #0
+ 800556a:	a812      	add	r0, sp, #72	@ 0x48
+ 800556c:	f011 fc19 	bl	8016da2 <memset>
+ 8005570:	2f00      	cmp	r7, #0
+ 8005572:	f000 80da 	beq.w	800572a <MetrologyManager_AcceptRawSample+0x2c6>
+ 8005576:	f1b8 0f00 	cmp.w	r8, #0
+ 800557a:	f000 80d6 	beq.w	800572a <MetrologyManager_AcceptRawSample+0x2c6>
+ 800557e:	485f      	ldr	r0, [pc, #380]	@ (80056fc <MetrologyManager_AcceptRawSample+0x298>)
+ 8005580:	a904      	add	r1, sp, #16
+ 8005582:	f004 f86a 	bl	800965a <WeightEngine_GetFastCalibratedMass>
+ 8005586:	4604      	mov	r4, r0
+ 8005588:	b918      	cbnz	r0, 8005592 <MetrologyManager_AcceptRawSample+0x12e>
+ 800558a:	2200      	movs	r2, #0
+ 800558c:	2300      	movs	r3, #0
+ 800558e:	e9cd 2304 	strd	r2, r3, [sp, #16]
+ 8005592:	e9dd 0104 	ldrd	r0, r1, [sp, #16]
+ 8005596:	f898 3104 	ldrb.w	r3, [r8, #260]	@ 0x104
+ 800559a:	e9cd 0106 	strd	r0, r1, [sp, #24]
+ 800559e:	2b00      	cmp	r3, #0
+ 80055a0:	f000 80ba 	beq.w	8005718 <MetrologyManager_AcceptRawSample+0x2b4>
+ 80055a4:	f001 f86c 	bl	8006680 <SystemContext_GetConfigRevision>
+ 80055a8:	4e57      	ldr	r6, [pc, #348]	@ (8005708 <MetrologyManager_AcceptRawSample+0x2a4>)
+ 80055aa:	b285      	uxth	r5, r0
+ 80055ac:	8a33      	ldrh	r3, [r6, #16]
+ 80055ae:	2b00      	cmp	r3, #0
+ 80055b0:	f040 814b 	bne.w	800584a <MetrologyManager_AcceptRawSample+0x3e6>
+ 80055b4:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
+ 80055b6:	9312      	str	r3, [sp, #72]	@ 0x48
+ 80055b8:	6a3b      	ldr	r3, [r7, #32]
+ 80055ba:	9313      	str	r3, [sp, #76]	@ 0x4c
+ 80055bc:	f898 3104 	ldrb.w	r3, [r8, #260]	@ 0x104
+ 80055c0:	2b01      	cmp	r3, #1
+ 80055c2:	f040 814a 	bne.w	800585a <MetrologyManager_AcceptRawSample+0x3f6>
+ 80055c6:	e9d7 230c 	ldrd	r2, r3, [r7, #48]	@ 0x30
+ 80055ca:	e9cd 2314 	strd	r2, r3, [sp, #80]	@ 0x50
+ 80055ce:	e9dd 2306 	ldrd	r2, r3, [sp, #24]
+ 80055d2:	e9cd 2316 	strd	r2, r3, [sp, #88]	@ 0x58
+ 80055d6:	e9d8 2344 	ldrd	r2, r3, [r8, #272]	@ 0x110
+ 80055da:	e9cd 2318 	strd	r2, r3, [sp, #96]	@ 0x60
+ 80055de:	e9d8 2346 	ldrd	r2, r3, [r8, #280]	@ 0x118
+ 80055e2:	e9cd 231a 	strd	r2, r3, [sp, #104]	@ 0x68
+ 80055e6:	69fb      	ldr	r3, [r7, #28]
+ 80055e8:	f3c3 1200 	ubfx	r2, r3, #4, #1
+ 80055ec:	f88d 2071 	strb.w	r2, [sp, #113]	@ 0x71
+ 80055f0:	2200      	movs	r2, #0
+ 80055f2:	f013 0f08 	tst.w	r3, #8
+ 80055f6:	bf0c      	ite	eq
+ 80055f8:	4613      	moveq	r3, r2
+ 80055fa:	4623      	movne	r3, r4
+ 80055fc:	f88d 2072 	strb.w	r2, [sp, #114]	@ 0x72
+ 8005600:	f88d 3073 	strb.w	r3, [sp, #115]	@ 0x73
+ 8005604:	f00b fb22 	bl	8010c4c <FaultManager_HasWeightInvalidFault>
+ 8005608:	69fa      	ldr	r2, [r7, #28]
+ 800560a:	f88d 0074 	strb.w	r0, [sp, #116]	@ 0x74
+ 800560e:	f3c2 12c0 	ubfx	r2, r2, #7, #1
+ 8005612:	f88d 2075 	strb.w	r2, [sp, #117]	@ 0x75
+ 8005616:	f000 ff8f 	bl	8006538 <SystemContext_GetState>
+ 800561a:	2808      	cmp	r0, #8
+ 800561c:	bf0e      	itee	eq
+ 800561e:	2301      	moveq	r3, #1
+ 8005620:	f084 0301 	eorne.w	r3, r4, #1
+ 8005624:	b2db      	uxtbne	r3, r3
+ 8005626:	f003 0301 	and.w	r3, r3, #1
+ 800562a:	4837      	ldr	r0, [pc, #220]	@ (8005708 <MetrologyManager_AcceptRawSample+0x2a4>)
+ 800562c:	aa08      	add	r2, sp, #32
+ 800562e:	a912      	add	r1, sp, #72	@ 0x48
+ 8005630:	f88d 3076 	strb.w	r3, [sp, #118]	@ 0x76
+ 8005634:	f00f fe66 	bl	8015304 <CheckweighShadow_Process>
+ 8005638:	2800      	cmp	r0, #0
+ 800563a:	d076      	beq.n	800572a <MetrologyManager_AcceptRawSample+0x2c6>
+ 800563c:	f89d 203b 	ldrb.w	r2, [sp, #59]	@ 0x3b
+ 8005640:	4b32      	ldr	r3, [pc, #200]	@ (800570c <MetrologyManager_AcceptRawSample+0x2a8>)
+ 8005642:	8235      	strh	r5, [r6, #16]
+ 8005644:	701a      	strb	r2, [r3, #0]
+ 8005646:	e070      	b.n	800572a <MetrologyManager_AcceptRawSample+0x2c6>
+ 8005648:	f1ba 0f08 	cmp.w	sl, #8
+ 800564c:	bf0c      	ite	eq
+ 800564e:	2400      	moveq	r4, #0
+ 8005650:	f3c4 0480 	ubfxne	r4, r4, #2, #1
+ 8005654:	f00b fae6 	bl	8010c24 <FaultManager_GetActiveMask>
+ 8005658:	f8d5 b01c 	ldr.w	fp, [r5, #28]
+ 800565c:	4682      	mov	sl, r0
+ 800565e:	682d      	ldr	r5, [r5, #0]
+ 8005660:	f000 ff60 	bl	8006524 <SystemContext_Get>
+ 8005664:	2800      	cmp	r0, #0
+ 8005666:	f43f af20 	beq.w	80054aa <MetrologyManager_AcceptRawSample+0x46>
+ 800566a:	f890 3098 	ldrb.w	r3, [r0, #152]	@ 0x98
+ 800566e:	2b01      	cmp	r3, #1
+ 8005670:	f63f af1b 	bhi.w	80054aa <MetrologyManager_AcceptRawSample+0x46>
+ 8005674:	b17c      	cbz	r4, 8005696 <MetrologyManager_AcceptRawSample+0x232>
+ 8005676:	eb00 1043 	add.w	r0, r0, r3, lsl #5
+ 800567a:	6d83      	ldr	r3, [r0, #88]	@ 0x58
+ 800567c:	f003 13ff 	and.w	r3, r3, #16711935	@ 0xff00ff
+ 8005680:	f5b3 3f80 	cmp.w	r3, #65536	@ 0x10000
+ 8005684:	d131      	bne.n	80056ea <MetrologyManager_AcceptRawSample+0x286>
+ 8005686:	f890 405b 	ldrb.w	r4, [r0, #91]	@ 0x5b
+ 800568a:	f1a4 0e03 	sub.w	lr, r4, #3
+ 800568e:	f1de 0400 	rsbs	r4, lr, #0
+ 8005692:	eb44 040e 	adc.w	r4, r4, lr
+ 8005696:	4b1e      	ldr	r3, [pc, #120]	@ (8005710 <MetrologyManager_AcceptRawSample+0x2ac>)
+ 8005698:	4a1e      	ldr	r2, [pc, #120]	@ (8005714 <MetrologyManager_AcceptRawSample+0x2b0>)
+ 800569a:	442b      	add	r3, r5
+ 800569c:	4293      	cmp	r3, r2
+ 800569e:	bf94      	ite	ls
+ 80056a0:	2300      	movls	r3, #0
+ 80056a2:	2301      	movhi	r3, #1
+ 80056a4:	9303      	str	r3, [sp, #12]
+ 80056a6:	f3cb 13c0 	ubfx	r3, fp, #7, #1
+ 80056aa:	9302      	str	r3, [sp, #8]
+ 80056ac:	f1ba 0300 	subs.w	r3, sl, #0
+ 80056b0:	bf18      	it	ne
+ 80056b2:	2301      	movne	r3, #1
+ 80056b4:	4632      	mov	r2, r6
+ 80056b6:	e9cd 4300 	strd	r4, r3, [sp]
+ 80056ba:	4649      	mov	r1, r9
+ 80056bc:	463b      	mov	r3, r7
+ 80056be:	4640      	mov	r0, r8
+ 80056c0:	f7ff fb66 	bl	8004d90 <A13DR_TimedFeed.constprop.0>
+ 80056c4:	2800      	cmp	r0, #0
+ 80056c6:	f43f aef0 	beq.w	80054aa <MetrologyManager_AcceptRawSample+0x46>
+ 80056ca:	f7ff fb0d 	bl	8004ce8 <A13CCompat_GetSnapshot.constprop.0>
+ 80056ce:	2800      	cmp	r0, #0
+ 80056d0:	f43f aeeb 	beq.w	80054aa <MetrologyManager_AcceptRawSample+0x46>
+ 80056d4:	2300      	movs	r3, #0
+ 80056d6:	2200      	movs	r2, #0
+ 80056d8:	9300      	str	r3, [sp, #0]
+ 80056da:	4808      	ldr	r0, [pc, #32]	@ (80056fc <MetrologyManager_AcceptRawSample+0x298>)
+ 80056dc:	2300      	movs	r3, #0
+ 80056de:	f004 f904 	bl	80098ea <WeightEngine_SetBetaExternalDrift>
+ 80056e2:	2800      	cmp	r0, #0
+ 80056e4:	f47f af38 	bne.w	8005558 <MetrologyManager_AcceptRawSample+0xf4>
+ 80056e8:	e6df      	b.n	80054aa <MetrologyManager_AcceptRawSample+0x46>
+ 80056ea:	2400      	movs	r4, #0
+ 80056ec:	e7d3      	b.n	8005696 <MetrologyManager_AcceptRawSample+0x232>
+ 80056ee:	bf00      	nop
+ 80056f0:	20001634 	.word	0x20001634
+ 80056f4:	20001070 	.word	0x20001070
+ 80056f8:	20001510 	.word	0x20001510
+ 80056fc:	20001638 	.word	0x20001638
+ 8005700:	20001630 	.word	0x20001630
+ 8005704:	200015a8 	.word	0x200015a8
+ 8005708:	20000ff4 	.word	0x20000ff4
+ 800570c:	20000ff0 	.word	0x20000ff0
+ 8005710:	007effff 	.word	0x007effff
+ 8005714:	00fdfffe 	.word	0x00fdfffe
+ 8005718:	ab06      	add	r3, sp, #24
+ 800571a:	9300      	str	r3, [sp, #0]
+ 800571c:	e9d7 2310 	ldrd	r2, r3, [r7, #64]	@ 0x40
+ 8005720:	f003 f9e8 	bl	8008af4 <MassMath_Subtract>
+ 8005724:	2800      	cmp	r0, #0
+ 8005726:	f47f af3d 	bne.w	80055a4 <MetrologyManager_AcceptRawSample+0x140>
+ 800572a:	4851      	ldr	r0, [pc, #324]	@ (8005870 <MetrologyManager_AcceptRawSample+0x40c>)
+ 800572c:	f003 ff8c 	bl	8009648 <WeightEngine_GetSnapshot>
+ 8005730:	4605      	mov	r5, r0
+ 8005732:	f000 fef7 	bl	8006524 <SystemContext_Get>
+ 8005736:	2240      	movs	r2, #64	@ 0x40
+ 8005738:	4604      	mov	r4, r0
+ 800573a:	2100      	movs	r1, #0
+ 800573c:	a812      	add	r0, sp, #72	@ 0x48
+ 800573e:	f011 fb30 	bl	8016da2 <memset>
+ 8005742:	2d00      	cmp	r5, #0
+ 8005744:	f43f aede 	beq.w	8005504 <MetrologyManager_AcceptRawSample+0xa0>
+ 8005748:	2c00      	cmp	r4, #0
+ 800574a:	f43f aedb 	beq.w	8005504 <MetrologyManager_AcceptRawSample+0xa0>
+ 800574e:	f894 702d 	ldrb.w	r7, [r4, #45]	@ 0x2d
+ 8005752:	2100      	movs	r1, #0
+ 8005754:	eb07 0247 	add.w	r2, r7, r7, lsl #1
+ 8005758:	f102 082f 	add.w	r8, r2, #47	@ 0x2f
+ 800575c:	4422      	add	r2, r4
+ 800575e:	f892 3030 	ldrb.w	r3, [r2, #48]	@ 0x30
+ 8005762:	f892 0031 	ldrb.w	r0, [r2, #49]	@ 0x31
+ 8005766:	aa16      	add	r2, sp, #88	@ 0x58
+ 8005768:	f894 9098 	ldrb.w	r9, [r4, #152]	@ 0x98
+ 800576c:	9200      	str	r2, [sp, #0]
+ 800576e:	463a      	mov	r2, r7
+ 8005770:	f003 fbe6 	bl	8008f40 <UnitConverter_CountToMass>
+ 8005774:	f000 fee0 	bl	8006538 <SystemContext_GetState>
+ 8005778:	f894 1158 	ldrb.w	r1, [r4, #344]	@ 0x158
+ 800577c:	007e      	lsls	r6, r7, #1
+ 800577e:	2901      	cmp	r1, #1
+ 8005780:	44a0      	add	r8, r4
+ 8005782:	d16d      	bne.n	8005860 <MetrologyManager_AcceptRawSample+0x3fc>
+ 8005784:	e9d5 230c 	ldrd	r2, r3, [r5, #48]	@ 0x30
+ 8005788:	e9cd 2312 	strd	r2, r3, [sp, #72]	@ 0x48
+ 800578c:	6a2b      	ldr	r3, [r5, #32]
+ 800578e:	eb04 1949 	add.w	r9, r4, r9, lsl #5
+ 8005792:	9314      	str	r3, [sp, #80]	@ 0x50
+ 8005794:	f8d9 3070 	ldr.w	r3, [r9, #112]	@ 0x70
+ 8005798:	f1a0 0c08 	sub.w	ip, r0, #8
+ 800579c:	9318      	str	r3, [sp, #96]	@ 0x60
+ 800579e:	e9d4 2300 	ldrd	r2, r3, [r4]
+ 80057a2:	e9cd 231a 	strd	r2, r3, [sp, #104]	@ 0x68
+ 80057a6:	69eb      	ldr	r3, [r5, #28]
+ 80057a8:	f000 00fd 	and.w	r0, r0, #253	@ 0xfd
+ 80057ac:	f3c3 1200 	ubfx	r2, r3, #4, #1
+ 80057b0:	f88d 2070 	strb.w	r2, [sp, #112]	@ 0x70
+ 80057b4:	f3c3 12c0 	ubfx	r2, r3, #7, #1
+ 80057b8:	f88d 2071 	strb.w	r2, [sp, #113]	@ 0x71
+ 80057bc:	f1dc 0200 	rsbs	r2, ip, #0
+ 80057c0:	eb42 020c 	adc.w	r2, r2, ip
+ 80057c4:	2805      	cmp	r0, #5
+ 80057c6:	bf14      	ite	ne
+ 80057c8:	2300      	movne	r3, #0
+ 80057ca:	f3c3 03c0 	ubfxeq	r3, r3, #3, #1
+ 80057ce:	f88d 3073 	strb.w	r3, [sp, #115]	@ 0x73
+ 80057d2:	6a6b      	ldr	r3, [r5, #36]	@ 0x24
+ 80057d4:	f88d 2072 	strb.w	r2, [sp, #114]	@ 0x72
+ 80057d8:	931e      	str	r3, [sp, #120]	@ 0x78
+ 80057da:	1e4a      	subs	r2, r1, #1
+ 80057dc:	4251      	negs	r1, r2
+ 80057de:	f894 002d 	ldrb.w	r0, [r4, #45]	@ 0x2d
+ 80057e2:	4151      	adcs	r1, r2
+ 80057e4:	f898 2001 	ldrb.w	r2, [r8, #1]
+ 80057e8:	f898 5002 	ldrb.w	r5, [r8, #2]
+ 80057ec:	0183      	lsls	r3, r0, #6
+ 80057ee:	b2db      	uxtb	r3, r3
+ 80057f0:	00d2      	lsls	r2, r2, #3
+ 80057f2:	ea43 2301 	orr.w	r3, r3, r1, lsl #8
+ 80057f6:	f002 0238 	and.w	r2, r2, #56	@ 0x38
+ 80057fa:	2d01      	cmp	r5, #1
+ 80057fc:	ea43 0302 	orr.w	r3, r3, r2
+ 8005800:	d031      	beq.n	8005866 <MetrologyManager_AcceptRawSample+0x402>
+ 8005802:	2d02      	cmp	r5, #2
+ 8005804:	d031      	beq.n	800586a <MetrologyManager_AcceptRawSample+0x406>
+ 8005806:	2d05      	cmp	r5, #5
+ 8005808:	bf0c      	ite	eq
+ 800580a:	2202      	moveq	r2, #2
+ 800580c:	2203      	movne	r2, #3
+ 800580e:	ea43 0342 	orr.w	r3, r3, r2, lsl #1
+ 8005812:	4a18      	ldr	r2, [pc, #96]	@ (8005874 <MetrologyManager_AcceptRawSample+0x410>)
+ 8005814:	443e      	add	r6, r7
+ 8005816:	7812      	ldrb	r2, [r2, #0]
+ 8005818:	f88d 007e 	strb.w	r0, [sp, #126]	@ 0x7e
+ 800581c:	2a01      	cmp	r2, #1
+ 800581e:	bf08      	it	eq
+ 8005820:	f043 0301 	orreq.w	r3, r3, #1
+ 8005824:	4434      	add	r4, r6
+ 8005826:	f8ad 307c 	strh.w	r3, [sp, #124]	@ 0x7c
+ 800582a:	f894 3030 	ldrb.w	r3, [r4, #48]	@ 0x30
+ 800582e:	4812      	ldr	r0, [pc, #72]	@ (8005878 <MetrologyManager_AcceptRawSample+0x414>)
+ 8005830:	f88d 307f 	strb.w	r3, [sp, #127]	@ 0x7f
+ 8005834:	f894 3031 	ldrb.w	r3, [r4, #49]	@ 0x31
+ 8005838:	a912      	add	r1, sp, #72	@ 0x48
+ 800583a:	f88d 3080 	strb.w	r3, [sp, #128]	@ 0x80
+ 800583e:	f002 feed 	bl	800861c <DisplayConditioner_Update>
+ 8005842:	2800      	cmp	r0, #0
+ 8005844:	f47f ae32 	bne.w	80054ac <MetrologyManager_AcceptRawSample+0x48>
+ 8005848:	e65c      	b.n	8005504 <MetrologyManager_AcceptRawSample+0xa0>
+ 800584a:	429d      	cmp	r5, r3
+ 800584c:	f43f aeb2 	beq.w	80055b4 <MetrologyManager_AcceptRawSample+0x150>
+ 8005850:	210c      	movs	r1, #12
+ 8005852:	4630      	mov	r0, r6
+ 8005854:	f00f fd4d 	bl	80152f2 <CheckweighShadow_RequestReset>
+ 8005858:	e6ac      	b.n	80055b4 <MetrologyManager_AcceptRawSample+0x150>
+ 800585a:	e9d7 2312 	ldrd	r2, r3, [r7, #72]	@ 0x48
+ 800585e:	e6b4      	b.n	80055ca <MetrologyManager_AcceptRawSample+0x166>
+ 8005860:	e9d5 2312 	ldrd	r2, r3, [r5, #72]	@ 0x48
+ 8005864:	e790      	b.n	8005788 <MetrologyManager_AcceptRawSample+0x324>
+ 8005866:	2200      	movs	r2, #0
+ 8005868:	e7d1      	b.n	800580e <MetrologyManager_AcceptRawSample+0x3aa>
+ 800586a:	2201      	movs	r2, #1
+ 800586c:	e7cf      	b.n	800580e <MetrologyManager_AcceptRawSample+0x3aa>
+ 800586e:	bf00      	nop
+ 8005870:	20001638 	.word	0x20001638
+ 8005874:	20001011 	.word	0x20001011
+ 8005878:	200015b0 	.word	0x200015b0

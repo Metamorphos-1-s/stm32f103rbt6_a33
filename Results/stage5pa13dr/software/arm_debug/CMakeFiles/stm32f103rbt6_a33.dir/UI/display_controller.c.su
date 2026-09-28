@@ -1,0 +1,16 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:79:13:DisplayController_BuildIndicators	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:103:13:DisplayController_BuildModel	56	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:220:13:DisplayController_ApplyModel	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:55:13:DisplayController_ApplyEditCursor	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:251:6:DisplayController_Init	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:272:6:DisplayController_Process20ms	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:298:6:DisplayController_SetPage	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:309:6:DisplayController_ShowMessage	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:323:6:DisplayController_SetTextPage	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:339:6:DisplayController_SetNumericPage	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:357:6:DisplayController_SetTextEditPage	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:374:6:DisplayController_SetNumericEditPage	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:393:6:DisplayController_SetBrightness	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:399:6:DisplayController_SetTestPattern	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:410:13:DisplayController_GetPage	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.c:416:6:DisplayController_GetDirectionalDiagnostics	8	static

@@ -1,0 +1,5 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/mass_math.c:76:6:MassMath_Add	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/mass_math.c:84:6:MassMath_Subtract	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/mass_math.c:93:6:MassMath_Abs	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/mass_math.c:100:6:MassMath_MulDivRound	64	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/mass_math.c:125:6:MassMath_Quantize	40	static

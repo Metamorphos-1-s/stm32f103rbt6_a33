@@ -1,0 +1,4 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_display_font.c:15:6:Stage2B_FontEncode	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_display_font.c:137:6:Stage2B_FormatHex24	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_display_font.c:155:6:Stage2B_FormatBatteryMv	20	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_display_font.c:196:6:Stage2B_FormatKeyMask	0	static

@@ -1,0 +1,156 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Publish" label: "Publish\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:77:13\n40 bytes (static)" }
+node: { title: "BSP_TimeNowMs" label: "BSP_TimeNowMs\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_time.h:22:15" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Publish" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:79:29" }
+node: { title: "EventQueue_Push" label: "EventQueue_Push\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/event_queue/event_queue.h:60:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Publish" targetname: "EventQueue_Push" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:80:11" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Show" label: "Show\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:83:13\n16 bytes (static)" }
+node: { title: "DisplayCodes_Get" label: "DisplayCodes_Get\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/display_codes.h:52:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Show" targetname: "DisplayCodes_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:86:9" }
+node: { title: "DisplayController_ShowMessage" label: "DisplayController_ShowMessage\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.h:15:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Show" targetname: "DisplayController_ShowMessage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:88:9" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:ApplyRequestedModes" label: "ApplyRequestedModes\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:51:13\n40 bytes (static)" }
+node: { title: "MetrologyManager_RestoreR5Request" label: "MetrologyManager_RestoreR5Request\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/metrology_manager.h:82:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:ApplyRequestedModes" targetname: "MetrologyManager_RestoreR5Request" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:58:14" }
+node: { title: "App_GetGuardedCheckweighState" label: "App_GetGuardedCheckweighState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.h:20:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:ApplyRequestedModes" targetname: "App_GetGuardedCheckweighState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:67:14" }
+node: { title: "App_RestoreGuardedCheckweighMode" label: "App_RestoreGuardedCheckweighMode\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.h:22:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:ApplyRequestedModes" targetname: "App_RestoreGuardedCheckweighMode" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:68:14" }
+node: { title: "PersistenceManager_Init" label: "PersistenceManager_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:92:6\n0 bytes (static)" }
+node: { title: "PersistenceManager_LoadStartup" label: "PersistenceManager_LoadStartup\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:104:18\n8 bytes (static)" }
+node: { title: "ConfigStore_Load" label: "ConfigStore_Load\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/config_store/config_store.h:92:18" shape : ellipse }
+edge: { sourcename: "PersistenceManager_LoadStartup" targetname: "ConfigStore_Load" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:107:21" }
+node: { title: "PersistenceManager_Process" label: "PersistenceManager_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:286:6\n24 bytes (static)" }
+node: { title: "Stage4BStorageDiagnostics_Update" label: "Stage4BStorageDiagnostics_Update\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage4b_storage_diagnostics.h:36:6" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "Stage4BStorageDiagnostics_Update" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:296:9" }
+node: { title: "ConfigStore_Process" label: "ConfigStore_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/config_store/config_store.h:100:6" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "ConfigStore_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:299:5" }
+node: { title: "ConfigStore_GetState" label: "ConfigStore_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/config_store/config_store.h:102:18" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "ConfigStore_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:300:13" }
+node: { title: "ConfigStore_GetLastOperationResult" label: "ConfigStore_GetLastOperationResult\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/config_store/config_store.h:104:28" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "ConfigStore_GetLastOperationResult" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:304:14" }
+node: { title: "SystemContext_Get" label: "SystemContext_Get\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:29:22" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:313:44" }
+node: { title: "SystemContext_GetConfigRevision" label: "SystemContext_GetConfigRevision\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:55:10" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "SystemContext_GetConfigRevision" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:315:18" }
+node: { title: "PersistentCodec_DeviceConfigEqual" label: "PersistentCodec_DeviceConfigEqual\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/config_store/persistent_codec.h:34:6" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "PersistentCodec_DeviceConfigEqual" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:317:17" }
+node: { title: "SystemContext_FinalizeSavedRevision" label: "SystemContext_FinalizeSavedRevision\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:51:6" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "SystemContext_FinalizeSavedRevision" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:319:17" }
+node: { title: "ConfigApplication_ApplyFactoryDefaults" label: "ConfigApplication_ApplyFactoryDefaults\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/config_application.h:18:19" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "ConfigApplication_ApplyFactoryDefaults" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:322:14" }
+node: { title: "SystemContext_SetTareState" label: "SystemContext_SetTareState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:32:6" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "SystemContext_SetTareState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:332:23" }
+node: { title: "SystemContext_SetWeightView" label: "SystemContext_SetWeightView\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:39:6" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "SystemContext_SetWeightView" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:333:23" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "SystemContext_GetConfigRevision" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:337:17" }
+node: { title: "SystemContext_MarkRevisionSaved" label: "SystemContext_MarkRevisionSaved\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:59:6" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "SystemContext_MarkRevisionSaved" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:335:19" }
+node: { title: "DeviceManager_ExitStorageMaintenance" label: "DeviceManager_ExitStorageMaintenance\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.h:33:6" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "DeviceManager_ExitStorageMaintenance" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:340:32" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:344:38" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:346:19" }
+node: { title: "MetrologyManager_RestartAfterStorage" label: "MetrologyManager_RestartAfterStorage\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/metrology_manager.h:69:6" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "MetrologyManager_RestartAfterStorage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:345:15" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Show" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:356:9" }
+node: { title: "ConfigStore_GetActiveSequence" label: "ConfigStore_GetActiveSequence\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/config_store/config_store.h:106:10" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "ConfigStore_GetActiveSequence" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:357:9" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Publish" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:357:9" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Show" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:366:9" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "ConfigStore_GetActiveSequence" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:367:9" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Publish" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:367:9" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Show" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:374:9" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "ConfigStore_GetActiveSequence" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:375:9" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Publish" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:375:9" }
+node: { title: "ConfigApplication_ApplyTransient" label: "ConfigApplication_ApplyTransient\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/config_application.h:20:19" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "ConfigApplication_ApplyTransient" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:385:32" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:ApplyRequestedModes" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:389:27" }
+node: { title: "SystemContext_RestoreSnapshot" label: "SystemContext_RestoreSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:52:6" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "SystemContext_RestoreSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:392:27" }
+node: { title: "FaultManager_Set" label: "FaultManager_Set\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/fault_manager/fault_manager.h:47:6" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:395:31" }
+node: { title: "SystemContext_SetConfigDirty" label: "SystemContext_SetConfigDirty\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:38:6" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "SystemContext_SetConfigDirty" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:398:19" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:400:13" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Show" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:401:9" }
+node: { title: "ConfigStore_GetLastError" label: "ConfigStore_GetLastError\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/config_store/config_store.h:108:10" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "ConfigStore_GetLastError" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:402:9" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Publish" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:402:9" }
+node: { title: "ConfigStore_AcknowledgeResult" label: "ConfigStore_AcknowledgeResult\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/config_store/config_store.h:110:6" shape : ellipse }
+edge: { sourcename: "PersistenceManager_Process" targetname: "ConfigStore_AcknowledgeResult" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:406:5" }
+edge: { sourcename: "PersistenceManager_Process" targetname: "Stage4BStorageDiagnostics_Update" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:409:5" }
+node: { title: "PersistenceManager_IsBusy" label: "PersistenceManager_IsBusy\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:412:6\n0 bytes (static)" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" label: "Start\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:111:22\n16 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:119:36" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "PersistenceManager_IsBusy" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:123:30" }
+node: { title: "SystemContext_GetState" label: "SystemContext_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:30:10" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:124:11" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:126:10" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "PersistenceManager_IsBusy" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:128:16" }
+node: { title: "SystemContext_HasStorageRecord" label: "SystemContext_HasStorageRecord\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:60:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "SystemContext_HasStorageRecord" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:132:43" }
+node: { title: "StoragePowerGuard_CanStartFlashOperation" label: "StoragePowerGuard_CanStartFlashOperation\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/storage_power_guard/storage_power_guard.h:17:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "StoragePowerGuard_CanStartFlashOperation" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:137:10" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "SystemContext_GetConfigRevision" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:141:28" }
+node: { title: "DefaultConfig_Load" label: "DefaultConfig_Load\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/default_config.h:9:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "DefaultConfig_Load" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:144:9" }
+node: { title: "ConfigApplication_Validate" label: "ConfigApplication_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/config_application.h:16:19" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "ConfigApplication_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:148:13" }
+node: { title: "ConfigStore_RequestFactoryReset" label: "ConfigStore_RequestFactoryReset\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/config_store/config_store.h:97:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "ConfigStore_RequestFactoryReset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:156:20" }
+node: { title: "ConfigStore_RequestSave" label: "ConfigStore_RequestSave\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/config_store/config_store.h:94:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "ConfigStore_RequestSave" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:163:20" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "ConfigStore_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:169:25" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "ConfigStore_AcknowledgeResult" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:174:13" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "ConfigStore_GetLastOperationResult" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:179:9" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Publish" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:182:9" }
+node: { title: "DeviceManager_EnterStorageMaintenance" label: "DeviceManager_EnterStorageMaintenance\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.h:32:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "DeviceManager_EnterStorageMaintenance" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:185:10" }
+node: { title: "ConfigStore_CancelPending" label: "ConfigStore_CancelPending\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/config_store/config_store.h:111:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "ConfigStore_CancelPending" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:187:15" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Publish" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:192:5" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Show" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:195:5" }
+node: { title: "PersistenceManager_RequestSave" label: "PersistenceManager_RequestSave\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:201:15\n8 bytes (static)" }
+edge: { sourcename: "PersistenceManager_RequestSave" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:203:12" }
+node: { title: "PersistenceManager_RequestCalibrationSave" label: "PersistenceManager_RequestCalibrationSave\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:207:15\n16 bytes (static)" }
+edge: { sourcename: "PersistenceManager_RequestCalibrationSave" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:209:36" }
+edge: { sourcename: "PersistenceManager_RequestCalibrationSave" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:210:10" }
+edge: { sourcename: "PersistenceManager_RequestCalibrationSave" targetname: "SystemContext_GetConfigRevision" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:212:10" }
+node: { title: "SystemContext_GetSavedRevision" label: "SystemContext_GetSavedRevision\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:56:10" shape : ellipse }
+edge: { sourcename: "PersistenceManager_RequestCalibrationSave" targetname: "SystemContext_GetSavedRevision" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:212:47" }
+node: { title: "CommandService_LocalCalibrationApplied" label: "CommandService_LocalCalibrationApplied\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/command_service/command_service.h:64:6" shape : ellipse }
+edge: { sourcename: "PersistenceManager_RequestCalibrationSave" targetname: "CommandService_LocalCalibrationApplied" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:213:10" }
+edge: { sourcename: "PersistenceManager_RequestCalibrationSave" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:215:12" }
+node: { title: "PersistenceManager_RequestFactoryReset" label: "PersistenceManager_RequestFactoryReset\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:281:15\n8 bytes (static)" }
+edge: { sourcename: "PersistenceManager_RequestFactoryReset" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Start" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:283:12" }
+node: { title: "PersistenceManager_RequestCandidateSave" label: "PersistenceManager_RequestCandidateSave\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:219:15\n32 bytes (static)" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:228:36" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "PersistenceManager_IsBusy" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:231:9" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "SystemContext_GetConfigRevision" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:232:10" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "ConfigApplication_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:233:10" }
+node: { title: "Revision_Next" label: "Revision_Next\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/revision_helper.h:9:10" shape : ellipse }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "Revision_Next" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:235:12" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "StoragePowerGuard_CanStartFlashOperation" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:236:10" }
+node: { title: "memcpy" label: "__builtin_memcpy\n<built-in>" shape : ellipse }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "memcpy" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "memcpy" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "SystemContext_GetSavedRevision" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:242:43" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "ConfigStore_RequestSave" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:245:10" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "DeviceManager_EnterStorageMaintenance" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:247:10" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "ConfigStore_CancelPending" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:249:15" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "ConfigApplication_ApplyTransient" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:252:9" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "ConfigStore_CancelPending" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:255:15" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "DeviceManager_ExitStorageMaintenance" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:256:15" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:ApplyRequestedModes" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:260:10" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "ConfigApplication_ApplyTransient" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:262:25" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:ApplyRequestedModes" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:265:20" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "ConfigStore_CancelPending" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:266:15" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "DeviceManager_ExitStorageMaintenance" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:267:15" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:268:24" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Publish" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:275:5" }
+edge: { sourcename: "PersistenceManager_RequestCandidateSave" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:Show" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:276:5" }
+node: { title: "PersistenceManager_GetStatus" label: "PersistenceManager_GetStatus\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:417:19\n0 bytes (static)" }
+node: { title: "PersistenceManager_GetLoadResult" label: "PersistenceManager_GetLoadResult\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:418:18\n0 bytes (static)" }
+node: { title: "PersistenceManager_GetLoadInfo" label: "PersistenceManager_GetLoadInfo\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:419:23\n0 bytes (static)" }
+node: { title: "PersistenceManager_GetFactoryResetResult" label: "PersistenceManager_GetFactoryResetResult\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.c:420:20\n0 bytes (static)" }
+}

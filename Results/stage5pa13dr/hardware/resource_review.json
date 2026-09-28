@@ -1,0 +1,181 @@
+{
+  "result": "PASS",
+  "classification": "DIAGNOSTIC_TARGET_DIRECT_MEASUREMENT",
+  "start_utc": "2026-09-28T09:36:09.556617+00:00",
+  "end_utc": "2026-09-28T09:54:02.263765+00:00",
+  "host_monotonic_duration_s": 1072.703,
+  "host_polls": 12518,
+  "host_gap_events": [],
+  "target_first_sequence": 1,
+  "target_last_sequence": 10702,
+  "target_timed_calls": 10702,
+  "target_produced": 10702,
+  "target_consumed": 10702,
+  "target_engine": 10702,
+  "fifo": 0,
+  "hclk_hz": 72000000,
+  "paths": [
+    {
+      "path": "OFF",
+      "calls": 1616,
+      "max_cycles": 431,
+      "max_us": 5.986111111111111,
+      "peak_sequence": 1267
+    },
+    {
+      "path": "HOLDOFF",
+      "calls": 518,
+      "max_cycles": 143444,
+      "max_us": 1992.2777777777778,
+      "peak_sequence": 4221
+    },
+    {
+      "path": "REFERENCE_FILL",
+      "calls": 1200,
+      "max_cycles": 604317,
+      "max_us": 8393.291666666666,
+      "peak_sequence": 2066
+    },
+    {
+      "path": "OBSERVATION_FILL",
+      "calls": 796,
+      "max_cycles": 77296,
+      "max_us": 1073.5555555555557,
+      "peak_sequence": 4646
+    },
+    {
+      "path": "TRACKING",
+      "calls": 1898,
+      "max_cycles": 430086,
+      "max_us": 5973.416666666667,
+      "peak_sequence": 3444
+    },
+    {
+      "path": "FAST_TRACKING",
+      "calls": 1986,
+      "max_cycles": 496459,
+      "max_us": 6895.263888888889,
+      "peak_sequence": 9594
+    },
+    {
+      "path": "STEP_PENDING",
+      "calls": 29,
+      "max_cycles": 106616,
+      "max_us": 1480.7777777777778,
+      "peak_sequence": 4174
+    },
+    {
+      "path": "STEP_SETTLING",
+      "calls": 82,
+      "max_cycles": 128798,
+      "max_us": 1788.861111111111,
+      "peak_sequence": 9626
+    },
+    {
+      "path": "DOSING",
+      "calls": 2577,
+      "max_cycles": 77161,
+      "max_us": 1071.6805555555557,
+      "peak_sequence": 7836
+    },
+    {
+      "path": "INVALID",
+      "calls": 0,
+      "max_cycles": 0,
+      "max_us": 0.0,
+      "peak_sequence": 0
+    }
+  ],
+  "feed_max_us": 8393.291666666666,
+  "app_run_max_us": 12042.861111111111,
+  "loop_interval_max_us": 12043.569444444445,
+  "empty_bracket_cycles": 20,
+  "overhead_subtracted": false,
+  "runtime_untouched_bytes": 1388,
+  "runtime_stack_top_to_touched_bytes": 756,
+  "static_end": "0x200047a0",
+  "deepest_touched": "0x20004d0c",
+  "stack_top": "0x20005000",
+  "control": 0,
+  "gates": 3,
+  "boost_evaluations": 1986,
+  "fault": 0,
+  "overrun": 0,
+  "read_errors": 0,
+  "restore_application_byte_equal": true,
+  "restore_config_byte_equal": true,
+  "restored_prefix_byte_equal": true,
+  "restored_tail_nonff": 0,
+  "restored_application_sha256": "6279F17AB9E987BF8156F5F9F805B8DB41CDBDA2951603DC1B55CE559D4B34B5",
+  "restored_config_sha256": "856BD8F5C14760561FC4BFEC4274FE0C5480C19BC4422046617C2450F8439733",
+  "terminal": {
+    "utc": "2026-09-28T09:54:19.247084+00:00",
+    "host_monotonic_ns": 332543265000000,
+    "firmware": "0x051D",
+    "map": "0x0105",
+    "word_order": "high",
+    "display_count": 23,
+    "display_decimals": 2,
+    "gross_ug": 232028,
+    "net_ug": 232028,
+    "raw_adc": 42085,
+    "filtered_adc_counts": 42074,
+    "sample_sequence": 8,
+    "mcu_uptime_ms": 1617,
+    "overrun_count": 0,
+    "fault_mask": 0,
+    "dirty": 0,
+    "revision": 19,
+    "saved_revision": 19,
+    "calibration_valid": 1,
+    "configuration": {
+      "active_profile": 0,
+      "sample_rate": 0,
+      "gain": 3,
+      "filter_mode": 1,
+      "filter_strength": 3,
+      "raw_zero": 41868,
+      "raw_span": 485780,
+      "span_mass_ug": 500000000,
+      "schema": 2,
+      "persistent_format": 3,
+      "slot": 1,
+      "storage_sequence": 19
+    },
+    "r5": {
+      "signature": 21941,
+      "application": 0,
+      "mode": 0,
+      "state": 0,
+      "limited": 0,
+      "offset_ug": 0,
+      "save_request_count_low": 0
+    },
+    "checkweigh": {
+      "signature": 23477,
+      "mode": 0
+    },
+    "candidate": {
+      "signature": "0xA13C",
+      "mode": 0,
+      "state": 0,
+      "reason": 0,
+      "limited": 0,
+      "offset_ug": 0,
+      "corrected_ug": 239912,
+      "uncompensated_ug": 239912,
+      "sample_sequence": 9,
+      "mcu_uptime_ms": 1718,
+      "gate_count": 0,
+      "rebuild_count": 0,
+      "boost_samples": 0,
+      "obvious_sequence": 0,
+      "robust_sequence": 0,
+      "quiet_sequence": 0,
+      "reference_lock_sequence": 0,
+      "first_correction_sequence": 0
+    }
+  },
+  "historical_A13D": "FAIL; unchanged",
+  "A13B_efficacy": "INCONCLUSIVE; unchanged"
+}

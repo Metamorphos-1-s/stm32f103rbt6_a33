@@ -1,0 +1,2 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_power_monitor.c:6:6:BSP_PvdInit	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_power_monitor.c:21:6:BSP_PvdIsSupplySafe	0	static

@@ -1,0 +1,99 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:DeviceManager_MakeCs1237Config" label: "DeviceManager_MakeCs1237Config\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:354:22\n8 bytes (static)" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:DeviceManager_PushEvent" label: "DeviceManager_PushEvent\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:341:13\n40 bytes (static)" }
+node: { title: "BSP_TimeNowMs" label: "BSP_TimeNowMs\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_time.h:22:15" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:DeviceManager_PushEvent" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:347:26" }
+node: { title: "EventQueue_Push" label: "EventQueue_Push\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/event_queue/event_queue.h:60:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:DeviceManager_PushEvent" targetname: "EventQueue_Push" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:351:11" }
+node: { title: "DeviceManager_Init" label: "DeviceManager_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:41:6\n24 bytes (static)" }
+node: { title: "memcpy" label: "__builtin_memcpy\n<built-in>" shape : ellipse }
+edge: { sourcename: "DeviceManager_Init" targetname: "memcpy" }
+node: { title: "OutputGpio_Init" label: "OutputGpio_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/output_gpio/output_gpio.h:16:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_Init" targetname: "OutputGpio_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:63:5" }
+node: { title: "W02PwrKey_Init" label: "W02PwrKey_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.h:14:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_Init" targetname: "W02PwrKey_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:64:5" }
+node: { title: "W02Uart_Init" label: "W02Uart_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_uart.h:14:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_Init" targetname: "W02Uart_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:65:10" }
+edge: { sourcename: "DeviceManager_Init" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:69:5" }
+node: { title: "BleTransport_Init" label: "BleTransport_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_transport/ble_transport.h:33:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_Init" targetname: "BleTransport_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:69:5" }
+edge: { sourcename: "DeviceManager_Init" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:70:5" }
+node: { title: "BleConnectionManager_Init" label: "BleConnectionManager_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_connection_manager/ble_connection_manager.h:42:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_Init" targetname: "BleConnectionManager_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:70:5" }
+node: { title: "Stage5C_BleDiagnosticsInit" label: "Stage5C_BleDiagnosticsInit\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.h:41:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_Init" targetname: "Stage5C_BleDiagnosticsInit" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:71:5" }
+node: { title: "W02PwrKey_RequestPulse" label: "W02PwrKey_RequestPulse\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.h:15:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_Init" targetname: "W02PwrKey_RequestPulse" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:72:11" }
+node: { title: "TM1628_Init" label: "TM1628_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/tm1628/tm1628.h:10:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_Init" targetname: "TM1628_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:73:10" }
+node: { title: "BatteryAdc_Init" label: "BatteryAdc_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/battery_adc/battery_adc.h:19:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_Init" targetname: "BatteryAdc_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:74:10" }
+edge: { sourcename: "DeviceManager_Init" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:DeviceManager_MakeCs1237Config" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:79:17" }
+node: { title: "CS1237_Init" label: "CS1237_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/cs1237/cs1237.h:9:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_Init" targetname: "CS1237_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:80:10" }
+edge: { sourcename: "DeviceManager_Init" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:DeviceManager_PushEvent" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:92:5" }
+node: { title: "DeviceManager_ProcessFast" label: "DeviceManager_ProcessFast\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:96:6\n8 bytes (static)" }
+node: { title: "CS1237_Process" label: "CS1237_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/cs1237/cs1237.h:10:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_ProcessFast" targetname: "CS1237_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:103:5" }
+node: { title: "CS1237_GetState" label: "CS1237_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/cs1237/cs1237.h:20:14" shape : ellipse }
+edge: { sourcename: "DeviceManager_ProcessFast" targetname: "CS1237_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:104:9" }
+node: { title: "FaultManager_Set" label: "FaultManager_Set\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/fault_manager/fault_manager.h:47:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_ProcessFast" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:107:9" }
+node: { title: "DeviceManager_Process1ms" label: "DeviceManager_Process1ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:111:6\n8 bytes (static)" }
+node: { title: "W02PwrKey_Process" label: "W02PwrKey_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.h:16:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_Process1ms" targetname: "W02PwrKey_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:118:5" }
+node: { title: "W02PwrKey_GetState" label: "W02PwrKey_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.h:18:16" shape : ellipse }
+edge: { sourcename: "DeviceManager_Process1ms" targetname: "W02PwrKey_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:119:9" }
+edge: { sourcename: "DeviceManager_Process1ms" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:122:9" }
+node: { title: "DeviceManager_Process10ms" label: "DeviceManager_Process10ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:126:6\n48 bytes (static)" }
+node: { title: "TM1628_ReadKeys" label: "TM1628_ReadKeys\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/tm1628/tm1628.h:17:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_Process10ms" targetname: "TM1628_ReadKeys" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:136:10" }
+edge: { sourcename: "DeviceManager_Process10ms" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:145:13" }
+edge: { sourcename: "DeviceManager_Process10ms" targetname: "EventQueue_Push" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:159:14" }
+node: { title: "DeviceManager_Process20ms" label: "DeviceManager_Process20ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:166:6\n8 bytes (static)" }
+node: { title: "TM1628_IsDirty" label: "TM1628_IsDirty\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/tm1628/tm1628.h:16:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_Process20ms" targetname: "TM1628_IsDirty" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:168:28" }
+node: { title: "TM1628_Flush" label: "TM1628_Flush\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/tm1628/tm1628.h:15:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_Process20ms" targetname: "TM1628_Flush" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:173:10" }
+edge: { sourcename: "DeviceManager_Process20ms" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:182:13" }
+node: { title: "DeviceManager_Process500ms" label: "DeviceManager_Process500ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:191:6\n8 bytes (static)" }
+node: { title: "BatteryAdc_Process500ms" label: "BatteryAdc_Process500ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/battery_adc/battery_adc.h:20:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_Process500ms" targetname: "BatteryAdc_Process500ms" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:201:5" }
+node: { title: "BatteryAdc_GetState" label: "BatteryAdc_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/battery_adc/battery_adc.h:21:24" shape : ellipse }
+edge: { sourcename: "DeviceManager_Process500ms" targetname: "BatteryAdc_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:202:13" }
+node: { title: "BatteryAdc_GetErrorCount" label: "BatteryAdc_GetErrorCount\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/battery_adc/battery_adc.h:22:10" shape : ellipse }
+edge: { sourcename: "DeviceManager_Process500ms" targetname: "BatteryAdc_GetErrorCount" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:203:19" }
+edge: { sourcename: "DeviceManager_Process500ms" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:215:13" }
+node: { title: "DeviceManager_IsReady" label: "DeviceManager_IsReady\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:224:6\n8 bytes (static)" }
+node: { title: "CS1237_IsReady" label: "CS1237_IsReady\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/cs1237/cs1237.h:11:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_IsReady" targetname: "CS1237_IsReady" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:235:12" }
+node: { title: "DeviceManager_EnterStorageMaintenance" label: "DeviceManager_EnterStorageMaintenance\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:239:6\n16 bytes (static)" }
+edge: { sourcename: "DeviceManager_EnterStorageMaintenance" targetname: "W02PwrKey_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:247:17" }
+node: { title: "BSP_RS485_SetTransmit" label: "BSP_RS485_SetTransmit\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_gpio.h:15:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_EnterStorageMaintenance" targetname: "BSP_RS485_SetTransmit" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:252:5" }
+edge: { sourcename: "DeviceManager_EnterStorageMaintenance" targetname: "W02PwrKey_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:253:5" }
+node: { title: "CS1237_EnterSafeState" label: "CS1237_EnterSafeState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/cs1237/cs1237.h:26:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_EnterStorageMaintenance" targetname: "CS1237_EnterSafeState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:254:5" }
+node: { title: "DeviceManager_ExitStorageMaintenance" label: "DeviceManager_ExitStorageMaintenance\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:259:6\n16 bytes (static)" }
+node: { title: "SystemContext_Get" label: "SystemContext_Get\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:29:22" shape : ellipse }
+edge: { sourcename: "DeviceManager_ExitStorageMaintenance" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:268:15" }
+edge: { sourcename: "DeviceManager_ExitStorageMaintenance" targetname: "memcpy" }
+edge: { sourcename: "DeviceManager_ExitStorageMaintenance" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:DeviceManager_MakeCs1237Config" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:273:17" }
+edge: { sourcename: "DeviceManager_ExitStorageMaintenance" targetname: "CS1237_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:274:10" }
+node: { title: "DeviceManager_IsInStorageMaintenance" label: "DeviceManager_IsInStorageMaintenance\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:282:6\n0 bytes (static)" }
+node: { title: "DeviceManager_GetErrorMask" label: "DeviceManager_GetErrorMask\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:287:10\n0 bytes (static)" }
+node: { title: "DeviceManager_ObserveCs1237Consumption" label: "DeviceManager_ObserveCs1237Consumption\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:292:6\n8 bytes (static)" }
+edge: { sourcename: "DeviceManager_ObserveCs1237Consumption" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:307:5" }
+node: { title: "DeviceManager_GetOverrunBacklog" label: "DeviceManager_GetOverrunBacklog\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:311:10\n0 bytes (static)" }
+node: { title: "DeviceManager_GetOverrunConsumedCount" label: "DeviceManager_GetOverrunConsumedCount\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:316:10\n0 bytes (static)" }
+node: { title: "DeviceManager_GetRecordedOverrunCount" label: "DeviceManager_GetRecordedOverrunCount\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:321:10\n0 bytes (static)" }
+node: { title: "DeviceManager_EnterSafeState" label: "DeviceManager_EnterSafeState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:326:6\n8 bytes (static)" }
+edge: { sourcename: "DeviceManager_EnterSafeState" targetname: "BSP_RS485_SetTransmit" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:328:5" }
+node: { title: "OutputGpio_AllOff" label: "OutputGpio_AllOff\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/output_gpio/output_gpio.h:19:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_EnterSafeState" targetname: "OutputGpio_AllOff" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:329:5" }
+edge: { sourcename: "DeviceManager_EnterSafeState" targetname: "W02PwrKey_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:330:5" }
+node: { title: "TM1628_ReleaseBus" label: "TM1628_ReleaseBus\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/tm1628/tm1628.h:19:6" shape : ellipse }
+edge: { sourcename: "DeviceManager_EnterSafeState" targetname: "TM1628_ReleaseBus" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:331:5" }
+edge: { sourcename: "DeviceManager_EnterSafeState" targetname: "CS1237_EnterSafeState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:332:5" }
+node: { title: "DeviceManager_GetLastRawKeyMask" label: "DeviceManager_GetLastRawKeyMask\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.c:336:9\n0 bytes (static)" }
+}

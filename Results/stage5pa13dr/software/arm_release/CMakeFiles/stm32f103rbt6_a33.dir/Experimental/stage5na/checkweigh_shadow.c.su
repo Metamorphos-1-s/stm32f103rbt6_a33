@@ -1,0 +1,4 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Experimental/stage5na/checkweigh_shadow.c:28:9:CheckweighShadow_Classify	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Experimental/stage5na/checkweigh_shadow.c:83:6:CheckweighShadow_Reset	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Experimental/stage5na/checkweigh_shadow.c:92:6:CheckweighShadow_RequestReset	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Experimental/stage5na/checkweigh_shadow.c:99:6:CheckweighShadow_Process	64	static

@@ -1,0 +1,371 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_500msTask" label: "App_500msTask\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:636:13\n0 bytes (static)" }
+node: { title: "DeviceManager_Process500ms" label: "DeviceManager_Process500ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.h:21:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_500msTask" targetname: "DeviceManager_Process500ms" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:639:3" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_100msTask" label: "App_100msTask\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:485:13\n0 bytes (static)" }
+node: { title: "StoragePowerGuard_Process100ms" label: "StoragePowerGuard_Process100ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/storage_power_guard/storage_power_guard.h:15:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_100msTask" targetname: "StoragePowerGuard_Process100ms" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:488:3" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_PushEvent" label: "App_PushEvent\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:1019:13\n40 bytes (static)" }
+node: { title: "BSP_TimeNowMs" label: "BSP_TimeNowMs\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_time.h:22:15" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_PushEvent" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:1024:24" }
+node: { title: "EventQueue_Push" label: "EventQueue_Push\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/event_queue/event_queue.h:60:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_PushEvent" targetname: "EventQueue_Push" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:1028:10" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" label: "App_20msTask\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:491:13\n168 bytes (static)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "memset" }
+node: { title: "DeviceManager_Process20ms" label: "DeviceManager_Process20ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.h:20:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "DeviceManager_Process20ms" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:497:3" }
+node: { title: "MeasurementBridge_BuildUpdateEvent" label: "MeasurementBridge_BuildUpdateEvent\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/measurement_bridge.h:15:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "MeasurementBridge_BuildUpdateEvent" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:1004:7" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "EventQueue_Push" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:1005:7" }
+node: { title: "MetrologyManager_Process20ms" label: "MetrologyManager_Process20ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/metrology_manager.h:51:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "MetrologyManager_Process20ms" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:499:3" }
+node: { title: "SystemContext_Get" label: "SystemContext_Get\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:29:22" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:500:12" }
+node: { title: "MetrologyManager_GetSnapshot" label: "MetrologyManager_GetSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/metrology_manager.h:52:23" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "MetrologyManager_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:501:14" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:504:25" }
+node: { title: "SystemContext_GetState" label: "SystemContext_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:30:10" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:505:31" }
+node: { title: "FaultManager_HasWeightInvalidFault" label: "FaultManager_HasWeightInvalidFault\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/fault_manager/fault_manager.h:52:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "FaultManager_HasWeightInvalidFault" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:507:31" }
+node: { title: "StartupAutoZeroController_Process" label: "StartupAutoZeroController_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/startup_auto_zero_controller.h:57:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "StartupAutoZeroController_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:517:9" }
+node: { title: "MetrologyManager_Zero" label: "MetrologyManager_Zero\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/metrology_manager.h:58:20" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "MetrologyManager_Zero" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:518:7" }
+node: { title: "StartupAutoZeroController_CompleteZero" label: "StartupAutoZeroController_CompleteZero\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/startup_auto_zero_controller.h:59:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "StartupAutoZeroController_CompleteZero" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:518:7" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:522:3" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:532:34" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:550:11" }
+node: { title: "LimitChecker_Reset" label: "LimitChecker_Reset\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/limit_checker/limit_checker.h:36:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "LimitChecker_Reset" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:557:5" }
+node: { title: "AlarmOutputManager_Init" label: "AlarmOutputManager_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/alarm_output_manager/alarm_output_manager.h:32:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "AlarmOutputManager_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:558:5" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "MetrologyManager_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:563:14" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "memset" }
+node: { title: "MetrologyManager_GetAlarmShadowDiagnostics" label: "MetrologyManager_GetAlarmShadowDiagnostics\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/metrology_manager.h:93:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "MetrologyManager_GetAlarmShadowDiagnostics" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:571:8" }
+node: { title: "AlarmOutputManager_AllOff" label: "AlarmOutputManager_AllOff\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/alarm_output_manager/alarm_output_manager.h:40:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "AlarmOutputManager_AllOff" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:573:5" }
+node: { title: "AlarmConfig_Validate" label: "AlarmConfig_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/alarm_config_validation.h:8:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "AlarmConfig_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:585:7" }
+node: { title: "FaultManager_GetActiveMask" label: "FaultManager_GetActiveMask\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/fault_manager/fault_manager.h:50:10" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "FaultManager_GetActiveMask" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:587:33" }
+node: { title: "GuardedCheckweigh_Process" label: "GuardedCheckweigh_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/guarded_checkweigh/guarded_checkweigh.h:53:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "GuardedCheckweigh_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:589:7" }
+node: { title: "AlarmOutputManager_Update" label: "AlarmOutputManager_Update\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/alarm_output_manager/alarm_output_manager.h:33:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "AlarmOutputManager_Update" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:591:11" }
+node: { title: "DisplayController_Process20ms" label: "DisplayController_Process20ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.h:13:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "DisplayController_Process20ms" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:524:3" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:525:3" }
+node: { title: "BleTelemetryService_Process" label: "BleTelemetryService_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_telemetry_service/ble_telemetry_service.h:9:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "BleTelemetryService_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:525:3" }
+node: { title: "Stage3MetrologyDiagnostics_Update" label: "Stage3MetrologyDiagnostics_Update\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage3_metrology_diagnostics.h:29:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_20msTask" targetname: "Stage3MetrologyDiagnostics_Update" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:526:3" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ExecuteLocalCommand" label: "App_ExecuteLocalCommand\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:840:22\n48 bytes (static)" }
+node: { title: "CommandService_Execute" label: "CommandService_Execute\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/command_service/command_service.h:57:15" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ExecuteLocalCommand" targetname: "CommandService_Execute" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:848:10" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ShowCommandResult" label: "App_ShowCommandResult\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:851:13\n16 bytes (static)" }
+node: { title: "DisplayCodes_Get" label: "DisplayCodes_Get\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_model/display_codes.h:52:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ShowCommandResult" targetname: "DisplayCodes_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:892:7" }
+node: { title: "DisplayController_ShowMessage" label: "DisplayController_ShowMessage\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.h:15:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ShowCommandResult" targetname: "DisplayController_ShowMessage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:894:5" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ReconcileUiOwnership" label: "App_ReconcileUiOwnership\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:464:13\n16 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ReconcileUiOwnership" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:466:34" }
+node: { title: "DisplayController_GetPage" label: "DisplayController_GetPage\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.h:27:13" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ReconcileUiOwnership" targetname: "DisplayController_GetPage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:467:22" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ReconcileUiOwnership" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:475:29" }
+node: { title: "MenuController_IsActive" label: "MenuController_IsActive\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/menu_controller/menu_controller.h:17:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ReconcileUiOwnership" targetname: "MenuController_IsActive" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:476:7" }
+node: { title: "StatusController_IsActive" label: "StatusController_IsActive\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/status_controller/status_controller.h:47:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ReconcileUiOwnership" targetname: "StatusController_IsActive" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:476:36" }
+node: { title: "DisplayController_SetPage" label: "DisplayController_SetPage\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.h:14:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ReconcileUiOwnership" targetname: "DisplayController_SetPage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:481:3" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" label: "App_10msTask\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:409:13\n88 bytes (static)" }
+node: { title: "DeviceManager_Process10ms" label: "DeviceManager_Process10ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.h:19:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "DeviceManager_Process10ms" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:415:3" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:416:7" }
+node: { title: "SelfTestController_Process10ms" label: "SelfTestController_Process10ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/self_test_controller.h:21:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "SelfTestController_Process10ms" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:426:3" }
+node: { title: "MenuController_Process10ms" label: "MenuController_Process10ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/menu_controller/menu_controller.h:14:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "MenuController_Process10ms" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:427:3" }
+node: { title: "StatusController_Process10ms" label: "StatusController_Process10ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/status_controller/status_controller.h:45:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "StatusController_Process10ms" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:428:3" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:429:3" }
+node: { title: "CommandService_Process" label: "CommandService_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/command_service/command_service.h:56:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "CommandService_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:429:3" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:430:3" }
+node: { title: "ModbusCommandMailbox_Process" label: "ModbusCommandMailbox_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_command_mailbox.h:10:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "ModbusCommandMailbox_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:430:3" }
+node: { title: "CalibrationController_Process10ms" label: "CalibrationController_Process10ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/calibration_controller.h:62:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "CalibrationController_Process10ms" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:431:3" }
+node: { title: "MenuController_TakeCalibrationRequest" label: "MenuController_TakeCalibrationRequest\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/menu_controller/menu_controller.h:18:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "MenuController_TakeCalibrationRequest" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:433:7" }
+node: { title: "DeviceManager_GetLastRawKeyMask" label: "DeviceManager_GetLastRawKeyMask\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.h:31:9" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "DeviceManager_GetLastRawKeyMask" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:418:5" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:418:5" }
+node: { title: "KeyService_Process10ms" label: "KeyService_Process10ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/key_service/key_service.h:12:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "KeyService_Process10ms" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:418:5" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:900:20" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "StatusController_IsActive" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:907:7" }
+node: { title: "StatusController_HandleKeyEvent" label: "StatusController_HandleKeyEvent\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/status_controller/status_controller.h:46:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "StatusController_HandleKeyEvent" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:909:11" }
+node: { title: "MenuController_HandleKeyEvent" label: "MenuController_HandleKeyEvent\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/menu_controller/menu_controller.h:15:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "MenuController_HandleKeyEvent" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:920:11" }
+node: { title: "CalibrationController_HandleKeyEvent" label: "CalibrationController_HandleKeyEvent\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/calibration_controller.h:63:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "CalibrationController_HandleKeyEvent" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:925:11" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "DisplayController_GetPage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:936:8" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ReconcileUiOwnership" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:944:5" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "DisplayController_GetPage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:937:8" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "DisplayController_GetPage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:938:8" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "DisplayController_GetPage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:940:11" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "DisplayController_GetPage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:951:24" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "DisplayController_SetPage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:956:5" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ExecuteLocalCommand" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:958:13" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ExecuteLocalCommand" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:960:13" }
+node: { title: "MenuController_Enter" label: "MenuController_Enter\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/menu_controller/menu_controller.h:12:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "MenuController_Enter" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:965:9" }
+node: { title: "SystemContext_SetState" label: "SystemContext_SetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:31:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "SystemContext_SetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:966:13" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ExecuteLocalCommand" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:970:5" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ShowCommandResult" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:970:5" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ExecuteLocalCommand" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:973:5" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ShowCommandResult" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:973:5" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ExecuteLocalCommand" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:976:5" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ShowCommandResult" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:976:5" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ExecuteLocalCommand" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:979:5" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ShowCommandResult" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:979:5" }
+node: { title: "RunKeyPolicy_GetStarAction" label: "RunKeyPolicy_GetStarAction\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/status_controller/run_key_policy.h:12:15" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "RunKeyPolicy_GetStarAction" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:986:13" }
+node: { title: "StatusController_Enter" label: "StatusController_Enter\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/status_controller/status_controller.h:43:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "StatusController_Enter" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:988:11" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "DisplayController_GetPage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:992:25" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "DisplayController_SetPage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:994:5" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ExecuteLocalCommand" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:995:11" }
+node: { title: "KeyService_TryPopEvent" label: "KeyService_TryPopEvent\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/key_service/key_service.h:13:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "KeyService_TryPopEvent" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:420:12" }
+node: { title: "CommandService_GetCalibrationSnapshot" label: "CommandService_GetCalibrationSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/command_service/command_service.h:60:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "CommandService_GetCalibrationSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:437:9" }
+node: { title: "PersistenceManager_IsBusy" label: "PersistenceManager_IsBusy\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.h:43:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "PersistenceManager_IsBusy" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:440:9" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ShowCommandResult" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:442:7" }
+node: { title: "CalibrationController_Begin" label: "CalibrationController_Begin\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/calibration_controller.h:61:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "CalibrationController_Begin" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:444:14" }
+node: { title: "MenuController_Cancel" label: "MenuController_Cancel\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/menu_controller/menu_controller.h:16:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "MenuController_Cancel" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:446:7" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:447:13" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "SystemContext_SetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:447:13" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ShowCommandResult" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:454:7" }
+node: { title: "MenuController_TakeExitRequest" label: "MenuController_TakeExitRequest\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/menu_controller/menu_controller.h:19:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "MenuController_TakeExitRequest" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:457:7" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:459:11" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "SystemContext_SetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:459:11" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_10msTask" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_ReconcileUiOwnership" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:461:3" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_1msTask" label: "App_1msTask\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:389:13\n8 bytes (static)" }
+node: { title: "BSP_BoardProcess" label: "BSP_BoardProcess\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_board.h:9:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_1msTask" targetname: "BSP_BoardProcess" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:394:3" }
+node: { title: "DeviceManager_Process1ms" label: "DeviceManager_Process1ms\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.h:18:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_1msTask" targetname: "DeviceManager_Process1ms" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:395:3" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_1msTask" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:397:20" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_1msTask" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:400:5" }
+node: { title: "AlarmOutputManager_Run" label: "AlarmOutputManager_Run\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/alarm_output_manager/alarm_output_manager.h:37:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_1msTask" targetname: "AlarmOutputManager_Run" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:400:5" }
+node: { title: "App_Init" label: "App_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:101:6\n400 bytes (static)" }
+edge: { sourcename: "App_Init" targetname: "memset" }
+node: { title: "BSP_BoardInit" label: "BSP_BoardInit\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_board.h:8:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "BSP_BoardInit" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:110:8" }
+node: { title: "BSP_Uart3DmaInit" label: "BSP_Uart3DmaInit\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_uart3_dma.h:35:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "BSP_Uart3DmaInit" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:114:8" }
+node: { title: "Scheduler_Init" label: "Scheduler_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/scheduler/scheduler.h:19:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "Scheduler_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:125:3" }
+node: { title: "EventQueue_Init" label: "EventQueue_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/event_queue/event_queue.h:59:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "EventQueue_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:126:3" }
+node: { title: "FaultManager_Init" label: "FaultManager_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/fault_manager/fault_manager.h:46:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "FaultManager_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:127:3" }
+node: { title: "BSP_FlashValidateLayout" label: "BSP_FlashValidateLayout\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_flash.h:15:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "BSP_FlashValidateLayout" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:128:8" }
+node: { title: "FaultManager_Set" label: "FaultManager_Set\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/fault_manager/fault_manager.h:47:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:130:5" }
+node: { title: "BSP_FlashGetBackend" label: "BSP_FlashGetBackend\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_flash.h:14:24" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "BSP_FlashGetBackend" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:132:3" }
+node: { title: "ConfigStore_Init" label: "ConfigStore_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/config_store/config_store.h:90:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "ConfigStore_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:132:3" }
+node: { title: "StoragePowerGuard_Init" label: "StoragePowerGuard_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/storage_power_guard/storage_power_guard.h:14:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "StoragePowerGuard_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:133:3" }
+node: { title: "ConfigStore_SetPowerCheck" label: "ConfigStore_SetPowerCheck\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/config_store/config_store.h:91:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "ConfigStore_SetPowerCheck" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:134:3" }
+node: { title: "PersistenceManager_Init" label: "PersistenceManager_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.h:30:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "PersistenceManager_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:135:9" }
+node: { title: "MeasurementBridge_Init" label: "MeasurementBridge_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/measurement_bridge.h:9:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "MeasurementBridge_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:136:3" }
+node: { title: "WeighingProfileManager_Init" label: "WeighingProfileManager_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.h:25:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "WeighingProfileManager_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:137:3" }
+node: { title: "LimitChecker_Init" label: "LimitChecker_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/limit_checker/limit_checker.h:35:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "LimitChecker_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:142:3" }
+edge: { sourcename: "App_Init" targetname: "AlarmOutputManager_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:143:3" }
+node: { title: "GuardedCheckweigh_Init" label: "GuardedCheckweigh_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/guarded_checkweigh/guarded_checkweigh.h:49:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "GuardedCheckweigh_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:145:3" }
+node: { title: "PersistenceManager_LoadStartup" label: "PersistenceManager_LoadStartup\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.h:31:18" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "PersistenceManager_LoadStartup" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:155:17" }
+node: { title: "DefaultConfig_Load" label: "DefaultConfig_Load\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/default_config.h:9:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "DefaultConfig_Load" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:162:5" }
+edge: { sourcename: "App_Init" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:166:7" }
+node: { title: "PersistenceManager_GetLoadInfo" label: "PersistenceManager_GetLoadInfo\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.h:46:23" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "PersistenceManager_GetLoadInfo" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:169:15" }
+edge: { sourcename: "App_Init" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:171:12" }
+node: { title: "SystemContext_InitRestored" label: "SystemContext_InitRestored\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:24:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "SystemContext_InitRestored" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:172:8" }
+edge: { sourcename: "App_Init" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:178:41" }
+node: { title: "MetrologyManager_Init" label: "MetrologyManager_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/metrology_manager.h:48:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "MetrologyManager_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:178:9" }
+node: { title: "MetrologyManager_RestoreR5Request" label: "MetrologyManager_RestoreR5Request\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/metrology_manager.h:82:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "MetrologyManager_RestoreR5Request" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:180:9" }
+node: { title: "GuardedCheckweigh_SetMode" label: "GuardedCheckweigh_SetMode\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/guarded_checkweigh/guarded_checkweigh.h:50:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "GuardedCheckweigh_SetMode" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:184:9" }
+node: { title: "StartupAutoZeroController_Init" label: "StartupAutoZeroController_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/startup_auto_zero_controller.h:55:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "StartupAutoZeroController_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:198:9" }
+node: { title: "CommandService_Init" label: "CommandService_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/command_service/command_service.h:55:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "CommandService_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:202:3" }
+node: { title: "BleCommandService_Init" label: "BleCommandService_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_command_service/ble_command_service.h:22:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "BleCommandService_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:203:3" }
+node: { title: "ModbusRegisterModel_Init" label: "ModbusRegisterModel_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_register_model.h:11:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "ModbusRegisterModel_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:204:3" }
+node: { title: "CommunicationManager_Init" label: "CommunicationManager_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/communication_manager.h:49:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "CommunicationManager_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:205:9" }
+node: { title: "BleTelemetryService_Init" label: "BleTelemetryService_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_telemetry_service/ble_telemetry_service.h:8:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "BleTelemetryService_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:206:3" }
+node: { title: "MenuController_Init" label: "MenuController_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/menu_controller/menu_controller.h:11:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "MenuController_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:207:3" }
+node: { title: "StatusController_Init" label: "StatusController_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/status_controller/status_controller.h:42:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "StatusController_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:208:3" }
+node: { title: "SelfTestController_Init" label: "SelfTestController_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/self_test_controller.h:19:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "SelfTestController_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:209:3" }
+node: { title: "KeyService_Init" label: "KeyService_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/key_service/key_service.h:11:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "KeyService_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:210:8" }
+edge: { sourcename: "App_Init" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:212:5" }
+node: { title: "DisplayController_Init" label: "DisplayController_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/display_controller.h:12:6" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "DisplayController_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:214:8" }
+edge: { sourcename: "App_Init" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:216:5" }
+node: { title: "Scheduler_AddPeriodicTask" label: "Scheduler_AddPeriodicTask\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/scheduler/scheduler.h:20:9" shape : ellipse }
+edge: { sourcename: "App_Init" targetname: "Scheduler_AddPeriodicTask" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:219:8" }
+edge: { sourcename: "App_Init" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:225:5" }
+edge: { sourcename: "App_Init" targetname: "Scheduler_AddPeriodicTask" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:220:8" }
+edge: { sourcename: "App_Init" targetname: "Scheduler_AddPeriodicTask" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:221:8" }
+edge: { sourcename: "App_Init" targetname: "Scheduler_AddPeriodicTask" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:222:8" }
+edge: { sourcename: "App_Init" targetname: "Scheduler_AddPeriodicTask" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:223:8" }
+edge: { sourcename: "App_Init" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_PushEvent" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:1016:10" }
+edge: { sourcename: "App_Init" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_PushEvent" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:1016:10" }
+edge: { sourcename: "App_Init" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:232:5" }
+edge: { sourcename: "App_Init" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_PushEvent" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:237:8" }
+edge: { sourcename: "App_Init" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:App_PushEvent" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:244:8" }
+node: { title: "App_Run" label: "App_Run\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:253:6\n40 bytes (static)" }
+node: { title: "DeviceManager_ProcessFast" label: "DeviceManager_ProcessFast\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.h:17:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "DeviceManager_ProcessFast" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:263:3" }
+node: { title: "WeighingProfileManager_Process" label: "WeighingProfileManager_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/weighing_profile_manager.h:27:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "WeighingProfileManager_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:264:3" }
+node: { title: "DeviceManager_IsInStorageMaintenance" label: "DeviceManager_IsInStorageMaintenance\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.h:34:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "DeviceManager_IsInStorageMaintenance" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:271:8" }
+node: { title: "MeasurementBridge_Process" label: "MeasurementBridge_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/measurement_bridge.h:10:9" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "MeasurementBridge_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:277:11" }
+node: { title: "MeasurementBridge_GetConsumedCount" label: "MeasurementBridge_GetConsumedCount\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/measurement_bridge.h:11:10" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "MeasurementBridge_GetConsumedCount" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:283:3" }
+node: { title: "MeasurementBridge_GetLastBacklog" label: "MeasurementBridge_GetLastBacklog\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/measurement_bridge.h:13:10" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "MeasurementBridge_GetLastBacklog" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:283:3" }
+node: { title: "MeasurementBridge_GetObservedOverrunCount" label: "MeasurementBridge_GetObservedOverrunCount\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/measurement_bridge.h:14:10" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "MeasurementBridge_GetObservedOverrunCount" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:283:3" }
+node: { title: "DeviceManager_ObserveCs1237Consumption" label: "DeviceManager_ObserveCs1237Consumption\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.h:24:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "DeviceManager_ObserveCs1237Consumption" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:283:3" }
+node: { title: "CommunicationManager_Process" label: "CommunicationManager_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/communication_manager.h:50:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "CommunicationManager_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:290:3" }
+edge: { sourcename: "App_Run" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:294:3" }
+node: { title: "BleConnectionManager_Run" label: "BleConnectionManager_Run\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_connection_manager/ble_connection_manager.h:43:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "BleConnectionManager_Run" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:294:3" }
+edge: { sourcename: "App_Run" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:295:7" }
+edge: { sourcename: "App_Run" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:297:5" }
+node: { title: "BleCommandService_Process" label: "BleCommandService_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_command_service/ble_command_service.h:23:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "BleCommandService_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:297:5" }
+node: { title: "Stage5C_BleDiagnosticsProcess" label: "Stage5C_BleDiagnosticsProcess\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.h:42:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "Stage5C_BleDiagnosticsProcess" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:299:3" }
+edge: { sourcename: "App_Run" targetname: "MeasurementBridge_GetLastBacklog" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:303:3" }
+edge: { sourcename: "App_Run" targetname: "MeasurementBridge_GetObservedOverrunCount" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:303:3" }
+node: { title: "Stage2B_DiagnosticsUpdateCs1237Stats" label: "Stage2B_DiagnosticsUpdateCs1237Stats\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.h:54:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "Stage2B_DiagnosticsUpdateCs1237Stats" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:303:3" }
+node: { title: "Scheduler_RunPending" label: "Scheduler_RunPending\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/scheduler/scheduler.h:24:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "Scheduler_RunPending" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:306:3" }
+node: { title: "PersistenceManager_Process" label: "PersistenceManager_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/persistence_manager.h:42:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "PersistenceManager_Process" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:307:3" }
+node: { title: "BleCommandService_HandleEvent" label: "BleCommandService_HandleEvent\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_command_service/ble_command_service.h:24:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "BleCommandService_HandleEvent" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:649:3" }
+node: { title: "Stage2B_DiagnosticsSetRawKeyMask" label: "Stage2B_DiagnosticsSetRawKeyMask\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.h:53:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "Stage2B_DiagnosticsSetRawKeyMask" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:688:5" }
+node: { title: "EventQueue_DroppedCount" label: "EventQueue_DroppedCount\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/event_queue/event_queue.h:63:10" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "EventQueue_DroppedCount" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:315:7" }
+node: { title: "EventQueue_Pop" label: "EventQueue_Pop\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/event_queue/event_queue.h:61:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "EventQueue_Pop" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:309:50" }
+edge: { sourcename: "App_Run" targetname: "EventQueue_DroppedCount" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:317:30" }
+edge: { sourcename: "App_Run" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:318:5" }
+node: { title: "Stage2B_DiagnosticsProcess" label: "Stage2B_DiagnosticsProcess\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.h:41:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "Stage2B_DiagnosticsProcess" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:321:3" }
+edge: { sourcename: "App_Run" targetname: "SystemContext_Get" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:694:34" }
+edge: { sourcename: "App_Run" targetname: "SystemContext_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:695:20" }
+edge: { sourcename: "App_Run" targetname: "FaultManager_GetActiveMask" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:698:7" }
+edge: { sourcename: "App_Run" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:718:13" }
+node: { title: "DeviceManager_Init" label: "DeviceManager_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.h:16:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "DeviceManager_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:716:37" }
+node: { title: "SelfTestController_Begin" label: "SelfTestController_Begin\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/self_test_controller.h:20:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "SelfTestController_Begin" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:726:17" }
+edge: { sourcename: "App_Run" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:732:15" }
+node: { title: "SelfTestController_GetState" label: "SelfTestController_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/self_test_controller.h:23:15" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "SelfTestController_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:740:13" }
+edge: { sourcename: "App_Run" targetname: "DisplayController_Init" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:742:17" }
+edge: { sourcename: "App_Run" targetname: "SelfTestController_GetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:745:18" }
+node: { title: "DeviceManager_IsReady" label: "DeviceManager_IsReady\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.h:22:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "DeviceManager_IsReady" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:752:13" }
+edge: { sourcename: "App_Run" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:761:18" }
+node: { title: "BSP_TimeElapsed" label: "BSP_TimeElapsed\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_time.h:23:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "BSP_TimeElapsed" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:761:18" }
+edge: { sourcename: "App_Run" targetname: "FaultManager_Set" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:764:11" }
+node: { title: "CalibrationController_GetSession" label: "CalibrationController_GetSession\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/calibration_controller.h:66:27" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "CalibrationController_GetSession" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:774:45" }
+edge: { sourcename: "App_Run" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:780:25" }
+node: { title: "SystemContext_GetConfigRevision" label: "SystemContext_GetConfigRevision\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:55:10" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "SystemContext_GetConfigRevision" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:785:16" }
+node: { title: "MenuController_AllowCurrentDirtySave" label: "MenuController_AllowCurrentDirtySave\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/menu_controller/menu_controller.h:13:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "MenuController_AllowCurrentDirtySave" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:787:13" }
+edge: { sourcename: "App_Run" targetname: "DisplayController_SetPage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:790:13" }
+edge: { sourcename: "App_Run" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:815:10" }
+edge: { sourcename: "App_Run" targetname: "SystemContext_SetState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:815:10" }
+node: { title: "MetrologyManager_HandleFaultState" label: "MetrologyManager_HandleFaultState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/metrology_manager.h:75:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "MetrologyManager_HandleFaultState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:827:5" }
+node: { title: "MetrologyManager_ForceDisplayTracking" label: "MetrologyManager_ForceDisplayTracking\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/metrology_manager.h:55:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "MetrologyManager_ForceDisplayTracking" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:828:5" }
+node: { title: "Stage2B_DiagnosticsEnterFault" label: "Stage2B_DiagnosticsEnterFault\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage2b_board_diagnostics.h:51:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "Stage2B_DiagnosticsEnterFault" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:829:5" }
+node: { title: "SelfTestController_Cancel" label: "SelfTestController_Cancel\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/self_test_controller.h:22:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "SelfTestController_Cancel" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:830:5" }
+edge: { sourcename: "App_Run" targetname: "MenuController_Cancel" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:831:5" }
+node: { title: "StatusController_Cancel" label: "StatusController_Cancel\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/UI/status_controller/status_controller.h:44:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "StatusController_Cancel" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:832:5" }
+node: { title: "CalibrationController_Cancel" label: "CalibrationController_Cancel\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/calibration_controller.h:64:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "CalibrationController_Cancel" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:833:5" }
+edge: { sourcename: "App_Run" targetname: "DisplayController_SetPage" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:834:5" }
+node: { title: "DeviceManager_EnterSafeState" label: "DeviceManager_EnterSafeState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/device_manager.h:30:6" shape : ellipse }
+edge: { sourcename: "App_Run" targetname: "DeviceManager_EnterSafeState" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:835:5" }
+node: { title: "App_ExitDiagnostics" label: "App_ExitDiagnostics\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:328:6\n0 bytes (static)" }
+node: { title: "App_GetAlarmOutputDiagnostics" label: "App_GetAlarmOutputDiagnostics\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:344:6\n0 bytes (static)" }
+node: { title: "AlarmOutputManager_GetDiagnostics" label: "AlarmOutputManager_GetDiagnostics\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/alarm_output_manager/alarm_output_manager.h:41:6" shape : ellipse }
+edge: { sourcename: "App_GetAlarmOutputDiagnostics" targetname: "AlarmOutputManager_GetDiagnostics" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:347:10" }
+node: { title: "App_SetGuardedCheckweighMode" label: "App_SetGuardedCheckweighMode\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:355:6\n8 bytes (static)" }
+edge: { sourcename: "App_SetGuardedCheckweighMode" targetname: "GuardedCheckweigh_SetMode" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:358:8" }
+edge: { sourcename: "App_SetGuardedCheckweighMode" targetname: "AlarmOutputManager_AllOff" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:360:3" }
+node: { title: "SystemContext_SetRequestedCheckweighMode" label: "SystemContext_SetRequestedCheckweighMode\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/system_context.h:44:6" shape : ellipse }
+edge: { sourcename: "App_SetGuardedCheckweighMode" targetname: "SystemContext_SetRequestedCheckweighMode" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:362:8" }
+node: { title: "App_GetGuardedCheckweighState" label: "App_GetGuardedCheckweighState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:367:6\n12 bytes (static)" }
+node: { title: "App_RestoreGuardedCheckweighMode" label: "App_RestoreGuardedCheckweighMode\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:374:6\n8 bytes (static)" }
+edge: { sourcename: "App_RestoreGuardedCheckweighMode" targetname: "GuardedCheckweigh_SetMode" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:376:17" }
+edge: { sourcename: "App_RestoreGuardedCheckweighMode" targetname: "AlarmOutputManager_AllOff" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:378:3" }
+node: { title: "App_GetStartupAutoZeroSnapshot" label: "App_GetStartupAutoZeroSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:384:32\n0 bytes (static)" }
+node: { title: "StartupAutoZeroController_GetSnapshot" label: "StartupAutoZeroController_GetSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/startup_auto_zero_controller.h:61:32" shape : ellipse }
+edge: { sourcename: "App_GetStartupAutoZeroSnapshot" targetname: "StartupAutoZeroController_GetSnapshot" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/App/app_main.c:386:10" }
+}

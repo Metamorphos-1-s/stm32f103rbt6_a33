@@ -1,0 +1,19 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:ScaleForDecimals" label: "ScaleForDecimals\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:9:13\n0 bytes (static)" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:UnitFactor" label: "UnitFactor\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:17:13\n0 bytes (static)" }
+node: { title: "UnitConverter_CountToMass" label: "UnitConverter_CountToMass\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:30:6\n48 bytes (static)" }
+edge: { sourcename: "UnitConverter_CountToMass" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:UnitFactor" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:36:12" }
+edge: { sourcename: "UnitConverter_CountToMass" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:ScaleForDecimals" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:37:12" }
+node: { title: "MassMath_MulDivRound" label: "MassMath_MulDivRound\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/mass_math.h:13:6" shape : ellipse }
+edge: { sourcename: "UnitConverter_CountToMass" targetname: "MassMath_MulDivRound" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:38:12" }
+node: { title: "UnitConverter_MassToCountUnbounded" label: "UnitConverter_MassToCountUnbounded\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:41:6\n64 bytes (static)" }
+edge: { sourcename: "UnitConverter_MassToCountUnbounded" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:UnitFactor" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:50:10" }
+edge: { sourcename: "UnitConverter_MassToCountUnbounded" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:ScaleForDecimals" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:51:10" }
+edge: { sourcename: "UnitConverter_MassToCountUnbounded" targetname: "MassMath_MulDivRound" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:52:10" }
+node: { title: "MassMath_Quantize" label: "MassMath_Quantize\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/mass_math.h:15:6" shape : ellipse }
+edge: { sourcename: "UnitConverter_MassToCountUnbounded" targetname: "MassMath_Quantize" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:56:12" }
+node: { title: "UnitConverter_MassToDisplay" label: "UnitConverter_MassToDisplay\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:59:6\n32 bytes (static)" }
+edge: { sourcename: "UnitConverter_MassToDisplay" targetname: "UnitConverter_MassToCountUnbounded" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:69:10" }
+node: { title: "UnitConverter_ValidateDisplayConfig" label: "UnitConverter_ValidateDisplayConfig\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:86:6\n32 bytes (static)" }
+edge: { sourcename: "UnitConverter_ValidateDisplayConfig" targetname: "UnitConverter_MassToDisplay" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/unit_converter.c:92:12" }
+}

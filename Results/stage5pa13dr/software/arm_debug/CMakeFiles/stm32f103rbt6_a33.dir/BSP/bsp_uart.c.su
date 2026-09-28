@@ -1,0 +1,2 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_uart.c:5:28:BSP_UartGetHandle	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_uart.c:18:6:BSP_UartTransmitBlocking	16	static

@@ -1,0 +1,9 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_transport/ble_transport.c:40:6:BleTransport_Init	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_transport/ble_transport.c:61:6:BleTransport_RxPushFromIsr	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_transport/ble_transport.c:76:6:BleTransport_Write	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_transport/ble_transport.c:100:6:BleTransport_WritePriority	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_transport/ble_transport.c:121:6:BleTransport_Read	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_transport/ble_transport.c:139:6:BleTransport_Run	56	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_transport/ble_transport.c:215:6:BleTransport_IsReady	8	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_transport/ble_transport.c:217:6:BleTransport_Reset	16	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_transport/ble_transport.c:224:6:BleTransport_GetDiagnostics	12	static

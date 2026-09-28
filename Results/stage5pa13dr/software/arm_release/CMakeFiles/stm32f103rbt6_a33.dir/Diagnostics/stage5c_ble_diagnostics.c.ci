@@ -1,0 +1,14 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c"
+node: { title: "Stage5C_BleDiagnosticsProcess" label: "Stage5C_BleDiagnosticsProcess\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c:86:6\n64 bytes (static)" }
+node: { title: "BleTransport_GetDiagnostics" label: "BleTransport_GetDiagnostics\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/ble_transport/ble_transport.h:40:6" shape : ellipse }
+edge: { sourcename: "Stage5C_BleDiagnosticsProcess" targetname: "BleTransport_GetDiagnostics" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c:91:5" }
+node: { title: "Stage5C_BleDiagnosticsRequestHello" label: "Stage5C_BleDiagnosticsRequestHello\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c:124:20\n0 bytes (static)" }
+node: { title: "Stage5C_BleDiagnosticsStartSoak" label: "Stage5C_BleDiagnosticsStartSoak\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c:170:6\n0 bytes (static)" }
+node: { title: "Stage5C_BleDiagnosticsStopSoak" label: "Stage5C_BleDiagnosticsStopSoak\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c:204:6\n0 bytes (static)" }
+node: { title: "Stage5C_BleDiagnosticsInit" label: "Stage5C_BleDiagnosticsInit\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c:69:6\n8 bytes (static)" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "Stage5C_BleDiagnosticsInit" targetname: "memset" }
+edge: { sourcename: "Stage5C_BleDiagnosticsInit" targetname: "Stage5C_BleDiagnosticsRequestHello" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c:79:15" }
+edge: { sourcename: "Stage5C_BleDiagnosticsInit" targetname: "Stage5C_BleDiagnosticsStopSoak" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c:81:9" }
+node: { title: "Stage5C_BleDiagnosticsGetSnapshot" label: "Stage5C_BleDiagnosticsGetSnapshot\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Diagnostics/stage5c_ble_diagnostics.c:210:39\n0 bytes (static)" }
+}

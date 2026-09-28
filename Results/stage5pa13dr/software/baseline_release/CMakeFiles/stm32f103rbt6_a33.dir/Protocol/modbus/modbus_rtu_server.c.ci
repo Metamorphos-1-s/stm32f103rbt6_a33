@@ -1,0 +1,51 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:AppendCrc" label: "AppendCrc\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:48:13\n16 bytes (static)" }
+node: { title: "ModbusCrc16_Calculate" label: "ModbusCrc16_Calculate\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_crc16.h:6:10" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:AppendCrc" targetname: "ModbusCrc16_Calculate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:53:11" }
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:BuildException" label: "BuildException\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:59:13\n12 bytes (static)" }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:BuildException" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:AppendCrc" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:71:12" }
+node: { title: "ModbusRtuServer_HandleAdu" label: "ModbusRtuServer_HandleAdu\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:187:6\n56 bytes (static)" }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "ModbusCrc16_Calculate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:207:22" }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:BuildException" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:89:16" }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:BuildException" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:96:16" }
+node: { title: "ModbusRegisterModel_ReadHolding" label: "ModbusRegisterModel_ReadHolding\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_register_model.h:17:22" shape : ellipse }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "ModbusRegisterModel_ReadHolding" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:101:14" }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:BuildException" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:108:16" }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:AppendCrc" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:119:12" }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:BuildException" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:132:16" }
+node: { title: "ModbusRegisterModel_WriteSingle" label: "ModbusRegisterModel_WriteSingle\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_register_model.h:19:22" shape : ellipse }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "ModbusRegisterModel_WriteSingle" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:135:14" }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:BuildException" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:140:16" }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:AppendCrc" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:145:12" }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:BuildException" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:162:16" }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:BuildException" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:171:16" }
+node: { title: "ModbusRegisterModel_WriteMultiple" label: "ModbusRegisterModel_WriteMultiple\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_register_model.h:21:22" shape : ellipse }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "ModbusRegisterModel_WriteMultiple" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:175:14" }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:BuildException" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:179:16" }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:AppendCrc" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:184:12" }
+edge: { sourcename: "ModbusRtuServer_HandleAdu" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:BuildException" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:250:17" }
+node: { title: "ModbusRtuServer_Init" label: "ModbusRtuServer_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:260:6\n32 bytes (static)" }
+node: { title: "ModbusRtuTransport_IsValid" label: "ModbusRtuTransport_IsValid\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_transport.h:23:6" shape : ellipse }
+edge: { sourcename: "ModbusRtuServer_Init" targetname: "ModbusRtuTransport_IsValid" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:267:10" }
+node: { title: "memset" label: "__builtin_memset\n<built-in>" shape : ellipse }
+edge: { sourcename: "ModbusRtuServer_Init" targetname: "memset" }
+node: { title: "ModbusRtuServer_Process" label: "ModbusRtuServer_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:279:6\n40 bytes (static)" }
+node: { title: "ModbusRtuFramer_TryGetFrame" label: "ModbusRtuFramer_TryGetFrame\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_framer.h:64:6" shape : ellipse }
+edge: { sourcename: "ModbusRtuServer_Process" targetname: "ModbusRtuFramer_TryGetFrame" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:287:39" }
+edge: { sourcename: "ModbusRtuServer_Process" targetname: "ModbusRtuServer_HandleAdu" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:296:18" }
+node: { title: "BSP_TimeNowMs" label: "BSP_TimeNowMs\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_time.h:22:15" shape : ellipse }
+edge: { sourcename: "ModbusRtuServer_Process" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:303:42" }
+edge: { sourcename: "ModbusRtuServer_Process" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:308:28" }
+node: { title: "__indirect_call" label: "Indirect Call Placeholder" shape : ellipse }
+edge: { sourcename: "ModbusRtuServer_Process" targetname: "__indirect_call" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:313:17" }
+edge: { sourcename: "ModbusRtuServer_Process" targetname: "__indirect_call" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:327:17" }
+edge: { sourcename: "ModbusRtuServer_Process" targetname: "__indirect_call" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:333:22" }
+edge: { sourcename: "ModbusRtuServer_Process" targetname: "__indirect_call" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:339:17" }
+edge: { sourcename: "ModbusRtuServer_Process" targetname: "__indirect_call" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:344:13" }
+node: { title: "ModbusRtuServer_IsBusy" label: "ModbusRtuServer_IsBusy\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:353:6\n0 bytes (static)" }
+node: { title: "ModbusRtuServer_Suspend" label: "ModbusRtuServer_Suspend\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:358:6\n0 bytes (static)" }
+edge: { sourcename: "ModbusRtuServer_Suspend" targetname: "__indirect_call" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:362:5" }
+node: { title: "ModbusRtuServer_Resume" label: "ModbusRtuServer_Resume\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:365:6\n16 bytes (static)" }
+node: { title: "ModbusRtuServer_GetState" label: "ModbusRtuServer_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:375:22\n0 bytes (static)" }
+node: { title: "ModbusRtuServer_GetStatistics" label: "ModbusRtuServer_GetStatistics\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Protocol/modbus/modbus_rtu_server.c:380:34\n0 bytes (static)" }
+}

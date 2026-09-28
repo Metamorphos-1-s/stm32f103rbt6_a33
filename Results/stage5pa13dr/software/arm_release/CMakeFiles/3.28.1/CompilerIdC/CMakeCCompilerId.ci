@@ -1,0 +1,3 @@
+graph: { title: "CMakeCCompilerId.c"
+node: { title: "main" label: "main\nCMakeCCompilerId.c:853:5\n24 bytes (static)" }
+}

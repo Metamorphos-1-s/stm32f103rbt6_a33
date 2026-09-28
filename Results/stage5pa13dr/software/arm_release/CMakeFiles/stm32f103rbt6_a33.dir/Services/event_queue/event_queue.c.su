@@ -1,0 +1,5 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/event_queue/event_queue.c:13:6:EventQueue_Init	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/event_queue/event_queue.c:21:6:EventQueue_Push	20	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/event_queue/event_queue.c:35:6:EventQueue_Pop	20	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/event_queue/event_queue.c:48:10:EventQueue_Count	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/event_queue/event_queue.c:53:10:EventQueue_DroppedCount	0	static

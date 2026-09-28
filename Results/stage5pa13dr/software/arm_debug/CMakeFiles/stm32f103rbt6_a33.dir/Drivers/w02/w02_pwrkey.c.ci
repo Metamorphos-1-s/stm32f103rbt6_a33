@@ -1,0 +1,27 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c"
+node: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:W02PwrKey_PushEvent" label: "W02PwrKey_PushEvent\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:81:13\n32 bytes (static)" }
+node: { title: "BSP_TimeNowMs" label: "BSP_TimeNowMs\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_time.h:22:15" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:W02PwrKey_PushEvent" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:86:26" }
+node: { title: "EventQueue_Push" label: "EventQueue_Push\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/event_queue/event_queue.h:60:6" shape : ellipse }
+edge: { sourcename: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:W02PwrKey_PushEvent" targetname: "EventQueue_Push" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:90:11" }
+node: { title: "W02PwrKey_Init" label: "W02PwrKey_Init\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:16:6\n8 bytes (static)" }
+node: { title: "BSP_W02_PwrKeyRelease" label: "BSP_W02_PwrKeyRelease\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_gpio.h:38:6" shape : ellipse }
+edge: { sourcename: "W02PwrKey_Init" targetname: "BSP_W02_PwrKeyRelease" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:18:5" }
+node: { title: "W02PwrKey_Process" label: "W02PwrKey_Process\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:38:6\n8 bytes (static)" }
+edge: { sourcename: "W02PwrKey_Process" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:47:14" }
+node: { title: "BSP_TimeElapsed" label: "BSP_TimeElapsed\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_time.h:23:6" shape : ellipse }
+edge: { sourcename: "W02PwrKey_Process" targetname: "BSP_TimeElapsed" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:48:9" }
+edge: { sourcename: "W02PwrKey_Process" targetname: "BSP_W02_PwrKeyRelease" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:51:9" }
+edge: { sourcename: "W02PwrKey_Process" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:W02PwrKey_PushEvent" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:53:9" }
+edge: { sourcename: "W02PwrKey_Process" targetname: "BSP_TimeElapsed" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:55:14" }
+edge: { sourcename: "W02PwrKey_Process" targetname: "BSP_W02_PwrKeyRelease" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:58:9" }
+edge: { sourcename: "W02PwrKey_Process" targetname: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:W02PwrKey_PushEvent" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:60:9" }
+node: { title: "W02PwrKey_IsBusy" label: "W02PwrKey_IsBusy\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:65:6\n0 bytes (static)" }
+node: { title: "W02PwrKey_GetState" label: "W02PwrKey_GetState\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:70:16\n0 bytes (static)" }
+node: { title: "W02PwrKey_IsPulseDurationValid" label: "W02PwrKey_IsPulseDurationValid\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:75:6\n0 bytes (static)" }
+node: { title: "W02PwrKey_RequestPulse" label: "W02PwrKey_RequestPulse\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:24:6\n16 bytes (static)" }
+edge: { sourcename: "W02PwrKey_RequestPulse" targetname: "W02PwrKey_IsPulseDurationValid" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:26:10" }
+node: { title: "BSP_W02_PwrKeyAssertLow" label: "BSP_W02_PwrKeyAssertLow\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/BSP/bsp_gpio.h:39:6" shape : ellipse }
+edge: { sourcename: "W02PwrKey_RequestPulse" targetname: "BSP_W02_PwrKeyAssertLow" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:27:42" }
+edge: { sourcename: "W02PwrKey_RequestPulse" targetname: "BSP_TimeNowMs" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Drivers/w02/w02_pwrkey.c:33:25" }
+}

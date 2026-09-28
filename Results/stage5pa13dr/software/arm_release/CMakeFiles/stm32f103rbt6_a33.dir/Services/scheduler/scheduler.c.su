@@ -1,0 +1,5 @@
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/scheduler/scheduler.c:16:6:Scheduler_Init	0	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/scheduler/scheduler.c:32:9:Scheduler_AddPeriodicTask	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/scheduler/scheduler.c:57:6:Scheduler_SetTaskEnabled	24	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/scheduler/scheduler.c:75:6:Scheduler_RunPending	32	static
+D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Services/scheduler/scheduler.c:104:9:Scheduler_GetTaskCount	0	static

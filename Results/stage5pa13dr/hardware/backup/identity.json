@@ -1,0 +1,16 @@
+{
+  "application_sha256": "6279F17AB9E987BF8156F5F9F805B8DB41CDBDA2951603DC1B55CE559D4B34B5",
+  "config_sha256": "856BD8F5C14760561FC4BFEC4274FE0C5480C19BC4422046617C2450F8439733",
+  "application_bytes": 126976,
+  "config_bytes": 4096,
+  "ordinary_prefix_sha256": "DDF57FB131E5EF675D94B08A5A8752EB0FB588BA5230DEA6F34C57D6B2F62DDD",
+  "prefix_byte_mismatch": 0,
+  "tail_nonff": 0,
+  "firmware": "0x051D",
+  "map": "0x0105",
+  "revision": 19,
+  "saved_revision": 19,
+  "word_order": "high",
+  "mode": "OFF",
+  "application": "SHADOW"
+}

@@ -1,0 +1,11 @@
+graph: { title: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/device_config_validator.c"
+node: { title: "DeviceConfig_ValidateCommunication" label: "DeviceConfig_ValidateCommunication\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/device_config_validator.c:12:6\n0 bytes (static)" }
+node: { title: "DeviceConfig_Validate" label: "DeviceConfig_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/device_config_validator.c:34:6\n16 bytes (static)" }
+node: { title: "MetrologyConfig_ValidateCanonical" label: "MetrologyConfig_ValidateCanonical\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/measurement/metrology_config_validator.h:26:23" shape : ellipse }
+edge: { sourcename: "DeviceConfig_Validate" targetname: "MetrologyConfig_ValidateCanonical" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/device_config_validator.c:37:10" }
+edge: { sourcename: "DeviceConfig_Validate" targetname: "DeviceConfig_ValidateCommunication" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/device_config_validator.c:39:10" }
+node: { title: "AlarmConfig_Validate" label: "AlarmConfig_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/alarm_config_validation.h:8:6" shape : ellipse }
+edge: { sourcename: "DeviceConfig_Validate" targetname: "AlarmConfig_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/device_config_validator.c:40:10" }
+node: { title: "CalibrationModel_Validate" label: "CalibrationModel_Validate\nD:/Documents/stm32f103rbt6_a33_stage5pa13dr/Domain/calibration/calibration_model.h:26:19" shape : ellipse }
+edge: { sourcename: "DeviceConfig_Validate" targetname: "CalibrationModel_Validate" label: "D:/Documents/stm32f103rbt6_a33_stage5pa13dr/Config/device_config_validator.c:53:11" }
+}
