@@ -1,0 +1,35 @@
+{
+  "stage": "STAGE5PA13E-R",
+  "baseline": "72a2283ec3073d61834a5c2d13a9a5d1ad1c19da",
+  "phase": "SOFTWARE_AND_STATIC_ONLY_BEFORE_DEVICE_ACCESS",
+  "historic_a13e": "SOFTWARE GATE FAIL, unchanged",
+  "historic_a13d": "TARGET RESOURCE GATE FAIL, unchanged",
+  "a13b_efficacy": "INCONCLUSIVE, unchanged",
+  "strict_a13cr_10774": "PASS 0 mismatches, includes public obvious sequence",
+  "parity_a13b_88765": "PASS 0 mismatches; historical regression, not new efficacy",
+  "parity_a9_107491": "PASS 0 mismatches; historical regression",
+  "synthetic_6": "PASS 0 mismatches",
+  "host_debug": "PASS 46/46",
+  "host_release": "PASS 46/46",
+  "resource_contract_tests": "PASS 4/4",
+  "strict_arm_debug_release": "PASS, both ACTIVE and RESOURCE variants",
+  "ram_static": {
+    "active_debug": {"ram_bytes":19432,"complete_stack_bytes":1552,"collision_bytes":520},
+    "active_release": {"ram_bytes":19384,"complete_stack_bytes":1448,"collision_bytes":672},
+    "resource_debug": {"ram_bytes":19432,"complete_stack_bytes":1552,"collision_bytes":520},
+    "resource_release": {"ram_bytes":19384,"complete_stack_bytes":1448,"collision_bytes":672}
+  },
+  "images": {
+    "ordinary_051D_rebuilt.bin": {"bytes":93588,"sha256":"DDF57FB131E5EF675D94B08A5A8752EB0FB588BA5230DEA6F34C57D6B2F62DDD","firmware":"0x051D","map":"0x0105"},
+    "active_0x0520.bin": {"bytes":94620,"sha256":"0CED588DF5C0C1AE1A3635A376002EE8F9479DCC579F5F96FF9607894C8DC4F6","firmware":"0x0520","map":"0x0109"},
+    "resource_0x0521.bin": {"bytes":96324,"sha256":"AFB6144A384B7CC611C05B727FCA5E855DE51E4E0F473F7EA63A13EB294C5BED","firmware":"0x0521","map":"0x010A"}
+  },
+  "standard_release_sha256": "C181AE5B916A69C6B120E712D52B575AA62E46B9F9F0C12786FFD3C8C2100CD9",
+  "standard_previous_byte_identical": true,
+  "ordinary_math_object_sha256": "EFCAA070EC912A2746C89E7C27DAEB39829E9FF953DBF3468038E22B63AC38EC",
+  "active_and_resource_math_object_sha256": "EF86E64F47B87F9900BD36108C1132447C1FB74CF2F23B30D83F073A21784F5F",
+  "corrected_offset_state_changes": false,
+  "metadata_only": "A13E switch gates public event sequence expiry; old 051D object unchanged",
+  "device_accessed": false,
+  "target_resource": "NOT RUN; runtime measurement mandatory before ACTIVE installation"
+}

@@ -1,0 +1,21 @@
+{
+  "stage": "A13E-R",
+  "classification": "PROSPECTIVE_TARGET_RESOURCE_NOT_HISTORICAL_A13D",
+  "software_baseline": "72a2283ec3073d61834a5c2d13a9a5d1ad1c19da",
+  "diagnostic_identity": "0x0521/Map0x010A",
+  "active_identity": "0x0520/Map0x0109",
+  "ordinary_identity": "0x051D/Map0x0105",
+  "target_feed_us_max": 10000,
+  "target_app_run_us_max": 25000,
+  "target_loop_interval_us_max": 25000,
+  "static_collision_margin_bytes_min": 512,
+  "runtime_untouched_ram_bytes_min": 512,
+  "mcu_sample_loss_allowed": false,
+  "max_host_heartbeat_gap_s": 5,
+  "host_poll_gaps": "REPORT_NOT_INTERPOLATE; PASS ONLY IF MCU CUMULATIVE CONSERVATION AND RESET PROOF VALID",
+  "required_paths": ["OFF","HOLDOFF","REFERENCE_FILL","OBSERVATION_FILL","TRACKING","FAST_TRACKING","STEP_PENDING","STEP_SETTLING","DOSING"],
+  "mcu_invalid_path_allowed": false,
+  "save_revision_dirty_fault_overrun_read_errors": "MUST NOT INCREASE",
+  "effective_time_measurement": "INCLUDES DWT BRACKET AND IRQS; NO OVERHEAD SUBTRACTION",
+  "runtime_mode": "A13 ACTIVE MUST BE EXPLICIT; final ordinary or engineering firmware OFF+SHADOW"
+}

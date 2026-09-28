@@ -154,11 +154,66 @@ static int TestBootInvalidInputDoesNotLatchInOff(void)
     return 0;
 }
 
+static int TestPublishedEventLifetime(void)
+{
+    A13CCompensator c;
+    const A13CSnapshot *s;
+    int64_t offset;
+    uint32_t i;
+    A13C_Init(&c);
+    CHECK(A13C_SetMode(&c, A13C_MODE_STATIC));
+    for (i=0U; i<4000U; ++i)
+        CHECK(A13C_Feed(&c, i+1U, 1000U+100U*i, (int64_t)i*200,
+                        true, false, false, false));
+    offset=A13C_GetSnapshot(&c)->offset_ug;
+    CHECK(offset>0);
+    for (i=4000U; i<4700U; ++i)
+        CHECK(A13C_Feed(&c, i+1U, 1000U+100U*i,
+                        INT64_C(500799800),true,false,false,false));
+    s=A13C_GetSnapshot(&c);
+    CHECK(s->obvious_step_sequence>=4000U && s->obvious_step_sequence<4100U);
+    CHECK(s->robust_step_sequence>s->obvious_step_sequence);
+    CHECK(s->offset_ug>=offset);
+    CHECK(A13C_SetMode(&c,A13C_MODE_DOSING));
+    CHECK(A13C_Feed(&c,4701U,471000U,INT64_C(500799800),true,false,false,false));
+    CHECK(A13C_GetSnapshot(&c)->obvious_step_sequence==0U);
+    offset=A13C_GetSnapshot(&c)->offset_ug;
+    for (i=4701U; i<4800U; ++i) {
+        CHECK(A13C_Feed(&c,i+1U,1000U+100U*i,INT64_C(500799800),true,false,false,false));
+        CHECK(A13C_GetSnapshot(&c)->offset_ug==offset);
+    }
+    CHECK(A13C_SetMode(&c,A13C_MODE_STATIC));
+    CHECK(A13C_Feed(&c,4801U,481000U,INT64_C(500799800),true,false,false,false));
+    s=A13C_GetSnapshot(&c);
+    CHECK(s->reason==A13C_REASON_DOSING_EXIT);
+    CHECK(s->obvious_step_sequence==0U && s->robust_step_sequence==0U);
+    CHECK(s->quiet_sequence==4801U && s->offset_ug==offset);
+    for (i=4801U; i<5500U; ++i)
+        CHECK(A13C_Feed(&c,i+1U,1000U+100U*i,
+                        i<4861U ? INT64_C(500799800) : INT64_C(799800),
+                        true,false,false,false));
+    s=A13C_GetSnapshot(&c);
+    CHECK(s->obvious_step_sequence>=4862U && s->obvious_step_sequence<4960U);
+    CHECK(s->robust_step_sequence>s->obvious_step_sequence);
+    CHECK(s->corrected_ug==s->uncompensated_ug-s->offset_ug);
+    CHECK(A13C_Feed(&c,5501U,551000U,INT64_C(799800),true,true,false,false));
+    s=A13C_GetSnapshot(&c);
+    CHECK(s->limited && s->obvious_step_sequence==0U && s->robust_step_sequence==0U);
+    CHECK(s->quiet_sequence==0U && s->reference_lock_sequence==0U);
+    A13C_Reset(&c,A13C_REASON_ZERO);
+    CHECK(A13C_GetSnapshot(&c)->obvious_step_sequence==0U);
+    CHECK(A13C_GetSnapshot(&c)->offset_ug==0);
+    CHECK(A13C_SetMode(&c,A13C_MODE_OFF));
+    CHECK(A13C_GetSnapshot(&c)->obvious_step_sequence==0U);
+    return 0;
+}
+
 int main(void)
 {
     if (TestStepDosingAndReset() || TestGapsAndLimits() ||
         TestCorrectionBoundsAndSlowFeed() ||
-        TestBootInvalidInputDoesNotLatchInOff()) return 1;
+        TestBootInvalidInputDoesNotLatchInOff() ||
+        TestPublishedEventLifetime()) return 1;
     (void)puts("A13C shadow safety 4/4 PASS");
     return 0;
 }

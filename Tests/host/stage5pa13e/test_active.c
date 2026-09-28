@@ -47,12 +47,18 @@ static void init(void)
 static void sample(int32_t raw)
 {
     RawMeasurementSample s={raw,(++tick)*100U,true};
+    const WeightSnapshot *w;
+    int64_t expected_display_input;
     CHECK(MetrologyManager_AcceptRawSample(&s));
+    w=MetrologyManager_GetSnapshot();
     CHECK(MetrologyManager_GetSnapshot()->net_mass_ug ==
         MetrologyManager_GetSnapshot()->gross_mass_ug-MetrologyManager_GetSnapshot()->tare_mass_ug);
     CHECK(MetrologyManager_GetSnapshot()->gross_mass_ug ==
         MetrologyManager_GetSnapshot()->uncompensated_gross_mass_ug-
         (MetrologyManager_GetR5Application()==R5_BETA_APPLICATION_ACTIVE ? MetrologyManager_GetA13CSnapshot()->offset_ug : 0));
+    expected_display_input=SystemContext_Get()->runtime.weight_view==WEIGHT_VIEW_GROSS ?
+        w->gross_mass_ug : w->net_mass_ug;
+    CHECK(MetrologyManager_GetDisplayConditionSnapshot()->authoritative_mass_ug==expected_display_input);
 }
 static void ready(void) { uint32_t i; for(i=0U;i<30U;++i) sample(100000); }
 static CommandResult cmd(CommandId id,int32_t app,int32_t mode,uint32_t gen)
@@ -192,6 +198,13 @@ static void test_menu_direct_long_volatile_and_cancel(void)
     menu_drift(&now);key(KEY_ID_HASH,KEY_EVENT_SHORT,&now);key(KEY_ID_TARE,KEY_EVENT_SHORT,&now);
     CHECK(!R5LocalControl_HasCandidate());CHECK(TestMock_GetSaveRequestCount()==0U);
     MenuController_Cancel();
+    menu_drift(&now);key(KEY_ID_HASH,KEY_EVENT_SHORT,&now);
+    TestMock_SetTimeMs(now+MENU_TIMEOUT_MS+10U);
+    MenuController_Process10ms();
+    CHECK(!MenuController_IsActive());
+    CHECK(MetrologyManager_GetR5Application()==R5_BETA_APPLICATION_SHADOW);
+    CHECK(TestMock_GetSaveRequestCount()==0U);
+    CHECK(SystemContext_GetConfigRevision()==revision);
 }
 static void test_zero_calibration_and_overload(void)
 {

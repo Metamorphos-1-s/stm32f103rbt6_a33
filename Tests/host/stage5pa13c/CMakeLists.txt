@@ -6,7 +6,9 @@ add_executable(stage5pa13c_replay_runner
     replay_runner.c
     ../../../Domain/measurement/a13c_shadow_compensator.c)
 target_include_directories(stage5pa13c_replay_runner PRIVATE
-    ../../../Domain/measurement)
+    ../../../Domain/measurement ../../../Config)
+target_compile_definitions(stage5pa13c_replay_runner PRIVATE
+    A33_ENABLE_STAGE5PA13C_SHADOW=1 A33_ENABLE_STAGE5PA13E_ACTIVE=1)
 if(MSVC)
     target_compile_options(stage5pa13c_replay_runner PRIVATE /W4 /WX)
 else()
@@ -18,6 +20,9 @@ add_executable(stage5pa13c_safety_tests
     ../../../Domain/measurement/a13c_shadow_compensator.c)
 target_include_directories(stage5pa13c_safety_tests PRIVATE
     ../../../Domain/measurement)
+target_include_directories(stage5pa13c_safety_tests PRIVATE ../../../Config)
+target_compile_definitions(stage5pa13c_safety_tests PRIVATE
+    A33_ENABLE_STAGE5PA13C_SHADOW=1 A33_ENABLE_STAGE5PA13E_ACTIVE=1)
 if(MSVC)
     target_compile_options(stage5pa13c_safety_tests PRIVATE /W4 /WX)
 else()
@@ -30,4 +35,4 @@ add_executable(stage5pa13c_host_benchmark
     benchmark.c
     ../../../Domain/measurement/a13c_shadow_compensator.c)
 target_include_directories(stage5pa13c_host_benchmark PRIVATE
-    ../../../Domain/measurement)
+    ../../../Domain/measurement ../../../Config)

@@ -1,4 +1,5 @@
 #include "a13c_shadow_compensator.h"
+#include "project_config.h"
 
 #include <limits.h>
 #include <stddef.h>
@@ -228,6 +229,20 @@ static void ClearReference(A13CCompensator *c, uint32_t sequence,
     if (reason != A13C_REASON_INITIAL) ++c->snapshot.rebuild_count;
 }
 
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+/* Public event timestamps are evidence about the current event, not controller
+ * state. Do not erase internal event_sequence/obvious_sequence here: DOSING's
+ * recent-step decision must be made from them before those events expire. */
+static void ClearPublishedEvent(A13CCompensator *c)
+{
+    c->snapshot.obvious_step_sequence = 0U;
+    c->snapshot.robust_step_sequence = 0U;
+    c->snapshot.quiet_sequence = 0U;
+    c->snapshot.reference_lock_sequence = 0U;
+    c->snapshot.first_correction_sequence = 0U;
+}
+#endif
+
 static void EnterLimited(A13CCompensator *c, A13CReason reason)
 {
     c->limited = true;
@@ -236,6 +251,9 @@ static void EnterLimited(A13CCompensator *c, A13CReason reason)
     c->reason = reason;
     c->event_pending = false;
     c->obvious_valid = false;
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    ClearPublishedEvent(c);
+#endif
     c->reference_valid = false;
     EmptyHistory(c);
     ++c->snapshot.rebuild_count;
@@ -292,6 +310,9 @@ void A13C_Reset(A13CCompensator *c, A13CReason reason)
     c->have_last = false;
     c->event_pending = false;
     c->obvious_valid = false;
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    ClearPublishedEvent(c);
+#endif
     c->have_pre_step_mass = false;
     c->event_reference_count = 0U;
     c->event_observation_count = 0U;
@@ -308,6 +329,9 @@ static bool FeedDosing(A13CCompensator *c, uint32_t sequence,
 {
     if (!c->was_dosing) {
         ClearReference(c, sequence, A13C_REASON_DOSING_ENTRY);
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+        ClearPublishedEvent(c);
+#endif
         c->event_reference_count = 0U;
         c->event_observation_count = 0U;
         c->event_reference_valid = false;
@@ -383,6 +407,9 @@ static void LeaveDosing(A13CCompensator *c, uint32_t sequence)
     }
     c->event_pending = false;
     c->obvious_valid = false;
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    c->snapshot.obvious_step_sequence = 0U;
+#endif
     c->have_pre_step_mass = false;
     c->event_reference_count = 0U;
     c->event_observation_count = 0U;
@@ -548,6 +575,9 @@ bool A13C_Feed(A13CCompensator *c, uint32_t sequence,
         ClearStep(c);
         c->event_pending = false;
         c->obvious_valid = false;
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+        ClearPublishedEvent(c);
+#endif
         c->have_pre_step_mass = false;
         c->event_reference_count = 0U;
         c->event_observation_count = 0U;
