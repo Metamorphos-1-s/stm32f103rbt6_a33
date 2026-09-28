@@ -398,6 +398,20 @@ static void RequestSave(uint32_t now_ms)
 #if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
 static void RequestR5CandidateSave(uint32_t now_ms)
 {
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    R5LocalResult result;
+    if (SystemContext_GetConfigRevision() != s_expected_revision) {
+        ShowCode(DISPLAY_CODE_BUSY);
+        return;
+    }
+    result = R5LocalControl_Apply();
+    ShowCode(result == R5_LOCAL_RESULT_OK ? DISPLAY_CODE_DONE :
+        result == R5_LOCAL_RESULT_BUSY ? DISPLAY_CODE_BUSY : DISPLAY_CODE_ERROR);
+    if (result == R5_LOCAL_RESULT_OK) {
+        s_exit_after_save = true;
+        s_message_until_ms = now_ms + UI_MESSAGE_DEFAULT_MS;
+    }
+#else
     R5LocalStatus status;
     if ((SystemContext_GetConfigRevision() != s_expected_revision) ||
         !R5LocalControl_GetStatus(&status) ||
@@ -434,6 +448,7 @@ static void RequestR5CandidateSave(uint32_t now_ms)
     s_candidate_changed = !PersistentCodec_DeviceConfigEqual(
         &s_candidate_config, &s_original_config);
     RequestSave(now_ms);
+#endif
 }
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
 static void RequestCheckweighCandidateSave(uint32_t now_ms)

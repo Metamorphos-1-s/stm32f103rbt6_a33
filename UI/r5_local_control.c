@@ -37,6 +37,9 @@ bool R5LocalControl_GetStatus(R5LocalStatus *status)
     status->mode = (R5DriftMode)((packed >> 16U) & 0xFFU);
     status->state = (R5DriftState)((packed >> 8U) & 0xFFU);
     status->limited = (packed & 1U) != 0U;
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    status->generation = response.status_flags;
+#endif
     return ((uint32_t)status->application <=
             (uint32_t)R5_LOCAL_APPLICATION_ACTIVE) &&
            ((uint32_t)status->mode <=
@@ -107,9 +110,13 @@ static bool SamePublicState(const R5LocalStatus *left,
                             const R5LocalStatus *right)
 {
     return (left->application == right->application) &&
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+           (left->generation == right->generation) &&
+#endif
            (left->mode == right->mode);
 }
 
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE == 0U)
 static bool SetApplication(R5LocalApplication application)
 {
     return Execute(COMMAND_R5_SET_APPLICATION, (int32_t)application,
@@ -136,14 +143,17 @@ static bool Restore(const R5LocalStatus *original)
     return SetApplication(R5_LOCAL_APPLICATION_SHADOW) &&
            SetMode(R5_DRIFT_MODE_OFF);
 }
+#endif
 
 R5LocalResult R5LocalControl_Apply(void)
 {
     R5LocalStatus current;
     R5LocalApplication application;
     R5DriftMode mode;
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE == 0U)
     bool first_ok;
     bool second_ok;
+#endif
     if (!s_candidate) return R5_LOCAL_RESULT_ERROR;
     if (!R5LocalControl_GetStatus(&current) ||
         !SamePublicState(&current, &s_expected))
@@ -173,6 +183,23 @@ R5LocalResult R5LocalControl_Apply(void)
         s_candidate = false;
         return R5_LOCAL_RESULT_OK;
     }
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    {
+        CommandRequest request = {0};
+        CommandResponse response;
+        CommandResult result;
+        request.source = COMMAND_SOURCE_LOCAL_KEY;
+        request.id = COMMAND_A13_SET_PAIR;
+        request.value0 = application;
+        request.value1 = mode;
+        request.flags = 1U;
+        request.value64 = s_expected.generation;
+        result = CommandService_Execute(&request, &response);
+        if (result == COMMAND_RESULT_OK) { s_candidate = false; return R5_LOCAL_RESULT_OK; }
+        ++s_failure_count;
+        return result == COMMAND_RESULT_BUSY ? R5_LOCAL_RESULT_BUSY : R5_LOCAL_RESULT_ERROR;
+    }
+#else
     if ((application == R5_LOCAL_APPLICATION_SHADOW) &&
         (mode != R5_DRIFT_MODE_DOSING_NO_COMPENSATION))
     {
@@ -192,6 +219,7 @@ R5LocalResult R5LocalControl_Apply(void)
     ++s_failure_count;
     if (first_ok) (void)Restore(&current);
     return R5_LOCAL_RESULT_ERROR;
+#endif
 }
 
 const char *R5LocalControl_ChoiceText(R5LocalChoice choice)

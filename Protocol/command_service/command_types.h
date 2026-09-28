@@ -61,6 +61,9 @@ typedef enum
     COMMAND_CHECKWEIGH_GET_STATUS,
 #endif
 #endif
+#if defined(A33_ENABLE_STAGE5PA13E_ACTIVE) && (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    COMMAND_A13_SET_PAIR,
+#endif
     COMMAND_COUNT
 } CommandId;
 

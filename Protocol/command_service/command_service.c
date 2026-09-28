@@ -403,6 +403,12 @@ CommandResult CommandService_Execute(const CommandRequest *request,
     {
         return COMMAND_RESULT_INVALID_ARGUMENT;
     }
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    if ((request->id == COMMAND_A13_SET_PAIR || request->id == COMMAND_R5_SET_MODE ||
+         request->id == COMMAND_R5_SET_APPLICATION || request->id == COMMAND_R5_RESET_STATE) &&
+        request->source != COMMAND_SOURCE_LOCAL_KEY && request->source != COMMAND_SOURCE_MODBUS &&
+        request->source != COMMAND_SOURCE_MODBUS_USART3) return COMMAND_RESULT_INVALID_ARGUMENT;
+#endif
     if ((PersistenceManager_IsBusy() || WeighingProfileManager_IsBusy() ||
          CommandService_CommunicationBusy()) &&
         ((request->id == COMMAND_ZERO) ||
@@ -878,6 +884,9 @@ CommandResult CommandService_Execute(const CommandRequest *request,
                     response->value1 = (r5->offset_ug > INT32_MAX) ? INT32_MAX :
                         ((r5->offset_ug < INT32_MIN) ? INT32_MIN :
                          (int32_t)r5->offset_ug);
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+                    response->status_flags = MetrologyManager_GetA13Generation();
+#endif
                     result = COMMAND_RESULT_OK;
                 }
             }
@@ -903,6 +912,12 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             break;
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
         case COMMAND_CHECKWEIGH_SET_MODE:
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+            if (request->value0 != 0 && MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_ACTIVE) {
+                result = COMMAND_RESULT_INVALID_STATE;
+                break;
+            }
+#endif
             if ((request->source == COMMAND_SOURCE_BLE) ||
                 (request->value0 < (int32_t)GUARDED_CHECKWEIGH_OFF) ||
                 (request->value0 >= (int32_t)GUARDED_CHECKWEIGH_MODE_COUNT) ||
@@ -932,6 +947,19 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             }
             break;
 #endif
+#endif
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+        case COMMAND_A13_SET_PAIR:
+            if (request->value0 < 0 || request->value0 > 1 || request->value1 < 0 ||
+                request->value1 > 2 || request->flags > 1U || request->value64 < 0 ||
+                request->value64 > UINT32_MAX || (!request->flags && request->value64))
+                result = COMMAND_RESULT_INVALID_ARGUMENT;
+            else if (request->flags && (uint32_t)request->value64 != MetrologyManager_GetA13Generation())
+                result = COMMAND_RESULT_BUSY;
+            else result = MetrologyManager_SetA13Pair((R5BetaApplication)request->value0,
+                (R5DriftMode)request->value1, (uint32_t)request->value64, request->flags != 0U) ?
+                COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_STATE;
+            break;
 #endif
         case COMMAND_COUNT:
         default:

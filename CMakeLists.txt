@@ -56,6 +56,10 @@ option(A33_ENABLE_STAGE5PA2D_CALIBRATION
     "Enable Stage 5P-A2D calibration workflow candidate" OFF)
 option(A33_ENABLE_STAGE5PA13C_SHADOW
     "Enable isolated 10 Hz A13C automatic STATIC SHADOW candidate" OFF)
+option(A33_ENABLE_STAGE5PA13E_ACTIVE "Enable volatile guarded A13 engineering ACTIVE" OFF)
+if(A33_ENABLE_STAGE5PA13E_ACTIVE AND NOT A33_ENABLE_STAGE5PA13C_SHADOW)
+    message(FATAL_ERROR "A13E requires the frozen A13C path")
+endif()
 option(A33_ENABLE_STAGE5PA13D_RESOURCES
     "Enable isolated A13D timing and MSP watermark diagnostics" OFF)
 option(A33_ENABLE_STAGE5PA13DR_RESOURCES
@@ -97,6 +101,9 @@ endif()
 if(A33_ENABLE_STAGE5PA13DR_RESOURCES AND
    (NOT A33_ENABLE_STAGE5PA13C_SHADOW OR A33_ENABLE_STAGE5PA13D_RESOURCES))
     message(FATAL_ERROR "A13D-R needs A13C SHADOW and excludes old A13D diagnostics")
+endif()
+if(A33_ENABLE_STAGE5PA13E_ACTIVE AND A33_ENABLE_STAGE5PA13D_RESOURCES)
+    message(FATAL_ERROR "A13E excludes obsolete last-call A13D diagnostics")
 endif()
 
 # Enable CMake support for ASM and C languages
@@ -305,6 +312,11 @@ if(A33_ENABLE_STAGE5PA13C_SHADOW)
 else()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
         A33_ENABLE_STAGE5PA13C_SHADOW=0)
+endif()
+if(A33_ENABLE_STAGE5PA13E_ACTIVE)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5PA13E_ACTIVE=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5PA13E_ACTIVE=0)
 endif()
 if(A33_ENABLE_STAGE5PA13D_RESOURCES)
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE Diagnostics/stage5pa13d_resources.c)

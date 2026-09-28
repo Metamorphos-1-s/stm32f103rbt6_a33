@@ -88,6 +88,12 @@ const R5DriftSnapshot *MetrologyManager_GetR5Snapshot(void);
 const A13CSnapshot *MetrologyManager_GetA13CSnapshot(void);
 #endif
 R5BetaApplication MetrologyManager_GetR5Application(void);
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+bool MetrologyManager_SetA13Pair(R5BetaApplication application, R5DriftMode mode,
+    uint32_t expected_generation, bool require_generation);
+uint32_t MetrologyManager_GetA13Generation(void);
+uint32_t MetrologyManager_ReadA13ActiveMetric(uint16_t index);
+#endif
 bool MetrologyManager_SetAlarmShadowThresholds(int64_t low_ug,
     int64_t high_ug);
 bool MetrologyManager_GetAlarmShadowDiagnostics(

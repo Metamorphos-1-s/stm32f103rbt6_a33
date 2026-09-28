@@ -38,6 +38,9 @@ typedef struct
     R5DriftMode mode;
     R5DriftState state;
     bool limited;
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    uint32_t generation;
+#endif
 } R5LocalStatus;
 
 bool R5LocalControl_GetStatus(R5LocalStatus *status);

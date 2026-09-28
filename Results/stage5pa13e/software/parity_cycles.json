@@ -1,0 +1,183 @@
+{
+  "classification": "A13C_PYTHON_C_SAMPLE_PARITY",
+  "candidate": "auto_static_350_5m",
+  "samples": 4000,
+  "runner_exit_code": 0,
+  "python_gates": [
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "event_detected_seq": 1001315,
+      "settled_seq": 1001350,
+      "obvious_step_seq": 1001300,
+      "net_step_ug": 500007300.0,
+      "offset_at_detection_ug": 3255
+    },
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "event_detected_seq": 1001915,
+      "settled_seq": 1001950,
+      "obvious_step_seq": 1001900,
+      "net_step_ug": 499992700.0,
+      "offset_at_detection_ug": 3255
+    },
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "event_detected_seq": 1002515,
+      "settled_seq": 1002550,
+      "obvious_step_seq": 1002500,
+      "net_step_ug": 500007300.0,
+      "offset_at_detection_ug": 3255
+    },
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "event_detected_seq": 1003115,
+      "settled_seq": 1003150,
+      "obvious_step_seq": 1003100,
+      "net_step_ug": 499992700.0,
+      "offset_at_detection_ug": 3255
+    }
+  ],
+  "python_rebases": [
+    {
+      "seq": 1001315,
+      "reason": "STATIC_STEP_PENDING",
+      "offset_ug": 3255
+    },
+    {
+      "seq": 1001350,
+      "reason": "STATIC_STEP_FAST",
+      "offset_ug": 3255
+    },
+    {
+      "seq": 1001915,
+      "reason": "STATIC_STEP_PENDING",
+      "offset_ug": 3255
+    },
+    {
+      "seq": 1001950,
+      "reason": "STATIC_STEP_FAST",
+      "offset_ug": 3255
+    },
+    {
+      "seq": 1002515,
+      "reason": "STATIC_STEP_PENDING",
+      "offset_ug": 3255
+    },
+    {
+      "seq": 1002550,
+      "reason": "STATIC_STEP_FAST",
+      "offset_ug": 3255
+    },
+    {
+      "seq": 1003115,
+      "reason": "STATIC_STEP_PENDING",
+      "offset_ug": 3255
+    },
+    {
+      "seq": 1003150,
+      "reason": "STATIC_STEP_FAST",
+      "offset_ug": 3255
+    }
+  ],
+  "python_max_10s_offset_ug": 3500,
+  "first_mismatch": null,
+  "mismatch_count": 0,
+  "gate_timing": [
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "emitted_seq": 1001350,
+      "expected_obvious_seq": 1001300,
+      "expected_robust_seq": 1001315,
+      "expected_quiet_seq": 1001350,
+      "actual_obvious_seq": 1001300,
+      "actual_robust_seq": 1001315,
+      "actual_quiet_seq": 1001350,
+      "expected_reference_lock_seq": 1001764,
+      "actual_reference_lock_seq": 1001764,
+      "expected_first_correction_seq": null,
+      "actual_first_correction_seq": null
+    },
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "emitted_seq": 1001950,
+      "expected_obvious_seq": 1001900,
+      "expected_robust_seq": 1001915,
+      "expected_quiet_seq": 1001950,
+      "actual_obvious_seq": 1001900,
+      "actual_robust_seq": 1001915,
+      "actual_quiet_seq": 1001950,
+      "expected_reference_lock_seq": 1002364,
+      "actual_reference_lock_seq": 1002364,
+      "expected_first_correction_seq": null,
+      "actual_first_correction_seq": null
+    },
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "emitted_seq": 1002550,
+      "expected_obvious_seq": 1002500,
+      "expected_robust_seq": 1002515,
+      "expected_quiet_seq": 1002550,
+      "actual_obvious_seq": 1002500,
+      "actual_robust_seq": 1002515,
+      "actual_quiet_seq": 1002550,
+      "expected_reference_lock_seq": 1002964,
+      "actual_reference_lock_seq": 1002964,
+      "expected_first_correction_seq": null,
+      "actual_first_correction_seq": null
+    },
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "emitted_seq": 1003150,
+      "expected_obvious_seq": 1003100,
+      "expected_robust_seq": 1003115,
+      "expected_quiet_seq": 1003150,
+      "actual_obvious_seq": 1003100,
+      "actual_robust_seq": 1003115,
+      "actual_quiet_seq": 1003150,
+      "expected_reference_lock_seq": 1003564,
+      "actual_reference_lock_seq": 1003564,
+      "expected_first_correction_seq": 1003764,
+      "actual_first_correction_seq": 1003764
+    }
+  ],
+  "c_max_10s_offset_ug": 3500,
+  "c_gate_details": [
+    {
+      "seq": 1001350,
+      "source": "STATIC_OBVIOUS_STEP",
+      "c_obvious_seq": 1001300,
+      "c_robust_seq": 1001315,
+      "c_quiet_seq": 1001350,
+      "c_reference_lock_seq": 0,
+      "c_correction_seq": 0
+    },
+    {
+      "seq": 1001950,
+      "source": "STATIC_OBVIOUS_STEP",
+      "c_obvious_seq": 1001900,
+      "c_robust_seq": 1001915,
+      "c_quiet_seq": 1001950,
+      "c_reference_lock_seq": 0,
+      "c_correction_seq": 0
+    },
+    {
+      "seq": 1002550,
+      "source": "STATIC_OBVIOUS_STEP",
+      "c_obvious_seq": 1002500,
+      "c_robust_seq": 1002515,
+      "c_quiet_seq": 1002550,
+      "c_reference_lock_seq": 0,
+      "c_correction_seq": 0
+    },
+    {
+      "seq": 1003150,
+      "source": "STATIC_OBVIOUS_STEP",
+      "c_obvious_seq": 1003100,
+      "c_robust_seq": 1003115,
+      "c_quiet_seq": 1003150,
+      "c_reference_lock_seq": 0,
+      "c_correction_seq": 0
+    }
+  ],
+  "status": "PASS"
+}

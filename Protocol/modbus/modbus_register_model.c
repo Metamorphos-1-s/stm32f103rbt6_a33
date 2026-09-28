@@ -584,6 +584,14 @@ static ModbusRegisterResult ReadOne(uint16_t address,
         return MODBUS_REGISTER_OK;
     }
 #endif
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    if (address >= 0x0340U && address <= 0x0367U) {
+        uint16_t offset = (uint16_t)(address - 0x0340U);
+        *value = Word32(MetrologyManager_ReadA13ActiveMetric((uint16_t)(offset / 2U)),
+            (uint8_t)(offset % 2U), order);
+        return MODBUS_REGISTER_OK;
+    }
+#endif
     if ((address >= MODBUS_A13C_FIRST) &&
         (address <= MODBUS_A13C_LAST))
     {

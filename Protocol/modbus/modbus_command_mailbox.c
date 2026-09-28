@@ -67,6 +67,9 @@ static bool MapCommand(uint16_t id, CommandId *command)
         COMMAND_ALARM_SHADOW_SET_LIMITS
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
         , COMMAND_CHECKWEIGH_SET_MODE, COMMAND_CHECKWEIGH_GET_STATUS
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+        , COMMAND_A13_SET_PAIR
+#endif
 #endif
 #endif
     };

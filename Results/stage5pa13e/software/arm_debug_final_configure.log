@@ -1,0 +1,18 @@
+Preset CMake variables:
+
+  A33_DEBUG_OPTIMIZATION="-Og"
+  A33_ENABLE_STAGE5MR5E_D1D_BETA="ON"
+  A33_ENABLE_STAGE5MR5_BETA="ON"
+  A33_ENABLE_STAGE5NB_BETA="ON"
+  A33_ENABLE_STAGE5PA1_CANDIDATE="ON"
+  A33_ENABLE_STAGE5PA1_MODBUS_OPTIMIZATION="ON"
+  A33_ENABLE_STAGE5PA2C_PRODUCT="ON"
+  A33_ENABLE_STAGE5PA2D_CALIBRATION="ON"
+  A33_ENABLE_STAGE5PA2_PRODUCT="ON"
+  A33_ENABLE_STAGE5PA_PRODUCT="ON"
+  CMAKE_TOOLCHAIN_FILE:FILEPATH="D:/Documents/stm32f103rbt6_a33_stage5pa13e/cmake/gcc-arm-none-eabi.cmake"
+
+Build type: Debug
+-- Configuring done (0.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: D:/Downloads/a13e_builds/arm_debug

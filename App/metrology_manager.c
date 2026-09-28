@@ -1,4 +1,7 @@
 #include "metrology_manager.h"
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+#include "app_main.h"
+#endif
 
 #include "event_queue.h"
 #include "display_conditioner.h"
@@ -165,12 +168,36 @@ static const R5DriftSnapshot *A13CCompat_GetSnapshot(
 static R5DriftCompensator s_r5_drift;
 #endif
 static R5BetaApplication s_r5_application;
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+static uint32_t s_a13e_generation;
+static int32_t s_a13e_exit_offset;
+static uint8_t s_a13e_exit_reason;
+static bool A13E_Supported(void)
+{
+    const WeighingProfileConfig *p = &s_engine.metrology.profiles[s_engine.metrology.active_profile];
+    return p->sample_rate == DEVICE_CS1237_DATA_RATE_10_HZ &&
+        p->filter_mode == FILTER_MODE_AVERAGE && p->filter_strength == 3U;
+}
+static void A13E_Stop(A13CReason reason)
+{
+    s_a13e_exit_offset = s_r5_application == R5_BETA_APPLICATION_ACTIVE ?
+        (int32_t)s_r5_drift.offset_ug : 0;
+    s_a13e_exit_reason = (uint8_t)reason;
+    s_r5_application = R5_BETA_APPLICATION_SHADOW;
+    A13C_Reset(&s_r5_drift, reason);
+    (void)A13C_SetMode(&s_r5_drift, A13C_MODE_OFF);
+    (void)WeightEngine_SetBetaExternalDrift(&s_engine, 0, false);
+    if (s_a13e_generation != UINT32_MAX) ++s_a13e_generation;
+}
+#endif
 #if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
 static bool s_restoring_r5_request;
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE == 0U)
 static bool MetrologyManager_IsRestoringR5Request(void)
 {
     return s_restoring_r5_request;
 }
+#endif
 #endif
 static CheckweighShadow s_alarm_shadow;
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
@@ -320,6 +347,11 @@ bool MetrologyManager_Init(const DeviceConfig *config,
     s_runtime_drift_fault_latched = false;
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     s_r5_application = R5_BETA_APPLICATION_SHADOW;
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    s_a13e_generation = 0U;
+    s_a13e_exit_offset = 0;
+    s_a13e_exit_reason = 0U;
+#endif
     (void)memset(&s_r5_drift, 0, sizeof(s_r5_drift));
     CheckweighShadow_Reset(&s_alarm_shadow);
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
@@ -457,6 +489,10 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
                 (sample != NULL) ? sample->timestamp_ms :
                 s_r5_drift.last_timestamp_ms, s_r5_drift.last_mass_ug,
                 false, false, false, false);
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+        if (s_initialized && s_r5_application == R5_BETA_APPLICATION_ACTIVE)
+            A13E_Stop(A13C_REASON_INVALID_INPUT);
+#endif
 #endif
         if (s_initialized && (sample != NULL))
             WeightEngine_FreezeRuntimeDrift(&s_engine, sample->timestamp_ms,
@@ -476,6 +512,17 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
     WeightEngine_SetRuntimeDriftLearningAllowed(&s_engine,
         ((state == APP_STATE_RUN) || (state == APP_STATE_MENU)) &&
         (FaultManager_GetActiveMask() == 0U));
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    /* Sample validity/overload must be evaluated on the raw authority, not a
+     * preceding offset that could hide a near-limit overload. This transient
+     * is inside one non-reentrant sample transaction; final output is selected
+     * below before display/Modbus/alarm consumers run. */
+    if (s_r5_application == R5_BETA_APPLICATION_ACTIVE &&
+        !WeightEngine_SetBetaExternalDrift(&s_engine, 0, false)) {
+        A13E_Stop(A13C_REASON_NUMERIC);
+        return false;
+    }
+#endif
     if (!WeightEngine_ProcessRawSample(&s_engine, sample))
     {
 #if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
@@ -484,6 +531,10 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
         (void)A13C_Feed(&s_r5_drift, s_r5_drift.last_sequence,
             sample->timestamp_ms, s_r5_drift.last_mass_ug,
             false, false, false, false);
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+        if (s_r5_application == R5_BETA_APPLICATION_ACTIVE)
+            A13E_Stop(A13C_REASON_INVALID_INPUT);
+#endif
 #endif
         ++s_rejected_sample_count;
         FaultManager_Set(FAULT_WEIGHT_MATH_OVERFLOW);
@@ -496,6 +547,10 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
         const R5DriftSnapshot *r5_snapshot;
         if (snapshot == NULL) return false;
         if ((snapshot->status_flags & WEIGHT_STATUS_WEIGHT_VALID) == 0U) {
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+            if (s_r5_application == R5_BETA_APPLICATION_ACTIVE)
+                A13E_Stop(A13C_REASON_INVALID_INPUT);
+#endif
 #if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
             (void)A13C_Feed(&s_r5_drift, snapshot->sample_sequence,
                 snapshot->sample_timestamp_ms,
@@ -517,11 +572,25 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
         input.overload = (snapshot->status_flags & WEIGHT_STATUS_OVERLOAD) != 0U;
         input.near_rail = (snapshot->raw_value >= 8323072) ||
                           (snapshot->raw_value <= -8323072);
-        if (!R5Drift_ProcessSample(&s_r5_drift, &input)) return false;
+        if (!R5Drift_ProcessSample(&s_r5_drift, &input)) {
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+            A13E_Stop(A13C_REASON_NUMERIC);
+#endif
+            return false;
+        }
         r5_snapshot = R5Drift_GetSnapshot(&s_r5_drift);
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+        if (s_r5_application == R5_BETA_APPLICATION_ACTIVE &&
+            (s_r5_drift.limited || s_r5_drift.reason == A13C_REASON_TIME_GAP ||
+             !A13E_Supported() || input.fault_active || input.overload ||
+             !input.calibration_valid || input.near_rail)) {
+            A13E_Stop(s_r5_drift.reason);
+            r5_snapshot = R5Drift_GetSnapshot(&s_r5_drift);
+        }
+#endif
         if ((r5_snapshot == NULL) || !WeightEngine_SetBetaExternalDrift(
             &s_engine,
-#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U) && (A33_ENABLE_STAGE5PA13E_ACTIVE == 0U)
             0, false)) return false;
 #else
             r5_snapshot->offset_ug,
@@ -550,6 +619,15 @@ void MetrologyManager_Process20ms(void)
     {
         return;
     }
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    if (s_r5_application == R5_BETA_APPLICATION_ACTIVE &&
+        (FaultManager_GetActiveMask() || SystemContext_GetState() == APP_STATE_CALIBRATION ||
+         !s_engine.calibration.calibration_valid || !A13E_Supported())) {
+        A13E_Stop(FaultManager_GetActiveMask() ? A13C_REASON_FAULT :
+            SystemContext_GetState() == APP_STATE_CALIBRATION ? A13C_REASON_CALIBRATION : A13C_REASON_PROFILE);
+        MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+    }
+#endif
     snapshot = WeightEngine_GetSnapshot(&s_engine);
     if (snapshot == NULL)
     {
@@ -788,6 +866,9 @@ bool MetrologyManager_ApplyCalibration(
         FaultManager_Set(FAULT_WEIGHT_MATH_OVERFLOW);
         return false;
     }
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    A13E_Stop(A13C_REASON_CALIBRATION);
+#endif
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     R5Drift_HandleEvent(&s_r5_drift, R5_DRIFT_EVENT_CALIBRATION_COMMIT);
     CheckweighShadow_RequestReset(&s_alarm_shadow,
@@ -805,6 +886,9 @@ bool MetrologyManager_ReconfigureFilter(FilterMode mode, uint8_t strength)
     {
         return false;
     }
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    A13E_Stop(A13C_REASON_PROFILE);
+#endif
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     R5Drift_HandleEvent(&s_r5_drift, R5_DRIFT_EVENT_PROFILE_CHANGE);
     CheckweighShadow_RequestReset(&s_alarm_shadow, ALARM_SHADOW_RESET_FILTER);
@@ -845,6 +929,9 @@ static bool MetrologyManager_RebuildEngine(const DeviceConfig *config,
     }
     calibration_changed = MetrologyManager_CalibrationChanged(
         &config->calibration, &s_engine.calibration);
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    A13E_Stop(A13C_REASON_PROFILE);
+#endif
     restore_tare = !calibration_changed && s_engine.zero_tare.tare_active;
     zero_offset = calibration_changed ? 0 : s_engine.zero_tare.zero_offset_raw;
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
@@ -984,6 +1071,10 @@ void MetrologyManager_ResetRuntimeDrift(RuntimeDriftResetReason reason)
 void MetrologyManager_HandleFaultState(void)
 {
     const WeightSnapshot *snapshot;
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    if (s_initialized && s_r5_application == R5_BETA_APPLICATION_ACTIVE)
+        A13E_Stop(A13C_REASON_FAULT);
+#endif
     if (!s_initialized || s_runtime_drift_fault_latched) return;
     snapshot = WeightEngine_GetSnapshot(&s_engine);
     if (MetrologyManager_ActiveFaultInvalidatesReference())
@@ -1005,6 +1096,10 @@ const RuntimeDriftSnapshot *MetrologyManager_GetRuntimeDriftSnapshot(void)
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
 bool MetrologyManager_SetR5Mode(R5DriftMode mode)
 {
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    return MetrologyManager_SetA13Pair(mode == R5_DRIFT_MODE_OFF ?
+        R5_BETA_APPLICATION_SHADOW : s_r5_application, mode, 0U, false);
+#else
     AppState state = SystemContext_GetState();
     const R5DriftSnapshot *snapshot;
 #if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
@@ -1035,10 +1130,14 @@ bool MetrologyManager_SetR5Mode(R5DriftMode mode)
 #endif
 #endif
     return true;
+#endif
 }
 
 bool MetrologyManager_SetR5Application(R5BetaApplication application)
 {
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    return MetrologyManager_SetA13Pair(application, (R5DriftMode)s_r5_drift.mode, 0U, false);
+#else
     const R5DriftSnapshot *snapshot;
 #if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
     if (application != R5_BETA_APPLICATION_SHADOW) return false;
@@ -1059,7 +1158,70 @@ bool MetrologyManager_SetR5Application(R5BetaApplication application)
         (void)SystemContext_SetRequestedR5Application((uint8_t)application);
 #endif
     return true;
+#endif
 }
+
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+uint32_t MetrologyManager_GetA13Generation(void) { return s_a13e_generation; }
+bool MetrologyManager_SetA13Pair(R5BetaApplication application, R5DriftMode mode,
+    uint32_t expected_generation, bool require_generation)
+{
+    const WeightSnapshot *weight = WeightEngine_GetSnapshot(&s_engine);
+    AppState state = SystemContext_GetState();
+    if (!s_initialized || (uint32_t)application > 1U || (uint32_t)mode > 2U ||
+        (require_generation && expected_generation != s_a13e_generation)) return false;
+    if (mode == R5_DRIFT_MODE_OFF) {
+        if (application != R5_BETA_APPLICATION_SHADOW) return false;
+        A13E_Stop(A13C_REASON_NONE);
+        MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+        return true;
+    }
+    if (state != APP_STATE_RUN && state != APP_STATE_MENU) return false;
+    if (s_a13e_generation == UINT32_MAX) return false;
+    if (application == R5_BETA_APPLICATION_ACTIVE &&
+        (!A13E_Supported() || weight == NULL || FaultManager_GetActiveMask() ||
+         (weight->status_flags & (WEIGHT_STATUS_WEIGHT_VALID | WEIGHT_STATUS_CALIBRATION_VALID)) !=
+             (WEIGHT_STATUS_WEIGHT_VALID | WEIGHT_STATUS_CALIBRATION_VALID) ||
+         (weight->status_flags & WEIGHT_STATUS_OVERLOAD) || s_r5_drift.limited ||
+         weight->raw_value >= 8323072 || weight->raw_value <= -8323072 ||
+         (s_r5_application == R5_BETA_APPLICATION_SHADOW && s_r5_drift.offset_ug != 0) ||
+         !App_A13CheckweighIsOff())) return false;
+    if (!R5Drift_SetMode(&s_r5_drift, mode)) return false;
+    if (!WeightEngine_SetBetaExternalDrift(&s_engine, s_r5_drift.offset_ug,
+            application == R5_BETA_APPLICATION_ACTIVE)) {
+        A13E_Stop(A13C_REASON_NUMERIC);
+        return false;
+    }
+    s_r5_application = application;
+    ++s_a13e_generation;
+    MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+    return true;
+}
+uint32_t MetrologyManager_ReadA13ActiveMetric(uint16_t index)
+{
+    const WeightSnapshot *w = WeightEngine_GetSnapshot(&s_engine);
+    uint64_t value;
+    if (index == 0U) return UINT32_C(0xA13E0001);
+    if (index == 1U) return s_a13e_generation;
+    if (index == 2U) return (uint32_t)s_a13e_exit_offset;
+    if (index == 3U) return s_a13e_exit_reason;
+    if (index == 4U) return s_r5_application;
+    if (w == NULL) return 0U;
+    if (index == 5U) return w->sample_sequence;
+    if (index == 6U) return w->sample_timestamp_ms;
+    if (index == 7U) return (uint32_t)s_engine.beta_external_drift_offset_ug;
+    if (index == 8U) return s_engine.beta_external_drift_apply ? 1U : 0U;
+    if (index >= 9U && index <= 16U) {
+        value = (uint64_t)(index <= 10U ? w->uncompensated_gross_mass_ug :
+            index <= 12U ? w->gross_mass_ug : index <= 14U ? w->net_mass_ug : w->tare_mass_ug);
+        return ((index - 9U) & 1U) == 0U ? (uint32_t)(value >> 32U) : (uint32_t)value;
+    }
+    if (index == 17U) return s_r5_drift.mode;
+    if (index == 18U) return s_r5_drift.state;
+    if (index == 19U) return (uint32_t)s_r5_drift.offset_ug;
+    return 0U;
+}
+#endif
 
 #if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
 bool MetrologyManager_RestoreR5Request(R5BetaApplication application,
@@ -1089,6 +1251,12 @@ bool MetrologyManager_RestoreR5Request(R5BetaApplication application,
 
 void MetrologyManager_ResetR5(void)
 {
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+    if (s_initialized) {
+        A13E_Stop(A13C_REASON_NONE);
+        MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+    }
+#else
     R5DriftMode mode;
     if (!s_initialized) return;
     mode = (R5DriftMode)s_r5_drift.mode;
@@ -1099,6 +1267,7 @@ void MetrologyManager_ResetR5(void)
         s_r5_application == R5_BETA_APPLICATION_ACTIVE);
     CheckweighShadow_RequestReset(&s_alarm_shadow,
         ALARM_SHADOW_RESET_R5_MODE);
+#endif
 }
 
 const R5DriftSnapshot *MetrologyManager_GetR5Snapshot(void)

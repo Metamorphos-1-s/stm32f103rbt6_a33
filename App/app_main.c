@@ -355,6 +355,10 @@ bool App_GetAlarmOutputDiagnostics(AlarmOutputDiagnostics *diagnostics)
 bool App_SetGuardedCheckweighMode(GuardedCheckweighMode mode,
     uint32_t expected_generation, bool require_generation)
 {
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+  if (mode != GUARDED_CHECKWEIGH_OFF &&
+      MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_ACTIVE) return false;
+#endif
   if (!GuardedCheckweigh_SetMode(&s_guarded_checkweigh, mode,
       expected_generation, require_generation)) return false;
   AlarmOutputManager_AllOff(&s_alarm_output_manager);
@@ -370,9 +374,16 @@ bool App_GetGuardedCheckweighState(GuardedCheckweigh *state)
   *state = s_guarded_checkweigh;
   return true;
 }
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+bool App_A13CheckweighIsOff(void) { return s_guarded_checkweigh.mode == GUARDED_CHECKWEIGH_OFF; }
+#endif
 #if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
 bool App_RestoreGuardedCheckweighMode(GuardedCheckweighMode mode)
 {
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+  if (mode != GUARDED_CHECKWEIGH_OFF &&
+      MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_ACTIVE) return false;
+#endif
   bool result = GuardedCheckweigh_SetMode(&s_guarded_checkweigh, mode,
       s_guarded_checkweigh.generation, true);
   AlarmOutputManager_AllOff(&s_alarm_output_manager);
