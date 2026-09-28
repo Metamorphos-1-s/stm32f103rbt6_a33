@@ -58,6 +58,8 @@ option(A33_ENABLE_STAGE5PA13C_SHADOW
     "Enable isolated 10 Hz A13C automatic STATIC SHADOW candidate" OFF)
 option(A33_ENABLE_STAGE5PA13D_RESOURCES
     "Enable isolated A13D timing and MSP watermark diagnostics" OFF)
+option(A33_ENABLE_STAGE5PA13DR_RESOURCES
+    "Enable prospective cumulative A13D-R resource evidence" OFF)
 
 if(A33_ENABLE_STAGE5NA3_DIAGNOSTICS AND NOT A33_ENABLE_STAGE5MR5_BETA)
     message(FATAL_ERROR "Stage 5N-A3 diagnostics require Stage 5M-R5 Beta")
@@ -91,6 +93,10 @@ if(A33_ENABLE_STAGE5PA13C_SHADOW AND NOT A33_ENABLE_STAGE5PA2D_CALIBRATION)
 endif()
 if(A33_ENABLE_STAGE5PA13D_RESOURCES AND NOT A33_ENABLE_STAGE5PA13C_SHADOW)
     message(FATAL_ERROR "Stage 5P-A13D requires frozen Stage 5P-A13C SHADOW")
+endif()
+if(A33_ENABLE_STAGE5PA13DR_RESOURCES AND
+   (NOT A33_ENABLE_STAGE5PA13C_SHADOW OR A33_ENABLE_STAGE5PA13D_RESOURCES))
+    message(FATAL_ERROR "A13D-R needs A13C SHADOW and excludes old A13D diagnostics")
 endif()
 
 # Enable CMake support for ASM and C languages
@@ -305,6 +311,12 @@ if(A33_ENABLE_STAGE5PA13D_RESOURCES)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5PA13D_RESOURCES=1)
 else()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5PA13D_RESOURCES=0)
+endif()
+if(A33_ENABLE_STAGE5PA13DR_RESOURCES)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE Diagnostics/stage5pa13dr_resources.c)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5PA13DR_RESOURCES=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5PA13DR_RESOURCES=0)
 endif()
 
 if(A33_ENABLE_STAGE5NA3_DIAGNOSTICS)

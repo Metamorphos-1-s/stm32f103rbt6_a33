@@ -1,0 +1,22 @@
+{
+  "baseline": "5dd51a472aabd4a14a2b69701dbcc70baf687b4d",
+  "contract": "TARGET_CUMULATIVE_MAXIMA_NOT_LAST_POLL_VALUE",
+  "diagnostic_identity": "0x051F/0x0108",
+  "max_call_us": 10000,
+  "max_loop_us": 25000,
+  "max_loop_interval_us": 25000,
+  "min_static_margin_bytes": 512,
+  "min_runtime_untouched_bytes": 512,
+  "max_duration_s": 3600,
+  "max_host_heartbeat_gap_s": 5,
+  "uptime_host_delta_tolerance_ms": 250,
+  "qualification_min_uptime_ms": 5000,
+  "five_blocks": [[0,32],[32,28],[448,10],[640,40],[896,122]],
+  "path_count_max": 65535,
+  "required_path_mask": 511,
+  "host_poll_gaps": "report; accept only with valid target cumulative/reset/conservation proof",
+  "target_sample_loss": "FAIL",
+  "a13d_prior_result": "FAIL; unchanged",
+  "a13b_efficacy": "INCONCLUSIVE; unchanged",
+  "active": "FORBIDDEN"
+}

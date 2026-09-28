@@ -3,6 +3,9 @@
 #include "crc32.h"
 #include "persistent_codec.h"
 #include "persistent_schema.h"
+#if (A33_ENABLE_STAGE5PA13DR_RESOURCES != 0U)
+#include "stage5pa13dr_stats.h"
+#endif
 
 #include <stddef.h>
 #include <string.h>
@@ -40,7 +43,22 @@ static uint8_t s_body[CONFIG_STORE_HEADER_SIZE +
                       CONFIG_STORE_PAYLOAD_BUFFER_SIZE + 1U];
 static uint8_t s_verify_chunk[CONFIG_STORE_VERIFY_CHUNK_SIZE];
 static uint8_t s_active_payload[CONFIG_STORE_PAYLOAD_BUFFER_SIZE];
+#if (A33_ENABLE_STAGE5PA13DR_RESOURCES != 0U)
+A13DRBootScratch g_a13dr_boot_scratch;
+static bool s_a13dr_claimed;
+#define s_slot_payload g_a13dr_boot_scratch.boot_payload
+bool ConfigStore_A13DRStatsClaimed(void) { return s_a13dr_claimed; }
+bool ConfigStore_ClaimA13DRStats(void)
+{
+    if (s_a13dr_claimed || s_backend == NULL || s_state != CONFIG_STORE_STATE_IDLE)
+        return false;
+    (void)memset(&g_a13dr_boot_scratch.stats, 0, sizeof(g_a13dr_boot_scratch.stats));
+    s_a13dr_claimed = true;
+    return true;
+}
+#else
 static uint8_t s_slot_payload[CONFIG_STORE_PAYLOAD_BUFFER_SIZE];
+#endif
 static uint16_t s_payload_length;
 static uint16_t s_logical_body_length;
 static uint16_t s_program_body_length;
@@ -232,6 +250,9 @@ static SlotStatus ReadSlot(uint32_t address, SlotRecord *record,
 
 void ConfigStore_Init(const FlashBackendOps *backend)
 {
+#if (A33_ENABLE_STAGE5PA13DR_RESOURCES != 0U)
+    if (s_a13dr_claimed) return;
+#endif
     s_backend = backend;
     s_power_check = NULL;
     s_state = CONFIG_STORE_STATE_IDLE;
@@ -264,6 +285,9 @@ ConfigLoadResult ConfigStore_Load(DeviceConfig *config, RuntimeState *runtime,
     SlotRecord b;
     SlotRecord *selected = NULL;
     ConfigLoadResult result;
+#if (A33_ENABLE_STAGE5PA13DR_RESOURCES != 0U)
+    if (s_a13dr_claimed) return CONFIG_LOAD_IO_ERROR;
+#endif
 
     if ((config == NULL) || (runtime == NULL) || (info == NULL) ||
         (s_backend == NULL)) return CONFIG_LOAD_IO_ERROR;
@@ -336,6 +360,11 @@ static bool Request(const DeviceConfig *config, const RuntimeState *runtime,
 {
     PersistentCodecResult codec;
     uint32_t crc;
+#if (A33_ENABLE_STAGE5PA13DR_RESOURCES != 0U)
+    /* Final SAVE verification also needs slot scratch. Reject before any
+     * statistics/body/Flash mutation while diagnostics own its lifetime. */
+    if (s_a13dr_claimed) return false;
+#endif
     if ((s_state != CONFIG_STORE_STATE_IDLE) || (config == NULL) ||
         (runtime == NULL) || (s_backend == NULL) || (revision == 0xFFFFFFFFUL))
     {

@@ -8,6 +8,10 @@
 #include "system_context.h"
 #include "unit_converter.h"
 #include "weight_engine.h"
+#if (A33_ENABLE_STAGE5PA13DR_RESOURCES != 0U)
+#include "bsp_time.h"
+#include "stage5pa13dr_stats.h"
+#endif
 #if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
 #include "bsp_time.h"
 #include "stage5pa13d_resources.h"
@@ -22,6 +26,21 @@
 
 #include <stddef.h>
 #include <string.h>
+
+#if (A33_ENABLE_STAGE5PA13DR_RESOURCES != 0U)
+static bool A13DR_TimedFeed(A13CCompensator *candidate, uint32_t sequence,
+    uint32_t stamp, int64_t gross, bool valid, bool fault, bool overload, bool rail)
+{
+    uint32_t before = candidate != NULL ? candidate->snapshot.boost_samples : 0U;
+    uint32_t start = BSP_TimeNowCycles();
+    bool result = A13C_Feed(candidate, sequence, stamp, gross, valid, fault, overload, rail);
+    A13DR_FeedEnd(start, sequence, candidate != NULL ? (uint32_t)candidate->state : 8U,
+        candidate != NULL && candidate->snapshot.boost_samples > before);
+    return result;
+}
+/* Covers canonical and invalid/boot-readiness Feed call sites, not mathematics. */
+#define A13C_Feed A13DR_TimedFeed
+#endif
 
 static WeightEngine s_engine;
 static bool s_initialized;

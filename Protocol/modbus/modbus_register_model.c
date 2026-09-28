@@ -13,6 +13,9 @@
 #include "modbus_register_map.h"
 #include "persistent_schema.h"
 #include "project_config.h"
+#if (A33_ENABLE_STAGE5PA13DR_RESOURCES != 0U)
+#include "stage5pa13dr_stats.h"
+#endif
 #if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
 #include "stage5pa13d_resources.h"
 #endif
@@ -542,6 +545,31 @@ static ModbusRegisterResult ReadOne(uint16_t address,
     }
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
 #if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+#if (A33_ENABLE_STAGE5PA13DR_RESOURCES != 0U)
+    if (address >= 0x0380U && address <= 0x03F9U) {
+        uint16_t offset = (uint16_t)(address-0x0380U);
+        uint16_t first;
+        uint32_t metric;
+        if (offset < 64U) {
+            metric = A13DR_ReadMetric((uint16_t)(offset/2U));
+            first = (uint16_t)(offset & 0xfffeU);
+        } else if (offset < 84U) {
+            metric = A13DR_ReadMetric((uint16_t)(32U+(offset-64U)/2U));
+            first = (uint16_t)(64U+((offset-64U)&0xfffeU));
+        } else if (offset < 94U) {
+            *value = (uint16_t)A13DR_ReadMetric((uint16_t)(42U+offset-84U));
+            return MODBUS_REGISTER_OK;
+        } else if (offset < 114U) {
+            metric = A13DR_ReadMetric((uint16_t)(56U+(offset-94U)/2U));
+            first = (uint16_t)(94U+((offset-94U)&0xfffeU));
+        } else {
+            metric = A13DR_ReadMetric((uint16_t)(52U+(offset-114U)/2U));
+            first = (uint16_t)(114U+((offset-114U)&0xfffeU));
+        }
+        *value = Word32(metric,(uint8_t)(offset-first),order);
+        return MODBUS_REGISTER_OK;
+    }
+#endif
 #if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
     /* One atomic main-loop FC03 snapshot may include A13C + resource metrics.
      * Explicitly reserved diagnostic padding allows a 112-word block. */

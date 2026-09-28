@@ -27,7 +27,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "app_main.h"
-#if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
+#if (A33_ENABLE_STAGE5PA13DR_RESOURCES != 0U)
+#include "stage5pa13dr_stats.h"
+#elif (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
 #include "stage5pa13d_resources.h"
 #endif
 
@@ -113,7 +115,10 @@ int main(void)
   {
     Error_Handler();
   }
-#if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
+#if (A33_ENABLE_STAGE5PA13DR_RESOURCES != 0U)
+  if (!A13DR_Init()) Error_Handler();
+  A13DR_PaintStack();
+#elif (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
   A13D_Init();
   A13D_PaintStack();
 #endif
@@ -127,11 +132,15 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-#if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
+#if (A33_ENABLE_STAGE5PA13DR_RESOURCES != 0U)
+    uint32_t a13dr_loop_start = A13DR_LoopBegin();
+#elif (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
     uint32_t a13d_loop_start = A13D_LoopBegin();
 #endif
     App_Run();
-#if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
+#if (A33_ENABLE_STAGE5PA13DR_RESOURCES != 0U)
+    A13DR_LoopEnd(a13dr_loop_start);
+#elif (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
     A13D_LoopEnd(a13d_loop_start);
 #endif
   }
