@@ -43,26 +43,29 @@ def main():
                 application=args.application, mode=args.mode, stop=args.stop))+'\n')
         return
     seen = 0; rows = []; deadline = time.monotonic() + args.duration
+    args.out.mkdir(parents=True, exist_ok=True)
+    samples = (args.out/'samples.jsonl').open('w')
+    events = (args.out/'events.jsonl').open('a')
     with SerialTransport('COM5',115200,'N',1,350) as transport:
         client = ModbusClient(transport,1)
         while time.monotonic() < deadline:
             lines = requests.read_text().splitlines() if requests.exists() else []
             for line in lines[seen:]:
                 request = json.loads(line); pre = sample(client)
+                if request.get('stop'):
+                    deadline = 0
                 if request.get('mode') is not None:
                     result = execute_command(client,1800+seen,36,
                         arg0=request['application'], arg1=request['mode'],
                         arg64=pre['generation'], flags=1)
                     post = sample(client)
-                    with (args.out/'events.jsonl').open('a') as stream:
-                        stream.write(json.dumps(dict(utc=now(), kind='PAIR',
-                            request=request, pre=pre, result=result, post=post))+'\n')
+                    events.write(json.dumps(dict(utc=now(), kind='PAIR',
+                        request=request, pre=pre, result=result, post=post))+'\n'); events.flush()
                     if result['result'] or post['application'] != request['application'] or post['mode'] != request['mode']:
                         raise RuntimeError('pair failed '+str(result))
                 seen += 1
-            rows.append(sample(client)); time.sleep(0.08)
-    with (args.out/'samples.jsonl').open('w') as stream:
-        for row in rows: stream.write(json.dumps(row)+'\n')
+            row=sample(client); rows.append(row); samples.write(json.dumps(row)+'\n'); samples.flush(); time.sleep(0.08)
+    samples.close(); events.close()
     (args.out/'summary.json').write_text(json.dumps(dict(status='PASS',rows=len(rows)),indent=2)+'\n')
 
 if __name__ == '__main__': main()
