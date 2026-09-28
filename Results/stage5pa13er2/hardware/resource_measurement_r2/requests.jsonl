@@ -1,0 +1,8 @@
+{"utc": "2026-09-28T13:46:39.395727+00:00", "host_monotonic_ns": 346483421000000, "event": "USER_CONFIRMED_500G_REMOVED", "mode": null, "application": null, "stop": false}
+{"utc": "2026-09-28T13:47:06.130194+00:00", "host_monotonic_ns": 346510156000000, "event": "ZERO_OFFSET_OFF_SHADOW_R2", "mode": 0, "application": 0, "stop": false}
+{"utc": "2026-09-28T13:47:47.889607+00:00", "host_monotonic_ns": 346551906000000, "event": "ZERO_OFFSET_ACTIVE_STATIC_R2", "mode": 2, "application": 1, "stop": false}
+{"utc": "2026-09-28T13:52:16.314789+00:00", "host_monotonic_ns": 346820343000000, "event": "USER_CONFIRMED_500G_LOADED_R2", "mode": null, "application": null, "stop": false}
+{"utc": "2026-09-28T13:53:30.695583+00:00", "host_monotonic_ns": 346894718000000, "event": "ACTIVE_DOSING_RESOURCE_PATH_R2", "mode": 1, "application": 1, "stop": false}
+{"utc": "2026-09-28T13:55:31.572615+00:00", "host_monotonic_ns": 347015593000000, "event": "USER_CONFIRMED_500G_REMOVED_R2", "mode": null, "application": null, "stop": false}
+{"utc": "2026-09-28T13:55:48.239942+00:00", "host_monotonic_ns": 347032265000000, "event": "ACTIVE_STATIC_UNLOAD_REBUILD_R2", "mode": 2, "application": 1, "stop": false}
+{"utc": "2026-09-28T13:57:25.841873+00:00", "host_monotonic_ns": 347129859000000, "event": "RESOURCE_COVERAGE_COMPLETE_STOP_R2", "mode": null, "application": null, "stop": true}

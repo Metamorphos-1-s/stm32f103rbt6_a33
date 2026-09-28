@@ -1,0 +1,22 @@
+{
+  "status": "FAIL",
+  "error": "ACTIVE precondition is not zero-offset OFF+SHADOW",
+  "polls": 4314,
+  "host_gap_events": [
+    {
+      "previous": 668,
+      "current": 671,
+      "calls_not_seen_as_individual_polls": 2,
+      "note": "retained in MCU maxima/counts; not interpolated"
+    },
+    {
+      "previous": 1049,
+      "current": 1052,
+      "calls_not_seen_as_individual_polls": 2,
+      "note": "retained in MCU maxima/counts; not interpolated"
+    }
+  ],
+  "snapshots_sha256": "3CACC81B81D1409262D3911E464213351B197A791E24EE1EABD5EB9FE1F02B27",
+  "polls_sha256": "A2AB95D5C0721CF518593046D7C2F54055A0A7CFFF81BEB50C86A4139DEEEFAC",
+  "note": "target cumulative maxima survive host gaps; earlier weight read blocks are not same sample"
+}

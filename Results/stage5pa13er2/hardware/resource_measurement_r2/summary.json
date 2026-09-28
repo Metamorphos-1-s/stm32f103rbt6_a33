@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "error": null,
+  "polls": 8344,
+  "host_gap_events": [
+    {
+      "previous": 1917,
+      "current": 1920,
+      "calls_not_seen_as_individual_polls": 2,
+      "note": "retained in MCU maxima/counts; not interpolated"
+    },
+    {
+      "previous": 2334,
+      "current": 2337,
+      "calls_not_seen_as_individual_polls": 2,
+      "note": "retained in MCU maxima/counts; not interpolated"
+    },
+    {
+      "previous": 3293,
+      "current": 3295,
+      "calls_not_seen_as_individual_polls": 1,
+      "note": "retained in MCU maxima/counts; not interpolated"
+    },
+    {
+      "previous": 3429,
+      "current": 3431,
+      "calls_not_seen_as_individual_polls": 1,
+      "note": "retained in MCU maxima/counts; not interpolated"
+    },
+    {
+      "previous": 5756,
+      "current": 5759,
+      "calls_not_seen_as_individual_polls": 2,
+      "note": "retained in MCU maxima/counts; not interpolated"
+    },
+    {
+      "previous": 7129,
+      "current": 7132,
+      "calls_not_seen_as_individual_polls": 2,
+      "note": "retained in MCU maxima/counts; not interpolated"
+    }
+  ],
+  "snapshots_sha256": "016D4DD680FE7178DEC070DE0740C0B1E783F218DDB2B9EE31A727A9CF595E91",
+  "polls_sha256": "8ED933FBE939FA7E3699ED7517392B5C032606A9EB7B0154D6DA8814D81871CD",
+  "note": "target cumulative maxima survive host gaps; earlier weight read blocks are not same sample"
+}

@@ -1,0 +1,4 @@
+{"utc": "2026-09-28T13:36:04.478798+00:00", "host_monotonic_ns": 345848500000000, "event": "ZERO_OFFSET_OFF_SHADOW", "mode": 0, "application": 0, "stop": false}
+{"utc": "2026-09-28T13:36:42.583323+00:00", "host_monotonic_ns": 345886609000000, "event": "ZERO_OFFSET_ACTIVE_STATIC", "mode": 2, "application": 1, "stop": false}
+{"utc": "2026-09-28T13:39:24.194970+00:00", "host_monotonic_ns": 346048218000000, "event": "USER_CONFIRMED_500G_LOADED", "mode": null, "application": null, "stop": false}
+{"utc": "2026-09-28T13:41:58.223373+00:00", "host_monotonic_ns": 346202250000000, "event": "ACTIVE_DOSING_RESOURCE_PATH", "mode": 1, "application": 1, "stop": false}

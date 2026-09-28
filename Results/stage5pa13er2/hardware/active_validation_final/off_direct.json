@@ -1,0 +1,53 @@
+{
+  "pre": {
+    "utc": "2026-09-28T14:26:41.705625+00:00",
+    "firmware": 1312,
+    "map": 265,
+    "gross": 287941,
+    "display": 30,
+    "seq": 16114,
+    "fault": 0,
+    "overrun": 0,
+    "dirty": 0,
+    "revision": 19,
+    "saved": 19,
+    "generation": 7,
+    "application": 1,
+    "mode": 2,
+    "state": 7,
+    "offset": 16138,
+    "applied": 16138,
+    "apply": 1,
+    "exit_offset": 4294961731,
+    "exit_reason": 0
+  },
+  "result": {
+    "token": 2000,
+    "result": 0,
+    "result_name": "OK",
+    "state": 0,
+    "last_command": 36
+  },
+  "post": {
+    "utc": "2026-09-28T14:26:41.774325+00:00",
+    "firmware": 1312,
+    "map": 265,
+    "gross": 306367,
+    "display": 31,
+    "seq": 16114,
+    "fault": 0,
+    "overrun": 0,
+    "dirty": 0,
+    "revision": 19,
+    "saved": 19,
+    "generation": 8,
+    "application": 0,
+    "mode": 0,
+    "state": 0,
+    "offset": 0,
+    "applied": 0,
+    "apply": 0,
+    "exit_offset": 16138,
+    "exit_reason": 0
+  }
+}

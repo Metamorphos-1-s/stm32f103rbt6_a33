@@ -1,0 +1,6 @@
+{"utc": "2026-09-28T14:20:32.564564+00:00", "event": "ZERO_OFFSET_ACTIVE_STATIC_FINAL2", "application": 1, "mode": 2, "stop": false}
+{"utc": "2026-09-28T14:23:20.136635+00:00", "event": "USER_CONFIRMED_500G_LOADED_FINAL2", "application": null, "mode": null, "stop": false}
+{"utc": "2026-09-28T14:24:18.014293+00:00", "event": "ACTIVE_DOSING_FREEZE_FINAL2", "application": 1, "mode": 1, "stop": false}
+{"utc": "2026-09-28T14:25:39.652005+00:00", "event": "USER_CONFIRMED_500G_REMOVED_FINAL2", "application": null, "mode": null, "stop": false}
+{"utc": "2026-09-28T14:25:39.749689+00:00", "event": "ACTIVE_STATIC_AFTER_UNLOAD_FINAL2", "application": 1, "mode": 2, "stop": false}
+{"utc": "2026-09-28T14:25:58.489785+00:00", "event": "ACTIVE_VALIDATION_STOP", "application": null, "mode": null, "stop": true}
