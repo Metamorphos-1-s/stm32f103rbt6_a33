@@ -1,0 +1,14 @@
+{
+  "res": {
+    "token": 5000,
+    "result": 0,
+    "result_name": "OK",
+    "state": 0,
+    "last_command": 36
+  },
+  "application": 0,
+  "mode": 0,
+  "state": 0,
+  "offset": 0,
+  "generation": 5
+}

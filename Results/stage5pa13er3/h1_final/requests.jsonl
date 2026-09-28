@@ -1,0 +1,3 @@
+{"utc": "2026-09-28T16:36:28.959776+00:00", "event": "H1_FINAL_ACTIVE_STATIC", "application": 1, "mode": 2, "stop": false}
+{"utc": "2026-09-28T16:38:09.397728+00:00", "event": "H1_FINAL_DOSING", "application": 1, "mode": 1, "stop": false}
+{"utc": "2026-09-28T16:38:36.064693+00:00", "event": "STOP_H1_FINAL", "application": null, "mode": null, "stop": true}

@@ -1,0 +1,27 @@
+{
+  "generation": 2,
+  "pair": {
+    "token": 4000,
+    "result": 0,
+    "result_name": "OK",
+    "state": 0,
+    "last_command": 36
+  },
+  "active_generation": 3,
+  "active_app": 1,
+  "active_mode": 2,
+  "checkweigh_get": {
+    "token": 4001,
+    "result": 0,
+    "result_name": "OK",
+    "state": 0,
+    "last_command": 35
+  },
+  "checkweigh_set": {
+    "token": 4002,
+    "result": 4,
+    "result_name": "INVALID_STATE",
+    "state": 0,
+    "last_command": 34
+  }
+}

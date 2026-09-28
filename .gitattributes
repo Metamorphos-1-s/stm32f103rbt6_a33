@@ -97,6 +97,11 @@ Results/stage5pa13dr/** -text -eol -diff
 Results/stage5pa13e/** -text -eol -diff
 Results/stage5pa13er/** -text -eol -diff
 Results/stage5pa13er2/** -text -eol -diff
+Results/stage5pa13er3/** -text -eol -diff
+Docs/STAGE5PA13ER3*.md text eol=lf
+Tools/h1_atomic.py text eol=lf
+Tools/r3_*.py text eol=lf
+Tools/test_r3_*.py text eol=lf
 Docs/STAGE5PA13ER2*.md text eol=lf
 Tools/stage5pa13er2*.py text eol=lf
 Tools/stage5pa13er/*.py text eol=lf
