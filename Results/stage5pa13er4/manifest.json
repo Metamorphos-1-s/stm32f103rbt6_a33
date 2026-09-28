@@ -30,6 +30,11 @@
       "sha256": "6DF9D70083DF9C4CD66A0B915385907594BDB633EE74DB0A49FE85A7E0A18846"
     },
     {
+      "path": "Results/stage5pa13er4/20260928T173629Z_nonzero_atomic/qualification.json",
+      "bytes": 2588,
+      "sha256": "6EFB9903FFC42E4D71DB8A688BB096CF7BA845D3A43D8D50D56C5E186369967F"
+    },
+    {
       "path": "Results/stage5pa13er4/20260928T173629Z_nonzero_atomic/samples.jsonl",
       "bytes": 1464278,
       "sha256": "680287C30BA7B771EA1FF49877555F75F1F9331944D3F44E1B04A2DC5D5E0DC0"
