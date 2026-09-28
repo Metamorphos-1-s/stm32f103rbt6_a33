@@ -46,8 +46,8 @@ def run(args):
                                   offset_ug=pre_original['beta_offset_ug'],
                                   limited=pre_original['beta_limited'],
                                   fault=pre_target['fault'],overrun=pre_target['overrun'])
-                            if req['application']==1 and (pre_safety['application']!=0 or
-                                pre_target['mode']!=0 or pre_original['beta_offset_ug']!=0 or
+                            entering_active = req['application']==1 and pre_safety['application']==0
+                            if entering_active and (pre_target['mode']!=0 or pre_original['beta_offset_ug']!=0 or
                                 pre_original['beta_limited'] or pre_target['fault'] or pre_target['overrun']):
                                 raise ValueError('ACTIVE precondition is not zero-offset OFF+SHADOW')
                             response=execute_command(client,1600+seen,36,arg0=req['application'],arg1=req['mode'],arg64=gen,flags=1)
@@ -61,7 +61,7 @@ def run(args):
                             if req['application']==0 and req['mode']==0 and post_original['beta_offset_ug']!=0:
                                 raise ValueError('OFF did not clear offset')
                             if req['application']==1 and (post_safety['application']!=1 or
-                                post_target['mode']!=2 or post_original['beta_offset_ug']!=0):
+                                post_target['mode']!=req['mode']):
                                 raise ValueError('ACTIVE postcondition mismatch')
                             mode=req['mode'];application=req['application']
                             transition_deadline=time.monotonic()+1
