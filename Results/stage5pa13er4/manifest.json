@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "stage": "A13E-R4",
+  "baseline": "9b2e4baa17fb698ff3f3b3239690bb1902665e51",
+  "classification": "H1_NONZERO_RAW_ATOMIC_PASS",
+  "entries": [
+    {
+      "path": "Docs/STAGE5PA13ER4_NONZERO_ATOMIC_EVIDENCE.md",
+      "bytes": 3836,
+      "sha256": "B7FE7DD002F375A906E4EA378C71E012AFEE30649BC1C1B3066AE71F7E02161B"
+    },
+    {
+      "path": "Results/stage5pa13er4/20260928T173629Z_nonzero_atomic/capture_summary.json",
+      "bytes": 2636,
+      "sha256": "2D7C136A3713AB1D12FC2676EA55DDE7CCC8C3CF238BFFB077C39A81BCE93838"
+    },
+    {
+      "path": "Results/stage5pa13er4/20260928T173629Z_nonzero_atomic/events.jsonl",
+      "bytes": 41426,
+      "sha256": "5655F5E0D9D90573463765497C625ECD501B46FE5BE3D8F52D685AF0734F0546"
+    },
+    {
+      "path": "Results/stage5pa13er4/20260928T173629Z_nonzero_atomic/frames.jsonl",
+      "bytes": 2999433,
+      "sha256": "F76B73E68DE1DAD1CBB007E72BBC915575474ABFBBD47A9E42D5BDBA3828F8F5"
+    },
+    {
+      "path": "Results/stage5pa13er4/20260928T173629Z_nonzero_atomic/live_summary.json",
+      "bytes": 2636,
+      "sha256": "2D7C136A3713AB1D12FC2676EA55DDE7CCC8C3CF238BFFB077C39A81BCE93838"
+    },
+    {
+      "path": "Results/stage5pa13er4/20260928T173629Z_nonzero_atomic/samples.jsonl",
+      "bytes": 1467560,
+      "sha256": "E12B4B148F9D9435AFAB372E990EE114F5B6FABDEB70A0A1B70D0111D6A6AA9D"
+    },
+    {
+      "path": "Tools/r4_evidence.py",
+      "bytes": 1169,
+      "sha256": "64C796AFFA031EAE840DD1DA01580D882BECEF0B12A1F6BF7CC7C001AA48CD81"
+    },
+    {
+      "path": "Tools/r4_h1_capture.py",
+      "bytes": 13441,
+      "sha256": "AA251BA16DC0BE19B7AB1CACEF37BFBBEE14C32FC9DE2BCEF19ACE8AE50A0149"
+    },
+    {
+      "path": "Tools/test_r4_h1_capture.py",
+      "bytes": 2594,
+      "sha256": "7B0A36E5CB612C3C03FB9D35969C561FD05DA06DADF454A9167ECAD8C83F2358"
+    }
+  ]
+}
