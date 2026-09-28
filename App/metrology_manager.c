@@ -8,6 +8,10 @@
 #include "system_context.h"
 #include "unit_converter.h"
 #include "weight_engine.h"
+#if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
+#include "bsp_time.h"
+#include "stage5pa13d_resources.h"
+#endif
 #if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
 #include "a13c_shadow_compensator.h"
 #endif
@@ -70,18 +74,31 @@ static bool A13CCompat_ProcessSample(A13CCompensator *candidate,
 {
     const SystemContext *context = SystemContext_Get();
     const WeighingProfileConfig *profile;
+#if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
+    uint32_t a13d_start;
+    bool a13d_result;
+#endif
     if ((context == NULL) ||
         ((uint32_t)context->config.metrology.active_profile >=
          WEIGHING_PROFILE_COUNT)) return false;
     profile = &context->config.metrology.profiles[
         context->config.metrology.active_profile];
     /* No output outside the one frozen 10 Hz/filt1/strength3 envelope. */
+#if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
+    a13d_start = BSP_TimeNowCycles();
+    a13d_result = A13C_Feed(candidate, input->sample_sequence, input->timestamp_ms,
+#else
     return A13C_Feed(candidate, input->sample_sequence, input->timestamp_ms,
+#endif
         input->uncompensated_gross_ug, input->calibration_valid &&
         (profile->sample_rate == DEVICE_CS1237_DATA_RATE_10_HZ) &&
         (profile->filter_mode == FILTER_MODE_AVERAGE) &&
         (profile->filter_strength == 3U),
         input->fault_active, input->overload, input->near_rail);
+#if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
+    A13D_FeedEnd(a13d_start, input->sample_sequence, (uint32_t)candidate->state);
+    return a13d_result;
+#endif
 }
 
 static const R5DriftSnapshot *A13CCompat_GetSnapshot(

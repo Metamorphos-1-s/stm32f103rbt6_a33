@@ -999,3 +999,11 @@ add_test(NAME alarm_output_manager_logic COMMAND alarm_output_manager_tests)
 # Isolated, opt-in engineering controller tests. The existing release
 # regression executables remain built against the frozen product R5 path.
 add_subdirectory(stage5pa13c)
+add_executable(stage5pa13d_resource_tests stage5pa13d/test_resources.c)
+target_include_directories(stage5pa13d_resource_tests PRIVATE ../../Diagnostics)
+if(MSVC)
+    target_compile_options(stage5pa13d_resource_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5pa13d_resource_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5pa13d_resource_logic COMMAND stage5pa13d_resource_tests)
