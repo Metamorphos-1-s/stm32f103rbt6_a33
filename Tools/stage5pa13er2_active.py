@@ -27,7 +27,7 @@ def sample(client):
         calibration_valid=diag[27], signature=u32(active,0), generation=u32(active,2),
         exit_offset=u32(active,4), exit_reason=u32(active,6), application=u32(active,8),
         active_sequence=u32(active,10), active_mcu_ms=u32(active,12), applied_offset=u32(active,14),
-        apply=u32(active,16), mode=u32(active,30), state=u32(active,32), offset=u32(active,34))
+        apply=u32(active,16), mode=u32(active,34), state=u32(active,36), offset=u32(active,38))
 
 def main():
     parser = argparse.ArgumentParser()
