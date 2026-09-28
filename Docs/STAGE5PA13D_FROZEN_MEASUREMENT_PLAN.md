@@ -68,9 +68,12 @@ Stack high-water covers all post-paint App_Run work, including this warmup.
 
 Five fixed blocks per poll: realtime 0x0000/32, general diagnostics 0x0020/28,
 storage 0x01C0/10, engineering R5 0x0280/40, and atomic A13C+resource extension
-0x0300/108. Reserved gap registers are zero only in the independent diagnostic
-Map 0x0106. Last call timing and candidate sequence share the atomic final
-block; separate earlier realtime values are never silently treated as that
+0x0300/112. Reserved gap registers are zero only in the final diagnostic
+Map 0x0107. Last call timing, actual timed-state, 28-bit lossless sequence and
+authoritative weight-engine timestamp share the atomic final
+block; mode-set candidate snapshots are kept separate from last timed-call
+identity. Any sequence reaching 2^28 invalidates diagnostic metadata; the
+bounded reset-started run is at most 7200 seconds. Separate earlier realtime values are never silently treated as that
 same sample. Overhead empty-bracket maximum is stored in flags bits 8–31,
 while bits 0–7 report paint/DWT/stack validity. Timing is never overhead-subtracted.
 

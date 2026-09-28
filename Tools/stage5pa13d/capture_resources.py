@@ -19,16 +19,18 @@ def read(client):
     d, _ = client.read(0x20, 28)
     storage, _ = client.read(0x1c0, 10)
     beta, _ = client.read(0x280, 40)
-    full, _ = client.read(0x300, 108)
-    c, metrics = full[:37], full[64:108]
+    full, _ = client.read(0x300, 112)
+    c, metrics = full[:37], full[64:112]
     order = 'high'  # frozen preflight is independently confirmed high-word-first
-    m = [unsigned32(metrics[i:i+2], order) for i in range(0, 44, 2)]
+    m = [unsigned32(metrics[i:i+2], order) for i in range(0, 48, 2)]
     return dict(utc=now(), host_monotonic_ns=time.monotonic_ns(),
         firmware=r[15], map=r[14], signature=c[0],
         gross_ug=word64(r[20:24], order), raw_adc=word32(r[28:30], order),
         filtered_adc_counts=word32(r[30:32], order), display_count=word32(r[:2], order),
         status_flags=r[4] | (r[5] << 16), realtime_sequence=unsigned32(d[:2], order),
-        sequence=unsigned32(c[17:19], order), mcu_ms=unsigned32(c[19:21], order),
+        sequence=m[3], mcu_ms=m[22], timed_state=m[5],
+        candidate_sequence=unsigned32(c[17:19], order),
+        candidate_mcu_ms=unsigned32(c[19:21], order),
         mode=c[1], state=c[2], reason=c[3], limited=c[4],
         offset_ug=word64(c[5:9], order), candidate_ug=word64(c[9:13], order),
         input_ug=word64(c[13:17], order), gates=unsigned32(c[21:23], order),
@@ -41,7 +43,7 @@ def read(client):
         lowest_touched=m[10], flags=m[11] & 255, overhead_max_cycles=m[11] >> 8,
         static_end=m[12], stack_top=m[13], control=m[14],
         produced=m[15], consumed=m[16], invalid=m[17], fifo=m[18],
-        driver_read_errors=m[19], overrun=m[20], engine_sequence=m[21],
+        driver_read_errors=m[19], overrun=m[20], engine_sequence=m[23],
         persistent_format=storage[0], storage_slot=storage[1])
 
 
@@ -71,7 +73,7 @@ def run(args):
             client = ModbusClient(transport, 1)
             with (output / 'samples.csv').open('w', newline='', encoding='utf-8') as stream:
                 writer = None
-                event('CAPTURE_BEGIN', five_blocks=[[0,32],[32,28],[448,10],[640,40],[768,108]])
+                event('CAPTURE_BEGIN', five_blocks=[[0,32],[32,28],[448,10],[640,40],[768,112]])
                 while time.monotonic() < deadline:
                     requests = output / 'requests.jsonl'
                     lines = requests.read_text().splitlines() if requests.exists() else []
@@ -101,13 +103,13 @@ def run(args):
                     writer.writerow(sample)
                     stream.flush()
                     rows += 1
-                    if (sample['firmware'], sample['map'], sample['signature']) != (0x051e, 0x0106, 0xa13c):
+                    if (sample['firmware'], sample['map'], sample['signature']) != (0x051e, 0x0107, 0xa13c):
                         raise RuntimeError('identity mismatch')
                     if sample['flags'] != 1 or sample['control'] & 2:
                         raise RuntimeError('paint/DWT/sentinel/MSP validity failure')
                     if sample['lowest_touched'] - sample['static_end'] < 512:
                         raise RuntimeError('runtime RAM margin below 512')
-                    if sample['fault'] or sample['overrun'] or sample['driver_read_errors'] or sample['dirty']:
+                    if sample['fault'] or sample['overrun'] or sample['driver_read_errors'] or sample['dirty'] or sample['limited']:
                         raise RuntimeError('fault/overrun/read-error/dirty')
                     if sample['revision'] != 19 or sample['saved_revision'] != 19 or sample['save_count']:
                         raise RuntimeError('configuration/SAVE invariant changed')
@@ -118,13 +120,13 @@ def run(args):
                         raise RuntimeError('A13C 10ms budget')
                     if sample['loop_max_cycles'] * 40 > hclk or sample['loop_interval_max_cycles'] * 40 > hclk:
                         raise RuntimeError('main loop 25ms budget')
-                    if not started and sample['sequence'] > 0 and sample['status_flags'] & 8 and sample['call_sequence'] == sample['sequence'] and sample['driver_state'] == 4 and sample['calibration_valid']:
+                    if not started and sample['sequence'] > 0 and sample['status_flags'] & 8 and sample['engine_sequence'] == sample['sequence'] and sample['driver_state'] == 4 and sample['calibration_valid']:
                         started = True
                         event('QUALIFICATION_START', sequence=sample['sequence'], mcu_ms=sample['mcu_ms'])
                     if started:
                         if sample['produced'] - sample['consumed'] != sample['fifo']:
                             raise RuntimeError('driver/FIFO/bridge conservation')
-                        if sample['engine_sequence'] != sample['consumed'] - sample['invalid']:
+                        if sample['engine_sequence'] != sample['consumed'] - sample['invalid'] or sample['engine_sequence'] != sample['sequence'] or sample['invalid']:
                             raise RuntimeError('engine/bridge conservation')
                         if sample['sequence'] != sample['call_sequence']:
                             raise RuntimeError('call/candidate sequence mismatch')

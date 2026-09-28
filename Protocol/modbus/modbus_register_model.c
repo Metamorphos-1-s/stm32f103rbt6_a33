@@ -544,12 +544,12 @@ static ModbusRegisterResult ReadOne(uint16_t address,
 #if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
 #if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
     /* One atomic main-loop FC03 snapshot may include A13C + resource metrics.
-     * Explicitly reserved diagnostic padding allows a 108-word block. */
+     * Explicitly reserved diagnostic padding allows a 112-word block. */
     if ((address >= 0x0325U) && (address <= 0x033FU)) {
         *value = 0U;
         return MODBUS_REGISTER_OK;
     }
-    if ((address >= 0x0340U) && (address <= 0x036BU)) {
+    if ((address >= 0x0340U) && (address <= 0x036FU)) {
         uint16_t offset = (uint16_t)(address - 0x0340U);
         *value = Word32(A13D_ReadMetric((uint16_t)(offset / 2U)),
             (uint8_t)(offset % 2U), order);

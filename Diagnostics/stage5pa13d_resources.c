@@ -111,19 +111,24 @@ void A13D_LoopEnd(uint32_t start)
 void A13D_FeedEnd(uint32_t start, uint32_t sequence, uint32_t state)
 {
     uint32_t elapsed = BSP_TimeNowCycles() - start;
-    (void)state; /* State is atomically read with candidate + last-call sequence. */
+    if (sequence >= UINT32_C(0x10000000) || state >= 16U)
+        g_a13d_resources.stack_offset_flags |= UINT16_C(0x2000);
     g_a13d_resources.feed_last_cycles = elapsed;
-    g_a13d_resources.feed_last_sequence = sequence;
+    /* Lossless in this bounded, reset-started diagnostic run. Refuse overflow;
+     * never associate a prior call's cycles with a new mode-set snapshot. */
+    g_a13d_resources.feed_last_sequence = sequence | (state << 28U);
 }
 
 uint32_t A13D_ReadMetric(uint16_t index)
 {
     const A13CSnapshot *candidate = MetrologyManager_GetA13CSnapshot();
+    const MassSnapshot *mass = MetrologyManager_GetMassSnapshot();
     switch (index) {
     case 0U: return HAL_RCC_GetHCLKFreq();
-    case 1U: case 5U: case 6U: return 0U; /* Reserved; peak identity from full host stream. */
+    case 1U: case 6U: return 0U;
     case 2U: return g_a13d_resources.feed_last_cycles;
-    case 3U: return g_a13d_resources.feed_last_sequence;
+    case 3U: return g_a13d_resources.feed_last_sequence & UINT32_C(0x0fffffff);
+    case 5U: return g_a13d_resources.feed_last_sequence >> 28U;
     case 4U: return 0U; /* Exact maximum/sequence/state from complete host samples. */
     case 7U: return g_a13d_resources.loop_max_cycles;
     case 8U: return g_a13d_resources.loop_max_interval_cycles;
@@ -142,6 +147,8 @@ uint32_t A13D_ReadMetric(uint16_t index)
     case 19U: return CS1237_GetReadErrorCount();
     case 20U: return CS1237_GetBufferOverrunCount();
     case 21U: return candidate != NULL ? candidate->sample_sequence : 0U;
+    case 22U: return mass != NULL ? mass->sample_timestamp_ms : 0U;
+    case 23U: return mass != NULL ? mass->sample_sequence : 0U;
     default: return 0U;
     }
 }

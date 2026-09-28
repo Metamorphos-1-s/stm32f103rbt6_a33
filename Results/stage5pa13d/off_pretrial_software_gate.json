@@ -1,9 +1,9 @@
 {
   "baseline": "4a6f3edfbab74a7fd7ba1ff35c768534c05d2704",
   "device_accessed_during_software_gate": false,
-  "diagnostic_identity": "0x051E / Map 0x0107",
-  "diagnostic_bytes": 94364,
-  "diagnostic_sha256": "C0EF4AF2AE1D63FA7B2D414932A5C7B2221380AD2640137A5C67022AD708B7D5",
+  "diagnostic_identity": "0x051E / Map 0x0106",
+  "diagnostic_bytes": 94292,
+  "diagnostic_sha256": "DD81C2E7499E3F013350A4A06359AE7B98006FBDCE4ED7364D1214A48A092D19",
   "baseline_rebuilt_sha256": "DDF57FB131E5EF675D94B08A5A8752EB0FB588BA5230DEA6F34C57D6B2F62DDD",
   "a13c_math_object_sha256_both_builds": "EFCAA070EC912A2746C89E7C27DAEB39829E9FF953DBF3468038E22B63AC38EC",
   "a13c_math_source_modified": false,
@@ -26,7 +26,6 @@
   "discarded_prototypes": "48B and 32B diagnostic state; never flashed; preserved evidence",
   "host_initial_failure": "MSVC constant-condition warning in new ABI test; fixed by static assertions; original log preserved",
   "stack_painter": "naked leaf, thread/MSP check, PRIMASK, 64-byte exclusion, aligned _ebss start, actual MSP<=_estack, exact <4096-byte span, no PUSH or calls",
-  "result": "PASS SOFTWARE; FINAL ATOMIC TIMING QUALIFICATION NOT RUN YET",
-  "pretrial": "separate Map0106 OFF-only timing run restored exact051D; not joined to final acquisition",
+  "result": "PASS SOFTWARE; HARDWARE NOT RUN YET",
   "a13b_efficacy": "INCONCLUSIVE; owner deferral unchanged"
 }

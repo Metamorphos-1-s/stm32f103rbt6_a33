@@ -10,7 +10,7 @@
   "stack_paint_exclusion_below_current_msp_bytes": 64,
   "missing_sequence_allowed": 0,
   "qualification_start": "first positive weight-valid RUNNING sample with last-call/candidate sequence match",
-  "five_blocks": [[0, 32], [32, 28], [448, 10], [640, 40], [768, 108]],
+  "five_blocks": [[0, 32], [32, 28], [448, 10], [640, 40], [768, 112]],
   "fifo_conservation_required": true,
   "fault_overrun_read_error_growth_allowed": 0,
   "sustained_fifo_backlog_threshold": 1,
