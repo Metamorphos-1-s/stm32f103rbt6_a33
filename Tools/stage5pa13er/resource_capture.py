@@ -38,11 +38,31 @@ def run(args):
                     for line in requests[seen:]:
                         req=json.loads(line);stamp('HOST_REQUEST',request=req)
                         if req.get('mode') is not None:
+                            pre_target,pre_safety,pre_original=read(client)
                             generation,_=client.read(0x0342,2)
                             gen=unsigned32(generation,'high')
+                            stamp('PAIR_PRECONDITION',request=req,generation=gen,
+                                  application=pre_safety['application'],mode=pre_target['mode'],
+                                  offset_ug=pre_original['beta_offset_ug'],
+                                  limited=pre_original['beta_limited'],
+                                  fault=pre_target['fault'],overrun=pre_target['overrun'])
+                            if req['application']==1 and (pre_safety['application']!=0 or
+                                pre_target['mode']!=0 or pre_original['beta_offset_ug']!=0 or
+                                pre_original['beta_limited'] or pre_target['fault'] or pre_target['overrun']):
+                                raise ValueError('ACTIVE precondition is not zero-offset OFF+SHADOW')
                             response=execute_command(client,1600+seen,36,arg0=req['application'],arg1=req['mode'],arg64=gen,flags=1)
                             stamp('PAIR_RESULT',result=response,expected_generation=gen)
                             if response['result']:raise ValueError('atomic pair rejected: '+str(response))
+                            post_target,post_safety,post_original=read(client)
+                            stamp('PAIR_POSTCONDITION',application=post_safety['application'],
+                                  mode=post_target['mode'],offset_ug=post_original['beta_offset_ug'],
+                                  generation=post_target.get('generation_end'),
+                                  gross_ug=post_original['gross_ug'])
+                            if req['application']==0 and req['mode']==0 and post_original['beta_offset_ug']!=0:
+                                raise ValueError('OFF did not clear offset')
+                            if req['application']==1 and (post_safety['application']!=1 or
+                                post_target['mode']!=2 or post_original['beta_offset_ug']!=0):
+                                raise ValueError('ACTIVE postcondition mismatch')
                             mode=req['mode'];application=req['application']
                             transition_deadline=time.monotonic()+1
                         if req.get('stop'):deadline=0

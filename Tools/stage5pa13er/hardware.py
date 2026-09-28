@@ -13,7 +13,7 @@ from hardware_shadow import SerialTransport,ModbusClient,probe
 from parse_config_slots import parse_dump
 
 PROGRAMMER='E:/ST/STM32CubeCLT_1.18.0/STM32CubeProgrammer/bin/STM32_Programmer_CLI.exe'
-BASE=ROOT/'Results/stage5pa13er/hardware'
+BASE=ROOT/'Results/stage5pa13er2/hardware'
 ORDINARY_SHA='DDF57FB131E5EF675D94B08A5A8752EB0FB588BA5230DEA6F34C57D6B2F62DDD'
 EXPECTED_CONFIG_SHA='856BD8F5C14760561FC4BFEC4274FE0C5480C19BC4422046617C2450F8439733'
 
