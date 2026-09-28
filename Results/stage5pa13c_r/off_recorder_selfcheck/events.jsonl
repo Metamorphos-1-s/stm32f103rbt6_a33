@@ -1,0 +1,2 @@
+{"utc": "2026-09-28T04:09:20.274664+00:00", "host_monotonic_ns": 311844296000000, "kind": "RECORDER_START", "data_role": "FOCUSED_SHADOW_FUNCTIONAL_SAFETY"}
+{"utc": "2026-09-28T04:09:28.277168+00:00", "host_monotonic_ns": 311852296000000, "kind": "RECORDER_STOP", "failure": null}

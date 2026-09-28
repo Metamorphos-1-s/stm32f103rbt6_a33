@@ -1,0 +1,8 @@
+{"utc": "2026-09-28T06:15:10.126195+00:00", "host_monotonic_ns": 319394156000000, "event": "EMPTY_CONFIRMED_BY_USER_STATIC_REQUEST", "mode": 2, "stop": false}
+{"utc": "2026-09-28T06:17:01.809685+00:00", "host_monotonic_ns": 319505828000000, "event": "FIRST_500G_LOAD_INSTRUCTION_ISSUED", "mode": null, "stop": false}
+{"utc": "2026-09-28T06:17:56.471439+00:00", "host_monotonic_ns": 319560500000000, "event": "FIRST_500G_LOAD_COMPLETE_USER_CONFIRMATION_RECORDED", "mode": null, "stop": false}
+{"utc": "2026-09-28T06:23:21.179725+00:00", "host_monotonic_ns": 319885203000000, "event": "LOADED_FAST_WINDOW_COMPLETE_NONZERO_DOSING_BEGIN", "mode": 1, "stop": false}
+{"utc": "2026-09-28T06:25:16.884918+00:00", "host_monotonic_ns": 320000906000000, "event": "NONZERO_DOSING_FREEZE_COMPLETED_RETURN_STATIC", "mode": 2, "stop": false}
+{"utc": "2026-09-28T06:27:02.867951+00:00", "host_monotonic_ns": 320106890000000, "event": "FIRST_500G_UNLOAD_INSTRUCTION_ISSUED", "mode": null, "stop": false}
+{"utc": "2026-09-28T06:28:05.474799+00:00", "host_monotonic_ns": 320169500000000, "event": "FIRST_500G_UNLOAD_COMPLETE_USER_CONFIRMATION_RECORDED", "mode": null, "stop": false}
+{"utc": "2026-09-28T06:33:09.400639+00:00", "host_monotonic_ns": 320473421000000, "event": "UNLOAD_FAST_WINDOW_COMPLETE_FINAL_CLEANUP", "mode": null, "stop": true}

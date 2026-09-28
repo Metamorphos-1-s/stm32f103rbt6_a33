@@ -1,0 +1,24 @@
+      -------------------------------------------------------------------
+                       STM32CubeProgrammer v2.19.0                  
+      -------------------------------------------------------------------
+
+ST-LINK SN  : E1007200D0D2139393740544
+ST-LINK FW  : V2J47S7
+Board       : --
+Voltage     : 3.29V
+SWD freq    : 4000 KHz
+Connect mode: Under Reset
+Reset mode  : Hardware reset
+Device ID   : 0x410
+Revision ID : Rev X
+Device name : STM32F101/F102/F103 Medium-density
+Flash size  : 128 KBytes
+Device type : MCU
+Device CPU  : Cortex-M3
+BL Version  : --
+
+
+Erase sector(s) ... 
+
+Existing specified sectors are erased successfully 
+Protected sectors are not erased

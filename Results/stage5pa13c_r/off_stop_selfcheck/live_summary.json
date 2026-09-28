@@ -1,0 +1,9 @@
+{
+  "status": "STOPPED",
+  "failure": null,
+  "rows": 59,
+  "distinct_samples": 29,
+  "unobserved_sequences": 0,
+  "read_errors": 0,
+  "csv_sha256": "CD4ECBCEC64E69BAE504FD63D1009CC984082A3CE66FE4C736AEE923AC17392B"
+}

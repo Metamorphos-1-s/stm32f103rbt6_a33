@@ -1,0 +1,4 @@
+{"utc": "2026-09-28T04:11:05.078068+00:00", "host_monotonic_ns": 311949093000000, "kind": "RECORDER_START", "data_role": "FOCUSED_SHADOW_FUNCTIONAL_SAFETY"}
+{"utc": "2026-09-28T06:11:04.945614+00:00", "host_monotonic_ns": 319148968000000, "kind": "FINAL_OFF_REQUEST"}
+{"utc": "2026-09-28T06:11:04.970134+00:00", "host_monotonic_ns": 319149000000000, "kind": "FINAL_OFF_RESULT", "result": {"token": 32001, "result": 0, "result_name": "OK", "state": 0, "last_command": 29}}
+{"utc": "2026-09-28T06:11:05.074624+00:00", "host_monotonic_ns": 319149093000000, "kind": "RECORDER_STOP", "failure": null}

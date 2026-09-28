@@ -91,4 +91,7 @@ Results/stage5pa13b/**/*.json -text -eol -diff
 Results/stage5pa13b/opened_a9_smoke.json text eol=lf diff
 # Preserve exact bytes for A13C hardware failure records and rollback dumps.
 Results/stage5pa13c/** -text -eol -diff
+Results/stage5pa13c_r/** -text -eol -diff
+Tools/stage5pa13cr/*.py text eol=lf
+Docs/STAGE5PA13CR_FOCUSED_HARDWARE_RETEST.md text eol=lf
 Docs/STAGE5PA13B_*.md text eol=lf
