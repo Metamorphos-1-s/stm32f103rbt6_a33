@@ -40,6 +40,25 @@ class Checker:
         self.baseline_engine = None
         self.baseline_fifo = None
         self.allow_active = allow_active
+        self.allowed_revisions = {baseline_revision}
+        if allow_expected_profile_change:
+            # The recorder starts after the separately evidenced 19->20
+            # profile switch; the next pair transaction is audited from 20.
+            self.allowed_revisions.add(baseline_revision + 1)
+        self.transaction_ledger = []
+
+    def record_revision_transaction(self, kind, before_revision, after_revision,
+                                    before_saved, after_saved, changed):
+        if before_saved != after_saved or after_saved != self.baseline_revision:
+            raise ValueError('transaction changed saved revision')
+        expected = 1 if changed else 0
+        if after_revision - before_revision != expected:
+            raise ValueError('transaction revision delta')
+        self.allowed_revisions.add(after_revision)
+        self.transaction_ledger.append(dict(kind=kind,
+                                             before_revision=before_revision,
+                                             after_revision=after_revision,
+                                             changed=changed))
 
     def check(self, s, host_ns, safety):
         if s['signature'] != SIGNATURE or s['epoch_id'] == 0:
@@ -56,8 +75,7 @@ class Checker:
                 safety['application'] and not self.allow_active):
             raise ValueError('target fault/error/dirty/ACTIVE')
         if self.allow_expected_profile_change:
-            if safety['saved_revision'] != self.baseline_revision or safety['revision'] not in (
-                    self.baseline_revision, self.baseline_revision + 1):
+            if safety['saved_revision'] != self.baseline_revision or safety['revision'] not in self.allowed_revisions:
                 raise ValueError('unexpected profile revision')
             if bool(safety['dirty']) != (safety['revision'] != safety['saved_revision']):
                 raise ValueError('profile dirty/revision mismatch')

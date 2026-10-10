@@ -60,7 +60,14 @@ def run(args):
                             response = execute_command(client, 2600 + seen, 36,
                                                        arg0=int(request['application']), arg1=int(request['mode']),
                                                        arg64=generation, flags=1)
-                            event('PAIR_RESULT', result=response, expected_generation=generation)
+                            post_target, post_safety, post_original = read(client)
+                            checker.record_revision_transaction(
+                                'a13_pair', safety['revision'], post_safety['revision'],
+                                safety['saved_revision'], post_safety['saved_revision'],
+                                (post_safety['revision'] != safety['revision']))
+                            event('PAIR_RESULT', result=response, expected_generation=generation,
+                                  post_application=post_safety['application'], post_mode=post_target['mode'],
+                                  post_revision=post_safety['revision'], post_saved_revision=post_safety['saved_revision'])
                             if response['result']:
                                 raise ValueError('pair request rejected: ' + str(response))
                             application = int(request['application']); mode = int(request['mode'])

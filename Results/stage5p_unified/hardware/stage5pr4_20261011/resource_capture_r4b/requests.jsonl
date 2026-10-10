@@ -1,0 +1,3 @@
+{"utc": "2026-10-10T19:09:26.758276+00:00", "host_monotonic_ns": 1402587296000000, "event": "ACTIVE STATIC", "mode": 1, "application": 1, "stop": false}
+{"utc": "2026-10-10T19:10:46.154898+00:00", "host_monotonic_ns": 1402666687000000, "event": "ACTIVE DOSING", "mode": 2, "application": 1, "stop": false}
+{"utc": "2026-10-10T19:12:00.518922+00:00", "host_monotonic_ns": 1402741046000000, "event": "ACTIVE STATIC return", "mode": 1, "application": 1, "stop": false}
