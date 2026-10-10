@@ -22,6 +22,10 @@ typedef struct
 } BatteryAdcState;
 
 bool BatteryAdc_Init(const BatteryConfig *config);
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+bool BatteryAdc_IsConfigurationValid(const BatteryConfig *config);
+bool BatteryAdc_Reconfigure(const BatteryConfig *config);
+#endif
 void BatteryAdc_Process500ms(void);
 const BatteryAdcState *BatteryAdc_GetState(void);
 uint32_t BatteryAdc_GetErrorCount(void);

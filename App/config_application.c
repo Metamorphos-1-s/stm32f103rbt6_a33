@@ -1,12 +1,16 @@
 #include "config_application.h"
 
 #include "alarm_config_validation.h"
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+#include "battery_adc.h"
+#endif
 #include "calibration_model.h"
 #include "device_config_validator.h"
 #include "display_controller.h"
 #include "fault_manager.h"
 #include "metrology_config_validator.h"
 #include "metrology_manager.h"
+#include "weight_filter.h"
 #include "project_config.h"
 #include "system_context.h"
 
@@ -41,6 +45,7 @@ ConfigApplyResult ConfigApplication_Validate(const DeviceConfig *candidate,
            candidate->metrology.capacity_ug)))
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
         || (candidate->system.requested_r5_mode > 2U) ||
+        !BatteryAdc_IsConfigurationValid(&candidate->battery) ||
         (candidate->system.requested_r5_application > 1U) ||
         (candidate->system.requested_checkweigh_mode > 2U) ||
         ((candidate->system.requested_r5_mode == 0U) &&
@@ -49,16 +54,7 @@ ConfigApplyResult ConfigApplication_Validate(const DeviceConfig *candidate,
          (candidate->system.requested_r5_application != 1U)) ||
         ((candidate->system.requested_r5_application != 0U) &&
          (candidate->system.requested_r5_mode != 0U) &&
-         (candidate->system.requested_checkweigh_mode != 0U)) ||
-        /* Keep the engineering ACTIVE envelope explicit until the 40 Hz and
-         * other filter admission path is independently implemented. */
-        ((candidate->system.requested_r5_application != 0U) &&
-         (candidate->system.requested_r5_mode != 0U) &&
-         ((candidate->metrology.profiles[candidate->metrology.active_profile].sample_rate !=
-           DEVICE_CS1237_DATA_RATE_10_HZ) ||
-          (candidate->metrology.profiles[candidate->metrology.active_profile].filter_mode !=
-           FILTER_MODE_AVERAGE) ||
-          (candidate->metrology.profiles[candidate->metrology.active_profile].filter_strength != 3U)))
+         (candidate->system.requested_checkweigh_mode != 0U))
 #endif
         )
     {
@@ -84,6 +80,7 @@ static ConfigApplyResult ConfigApplication_ApplyInternal(
     const SystemContext *context = SystemContext_Get();
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
     bool needs_metrology_rebuild;
+    bool needs_battery_reconfigure;
 #endif
 #if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     DeviceConfig normalized;
@@ -97,6 +94,8 @@ static ConfigApplyResult ConfigApplication_ApplyInternal(
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
     needs_metrology_rebuild = RequiresMetrologyRebuild(&context->config,
         candidate);
+    needs_battery_reconfigure = memcmp(&context->config.battery,
+        &candidate->battery, sizeof(candidate->battery)) != 0;
 #endif
 #if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     normalized = *candidate;
@@ -153,6 +152,24 @@ static ConfigApplyResult ConfigApplication_ApplyInternal(
         }
         return CONFIG_APPLY_METROLOGY_ERROR;
     }
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    if (needs_battery_reconfigure &&
+        !BatteryAdc_Reconfigure(&candidate->battery))
+    {
+        FaultManager_Set(FAULT_METROLOGY_CONFIG_INVALID);
+        return CONFIG_APPLY_METROLOGY_ERROR;
+    }
+    if (needs_metrology_rebuild &&
+        !MetrologyManager_RestoreR5Request(
+            (R5BetaApplication)candidate->system.requested_r5_application,
+            (R5DriftMode)candidate->system.requested_r5_mode))
+    {
+        /* A failed re-arm after RAM commit is not a successful config edit.
+         * Stop formal weighing and expose the fault; never save this state. */
+        FaultManager_Set(FAULT_METROLOGY_CONFIG_INVALID);
+        return CONFIG_APPLY_METROLOGY_ERROR;
+    }
+#endif
     return CONFIG_APPLY_OK;
 }
 

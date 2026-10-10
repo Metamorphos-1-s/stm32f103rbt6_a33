@@ -99,6 +99,9 @@ Results/stage5pa13er/** -text -eol -diff
 Results/stage5pa13er2/** -text -eol -diff
 Results/stage5pa13er3/** -text -eol -diff
 Results/stage5pa13er4/** -text -eol -diff
+Results/stage5p_unified/** -text -eol -diff
+Docs/STAGE5P_UNIFIED*.md text eol=lf
+Tools/stage5_unified/*.py text eol=lf
 Docs/STAGE5PA13ER4*.md text eol=lf
 Tools/r4_*.py text eol=lf
 Tools/test_r4_*.py text eol=lf

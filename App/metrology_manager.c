@@ -1,4 +1,6 @@
 #include "metrology_manager.h"
+#include "weight_filter.h"
+#include "cs1237.h"
 #if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
 #include "app_main.h"
 #endif
@@ -53,11 +55,15 @@ static bool s_last_published_stable;
 static DisplayConditioner s_display_conditioner;
 static bool s_runtime_drift_fault_latched;
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+static R5BetaApplication s_r5_application;
 #if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
 /* The engineering image reuses the legacy state storage. The frozen
  * release and the original R5 path are not built through this adapter. */
 static A13CCompensator s_r5_drift;
 static R5DriftSnapshot s_a13c_diagnostics;
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+static void A13E_Stop(A13CReason reason);
+#endif
 
 static bool A13CCompat_Init(A13CCompensator *candidate,
                              const R5DriftConfig *config)
@@ -69,9 +75,28 @@ static bool A13CCompat_Init(A13CCompensator *candidate,
 
 static bool A13CCompat_SetMode(A13CCompensator *candidate, R5DriftMode mode)
 {
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    uint32_t previous_sequence;
+    uint32_t previous_timestamp;
+    bool result;
+#endif
     if ((uint32_t)mode > (uint32_t)R5_DRIFT_MODE_STATIC_COMPENSATION)
         return false;
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    previous_sequence = candidate->snapshot.sample_sequence;
+    previous_timestamp = candidate->snapshot.timestamp_ms;
+    result = A13C_SetMode(candidate, (A13CMode)mode);
+    if (result && SystemContext_Get() != NULL &&
+        SystemContext_Get()->config.metrology.profiles[
+            SystemContext_Get()->config.metrology.active_profile].sample_rate ==
+            DEVICE_CS1237_DATA_RATE_40_HZ) {
+        candidate->snapshot.sample_sequence = previous_sequence;
+        candidate->snapshot.timestamp_ms = previous_timestamp;
+    }
+    return result;
+#else
     return A13C_SetMode(candidate, (A13CMode)mode);
+#endif
 }
 
 static void A13CCompat_HandleEvent(A13CCompensator *candidate,
@@ -96,6 +121,11 @@ static bool A13CCompat_ProcessSample(A13CCompensator *candidate,
 {
     const SystemContext *context = SystemContext_Get();
     const WeighingProfileConfig *profile;
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    uint32_t physical_previous;
+    uint32_t logical_sequence;
+    MassValueUg fast_gross;
+#endif
 #if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
     uint32_t a13d_start;
     bool a13d_result;
@@ -105,6 +135,88 @@ static bool A13CCompat_ProcessSample(A13CCompensator *candidate,
          WEIGHING_PROFILE_COUNT)) return false;
     profile = &context->config.metrology.profiles[
         context->config.metrology.active_profile];
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    if ((profile->sample_rate != DEVICE_CS1237_DATA_RATE_10_HZ &&
+         profile->sample_rate != DEVICE_CS1237_DATA_RATE_40_HZ))
+        return false;
+    if (profile->sample_rate == DEVICE_CS1237_DATA_RATE_40_HZ) {
+        /* Public snapshot sequence is physical; the controller's internal
+         * sequence counts only admitted 100 ms samples. No extra RAM state. */
+        physical_previous = candidate->snapshot.sample_sequence;
+        if (physical_previous != 0U &&
+            (input->sample_sequence != physical_previous + 1U ||
+             input->timestamp_ms <= candidate->snapshot.timestamp_ms ||
+             input->timestamp_ms - candidate->snapshot.timestamp_ms > 40U)) {
+            if (s_r5_application == R5_BETA_APPLICATION_ACTIVE)
+                A13E_Stop(A13C_REASON_TIME_GAP);
+            else A13C_Reset(candidate, A13C_REASON_TIME_GAP);
+            candidate->snapshot.sample_sequence = input->sample_sequence;
+            candidate->snapshot.timestamp_ms = input->timestamp_ms;
+            return true;
+        }
+        logical_sequence = (input->sample_sequence - 1U) / 4U + 1U;
+        if (!input->calibration_valid || input->fault_active ||
+            input->overload || input->near_rail ||
+            (CS1237_GetBufferOverrunCount() != 0U) ||
+            (CS1237_GetReadErrorCount() != 0U)) {
+            A13CReason reason = !input->calibration_valid ?
+                A13C_REASON_INVALID_INPUT :
+                input->fault_active ? A13C_REASON_FAULT :
+                input->overload ? A13C_REASON_OVERLOAD :
+                input->near_rail ? A13C_REASON_NEAR_RAIL :
+                A13C_REASON_INVALID_INPUT;
+            if (s_r5_application == R5_BETA_APPLICATION_ACTIVE)
+                A13E_Stop(reason);
+            else (void)A13C_Feed(candidate, candidate->last_sequence,
+                input->timestamp_ms, input->uncompensated_gross_ug,
+                false, input->fault_active, input->overload,
+                input->near_rail);
+            candidate->snapshot.sample_sequence = input->sample_sequence;
+            candidate->snapshot.timestamp_ms = input->timestamp_ms;
+            return true;
+        }
+        if (!WeightEngine_GetFastCalibratedMass(&s_engine, &fast_gross)) {
+            if (s_r5_application == R5_BETA_APPLICATION_ACTIVE)
+                A13E_Stop(A13C_REASON_INVALID_INPUT);
+            else A13C_Reset(candidate, A13C_REASON_INVALID_INPUT);
+            candidate->snapshot.sample_sequence = input->sample_sequence;
+            candidate->snapshot.timestamp_ms = input->timestamp_ms;
+            return true;
+        }
+        if ((input->sample_sequence - 1U) % 4U != 0U) {
+            if (candidate->mode == A13C_MODE_STATIC &&
+                fast_gross -
+                    candidate->snapshot.uncompensated_ug >= INT64_C(2000000)) {
+                candidate->freeze_until = logical_sequence + 50U;
+                candidate->boost_until = 0U;
+                candidate->reason = A13C_REASON_STATIC_STEP_PENDING;
+                candidate->state = A13C_STATE_STEP_PENDING;
+            } else if (candidate->mode == A13C_MODE_STATIC &&
+                candidate->snapshot.uncompensated_ug -
+                    fast_gross >= INT64_C(2000000)) {
+                candidate->freeze_until = logical_sequence + 50U;
+                candidate->boost_until = 0U;
+                candidate->reason = A13C_REASON_STATIC_STEP_PENDING;
+                candidate->state = A13C_STATE_STEP_PENDING;
+            }
+            candidate->snapshot.uncompensated_ug =
+                input->uncompensated_gross_ug;
+            candidate->snapshot.corrected_ug =
+                input->uncompensated_gross_ug - candidate->offset_ug;
+            candidate->snapshot.offset_ug = candidate->offset_ug;
+            candidate->snapshot.sample_sequence = input->sample_sequence;
+            candidate->snapshot.timestamp_ms = input->timestamp_ms;
+            candidate->snapshot.reason = candidate->reason;
+            candidate->snapshot.state = candidate->state;
+            return true;
+        }
+        if (!A13C_Feed(candidate, logical_sequence, input->timestamp_ms,
+                input->uncompensated_gross_ug, true, false, false, false))
+            return false;
+        candidate->snapshot.sample_sequence = input->sample_sequence;
+        return true;
+    }
+#endif
     /* No output outside the one frozen 10 Hz/filt1/strength3 envelope. */
 #if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
     a13d_start = BSP_TimeNowCycles();
@@ -113,9 +225,13 @@ static bool A13CCompat_ProcessSample(A13CCompensator *candidate,
     return A13C_Feed(candidate, input->sample_sequence, input->timestamp_ms,
 #endif
         input->uncompensated_gross_ug, input->calibration_valid &&
+#if (A33_ENABLE_STAGE5P_UNIFIED == 0U)
         (profile->sample_rate == DEVICE_CS1237_DATA_RATE_10_HZ) &&
         (profile->filter_mode == FILTER_MODE_AVERAGE) &&
         (profile->filter_strength == 3U),
+#else
+        (profile->sample_rate == DEVICE_CS1237_DATA_RATE_10_HZ),
+#endif
         input->fault_active, input->overload, input->near_rail);
 #if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
     A13D_FeedEnd(a13d_start, input->sample_sequence, (uint32_t)candidate->state);
@@ -167,7 +283,6 @@ static const R5DriftSnapshot *A13CCompat_GetSnapshot(
 #else
 static R5DriftCompensator s_r5_drift;
 #endif
-static R5BetaApplication s_r5_application;
 #if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
 static uint32_t s_a13e_generation;
 static int32_t s_a13e_exit_offset;
@@ -175,8 +290,17 @@ static uint8_t s_a13e_exit_reason;
 static bool A13E_Supported(void)
 {
     const WeighingProfileConfig *p = &s_engine.metrology.profiles[s_engine.metrology.active_profile];
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    uint8_t minimum;
+    uint8_t maximum;
+    return (p->sample_rate == DEVICE_CS1237_DATA_RATE_10_HZ ||
+            p->sample_rate == DEVICE_CS1237_DATA_RATE_40_HZ) &&
+        MetrologyConfig_FilterStrengthBounds(p->filter_mode,&minimum,&maximum) &&
+        p->filter_strength >= minimum && p->filter_strength <= maximum;
+#else
     return p->sample_rate == DEVICE_CS1237_DATA_RATE_10_HZ &&
         p->filter_mode == FILTER_MODE_AVERAGE && p->filter_strength == 3U;
+#endif
 }
 static void A13E_Stop(A13CReason reason)
 {
@@ -919,6 +1043,10 @@ bool MetrologyManager_ReconfigureFilter(FilterMode mode, uint8_t strength)
     A13E_Stop(A13C_REASON_PROFILE);
 #endif
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    if (s_r5_application == R5_BETA_APPLICATION_ACTIVE)
+        A13E_Stop(A13C_REASON_PROFILE);
+#endif
     R5Drift_HandleEvent(&s_r5_drift, R5_DRIFT_EVENT_PROFILE_CHANGE);
     CheckweighShadow_RequestReset(&s_alarm_shadow, ALARM_SHADOW_RESET_FILTER);
 #endif
@@ -1033,6 +1161,13 @@ bool MetrologyManager_Reconfigure(const DeviceConfig *config)
         METROLOGY_REBUILD_REPLAY_RAW);
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     if (result) {
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+        /* A profile change invalidates the old reference and may require
+         * dropping a nonzero applied offset. Surface the exit reason/amount;
+         * the request is rearmed only after the new configuration is applied. */
+        if (s_r5_application == R5_BETA_APPLICATION_ACTIVE)
+            A13E_Stop(A13C_REASON_PROFILE);
+#endif
         R5Drift_HandleEvent(&s_r5_drift, R5_DRIFT_EVENT_PROFILE_CHANGE);
         CheckweighShadow_RequestReset(&s_alarm_shadow,
             ALARM_SHADOW_RESET_RECONFIGURE);
@@ -1285,6 +1420,10 @@ bool MetrologyManager_RestoreR5Request(R5BetaApplication application,
     s_restoring_r5_request = true;
     (void)MetrologyManager_SetA13Pair(R5_BETA_APPLICATION_SHADOW,
         R5_DRIFT_MODE_OFF, 0U, false);
+    /* A restore/rebuild starts a new physical sample epoch even if the
+     * controller's internal 10 Hz logical sequence had an old value. */
+    s_r5_drift.snapshot.sample_sequence = 0U;
+    s_r5_drift.snapshot.timestamp_ms = 0U;
     s_restoring_r5_request = false;
     if (mode == R5_DRIFT_MODE_OFF) return true;
     if (application == R5_BETA_APPLICATION_ACTIVE &&

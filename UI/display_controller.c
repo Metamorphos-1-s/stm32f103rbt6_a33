@@ -96,7 +96,7 @@ static void DisplayController_BuildIndicators(const WeightSnapshot *snapshot,
     {
         const BatteryAdcState *battery = BatteryAdc_GetState();
         if (battery != NULL && battery->valid && battery->low_voltage_warning) {
-            *top &= (uint8_t)~DISPLAY_TOP_LED_BATTERY;
+            *top &= (uint8_t)(0xFFU ^ DISPLAY_TOP_LED_BATTERY);
             if (((BSP_TimeNowMs() / 500U) & 1U) == 0U)
                 *top |= DISPLAY_TOP_LED_BATTERY;
         }

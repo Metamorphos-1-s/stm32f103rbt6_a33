@@ -1,0 +1,183 @@
+{
+  "classification": "A13C_PYTHON_C_SAMPLE_PARITY",
+  "candidate": "auto_static_350_5m",
+  "samples": 107491,
+  "runner_exit_code": 0,
+  "python_gates": [
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "event_detected_seq": 1514891,
+      "settled_seq": 1514978,
+      "obvious_step_seq": 1514928,
+      "net_step_ug": 499151295.5,
+      "offset_at_detection_ug": 19116
+    },
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "event_detected_seq": 1548676,
+      "settled_seq": 1548716,
+      "obvious_step_seq": 1548666,
+      "net_step_ug": 500012390.0,
+      "offset_at_detection_ug": 92589
+    },
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "event_detected_seq": 1567428,
+      "settled_seq": 1567470,
+      "obvious_step_seq": 1567420,
+      "net_step_ug": 499999437.0,
+      "offset_at_detection_ug": 14734
+    },
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "event_detected_seq": 1586480,
+      "settled_seq": 1586520,
+      "obvious_step_seq": 1586470,
+      "net_step_ug": 499542702.0,
+      "offset_at_detection_ug": 73536
+    }
+  ],
+  "python_rebases": [
+    {
+      "seq": 1514891,
+      "reason": "STATIC_STEP_PENDING",
+      "offset_ug": 19116
+    },
+    {
+      "seq": 1514978,
+      "reason": "STATIC_STEP_FAST",
+      "offset_ug": 19116
+    },
+    {
+      "seq": 1548676,
+      "reason": "STATIC_STEP_PENDING",
+      "offset_ug": 92589
+    },
+    {
+      "seq": 1548716,
+      "reason": "STATIC_STEP_FAST",
+      "offset_ug": 92589
+    },
+    {
+      "seq": 1567428,
+      "reason": "STATIC_STEP_PENDING",
+      "offset_ug": 14734
+    },
+    {
+      "seq": 1567470,
+      "reason": "STATIC_STEP_FAST",
+      "offset_ug": 14734
+    },
+    {
+      "seq": 1586480,
+      "reason": "STATIC_STEP_PENDING",
+      "offset_ug": 73536
+    },
+    {
+      "seq": 1586520,
+      "reason": "STATIC_STEP_FAST",
+      "offset_ug": 73536
+    }
+  ],
+  "python_max_10s_offset_ug": 3465,
+  "first_mismatch": null,
+  "mismatch_count": 0,
+  "gate_timing": [
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "emitted_seq": 1514978,
+      "expected_obvious_seq": 1514928,
+      "expected_robust_seq": 1514891,
+      "expected_quiet_seq": 1514978,
+      "actual_obvious_seq": 1514928,
+      "actual_robust_seq": 1514891,
+      "actual_quiet_seq": 1514978,
+      "expected_reference_lock_seq": 1515340,
+      "actual_reference_lock_seq": 1515340,
+      "expected_first_correction_seq": 1515540,
+      "actual_first_correction_seq": 1515540
+    },
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "emitted_seq": 1548716,
+      "expected_obvious_seq": 1548666,
+      "expected_robust_seq": 1548676,
+      "expected_quiet_seq": 1548716,
+      "actual_obvious_seq": 1548666,
+      "actual_robust_seq": 1548676,
+      "actual_quiet_seq": 1548716,
+      "expected_reference_lock_seq": 1549125,
+      "actual_reference_lock_seq": 1549125,
+      "expected_first_correction_seq": 1549430,
+      "actual_first_correction_seq": 1549430
+    },
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "emitted_seq": 1567470,
+      "expected_obvious_seq": 1567420,
+      "expected_robust_seq": 1567428,
+      "expected_quiet_seq": 1567470,
+      "actual_obvious_seq": 1567420,
+      "actual_robust_seq": 1567428,
+      "actual_quiet_seq": 1567470,
+      "expected_reference_lock_seq": 1567877,
+      "actual_reference_lock_seq": 1567877,
+      "expected_first_correction_seq": 1568077,
+      "actual_first_correction_seq": 1568077
+    },
+    {
+      "source": "STATIC_OBVIOUS_STEP",
+      "emitted_seq": 1586520,
+      "expected_obvious_seq": 1586470,
+      "expected_robust_seq": 1586480,
+      "expected_quiet_seq": 1586520,
+      "actual_obvious_seq": 1586470,
+      "actual_robust_seq": 1586480,
+      "actual_quiet_seq": 1586520,
+      "expected_reference_lock_seq": 1586929,
+      "actual_reference_lock_seq": 1586929,
+      "expected_first_correction_seq": 1587334,
+      "actual_first_correction_seq": 1587334
+    }
+  ],
+  "c_max_10s_offset_ug": 3465,
+  "c_gate_details": [
+    {
+      "seq": 1514978,
+      "source": "STATIC_OBVIOUS_STEP",
+      "c_obvious_seq": 1514928,
+      "c_robust_seq": 1514891,
+      "c_quiet_seq": 1514978,
+      "c_reference_lock_seq": 0,
+      "c_correction_seq": 0
+    },
+    {
+      "seq": 1548716,
+      "source": "STATIC_OBVIOUS_STEP",
+      "c_obvious_seq": 1548666,
+      "c_robust_seq": 1548676,
+      "c_quiet_seq": 1548716,
+      "c_reference_lock_seq": 0,
+      "c_correction_seq": 0
+    },
+    {
+      "seq": 1567470,
+      "source": "STATIC_OBVIOUS_STEP",
+      "c_obvious_seq": 1567420,
+      "c_robust_seq": 1567428,
+      "c_quiet_seq": 1567470,
+      "c_reference_lock_seq": 0,
+      "c_correction_seq": 0
+    },
+    {
+      "seq": 1586520,
+      "source": "STATIC_OBVIOUS_STEP",
+      "c_obvious_seq": 1586470,
+      "c_robust_seq": 1586480,
+      "c_quiet_seq": 1586520,
+      "c_reference_lock_seq": 0,
+      "c_correction_seq": 0
+    }
+  ],
+  "status": "PASS"
+}

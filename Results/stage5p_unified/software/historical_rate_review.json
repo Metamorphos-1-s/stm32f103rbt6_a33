@@ -1,0 +1,195 @@
+{
+  "classification": "HISTORICAL_SPARSE_HOST_POLLS_NOT_UNIFIED_A13C_QUALIFICATION",
+  "rows": [
+    {
+      "source": "Results/stage5pa1b/hardware/20260924T_profile_switch_closure/h5_10_filt0_30s/samples.csv",
+      "sha256": "A2A834854E9BB8E002C07AC5A9E7EE1AB51CD51D95BD5AD1CD86509EBA950453",
+      "records": 300,
+      "sequence_span": 299,
+      "observed_fraction": 0.9498327759197325,
+      "missing_sequences": 15,
+      "host_duplicate_polls": 16,
+      "timestamp_span_ms": 29845,
+      "recorded_firmware_map": [
+        [
+          "0x0519",
+          "0x0104"
+        ]
+      ],
+      "sample_rate": 0,
+      "fault_nonzero": 0,
+      "overrun_growth": 0,
+      "summary_status": "COMPLETE",
+      "filter_label": "filt0",
+      "filter_strength": "NOT RECORDED IN THIS CSV; folder label is not a synchronized register read",
+      "epoch": "2026-09-24, before corrected S+/S- wiring and before A13C 0x0523"
+    },
+    {
+      "source": "Results/stage5pa1b/hardware/20260924T_profile_switch_closure/h5_10_filt1_30s/samples.csv",
+      "sha256": "9BFE147BE9FA44575550F16C032CA496F616838C333E394221885082162CAE01",
+      "records": 300,
+      "sequence_span": 300,
+      "observed_fraction": 1.0,
+      "missing_sequences": 0,
+      "host_duplicate_polls": 0,
+      "timestamp_span_ms": 29948,
+      "recorded_firmware_map": [
+        [
+          "0x0519",
+          "0x0104"
+        ]
+      ],
+      "sample_rate": 0,
+      "fault_nonzero": 0,
+      "overrun_growth": 0,
+      "summary_status": "COMPLETE",
+      "filter_label": "filt1",
+      "filter_strength": "NOT RECORDED IN THIS CSV; folder label is not a synchronized register read",
+      "epoch": "2026-09-24, before corrected S+/S- wiring and before A13C 0x0523"
+    },
+    {
+      "source": "Results/stage5pa1b/hardware/20260924T_profile_switch_closure/h5_10_filt2_30s/samples.csv",
+      "sha256": "48526A63F438895E2BB86D16B61017844C163E168BAAEA1390EC403ED65262A0",
+      "records": 300,
+      "sequence_span": 300,
+      "observed_fraction": 1.0,
+      "missing_sequences": 0,
+      "host_duplicate_polls": 0,
+      "timestamp_span_ms": 29946,
+      "recorded_firmware_map": [
+        [
+          "0x0519",
+          "0x0104"
+        ]
+      ],
+      "sample_rate": 0,
+      "fault_nonzero": 0,
+      "overrun_growth": 0,
+      "summary_status": "COMPLETE",
+      "filter_label": "filt2",
+      "filter_strength": "NOT RECORDED IN THIS CSV; folder label is not a synchronized register read",
+      "epoch": "2026-09-24, before corrected S+/S- wiring and before A13C 0x0523"
+    },
+    {
+      "source": "Results/stage5pa1b/hardware/20260924T_profile_switch_closure/h5_10_filt3_30s/samples.csv",
+      "sha256": "6956D977FEB9655E4B8AB067E5D075A505514CED8E06C969E371E53B152CCB4C",
+      "records": 300,
+      "sequence_span": 299,
+      "observed_fraction": 0.9264214046822743,
+      "missing_sequences": 22,
+      "host_duplicate_polls": 23,
+      "timestamp_span_ms": 29846,
+      "recorded_firmware_map": [
+        [
+          "0x0519",
+          "0x0104"
+        ]
+      ],
+      "sample_rate": 0,
+      "fault_nonzero": 0,
+      "overrun_growth": 0,
+      "summary_status": "COMPLETE",
+      "filter_label": "filt3",
+      "filter_strength": "NOT RECORDED IN THIS CSV; folder label is not a synchronized register read",
+      "epoch": "2026-09-24, before corrected S+/S- wiring and before A13C 0x0523"
+    },
+    {
+      "source": "Results/stage5pa1b/hardware/20260924T_profile_switch_closure/h5_40_filt0_30s/samples.csv",
+      "sha256": "92B706A01652FAC5F1C2D3C642EE50439CE8EF9505F6DC0AB754832613924278",
+      "records": 300,
+      "sequence_span": 1195,
+      "observed_fraction": 0.2510460251046025,
+      "missing_sequences": 895,
+      "host_duplicate_polls": 0,
+      "timestamp_span_ms": 29895,
+      "recorded_firmware_map": [
+        [
+          "0x0519",
+          "0x0104"
+        ]
+      ],
+      "sample_rate": 1,
+      "fault_nonzero": 0,
+      "overrun_growth": 0,
+      "summary_status": "COMPLETE",
+      "filter_label": "filt0",
+      "filter_strength": "NOT RECORDED IN THIS CSV; folder label is not a synchronized register read",
+      "epoch": "2026-09-24, before corrected S+/S- wiring and before A13C 0x0523"
+    },
+    {
+      "source": "Results/stage5pa1b/hardware/20260924T_profile_switch_closure/h5_40_filt1_30s/samples.csv",
+      "sha256": "050BE225B2FC1BFE48D64B409E727C6135B0DCA4D3ECC4A6D245620F77414F36",
+      "records": 300,
+      "sequence_span": 1196,
+      "observed_fraction": 0.2508361204013378,
+      "missing_sequences": 896,
+      "host_duplicate_polls": 0,
+      "timestamp_span_ms": 29921,
+      "recorded_firmware_map": [
+        [
+          "0x0519",
+          "0x0104"
+        ]
+      ],
+      "sample_rate": 1,
+      "fault_nonzero": 0,
+      "overrun_growth": 0,
+      "summary_status": "COMPLETE",
+      "filter_label": "filt1",
+      "filter_strength": "NOT RECORDED IN THIS CSV; folder label is not a synchronized register read",
+      "epoch": "2026-09-24, before corrected S+/S- wiring and before A13C 0x0523"
+    },
+    {
+      "source": "Results/stage5pa1b/hardware/20260924T_profile_switch_closure/h5_40_filt2_30s/samples.csv",
+      "sha256": "62221EE619DF9DD6D7E8B73DD75E21A52D89FF11957F284192CE4FD44FE485B1",
+      "records": 300,
+      "sequence_span": 1195,
+      "observed_fraction": 0.2510460251046025,
+      "missing_sequences": 895,
+      "host_duplicate_polls": 0,
+      "timestamp_span_ms": 29894,
+      "recorded_firmware_map": [
+        [
+          "0x0519",
+          "0x0104"
+        ]
+      ],
+      "sample_rate": 1,
+      "fault_nonzero": 0,
+      "overrun_growth": 0,
+      "summary_status": "COMPLETE",
+      "filter_label": "filt2",
+      "filter_strength": "NOT RECORDED IN THIS CSV; folder label is not a synchronized register read",
+      "epoch": "2026-09-24, before corrected S+/S- wiring and before A13C 0x0523"
+    },
+    {
+      "source": "Results/stage5pa1b/hardware/20260924T_profile_switch_closure/h5_40_filt3_30s/samples.csv",
+      "sha256": "7C64FF86864C49169AC153389480051F6633AC97D9CCF35965B9073824F49C43",
+      "records": 300,
+      "sequence_span": 1196,
+      "observed_fraction": 0.2508361204013378,
+      "missing_sequences": 896,
+      "host_duplicate_polls": 0,
+      "timestamp_span_ms": 29922,
+      "recorded_firmware_map": [
+        [
+          "0x0519",
+          "0x0104"
+        ]
+      ],
+      "sample_rate": 1,
+      "fault_nonzero": 0,
+      "overrun_growth": 0,
+      "summary_status": "COMPLETE",
+      "filter_label": "filt3",
+      "filter_strength": "NOT RECORDED IN THIS CSV; folder label is not a synchronized register read",
+      "epoch": "2026-09-24, before corrected S+/S- wiring and before A13C 0x0523"
+    }
+  ],
+  "limitations": [
+    "older 0x0519 R5 algorithm, not unified A13C 0x0523",
+    "collected before S+/S- correction",
+    "missing physical 40 Hz samples cannot be interpolated for state-machine replay",
+    "filter strength not present in synchronized CSV fields"
+  ]
+}

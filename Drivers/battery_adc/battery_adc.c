@@ -19,6 +19,20 @@ static uint32_t s_error_count;
 
 static bool BatteryAdc_ConfigIsValid(const BatteryConfig *config);
 
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+bool BatteryAdc_IsConfigurationValid(const BatteryConfig *config)
+{
+    return BatteryAdc_ConfigIsValid(config);
+}
+
+bool BatteryAdc_Reconfigure(const BatteryConfig *config)
+{
+    if (!s_initialized || !BatteryAdc_ConfigIsValid(config)) return false;
+    s_config = *config;
+    return true;
+}
+#endif
+
 bool BatteryAdc_Init(const BatteryConfig *config)
 {
     if (!BatteryAdc_ConfigIsValid(config))

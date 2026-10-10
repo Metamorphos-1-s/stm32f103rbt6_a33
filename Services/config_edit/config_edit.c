@@ -87,6 +87,12 @@ bool ConfigEdit_SetIntegerField(ConfigFieldId field, int32_t value)
             if ((value < 0) || (value > 1)) return false;
             s_working.system.startup_auto_zero_enable = (value != 0);
             break;
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+        case CONFIG_FIELD_BATTERY_OFFSET_MV:
+            if (value > 2000) return false;
+            s_working.battery.calibration_offset_mv = value;
+            break;
+#endif
         case CONFIG_FIELD_CAPACITY:
         case CONFIG_FIELD_DIVISION:
         case CONFIG_FIELD_DECIMAL_PLACES:
