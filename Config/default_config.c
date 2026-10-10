@@ -89,14 +89,28 @@ void DefaultConfig_Load(DeviceConfig *config)
 
     config->battery.divider_top_ohm = BATTERY_DIVIDER_TOP_OHM;
     config->battery.divider_bottom_ohm = BATTERY_DIVIDER_BOTTOM_OHM;
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    /* Approximate 4S terminal voltage from the post-diode ADC node. */
+    config->battery.calibration_offset_mv = 400;
+    config->battery.low_warning_mv = 13600U;
+    config->battery.critical_low_mv = 13200U;
+    config->battery.recovery_mv = 13900U;
+    config->battery.low_voltage_alarm_enable = true;
+#else
     config->battery.low_voltage_alarm_enable = false;
+#endif
 
     config->system.tare_power_loss_retention = false;
     config->system.watchdog_enable = (PROJECT_ENABLE_IWDG != 0U);
     config->system.startup_auto_zero_enable = false;
 #if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    config->system.requested_r5_mode = 2U; /* STATIC */
+    config->system.requested_r5_application = 1U; /* ACTIVE, once ready */
+#else
     config->system.requested_r5_mode = 0U;
     config->system.requested_r5_application = 0U;
+#endif
     config->system.requested_checkweigh_mode = 0U;
 #endif
 }

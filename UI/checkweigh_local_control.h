@@ -16,6 +16,9 @@ typedef enum {
 } CheckweighLocalResult;
 
 bool CheckweighLocalControl_BeginSession(void);
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+bool CheckweighLocalControl_SessionCurrent(void);
+#endif
 void CheckweighLocalControl_EndSession(void);
 bool CheckweighLocalControl_Begin(bool config_candidate_changed);
 void CheckweighLocalControl_Adjust(bool increment);

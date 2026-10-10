@@ -158,3 +158,20 @@ bool DisplayFormatter_FormatBatteryMv(uint32_t battery_mv,
     return DisplayFormatter_FormatWeight((WeightValue)battery_mv, 3U, false,
                                          segments);
 }
+
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+bool DisplayFormatter_FormatBatteryPercent(uint8_t percent,
+                                           uint16_t segments[6])
+{
+    if (percent > 100U || segments == NULL ||
+        !DisplayFormatter_FormatText6("     P", segments)) return false;
+    (void)DisplayFormatter_EncodeCharacter(
+        (char)('0' + (percent % 10U)), &segments[4]);
+    if (percent >= 10U)
+        (void)DisplayFormatter_EncodeCharacter(
+            (char)('0' + ((percent / 10U) % 10U)), &segments[3]);
+    if (percent == 100U)
+        (void)DisplayFormatter_EncodeCharacter('1', &segments[2]);
+    return true;
+}
+#endif

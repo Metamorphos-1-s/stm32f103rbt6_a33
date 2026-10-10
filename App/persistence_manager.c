@@ -51,9 +51,26 @@ static bool s_candidate_allow_cs1237_change;
 static bool ApplyRequestedModes(const DeviceConfig *from,
     const DeviceConfig *to)
 {
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    bool metrology_rebuilt =
+        memcmp(&from->metrology, &to->metrology, sizeof(from->metrology)) != 0 ||
+        memcmp(&from->calibration, &to->calibration, sizeof(from->calibration)) != 0 ||
+        memcmp(&from->stability, &to->stability, sizeof(from->stability)) != 0;
+#endif
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U) && (A33_ENABLE_STAGE5NB_BETA != 0U)
+    /* Release a mutually exclusive output before arming the R5 request. */
+    if ((from->system.requested_checkweigh_mode != 0U) &&
+        (to->system.requested_checkweigh_mode == 0U) &&
+        !App_RestoreGuardedCheckweighMode(GUARDED_CHECKWEIGH_OFF))
+        return false;
+#endif
     if ((from->system.requested_r5_application !=
          to->system.requested_r5_application) ||
-        (from->system.requested_r5_mode != to->system.requested_r5_mode))
+        (from->system.requested_r5_mode != to->system.requested_r5_mode)
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+        || metrology_rebuilt
+#endif
+        )
     {
         if (!MetrologyManager_RestoreR5Request(
             (R5BetaApplication)to->system.requested_r5_application,
@@ -63,6 +80,9 @@ static bool ApplyRequestedModes(const DeviceConfig *from,
     if (from->system.requested_checkweigh_mode !=
         to->system.requested_checkweigh_mode)
     {
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+        if (to->system.requested_checkweigh_mode == 0U) return true;
+#endif
         GuardedCheckweigh current;
         if (!App_GetGuardedCheckweighState(&current) ||
             !App_RestoreGuardedCheckweighMode(

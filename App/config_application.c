@@ -7,9 +7,24 @@
 #include "fault_manager.h"
 #include "metrology_config_validator.h"
 #include "metrology_manager.h"
+#include "project_config.h"
 #include "system_context.h"
 
 #include <stddef.h>
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+#include <string.h>
+
+static bool RequiresMetrologyRebuild(const DeviceConfig *current,
+    const DeviceConfig *candidate)
+{
+    return memcmp(&current->metrology, &candidate->metrology,
+               sizeof(current->metrology)) != 0 ||
+           memcmp(&current->calibration, &candidate->calibration,
+               sizeof(current->calibration)) != 0 ||
+           memcmp(&current->stability, &candidate->stability,
+               sizeof(current->stability)) != 0;
+}
+#endif
 
 ConfigApplyResult ConfigApplication_Validate(const DeviceConfig *candidate,
                                              bool allow_cs1237_change)
@@ -23,7 +38,29 @@ ConfigApplyResult ConfigApplication_Validate(const DeviceConfig *candidate,
         (context->runtime.tare_active &&
          ((context->runtime.current_tare_ug < 0) ||
           (context->runtime.current_tare_ug >
-           candidate->metrology.capacity_ug))))
+           candidate->metrology.capacity_ug)))
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+        || (candidate->system.requested_r5_mode > 2U) ||
+        (candidate->system.requested_r5_application > 1U) ||
+        (candidate->system.requested_checkweigh_mode > 2U) ||
+        ((candidate->system.requested_r5_mode == 0U) &&
+         (candidate->system.requested_r5_application != 0U)) ||
+        ((candidate->system.requested_r5_mode == 1U) &&
+         (candidate->system.requested_r5_application != 1U)) ||
+        ((candidate->system.requested_r5_application != 0U) &&
+         (candidate->system.requested_r5_mode != 0U) &&
+         (candidate->system.requested_checkweigh_mode != 0U)) ||
+        /* Keep the engineering ACTIVE envelope explicit until the 40 Hz and
+         * other filter admission path is independently implemented. */
+        ((candidate->system.requested_r5_application != 0U) &&
+         (candidate->system.requested_r5_mode != 0U) &&
+         ((candidate->metrology.profiles[candidate->metrology.active_profile].sample_rate !=
+           DEVICE_CS1237_DATA_RATE_10_HZ) ||
+          (candidate->metrology.profiles[candidate->metrology.active_profile].filter_mode !=
+           FILTER_MODE_AVERAGE) ||
+          (candidate->metrology.profiles[candidate->metrology.active_profile].filter_strength != 3U)))
+#endif
+        )
     {
         return CONFIG_APPLY_INVALID;
     }
@@ -45,6 +82,9 @@ static ConfigApplyResult ConfigApplication_ApplyInternal(
     bool advance_revision, bool dirty)
 {
     const SystemContext *context = SystemContext_Get();
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    bool needs_metrology_rebuild;
+#endif
 #if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     DeviceConfig normalized;
 #else
@@ -54,6 +94,10 @@ static ConfigApplyResult ConfigApplication_ApplyInternal(
         candidate, allow_cs1237_change);
 
     if (validation != CONFIG_APPLY_OK) return validation;
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    needs_metrology_rebuild = RequiresMetrologyRebuild(&context->config,
+        candidate);
+#endif
 #if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     normalized = *candidate;
 #endif
@@ -67,7 +111,11 @@ static ConfigApplyResult ConfigApplication_ApplyInternal(
     {
         return CONFIG_APPLY_DISPLAY_ERROR;
     }
-    if (!MetrologyManager_Reconfigure(
+    if (
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+        needs_metrology_rebuild &&
+#endif
+        !MetrologyManager_Reconfigure(
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
         normalized
 #else
@@ -92,7 +140,11 @@ static ConfigApplyResult ConfigApplication_ApplyInternal(
 #endif
             , dirty)))
     {
-        bool rollback_ok = MetrologyManager_Reconfigure(&context->config);
+        bool rollback_ok = true;
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+        if (needs_metrology_rebuild)
+#endif
+            rollback_ok = MetrologyManager_Reconfigure(&context->config);
         rollback_ok = DisplayController_SetBrightness(
             context->config.display.brightness) && rollback_ok;
         if (!rollback_ok)

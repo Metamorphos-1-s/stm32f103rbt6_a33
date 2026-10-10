@@ -2,6 +2,7 @@
 #define DISPLAY_MODEL_H
 
 #include "display_types.h"
+#include "project_config.h"
 #include "weight_types.h"
 
 #include <stdbool.h>
@@ -12,6 +13,9 @@ bool DisplayModel_SetWeight(WeightValue value, uint8_t decimal_places,
     bool show_negative, uint8_t status_flags);
 bool DisplayModel_SetText6(const char text[6]);
 bool DisplayModel_SetBatteryMv(uint32_t battery_mv);
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+bool DisplayModel_SetBatteryPercent(uint8_t percent);
+#endif
 bool DisplayModel_SetMessage(const char text[6], uint32_t duration_ms);
 bool DisplayModel_SetPage(DisplayPage page);
 bool DisplayModel_SetIndicators(uint8_t top_led_mask,

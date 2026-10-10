@@ -192,6 +192,9 @@ static void A13E_Stop(A13CReason reason)
 #endif
 #if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
 static bool s_restoring_r5_request;
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+static bool s_boot_r5_pending;
+#endif
 #if (A33_ENABLE_STAGE5PA13E_ACTIVE == 0U)
 static bool MetrologyManager_IsRestoringR5Request(void)
 {
@@ -351,6 +354,9 @@ bool MetrologyManager_Init(const DeviceConfig *config,
     s_a13e_generation = 0U;
     s_a13e_exit_offset = 0;
     s_a13e_exit_reason = 0U;
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    s_boot_r5_pending = false;
+#endif
 #endif
     (void)memset(&s_r5_drift, 0, sizeof(s_r5_drift));
     CheckweighShadow_Reset(&s_alarm_shadow);
@@ -619,6 +625,29 @@ void MetrologyManager_Process20ms(void)
     {
         return;
     }
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    /* The persisted request is applied only after the first authoritative
+     * calibrated sample. Until then the formal path is uncorrected. */
+    const SystemContext *boot_context = SystemContext_Get();
+    snapshot = WeightEngine_GetSnapshot(&s_engine);
+    if (s_boot_r5_pending && boot_context != NULL && snapshot != NULL &&
+        (SystemContext_GetState() == APP_STATE_RUN) &&
+        (snapshot->sample_sequence != 0U) &&
+        ((snapshot->status_flags & (WEIGHT_STATUS_WEIGHT_VALID |
+            WEIGHT_STATUS_CALIBRATION_VALID)) ==
+            (WEIGHT_STATUS_WEIGHT_VALID | WEIGHT_STATUS_CALIBRATION_VALID)) &&
+        ((snapshot->status_flags & WEIGHT_STATUS_OVERLOAD) == 0U) &&
+        (FaultManager_GetActiveMask() == 0U) &&
+        (boot_context->config.system.requested_r5_application == 0U ||
+         App_A13CheckweighIsOff())) {
+        s_restoring_r5_request = true;
+        if (MetrologyManager_SetA13Pair(
+                (R5BetaApplication)boot_context->config.system.requested_r5_application,
+                (R5DriftMode)boot_context->config.system.requested_r5_mode,
+                0U, false)) s_boot_r5_pending = false;
+        s_restoring_r5_request = false;
+    }
+#endif
 #if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
     if (s_r5_application == R5_BETA_APPLICATION_ACTIVE &&
         (FaultManager_GetActiveMask() || SystemContext_GetState() == APP_STATE_CALIBRATION ||
@@ -1170,10 +1199,22 @@ bool MetrologyManager_SetA13Pair(R5BetaApplication application, R5DriftMode mode
     AppState state = SystemContext_GetState();
     if (!s_initialized || (uint32_t)application > 1U || (uint32_t)mode > 2U ||
         (require_generation && expected_generation != s_a13e_generation)) return false;
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    if (!s_restoring_r5_request && application == R5_BETA_APPLICATION_ACTIVE &&
+        mode != R5_DRIFT_MODE_OFF && SystemContext_Get() != NULL &&
+        SystemContext_Get()->config.system.requested_checkweigh_mode != 0U)
+        return false;
+#endif
     if (mode == R5_DRIFT_MODE_OFF) {
         if (application != R5_BETA_APPLICATION_SHADOW) return false;
         A13E_Stop(A13C_REASON_NONE);
         MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+        if (!s_restoring_r5_request) s_boot_r5_pending = false;
+        if (!s_restoring_r5_request &&
+            !SystemContext_SetRequestedR5Pair((uint8_t)application,
+                (uint8_t)mode)) return false;
+#endif
         return true;
     }
     if (state != APP_STATE_RUN && state != APP_STATE_MENU) return false;
@@ -1195,6 +1236,12 @@ bool MetrologyManager_SetA13Pair(R5BetaApplication application, R5DriftMode mode
     s_r5_application = application;
     ++s_a13e_generation;
     MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    if (!s_restoring_r5_request) s_boot_r5_pending = false;
+    if (!s_restoring_r5_request &&
+        !SystemContext_SetRequestedR5Pair((uint8_t)application,
+            (uint8_t)mode)) return false;
+#endif
     return true;
 }
 uint32_t MetrologyManager_ReadA13ActiveMetric(uint16_t index)
@@ -1227,7 +1274,24 @@ uint32_t MetrologyManager_ReadA13ActiveMetric(uint16_t index)
 bool MetrologyManager_RestoreR5Request(R5BetaApplication application,
     R5DriftMode mode)
 {
-#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    const SystemContext *context = SystemContext_Get();
+    if (!s_initialized || context == NULL ||
+        (uint32_t)application > (uint32_t)R5_BETA_APPLICATION_ACTIVE ||
+        (uint32_t)mode > (uint32_t)R5_DRIFT_MODE_STATIC_COMPENSATION ||
+        (mode == R5_DRIFT_MODE_OFF &&
+         application != R5_BETA_APPLICATION_SHADOW)) return false;
+    s_boot_r5_pending = false;
+    s_restoring_r5_request = true;
+    (void)MetrologyManager_SetA13Pair(R5_BETA_APPLICATION_SHADOW,
+        R5_DRIFT_MODE_OFF, 0U, false);
+    s_restoring_r5_request = false;
+    if (mode == R5_DRIFT_MODE_OFF) return true;
+    if (application == R5_BETA_APPLICATION_ACTIVE &&
+        context->config.system.requested_checkweigh_mode != 0U) return false;
+    s_boot_r5_pending = true;
+    return true;
+#elif (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
     /* Never restore a persisted ACTIVE request into an engineering image. */
     bool result;
     (void)application;

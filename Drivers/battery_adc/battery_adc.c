@@ -65,6 +65,26 @@ void BatteryAdc_Process500ms(void)
     s_state.near_full_scale =
         s_state.raw_average >= BATTERY_ADC_NEAR_FULL_SCALE_RAW;
     s_state.valid = true;
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    if (!s_config.low_voltage_alarm_enable) {
+        s_state.low_voltage_warning = false;
+        s_state.low_voltage_confirm = 0U;
+    } else if (!s_state.low_voltage_warning &&
+               s_state.battery_mv <= s_config.low_warning_mv) {
+        if (++s_state.low_voltage_confirm >= 60U) {
+            s_state.low_voltage_warning = true;
+            s_state.low_voltage_confirm = 0U;
+        }
+    } else if (s_state.low_voltage_warning &&
+               s_state.battery_mv >= s_config.recovery_mv) {
+        if (++s_state.low_voltage_confirm >= 20U) {
+            s_state.low_voltage_warning = false;
+            s_state.low_voltage_confirm = 0U;
+        }
+    } else {
+        s_state.low_voltage_confirm = 0U;
+    }
+#endif
 
     event.type = EVENT_BATTERY_SAMPLE_UPDATED;
     event.timestamp_ms = s_state.timestamp_ms;
@@ -123,6 +143,15 @@ uint32_t BatteryAdc_ConvertAdcMv(uint32_t adc_mv,
     }
     return (uint32_t)corrected_mv;
 }
+
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+uint8_t BatteryAdc_ApproxPercent(uint32_t corrected_mv)
+{
+    if (corrected_mv <= 12800U) return 0U;
+    if (corrected_mv >= 16800U) return 100U;
+    return (uint8_t)(((corrected_mv - 12800U) * 100U + 2000U) / 4000U);
+}
+#endif
 
 static bool BatteryAdc_ConfigIsValid(const BatteryConfig *config)
 {

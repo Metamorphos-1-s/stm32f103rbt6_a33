@@ -42,6 +42,10 @@ bool SystemContext_SetRuntimeWeightView(WeightViewMode view);
 bool SystemContext_SetRequestedR5Mode(uint8_t mode);
 bool SystemContext_SetRequestedR5Application(uint8_t application);
 bool SystemContext_SetRequestedCheckweighMode(uint8_t mode);
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+/* An explicit runtime pair change is one pending V3 transaction. */
+bool SystemContext_SetRequestedR5Pair(uint8_t application, uint8_t mode);
+#endif
 #endif
 #if defined(A33_ENABLE_STAGE5MR5_BETA) && (A33_ENABLE_STAGE5MR5_BETA != 0U)
 bool SystemContext_SetActiveUnitConfig(MassUnit unit);

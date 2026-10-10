@@ -188,15 +188,23 @@ static void Render(void)
     if (s_edit_kind == MENU_EDIT_R5_DRIFT)
     {
         (void)DisplayController_SetTextPage(DISPLAY_PAGE_EDIT,
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+            R5LocalControl_ChoiceText((R5LocalChoice)s_value));
+#else
             R5LocalControl_ChoiceText(R5LocalControl_GetChoice()));
+#endif
         return;
     }
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
     if (s_edit_kind == MENU_EDIT_CHECKWEIGH_MODE)
     {
         (void)DisplayController_SetTextPage(DISPLAY_PAGE_EDIT,
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+            CheckweighLocalControl_ChoiceText((GuardedCheckweighMode)s_value));
+#else
             CheckweighLocalControl_ChoiceText(
                 CheckweighLocalControl_GetChoice()));
+#endif
         return;
     }
 #endif
@@ -364,6 +372,20 @@ static void RequestSave(uint32_t now_ms)
         ShowCode(DISPLAY_CODE_BUSY);
         return;
     }
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    if (((s_candidate_config.system.requested_r5_mode !=
+          s_original_config.system.requested_r5_mode ||
+          s_candidate_config.system.requested_r5_application !=
+          s_original_config.system.requested_r5_application) &&
+         !R5LocalControl_SessionCurrent()) ||
+        ((s_candidate_config.system.requested_checkweigh_mode !=
+          s_original_config.system.requested_checkweigh_mode) &&
+         !CheckweighLocalControl_SessionCurrent())) {
+        RestoreOriginalBrightness();
+        ShowCode(DISPLAY_CODE_BUSY);
+        return;
+    }
+#endif
 #if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
     if (PersistenceManager_IsBusy())
     {
@@ -665,14 +687,27 @@ static bool BeginEdit(MenuItem item, uint32_t now_ms)
             break;
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
         case MENU_ITEM_R5_DRIFT:
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+            s_value = s_candidate_config.system.requested_r5_mode == 0U ?
+                R5_LOCAL_CHOICE_OFF :
+                s_candidate_config.system.requested_r5_mode == 1U ?
+                R5_LOCAL_CHOICE_DOSING :
+                s_candidate_config.system.requested_r5_application == 0U ?
+                R5_LOCAL_CHOICE_SHADOW : R5_LOCAL_CHOICE_STATIC;
+#else
             if (!R5LocalControl_Begin(s_candidate_changed)) return false;
+#endif
             s_edit_kind = MENU_EDIT_R5_DRIFT;
             s_editing = true;
             Render();
             return true;
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
         case MENU_ITEM_CHECKWEIGH_MODE:
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+            s_value = s_candidate_config.system.requested_checkweigh_mode;
+#else
             if (!CheckweighLocalControl_Begin(s_candidate_changed)) return false;
+#endif
             s_edit_kind = MENU_EDIT_CHECKWEIGH_MODE;
             s_editing = true;
             Render();
@@ -768,13 +803,32 @@ static bool SubmitEditValue(void)
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     if (s_edit_kind == MENU_EDIT_R5_DRIFT)
     {
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+        if (((s_value == R5_LOCAL_CHOICE_STATIC) ||
+             (s_value == R5_LOCAL_CHOICE_DOSING)) &&
+            s_candidate_config.system.requested_checkweigh_mode != 0U)
+            return false;
+        s_candidate_config.system.requested_r5_application =
+            s_value >= R5_LOCAL_CHOICE_STATIC ? 1U : 0U;
+        s_candidate_config.system.requested_r5_mode =
+            s_value == R5_LOCAL_CHOICE_OFF ? 0U :
+            s_value == R5_LOCAL_CHOICE_DOSING ? 1U : 2U;
+#else
         R5LocalControl_Confirm();
+#endif
         return true;
     }
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
     if (s_edit_kind == MENU_EDIT_CHECKWEIGH_MODE)
     {
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+        if ((s_value != GUARDED_CHECKWEIGH_OFF) &&
+            s_candidate_config.system.requested_r5_application != 0U)
+            return false;
+        s_candidate_config.system.requested_checkweigh_mode = (uint8_t)s_value;
+#else
         CheckweighLocalControl_Confirm();
+#endif
         return true;
     }
 #endif
@@ -840,13 +894,23 @@ static void AdjustEdit(KeyId key)
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     if (s_edit_kind == MENU_EDIT_R5_DRIFT)
     {
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+        s_value = (s_value + (key == KEY_ID_HASH ? 1 :
+            R5_LOCAL_CHOICE_COUNT - 1)) % R5_LOCAL_CHOICE_COUNT;
+#else
         R5LocalControl_Adjust(key == KEY_ID_HASH);
+#endif
         return;
     }
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
     if (s_edit_kind == MENU_EDIT_CHECKWEIGH_MODE)
     {
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+        s_value = (s_value + (key == KEY_ID_HASH ? 1 :
+            GUARDED_CHECKWEIGH_MODE_COUNT - 1)) % GUARDED_CHECKWEIGH_MODE_COUNT;
+#else
         CheckweighLocalControl_Adjust(key == KEY_ID_HASH);
+#endif
         return;
     }
 #endif
@@ -1155,6 +1219,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                 return true;
             }
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
+#if (A33_ENABLE_STAGE5P_UNIFIED == 0U)
             if (s_edit_kind == MENU_EDIT_CHECKWEIGH_MODE)
             {
                 CheckweighLocalControl_Confirm();
@@ -1163,7 +1228,9 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                 return true;
             }
 #endif
+#endif
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#if (A33_ENABLE_STAGE5P_UNIFIED == 0U)
             if (s_edit_kind == MENU_EDIT_R5_DRIFT)
             {
                 R5LocalControl_Confirm();
@@ -1171,6 +1238,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                 RequestR5CandidateSave(event->timestamp_ms);
                 return true;
             }
+#endif
 #endif
             if (!SubmitEditValue())
             {
@@ -1280,6 +1348,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                  (event->type == KEY_EVENT_SHORT))
         {
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
+#if (A33_ENABLE_STAGE5P_UNIFIED == 0U)
             if (s_edit_kind == MENU_EDIT_R5_DRIFT)
             {
                 R5LocalControl_Confirm();
@@ -1295,6 +1364,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
                 Render();
                 return true;
             }
+#endif
 #endif
 #endif
             if (SystemContext_GetConfigRevision() != s_expected_revision)

@@ -178,6 +178,22 @@ bool SystemContext_SetRequestedCheckweighMode(uint8_t mode)
   s_system_context.config.system.requested_checkweigh_mode = mode;
   return SystemContext_MarkConfigChanged();
 }
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+bool SystemContext_SetRequestedR5Pair(uint8_t application, uint8_t mode)
+{
+  if (!s_system_context.initialized || application > 1U || mode > 2U ||
+      ((mode == 0U) && application != 0U) ||
+      ((mode == 1U) && application != 1U) ||
+      (application == 1U && mode != 0U &&
+       s_system_context.config.system.requested_checkweigh_mode != 0U))
+    return false;
+  if (s_system_context.config.system.requested_r5_application == application &&
+      s_system_context.config.system.requested_r5_mode == mode) return true;
+  s_system_context.config.system.requested_r5_application = application;
+  s_system_context.config.system.requested_r5_mode = mode;
+  return SystemContext_MarkConfigChanged();
+}
+#endif
 #endif
 
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)

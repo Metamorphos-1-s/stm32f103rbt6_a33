@@ -2,6 +2,7 @@
 #define DISPLAY_CONTROLLER_H
 
 #include "display_types.h"
+#include "project_config.h"
 #if defined(A33_ENABLE_STAGE5MR5_BETA) && (A33_ENABLE_STAGE5MR5_BETA != 0U)
 #include "directional_display_follower.h"
 #endif
@@ -11,6 +12,9 @@
 
 bool DisplayController_Init(void);
 void DisplayController_Process20ms(void);
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+void DisplayController_NotifyActivity(void);
+#endif
 void DisplayController_SetPage(DisplayPage page);
 void DisplayController_ShowMessage(const char text[6], uint32_t duration_ms);
 bool DisplayController_SetTextPage(DisplayPage page, const char text[6]);

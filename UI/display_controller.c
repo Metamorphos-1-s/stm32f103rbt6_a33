@@ -5,6 +5,7 @@
 #include "display_model.h"
 #include "display_formatter.h"
 #include "metrology_manager.h"
+#include "project_config.h"
 #include "system_context.h"
 #include "tm1628.h"
 #include "tm1628_board_map.h"
@@ -30,6 +31,10 @@ static bool s_text_override;
 static bool s_numeric_override;
 static bool s_message_active;
 static bool s_initialized;
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+static uint32_t s_last_activity_ms;
+#define DISPLAY_IDLE_DIM_MS 600000U
+#endif
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U) && \
     (A33_ENABLE_STAGE5MR5E_D1D_BETA == 0U)
 static DirectionalDisplayFollower s_directional_follower;
@@ -87,6 +92,16 @@ static void DisplayController_BuildIndicators(const WeightSnapshot *snapshot,
     if (s_page == DISPLAY_PAGE_GROSS) *top |= DISPLAY_TOP_LED_GROSS;
     if (s_page == DISPLAY_PAGE_TARE) *top |= DISPLAY_TOP_LED_TARE;
     if (s_page == DISPLAY_PAGE_BATTERY) *top |= DISPLAY_TOP_LED_BATTERY;
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    {
+        const BatteryAdcState *battery = BatteryAdc_GetState();
+        if (battery != NULL && battery->valid && battery->low_voltage_warning) {
+            *top &= (uint8_t)~DISPLAY_TOP_LED_BATTERY;
+            if (((BSP_TimeNowMs() / 500U) & 1U) == 0U)
+                *top |= DISPLAY_TOP_LED_BATTERY;
+        }
+    }
+#endif
     if ((flags & WEIGHT_STATUS_STABLE) != 0U) *top |= DISPLAY_TOP_LED_STABLE;
     if ((flags & WEIGHT_STATUS_ZERO) != 0U) *top |= DISPLAY_TOP_LED_ZERO;
     if ((flags & WEIGHT_STATUS_CALIBRATION_VALID) == 0U)
@@ -132,6 +147,13 @@ static bool DisplayController_BuildModel(void)
     {
         return DisplayModel_SetRawSegments(s_numeric_segments);
     }
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    if ((s_page == DISPLAY_PAGE_NET || s_page == DISPLAY_PAGE_GROSS) &&
+        battery != NULL && battery->valid && battery->low_voltage_warning &&
+        (BSP_TimeNowMs() % 60000U) < 2000U &&
+        ((BSP_TimeNowMs() / 500U) & 1U) == 0U)
+        return DisplayModel_SetText6("Lo-bAt");
+#endif
     switch (s_page)
     {
         case DISPLAY_PAGE_NET:
@@ -151,7 +173,12 @@ static bool DisplayController_BuildModel(void)
             break;
         case DISPLAY_PAGE_BATTERY:
             return (battery != NULL) && battery->valid ?
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+                DisplayModel_SetBatteryPercent(
+                    BatteryAdc_ApproxPercent(battery->battery_mv)) :
+#else
                 DisplayModel_SetBatteryMv(battery->battery_mv) :
+#endif
                 DisplayModel_SetText6("------");
         case DISPLAY_PAGE_STATUS:
             return DisplayModel_SetText6(" StAt ");
@@ -260,6 +287,9 @@ bool DisplayController_Init(void)
     s_text_override = false;
     s_numeric_override = false;
     s_applied_revision = 0U;
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    s_last_activity_ms = BSP_TimeNowMs();
+#endif
     if ((context != NULL) &&
         !DisplayModel_SetBrightness(context->config.display.brightness))
     {
@@ -272,6 +302,11 @@ bool DisplayController_Init(void)
 void DisplayController_Process20ms(void)
 {
     AppState state = SystemContext_GetState();
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    const SystemContext *context = SystemContext_Get();
+    const WeightSnapshot *weight = MetrologyManager_GetSnapshot();
+    uint32_t now = BSP_TimeNowMs();
+#endif
 
     if (!s_initialized || (state == APP_STATE_DIAGNOSTIC))
     {
@@ -282,6 +317,20 @@ void DisplayController_Process20ms(void)
         (void)DisplayController_ApplyModel();
         return;
     }
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+    if (context != NULL && state == APP_STATE_RUN &&
+        (s_page == DISPLAY_PAGE_NET || s_page == DISPLAY_PAGE_GROSS ||
+         s_page == DISPLAY_PAGE_TARE || s_page == DISPLAY_PAGE_BATTERY)) {
+        if (weight == NULL ||
+            (weight->status_flags & WEIGHT_STATUS_STABLE) == 0U ||
+            s_message_active) s_last_activity_ms = now;
+        (void)DisplayModel_SetBrightness(
+            (uint32_t)(now - s_last_activity_ms) >= DISPLAY_IDLE_DIM_MS ?
+                (context->config.display.brightness > 1U ? 1U :
+                    context->config.display.brightness) :
+                context->config.display.brightness);
+    } else s_last_activity_ms = now;
+#endif
     if (s_message_active &&
         ((uint32_t)(BSP_TimeNowMs() - s_message_start_ms) >=
          s_message_duration_ms))
@@ -294,6 +343,18 @@ void DisplayController_Process20ms(void)
     }
     (void)DisplayController_ApplyModel();
 }
+
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+void DisplayController_NotifyActivity(void)
+{
+    const SystemContext *context = SystemContext_Get();
+    s_last_activity_ms = BSP_TimeNowMs();
+    if (context != NULL &&
+        (s_page == DISPLAY_PAGE_NET || s_page == DISPLAY_PAGE_GROSS ||
+         s_page == DISPLAY_PAGE_TARE || s_page == DISPLAY_PAGE_BATTERY))
+        (void)DisplayModel_SetBrightness(context->config.display.brightness);
+}
+#endif
 
 void DisplayController_SetPage(DisplayPage page)
 {

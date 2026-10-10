@@ -45,6 +45,9 @@ typedef struct
 
 bool R5LocalControl_GetStatus(R5LocalStatus *status);
 bool R5LocalControl_BeginSession(void);
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+bool R5LocalControl_SessionCurrent(void);
+#endif
 void R5LocalControl_EndSession(void);
 bool R5LocalControl_Begin(bool config_candidate_changed);
 void R5LocalControl_Adjust(bool increment);

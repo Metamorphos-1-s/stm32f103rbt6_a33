@@ -1050,3 +1050,31 @@ else()
     target_compile_options(stage5pa13e_active_tests PRIVATE -Wall -Wextra -Werror)
 endif()
 add_test(NAME stage5pa13e_active_wiring COMMAND stage5pa13e_active_tests)
+
+# Isolated unified delivery candidate. The frozen A13E executable above
+# remains built without the new feature flag.
+add_executable(stage5p_unified_tests
+    stage5p_unified/test_unified.c
+    stage5p_unified/test_defaults_battery.c ${a13e_sources}
+    ../../Domain/measurement/a13c_shadow_compensator.c
+    ../../Domain/measurement/reference_lock_drift_compensator.c
+    ../../Experimental/stage5na/checkweigh_shadow.c
+    ../../Services/guarded_checkweigh/guarded_checkweigh.c
+    ../../UI/r5_local_control.c ../../UI/checkweigh_local_control.c
+    ../../UI/ui_config_workspace.c ../../UI/display_model/directional_display_follower.c)
+target_include_directories(stage5p_unified_tests PRIVATE ${a13e_includes}
+    ../../Experimental/stage5na ../../Services/guarded_checkweigh
+    ../../Services/alarm_output_manager ../../Domain/limit_checker)
+target_compile_definitions(stage5p_unified_tests PRIVATE
+    STAGE2A_HOST_TEST=1 ENABLE_STAGE2B_BOARD_DIAGNOSTICS=1
+    A33_ENABLE_STAGE5MR5_BETA=1 A33_ENABLE_STAGE5NB_BETA=1
+    A33_ENABLE_STAGE5MR5E_D1D_BETA=1 A33_ENABLE_STAGE5PA_PRODUCT=1
+    A33_ENABLE_STAGE5PA2_PRODUCT=1 A33_ENABLE_STAGE5PA2C_PRODUCT=1
+    A33_ENABLE_STAGE5PA2D_CALIBRATION=1 A33_ENABLE_STAGE5PA13C_SHADOW=1
+    A33_ENABLE_STAGE5PA13E_ACTIVE=1 A33_ENABLE_STAGE5P_UNIFIED=1)
+if(MSVC)
+    target_compile_options(stage5p_unified_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5p_unified_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5p_unified_defaults_and_startup COMMAND stage5p_unified_tests)

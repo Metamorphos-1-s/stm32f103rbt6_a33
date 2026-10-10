@@ -355,6 +355,14 @@ bool App_GetAlarmOutputDiagnostics(AlarmOutputDiagnostics *diagnostics)
 bool App_SetGuardedCheckweighMode(GuardedCheckweighMode mode,
     uint32_t expected_generation, bool require_generation)
 {
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+  const SystemContext *requested = SystemContext_Get();
+  /* A safety stop leaves the persisted R5 request intact. Do not allow an
+   * incompatible checkweigh request to enter the next explicit SAVE. */
+  if (mode != GUARDED_CHECKWEIGH_OFF && requested != NULL &&
+      requested->config.system.requested_r5_application != 0U &&
+      requested->config.system.requested_r5_mode != 0U) return false;
+#endif
 #if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
   if (mode != GUARDED_CHECKWEIGH_OFF &&
       MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_ACTIVE) return false;
@@ -914,6 +922,9 @@ static void App_ProcessKeyEvent(const KeyEvent *event)
   {
     return;
   }
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+  DisplayController_NotifyActivity();
+#endif
   /* STATUS owns RELEASED as well as action events for its entry-key gate. */
   if (StatusController_IsActive())
   {

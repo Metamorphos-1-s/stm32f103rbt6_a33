@@ -114,8 +114,20 @@ static void RenderValue(void)
                 profile->gain == DEVICE_CS1237_GAIN_64 ? 64U : 128U); break;
         case STATUS_ITEM_BATTERY:
             if ((battery != NULL) && battery->valid)
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+            {
+                uint8_t percent = BatteryAdc_ApproxPercent(battery->battery_mv);
+                char label[6] = {' ', ' ', ' ', ' ', '0', 'P'};
+                label[4] = (char)('0' + percent % 10U);
+                if (percent >= 10U)
+                    label[3] = (char)('0' + (percent / 10U) % 10U);
+                if (percent == 100U) label[2] = '1';
+                Show(label);
+            }
+#else
                 (void)DisplayController_SetNumericPage(DISPLAY_PAGE_STATUS,
                     (int32_t)battery->battery_mv, 3U);
+#endif
             else Show("------");
             break;
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)

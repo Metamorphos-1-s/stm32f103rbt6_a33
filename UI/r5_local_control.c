@@ -116,6 +116,15 @@ static bool SamePublicState(const R5LocalStatus *left,
            (left->mode == right->mode);
 }
 
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+bool R5LocalControl_SessionCurrent(void)
+{
+    R5LocalStatus current;
+    return s_session_valid && R5LocalControl_GetStatus(&current) &&
+        SamePublicState(&current, &s_expected);
+}
+#endif
+
 #if (A33_ENABLE_STAGE5PA13E_ACTIVE == 0U)
 static bool SetApplication(R5LocalApplication application)
 {

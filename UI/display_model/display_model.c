@@ -63,6 +63,15 @@ bool DisplayModel_SetBatteryMv(uint32_t battery_mv)
            DisplayModel_UpdateSegments(segments);
 }
 
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+bool DisplayModel_SetBatteryPercent(uint8_t percent)
+{
+    uint16_t segments[6];
+    return DisplayFormatter_FormatBatteryPercent(percent, segments) &&
+           DisplayModel_UpdateSegments(segments);
+}
+#endif
+
 bool DisplayModel_SetMessage(const char text[6], uint32_t duration_ms)
 {
     (void)duration_ms;
