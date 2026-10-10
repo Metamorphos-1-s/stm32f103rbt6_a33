@@ -41,7 +41,7 @@ class Checker:
             raise ValueError('invalid target diagnostics/lease/MSP')
         if s['touched']-s['static_end'] < 512:
             raise ValueError('runtime stack margin below512')
-        if safety['firmware'] != 0x051f or safety['map'] != 0x0108:
+        if safety['firmware'] != 0x0525 or safety['map'] != 0x010d:
             raise ValueError('identity changed')
         if any(s[k] for k in ('fault','overrun','read_errors','invalid')) or safety['dirty'] or safety['application']:
             raise ValueError('target fault/error/dirty/ACTIVE')

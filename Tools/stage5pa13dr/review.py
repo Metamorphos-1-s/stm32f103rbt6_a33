@@ -30,7 +30,7 @@ def review(directory):
     application = (restored / 'application_after.bin').read_bytes()
     prefix_same = application[:len(ordinary)] == ordinary
     tail_nonff = sum(value != 255 for value in application[len(ordinary):])
-    safe = (terminal['firmware'] == '0x051D' and terminal['map'] == '0x0105'
+    safe = (terminal['firmware'] == '0x0524' and terminal['map'] == '0x010C'
             and terminal['revision'] == terminal['saved_revision'] == 19
             and not any(terminal[k] for k in ('dirty', 'fault_mask', 'overrun_count'))
             and not any(terminal['r5'][k] for k in ('application', 'mode', 'offset_ug', 'save_request_count_low'))

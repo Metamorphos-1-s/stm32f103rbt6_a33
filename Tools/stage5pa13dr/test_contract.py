@@ -3,7 +3,7 @@ import copy
 import unittest
 from contract import Checker, decode, SIGNATURE
 
-SAFETY=dict(firmware=0x051f,map=0x0108,dirty=0,application=0,revision=19,
+SAFETY=dict(firmware=0x0525,map=0x010d,dirty=0,application=0,revision=19,
             saved_revision=19,save_count=0,calibration_valid=1)
 
 

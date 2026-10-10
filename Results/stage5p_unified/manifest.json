@@ -14,9 +14,129 @@
       "sha256": "31FD34A8D706EAE07DDCFBDD4AABD238C4F33FB799EB7BFC07C7C2DA448EDC85"
     },
     {
+      "path": "Docs/STAGE5P_UNIFIED_R_DIAGNOSTIC_HARDWARE_CLOSURE.md",
+      "bytes": 4331,
+      "sha256": "901E333EA5562A813501D9C9B93DECF11FEFD56C5183EA567BBCF5DFCA1DB631"
+    },
+    {
       "path": "Docs/STAGE5P_UNIFIED_SOFTWARE_GATE.md",
       "bytes": 5183,
       "sha256": "815F1922580E96A8827BF3206D79BBEEB7BA0BD9B2EB6DE2FAEE604B0A9709DD"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/application_before.bin",
+      "bytes": 126976,
+      "sha256": "F85404B5D551EB44CB9B585793CA1935D6D06D7DC4608B9F986956B9FAA84A6B"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/application_dump.log",
+      "bytes": 959,
+      "sha256": "601C5616F43C489F266E37D242FA91DB03D3212453D03C3F6D7AF007135D08A9"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/backup_identity.json",
+      "bytes": 1443,
+      "sha256": "307AA84F0205153B15CDCF0F8B4753D3764B779AF3F21DE04BCCC9ED84822240"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/config_before.bin",
+      "bytes": 4096,
+      "sha256": "856BD8F5C14760561FC4BFEC4274FE0C5480C19BC4422046617C2450F8439733"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/config_dump.log",
+      "bytes": 952,
+      "sha256": "DE8CD088D650A4C6693AAB2629308948D1D4E5C9C90DED689E74BF087BA84397"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/preflight.json",
+      "bytes": 1089,
+      "sha256": "2BD1C1B414DBAC94D54D55DDE6682CC5305E9924B3E0991EF4A0AA49191B553C"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/resource_install/application_after_install.bin",
+      "bytes": 126976,
+      "sha256": "901DD8BBE1627DE6C2929F0ED239240B2049EBEB52C42D395F2AADC5DCA4F72D"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/resource_install/application_after_install.log",
+      "bytes": 983,
+      "sha256": "5C140C23A8621B3826F841A3CEEEBB340DA4AA3D642FA3D00E910C42EFEF1621"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/resource_install/boot.json",
+      "bytes": 1075,
+      "sha256": "F3A8841E53B67C7F0E3BEE40C99475DC750A81BA6B6F6DDCFBF6365281F5D045"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/resource_install/config_after_install.bin",
+      "bytes": 4096,
+      "sha256": "856BD8F5C14760561FC4BFEC4274FE0C5480C19BC4422046617C2450F8439733"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/resource_install/config_after_install.log",
+      "bytes": 976,
+      "sha256": "7A3C170488F51F11DEED39B0544794343EF26D3796C5BCC56F7FA028A8C4E8FF"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/resource_install/config_before_install.bin",
+      "bytes": 4096,
+      "sha256": "856BD8F5C14760561FC4BFEC4274FE0C5480C19BC4422046617C2450F8439733"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/resource_install/config_before_install.log",
+      "bytes": 977,
+      "sha256": "CB6E5B69DC616326B6792658EF7A243EFFB81A6B559B17100C63A32C86D8C430"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/resource_install/program_verify.log",
+      "bytes": 1471,
+      "sha256": "9230531F25700A29B181E69A066B834055EF05B22F60DD487497795FC83007F5"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/restore_resource_stop/application_after_restore.bin",
+      "bytes": 126976,
+      "sha256": "F85404B5D551EB44CB9B585793CA1935D6D06D7DC4608B9F986956B9FAA84A6B"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/restore_resource_stop/application_after_restore.log",
+      "bytes": 988,
+      "sha256": "D32B83744159CA23572648CB36774E759CB964D01C4B6756FFE0924C68597D83"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/restore_resource_stop/config_after_restore.bin",
+      "bytes": 4096,
+      "sha256": "856BD8F5C14760561FC4BFEC4274FE0C5480C19BC4422046617C2450F8439733"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/restore_resource_stop/config_after_restore.log",
+      "bytes": 981,
+      "sha256": "22DA311231BEB280A88224DD4C1535295829AA93D47D9C1A69B184FF7769D9B8"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/restore_resource_stop/config_before_restore.bin",
+      "bytes": 4096,
+      "sha256": "856BD8F5C14760561FC4BFEC4274FE0C5480C19BC4422046617C2450F8439733"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/restore_resource_stop/config_before_restore.log",
+      "bytes": 982,
+      "sha256": "558C923822C9E844DF78320EA8C4DA792E084235887839C20C780325CED95260"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/restore_resource_stop/restore_verify.log",
+      "bytes": 1449,
+      "sha256": "6DA3B9DBFD99505C0BF6B0A99A63E59768B34A7D983F3839CB532D40DFC704CB"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/restore_resource_stop/terminal.json",
+      "bytes": 1075,
+      "sha256": "7646F961232C8F9BDCE3C7936A5CD84D1AD59454ACF27F158F0F540EE2643532"
+    },
+    {
+      "path": "Results/stage5p_unified/hardware/stage5pr_20261011/slots.json",
+      "bytes": 2715,
+      "sha256": "BAF89393F292224DDC12E4CEF4F4FB36F5166ACEC69CEB92212BC548574F0D7A"
     },
     {
       "path": "Results/stage5p_unified/software/arm_debug.elf",
@@ -99,6 +219,46 @@
       "sha256": "F1999A634E170B2D6E0B89E6A335D4FEDC8FE0C83F0C81A1DAEE29850BEE53D1"
     },
     {
+      "path": "Results/stage5p_unified/software/diag_release_analysis/CMakeCache.txt",
+      "bytes": 18282,
+      "sha256": "FBDF1BA2721383A86C2A046F5E30D298B4A9B1235418589DC9925C154EC94543"
+    },
+    {
+      "path": "Results/stage5p_unified/software/diag_release_analysis/compile_commands.json",
+      "bytes": 568782,
+      "sha256": "7901DDD4774951AFE61790EE11B707B9DBB4CBAEDA5AA4CED5ECD94B4F59BB37"
+    },
+    {
+      "path": "Results/stage5p_unified/software/diag_release_analysis/diag_0x0525.elf",
+      "bytes": 201252,
+      "sha256": "D88991C8531F69975D8F8BC929BCE7ECB68760FAF1C23530A63D879889B321E3"
+    },
+    {
+      "path": "Results/stage5p_unified/software/diag_release_analysis/diag_0x0525.map",
+      "bytes": 511603,
+      "sha256": "C69FA0E1C764E66CF4B5A2A6491FD0336700E5CD4413F868B7B4A0F9268A924E"
+    },
+    {
+      "path": "Results/stage5p_unified/software/diag_release_analysis/largest_ram_symbols.json",
+      "bytes": 14959,
+      "sha256": "86D091C5BEF73F750F40FCA008C64B81A59BE3C33F23387E0573475D9864EFA0"
+    },
+    {
+      "path": "Results/stage5p_unified/software/diag_release_analysis/ram_layout.json",
+      "bytes": 8094,
+      "sha256": "834F9CCEBDF1D02D54373C30D539E0628C5D72318E52B1F448B32AE27061BF53"
+    },
+    {
+      "path": "Results/stage5p_unified/software/diag_release_analysis/stack_watermark.json",
+      "bytes": 43490,
+      "sha256": "862FD1EB127820FC2867BC29F13327853A0FEB5D95BAEBA4715C64351C630788"
+    },
+    {
+      "path": "Results/stage5p_unified/software/diag_release_stack_gate.json",
+      "bytes": 627,
+      "sha256": "208AB4F099AD488D1D1CE2BC9464BE40CF705B0920D2C0E46181BF63ED571A50"
+    },
+    {
       "path": "Results/stage5p_unified/software/historical_rate_review.json",
       "bytes": 7185,
       "sha256": "2B771E0F14024392970EB9B11D4139168E1DDBF31085CDE528712B7B72EF4D1D"
@@ -164,6 +324,16 @@
       "sha256": "B0F09F19532867345D6343CDF850828D8B605140DAEAC61C5A8403AC9ABA2BF1"
     },
     {
+      "path": "Results/stage5p_unified/software/target_resource_diag_release_build.log",
+      "bytes": 14107,
+      "sha256": "29CDAA3466A771A1E233110B2832E19C1439825B219A64C387C675AE10B46D28"
+    },
+    {
+      "path": "Results/stage5p_unified/software/target_resource_diag_release_r_build.log",
+      "bytes": 14107,
+      "sha256": "93FD9F0D72D9D35862CC2EA0C67A245E8055653A313B88AA4F1767A9A514373B"
+    },
+    {
       "path": "Results/stage5p_unified/software/unified_0x0523_UNFLASHED.bin",
       "bytes": 96564,
       "sha256": "2FB971C55A1173A04C6508E0E42238740F82AD1BC22C9712F72E012DC24B5DB1"
@@ -174,9 +344,24 @@
       "sha256": "CBAB6D5E294D36F62231F9A233DF9E915E9F599D4B4826E6DC993A95035FFBF1"
     },
     {
+      "path": "Results/stage5p_unified/software/unified_resources_0x0525_UNFLASHED.bin",
+      "bytes": 98348,
+      "sha256": "799FAE10059692AF56E8413B59BC4E5F128C1DAAE38E52C75C0DE867C37A28F3"
+    },
+    {
       "path": "Tools/stage5_unified/evidence.py",
       "bytes": 1619,
       "sha256": "0CEC2ACE32B6A34F7AA3A6AD7E1226E5525A60729EB60EBB80AB6893B3711569"
+    },
+    {
+      "path": "Tools/stage5_unified/hardware_resource.py",
+      "bytes": 4693,
+      "sha256": "61EC3A5202EAAD7134A102C823EF75C8739C200BD71187254B8E52395E7E6AD0"
+    },
+    {
+      "path": "Tools/stage5_unified/resource_capture.py",
+      "bytes": 7673,
+      "sha256": "84A41ADC3D050CF0B22B955B681D5CAEC83CBD1E9394A80D934686F012AF092D"
     }
   ]
 }
