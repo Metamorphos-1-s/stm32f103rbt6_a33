@@ -26,11 +26,13 @@ def decode(words):
 
 
 class Checker:
-    def __init__(self):
+    def __init__(self, allow_expected_profile_change=False, baseline_revision=19):
         self.previous = None
         self.qualified = False
         self.gaps = []
         self.backlog_since = None
+        self.allow_expected_profile_change = allow_expected_profile_change
+        self.baseline_revision = baseline_revision
 
     def check(self, s, host_ns, safety):
         if s['signature'] != SIGNATURE or s['version'] != 1:
@@ -45,8 +47,16 @@ class Checker:
             raise ValueError('identity changed')
         if any(s[k] for k in ('fault','overrun','read_errors','invalid')) or safety['dirty'] or safety['application']:
             raise ValueError('target fault/error/dirty/ACTIVE')
-        if safety['revision'] != 19 or safety['saved_revision'] != 19 or safety['save_count']:
+        if self.allow_expected_profile_change:
+            if safety['saved_revision'] != self.baseline_revision or safety['revision'] not in (
+                    self.baseline_revision, self.baseline_revision + 1):
+                raise ValueError('unexpected profile revision')
+            if bool(safety['dirty']) != (safety['revision'] != safety['saved_revision']):
+                raise ValueError('profile dirty/revision mismatch')
+        elif safety['revision'] != 19 or safety['saved_revision'] != 19 or safety['dirty']:
             raise ValueError('persistence invariant')
+        if safety['save_count']:
+            raise ValueError('unexpected SAVE')
         if sum(s['counts']) != s['total'] or s['counts'][9]:
             raise ValueError('target call counter mismatch')
         expected_mask = sum(1<<i for i,c in enumerate(s['counts']) if c)

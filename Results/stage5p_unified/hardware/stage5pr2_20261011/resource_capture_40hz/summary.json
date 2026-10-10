@@ -1,0 +1,9 @@
+{
+  "status": "FAIL",
+  "error": "invalid target diagnostics/lease/MSP",
+  "polls": 1,
+  "host_gap_events": [],
+  "snapshots_sha256": "FB60FBF6CCA3BC01F10989C48249B141884001251B147C0BE3B8816116C017E7",
+  "polls_sha256": "03550A3ED272805F405AAEA01764803FA94B4EEED6E0CA13BBA1E9B826956EB5",
+  "note": "MCU cumulative maxima preserve calls across host polling gaps; no interpolation"
+}

@@ -28,7 +28,9 @@ def run(args):
     if (out / 'snapshots.jsonl').exists():
         raise ValueError('raw evidence already exists')
     backup = args.backup
-    checker = Checker(); seen = polls = 0; error = None; last = None
+    checker = Checker(allow_expected_profile_change=args.allow_profile_revision_change,
+                      baseline_revision=args.baseline_revision)
+    seen = polls = 0; error = None; last = None
     application = mode = 0; transition_deadline = 0
     deadline = time.monotonic() + args.duration
 
@@ -116,6 +118,8 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--backup', type=Path, required=True)
     parser.add_argument('--duration', type=float, default=1800)
+    parser.add_argument('--allow-profile-revision-change', action='store_true')
+    parser.add_argument('--baseline-revision', type=int, default=19)
     parser.add_argument('--event')
     parser.add_argument('--application', type=int, choices=(0, 1))
     parser.add_argument('--mode', type=int, choices=(0, 1, 2))
