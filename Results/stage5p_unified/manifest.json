@@ -9,6 +9,11 @@
       "sha256": "80E02F6250E759B65EDB40459589565ABE56ADC2A85C311C8829F17BA2464B4A"
     },
     {
+      "path": "Docs/STAGE5P_UNIFIED_FOCUSED_HARDWARE_VALIDATION.md",
+      "bytes": 4784,
+      "sha256": "31FD34A8D706EAE07DDCFBDD4AABD238C4F33FB799EB7BFC07C7C2DA448EDC85"
+    },
+    {
       "path": "Docs/STAGE5P_UNIFIED_SOFTWARE_GATE.md",
       "bytes": 5183,
       "sha256": "815F1922580E96A8827BF3206D79BBEEB7BA0BD9B2EB6DE2FAEE604B0A9709DD"
@@ -152,6 +157,11 @@
       "path": "Results/stage5p_unified/software/summary.json",
       "bytes": 4999,
       "sha256": "89E399766679911E89FA665E143C591FB4A2D12CB1690260E9145724760D9164"
+    },
+    {
+      "path": "Results/stage5p_unified/software/target_resource_diag_build.log",
+      "bytes": 1373,
+      "sha256": "B0F09F19532867345D6343CDF850828D8B605140DAEAC61C5A8403AC9ABA2BF1"
     },
     {
       "path": "Results/stage5p_unified/software/unified_0x0523_UNFLASHED.bin",

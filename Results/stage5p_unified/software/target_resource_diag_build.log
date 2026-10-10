@@ -1,0 +1,12 @@
+[1/1] Linking C executable stm32f103rbt6_a33.elf
+FAILED: stm32f103rbt6_a33.elf 
+C:\WINDOWS\system32\cmd.exe /C "cd . && E:\ST\STM32CubeCLT_1.18.0\GNU-tools-for-STM32\bin\arm-none-eabi-gcc.exe -Wall -Wextra -Werror -fstack-usage -fcallgraph-info=su -mcpu=cortex-m3  -Wall -fdata-sections -ffunction-sections -mcpu=cortex-m3  -Wall -fdata-sections -ffunction-sections -O0 -g3 -mcpu=cortex-m3  -T "D:/Documents/stm32f103rbt6_a33_stage5p_unified/cmake/STM32F103RB_FLASH_CONFIG.ld" --specs=nano.specs -Wl,-Map=stm32f103rbt6_a33.map -Wl,--gc-sections -Wl,--print-memory-usage @CMakeFiles\stm32f103rbt6_a33.rsp -o stm32f103rbt6_a33.elf  && cd ."
+E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/bin/ld.exe: stm32f103rbt6_a33.elf section `.text' will not fit in region `FLASH'
+E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/bin/ld.exe: region `FLASH' overflowed by 53880 bytes
+Memory region         Used Size  Region Size  %age Used
+             RAM:       19416 B        20 KB     94.80%
+           FLASH:      180856 B       124 KB    142.43%
+        CONFIG_A:           0 B         2 KB      0.00%
+        CONFIG_B:           0 B         2 KB      0.00%
+collect2.exe: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
