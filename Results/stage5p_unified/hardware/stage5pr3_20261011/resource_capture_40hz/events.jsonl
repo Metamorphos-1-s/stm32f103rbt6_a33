@@ -1,0 +1,4 @@
+{"utc": "2026-10-10T18:25:22.102463+00:00", "host_monotonic_ns": 1399947531000000, "kind": "CAPTURE_START", "identity": "0x0526/0x010E", "rate": "40Hz", "five_blocks": [[0, 32], [32, 28], [448, 10], [640, 40], [896, 122]]}
+{"utc": "2026-10-10T18:25:22.187070+00:00", "host_monotonic_ns": 1399947625000000, "kind": "CAPTURE_FAILURE", "error": "runtime stack margin below512"}
+{"utc": "2026-10-10T18:25:22.188070+00:00", "host_monotonic_ns": 1399947625000000, "kind": "CAPTURE_END", "error": "runtime stack margin below512"}
+{"utc": "2026-10-10T18:25:39.910945+00:00", "host_monotonic_ns": 1399965343000000, "kind": "EXACT_CURRENT_IMAGE_RESTORED", "firmware": "0x0520", "map": "0x0109"}

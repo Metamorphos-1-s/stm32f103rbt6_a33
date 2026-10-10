@@ -1,0 +1,9 @@
+{
+  "status": "FAIL",
+  "error": "target fault/error/dirty/ACTIVE",
+  "polls": 166,
+  "host_gap_events": [],
+  "snapshots_sha256": "7D9684733ABE9E5220F05E6723DB8ED4D5485E4AA4F72907C65371D2E40C7C3E",
+  "polls_sha256": "11D8EF0AE4CA6766964036452AF5907FA6F91BDB155E2729D707C343BBAB234C",
+  "note": "MCU cumulative maxima preserve calls across host polling gaps; no interpolation"
+}

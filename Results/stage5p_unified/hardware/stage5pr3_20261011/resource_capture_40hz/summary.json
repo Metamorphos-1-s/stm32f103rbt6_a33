@@ -1,0 +1,9 @@
+{
+  "status": "FAIL",
+  "error": "runtime stack margin below512",
+  "polls": 1,
+  "host_gap_events": [],
+  "snapshots_sha256": "2B096D75B819C91679CD9FB335582DCEC0EE58A74A8505DDD1C85DA1E216FC88",
+  "polls_sha256": "208DB130342DC810395DBF4B4FA0C69320BCA423CB192E9DE9C01419AB53DD85",
+  "note": "MCU cumulative maxima preserve calls across host polling gaps; no interpolation"
+}

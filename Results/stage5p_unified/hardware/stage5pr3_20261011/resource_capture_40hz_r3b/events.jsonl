@@ -1,0 +1,4 @@
+{"utc": "2026-10-10T18:28:00.459915+00:00", "host_monotonic_ns": 1400105890000000, "kind": "CAPTURE_START", "identity": "0x0526/0x010E", "rate": "40Hz", "five_blocks": [[0, 32], [32, 28], [448, 10], [640, 40], [896, 122]]}
+{"utc": "2026-10-10T18:28:00.551436+00:00", "host_monotonic_ns": 1400105984000000, "kind": "CAPTURE_FAILURE", "error": "target fault/error/dirty/ACTIVE"}
+{"utc": "2026-10-10T18:28:00.551436+00:00", "host_monotonic_ns": 1400105984000000, "kind": "CAPTURE_END", "error": "target fault/error/dirty/ACTIVE"}
+{"utc": "2026-10-10T18:28:18.333757+00:00", "host_monotonic_ns": 1400123765000000, "kind": "EXACT_CURRENT_IMAGE_RESTORED", "firmware": "0x0520", "map": "0x0109"}

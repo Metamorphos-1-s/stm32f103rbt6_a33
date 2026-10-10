@@ -21,6 +21,7 @@ typedef struct {
     uint32_t loop_count;
     uint16_t stack_offset_flags;
     uint16_t overhead_cycles;
+    uint32_t epoch_id;
 } A13DRStats;
 typedef union {
     uint8_t boot_payload[CONFIG_STORE_PAYLOAD_BUFFER_SIZE];
@@ -35,6 +36,7 @@ void A13DR_PaintStack(void);
 uint32_t A13DR_LoopBegin(void);
 void A13DR_LoopEnd(uint32_t start);
 void A13DR_FeedEnd(uint32_t start, uint32_t sequence, uint32_t state, bool boosted);
+void A13DR_BeginEpoch(uint32_t reason);
 uint32_t A13DR_ReadMetric(uint16_t index);
 
 /* Shared exact updater for MCU and host tests. All callers are main-loop only. */
@@ -80,6 +82,6 @@ static inline void A13DR_Accumulate(A13DRStats *s, uint32_t cycles,
         s->global_peak_sequence_path = (sequence & UINT32_C(0x0fffffff)) | (path << 28U);
     A13DR_EndWrite(s);
 }
-_Static_assert(sizeof(A13DRStats) == 136U, "statistics ABI");
+_Static_assert(sizeof(A13DRStats) == 140U, "statistics ABI");
 _Static_assert(sizeof(A13DRStats) <= CONFIG_STORE_PAYLOAD_BUFFER_SIZE, "boot scratch fit");
 #endif

@@ -3,7 +3,7 @@ import copy
 import unittest
 from contract import Checker, decode, SIGNATURE
 
-SAFETY=dict(firmware=0x0525,map=0x010d,dirty=0,application=0,revision=19,
+SAFETY=dict(firmware=0x0526,map=0x010e,dirty=0,application=0,revision=19,
             saved_revision=19,save_count=0,calibration_valid=1)
 
 
@@ -13,7 +13,7 @@ def snapshot():
         fault=0,overrun=0,read_errors=0,invalid=0,counts=[1]+[0]*9,total=1,
         maxima=[1000]+[0]*9,peaks=[1]+[0]*9,coverage=1,first=1,last=1,
         max_cycles=1000,peak_seq=1,peak_path=0,loop_max=10000,interval_max=12000,
-        produced=1,consumed=1,engine=1,fifo=0,now_ms=5000,driver_state=4,loops=50)
+        produced=1,consumed=1,engine=1,fifo=0,now_ms=5000,driver_state=4,loops=50,epoch_id=2)
 
 
 def after_command():
@@ -46,6 +46,12 @@ class ContractTests(unittest.TestCase):
             self.checker().check(s,5200000000,SAFETY)
     def checker(self):
         c=Checker(); c.check(snapshot(),5000000000,SAFETY); return c
+
+    def test_active_requires_explicit_contract(self):
+        s=snapshot(); safety=dict(SAFETY, application=1)
+        with self.assertRaisesRegex(ValueError,'target fault'):
+            Checker().check(s,5000000000,safety)
+        Checker(allow_active=True).check(s,5000000000,safety)
     def test_serial_command_skips_poll_not_target_peak(self):
         c=self.checker(); s=after_command()
         c.check(s,5200000000,SAFETY)

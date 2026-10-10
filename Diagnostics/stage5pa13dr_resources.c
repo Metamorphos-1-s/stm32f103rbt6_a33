@@ -7,6 +7,7 @@
 #include "fault_manager.h"
 #include "stm32f1xx_hal.h"
 #include <stddef.h>
+#include <string.h>
 
 extern uint8_t _ebss;
 extern uint8_t _estack;
@@ -126,12 +127,24 @@ uint32_t A13DR_ReadMetric(uint16_t index)
     case 30U:
         for(i=0U;i<A13DR_PATHS;++i) if(g_a13dr_stats.calls[i]) total|=1UL<<i;
         return total;
-    case 31U:return 1U;
+    case 31U:return g_a13dr_stats.epoch_id;
     case 52U:return FaultManager_GetActiveMask();
     case 53U:return 1U; /* Boot-scratch ownership valid. */
     case 54U:return CS1237_GetState();
     default:return 0U;
     }
+}
+void A13DR_BeginEpoch(uint32_t reason)
+{
+    uint16_t prior_flags = g_a13dr_stats.stack_offset_flags;
+    uint32_t epoch = (UINT32_C(1) | ((uint32_t)prior_flags << 16U));
+    uint16_t flags = (uint16_t)(prior_flags & UINT16_C(0x1fff));
+    uint16_t overhead = g_a13dr_stats.overhead_cycles;
+    (void)reason;
+    (void)memset(&g_a13dr_stats, 0, sizeof(g_a13dr_stats));
+    g_a13dr_stats.epoch_id = epoch;
+    g_a13dr_stats.stack_offset_flags = flags;
+    g_a13dr_stats.overhead_cycles = overhead;
 }
 _Static_assert(offsetof(A13DRStats,stack_offset_flags)==132U,"paint ABI");
 _Static_assert(offsetof(A13DRStats,overhead_cycles)==134U,"overhead ABI");

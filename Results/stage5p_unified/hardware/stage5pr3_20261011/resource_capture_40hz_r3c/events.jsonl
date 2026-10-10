@@ -1,0 +1,3 @@
+{"utc": "2026-10-10T18:29:27.918432+00:00", "host_monotonic_ns": 1400193359000000, "kind": "CAPTURE_START", "identity": "0x0526/0x010E", "rate": "40Hz", "five_blocks": [[0, 32], [32, 28], [448, 10], [640, 40], [896, 122]]}
+{"utc": "2026-10-10T18:30:32.832916+00:00", "host_monotonic_ns": 1400253359000000, "kind": "CAPTURE_END", "error": null}
+{"utc": "2026-10-10T18:30:32.832916+00:00", "host_monotonic_ns": 1400253359000000, "kind": "RESTORE_FAILURE", "error": "[Errno 2] No such file or directory: 'Results\\\\stage5p_unified\\\\hardware\\\\stage5pr3_202611\\\\backup_identity.json'"}

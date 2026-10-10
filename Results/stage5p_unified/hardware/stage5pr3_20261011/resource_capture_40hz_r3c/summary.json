@@ -1,0 +1,9 @@
+{
+  "status": "FAIL",
+  "error": "; restore: [Errno 2] No such file or directory: 'Results\\\\stage5p_unified\\\\hardware\\\\stage5pr3_202611\\\\backup_identity.json'",
+  "polls": 686,
+  "host_gap_events": [],
+  "snapshots_sha256": "67EBDCC7409B0A3032E42C76F6513E45C7D8EADFB2FB7079C9F697D422D4E087",
+  "polls_sha256": "51D3FEA8AB61EE89C8BDFFD21DB29A5F4C4198FB91405B9522874AF82CD6BB7A",
+  "note": "MCU cumulative maxima preserve calls across host polling gaps; no interpolation"
+}

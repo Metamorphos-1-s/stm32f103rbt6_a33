@@ -29,7 +29,8 @@ def run(args):
         raise ValueError('raw evidence already exists')
     backup = args.backup
     checker = Checker(allow_expected_profile_change=args.allow_profile_revision_change,
-                      baseline_revision=args.baseline_revision)
+                      baseline_revision=args.baseline_revision,
+                      allow_active=args.allow_active)
     seen = polls = 0; error = None; last = None
     application = mode = 0; transition_deadline = 0
     deadline = time.monotonic() + args.duration
@@ -43,7 +44,7 @@ def run(args):
             with (out / 'snapshots.jsonl').open('w', encoding='utf-8') as frames, \
                  (out / 'polls.csv').open('w', newline='', encoding='utf-8') as csvfile:
                 writer = None
-                event('CAPTURE_START', identity='0x0525/0x010D', rate='40Hz', five_blocks=[[0,32],[32,28],[448,10],[640,40],[896,122]])
+                event('CAPTURE_START', identity='0x0526/0x010E', rate='40Hz', five_blocks=[[0,32],[32,28],[448,10],[640,40],[896,122]])
                 while time.monotonic() < deadline:
                     request_file = out / 'requests.jsonl'
                     requests = request_file.read_text(encoding='utf-8').splitlines() if request_file.exists() else []
@@ -120,6 +121,7 @@ def main():
     parser.add_argument('--duration', type=float, default=1800)
     parser.add_argument('--allow-profile-revision-change', action='store_true')
     parser.add_argument('--baseline-revision', type=int, default=19)
+    parser.add_argument('--allow-active', action='store_true')
     parser.add_argument('--event')
     parser.add_argument('--application', type=int, choices=(0, 1))
     parser.add_argument('--mode', type=int, choices=(0, 1, 2))

@@ -1,0 +1,9 @@
+{
+  "status": "FAIL",
+  "error": "unexpected profile revision",
+  "polls": 266,
+  "host_gap_events": [],
+  "snapshots_sha256": "88DF834E8E2B8179707FBB2468E535BFB6048ED081FD95460EDC17D0023042FC",
+  "polls_sha256": "33F232A41DC8A4813E134D4C843B0CEFFBB88D2EF790610217623CBA207ABCD7",
+  "note": "MCU cumulative maxima preserve calls across host polling gaps; no interpolation"
+}

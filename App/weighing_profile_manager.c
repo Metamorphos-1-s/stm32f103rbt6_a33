@@ -4,6 +4,9 @@
 #include "cs1237.h"
 #include "fault_manager.h"
 #include "system_context.h"
+#if (A33_ENABLE_STAGE5P_UNIFIED_RESOURCES_R3 != 0U)
+#include "stage5pa13dr_stats.h"
+#endif
 
 #include <stddef.h>
 
@@ -125,7 +128,11 @@ void WeighingProfileManager_Process(void)
             else if (driver_state == CS1237_STATE_ERROR)
                 FaultManager_Set(FAULT_CS1237_CONFIG_ERROR);
             break;
-        case PROFILE_SWITCH_COMPLETE: s_state = PROFILE_SWITCH_IDLE; break;
+        case PROFILE_SWITCH_COMPLETE:
+#if (A33_ENABLE_STAGE5P_UNIFIED_RESOURCES_R3 != 0U)
+            A13DR_BeginEpoch(1U);
+#endif
+            s_state = PROFILE_SWITCH_IDLE; break;
         case PROFILE_SWITCH_IDLE:
         default: break;
     }

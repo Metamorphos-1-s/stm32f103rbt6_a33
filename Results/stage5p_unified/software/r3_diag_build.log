@@ -1,0 +1,7 @@
+[1/2] Building C object CMakeFiles/stm32f103rbt6_a33.dir/Diagnostics/stage5pa13dr_resources.c.obj
+[2/2] Linking C executable stm32f103rbt6_a33.elf
+Memory region         Used Size  Region Size  %age Used
+             RAM:       19384 B        20 KB     94.65%
+           FLASH:       98412 B       124 KB     77.50%
+        CONFIG_A:           0 B         2 KB      0.00%
+        CONFIG_B:           0 B         2 KB      0.00%

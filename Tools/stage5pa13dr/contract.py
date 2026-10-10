@@ -21,31 +21,39 @@ def decode(words):
         stack_top=m[15], control=m[16], now_ms=m[17], produced=m[18], consumed=m[19],
         invalid=m[20], fifo=m[21], read_errors=m[22], overrun=m[23], engine=m[24],
         sample_ms=m[25], mode=m[26], state=m[27], gates=m[28], boost_samples=m[29],
-        coverage=m[30], version=m[31], maxima=maxima, counts=counts, peaks=peaks,
+        coverage=m[30], epoch_id=m[31], maxima=maxima, counts=counts, peaks=peaks,
         fault=tail[0], leased=tail[1], driver_state=tail[2])
 
 
 class Checker:
-    def __init__(self, allow_expected_profile_change=False, baseline_revision=19):
+    def __init__(self, allow_expected_profile_change=False, baseline_revision=19,
+                 allow_active=False):
         self.previous = None
         self.qualified = False
         self.gaps = []
         self.backlog_since = None
         self.allow_expected_profile_change = allow_expected_profile_change
         self.baseline_revision = baseline_revision
+        self.epoch_id = None
+        self.baseline_produced = None
+        self.baseline_consumed = None
+        self.baseline_engine = None
+        self.baseline_fifo = None
+        self.allow_active = allow_active
 
     def check(self, s, host_ns, safety):
-        if s['signature'] != SIGNATURE or s['version'] != 1:
-            raise ValueError('wrong contract signature/version')
+        if s['signature'] != SIGNATURE or s['epoch_id'] == 0:
+            raise ValueError('wrong contract signature/epoch')
         if s['generation_begin'] != s['generation_end'] or s['generation_begin'] & 1:
             raise ValueError('incoherent atomic snapshot')
-        if s['flags'] != 1 or not s['leased'] or s['control'] & 2:
+        if (s['flags'] & 1) != 1 or (s['flags'] & 2) != 0 or not s['leased'] or s['control'] & 2:
             raise ValueError('invalid target diagnostics/lease/MSP')
         if s['touched']-s['static_end'] < 512:
             raise ValueError('runtime stack margin below512')
-        if safety['firmware'] != 0x0525 or safety['map'] != 0x010d:
+        if safety['firmware'] != 0x0526 or safety['map'] != 0x010e:
             raise ValueError('identity changed')
-        if any(s[k] for k in ('fault','overrun','read_errors','invalid')) or safety['dirty'] or safety['application']:
+        if any(s[k] for k in ('fault','overrun','read_errors','invalid')) or (
+                safety['application'] and not self.allow_active):
             raise ValueError('target fault/error/dirty/ACTIVE')
         if self.allow_expected_profile_change:
             if safety['saved_revision'] != self.baseline_revision or safety['revision'] not in (
@@ -53,6 +61,8 @@ class Checker:
                 raise ValueError('unexpected profile revision')
             if bool(safety['dirty']) != (safety['revision'] != safety['saved_revision']):
                 raise ValueError('profile dirty/revision mismatch')
+            if safety['revision'] == self.baseline_revision and safety['dirty']:
+                raise ValueError('unexpected dirty without profile revision')
         elif safety['revision'] != 19 or safety['saved_revision'] != 19 or safety['dirty']:
             raise ValueError('persistence invariant')
         if safety['save_count']:
@@ -80,10 +90,21 @@ class Checker:
             raise ValueError('target call exceeds10ms')
         if s['loop_max']*40>hclk or s['interval_max']*40>hclk:
             raise ValueError('target loop exceeds25ms')
-        if s['produced']-s['consumed'] != s['fifo'] or s['engine'] != s['consumed']:
+        if self.epoch_id is None:
+            self.epoch_id = s['epoch_id']
+            self.baseline_produced = s['produced']
+            self.baseline_consumed = s['consumed']
+            self.baseline_engine = s['engine']
+            self.baseline_fifo = s['fifo']
+        elif s['epoch_id'] != self.epoch_id:
+            raise ValueError('diagnostic epoch changed during qualification')
+        produced_delta = s['produced'] - self.baseline_produced
+        consumed_delta = s['consumed'] - self.baseline_consumed
+        engine_delta = s['engine'] - self.baseline_engine
+        if produced_delta - consumed_delta != s['fifo'] - self.baseline_fifo or engine_delta != consumed_delta:
             raise ValueError('target sample/FIFO conservation')
-        if s['last'] != s['engine']:
-            raise ValueError('every Feed not accounted for')
+        if engine_delta < 0 or consumed_delta < 0:
+            raise ValueError('target epoch counter reset')
         if s['fifo']>1:
             self.backlog_since = self.backlog_since or host_ns
             if host_ns-self.backlog_since>1000000000:

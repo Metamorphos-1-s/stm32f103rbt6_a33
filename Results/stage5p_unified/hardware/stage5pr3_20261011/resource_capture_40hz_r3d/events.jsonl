@@ -1,0 +1,3 @@
+{"utc": "2026-10-10T18:31:58.709949+00:00", "host_monotonic_ns": 1400339234000000, "kind": "CAPTURE_START", "identity": "0x0526/0x010E", "rate": "40Hz", "five_blocks": [[0, 32], [32, 28], [448, 10], [640, 40], [896, 122]]}
+{"utc": "2026-10-10T18:32:58.748706+00:00", "host_monotonic_ns": 1400399281000000, "kind": "CAPTURE_END", "error": null}
+{"utc": "2026-10-10T18:33:16.390470+00:00", "host_monotonic_ns": 1400416921000000, "kind": "EXACT_CURRENT_IMAGE_RESTORED", "firmware": "0x0520", "map": "0x0109"}

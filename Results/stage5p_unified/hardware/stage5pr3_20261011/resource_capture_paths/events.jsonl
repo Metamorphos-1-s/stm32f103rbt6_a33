@@ -1,0 +1,7 @@
+{"utc": "2026-10-10T18:34:15.916185+00:00", "host_monotonic_ns": 1400476453000000, "kind": "CAPTURE_START", "identity": "0x0526/0x010E", "rate": "40Hz", "five_blocks": [[0, 32], [32, 28], [448, 10], [640, 40], [896, 122]]}
+{"utc": "2026-10-10T18:34:30.350499+00:00", "host_monotonic_ns": 1400490875000000, "kind": "HOST_REQUEST", "request": {"utc": "2026-10-10T18:34:30.261483+00:00", "host_monotonic_ns": 1400490796000000, "event": "ACTIVE STATIC path coverage", "mode": 1, "application": 1, "stop": false}}
+{"utc": "2026-10-10T18:34:30.441539+00:00", "host_monotonic_ns": 1400490968000000, "kind": "PAIR_PRECONDITION", "generation": 3, "application": 0, "mode": 0, "offset_ug": 0, "fault": 0, "overrun": 0}
+{"utc": "2026-10-10T18:34:30.470545+00:00", "host_monotonic_ns": 1400491000000000, "kind": "PAIR_RESULT", "result": {"token": 2600, "result": 0, "result_name": "OK", "state": 0, "last_command": 36}, "expected_generation": 3}
+{"utc": "2026-10-10T18:34:30.564477+00:00", "host_monotonic_ns": 1400491093000000, "kind": "CAPTURE_FAILURE", "error": "target fault/error/dirty/ACTIVE"}
+{"utc": "2026-10-10T18:34:30.564477+00:00", "host_monotonic_ns": 1400491093000000, "kind": "CAPTURE_END", "error": "target fault/error/dirty/ACTIVE"}
+{"utc": "2026-10-10T18:34:48.262736+00:00", "host_monotonic_ns": 1400508796000000, "kind": "EXACT_CURRENT_IMAGE_RESTORED", "firmware": "0x0520", "map": "0x0109"}
