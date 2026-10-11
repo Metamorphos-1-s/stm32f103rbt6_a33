@@ -1,0 +1,289 @@
+{
+  "requested_profile": 1,
+  "events": [
+    {
+      "kind": "PRE",
+      "utc": "2026-10-11T06:53:52.234318+00:00",
+      "monotonic_ns": 1444852765000000,
+      "probe": {
+        "utc": "2026-10-11T06:53:52.234318+00:00",
+        "host_monotonic_ns": 1444852765000000,
+        "firmware": "0x0526",
+        "map": "0x010E",
+        "word_order": "high",
+        "display_count": 50037,
+        "display_decimals": 2,
+        "gross_ug": 500372822,
+        "net_ug": 500372822,
+        "raw_adc": 486126,
+        "filtered_adc_counts": 486111,
+        "sample_sequence": 10,
+        "mcu_uptime_ms": 1817,
+        "overrun_count": 0,
+        "fault_mask": 0,
+        "dirty": 0,
+        "revision": 19,
+        "saved_revision": 19,
+        "calibration_valid": 1,
+        "configuration": {
+          "active_profile": 0,
+          "sample_rate": 0,
+          "gain": 3,
+          "filter_mode": 1,
+          "filter_strength": 3,
+          "raw_zero": 41868,
+          "raw_span": 485780,
+          "span_mass_ug": 500000000,
+          "schema": 2,
+          "persistent_format": 3,
+          "slot": 1,
+          "storage_sequence": 19
+        },
+        "r5": {
+          "signature": 21941,
+          "application": 0,
+          "mode": 0,
+          "state": 0,
+          "limited": 0,
+          "offset_ug": 0,
+          "save_request_count_low": 0
+        },
+        "checkweigh": {
+          "signature": 23477,
+          "mode": 0
+        },
+        "candidate": null
+      }
+    },
+    {
+      "kind": "REQUEST_FC16",
+      "utc": "2026-10-11T06:53:52.244815+00:00",
+      "monotonic_ns": 1444852781000000,
+      "command": 7,
+      "token": 17642,
+      "arg0": 1,
+      "arg1": 0,
+      "arg64": 0,
+      "flags": 0,
+      "raw": {
+        "tx": "01100040000B1644EA00070000000100000000000000000000000000001CE5",
+        "rx": "01100040000B801A"
+      }
+    },
+    {
+      "kind": "EXECUTE_FC06",
+      "utc": "2026-10-11T06:53:52.252322+00:00",
+      "monotonic_ns": 1444852781000000,
+      "raw": {
+        "tx": "0106004BA55A02B7",
+        "rx": "0106004BA55A02B7"
+      }
+    },
+    {
+      "kind": "RESPONSE_FC03",
+      "utc": "2026-10-11T06:53:52.260348+00:00",
+      "monotonic_ns": 1444852796000000,
+      "raw": {
+        "tx": "0103004C000485DE",
+        "rx": "01030844EA000100000007A7D8"
+      },
+      "words": [
+        17642,
+        1,
+        0,
+        7
+      ]
+    },
+    {
+      "kind": "RESULT",
+      "result": {
+        "token": 17642,
+        "result": 1,
+        "state": 0,
+        "last_command": 7
+      }
+    },
+    {
+      "kind": "ASYNC_READBACK",
+      "samples": [
+        {
+          "utc": "2026-10-11T06:53:52.359478+00:00",
+          "monotonic_ns": 1444852890000000,
+          "probe": {
+            "utc": "2026-10-11T06:53:52.350944+00:00",
+            "host_monotonic_ns": 1444852890000000,
+            "firmware": "0x0526",
+            "map": "0x010E",
+            "word_order": "high",
+            "display_count": 50038,
+            "display_decimals": 2,
+            "gross_ug": 500379580,
+            "net_ug": 500379580,
+            "raw_adc": 486115,
+            "filtered_adc_counts": 486117,
+            "sample_sequence": 11,
+            "mcu_uptime_ms": 1918,
+            "overrun_count": 0,
+            "fault_mask": 0,
+            "dirty": 0,
+            "revision": 19,
+            "saved_revision": 19,
+            "calibration_valid": 1,
+            "configuration": {
+              "active_profile": 0,
+              "sample_rate": 0,
+              "gain": 3,
+              "filter_mode": 1,
+              "filter_strength": 3,
+              "raw_zero": 41868,
+              "raw_span": 485780,
+              "span_mass_ug": 500000000,
+              "schema": 2,
+              "persistent_format": 3,
+              "slot": 1,
+              "storage_sequence": 19
+            },
+            "r5": {
+              "signature": 21941,
+              "application": 0,
+              "mode": 0,
+              "state": 0,
+              "limited": 0,
+              "offset_ug": 0,
+              "save_request_count_low": 0
+            },
+            "checkweigh": {
+              "signature": 23477,
+              "mode": 0
+            },
+            "candidate": null,
+            "cs1237_state": 2,
+            "cs1237_buffered": 0
+          },
+          "cs_raw": {
+            "tx": "0103002B0002B403",
+            "rx": "010304000200005BF3"
+          }
+        },
+        {
+          "utc": "2026-10-11T06:53:52.557665+00:00",
+          "monotonic_ns": 1444853093000000,
+          "probe": {
+            "utc": "2026-10-11T06:53:52.550147+00:00",
+            "host_monotonic_ns": 1444853078000000,
+            "firmware": "0x0526",
+            "map": "0x010E",
+            "word_order": "high",
+            "display_count": 50038,
+            "display_decimals": 2,
+            "gross_ug": 500379580,
+            "net_ug": 500379580,
+            "raw_adc": 486115,
+            "filtered_adc_counts": 486117,
+            "sample_sequence": 11,
+            "mcu_uptime_ms": 1918,
+            "overrun_count": 0,
+            "fault_mask": 0,
+            "dirty": 0,
+            "revision": 19,
+            "saved_revision": 19,
+            "calibration_valid": 1,
+            "configuration": {
+              "active_profile": 0,
+              "sample_rate": 0,
+              "gain": 3,
+              "filter_mode": 1,
+              "filter_strength": 3,
+              "raw_zero": 41868,
+              "raw_span": 485780,
+              "span_mass_ug": 500000000,
+              "schema": 2,
+              "persistent_format": 3,
+              "slot": 1,
+              "storage_sequence": 19
+            },
+            "r5": {
+              "signature": 21941,
+              "application": 0,
+              "mode": 0,
+              "state": 0,
+              "limited": 0,
+              "offset_ug": 0,
+              "save_request_count_low": 0
+            },
+            "checkweigh": {
+              "signature": 23477,
+              "mode": 0
+            },
+            "candidate": null,
+            "cs1237_state": 4,
+            "cs1237_buffered": 0
+          },
+          "cs_raw": {
+            "tx": "0103002B0002B403",
+            "rx": "01030400040000BBF2"
+          }
+        },
+        {
+          "utc": "2026-10-11T06:53:52.759524+00:00",
+          "monotonic_ns": 1444853296000000,
+          "probe": {
+            "utc": "2026-10-11T06:53:52.750990+00:00",
+            "host_monotonic_ns": 1444853281000000,
+            "firmware": "0x0526",
+            "map": "0x010E",
+            "word_order": "high",
+            "display_count": 50033,
+            "display_decimals": 2,
+            "gross_ug": 500330020,
+            "net_ug": 500330020,
+            "raw_adc": 486073,
+            "filtered_adc_counts": 486073,
+            "sample_sequence": 8,
+            "mcu_uptime_ms": 2369,
+            "overrun_count": 0,
+            "fault_mask": 0,
+            "dirty": 1,
+            "revision": 20,
+            "saved_revision": 19,
+            "calibration_valid": 1,
+            "configuration": {
+              "active_profile": 1,
+              "sample_rate": 1,
+              "gain": 3,
+              "filter_mode": 0,
+              "filter_strength": 0,
+              "raw_zero": 41868,
+              "raw_span": 485780,
+              "span_mass_ug": 500000000,
+              "schema": 2,
+              "persistent_format": 3,
+              "slot": 1,
+              "storage_sequence": 19
+            },
+            "r5": {
+              "signature": 21941,
+              "application": 0,
+              "mode": 0,
+              "state": 0,
+              "limited": 0,
+              "offset_ug": 0,
+              "save_request_count_low": 0
+            },
+            "checkweigh": {
+              "signature": 23477,
+              "mode": 0
+            },
+            "candidate": null,
+            "cs1237_state": 4,
+            "cs1237_buffered": 0
+          },
+          "cs_raw": {
+            "tx": "0103002B0002B403",
+            "rx": "01030400040000BBF2"
+          }
+        }
+      ]
+    }
+  ]
+}
