@@ -1,0 +1,433 @@
+{
+  "runs": [
+    {
+      "name": "R4",
+      "epoch": 351272961,
+      "epoch_matches": true,
+      "rows": 2715,
+      "firmware": 1318,
+      "map": 270,
+      "hclk_hz": 72000000,
+      "modes": [
+        0,
+        1,
+        2
+      ],
+      "maxima": [
+        216,
+        82166,
+        672128,
+        84638,
+        0,
+        481131,
+        0,
+        0,
+        85485,
+        0
+      ],
+      "counts": [
+        103,
+        150,
+        300,
+        199,
+        0,
+        94,
+        0,
+        0,
+        1553,
+        0
+      ],
+      "app_run_max": 1027997,
+      "loop_interval_max": 1028049,
+      "peaks": [
+        2,
+        994,
+        1347,
+        1545,
+        0,
+        1554,
+        0,
+        0,
+        753,
+        0
+      ],
+      "coverage": 303,
+      "flags": 1,
+      "stack_untouched": 1264,
+      "produced": 9610,
+      "consumed": 9610,
+      "engine": 9600,
+      "fifo": 0,
+      "fault": 0,
+      "overrun": 0,
+      "read_errors": 0,
+      "dirty": 1,
+      "revision": 23,
+      "saved_revision": 19,
+      "save_count": 0,
+      "host_gaps": [
+        {
+          "previous": 103,
+          "current": 106,
+          "calls_not_seen_as_individual_polls": 2,
+          "note": "retained in MCU maxima/counts; not interpolated"
+        },
+        {
+          "previous": 895,
+          "current": 898,
+          "calls_not_seen_as_individual_polls": 2,
+          "note": "retained in MCU maxima/counts; not interpolated"
+        },
+        {
+          "previous": 1638,
+          "current": 1641,
+          "calls_not_seen_as_individual_polls": 2,
+          "note": "retained in MCU maxima/counts; not interpolated"
+        }
+      ],
+      "snapshots_sha256": "99D66132A60A778AC4DA575C731056F7ACA2332989E8ECE49C1EAAD60A4ABF9C",
+      "polls_sha256": "689D2974A2965A9A4310C190970453F6520015581E9DB78B4846C386333D8511"
+    },
+    {
+      "name": "R5",
+      "epoch": 348651521,
+      "epoch_matches": true,
+      "rows": 2017,
+      "firmware": 1318,
+      "map": 270,
+      "hclk_hz": 72000000,
+      "modes": [
+        0,
+        2
+      ],
+      "maxima": [
+        341,
+        86254,
+        641887,
+        82291,
+        475050,
+        0,
+        109535,
+        110812,
+        0,
+        0
+      ],
+      "counts": [
+        500,
+        251,
+        494,
+        199,
+        180,
+        0,
+        65,
+        300,
+        0,
+        0
+      ],
+      "app_run_max": 1036974,
+      "loop_interval_max": 1037026,
+      "peaks": [
+        255,
+        594,
+        1611,
+        1687,
+        1897,
+        0,
+        852,
+        898,
+        0,
+        0
+      ],
+      "coverage": 223,
+      "flags": 1,
+      "stack_untouched": 1224,
+      "produced": 7969,
+      "consumed": 7969,
+      "engine": 7959,
+      "fifo": 0,
+      "fault": 0,
+      "overrun": 0,
+      "read_errors": 0,
+      "dirty": 1,
+      "revision": 21,
+      "saved_revision": 19,
+      "save_count": 0,
+      "host_gaps": [
+        {
+          "previous": 500,
+          "current": 503,
+          "calls_not_seen_as_individual_polls": 2,
+          "note": "retained in MCU maxima/counts; not interpolated"
+        }
+      ],
+      "snapshots_sha256": "9DA2C95FB105D41E557CA761FA154E9F6F427833972E294DB164F2006A7D6DC3",
+      "polls_sha256": "6024C30FF4E6C8297FFCB41DEFACE8C1FF44065F4346A3CACE444ACE8482A72C"
+    }
+  ],
+  "combined": {
+    "coverage": 511,
+    "paths": [
+      {
+        "path": "OFF",
+        "bit": 1,
+        "sources": [
+          {
+            "run": "R4",
+            "mode_values": [
+              0,
+              1,
+              2
+            ],
+            "first_call_mode_values": [
+              0,
+              1
+            ],
+            "epoch": 351272961,
+            "calls": 103,
+            "peak_cycles": 216,
+            "peak_sequence": 2
+          },
+          {
+            "run": "R5",
+            "mode_values": [
+              0,
+              2
+            ],
+            "first_call_mode_values": [
+              0,
+              2
+            ],
+            "epoch": 348651521,
+            "calls": 500,
+            "peak_cycles": 341,
+            "peak_sequence": 255
+          }
+        ],
+        "union_evidence": true
+      },
+      {
+        "path": "HOLDOFF",
+        "bit": 2,
+        "sources": [
+          {
+            "run": "R4",
+            "mode_values": [
+              0,
+              1,
+              2
+            ],
+            "first_call_mode_values": [
+              2
+            ],
+            "epoch": 351272961,
+            "calls": 150,
+            "peak_cycles": 82166,
+            "peak_sequence": 994
+          },
+          {
+            "run": "R5",
+            "mode_values": [
+              0,
+              2
+            ],
+            "first_call_mode_values": [
+              2
+            ],
+            "epoch": 348651521,
+            "calls": 251,
+            "peak_cycles": 86254,
+            "peak_sequence": 594
+          }
+        ],
+        "union_evidence": true
+      },
+      {
+        "path": "REFERENCE_FILL",
+        "bit": 4,
+        "sources": [
+          {
+            "run": "R4",
+            "mode_values": [
+              0,
+              1,
+              2
+            ],
+            "first_call_mode_values": [
+              2
+            ],
+            "epoch": 351272961,
+            "calls": 300,
+            "peak_cycles": 672128,
+            "peak_sequence": 1347
+          },
+          {
+            "run": "R5",
+            "mode_values": [
+              0,
+              2
+            ],
+            "first_call_mode_values": [
+              2
+            ],
+            "epoch": 348651521,
+            "calls": 494,
+            "peak_cycles": 641887,
+            "peak_sequence": 1611
+          }
+        ],
+        "union_evidence": true
+      },
+      {
+        "path": "OBSERVATION_FILL",
+        "bit": 8,
+        "sources": [
+          {
+            "run": "R4",
+            "mode_values": [
+              0,
+              1,
+              2
+            ],
+            "first_call_mode_values": [
+              2
+            ],
+            "epoch": 351272961,
+            "calls": 199,
+            "peak_cycles": 84638,
+            "peak_sequence": 1545
+          },
+          {
+            "run": "R5",
+            "mode_values": [
+              0,
+              2
+            ],
+            "first_call_mode_values": [
+              2
+            ],
+            "epoch": 348651521,
+            "calls": 199,
+            "peak_cycles": 82291,
+            "peak_sequence": 1687
+          }
+        ],
+        "union_evidence": true
+      },
+      {
+        "path": "TRACKING",
+        "bit": 16,
+        "sources": [
+          {
+            "run": "R5",
+            "mode_values": [
+              0,
+              2
+            ],
+            "first_call_mode_values": [
+              2
+            ],
+            "epoch": 348651521,
+            "calls": 180,
+            "peak_cycles": 475050,
+            "peak_sequence": 1897
+          }
+        ],
+        "union_evidence": true
+      },
+      {
+        "path": "FAST_TRACKING",
+        "bit": 32,
+        "sources": [
+          {
+            "run": "R4",
+            "mode_values": [
+              0,
+              1,
+              2
+            ],
+            "first_call_mode_values": [
+              1,
+              2
+            ],
+            "epoch": 351272961,
+            "calls": 94,
+            "peak_cycles": 481131,
+            "peak_sequence": 1554
+          }
+        ],
+        "union_evidence": true
+      },
+      {
+        "path": "STEP_PENDING",
+        "bit": 64,
+        "sources": [
+          {
+            "run": "R5",
+            "mode_values": [
+              0,
+              2
+            ],
+            "first_call_mode_values": [
+              2
+            ],
+            "epoch": 348651521,
+            "calls": 65,
+            "peak_cycles": 109535,
+            "peak_sequence": 852
+          }
+        ],
+        "union_evidence": true
+      },
+      {
+        "path": "STEP_SETTLING",
+        "bit": 128,
+        "sources": [
+          {
+            "run": "R5",
+            "mode_values": [
+              0,
+              2
+            ],
+            "first_call_mode_values": [
+              2
+            ],
+            "epoch": 348651521,
+            "calls": 300,
+            "peak_cycles": 110812,
+            "peak_sequence": 898
+          }
+        ],
+        "union_evidence": true
+      },
+      {
+        "path": "DOSING",
+        "bit": 256,
+        "sources": [
+          {
+            "run": "R4",
+            "mode_values": [
+              0,
+              1,
+              2
+            ],
+            "first_call_mode_values": [
+              1,
+              2
+            ],
+            "epoch": 351272961,
+            "calls": 1553,
+            "peak_cycles": 85485,
+            "peak_sequence": 753
+          }
+        ],
+        "union_evidence": true
+      }
+    ],
+    "max_feed": 672128,
+    "max_app_run": 1036974,
+    "max_loop_interval": 1037026,
+    "same_diagnostic": true,
+    "safe_runs": true,
+    "combined_qualification": true
+  }
+}
