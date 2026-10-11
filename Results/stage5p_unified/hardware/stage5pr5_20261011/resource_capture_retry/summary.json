@@ -1,0 +1,16 @@
+{
+  "status": "INCOMPLETE",
+  "error": null,
+  "polls": 4099,
+  "host_gap_events": [
+    {
+      "previous": 207,
+      "current": 210,
+      "calls_not_seen_as_individual_polls": 2,
+      "note": "retained in MCU maxima/counts; not interpolated"
+    }
+  ],
+  "snapshots_sha256": "D90133EB7D55504B26C7A05F9DCFCE8F75EC5C2E53E1BC53ACB4C101F7E82CB7",
+  "polls_sha256": "BCBD73B6C56EF07CB01CE0F77EB5BB05A8E17C1AF924F0D6977AF4F660287B08",
+  "note": "MCU cumulative maxima preserve calls across host polling gaps; no interpolation"
+}
