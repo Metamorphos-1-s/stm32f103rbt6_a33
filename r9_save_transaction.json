@@ -1,0 +1,124 @@
+{
+  "result": "PASS",
+  "events": [
+    {
+      "kind": "BEFORE",
+      "utc": "2026-10-11T08:41:50.643350+00:00",
+      "state": {
+        "generation": 2,
+        "application": 1,
+        "mode": 2,
+        "state": 7,
+        "offset": 4294958476,
+        "revision": 20,
+        "saved_revision": 19,
+        "dirty": 1,
+        "fault": 0,
+        "overrun": 0,
+        "checkweigh": 0
+      }
+    },
+    {
+      "kind": "PAIR_ATTEMPT",
+      "utc": "2026-10-11T08:41:50.706361+00:00",
+      "attempt": 0,
+      "generation": 2,
+      "response": {
+        "token": 7000,
+        "result": 0,
+        "result_name": "OK",
+        "state": 0,
+        "last_command": 36
+      },
+      "state": {
+        "generation": 2,
+        "application": 1,
+        "mode": 2,
+        "state": 7,
+        "offset": 4294958476,
+        "revision": 20,
+        "saved_revision": 19,
+        "dirty": 1,
+        "fault": 0,
+        "overrun": 0,
+        "checkweigh": 0
+      }
+    },
+    {
+      "kind": "PAIR_COMPLETION_POLL",
+      "utc": "2026-10-11T08:41:50.741557+00:00",
+      "state": {
+        "generation": 2,
+        "application": 1,
+        "mode": 2,
+        "state": 7,
+        "offset": 4294958471,
+        "revision": 20,
+        "saved_revision": 19,
+        "dirty": 1,
+        "fault": 0,
+        "overrun": 0,
+        "checkweigh": 0
+      }
+    },
+    {
+      "kind": "SAVE_PRECONDITION",
+      "utc": "2026-10-11T08:41:50.775565+00:00",
+      "state": {
+        "generation": 2,
+        "application": 1,
+        "mode": 2,
+        "state": 7,
+        "offset": 4294958471,
+        "revision": 20,
+        "saved_revision": 19,
+        "dirty": 1,
+        "fault": 0,
+        "overrun": 0,
+        "checkweigh": 0
+      }
+    },
+    {
+      "kind": "SAVE_REQUEST",
+      "utc": "2026-10-11T08:41:51.205662+00:00",
+      "response": {
+        "token": 7100,
+        "result": 1,
+        "result_name": "ACCEPTED",
+        "state": 0,
+        "last_command": 13
+      },
+      "state": {
+        "generation": 3,
+        "application": 0,
+        "mode": 0,
+        "state": 0,
+        "offset": 0,
+        "revision": 20,
+        "saved_revision": 20,
+        "dirty": 0,
+        "fault": 0,
+        "overrun": 0,
+        "checkweigh": 0
+      }
+    },
+    {
+      "kind": "SAVE_POLL",
+      "utc": "2026-10-11T08:41:51.250609+00:00",
+      "state": {
+        "generation": 3,
+        "application": 0,
+        "mode": 0,
+        "state": 0,
+        "offset": 0,
+        "revision": 20,
+        "saved_revision": 20,
+        "dirty": 0,
+        "fault": 0,
+        "overrun": 0,
+        "checkweigh": 0
+      },
+      "save_result": 2
+    }
+  ]
+}
