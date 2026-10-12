@@ -1,0 +1,47 @@
+{
+  "sha256": "86A3CFC29E0567FD78A6597E5A221AC72D2CF274E8C8D9888EC77011D3D54785",
+  "slots": [
+    {
+      "slot": "A",
+      "sequence": 19,
+      "battery": {
+        "divider_top_ohm": 47000,
+        "divider_bottom_ohm": 10000,
+        "calibration_gain_ppm": 0,
+        "calibration_offset_mv": 0,
+        "low_warning_mv": 0,
+        "critical_low_mv": 0,
+        "recovery_mv": 0,
+        "low_voltage_alarm_enable": false
+      },
+      "legacy_zero_tuple": true
+    },
+    {
+      "slot": "B",
+      "sequence": 20,
+      "battery": {
+        "divider_top_ohm": 47000,
+        "divider_bottom_ohm": 10000,
+        "calibration_gain_ppm": 0,
+        "calibration_offset_mv": 0,
+        "low_warning_mv": 0,
+        "critical_low_mv": 0,
+        "recovery_mv": 0,
+        "low_voltage_alarm_enable": false
+      },
+      "legacy_zero_tuple": true
+    }
+  ],
+  "migration_policy": {
+    "automatic": false,
+    "reason": "V3 has no provenance bit distinguishing legacy defaults from an intentional alarm-off setting",
+    "requires_explicit_operator_confirmation": true,
+    "proposed_unified_values": {
+      "calibration_offset_mv": 400,
+      "low_warning_mv": 13600,
+      "critical_low_mv": 13200,
+      "recovery_mv": 13900,
+      "low_voltage_alarm_enable": true
+    }
+  }
+}

@@ -1,0 +1,259 @@
+[
+  {
+    "kind": "PRE",
+    "probe": {
+      "utc": "2026-10-12T18:40:14.093344+00:00",
+      "host_monotonic_ns": 111949453000000,
+      "firmware": "0x0527",
+      "map": "0x010F",
+      "word_order": "high",
+      "display_count": 26,
+      "display_decimals": 2,
+      "gross_ug": 261313,
+      "net_ug": 261313,
+      "raw_adc": 42083,
+      "filtered_adc_counts": 42100,
+      "sample_sequence": 709,
+      "mcu_uptime_ms": 71842,
+      "overrun_count": 0,
+      "fault_mask": 0,
+      "dirty": 0,
+      "revision": 20,
+      "saved_revision": 20,
+      "calibration_valid": 1,
+      "configuration": {
+        "active_profile": 0,
+        "sample_rate": 0,
+        "gain": 3,
+        "filter_mode": 1,
+        "filter_strength": 3,
+        "raw_zero": 41868,
+        "raw_span": 485780,
+        "span_mass_ug": 500000000,
+        "schema": 2,
+        "persistent_format": 3,
+        "slot": 2,
+        "storage_sequence": 20
+      },
+      "r5": {
+        "signature": 21941,
+        "application": 1,
+        "mode": 2,
+        "state": 5,
+        "limited": 0,
+        "offset_ug": 0,
+        "save_request_count_low": 0
+      },
+      "checkweigh": {
+        "signature": 23477,
+        "mode": 0
+      },
+      "candidate": null
+    },
+    "battery": {
+      "offset": 0,
+      "warning": 0,
+      "critical": 0,
+      "recovery": 0,
+      "enable": 0
+    }
+  },
+  {
+    "kind": 9,
+    "result": {
+      "token": 1001,
+      "result": 0,
+      "result_name": "OK",
+      "state": 0,
+      "last_command": 9
+    }
+  },
+  {
+    "kind": 10,
+    "result": {
+      "token": 1002,
+      "result": 3,
+      "result_name": "INVALID_ARGUMENT",
+      "state": 0,
+      "last_command": 10
+    }
+  },
+  {
+    "kind": "INVALID_READ",
+    "battery": {
+      "offset": 0,
+      "warning": 0,
+      "critical": 0,
+      "recovery": 0,
+      "enable": 0
+    }
+  },
+  {
+    "kind": 12,
+    "result": {
+      "token": 1003,
+      "result": 0,
+      "result_name": "OK",
+      "state": 0,
+      "last_command": 12
+    }
+  },
+  {
+    "kind": "AFTER_CANCEL",
+    "probe": {
+      "utc": "2026-10-12T18:40:14.315263+00:00",
+      "host_monotonic_ns": 111949671000000,
+      "firmware": "0x0527",
+      "map": "0x010F",
+      "word_order": "high",
+      "display_count": 26,
+      "display_decimals": 2,
+      "gross_ug": 244418,
+      "net_ug": 244418,
+      "raw_adc": 42092,
+      "filtered_adc_counts": 42085,
+      "sample_sequence": 711,
+      "mcu_uptime_ms": 72043,
+      "overrun_count": 0,
+      "fault_mask": 0,
+      "dirty": 0,
+      "revision": 20,
+      "saved_revision": 20,
+      "calibration_valid": 1,
+      "configuration": {
+        "active_profile": 0,
+        "sample_rate": 0,
+        "gain": 3,
+        "filter_mode": 1,
+        "filter_strength": 3,
+        "raw_zero": 41868,
+        "raw_span": 485780,
+        "span_mass_ug": 500000000,
+        "schema": 2,
+        "persistent_format": 3,
+        "slot": 2,
+        "storage_sequence": 20
+      },
+      "r5": {
+        "signature": 21941,
+        "application": 1,
+        "mode": 2,
+        "state": 5,
+        "limited": 0,
+        "offset_ug": 0,
+        "save_request_count_low": 0
+      },
+      "checkweigh": {
+        "signature": 23477,
+        "mode": 0
+      },
+      "candidate": null
+    },
+    "battery": {
+      "offset": 0,
+      "warning": 0,
+      "critical": 0,
+      "recovery": 0,
+      "enable": 0
+    }
+  },
+  {
+    "kind": 9,
+    "result": {
+      "token": 1101,
+      "result": 0,
+      "result_name": "OK",
+      "state": 0,
+      "last_command": 9
+    }
+  },
+  {
+    "kind": 10,
+    "result": {
+      "token": 1102,
+      "result": 0,
+      "result_name": "OK",
+      "state": 0,
+      "last_command": 10
+    }
+  },
+  {
+    "kind": "VALIDATE_READ",
+    "battery": {
+      "offset": 0,
+      "warning": 0,
+      "critical": 0,
+      "recovery": 0,
+      "enable": 0
+    }
+  },
+  {
+    "kind": 11,
+    "result": {
+      "token": 1103,
+      "result": 0,
+      "result_name": "OK",
+      "state": 0,
+      "last_command": 11
+    }
+  },
+  {
+    "kind": "APPLY_READ",
+    "probe": {
+      "utc": "2026-10-12T18:40:14.531261+00:00",
+      "host_monotonic_ns": 111949890000000,
+      "firmware": "0x0527",
+      "map": "0x010F",
+      "word_order": "high",
+      "display_count": 26,
+      "display_decimals": 2,
+      "gross_ug": 269197,
+      "net_ug": 269197,
+      "raw_adc": 42114,
+      "filtered_adc_counts": 42107,
+      "sample_sequence": 713,
+      "mcu_uptime_ms": 72243,
+      "overrun_count": 0,
+      "fault_mask": 0,
+      "dirty": 1,
+      "revision": 21,
+      "saved_revision": 20,
+      "calibration_valid": 1,
+      "configuration": {
+        "active_profile": 0,
+        "sample_rate": 0,
+        "gain": 3,
+        "filter_mode": 1,
+        "filter_strength": 3,
+        "raw_zero": 41868,
+        "raw_span": 485780,
+        "span_mass_ug": 500000000,
+        "schema": 2,
+        "persistent_format": 3,
+        "slot": 2,
+        "storage_sequence": 20
+      },
+      "r5": {
+        "signature": 21941,
+        "application": 1,
+        "mode": 2,
+        "state": 5,
+        "limited": 0,
+        "offset_ug": 0,
+        "save_request_count_low": 0
+      },
+      "checkweigh": {
+        "signature": 23477,
+        "mode": 0
+      },
+      "candidate": null
+    },
+    "battery": {
+      "offset": 400,
+      "warning": 13600,
+      "critical": 13200,
+      "recovery": 13900,
+      "enable": 1
+    }
+  }
+]
