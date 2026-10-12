@@ -39,6 +39,13 @@ static uint16_t s_staging[STAGING_REGISTER_COUNT];
 static uint16_t s_alarm_staging[ALARM_STAGING_REGISTER_COUNT];
 static uint16_t s_staging_validation;
 static bool s_staging_dirty;
+#if (A33_ENABLE_STAGE5P_BATTERY_TRANSACTION != 0U)
+static uint16_t s_battery_staging[9];
+static uint16_t s_battery_staging_validation;
+static bool s_battery_staging_dirty;
+static uint32_t s_battery_base_revision;
+static bool s_battery_session_active;
+#endif
 static CommunicationConfig s_pending_communication;
 static CommandSource s_pending_communication_owner;
 static bool s_pending_communication_owner_valid;
@@ -140,6 +147,27 @@ static void RefreshStaging(const DeviceConfig *config)
     s_alarm_staging[15]=config->alarm.external_buzzer_enable?1U:0U;
     s_alarm_staging[16]=config->alarm.qualified_beep_enable?1U:0U;
     s_staging_dirty=false; s_staging_validation=0U;
+#if (A33_ENABLE_STAGE5P_BATTERY_TRANSACTION != 0U)
+    s_battery_staging[0] = Word32((uint32_t)config->battery.calibration_offset_mv, 0U, order);
+    s_battery_staging[1] = Word32((uint32_t)config->battery.calibration_offset_mv, 1U, order);
+    s_battery_staging[2] = Word32(config->battery.low_warning_mv, 0U, order);
+    s_battery_staging[3] = Word32(config->battery.low_warning_mv, 1U, order);
+    s_battery_staging[4] = Word32(config->battery.critical_low_mv, 0U, order);
+    s_battery_staging[5] = Word32(config->battery.critical_low_mv, 1U, order);
+    s_battery_staging[6] = Word32(config->battery.recovery_mv, 0U, order);
+    s_battery_staging[7] = Word32(config->battery.recovery_mv, 1U, order);
+    s_battery_staging[8] = config->battery.low_voltage_alarm_enable ? 1U : 0U;
+    s_battery_staging_dirty=false; s_battery_staging_validation=0U;
+    s_battery_base_revision=SystemContext_Get()->config_revision;
+    s_battery_session_active=false;
+#endif
+}
+
+static uint32_t Join32(const uint16_t *words, ModbusWordOrder order)
+{
+    if (order == MODBUS_WORD_ORDER_HIGH_WORD_FIRST)
+        return ((uint32_t)words[0] << 16U) | words[1];
+    return ((uint32_t)words[1] << 16U) | words[0];
 }
 
 static bool DecodeStaging(const DeviceConfig *active,DeviceConfig *candidate)
@@ -147,6 +175,20 @@ static bool DecodeStaging(const DeviceConfig *active,DeviceConfig *candidate)
     uint8_t p; ModbusWordOrder order=active->communication.word_order;
     if(candidate==NULL)return false;
     *candidate=*active;
+#if (A33_ENABLE_STAGE5P_BATTERY_TRANSACTION != 0U)
+    if (s_battery_staging_dirty)
+    {
+        const SystemContext *context=SystemContext_Get();
+        if (!s_battery_session_active || s_staging_dirty || context==NULL ||
+            context->config_revision!=s_battery_base_revision) return false;
+        candidate->battery.calibration_offset_mv=(int32_t)Join32(&s_battery_staging[0],order);
+        candidate->battery.low_warning_mv=Join32(&s_battery_staging[2],order);
+        candidate->battery.critical_low_mv=Join32(&s_battery_staging[4],order);
+        candidate->battery.recovery_mv=Join32(&s_battery_staging[6],order);
+        candidate->battery.low_voltage_alarm_enable=s_battery_staging[8]!=0U;
+        return true;
+    }
+#endif
     candidate->metrology.compliance_mode=(MetrologyComplianceMode)s_staging[0];
     candidate->metrology.active_unit=(MassUnit)s_staging[1];
     candidate->metrology.enabled_unit_mask=(uint8_t)s_staging[2];
@@ -243,6 +285,18 @@ static ModbusRegisterResult ReadActive(uint16_t address,
     const MetrologyConfig *m = &config->metrology;
     uint8_t offset;
     *value = 0U;
+#if (A33_ENABLE_STAGE5P_BATTERY_TRANSACTION != 0U)
+    if (address >= MODBUS_BATTERY_ACTIVE_FIRST && address <= MODBUS_BATTERY_ACTIVE_LAST)
+    {
+        uint8_t index = (uint8_t)(address - MODBUS_BATTERY_ACTIVE_FIRST);
+        if (index < 2U) *value = Word32((uint32_t)config->battery.calibration_offset_mv, index, config->communication.word_order);
+        else if (index < 4U) *value = Word32(config->battery.low_warning_mv, (uint8_t)(index - 2U), config->communication.word_order);
+        else if (index < 6U) *value = Word32(config->battery.critical_low_mv, (uint8_t)(index - 4U), config->communication.word_order);
+        else if (index < 8U) *value = Word32(config->battery.recovery_mv, (uint8_t)(index - 6U), config->communication.word_order);
+        else *value = config->battery.low_voltage_alarm_enable ? 1U : 0U;
+        return MODBUS_REGISTER_OK;
+    }
+#endif
     switch (address)
     {
         case 0x0100U:*value=(uint16_t)m->compliance_mode; break;
@@ -330,6 +384,16 @@ static ModbusRegisterResult ReadOne(uint16_t address,
         return ModbusCommandMailbox_Read(address,value);
     if ((address>=MODBUS_ACTIVE_CONFIG_FIRST)&&(address<=MODBUS_ACTIVE_CONFIG_LAST))
         return ReadActive(address,config,value);
+#if (A33_ENABLE_STAGE5P_BATTERY_TRANSACTION != 0U)
+    if ((address>=MODBUS_BATTERY_ACTIVE_FIRST)&&(address<=MODBUS_BATTERY_ACTIVE_LAST))
+        return ReadActive(address,config,value);
+    if ((address>=MODBUS_BATTERY_STAGING_FIRST)&&(address<=MODBUS_BATTERY_STAGING_LAST))
+    { *value=s_battery_staging[address-MODBUS_BATTERY_STAGING_FIRST]; return MODBUS_REGISTER_OK; }
+    if (address==MODBUS_BATTERY_STAGING_VALIDATION)
+    { *value=s_battery_staging_validation; return MODBUS_REGISTER_OK; }
+    if (address==MODBUS_BATTERY_STAGING_DIRTY)
+    { *value=s_battery_staging_dirty?1U:0U; return MODBUS_REGISTER_OK; }
+#endif
     if ((address>=MODBUS_STAGING_CONFIG_FIRST)&&(address<=MODBUS_STAGING_CONFIG_LAST))
     { *value=(address==0x017EU)?s_staging_validation:((address==0x017FU)?(s_staging_dirty?1U:0U):s_staging[address-0x0140U]); return MODBUS_REGISTER_OK; }
     if ((address>=MODBUS_ALARM_ACTIVE_FIRST)&&(address<=MODBUS_ALARM_ACTIVE_LAST))
@@ -1029,6 +1093,12 @@ static bool CommunicationValueValid(uint16_t address,uint16_t value)
 
 static ModbusRegisterResult ValidateWriteAddress(uint16_t address,uint16_t value)
 {
+#if (A33_ENABLE_STAGE5P_BATTERY_TRANSACTION != 0U)
+    if ((address>=MODBUS_BATTERY_STAGING_FIRST)&&(address<=MODBUS_BATTERY_STAGING_LAST))
+        return (address==MODBUS_BATTERY_STAGING_LAST) ?
+            (value<=1U?MODBUS_REGISTER_OK:MODBUS_REGISTER_ILLEGAL_VALUE) :
+            MODBUS_REGISTER_OK;
+#endif
     if(address==0x017CU)
         return value<=1U?MODBUS_REGISTER_OK:MODBUS_REGISTER_ILLEGAL_VALUE;
     if((address>=0x0140U)&&(address<=0x017DU))return MODBUS_REGISTER_OK;
@@ -1078,6 +1148,20 @@ static ModbusRegisterResult WriteOne(uint16_t address,uint16_t value,
     DeviceConfig candidate;
 #endif
     if(result!=MODBUS_REGISTER_OK)return result;
+#if (A33_ENABLE_STAGE5P_BATTERY_TRANSACTION != 0U)
+    if((address>=MODBUS_BATTERY_STAGING_FIRST)&&
+       (address<=MODBUS_BATTERY_STAGING_LAST))
+    {
+        if (!s_battery_session_active || s_staging_dirty)
+            return MODBUS_REGISTER_BUSY;
+        if(CommandService_ReserveConfigOwner(source)!=COMMAND_RESULT_OK)
+            return MODBUS_REGISTER_BUSY;
+        s_battery_staging[address-MODBUS_BATTERY_STAGING_FIRST]=value;
+        s_battery_staging_dirty=true;
+        s_battery_staging_validation=0xFFFFU;
+        return MODBUS_REGISTER_OK;
+    }
+#endif
     if((address>=0x0242U)&&(address<=0x024DU)&&!allow_alarm_mass)
         return MODBUS_REGISTER_ILLEGAL_VALUE;
     if(address>=0x0240U&&address<=0x0250U)
@@ -1126,8 +1210,23 @@ static ModbusRegisterResult WriteOne(uint16_t address,uint16_t value,
 #endif
             }
             result=ModbusCommandMailbox_Write(address,value,source);
+#if (A33_ENABLE_STAGE5P_BATTERY_TRANSACTION != 0U)
+            if(command_id==9U && result==MODBUS_REGISTER_OK &&
+               ModbusCommandMailbox_GetLastResult()==COMMAND_RESULT_OK)
+                s_battery_session_active=true;
+#endif
             if(command_id==10U)s_staging_validation=ModbusCommandMailbox_GetLastResult();
+#if (A33_ENABLE_STAGE5P_BATTERY_TRANSACTION != 0U)
+            if(command_id==10U)s_battery_staging_validation=ModbusCommandMailbox_GetLastResult();
+#endif
             if((command_id==11U)&&(ModbusCommandMailbox_GetLastResult()==COMMAND_RESULT_OK))s_staging_dirty=false;
+#if (A33_ENABLE_STAGE5P_BATTERY_TRANSACTION != 0U)
+            if((command_id==11U)&&(ModbusCommandMailbox_GetLastResult()==COMMAND_RESULT_OK))
+            {
+                s_battery_staging_dirty=false;
+                s_battery_session_active=false;
+            }
+#endif
             if((command_id==12U)&&(result==MODBUS_REGISTER_OK))
             {
                 RefreshStaging(&context->config);

@@ -1,0 +1,12 @@
+{
+  "firmware": "0x0527",
+  "map": "0x010F",
+  "active_registers": "0x03A0..0x03A8",
+  "staging_registers": "0x03A9..0x03B1",
+  "validation_register": "0x03B2",
+  "dirty_register": "0x03B3",
+  "save_allowed_only_after": ["CONFIG_VALIDATE=OK", "CONFIG_APPLY_RAM=OK", "active_readback_exact"],
+  "target": {"calibration_offset_mv": 400, "low_warning_mv": 13600, "critical_low_mv": 13200, "recovery_mv": 13900, "low_voltage_alarm_enable": true},
+  "v3_payload_bytes": 281,
+  "device_write_performed": false
+}

@@ -59,9 +59,12 @@ bool DeviceConfig_Validate(const DeviceConfig *config)
     }
 
     if (config->battery.low_voltage_alarm_enable &&
-        ((config->battery.critical_low_mv == 0U) ||
+        ((config->battery.calibration_offset_mv < -2000) ||
+         (config->battery.calibration_offset_mv > 2000) ||
+         (config->battery.critical_low_mv < 10000U) ||
          (config->battery.low_warning_mv <= config->battery.critical_low_mv) ||
-         (config->battery.recovery_mv < config->battery.low_warning_mv)))
+         (config->battery.recovery_mv <= config->battery.low_warning_mv) ||
+         (config->battery.recovery_mv > 20000U)))
     {
         return false;
     }
