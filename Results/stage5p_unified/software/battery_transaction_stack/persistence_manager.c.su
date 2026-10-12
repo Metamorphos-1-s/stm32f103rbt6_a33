@@ -1,0 +1,16 @@
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:97:13:Publish	40	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:103:13:Show	16	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:131:22:Start	24	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:51:13:ApplyRequestedModes	40	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:112:6:PersistenceManager_Init	8	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:124:18:PersistenceManager_LoadStartup	8	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:221:15:PersistenceManager_RequestSave	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:227:15:PersistenceManager_RequestCalibrationSave	16	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:239:15:PersistenceManager_RequestCandidateSave	40	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:301:15:PersistenceManager_RequestFactoryReset	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:306:6:PersistenceManager_Process	32	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:432:6:PersistenceManager_IsBusy	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:437:19:PersistenceManager_GetStatus	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:438:18:PersistenceManager_GetLoadResult	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:439:23:PersistenceManager_GetLoadInfo	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/persistence_manager.c:440:20:PersistenceManager_GetFactoryResetResult	0	static

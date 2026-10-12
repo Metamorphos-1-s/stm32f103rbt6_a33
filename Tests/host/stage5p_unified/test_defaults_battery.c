@@ -52,3 +52,29 @@ void TestUnifiedDefaultsBattery(void)
     assert(battery->low_voltage_warning);
     (void)puts("UNIFIED DEFAULT AND BATTERY TEST PASS");
 }
+
+void TestBatteryTransactionValidation(void)
+{
+    DeviceConfig config;
+    DefaultConfig_Load(&config);
+    config.battery.calibration_offset_mv = 400;
+    config.battery.low_warning_mv = 13600U;
+    config.battery.critical_low_mv = 13200U;
+    config.battery.recovery_mv = 13900U;
+    config.battery.low_voltage_alarm_enable = true;
+    assert(DeviceConfig_Validate(&config));
+
+    config.battery.recovery_mv = 13600U;
+    assert(!DeviceConfig_Validate(&config));
+    config.battery.recovery_mv = 13900U;
+    config.battery.low_warning_mv = 13200U;
+    assert(!DeviceConfig_Validate(&config));
+
+    /* An explicitly disabled alarm may retain legacy zero thresholds. */
+    config.battery.low_warning_mv = 0U;
+    config.battery.critical_low_mv = 0U;
+    config.battery.recovery_mv = 0U;
+    config.battery.low_voltage_alarm_enable = false;
+    assert(DeviceConfig_Validate(&config));
+    (void)puts("BATTERY TRANSACTION VALIDATION TEST PASS");
+}

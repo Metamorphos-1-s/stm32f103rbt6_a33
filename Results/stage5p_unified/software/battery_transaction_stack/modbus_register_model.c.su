@@ -1,0 +1,15 @@
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Protocol/modbus/modbus_register_model.c:121:17:Join64	12	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Protocol/modbus/modbus_register_model.c:245:17:Word32	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Protocol/modbus/modbus_register_model.c:282:29:ReadActive	16	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Protocol/modbus/modbus_register_model.c:132:13:RefreshStaging	48	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Protocol/modbus/modbus_register_model.c:357:29:ReadOne	248	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Protocol/modbus/modbus_register_model.c:166:17:Join32	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Protocol/modbus/modbus_register_model.c:1094:29:ValidateWriteAddress	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Protocol/modbus/modbus_register_model.c:1141:29:WriteOne	56	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Protocol/modbus/modbus_register_model.c:976:6:ModbusRegisterModel_Init	16	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Protocol/modbus/modbus_register_model.c:994:6:ModbusRegisterModel_GetPendingCommunicationForSource	16	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Protocol/modbus/modbus_register_model.c:988:6:ModbusRegisterModel_GetPendingCommunication	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Protocol/modbus/modbus_register_model.c:1003:6:ModbusRegisterModel_CompleteCommunicationApply	16	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Protocol/modbus/modbus_register_model.c:1013:22:ModbusRegisterModel_ReadHolding	120	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Protocol/modbus/modbus_register_model.c:1265:22:ModbusRegisterModel_WriteSingle	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Protocol/modbus/modbus_register_model.c:1271:22:ModbusRegisterModel_WriteMultiple	48	static

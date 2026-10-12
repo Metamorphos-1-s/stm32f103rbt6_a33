@@ -1,0 +1,5 @@
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/config_application.c:33:19:ConfigApplication_Validate	24	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/config_application.c:76:26:ConfigApplication_ApplyInternal	40	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/config_application.c:176:19:ConfigApplication_Apply	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/config_application.c:181:19:ConfigApplication_ApplyFactoryDefaults	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/App/config_application.c:187:19:ConfigApplication_ApplyTransient	0	static

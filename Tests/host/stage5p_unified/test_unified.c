@@ -20,6 +20,7 @@
 #include <stdlib.h>
 
 void TestUnifiedDefaultsBattery(void);
+void TestBatteryTransactionValidation(void);
 
 static GuardedCheckweigh s_alarm;
 bool App_A13CheckweighIsOff(void)
@@ -213,6 +214,7 @@ int main(void)
 {
     uint32_t i;
     TestUnifiedDefaultsBattery();
+    TestBatteryTransactionValidation();
     Test40HzAdapter();
     Test40HzLegalFilters();
     Test40HzCorrectionBounds();

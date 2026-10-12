@@ -1,0 +1,9 @@
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Drivers/battery_adc/battery_adc.c:170:13:BatteryAdc_ConfigIsValid	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Drivers/battery_adc/battery_adc.c:23:6:BatteryAdc_IsConfigurationValid	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Drivers/battery_adc/battery_adc.c:28:6:BatteryAdc_Reconfigure	16	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Drivers/battery_adc/battery_adc.c:36:6:BatteryAdc_Init	16	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Drivers/battery_adc/battery_adc.c:114:24:BatteryAdc_GetState	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Drivers/battery_adc/battery_adc.c:119:10:BatteryAdc_GetErrorCount	0	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Drivers/battery_adc/battery_adc.c:124:10:BatteryAdc_ConvertAdcMv	24	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Drivers/battery_adc/battery_adc.c:50:6:BatteryAdc_Process500ms	40	static
+C:/Users/meta/Documents/stm32f103rbt6_a33_stage5p_unified_r10c/Drivers/battery_adc/battery_adc.c:162:9:BatteryAdc_ApproxPercent	0	static
