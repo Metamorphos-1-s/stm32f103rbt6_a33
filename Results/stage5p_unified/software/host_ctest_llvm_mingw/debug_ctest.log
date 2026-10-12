@@ -1,0 +1,8 @@
+Internal ctest changing into directory: D:/Downloads/stage5p_host_debug2
+Test project D:/Downloads/stage5p_host_debug2
+    Start 46: stage5p_unified_defaults_and_startup
+1/1 Test #46: stage5p_unified_defaults_and_startup ...   Passed    0.26 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.27 sec
