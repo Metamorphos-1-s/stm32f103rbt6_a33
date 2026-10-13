@@ -206,6 +206,11 @@ add_executable(stage5mr5e_d1d_display_tests
     ../../Domain/measurement/display_conditioner.c
     ../../Domain/measurement/mass_math.c
     ../../Domain/measurement/unit_converter.c)
+target_compile_definitions(stage5mr5e_d1d_display_tests PRIVATE
+    A33_ENABLE_STAGE5PA13C_SHADOW=1
+    A33_ENABLE_STAGE5PA13E_ACTIVE=1
+    A33_ENABLE_STAGE5P_UNIFIED=1
+    A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE=1)
 add_executable(stage5mr5e_d1d_display_runner
     stage5mr5e_d1d_display_runner.c
     ../../Domain/measurement/display_conditioner.c
@@ -1072,7 +1077,8 @@ target_compile_definitions(stage5p_unified_tests PRIVATE
     A33_ENABLE_STAGE5PA2_PRODUCT=1 A33_ENABLE_STAGE5PA2C_PRODUCT=1
     A33_ENABLE_STAGE5PA2D_CALIBRATION=1 A33_ENABLE_STAGE5PA13C_SHADOW=1
     A33_ENABLE_STAGE5PA13E_ACTIVE=1 A33_ENABLE_STAGE5P_UNIFIED=1
-    A33_ENABLE_STAGE5P_BATTERY_TRANSACTION=1)
+    A33_ENABLE_STAGE5P_BATTERY_TRANSACTION=1
+    A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE=1)
 if(MSVC)
     target_compile_options(stage5p_unified_tests PRIVATE /W4 /WX)
 else()
