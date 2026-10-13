@@ -753,11 +753,24 @@ CommandResult CommandService_Execute(const CommandRequest *request,
             }
             break;
         case COMMAND_SET_WEIGHT_VIEW:
+#if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
+        {
+            const SystemContext *context = SystemContext_Get();
+            WeightViewMode previous_view = context != NULL ?
+                context->runtime.weight_view : WEIGHT_VIEW_NET;
+            result = SystemContext_SetRuntimeWeightView((WeightViewMode)request->value0) ?
+                     COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
+            if (result == COMMAND_RESULT_OK)
+                MetrologyManager_ChangeDisplayWeightView(previous_view);
+            break;
+        }
+#else
             result = SystemContext_SetRuntimeWeightView((WeightViewMode)request->value0) ?
                      COMMAND_RESULT_OK : COMMAND_RESULT_INVALID_ARGUMENT;
             if (result == COMMAND_RESULT_OK)
                 MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
             break;
+#endif
         case COMMAND_REQUEST_MANUAL_OUTPUT:
             result = COMMAND_RESULT_ACCEPTED;
             break;

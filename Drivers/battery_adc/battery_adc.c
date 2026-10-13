@@ -11,6 +11,11 @@
 
 #define BATTERY_MAX_RESISTOR_OHM  1000000U
 #define BATTERY_GAIN_SCALE_PPM    1000000LL
+#if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
+#define BATTERY_LOW_CONFIRM_SAMPLES 10U /* 500 ms cadence: 5 seconds */
+#else
+#define BATTERY_LOW_CONFIRM_SAMPLES 60U
+#endif
 
 static BatteryConfig s_config;
 static BatteryAdcState s_state;
@@ -85,7 +90,7 @@ void BatteryAdc_Process500ms(void)
         s_state.low_voltage_confirm = 0U;
     } else if (!s_state.low_voltage_warning &&
                s_state.battery_mv <= s_config.low_warning_mv) {
-        if (++s_state.low_voltage_confirm >= 60U) {
+        if (++s_state.low_voltage_confirm >= BATTERY_LOW_CONFIRM_SAMPLES) {
             s_state.low_voltage_warning = true;
             s_state.low_voltage_confirm = 0U;
         }

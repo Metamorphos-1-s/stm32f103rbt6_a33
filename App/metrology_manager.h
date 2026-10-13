@@ -53,6 +53,9 @@ const WeightSnapshot *MetrologyManager_GetSnapshot(void);
 const MassSnapshot *MetrologyManager_GetMassSnapshot(void);
 const DisplayConditionSnapshot *MetrologyManager_GetDisplayConditionSnapshot(void);
 void MetrologyManager_ForceDisplayTracking(DisplayConditionReleaseReason reason);
+#if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
+void MetrologyManager_ChangeDisplayWeightView(WeightViewMode previous_view);
+#endif
 bool MetrologyManager_SetDisplayUnit(MassUnit unit);
 MassUnit MetrologyManager_GetDisplayUnit(void);
 WeightActionResult MetrologyManager_Zero(void);

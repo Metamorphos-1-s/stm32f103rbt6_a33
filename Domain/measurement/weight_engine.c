@@ -83,6 +83,9 @@ bool WeightEngine_UpdateDisplayConfig(WeightEngine *engine,
 
 static void ClearDerived(WeightEngine *engine)
 {
+#if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
+    engine->zero_indicator_candidate_active = false;
+#endif
     engine->snapshot.gross_mass_ug = 0;
     engine->snapshot.uncompensated_gross_mass_ug = 0;
     engine->snapshot.net_mass_ug = 0;
@@ -102,6 +105,12 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
     MassValueUg net;
     uint64_t magnitude;
     MassValueUg overload;
+#if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
+    MassValueUg zero_indicator_range_ug;
+    const UnitDisplayConfig *unit_display;
+    bool zero_indicator_was_on =
+        (engine->snapshot.status_flags & WEIGHT_STATUS_ZERO) != 0U;
+#endif
 #if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     RuntimeDriftInput drift_input;
     const RuntimeDriftSnapshot *drift_snapshot;
@@ -171,8 +180,47 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
     engine->snapshot.net_mass_ug = net;
 #endif
     if (!MassMath_Abs(net, &magnitude)) return false;
+#if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
+    unit_display = &engine->metrology.unit_display[
+        engine->metrology.active_unit];
+    {
+        bool desired_zero = false;
+        if (stability_state == STABILITY_STATE_STABLE &&
+            UnitConverter_CountToMass(unit_display->division_digit,
+                engine->metrology.active_unit, unit_display->decimal_places,
+                &zero_indicator_range_ug) && zero_indicator_range_ug > 0)
+            desired_zero = magnitude <= (uint64_t)zero_indicator_range_ug *
+                (zero_indicator_was_on ? 2U : 1U);
+        if (stability_state != STABILITY_STATE_STABLE)
+        {
+            engine->zero_indicator_candidate_active = false;
+        }
+        else if (desired_zero == zero_indicator_was_on)
+        {
+            engine->zero_indicator_candidate_active = false;
+        }
+        else if (!engine->zero_indicator_candidate_active ||
+                 engine->zero_indicator_candidate_on != desired_zero)
+        {
+            engine->zero_indicator_candidate_active = true;
+            engine->zero_indicator_candidate_on = desired_zero;
+            engine->zero_indicator_candidate_since_ms =
+                engine->snapshot.sample_timestamp_ms;
+        }
+        else if ((uint32_t)(engine->snapshot.sample_timestamp_ms -
+                     engine->zero_indicator_candidate_since_ms) >= 1000U)
+        {
+            zero_indicator_was_on = desired_zero;
+            engine->zero_indicator_candidate_active = false;
+        }
+        if (zero_indicator_was_on &&
+            stability_state == STABILITY_STATE_STABLE)
+            engine->snapshot.status_flags |= WEIGHT_STATUS_ZERO;
+    }
+#else
     if (magnitude <= (uint64_t)engine->metrology.zero_range_ug)
         engine->snapshot.status_flags |= WEIGHT_STATUS_ZERO;
+#endif
     if (!MassMath_Abs(gross, &magnitude)) return false;
     if ((overload > 0) && (magnitude > (uint64_t)overload))
         engine->snapshot.status_flags |= WEIGHT_STATUS_OVERLOAD;

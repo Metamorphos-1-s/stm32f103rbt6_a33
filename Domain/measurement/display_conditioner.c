@@ -272,6 +272,48 @@ bool DisplayConditioner_RequestOperatorZeroAnchor(
     return true;
 }
 
+#if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
+bool DisplayConditioner_TransferWeightView(DisplayConditioner *conditioner,
+    const DisplayConditionInput *previous,
+    const DisplayConditionInput *next)
+{
+    int32_t old_count;
+    int32_t new_count;
+    int64_t translated;
+
+    if ((conditioner == NULL) || (previous == NULL) || (next == NULL) ||
+        !conditioner->initialized || !previous->stable || !next->stable ||
+        !conditioner->snapshot.locked ||
+        conditioner->snapshot.state != DISPLAY_CONDITION_LOCKED ||
+        conditioner->snapshot.operator_zero_anchor ||
+        !conditioner->snapshot.display_domain_valid ||
+        conditioner->snapshot.source != previous->source ||
+        conditioner->snapshot.last_sample_sequence != previous->sample_sequence ||
+        previous->sample_sequence != next->sample_sequence ||
+        previous->unit != next->unit ||
+        previous->decimal_places != next->decimal_places ||
+        previous->division_digit != next->division_digit ||
+        previous->source == next->source ||
+        !DisplayDomain(previous, &old_count) ||
+        !DisplayDomain(next, &new_count))
+        return false;
+
+    translated = (int64_t)conditioner->snapshot.display_count +
+        (int64_t)new_count - old_count;
+    if (translated > INT32_MAX || translated < INT32_MIN ||
+        !SetDisplayCount(conditioner, next, (int32_t)translated))
+        return false;
+    conditioner->snapshot.desired_display_count = new_count;
+    conditioner->snapshot.source = next->source;
+    conditioner->snapshot.last_sample_sequence = next->sample_sequence;
+    conditioner->snapshot.last_release_reason = DISPLAY_RELEASE_SOURCE_CHANGE;
+    conditioner->release_sample_count = 0U;
+    ResetFollowEvidence(conditioner);
+    ClearCandidate(conditioner);
+    return true;
+}
+#endif
+
 bool DisplayConditioner_Update(DisplayConditioner *conditioner,
     const DisplayConditionInput *input)
 {

@@ -34,6 +34,13 @@ static bool s_initialized;
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
 static uint32_t s_last_activity_ms;
 #define DISPLAY_IDLE_DIM_MS 600000U
+#if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
+#define DISPLAY_LOW_BATTERY_REPEAT_MS 20000U
+#define DISPLAY_LOW_BATTERY_WINDOW_MS 4000U
+#else
+#define DISPLAY_LOW_BATTERY_REPEAT_MS 60000U
+#define DISPLAY_LOW_BATTERY_WINDOW_MS 2000U
+#endif
 #endif
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U) && \
     (A33_ENABLE_STAGE5MR5E_D1D_BETA == 0U)
@@ -90,7 +97,10 @@ static void DisplayController_BuildIndicators(const WeightSnapshot *snapshot,
     *bottom = 0U;
     if (s_page == DISPLAY_PAGE_NET) *top |= DISPLAY_TOP_LED_NET;
     if (s_page == DISPLAY_PAGE_GROSS) *top |= DISPLAY_TOP_LED_GROSS;
+#if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE == 0U)
+    /* The unified UI no longer exposes the tare-amount page. */
     if (s_page == DISPLAY_PAGE_TARE) *top |= DISPLAY_TOP_LED_TARE;
+#endif
     if (s_page == DISPLAY_PAGE_BATTERY) *top |= DISPLAY_TOP_LED_BATTERY;
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
     {
@@ -150,7 +160,8 @@ static bool DisplayController_BuildModel(void)
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
     if ((s_page == DISPLAY_PAGE_NET || s_page == DISPLAY_PAGE_GROSS) &&
         battery != NULL && battery->valid && battery->low_voltage_warning &&
-        (BSP_TimeNowMs() % 60000U) < 2000U &&
+        (BSP_TimeNowMs() % DISPLAY_LOW_BATTERY_REPEAT_MS) <
+            DISPLAY_LOW_BATTERY_WINDOW_MS &&
         ((BSP_TimeNowMs() / 500U) & 1U) == 0U)
         return DisplayModel_SetText6("Lo-bAt");
 #endif

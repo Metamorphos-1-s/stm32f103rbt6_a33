@@ -972,8 +972,12 @@ static void App_ProcessKeyEvent(const KeyEvent *event)
   {
     DisplayPage page = DisplayController_GetPage();
     if (page == DISPLAY_PAGE_NET) page = DISPLAY_PAGE_GROSS;
+#if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
+    else if (page == DISPLAY_PAGE_GROSS) page = DISPLAY_PAGE_BATTERY;
+#else
     else if (page == DISPLAY_PAGE_GROSS) page = DISPLAY_PAGE_TARE;
     else if (page == DISPLAY_PAGE_TARE) page = DISPLAY_PAGE_BATTERY;
+#endif
     else page = DISPLAY_PAGE_NET;
     DisplayController_SetPage(page);
     if (page == DISPLAY_PAGE_NET)

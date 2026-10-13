@@ -27,6 +27,12 @@ typedef struct
     WeightSnapshot snapshot;
     bool initialized;
     bool has_raw_sample;
+#if defined(A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE) && \
+    (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
+    uint32_t zero_indicator_candidate_since_ms;
+    bool zero_indicator_candidate_active;
+    bool zero_indicator_candidate_on;
+#endif
 #if !defined(A33_ENABLE_STAGE5MR5_BETA) || (A33_ENABLE_STAGE5MR5_BETA == 0U)
     bool runtime_drift_learning_allowed;
 #endif

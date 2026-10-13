@@ -18,6 +18,7 @@ void TestUnifiedDefaultsBattery(void)
     _Static_assert(sizeof(BatteryAdcState) <= 20U,
         "battery status must reuse existing layout slack");
     DefaultConfig_Load(&config);
+    assert(config.metrology.zero_range_ug == INT64_C(2000000));
     assert(config.metrology.profiles[config.metrology.active_profile].sample_rate ==
         DEVICE_CS1237_DATA_RATE_10_HZ);
     assert(config.metrology.profiles[config.metrology.active_profile].filter_mode ==
@@ -45,7 +46,7 @@ void TestUnifiedDefaultsBattery(void)
     assert(segments[5] == p);
     assert(!DisplayFormatter_FormatBatteryPercent(101U, segments));
     assert(BatteryAdc_Init(&config.battery));
-    for (i = 0U; i < 59U; ++i) BatteryAdc_Process500ms();
+    for (i = 0U; i < 9U; ++i) BatteryAdc_Process500ms();
     battery = BatteryAdc_GetState();
     assert(battery != NULL && battery->valid && !battery->low_voltage_warning);
     BatteryAdc_Process500ms();

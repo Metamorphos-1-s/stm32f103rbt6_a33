@@ -169,12 +169,43 @@ static void TestFortyHzPhysicalCadence(void)
     CHECK(conditioner.snapshot.display_count == 1);
 }
 
+static void TestWeightViewTransferKeepsStableAnchor(void)
+{
+    DisplayConditioner conditioner;
+    DisplayConditionInput net;
+    DisplayConditionInput gross;
+    uint32_t sequence;
+
+    DisplayConditioner_Init(&conditioner, 0, 0U);
+    sequence = Lock(&conditioner, 50000, 1U, 6U);
+    net = Input(50000, sequence, 900U, true, 6U, MASS_UNIT_G, 2U, 1U);
+    gross = Input(60000, sequence, 900U, true, 0x106U,
+        MASS_UNIT_G, 2U, 1U);
+    CHECK(DisplayConditioner_TransferWeightView(&conditioner, &net, &gross));
+    CHECK(conditioner.snapshot.locked &&
+        conditioner.snapshot.display_count == 60000 &&
+        conditioner.snapshot.source == 0x106U);
+    gross = Input(60001, ++sequence, 1000U, true, 0x106U,
+        MASS_UNIT_G, 2U, 1U);
+    CHECK(DisplayConditioner_Update(&conditioner, &gross));
+    CHECK(conditioner.snapshot.locked &&
+        conditioner.snapshot.display_count == 60000);
+    net = Input(50001, sequence, 1000U, true, 6U,
+        MASS_UNIT_G, 2U, 1U);
+    CHECK(DisplayConditioner_TransferWeightView(&conditioner, &gross, &net));
+    CHECK(conditioner.snapshot.locked &&
+        conditioner.snapshot.display_count == 50000);
+    net.stable = false;
+    CHECK(!DisplayConditioner_TransferWeightView(&conditioner, &net, &gross));
+}
+
 int main(void)
 {
     TestThreeZonesAndUniqueSequence();
     TestDivisionAndDirection();
     TestSourceInvalidAndWrap();
     TestFortyHzPhysicalCadence();
+    TestWeightViewTransferKeepsStableAnchor();
     if (s_failures != 0U)
     {
         (void)printf("Unified display tests: %u failure(s)\n", s_failures);

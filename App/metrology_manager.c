@@ -845,6 +845,44 @@ void MetrologyManager_ForceDisplayTracking(DisplayConditionReleaseReason reason)
         snapshot->sample_timestamp_ms, reason);
 }
 
+#if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
+void MetrologyManager_ChangeDisplayWeightView(WeightViewMode previous_view)
+{
+    const WeightSnapshot *snapshot = WeightEngine_GetSnapshot(&s_engine);
+    const SystemContext *context = SystemContext_Get();
+
+    if (!s_initialized || snapshot == NULL || context == NULL ||
+        previous_view == context->runtime.weight_view) return;
+#if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
+    {
+        const UnitDisplayConfig *display =
+            &context->config.metrology.unit_display[
+                context->config.metrology.active_unit];
+        DisplayConditionInput previous = {0};
+        DisplayConditionInput next = {0};
+        uint16_t next_source = MetrologyManager_DisplaySource(context, display);
+
+        previous.authoritative_mass_ug = previous_view == WEIGHT_VIEW_GROSS ?
+            snapshot->gross_mass_ug : snapshot->net_mass_ug;
+        previous.source = (uint16_t)((next_source & (uint16_t)~0x0100U) |
+            (previous_view == WEIGHT_VIEW_GROSS ? 0x0100U : 0U));
+        previous.sample_sequence = snapshot->sample_sequence;
+        previous.stable = (snapshot->status_flags & WEIGHT_STATUS_STABLE) != 0U;
+        previous.unit = context->config.metrology.active_unit;
+        previous.decimal_places = display->decimal_places;
+        previous.division_digit = display->division_digit;
+        next = previous;
+        next.authoritative_mass_ug = context->runtime.weight_view ==
+            WEIGHT_VIEW_GROSS ? snapshot->gross_mass_ug : snapshot->net_mass_ug;
+        next.source = next_source;
+        if (DisplayConditioner_TransferWeightView(&s_display_conditioner,
+                &previous, &next)) return;
+    }
+#endif
+    MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+}
+#endif
+
 static void MetrologyManager_RequestOperatorZeroAnchor(void)
 {
     const WeightSnapshot *snapshot = WeightEngine_GetSnapshot(&s_engine);

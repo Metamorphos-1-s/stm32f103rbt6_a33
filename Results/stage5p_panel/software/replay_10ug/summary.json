@@ -1,0 +1,35 @@
+{
+  "a13b": {
+    "status": "PASS",
+    "samples": 88765,
+    "source_sha256": "6D11B9A3D44C6E8DC658EB1F41B99975EC339DD7DBD0D3E61791DCA75B777612",
+    "mismatches": 0,
+    "max_10s_offset_ug": 3465,
+    "first_mismatch": null,
+    "max_per_sample_offset_ug": 35,
+    "dosing_offset_changes": 0,
+    "max_obvious_step_loss_ug": 0
+  },
+  "a9": {
+    "status": "PASS",
+    "samples": 107491,
+    "source_sha256": "E683609BA0DB7EA090D101CE38569A432EC319982E7D41A9D2176A62B623128C",
+    "mismatches": 0,
+    "max_10s_offset_ug": 3465,
+    "first_mismatch": null,
+    "max_per_sample_offset_ug": 35,
+    "dosing_offset_changes": 0,
+    "max_obvious_step_loss_ug": 0
+  },
+  "a13cr": {
+    "status": "PASS",
+    "samples": 10774,
+    "source_sha256": "499D2F14D2E2A04FEE27369209610089AA39D91CD39B1CBABD04A27B8D2CA838",
+    "mismatches": 0,
+    "max_10s_offset_ug": 3465,
+    "first_mismatch": null,
+    "max_per_sample_offset_ug": 35,
+    "dosing_offset_changes": 0,
+    "max_obvious_step_loss_ug": 0
+  }
+}

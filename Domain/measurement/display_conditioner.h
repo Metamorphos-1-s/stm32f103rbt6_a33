@@ -114,6 +114,12 @@ bool DisplayConditioner_RequestOperatorZeroAnchor(
     DisplayConditioner *conditioner, uint32_t now_ms);
 bool DisplayConditioner_Update(DisplayConditioner *conditioner,
     const DisplayConditionInput *input);
+#if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
+/* Preserve a stable display anchor when NET/GROSS changes by the tare amount. */
+bool DisplayConditioner_TransferWeightView(DisplayConditioner *conditioner,
+    const DisplayConditionInput *previous,
+    const DisplayConditionInput *next);
+#endif
 const DisplayConditionSnapshot *DisplayConditioner_GetSnapshot(
     const DisplayConditioner *conditioner);
 MassValueUg DisplayConditioner_ComputeReleaseThreshold(

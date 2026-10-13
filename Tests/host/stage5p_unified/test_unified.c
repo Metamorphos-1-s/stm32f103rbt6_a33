@@ -62,6 +62,36 @@ static void Feed(void)
     MetrologyManager_Process20ms();
 }
 
+static void FeedRaw(int32_t raw)
+{
+    RawMeasurementSample sample = {raw, (++s_tick) * 100U, true};
+    assert(MetrologyManager_AcceptRawSample(&sample));
+    MetrologyManager_Process20ms();
+}
+
+static void TestZeroIndicatorHysteresis(void)
+{
+    uint32_t i;
+    const WeightSnapshot *weight;
+    Start(0U, 0U, 0U);
+    for (i = 0U; i < 40U; ++i) FeedRaw(100000);
+    weight = MetrologyManager_GetSnapshot();
+    assert((weight->status_flags & WEIGHT_STATUS_ZERO) != 0U);
+    for (i = 0U; i < 10U; ++i) FeedRaw(100015);
+    weight = MetrologyManager_GetSnapshot();
+    assert((weight->status_flags & WEIGHT_STATUS_STABLE) != 0U);
+    assert((weight->status_flags & WEIGHT_STATUS_ZERO) != 0U);
+    for (i = 0U; i < 12U; ++i) FeedRaw(100030);
+    weight = MetrologyManager_GetSnapshot();
+    assert((weight->status_flags & WEIGHT_STATUS_ZERO) == 0U);
+    for (i = 0U; i < 10U; ++i) FeedRaw(100015);
+    weight = MetrologyManager_GetSnapshot();
+    assert((weight->status_flags & WEIGHT_STATUS_ZERO) == 0U);
+    for (i = 0U; i < 12U; ++i) FeedRaw(100000);
+    weight = MetrologyManager_GetSnapshot();
+    assert((weight->status_flags & WEIGHT_STATUS_ZERO) != 0U);
+}
+
 static void Start40(FilterMode filter, uint8_t strength)
 {
     DefaultConfig_Load(&s_config);
@@ -215,6 +245,7 @@ int main(void)
     uint32_t i;
     TestUnifiedDefaultsBattery();
     TestBatteryTransactionValidation();
+    TestZeroIndicatorHysteresis();
     Test40HzAdapter();
     Test40HzLegalFilters();
     Test40HzCorrectionBounds();
