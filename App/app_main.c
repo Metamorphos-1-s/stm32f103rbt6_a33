@@ -361,6 +361,9 @@ bool App_GetAlarmOutputDiagnostics(AlarmOutputDiagnostics *diagnostics)
 bool App_SetGuardedCheckweighMode(GuardedCheckweighMode mode,
     uint32_t expected_generation, bool require_generation)
 {
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+  if (PersistenceManager_IsBusy()) return false;
+#endif
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U) && \
     (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION == 0U)
   const SystemContext *requested = SystemContext_Get();
@@ -612,6 +615,11 @@ static void App_UpdateAlarmOutputs(uint32_t now_ms)
   guarded_input.calibration_active = state == APP_STATE_CALIBRATION;
   guarded_input.fault_active = (FaultManager_GetActiveMask() != 0U) ||
       (state == APP_STATE_FAULT);
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+  if (DeviceManager_IsInStorageMaintenance() ||
+      MetrologyManager_IsStorageReacquiring())
+      guarded_input.fault_active = true;
+#endif
 #if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
   if (MeasurementBridge_RejectedSince(&s_alarm_last_invalid_count))
       guarded_input.fault_active = true;
@@ -621,6 +629,10 @@ static void App_UpdateAlarmOutputs(uint32_t now_ms)
     (void)AlarmOutputManager_Update(&s_alarm_output_manager, &result,
                                     &context->config.alarm, now_ms);
   else AlarmOutputManager_AllOff(&s_alarm_output_manager);
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+  if (!DeviceManager_IsInStorageMaintenance())
+      MetrologyManager_AcknowledgeStorageReacquisition();
+#endif
   return;
 #endif
 

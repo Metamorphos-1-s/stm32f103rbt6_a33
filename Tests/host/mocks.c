@@ -114,6 +114,7 @@ CommandSource CommunicationManager_GetSaveSource(void)
 
 uint32_t CommunicationManager_GetSaveRevision(void) { return 0U; }
 
+#if !defined(STAGE5P_REAL_PERSISTENCE)
 bool PersistenceManager_IsBusy(void)
 {
     return s_persistence_busy;
@@ -183,6 +184,7 @@ PersistenceStatus PersistenceManager_GetStatus(void)
 {
     return s_persistence_status;
 }
+#endif
 
 void TestMock_Reset(void)
 {

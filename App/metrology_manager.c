@@ -10,6 +10,9 @@
 #include "fault_manager.h"
 #include "metrology_config_validator.h"
 #include "mass_math.h"
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+#include "persistence_manager.h"
+#endif
 #include "system_context.h"
 #include "unit_converter.h"
 #include "weight_engine.h"
@@ -61,6 +64,11 @@ static R5BetaApplication s_r5_application;
  * release and the original R5 path are not built through this adapter. */
 static A13CCompensator s_r5_drift;
 static R5DriftSnapshot s_a13c_diagnostics;
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+#define STORAGE_RESUME_R5 0x01U
+#define STORAGE_RESUME_ALARM 0x02U
+static uint8_t s_storage_resume_flags;
+#endif
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
 static void A13E_Stop(A13CReason reason);
 #endif
@@ -140,6 +148,26 @@ static bool A13CCompat_ProcessSample(A13CCompensator *candidate,
          profile->sample_rate != DEVICE_CS1237_DATA_RATE_40_HZ))
         return false;
     if (profile->sample_rate == DEVICE_CS1237_DATA_RATE_40_HZ) {
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+        if ((s_storage_resume_flags & STORAGE_RESUME_R5) != 0U) {
+            bool admitted = ((input->sample_sequence - 1U) % 4U) == 0U;
+            logical_sequence = (input->sample_sequence - 1U) / 4U + 1U;
+            if (input->sample_sequence == 0U || input->timestamp_ms == 0U) {
+                A13E_Stop(A13C_REASON_TIME_GAP);
+                return true;
+            }
+            if (candidate->snapshot.sample_sequence == 0U ||
+                input->sample_sequence != candidate->snapshot.sample_sequence + 1U ||
+                input->timestamp_ms <= candidate->snapshot.timestamp_ms ||
+                input->timestamp_ms - candidate->snapshot.timestamp_ms > 40U) {
+                A13C_ResumeAfterStorage(candidate, logical_sequence,
+                    input->timestamp_ms, input->uncompensated_gross_ug, admitted);
+                candidate->snapshot.sample_sequence = input->sample_sequence - 1U;
+                candidate->snapshot.timestamp_ms = input->timestamp_ms - 1U;
+            }
+            s_storage_resume_flags &= (uint8_t)~STORAGE_RESUME_R5;
+        }
+#endif
         /* Public snapshot sequence is physical; the controller's internal
          * sequence counts only admitted 100 ms samples. No extra RAM state. */
         physical_previous = candidate->snapshot.sample_sequence;
@@ -218,6 +246,21 @@ static bool A13CCompat_ProcessSample(A13CCompensator *candidate,
     }
 #endif
     /* No output outside the one frozen 10 Hz/filt1/strength3 envelope. */
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+    if ((s_storage_resume_flags & STORAGE_RESUME_R5) != 0U) {
+        if (input->sample_sequence == 0U || input->timestamp_ms == 0U) {
+            A13E_Stop(A13C_REASON_TIME_GAP);
+            return true;
+        }
+        if (!candidate->have_last ||
+            input->sample_sequence != candidate->last_sequence + 1U ||
+            input->timestamp_ms <= candidate->last_timestamp_ms ||
+            input->timestamp_ms - candidate->last_timestamp_ms > 250U)
+            A13C_ResumeAfterStorage(candidate, input->sample_sequence,
+                input->timestamp_ms, input->uncompensated_gross_ug, true);
+        s_storage_resume_flags &= (uint8_t)~STORAGE_RESUME_R5;
+    }
+#endif
 #if (A33_ENABLE_STAGE5PA13D_RESOURCES != 0U)
     a13d_start = BSP_TimeNowCycles();
     a13d_result = A13C_Feed(candidate, input->sample_sequence, input->timestamp_ms,
@@ -304,6 +347,9 @@ static bool A13E_Supported(void)
 }
 static void A13E_Stop(A13CReason reason)
 {
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+    s_storage_resume_flags &= (uint8_t)~STORAGE_RESUME_R5;
+#endif
     s_a13e_exit_offset = s_r5_application == R5_BETA_APPLICATION_ACTIVE ?
         (int32_t)s_r5_drift.offset_ug : 0;
     s_a13e_exit_reason = (uint8_t)reason;
@@ -472,6 +518,9 @@ bool MetrologyManager_Init(const DeviceConfig *config,
     s_last_published_sequence = 0U;
     s_last_published_stable = false;
     s_runtime_drift_fault_latched = false;
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+    s_storage_resume_flags = 0U;
+#endif
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     s_r5_application = R5_BETA_APPLICATION_SHADOW;
 #if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
@@ -1267,8 +1316,50 @@ bool MetrologyManager_ReconfigureDiagnosticRate(Cs1237DataRate rate)
 
 bool MetrologyManager_RestartAfterStorage(const DeviceConfig *config)
 {
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+    if (!MetrologyManager_RebuildEngine(config, METROLOGY_REBUILD_KEEP_RAW))
+        return false;
+    s_storage_resume_flags = STORAGE_RESUME_ALARM;
+    CheckweighShadow_RequestReset(&s_alarm_shadow,
+        ALARM_SHADOW_RESET_RECONFIGURE);
+    return MetrologyManager_RestoreR5Request(
+        (R5BetaApplication)config->system.requested_r5_application,
+        (R5DriftMode)config->system.requested_r5_mode);
+#else
     return MetrologyManager_RebuildEngine(config, METROLOGY_REBUILD_KEEP_RAW);
+#endif
 }
+
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+bool MetrologyManager_ResumeAfterStorage(const DeviceConfig *config)
+{
+    if (!s_initialized || config == NULL ||
+        memcmp(&s_engine.metrology, &config->metrology,
+            sizeof(config->metrology)) != 0 ||
+        memcmp(&s_engine.calibration, &config->calibration,
+            sizeof(config->calibration)) != 0 ||
+        memcmp(&s_engine.stability_config, &config->stability,
+            sizeof(config->stability)) != 0) {
+        A13E_Stop(A13C_REASON_PROFILE);
+        return false;
+    }
+    s_storage_resume_flags = STORAGE_RESUME_ALARM |
+        (s_r5_drift.mode != A13C_MODE_OFF ? STORAGE_RESUME_R5 : 0U);
+    CheckweighShadow_RequestReset(&s_alarm_shadow,
+        ALARM_SHADOW_RESET_RECONFIGURE);
+    return true;
+}
+
+bool MetrologyManager_IsStorageReacquiring(void)
+{
+    return (s_storage_resume_flags & STORAGE_RESUME_ALARM) != 0U;
+}
+
+void MetrologyManager_AcknowledgeStorageReacquisition(void)
+{
+    s_storage_resume_flags &= (uint8_t)~STORAGE_RESUME_ALARM;
+}
+#endif
 
 uint32_t MetrologyManager_GetRejectedSampleCount(void)
 {
@@ -1400,6 +1491,9 @@ bool MetrologyManager_SetA13Pair(R5BetaApplication application, R5DriftMode mode
     AppState state = SystemContext_GetState();
     if (!s_initialized || (uint32_t)application > 1U || (uint32_t)mode > 2U ||
         (require_generation && expected_generation != s_a13e_generation)) return false;
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+    if (PersistenceManager_IsBusy() && !s_restoring_r5_request) return false;
+#endif
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U) && \
     (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION == 0U)
     if (!s_restoring_r5_request && application == R5_BETA_APPLICATION_ACTIVE &&

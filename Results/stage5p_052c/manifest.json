@@ -1,0 +1,204 @@
+{
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 8,
+      "sha256": "705FD4D6451A31D36B3DF7DE96F83F30AC976C9B4A6D1E51671D8E2F33E2D0DA"
+    },
+    {
+      "path": "hardware/application_after.bin",
+      "bytes": 126976,
+      "sha256": "F7FEA7553D6B3DB0D2F87B3BF92D43B17F742D6A730092D336ACB63C187AA24B"
+    },
+    {
+      "path": "hardware/application_erase.log",
+      "bytes": 695,
+      "sha256": "9992888C375F9B0652AFE86B0CE1C6E0D0BBBE63180C0F6166C9080060CE7E59"
+    },
+    {
+      "path": "hardware/application_program_verify.log",
+      "bytes": 1737,
+      "sha256": "58491BD7147AF6347C84B6608C50B080058558E68DEAAD8C159FD552DDC64E53"
+    },
+    {
+      "path": "hardware/boot_probe/preflight.json",
+      "bytes": 1067,
+      "sha256": "E57BBE07175006F840A061549FE4EA25987E483AACD927AA4B80F33BB0A6A185"
+    },
+    {
+      "path": "hardware/config_after_flash.bin",
+      "bytes": 4096,
+      "sha256": "A762D9FC4370704CFA3378AB2756A318BF69DE239426FF2FF6E9158C30EAF104"
+    },
+    {
+      "path": "hardware/config_after_power.bin",
+      "bytes": 4096,
+      "sha256": "05CB5BAFB2E722702F8B132F1FAC6C273BA273A7A1A3ABD50F6FDCA72CECFBC1"
+    },
+    {
+      "path": "hardware/config_save_audit.json",
+      "bytes": 9547,
+      "sha256": "8437DCD6F37A9D744743F3355660FB0CBCE801C060C4BA6B5C34876D7CB2730B"
+    },
+    {
+      "path": "hardware/final_after_swd/preflight.json",
+      "bytes": 1074,
+      "sha256": "B9A90242A0BEA955FB9149E72D35992C00095A2CBED848597CA27E9658D8B58F"
+    },
+    {
+      "path": "hardware/final_com5/preflight.json",
+      "bytes": 1072,
+      "sha256": "8D816E23369F14DA98540FAA722A693D4B87E9342D54A42CFFF6F5D0C793DCEA"
+    },
+    {
+      "path": "hardware/immediate_preflash_com5/preflight.json",
+      "bytes": 1075,
+      "sha256": "B6968755A78C31D7A9D9D47DEE7126C0DB55A9E919A36063B6354B4F27545926"
+    },
+    {
+      "path": "hardware/power_restore_1/errors.jsonl",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "hardware/power_restore_1/frames.txt",
+      "bytes": 6205122,
+      "sha256": "8039D27D0D88EC5452505AB97A5EA6C21B7C1B98B810C43B90D3C838B99FE273"
+    },
+    {
+      "path": "hardware/power_restore_1/samples.csv",
+      "bytes": 513713,
+      "sha256": "728A779FB780E7332A5A2C3B12E317E1639A2A997DFD22FB876F863FE48C6E32"
+    },
+    {
+      "path": "hardware/power_restore_1/summary.json",
+      "bytes": 184,
+      "sha256": "CF0D106957FFFAD473E312A9FFDFC9528F3881344FF47B0C23547124EFA7C2DD"
+    },
+    {
+      "path": "hardware/power_restore_stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "hardware/power_restore_stdout.log",
+      "bytes": 169,
+      "sha256": "9BA8A714CE8A68CB138DA72B0FFF2B307847FF95016444125A73FD6B71FCBD4F"
+    },
+    {
+      "path": "hardware/preflash_swd/application.bin",
+      "bytes": 126976,
+      "sha256": "AB6746226EA9D392687024D225634484513EF82A3DDBB84F805C9F9B8181D225"
+    },
+    {
+      "path": "hardware/preflash_swd/config_v3.bin",
+      "bytes": 4096,
+      "sha256": "A762D9FC4370704CFA3378AB2756A318BF69DE239426FF2FF6E9158C30EAF104"
+    },
+    {
+      "path": "hardware/preflash_swd/slots.json",
+      "bytes": 4217,
+      "sha256": "571E7FA2B82453E76C9211F3760A73EC609672B0B567FE4E02009A8DA2633A89"
+    },
+    {
+      "path": "hardware/preflight_com5/preflight.json",
+      "bytes": 1075,
+      "sha256": "D50438E61A9514BE6451C2A067AFA50E94FFC85694200A370036C591F0A1CD20"
+    },
+    {
+      "path": "hardware/ram_pair_configure/events.json",
+      "bytes": 7422,
+      "sha256": "3105443F16BE8DA68F17D5E3DB4B964C69337FAEC83F6BBF78A3C27A7C961293"
+    },
+    {
+      "path": "hardware/ram_pair_configure/frames.txt",
+      "bytes": 13959,
+      "sha256": "2F5A1DB0E2F13C5924D7E43D1D8ED03E6FF0EEDAFE90BB80699233ADEA7446AA"
+    },
+    {
+      "path": "hardware/save_analysis.json",
+      "bytes": 1165,
+      "sha256": "43AEDABCA32D3437E829ADFB81C0999750B1478DB2146BF48F13CA3EAE1ED49A"
+    },
+    {
+      "path": "hardware/save_continuity_1/errors.jsonl",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "hardware/save_continuity_1/events.json",
+      "bytes": 7330,
+      "sha256": "65DBC95B62F0517DD833A335E2311C94A38486006C5F4CCA9F59D11F6366324E"
+    },
+    {
+      "path": "hardware/save_continuity_1/frames.txt",
+      "bytes": 4043431,
+      "sha256": "60477412C6774264FBA3AB6AA792FD5E97B47B819CD564BF13FA26B28E3AB212"
+    },
+    {
+      "path": "hardware/save_continuity_1/samples.csv",
+      "bytes": 423263,
+      "sha256": "992AE49B92BD7D1B28B3464829023BD1AD122EC794486F2ADF718A38180145E2"
+    },
+    {
+      "path": "hardware/save_continuity_1/summary.json",
+      "bytes": 263,
+      "sha256": "2FDAB55939B6D01816C17428730C8973267F96C705E680B691EAF965D13B81F5"
+    },
+    {
+      "path": "hardware/save_continuity_stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "hardware/save_continuity_stdout.log",
+      "bytes": 239,
+      "sha256": "680FA99FFA7EC72E602FCB70852295FD1DFBEBFB3C3BCC3C8D76583EEDBDD7ED"
+    },
+    {
+      "path": "hardware/SAVE_TRIGGER",
+      "bytes": 60,
+      "sha256": "CAFA3EA1B0ECEE48836C0C9A13FF823F2BB4A5406077D77499796FB02D4F742E"
+    },
+    {
+      "path": "hardware/slots_after_power.json",
+      "bytes": 4245,
+      "sha256": "93341A47C409BDBA2C3F9EBF6ACF86497FF6B2C482260728F3522C9F3BDCDEE1"
+    },
+    {
+      "path": "software/firmware_0x052C.bin",
+      "bytes": 98644,
+      "sha256": "E87C5FCFDCC4FE8800725741AFE39BA8378FDE917A7C45A4453BA4CBE8826DD6"
+    },
+    {
+      "path": "software/firmware_0x052C.elf",
+      "bytes": 201224,
+      "sha256": "BBFE6183A5F17BCEF6D0E846B1FF3CFEDB55BD1346CAC866A5B4671786F0C17E"
+    },
+    {
+      "path": "software/firmware_0x052C.map",
+      "bytes": 511562,
+      "sha256": "5C4F6A6525B63F8C149CCFD1A89DD4228FE32DE9D80E3D6CE728151BFA8A04B2"
+    },
+    {
+      "path": "software/full_host_build_failure.log",
+      "bytes": 4201,
+      "sha256": "BC0724AA0C677B1E64257708A1CB44DE0C4EA53DA31BB19EF0D5A6B8373C54EA"
+    },
+    {
+      "path": "software/host_debug_ctest.log",
+      "bytes": 707,
+      "sha256": "ABFA0E713FC2076CE9B783AB770E6CE8D9C4EC678DF507F55A2802E6F2033779"
+    },
+    {
+      "path": "software/host_release_ctest.log",
+      "bytes": 711,
+      "sha256": "260AD589EBA2589602EA25251338E9E04F3724FFE5AF13E0537165AD2495F82B"
+    },
+    {
+      "path": "software/pre_fix_host_failure.log",
+      "bytes": 677,
+      "sha256": "36B3572749FE2996339800F6F79F99171AD356EE2FF9793F680B75AE8471388A"
+    }
+  ]
+}

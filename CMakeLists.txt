@@ -64,6 +64,8 @@ option(A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE
     "Enable panel, battery timing, zero and long-rate engineering candidate" OFF)
 option(A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION
     "Enable simultaneous R5 ACTIVE and formal checkweigh candidate" OFF)
+option(A33_ENABLE_STAGE5P_SAVE_CONTINUITY
+    "Preserve guarded R5 continuity across pure SAVE" OFF)
 option(A33_ENABLE_STAGE5P_UNIFIED_RESOURCES
     "Enable cumulative target-resource diagnostics for the unified candidate" OFF)
 option(A33_ENABLE_STAGE5P_UNIFIED_RESOURCES_R3
@@ -82,6 +84,9 @@ if(A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE AND NOT A33_ENABLE_STAGE5P_UNI
 endif()
 if(A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION AND NOT A33_ENABLE_STAGE5P_UNIFIED)
     message(FATAL_ERROR "R5/checkweigh integration requires the unified candidate")
+endif()
+if(A33_ENABLE_STAGE5P_SAVE_CONTINUITY AND NOT A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION)
+    message(FATAL_ERROR "SAVE continuity requires R5/checkweigh integration")
 endif()
 if(A33_ENABLE_STAGE5P_UNIFIED_RESOURCES AND NOT A33_ENABLE_STAGE5P_UNIFIED)
     message(FATAL_ERROR "Unified resource diagnostics require the unified candidate")
@@ -366,6 +371,11 @@ if(A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION=1)
 else()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION=0)
+endif()
+if(A33_ENABLE_STAGE5P_SAVE_CONTINUITY)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5P_SAVE_CONTINUITY=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5P_SAVE_CONTINUITY=0)
 endif()
 if(A33_ENABLE_STAGE5P_UNIFIED_RESOURCES)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5P_UNIFIED_RESOURCES=1)

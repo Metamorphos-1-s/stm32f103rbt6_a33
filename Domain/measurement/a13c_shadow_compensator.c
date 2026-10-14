@@ -335,6 +335,30 @@ void A13C_Reset(A13CCompensator *c, A13CReason reason)
     Refresh(c, c->last_sequence, c->last_timestamp_ms, c->last_mass_ug);
 }
 
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+void A13C_ResumeAfterStorage(A13CCompensator *c,
+    uint32_t next_sequence, uint32_t timestamp_ms, int64_t gross_ug,
+    bool next_is_admitted)
+{
+    int64_t applied_offset;
+    if (c == NULL || c->mode == A13C_MODE_OFF || next_sequence == 0U ||
+        timestamp_ms == 0U) return;
+    applied_offset = c->offset_ug;
+    A13C_Reset(c, A13C_REASON_TIME_GAP);
+    c->offset_ug = applied_offset;
+    /* TIME_GAP remains a hard exit for any later, unplanned discontinuity. */
+    c->reason = A13C_REASON_INITIAL;
+    c->last_sequence = next_is_admitted ? next_sequence - 1U : next_sequence;
+    c->last_timestamp_ms = timestamp_ms - 1U;
+    c->last_mass_ug = gross_ug;
+    c->have_last = true;
+    c->was_dosing = c->mode == A13C_MODE_DOSING;
+    c->hold_until = next_sequence + HOLD_SAMPLES;
+    c->freeze_until = next_sequence + STEP_WARMUP;
+    Refresh(c, c->last_sequence, c->last_timestamp_ms, gross_ug);
+}
+#endif
+
 static bool FeedDosing(A13CCompensator *c, uint32_t sequence,
                        int64_t mass, uint32_t encoded)
 {

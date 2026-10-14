@@ -1,0 +1,42 @@
+{
+  "source": "Results\\stage5p_052c\\hardware\\save_continuity_1\\samples.csv",
+  "sha256": "992AE49B92BD7D1B28B3464829023BD1AD122EC794486F2ADF718A38180145E2",
+  "rows": 3191,
+  "read_errors": 0,
+  "save_commands": 1,
+  "save_completed_events": 1,
+  "save_result": "ACCEPTED",
+  "before_rows": 1385,
+  "after_rows": 1806,
+  "before_last": {
+    "utc": "2026-10-14T08:51:53.415219+00:00",
+    "sequence": "11313",
+    "r5_offset_ug": "9148",
+    "revision": "24",
+    "saved_revision": "22"
+  },
+  "after_first": {
+    "utc": "2026-10-14T08:51:54.063922+00:00",
+    "sequence": "11324",
+    "r5_offset_ug": "9148",
+    "revision": "24",
+    "saved_revision": "24"
+  },
+  "after_last": {
+    "utc": "2026-10-14T08:54:54.024189+00:00",
+    "sequence": "18503",
+    "r5_offset_ug": "9148",
+    "revision": "24",
+    "saved_revision": "24"
+  },
+  "post_save_wrong_r5_pair": 0,
+  "post_save_wrong_check_mode": 0,
+  "post_save_offset_changes": 0,
+  "formal_weight_equation_errors": 0,
+  "host_poll_sequence_gaps": 3187,
+  "fault_or_overrun_rows": 0,
+  "post_save_dirty_rows": 0,
+  "post_save_storage_sequences": [
+    "23"
+  ]
+}

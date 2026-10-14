@@ -1,4 +1,4 @@
-"""Short, no-SAVE hardware checkpoints for 0x052B coexistence."""
+"""Short, no-SAVE hardware checkpoints for 0x052C coexistence."""
 import argparse
 import json
 import sys
@@ -29,7 +29,7 @@ def words64(value):
 
 def snapshot(client):
     identity = probe(client)
-    if (identity["firmware"], identity["map"]) != ("0x052B", "0x010F"):
+    if (identity["firmware"], identity["map"]) != ("0x052C", "0x010F"):
         raise RuntimeError("unexpected firmware identity")
     a13, _ = client.read(0x340, 40)
     alarm, _ = client.read(0x220, 27)
@@ -141,7 +141,8 @@ def main():
                     raise RuntimeError("STATIC checkweigh not PENDING in DOSING")
                 if after["identity"]["fault_mask"] or after["identity"]["overrun_count"]:
                     raise RuntimeError("new device safety fault")
-                if args.phase != "inspect" and after["identity"]["saved_revision"] != 22:
+                if args.phase != "inspect" and after["identity"]["saved_revision"] != \
+                        before["identity"]["saved_revision"]:
                     raise RuntimeError("unexpected SAVE")
                 print(json.dumps({"phase": args.phase,
                     "before": {"r5": before["identity"]["r5"],

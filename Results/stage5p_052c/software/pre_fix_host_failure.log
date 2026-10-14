@@ -1,0 +1,16 @@
+Internal ctest changing into directory: D:/Downloads/stage5p_052c_host_debug
+Test project D:/Downloads/stage5p_052c_host_debug
+    Start 47: stage5p_save_continuity_logic
+1/1 Test #47: stage5p_save_continuity_logic ....Exit code 0xc0000409
+***Exception:   0.20 sec
+Assertion failed: MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_ACTIVE, file D:/Documents/stm32f103rbt6_a33_stage5p_052c_save/Tests/host/stage5p_unified/test_save_continuity.c, line 170
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.20 sec
+
+The following tests FAILED:
+	 47 - stage5p_save_continuity_logic (Exit code 0xc0000409
+)
+Errors while running CTest

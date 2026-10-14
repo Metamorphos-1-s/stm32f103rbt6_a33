@@ -121,6 +121,11 @@ typedef struct {
 void A13C_Init(A13CCompensator *controller);
 bool A13C_SetMode(A13CCompensator *controller, A13CMode mode);
 void A13C_Reset(A13CCompensator *controller, A13CReason reason);
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+void A13C_ResumeAfterStorage(A13CCompensator *controller,
+    uint32_t next_sequence, uint32_t timestamp_ms, int64_t gross_ug,
+    bool next_is_admitted);
+#endif
 bool A13C_Feed(A13CCompensator *controller, uint32_t sequence,
                uint32_t timestamp_ms, int64_t gross_ug, bool valid,
                bool fault, bool overload, bool near_rail);

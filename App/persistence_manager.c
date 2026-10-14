@@ -46,6 +46,9 @@ static RuntimeState s_candidate_original_runtime;
 static uint32_t s_candidate_original_revision;
 static uint32_t s_candidate_original_saved_revision;
 static bool s_candidate_allow_cs1237_change;
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+static bool s_candidate_metrology_rebuilt;
+#endif
 
 #if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
 static bool ApplyRequestedModes(const DeviceConfig *from,
@@ -122,6 +125,9 @@ bool PersistenceManager_Init(void)
     s_requested_revision = 0U;
     s_factory_result = FACTORY_RESET_RESULT_NONE;
     s_candidate_save = false;
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+    s_candidate_metrology_rebuilt = false;
+#endif
     (void)memset(&s_load_info, 0, sizeof(s_load_info));
     return true;
 }
@@ -185,6 +191,9 @@ static CommandResult Start(ConfigOperationType operation,
     }
     else
     {
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+        s_config_transaction.candidate_target = context->config;
+#endif
         accepted = ConfigStore_RequestSave(&context->config, &context->runtime,
                                            s_requested_revision);
         s_status = PERSISTENCE_STATUS_SAVING;
@@ -266,6 +275,15 @@ CommandResult PersistenceManager_RequestCandidateSave(
     s_candidate_original_revision = expected_revision;
     s_candidate_original_saved_revision = SystemContext_GetSavedRevision();
     s_candidate_allow_cs1237_change = allow_cs1237_change;
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+    s_candidate_metrology_rebuilt =
+        memcmp(&original->metrology, &candidate->metrology,
+            sizeof(original->metrology)) != 0 ||
+        memcmp(&original->calibration, &candidate->calibration,
+            sizeof(original->calibration)) != 0 ||
+        memcmp(&original->stability, &candidate->stability,
+            sizeof(original->stability)) != 0;
+#endif
     s_requested_revision = next;
     if (!ConfigStore_RequestSave(candidate, &context->runtime, next))
         return COMMAND_RESULT_INTERNAL_ERROR;
@@ -315,6 +333,10 @@ void PersistenceManager_Process(void)
     bool maintenance_active;
     bool flash_committed;
     bool runtime_ok = true;
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+    bool rebuild_after_storage = s_operation != CONFIG_OPERATION_SAVE ||
+        (s_candidate_save && s_candidate_metrology_rebuilt);
+#endif
 
     if (s_operation == CONFIG_OPERATION_NONE)
     {
@@ -352,23 +374,45 @@ void PersistenceManager_Process(void)
         }
         else
         {
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+            const SystemContext *context = SystemContext_Get();
+            if (s_operation == CONFIG_OPERATION_SAVE &&
+                (context == NULL ||
+                 SystemContext_GetConfigRevision() != s_requested_revision ||
+                 !PersistentCodec_DeviceConfigEqual(&context->config,
+                     &s_config_transaction.candidate_target)))
+                runtime_ok = false;
+            else
+#endif
             if (s_operation == CONFIG_OPERATION_FACTORY_RESET)
             {
                 (void)SystemContext_SetTareState(0, false);
                 (void)SystemContext_SetWeightView(WEIGHT_VIEW_NET);
             }
-            (void)SystemContext_MarkRevisionSaved((s_operation ==
-                CONFIG_OPERATION_SAVE) ? s_requested_revision :
-                SystemContext_GetConfigRevision());
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+            if (runtime_ok)
+#endif
+                (void)SystemContext_MarkRevisionSaved((s_operation ==
+                    CONFIG_OPERATION_SAVE) ? s_requested_revision :
+                    SystemContext_GetConfigRevision());
         }
     }
     if (maintenance_active && !DeviceManager_ExitStorageMaintenance())
     {
         runtime_ok = false;
     }
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+    else if (maintenance_active && runtime_ok && ((SystemContext_Get() == NULL) ||
+             !(rebuild_after_storage ?
+               MetrologyManager_RestartAfterStorage(
+                   &SystemContext_Get()->config) :
+               MetrologyManager_ResumeAfterStorage(
+                   &SystemContext_Get()->config))))
+#else
     else if (maintenance_active && ((SystemContext_Get() == NULL) ||
              !MetrologyManager_RestartAfterStorage(
                  &SystemContext_Get()->config)))
+#endif
     {
         runtime_ok = false;
     }
@@ -431,6 +475,9 @@ void PersistenceManager_Process(void)
     ConfigStore_AcknowledgeResult();
     s_operation = CONFIG_OPERATION_NONE;
     s_candidate_save = false;
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+    s_candidate_metrology_rebuilt = false;
+#endif
     Stage4BStorageDiagnostics_Update();
 }
 

@@ -1,4 +1,4 @@
-"""Read-only bounded 0x052B power-cycle and checkweigh reacquisition log."""
+"""Read-only bounded 0x052C power-cycle and checkweigh reacquisition log."""
 import argparse
 import csv
 import hashlib
@@ -34,6 +34,7 @@ def main():
     fields = ("utc", "host_monotonic_ns", "firmware", "map", "sequence",
               "uptime_ms", "r5_application", "r5_mode", "r5_state",
               "r5_offset_ug", "applied_offset_ug", "offset_applied",
+              "r5_reference_ug", "save_request_count_low",
               "check_mode", "check_reason", "check_formal", "check_flags",
               "revision", "saved_revision", "dirty", "fault", "overrun",
               "storage_slot", "storage_sequence")
@@ -55,17 +56,19 @@ def main():
                 try:
                     realtime, _ = client.read(0, 16)
                     diag, _ = client.read(0x20, 28)
-                    r5, _ = client.read(0x280, 10)
+                    r5, _ = client.read(0x280, 40)
                     check, _ = client.read(0x2c0, 8)
                     active, _ = client.read(0x340, 18)
                     storage, _ = client.read(0x1c0, 4)
-                    if (realtime[14], realtime[15]) != (0x010F, 0x052B):
+                    if (realtime[14], realtime[15]) != (0x010F, 0x052C):
                         raise RuntimeError("identity changed")
                     entry = dict(utc=utc(), host_monotonic_ns=time.monotonic_ns(),
                         firmware=realtime[15], map=realtime[14],
                         sequence=u32(diag[0:2]), uptime_ms=u32(diag[2:4]),
                         r5_application=r5[1], r5_mode=r5[2], r5_state=r5[3],
                         r5_offset_ug=word64(r5[6:10], "high"),
+                        r5_reference_ug=word64(r5[18:22], "high"),
+                        save_request_count_low=r5[39],
                         applied_offset_ug=word32(active[14:16], "high"),
                         offset_applied=u32(active[16:18]),
                         check_mode=check[1], check_reason=check[4],

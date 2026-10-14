@@ -70,6 +70,11 @@ bool MetrologyManager_Reconfigure(const DeviceConfig *config);
 bool MetrologyManager_ReconfigureDiagnosticRate(Cs1237DataRate rate);
 #endif
 bool MetrologyManager_RestartAfterStorage(const DeviceConfig *config);
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+bool MetrologyManager_ResumeAfterStorage(const DeviceConfig *config);
+bool MetrologyManager_IsStorageReacquiring(void);
+void MetrologyManager_AcknowledgeStorageReacquisition(void);
+#endif
 uint32_t MetrologyManager_GetRejectedSampleCount(void);
 int32_t MetrologyManager_GetZeroOffsetRaw(void);
 bool MetrologyManager_IsInitialized(void);

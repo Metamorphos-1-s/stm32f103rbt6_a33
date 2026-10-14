@@ -1,0 +1,9 @@
+{
+  "result": "CAPTURED_180S",
+  "rows": 3191,
+  "read_errors": 0,
+  "save_sent": true,
+  "save_completed": true,
+  "ended_utc": "2026-10-14T08:54:54.030190+00:00",
+  "samples_sha256": "992AE49B92BD7D1B28B3464829023BD1AD122EC794486F2ADF718A38180145E2"
+}

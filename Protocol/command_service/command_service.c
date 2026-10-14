@@ -403,6 +403,22 @@ CommandResult CommandService_Execute(const CommandRequest *request,
     {
         return COMMAND_RESULT_INVALID_ARGUMENT;
     }
+#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+    if (PersistenceManager_IsBusy() &&
+        (request->id == COMMAND_A13_SET_PAIR ||
+         request->id == COMMAND_R5_SET_MODE ||
+         request->id == COMMAND_R5_SET_APPLICATION ||
+         request->id == COMMAND_CHECKWEIGH_SET_MODE ||
+         request->id == COMMAND_SWITCH_WEIGHING_PROFILE ||
+         request->id == COMMAND_SET_CONFIG_FIELD ||
+         request->id == COMMAND_SET_CONFIG_MASS_FIELD ||
+         request->id == COMMAND_SET_PROFILE_FIELD ||
+         request->id == COMMAND_CONFIG_VALIDATE ||
+         request->id == COMMAND_COMMIT_CONFIG_EDIT)) {
+        response->result = COMMAND_RESULT_BUSY;
+        return COMMAND_RESULT_BUSY;
+    }
+#endif
 #if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
     if ((request->id == COMMAND_A13_SET_PAIR || request->id == COMMAND_R5_SET_MODE ||
          request->id == COMMAND_R5_SET_APPLICATION || request->id == COMMAND_R5_RESET_STATE) &&
