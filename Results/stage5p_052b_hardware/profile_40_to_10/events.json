@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "BEFORE",
+    "utc": "2026-10-14T06:58:57.572380+00:00",
+    "state": {
+      "firmware": 1323,
+      "map": 271,
+      "active_profile": 0,
+      "profiles": [
+        {
+          "sample_rate": 1,
+          "filter_mode": 1,
+          "strength": 3
+        },
+        {
+          "sample_rate": 1,
+          "filter_mode": 0,
+          "strength": 0
+        }
+      ],
+      "driver_state": 4,
+      "sequence": 80260,
+      "overrun": 0,
+      "fault": 0,
+      "revision": 28,
+      "saved": 22,
+      "dirty": 1,
+      "r5_application": 1,
+      "r5_mode": 2,
+      "r5_state": 5,
+      "offset_ug": 51440,
+      "offset_applied": 1
+    }
+  },
+  {
+    "kind": "ERROR",
+    "utc": "2026-10-14T06:58:57.577380+00:00",
+    "error": "target profile outside filt1/strength3 10/40 range"
+  }
+]

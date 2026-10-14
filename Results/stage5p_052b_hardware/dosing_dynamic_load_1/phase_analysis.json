@@ -1,0 +1,51 @@
+{
+  "source": "Results\\stage5p_052b_hardware\\dosing_dynamic_load_1\\samples.csv",
+  "rows": 467,
+  "first_utc": "2026-10-14T06:50:56.259384+00:00",
+  "last_utc": "2026-10-14T06:54:02.658287+00:00",
+  "load_bracket": [
+    "2026-10-14T06:51:53.451400+00:00",
+    "2026-10-14T06:51:53.851514+00:00"
+  ],
+  "unload_bracket": [
+    "2026-10-14T06:53:07.858373+00:00",
+    "2026-10-14T06:53:08.253169+00:00"
+  ],
+  "baseline": {
+    "uncompensated_gross_ug_median_ug": 385211.5,
+    "formal_gross_ug_median_ug": 333721.5,
+    "formal_net_ug_median_ug": 333721.5,
+    "applied_offset_ug_median_ug": 51490.0,
+    "rows": 12
+  },
+  "load_15_45s": {
+    "uncompensated_gross_ug_median_ug": 500404359,
+    "formal_gross_ug_median_ug": 500352869,
+    "formal_net_ug_median_ug": 500352869,
+    "applied_offset_ug_median_ug": 51490,
+    "rows": 75
+  },
+  "unload_15_45s": {
+    "uncompensated_gross_ug_median_ug": 400980,
+    "formal_gross_ug_median_ug": 349490,
+    "formal_net_ug_median_ug": 349490,
+    "applied_offset_ug_median_ug": 51490,
+    "rows": 75
+  },
+  "uncompensated_span_ug": 500019147.5,
+  "formal_span_ug": 500019147.5,
+  "uncompensated_unload_step_ug": -500003379,
+  "formal_unload_step_ug": -500003379,
+  "formal_low_rows": 281,
+  "formal_high_rows": 186,
+  "formal_disabled_rows": 0,
+  "offset_min_ug": 51490,
+  "offset_max_ug": 51490,
+  "weight_equation_mismatches": 0,
+  "net_equation_mismatches": 0,
+  "fault_rows": 0,
+  "overrun_rows": 0,
+  "sequence_regressions": 0,
+  "host_gaps_gt_2s": 0,
+  "shadow_same_sample_rows": 0
+}

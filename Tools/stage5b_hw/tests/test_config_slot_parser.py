@@ -24,6 +24,21 @@ class SlotTests(unittest.TestCase):
         self.assertEqual(decode_v3(payload)["metrology"]["zero_range_ug"],
                          60000000)
 
+    def test_v3_alarm_battery_and_requests_offsets(self):
+        payload = bytearray(281)
+        struct.pack_into("<qqq", payload, 207, 100000000, 400000000, 10000)
+        payload[231:236] = bytes((0, 0, 0, 0, 1))
+        struct.pack_into("<iIII", payload, 250, 400, 13600, 13200, 13900)
+        payload[266] = 1
+        payload[280] = 0x16
+        decoded = decode_v3(payload)
+        self.assertEqual(decoded["alarm"]["upper_limit_ug"], 400000000)
+        self.assertEqual(decoded["alarm"]["hysteresis_ug"], 10000)
+        self.assertTrue(decoded["alarm"]["limit_function_enable"])
+        self.assertEqual(decoded["battery"]["calibration_offset_mv"], 400)
+        self.assertEqual(decoded["requests"], {"r5_mode": 2,
+            "r5_application": 1, "checkweigh_mode": 1})
+
     def test_valid_slot(self):
         self.assertTrue(parse_slot(slot(7), "A")["valid"])
 

@@ -1,0 +1,51 @@
+{
+  "source": "Results\\stage5p_052b_hardware\\dynamic_load_1\\samples.csv",
+  "rows": 1119,
+  "first_utc": "2026-10-14T06:40:14.392852+00:00",
+  "last_utc": "2026-10-14T06:47:41.586433+00:00",
+  "load_bracket": [
+    "2026-10-14T06:41:16.387852+00:00",
+    "2026-10-14T06:41:16.782616+00:00"
+  ],
+  "unload_bracket": [
+    "2026-10-14T06:46:46.783109+00:00",
+    "2026-10-14T06:46:47.183303+00:00"
+  ],
+  "baseline": {
+    "uncompensated_gross_ug_median_ug": 406049.0,
+    "formal_gross_ug_median_ug": 381318.0,
+    "formal_net_ug_median_ug": 381318.0,
+    "applied_offset_ug_median_ug": 24731.0,
+    "rows": 12
+  },
+  "load_15_45s": {
+    "uncompensated_gross_ug_median_ug": 500431392,
+    "formal_gross_ug_median_ug": 500406661,
+    "formal_net_ug_median_ug": 500406661,
+    "applied_offset_ug_median_ug": 24731,
+    "rows": 75
+  },
+  "unload_15_45s": {
+    "uncompensated_gross_ug_median_ug": 474193,
+    "formal_gross_ug_median_ug": 383043,
+    "formal_net_ug_median_ug": 383043,
+    "applied_offset_ug_median_ug": 91150,
+    "rows": 75
+  },
+  "uncompensated_span_ug": 500025343.0,
+  "formal_span_ug": 500025343.0,
+  "uncompensated_unload_step_ug": -499957199,
+  "formal_unload_step_ug": -500023618,
+  "formal_low_rows": 293,
+  "formal_high_rows": 826,
+  "formal_disabled_rows": 0,
+  "offset_min_ug": 24731,
+  "offset_max_ug": 93575,
+  "weight_equation_mismatches": 0,
+  "net_equation_mismatches": 0,
+  "fault_rows": 0,
+  "overrun_rows": 0,
+  "sequence_regressions": 0,
+  "host_gaps_gt_2s": 0,
+  "shadow_same_sample_rows": 0
+}

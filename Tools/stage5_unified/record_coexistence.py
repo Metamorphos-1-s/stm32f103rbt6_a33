@@ -1,4 +1,4 @@
-"""Read-only, bounded 0x052A load/unload recorder with atomic weight block."""
+"""Read-only, bounded 0x052B load/unload recorder with atomic weight block."""
 import argparse
 import csv
 import hashlib
@@ -38,7 +38,11 @@ def main():
               "uncompensated_gross_ug", "formal_gross_ug", "formal_net_ug",
               "tare_ug", "applied_offset_ug", "offset_applied", "mode",
               "state", "check_mode", "check_reason", "check_formal",
-              "alarm_state", "fault", "overrun", "revision", "saved_revision")
+              "alarm_state", "display_count", "status_flags",
+              "raw_adc", "filtered_adc_counts", "raw_sequence",
+              "shadow_sequence", "shadow_static_ug", "shadow_dynamic_ug",
+              "shadow_classes", "shadow_formal_outputs", "same_sample",
+              "fault", "overrun", "revision", "saved_revision")
     with (args.output / "frames.txt").open("w", encoding="ascii") as frames, \
          (args.output / "samples.csv").open("w", encoding="utf-8", newline="") as data, \
          (args.output / "errors.jsonl").open("w", encoding="utf-8") as failures:
@@ -52,7 +56,7 @@ def main():
                              frame_logger=log_frame) as port:
             client = ModbusClient(port, 1)
             initial = probe(client)
-            if (initial["firmware"], initial["map"]) != ("0x052A", "0x010F"):
+            if (initial["firmware"], initial["map"]) != ("0x052B", "0x010F"):
                 raise RuntimeError("unexpected firmware identity")
             (args.output / "preflight.json").write_text(
                 json.dumps(initial, indent=2) + "\n", encoding="utf-8")
@@ -63,6 +67,8 @@ def main():
                     active, _ = client.read(0x340, 40)
                     check, _ = client.read(0x2c0, 8)
                     alarm, _ = client.read(0x220, 27)
+                    shadow, _ = client.read(0x2e0, 31)
+                    realtime, _ = client.read(0x0, 32)
                     diagnostic, _ = client.read(0x20, 28)
                     if active[0:2] != [0xA13E, 1]:
                         raise RuntimeError("A13 active signature changed")
@@ -77,6 +83,17 @@ def main():
                         mode=u32(active[34:36]), state=u32(active[36:38]),
                         check_mode=check[1], check_reason=check[4],
                         check_formal=check[5], alarm_state=alarm[17],
+                        display_count=decode_i32_words(realtime[0:2], "high"),
+                        status_flags=u32(realtime[4:6]),
+                        raw_adc=decode_i32_words(realtime[28:30], "high"),
+                        filtered_adc_counts=decode_i32_words(realtime[30:32], "high"),
+                        raw_sequence=u32(diagnostic[0:2]),
+                        shadow_sequence=u32(shadow[17:19]),
+                        shadow_static_ug=decode_i64_words(shadow[1:5], "high"),
+                        shadow_dynamic_ug=decode_i64_words(shadow[5:9], "high"),
+                        shadow_classes=shadow[21],
+                        shadow_formal_outputs=shadow[24],
+                        same_sample=int(u32(shadow[17:19]) == u32(active[10:12])),
                         fault=u32(diagnostic[25:27]),
                         overrun=u32(diagnostic[13:15]),
                         revision=u32(diagnostic[19:21]),

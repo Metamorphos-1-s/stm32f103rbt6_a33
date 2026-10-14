@@ -355,7 +355,7 @@ static void TestCheckweighFastNetAfterTare(void)
     assert(alarm.dynamic_input_ug == 0);
 }
 
-static void TestRejectedBridgeSampleRevokesFormalOutput(void)
+static void TestRejectedBridgeSampleRevokesMode(GuardedCheckweighMode mode)
 {
     CS1237_Config adc = {CS1237_RATE_10_HZ, CS1237_GAIN_128,
                          CS1237_CHANNEL_A, true};
@@ -368,10 +368,10 @@ static void TestRejectedBridgeSampleRevokesFormalOutput(void)
     MeasurementBridge_Init();
     assert(CS1237_Init(&adc));
     GuardedCheckweigh_Init(&guarded);
-    assert(GuardedCheckweigh_SetMode(&guarded,
-        GUARDED_CHECKWEIGH_STATIC, 0U, true));
+    assert(GuardedCheckweigh_SetMode(&guarded, mode, 0U, true));
     input.enabled = true;
     input.static_class = CHECKWEIGH_SHADOW_HIGH;
+    input.dynamic_class = CHECKWEIGH_SHADOW_HIGH;
     input.sample_sequence = 1U;
     input.sample_timestamp_ms = 100U;
     assert(GuardedCheckweigh_Process(&guarded, &input, 100U, &result));
@@ -406,6 +406,12 @@ static void TestRejectedBridgeSampleRevokesFormalOutput(void)
     input.sample_timestamp_ms = 500U;
     assert(GuardedCheckweigh_Process(&guarded, &input, 500U, &result));
     assert(result.state == CHECKWEIGH_HIGH);
+}
+
+static void TestRejectedBridgeSampleRevokesFormalOutput(void)
+{
+    TestRejectedBridgeSampleRevokesMode(GUARDED_CHECKWEIGH_STATIC);
+    TestRejectedBridgeSampleRevokesMode(GUARDED_CHECKWEIGH_DYNAMIC);
 }
 
 static void Key(KeyId id, KeyEventType type)

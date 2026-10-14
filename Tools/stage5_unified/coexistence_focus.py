@@ -1,4 +1,4 @@
-"""Short, no-SAVE hardware checkpoints for 0x052A coexistence."""
+"""Short, no-SAVE hardware checkpoints for 0x052B coexistence."""
 import argparse
 import json
 import sys
@@ -29,7 +29,7 @@ def words64(value):
 
 def snapshot(client):
     identity = probe(client)
-    if (identity["firmware"], identity["map"]) != ("0x052A", "0x010F"):
+    if (identity["firmware"], identity["map"]) != ("0x052B", "0x010F"):
         raise RuntimeError("unexpected firmware identity")
     a13, _ = client.read(0x340, 40)
     alarm, _ = client.read(0x220, 27)
@@ -57,7 +57,7 @@ def issue(client, token, command, **kwargs):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("phase", choices=("inspect", "configure", "dosing",
-                                           "dynamic", "static", "off"))
+                                           "dynamic", "static", "check_static", "off"))
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.output.exists():
@@ -87,8 +87,8 @@ def main():
                                    "result": issue(client, token, 9)})
                     client.write_single(0x0240, 1)
                     client.write_single(0x0241, 0)
-                    client.write_multiple(0x0242, words64(-1000000))
-                    client.write_multiple(0x0246, words64(1000000))
+                    client.write_multiple(0x0242, words64(100000000))
+                    client.write_multiple(0x0246, words64(400000000))
                     client.write_multiple(0x024A, words64(10000))
                     client.write_single(0x024E, 0)
                     client.write_single(0x024F, 0)
@@ -100,8 +100,8 @@ def main():
                     updated = snapshot(client)
                     events.append({"utc": utc(), "kind": "AFTER_CONFIG", "value": updated})
                     if updated["alarm"][0] != 1 or updated["alarm"][1] != 0 or \
-                            word64(updated["alarm"][2:6], "high") != -1000000 or \
-                            word64(updated["alarm"][6:10], "high") != 1000000:
+                            word64(updated["alarm"][2:6], "high") != 100000000 or \
+                            word64(updated["alarm"][6:10], "high") != 400000000:
                         raise RuntimeError("RAM alarm readback mismatch")
                     generation = updated["check_generation"]
                     events.append({"utc": utc(), "kind": "CHECKWEIGH_STATIC",
@@ -114,8 +114,8 @@ def main():
                                                    arg1=target,
                                                    arg64=before["a13_generation"],
                                                    flags=1)})
-                elif args.phase in ("dynamic", "off"):
-                    target = 2 if args.phase == "dynamic" else 0
+                elif args.phase in ("dynamic", "check_static", "off"):
+                    target = {"dynamic": 2, "check_static": 1, "off": 0}[args.phase]
                     events.append({"utc": utc(), "kind": "CHECKWEIGH_MODE",
                                    "result": issue(client, token, 34, arg0=target,
                                                    arg1=before["check_generation"],
@@ -123,18 +123,22 @@ def main():
                 time.sleep(0.5)
                 after = snapshot(client)
                 events.append({"utc": utc(), "kind": "AFTER", "value": after})
-                expected_check = {"configure": 1, "dynamic": 2, "off": 0}.get(args.phase)
+                expected_check = {"configure": 1, "check_static": 1,
+                                  "dynamic": 2, "off": 0}.get(args.phase)
                 if expected_check is not None and after["checkweigh"][1] != expected_check:
                     raise RuntimeError("checkweigh mode readback mismatch")
                 expected_r5 = {"dosing": 1, "static": 2}.get(args.phase)
                 if expected_r5 is not None and after["identity"]["r5"]["mode"] != expected_r5:
                     raise RuntimeError("R5 mode readback mismatch")
-                if args.phase == "dosing" and (
-                        after["identity"]["r5"]["offset_ug"] !=
-                        before["identity"]["r5"]["offset_ug"] or
-                        after["checkweigh"][4] != 3 or
-                        after["checkweigh"][5] != 0):
-                    raise RuntimeError("STATIC DOSING freeze/pending mismatch")
+                if args.phase == "dosing":
+                    if before["checkweigh"][1] == 1 and (
+                            after["checkweigh"][4] != 3 or after["checkweigh"][5] != 0):
+                        raise RuntimeError("STATIC checkweigh not PENDING in DOSING")
+                    if before["checkweigh"][1] == 2 and after["checkweigh"][5] == 0:
+                        raise RuntimeError("DYNAMIC checkweigh stopped in DOSING")
+                if args.phase == "check_static" and before["identity"]["r5"]["mode"] == 1 and (
+                        after["checkweigh"][4] != 3 or after["checkweigh"][5] != 0):
+                    raise RuntimeError("STATIC checkweigh not PENDING in DOSING")
                 if after["identity"]["fault_mask"] or after["identity"]["overrun_count"]:
                     raise RuntimeError("new device safety fault")
                 if args.phase != "inspect" and after["identity"]["saved_revision"] != 22:

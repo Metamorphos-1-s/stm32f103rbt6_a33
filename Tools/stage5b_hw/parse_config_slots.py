@@ -58,6 +58,28 @@ def decode_v3(payload):
         raise ValueError("persistent V3 payload is truncated")
     return {
         "metrology": {"zero_range_ug": struct.unpack_from("<q", payload, 16)[0]},
+        "alarm": {
+            "lower_limit_ug": struct.unpack_from("<q", payload, 207)[0],
+            "upper_limit_ug": struct.unpack_from("<q", payload, 215)[0],
+            "hysteresis_ug": struct.unpack_from("<q", payload, 223)[0],
+            "weight_source": payload[231],
+            "internal_buzzer_enable": bool(payload[232]),
+            "external_buzzer_enable": bool(payload[233]),
+            "qualified_beep_enable": bool(payload[234]),
+            "limit_function_enable": bool(payload[235]),
+        },
+        "battery": {
+            "calibration_offset_mv": struct.unpack_from("<i", payload, 250)[0],
+            "low_warning_mv": struct.unpack_from("<I", payload, 254)[0],
+            "critical_low_mv": struct.unpack_from("<I", payload, 258)[0],
+            "recovery_mv": struct.unpack_from("<I", payload, 262)[0],
+            "low_voltage_alarm_enable": bool(payload[266]),
+        },
+        "requests": {
+            "r5_mode": payload[280] & 3,
+            "r5_application": (payload[280] >> 2) & 1,
+            "checkweigh_mode": (payload[280] >> 4) & 3,
+        },
         "communication": {
             "baud_rate": struct.unpack_from("<I", payload, 176)[0],
             "parity": payload[180], "stop_bits": payload[181],

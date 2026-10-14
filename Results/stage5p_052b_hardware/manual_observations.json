@@ -1,0 +1,47 @@
+{
+  "time_basis": "User message time is not a precise physical edge; UTC event brackets come from host-monotonic sample records.",
+  "events": [
+    {
+      "source": "USER MESSAGE",
+      "verbatim": "500g 已放好",
+      "phase": "STATIC",
+      "inferred_utc_bracket": ["2026-10-14T06:33:57.486279+00:00", "2026-10-14T06:33:57.887007+00:00"]
+    },
+    {
+      "source": "USER MESSAGE",
+      "verbatim": "500g 已移除",
+      "phase": "STATIC",
+      "inferred_utc_bracket": ["2026-10-14T06:35:46.689280+00:00", "2026-10-14T06:35:47.077619+00:00"]
+    },
+    {
+      "source": "USER MESSAGE",
+      "verbatim": "DYNAMIC 500g 已放好",
+      "phase": "DYNAMIC",
+      "inferred_utc_bracket": ["2026-10-14T06:41:16.387852+00:00", "2026-10-14T06:41:16.782616+00:00"]
+    },
+    {
+      "source": "USER MESSAGE",
+      "verbatim": "DYNAMIC 500g 已移除",
+      "phase": "DYNAMIC",
+      "inferred_utc_bracket": ["2026-10-14T06:46:46.783109+00:00", "2026-10-14T06:46:47.183303+00:00"]
+    },
+    {
+      "source": "USER MESSAGE",
+      "verbatim": "DOSING 500g 已放好",
+      "phase": "ACTIVE+DOSING, DYNAMIC CHECKWEIGH",
+      "inferred_utc_bracket": ["2026-10-14T06:51:53.451400+00:00", "2026-10-14T06:51:53.851514+00:00"]
+    },
+    {
+      "source": "USER MESSAGE",
+      "verbatim": "DOSING 500g 已移除",
+      "phase": "ACTIVE+DOSING, DYNAMIC CHECKWEIGH",
+      "inferred_utc_bracket": ["2026-10-14T06:53:07.858373+00:00", "2026-10-14T06:53:08.253169+00:00"]
+    },
+    {
+      "source": "USER MESSAGE",
+      "verbatim": "1.上排左一左四亮，下排左一左五亮，0.33\n2.上排左二左四亮，下排左一左五亮，0.33\n3.上排左四左六亮，下排左一左五亮，41P\n4.上排左一左四亮，下排左一左五亮，0.32",
+      "phase": "NET -> GROSS -> BATTERY -> NET",
+      "observation_utc": "unconfirmed"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "source": "Results\\stage5p_052b_hardware\\static_load_1\\samples.csv",
+  "rows": 1168,
+  "first_utc": "2026-10-14T06:28:51.081714+00:00",
+  "last_utc": "2026-10-14T06:36:37.875718+00:00",
+  "load_bracket": [
+    "2026-10-14T06:33:57.486279+00:00",
+    "2026-10-14T06:33:57.887007+00:00"
+  ],
+  "unload_bracket": [
+    "2026-10-14T06:35:46.689280+00:00",
+    "2026-10-14T06:35:47.077619+00:00"
+  ],
+  "baseline": {
+    "uncompensated_gross_ug_median_ug": 371695.5,
+    "formal_gross_ug_median_ug": 360294.5,
+    "formal_net_ug_median_ug": 360294.5,
+    "applied_offset_ug_median_ug": 11401.0,
+    "rows": 12
+  },
+  "load_15_45s": {
+    "uncompensated_gross_ug_median_ug": 500387464,
+    "formal_gross_ug_median_ug": 500376063,
+    "formal_net_ug_median_ug": 500376063,
+    "applied_offset_ug_median_ug": 11401,
+    "rows": 75
+  },
+  "unload_15_45s": {
+    "uncompensated_gross_ug_median_ug": 442655,
+    "formal_gross_ug_median_ug": 409954,
+    "formal_net_ug_median_ug": 409954,
+    "applied_offset_ug_median_ug": 32701,
+    "rows": 75
+  },
+  "uncompensated_span_ug": 500015768.5,
+  "formal_span_ug": 500015768.5,
+  "uncompensated_unload_step_ug": -499944809,
+  "formal_unload_step_ug": -499966109,
+  "formal_low_rows": 891,
+  "formal_high_rows": 244,
+  "formal_disabled_rows": 33,
+  "offset_min_ug": -2789,
+  "offset_max_ug": 32701,
+  "weight_equation_mismatches": 0,
+  "net_equation_mismatches": 0,
+  "fault_rows": 0,
+  "overrun_rows": 0,
+  "sequence_regressions": 0,
+  "host_gaps_gt_2s": 0
+}
