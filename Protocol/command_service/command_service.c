@@ -926,10 +926,12 @@ CommandResult CommandService_Execute(const CommandRequest *request,
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
         case COMMAND_CHECKWEIGH_SET_MODE:
 #if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION == 0U)
             if (request->value0 != 0 && MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_ACTIVE) {
                 result = COMMAND_RESULT_INVALID_STATE;
                 break;
             }
+#endif
 #endif
             if ((request->source == COMMAND_SOURCE_BLE) ||
                 (request->value0 < (int32_t)GUARDED_CHECKWEIGH_OFF) ||

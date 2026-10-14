@@ -64,6 +64,9 @@ uint8_t MeasurementBridge_Process(uint8_t maximum_samples)
         else
         {
             bool accepted = MetrologyManager_AcceptRawSample(&raw_sample);
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+            if (!accepted) ++s_invalid_count;
+#endif
             const MassSnapshot *snapshot = MetrologyManager_GetMassSnapshot();
             SWD_BRIDGE_RESULT(accepted,
                 (accepted && (snapshot != NULL)) ? snapshot->sample_sequence : 0U);
@@ -88,6 +91,17 @@ uint32_t MeasurementBridge_GetInvalidCount(void)
 {
     return s_invalid_count;
 }
+
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+bool MeasurementBridge_RejectedSince(uint32_t *last_seen_count)
+{
+    uint32_t current = s_invalid_count;
+    if (last_seen_count == NULL) return true;
+    bool rejected = current != *last_seen_count;
+    *last_seen_count = current;
+    return rejected;
+}
+#endif
 
 uint16_t MeasurementBridge_GetLastBacklog(void)
 {

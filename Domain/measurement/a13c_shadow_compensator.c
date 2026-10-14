@@ -12,11 +12,16 @@
 #define QUIET_RANGE_UG INT64_C(50000)
 #define OBVIOUS_STEP_UG INT64_C(2000000)
 #define OFFSET_CAP_UG INT64_C(500000)
-#if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+#define LONG_RATE_UG_PER_CONTROL_SAMPLE 25U
+#define BOOST_RATE_UG_PER_CONTROL_SAMPLE 50U
+#elif (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
 /* One admitted controller sample per 100 ms at both 10 Hz and 40 Hz. */
 #define LONG_RATE_UG_PER_CONTROL_SAMPLE 10U
+#define BOOST_RATE_UG_PER_CONTROL_SAMPLE 35U
 #else
 #define LONG_RATE_UG_PER_CONTROL_SAMPLE 5U
+#define BOOST_RATE_UG_PER_CONTROL_SAMPLE 35U
 #endif
 #define STEP_WARMUP 50U
 #define HOLD_SAMPLES 150U
@@ -518,7 +523,8 @@ static bool FeedStatic(A13CCompensator *c, uint32_t sequence,
                 A13C_OBSERVATION_SAMPLES) - 2 * c->offset_ug -
                 c->reference_twice_ug;
             uint64_t excess_twice = (uint64_t)AbsSmall(error_twice);
-            uint32_t rate = sequence < c->boost_until ? 35U :
+            uint32_t rate = sequence < c->boost_until ?
+                BOOST_RATE_UG_PER_CONTROL_SAMPLE :
                 LONG_RATE_UG_PER_CONTROL_SAMPLE;
             uint32_t movement = 0U;
             if (excess_twice > UINT64_C(20000)) {

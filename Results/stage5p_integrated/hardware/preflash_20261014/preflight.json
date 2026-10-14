@@ -1,0 +1,49 @@
+{
+  "utc": "2026-10-13T19:38:55.256155+00:00",
+  "host_monotonic_ns": 201865390000000,
+  "firmware": "0x0529",
+  "map": "0x010F",
+  "word_order": "high",
+  "display_count": 7,
+  "display_decimals": 2,
+  "gross_ug": 68707,
+  "net_ug": 68707,
+  "raw_adc": 42164,
+  "filtered_adc_counts": 42171,
+  "sample_sequence": 694673,
+  "mcu_uptime_ms": 20842134,
+  "overrun_count": 0,
+  "fault_mask": 0,
+  "dirty": 0,
+  "revision": 22,
+  "saved_revision": 22,
+  "calibration_valid": 1,
+  "configuration": {
+    "active_profile": 0,
+    "sample_rate": 1,
+    "gain": 3,
+    "filter_mode": 1,
+    "filter_strength": 3,
+    "raw_zero": 41868,
+    "raw_span": 485780,
+    "span_mass_ug": 500000000,
+    "schema": 2,
+    "persistent_format": 3,
+    "slot": 2,
+    "storage_sequence": 22
+  },
+  "r5": {
+    "signature": 21941,
+    "application": 0,
+    "mode": 0,
+    "state": 0,
+    "limited": 0,
+    "offset_ug": 0,
+    "save_request_count_low": 1
+  },
+  "checkweigh": {
+    "signature": 23477,
+    "mode": 0
+  },
+  "candidate": null
+}

@@ -554,9 +554,27 @@ static bool MetrologyManager_ProcessAlarmShadow(void)
     fast_valid = WeightEngine_GetFastCalibratedMass(&s_engine, &fast_gross);
     if (!fast_valid) fast_gross = 0;
     fast_weight = fast_gross;
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U) && \
+    (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+    if (!MassMath_Subtract(fast_weight,
+        s_engine.beta_external_drift_apply ?
+            s_engine.beta_external_drift_offset_ug : 0,
+        &fast_weight)) {
+        FaultManager_Set(FAULT_WEIGHT_MATH_OVERFLOW);
+        return false;
+    }
+#endif
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+    if (!MassMath_Subtract(fast_weight, snapshot->tare_mass_ug,
+        &fast_weight)) {
+        FaultManager_Set(FAULT_WEIGHT_MATH_OVERFLOW);
+        return false;
+    }
+#else
     if ((context->config.alarm.weight_source == ALARM_WEIGHT_NET) &&
         !MassMath_Subtract(fast_gross, snapshot->tare_mass_ug,
             &fast_weight)) return false;
+#endif
     revision = (uint16_t)SystemContext_GetConfigRevision();
     if ((s_alarm_shadow.last_revision != 0U) &&
         (s_alarm_shadow.last_revision != revision))
@@ -565,8 +583,12 @@ static bool MetrologyManager_ProcessAlarmShadow(void)
     input.sequence = snapshot->sample_sequence;
     input.timestamp_ms = snapshot->sample_timestamp_ms;
     input.static_weight_ug =
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+        snapshot->net_mass_ug;
+#else
         (context->config.alarm.weight_source == ALARM_WEIGHT_GROSS) ?
         snapshot->gross_mass_ug : snapshot->net_mass_ug;
+#endif
     input.dynamic_weight_ug = fast_weight;
     input.low_limit_ug = s_alarm_shadow_low_ug;
     input.high_limit_ug = s_alarm_shadow_high_ug;
@@ -576,7 +598,9 @@ static bool MetrologyManager_ProcessAlarmShadow(void)
 #endif
     input.stable = (snapshot->status_flags & WEIGHT_STATUS_STABLE) != 0U;
     input.process_active =
-#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+        s_r5_drift.mode == A13C_MODE_DOSING;
+#elif (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
         false;
 #else
         (uint32_t)s_r5_drift.mode ==
@@ -762,8 +786,12 @@ void MetrologyManager_Process20ms(void)
             (WEIGHT_STATUS_WEIGHT_VALID | WEIGHT_STATUS_CALIBRATION_VALID)) &&
         ((snapshot->status_flags & WEIGHT_STATUS_OVERLOAD) == 0U) &&
         (FaultManager_GetActiveMask() == 0U) &&
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION == 0U)
         (boot_context->config.system.requested_r5_application == 0U ||
          App_A13CheckweighIsOff())) {
+#else
+        true) {
+#endif
         s_restoring_r5_request = true;
         if (MetrologyManager_SetA13Pair(
                 (R5BetaApplication)boot_context->config.system.requested_r5_application,
@@ -1372,7 +1400,8 @@ bool MetrologyManager_SetA13Pair(R5BetaApplication application, R5DriftMode mode
     AppState state = SystemContext_GetState();
     if (!s_initialized || (uint32_t)application > 1U || (uint32_t)mode > 2U ||
         (require_generation && expected_generation != s_a13e_generation)) return false;
-#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U) && \
+    (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION == 0U)
     if (!s_restoring_r5_request && application == R5_BETA_APPLICATION_ACTIVE &&
         mode != R5_DRIFT_MODE_OFF && SystemContext_Get() != NULL &&
         SystemContext_Get()->config.system.requested_checkweigh_mode != 0U)
@@ -1398,8 +1427,11 @@ bool MetrologyManager_SetA13Pair(R5BetaApplication application, R5DriftMode mode
              (WEIGHT_STATUS_WEIGHT_VALID | WEIGHT_STATUS_CALIBRATION_VALID) ||
          (weight->status_flags & WEIGHT_STATUS_OVERLOAD) || s_r5_drift.limited ||
          weight->raw_value >= 8323072 || weight->raw_value <= -8323072 ||
-         (s_r5_application == R5_BETA_APPLICATION_SHADOW && s_r5_drift.offset_ug != 0) ||
-         !App_A13CheckweighIsOff())) return false;
+         (s_r5_application == R5_BETA_APPLICATION_SHADOW && s_r5_drift.offset_ug != 0)
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION == 0U)
+         || !App_A13CheckweighIsOff()
+#endif
+         )) return false;
     if (!R5Drift_SetMode(&s_r5_drift, mode)) return false;
     if (!WeightEngine_SetBetaExternalDrift(&s_engine, s_r5_drift.offset_ug,
             application == R5_BETA_APPLICATION_ACTIVE)) {
@@ -1464,8 +1496,10 @@ bool MetrologyManager_RestoreR5Request(R5BetaApplication application,
     s_r5_drift.snapshot.timestamp_ms = 0U;
     s_restoring_r5_request = false;
     if (mode == R5_DRIFT_MODE_OFF) return true;
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION == 0U)
     if (application == R5_BETA_APPLICATION_ACTIVE &&
         context->config.system.requested_checkweigh_mode != 0U) return false;
+#endif
     s_boot_r5_pending = true;
     return true;
 #elif (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
@@ -1549,12 +1583,28 @@ bool MetrologyManager_GetAlarmShadowDiagnostics(
         !WeightEngine_GetFastCalibratedMass(&s_engine, &fast_gross))
         return false;
     fast_weight = fast_gross;
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U) && \
+    (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+    if (!MassMath_Subtract(fast_weight,
+        s_engine.beta_external_drift_apply ?
+            s_engine.beta_external_drift_offset_ug : 0,
+        &fast_weight)) return false;
+#endif
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+    if (!MassMath_Subtract(fast_weight, snapshot->tare_mass_ug,
+        &fast_weight)) return false;
+#else
     if ((context->config.alarm.weight_source == ALARM_WEIGHT_NET) &&
         !MassMath_Subtract(fast_gross, snapshot->tare_mass_ug,
             &fast_weight)) return false;
+#endif
     diagnostics->static_input_ug =
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+        snapshot->net_mass_ug;
+#else
         (context->config.alarm.weight_source == ALARM_WEIGHT_GROSS) ?
         snapshot->gross_mass_ug : snapshot->net_mass_ug;
+#endif
     diagnostics->dynamic_input_ug = fast_weight;
     diagnostics->low_limit_ug = s_alarm_shadow_low_ug;
     diagnostics->high_limit_ug = s_alarm_shadow_high_ug;
@@ -1567,15 +1617,23 @@ bool MetrologyManager_GetAlarmShadowDiagnostics(
     diagnostics->timestamp_ms = snapshot->sample_timestamp_ms;
     diagnostics->revision = s_alarm_shadow.last_revision;
     diagnostics->static_immediate = CheckweighShadow_Classify(
-        diagnostics->static_input_ug, s_alarm_shadow_low_ug,
-        s_alarm_shadow_high_ug);
+        diagnostics->static_input_ug,
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+        diagnostics->low_limit_ug, diagnostics->high_limit_ug);
+#else
+        s_alarm_shadow_low_ug, s_alarm_shadow_high_ug);
+#endif
     diagnostics->static_class = s_alarm_shadow.last_static_class;
     diagnostics->static_last_valid = s_alarm_shadow.static_last_valid;
     diagnostics->static_stable_count = s_alarm_shadow.static_stable_count;
     diagnostics->static_reason = s_alarm_shadow.last_static_reason;
     diagnostics->dynamic_immediate = CheckweighShadow_Classify(
-        diagnostics->dynamic_input_ug, s_alarm_shadow_low_ug,
-        s_alarm_shadow_high_ug);
+        diagnostics->dynamic_input_ug,
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+        diagnostics->low_limit_ug, diagnostics->high_limit_ug);
+#else
+        s_alarm_shadow_low_ug, s_alarm_shadow_high_ug);
+#endif
     diagnostics->dynamic_candidate = s_alarm_shadow.dynamic_candidate;
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
     diagnostics->dynamic_confirmed = s_alarm_shadow_dynamic_output;
@@ -1585,7 +1643,9 @@ bool MetrologyManager_GetAlarmShadowDiagnostics(
     diagnostics->dynamic_confirm_count = s_alarm_shadow.dynamic_confirm_count;
     diagnostics->dynamic_reason = s_alarm_shadow.last_dynamic_reason;
     diagnostics->process_active =
-#if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+        s_r5_drift.mode == A13C_MODE_DOSING;
+#elif (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
         false;
 #else
         (uint32_t)s_r5_drift.mode ==

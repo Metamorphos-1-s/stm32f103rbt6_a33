@@ -1,0 +1,14 @@
+{
+  "rows": 750,
+  "weight_mismatches": 0,
+  "net_mismatches": 0,
+  "sequence_regressions": 0,
+  "host_poll_gaps_over_2s": 0,
+  "fault_rows": 0,
+  "overrun_rows": 0,
+  "save_rows": 0,
+  "min_uncompensated_ug": 358179,
+  "max_uncompensated_ug": 482078,
+  "max_weight_error_ug": 0,
+  "max_net_error_ug": 0
+}

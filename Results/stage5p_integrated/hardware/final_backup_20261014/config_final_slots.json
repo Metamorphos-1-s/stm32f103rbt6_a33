@@ -1,0 +1,102 @@
+{
+  "source": "config_final.bin",
+  "slots": [
+    {
+      "slot": "A",
+      "slot_sha256": "DE1EF1549B0786802FC00C3975FE4E33D98C85DB3D3711918F01E7DCC7F75E70",
+      "payload_sha256": "6C68231C057F4976CDAE4FED380BA93A5578A25D69613B770167E3F9595C2E2C",
+      "persistent": {
+        "metrology": {
+          "zero_range_ug": 60000000
+        },
+        "communication": {
+          "baud_rate": 115200,
+          "parity": 0,
+          "stop_bits": 0,
+          "modbus_address": 1,
+          "protocol_mode": 1,
+          "word_order": 0
+        },
+        "display": {
+          "brightness": 3
+        },
+        "system": {
+          "tare_power_loss_retention": false,
+          "watchdog_enable": false,
+          "startup_auto_zero_enable": false
+        },
+        "runtime": {
+          "weight_view": 0,
+          "current_tare_ug": 0,
+          "tare_active": false
+        }
+      },
+      "magic": "0x41333343",
+      "record_format_version": 3,
+      "payload_schema_version": 3,
+      "header_size": 32,
+      "payload_length": 281,
+      "sequence": 21,
+      "record_flags": "0x00000000",
+      "stored_crc32": "0xB4F83468",
+      "calculated_crc32": "0xB4F83468",
+      "crc_valid": true,
+      "commit_marker": "0x434F4D54",
+      "committed": true,
+      "supported": true,
+      "valid": true
+    },
+    {
+      "slot": "B",
+      "slot_sha256": "25BA476255BE9C19471422B5BD2CCDA13563CFDA1E0D57CBD1DD0C38BD25BBE4",
+      "payload_sha256": "C750404919E9F9BBEFCCD9EF308374EAD0F61AA24B62A7845CC54EE439FFA9A2",
+      "persistent": {
+        "metrology": {
+          "zero_range_ug": 60000000
+        },
+        "communication": {
+          "baud_rate": 115200,
+          "parity": 0,
+          "stop_bits": 0,
+          "modbus_address": 1,
+          "protocol_mode": 1,
+          "word_order": 0
+        },
+        "display": {
+          "brightness": 3
+        },
+        "system": {
+          "tare_power_loss_retention": false,
+          "watchdog_enable": false,
+          "startup_auto_zero_enable": false
+        },
+        "runtime": {
+          "weight_view": 0,
+          "current_tare_ug": 0,
+          "tare_active": false
+        }
+      },
+      "magic": "0x41333343",
+      "record_format_version": 3,
+      "payload_schema_version": 3,
+      "header_size": 32,
+      "payload_length": 281,
+      "sequence": 22,
+      "record_flags": "0x00000000",
+      "stored_crc32": "0x4CCE5D99",
+      "calculated_crc32": "0x4CCE5D99",
+      "crc_valid": true,
+      "commit_marker": "0x434F4D54",
+      "committed": true,
+      "supported": true,
+      "valid": true
+    }
+  ],
+  "active_slot": "B",
+  "modbus_comparison": {
+    "active_slot": "B",
+    "sequence": 22,
+    "active_slot_matches": true,
+    "sequence_matches": true
+  }
+}

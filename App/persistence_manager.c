@@ -57,8 +57,8 @@ static bool ApplyRequestedModes(const DeviceConfig *from,
         memcmp(&from->calibration, &to->calibration, sizeof(from->calibration)) != 0 ||
         memcmp(&from->stability, &to->stability, sizeof(from->stability)) != 0;
 #endif
-#if (A33_ENABLE_STAGE5P_UNIFIED != 0U) && (A33_ENABLE_STAGE5NB_BETA != 0U)
-    /* Release a mutually exclusive output before arming the R5 request. */
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U) && (A33_ENABLE_STAGE5NB_BETA != 0U) && \
+    (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION == 0U)
     if ((from->system.requested_checkweigh_mode != 0U) &&
         (to->system.requested_checkweigh_mode == 0U) &&
         !App_RestoreGuardedCheckweighMode(GUARDED_CHECKWEIGH_OFF))
@@ -81,7 +81,12 @@ static bool ApplyRequestedModes(const DeviceConfig *from,
         to->system.requested_checkweigh_mode)
     {
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+        if (to->system.requested_checkweigh_mode == 0U)
+            return App_RestoreGuardedCheckweighMode(GUARDED_CHECKWEIGH_OFF);
+#else
         if (to->system.requested_checkweigh_mode == 0U) return true;
+#endif
 #endif
         GuardedCheckweigh current;
         if (!App_GetGuardedCheckweighState(&current) ||

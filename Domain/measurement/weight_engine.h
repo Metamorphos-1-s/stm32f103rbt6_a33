@@ -30,6 +30,9 @@ typedef struct
 #if defined(A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE) && \
     (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
     uint32_t zero_indicator_candidate_since_ms;
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+    uint32_t zero_indicator_last_sample_ms;
+#endif
     bool zero_indicator_candidate_active;
     bool zero_indicator_candidate_on;
 #endif

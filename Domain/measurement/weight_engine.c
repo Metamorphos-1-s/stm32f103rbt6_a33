@@ -189,8 +189,50 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
             UnitConverter_CountToMass(unit_display->division_digit,
                 engine->metrology.active_unit, unit_display->decimal_places,
                 &zero_indicator_range_ug) && zero_indicator_range_ug > 0)
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+            desired_zero = magnitude <= (uint64_t)zero_indicator_range_ug * 2U;
+#else
             desired_zero = magnitude <= (uint64_t)zero_indicator_range_ug *
                 (zero_indicator_was_on ? 2U : 1U);
+#endif
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+        if (engine->zero_indicator_candidate_active &&
+            (uint32_t)(engine->snapshot.sample_timestamp_ms -
+                engine->zero_indicator_last_sample_ms) > 250U)
+            engine->zero_indicator_candidate_active = false;
+        engine->zero_indicator_last_sample_ms =
+            engine->snapshot.sample_timestamp_ms;
+        if (stability_state != STABILITY_STATE_STABLE ||
+            !UnitConverter_CountToMass(unit_display->division_digit,
+                engine->metrology.active_unit, unit_display->decimal_places,
+                &zero_indicator_range_ug) || zero_indicator_range_ug <= 0)
+        {
+            zero_indicator_was_on = false;
+            engine->zero_indicator_candidate_active = false;
+        }
+        else if (magnitude > (uint64_t)zero_indicator_range_ug * 3U)
+        {
+            zero_indicator_was_on = false;
+            engine->zero_indicator_candidate_active = false;
+        }
+        else if (zero_indicator_was_on)
+            engine->zero_indicator_candidate_active = false;
+        else if (desired_zero)
+        {
+            if (!engine->zero_indicator_candidate_active)
+            {
+                engine->zero_indicator_candidate_active = true;
+                engine->zero_indicator_candidate_since_ms =
+                    engine->snapshot.sample_timestamp_ms;
+            }
+            else if ((uint32_t)(engine->snapshot.sample_timestamp_ms -
+                         engine->zero_indicator_candidate_since_ms) >= 1000U)
+            {
+                zero_indicator_was_on = true;
+                engine->zero_indicator_candidate_active = false;
+            }
+        }
+#else
         if (stability_state != STABILITY_STATE_STABLE)
         {
             engine->zero_indicator_candidate_active = false;
@@ -213,6 +255,7 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
             zero_indicator_was_on = desired_zero;
             engine->zero_indicator_candidate_active = false;
         }
+#endif
         if (zero_indicator_was_on &&
             stability_state == STABILITY_STATE_STABLE)
             engine->snapshot.status_flags |= WEIGHT_STATUS_ZERO;

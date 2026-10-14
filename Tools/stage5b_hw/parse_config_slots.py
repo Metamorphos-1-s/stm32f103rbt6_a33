@@ -57,6 +57,7 @@ def decode_v3(payload):
     if len(payload) < PAYLOAD_LENGTHS[3]:
         raise ValueError("persistent V3 payload is truncated")
     return {
+        "metrology": {"zero_range_ug": struct.unpack_from("<q", payload, 16)[0]},
         "communication": {
             "baud_rate": struct.unpack_from("<I", payload, 176)[0],
             "parity": payload[180], "stop_bits": payload[181],

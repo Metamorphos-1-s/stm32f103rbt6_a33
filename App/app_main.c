@@ -87,6 +87,9 @@ static StartupAutoZeroController s_startup_auto_zero;
 static AlarmOutputManager s_alarm_output_manager;
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
 static GuardedCheckweigh s_guarded_checkweigh;
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+static uint32_t s_alarm_last_invalid_count;
+#endif
 #endif
 static LimitChecker s_limit_checker;
 static uint32_t s_alarm_last_sample_sequence;
@@ -143,6 +146,9 @@ bool App_Init(void)
   AlarmOutputManager_Init(&s_alarm_output_manager);
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
   GuardedCheckweigh_Init(&s_guarded_checkweigh);
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+  s_alarm_last_invalid_count = 0U;
+#endif
 #endif
   s_alarm_last_sample_sequence = 0U;
   s_alarm_last_config_revision = 0U;
@@ -355,15 +361,15 @@ bool App_GetAlarmOutputDiagnostics(AlarmOutputDiagnostics *diagnostics)
 bool App_SetGuardedCheckweighMode(GuardedCheckweighMode mode,
     uint32_t expected_generation, bool require_generation)
 {
-#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U) && \
+    (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION == 0U)
   const SystemContext *requested = SystemContext_Get();
-  /* A safety stop leaves the persisted R5 request intact. Do not allow an
-   * incompatible checkweigh request to enter the next explicit SAVE. */
   if (mode != GUARDED_CHECKWEIGH_OFF && requested != NULL &&
       requested->config.system.requested_r5_application != 0U &&
       requested->config.system.requested_r5_mode != 0U) return false;
 #endif
-#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U) && \
+    (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION == 0U)
   if (mode != GUARDED_CHECKWEIGH_OFF &&
       MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_ACTIVE) return false;
 #endif
@@ -388,7 +394,8 @@ bool App_A13CheckweighIsOff(void) { return s_guarded_checkweigh.mode == GUARDED_
 #if (A33_ENABLE_STAGE5PA2C_PRODUCT != 0U)
 bool App_RestoreGuardedCheckweighMode(GuardedCheckweighMode mode)
 {
-#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
+#if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U) && \
+    (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION == 0U)
   if (mode != GUARDED_CHECKWEIGH_OFF &&
       MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_ACTIVE) return false;
 #endif
@@ -605,6 +612,10 @@ static void App_UpdateAlarmOutputs(uint32_t now_ms)
   guarded_input.calibration_active = state == APP_STATE_CALIBRATION;
   guarded_input.fault_active = (FaultManager_GetActiveMask() != 0U) ||
       (state == APP_STATE_FAULT);
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+  if (MeasurementBridge_RejectedSince(&s_alarm_last_invalid_count))
+      guarded_input.fault_active = true;
+#endif
   if (GuardedCheckweigh_Process(&s_guarded_checkweigh, &guarded_input,
       now_ms, &result))
     (void)AlarmOutputManager_Update(&s_alarm_output_manager, &result,

@@ -18,7 +18,11 @@ void TestUnifiedDefaultsBattery(void)
     _Static_assert(sizeof(BatteryAdcState) <= 20U,
         "battery status must reuse existing layout slack");
     DefaultConfig_Load(&config);
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+    assert(config.metrology.zero_range_ug == INT64_C(10000000));
+#else
     assert(config.metrology.zero_range_ug == INT64_C(2000000));
+#endif
     assert(config.metrology.profiles[config.metrology.active_profile].sample_rate ==
         DEVICE_CS1237_DATA_RATE_10_HZ);
     assert(config.metrology.profiles[config.metrology.active_profile].filter_mode ==
@@ -27,6 +31,11 @@ void TestUnifiedDefaultsBattery(void)
     assert(config.system.requested_r5_mode == 2U);
     assert(config.system.requested_r5_application == 1U);
     assert(config.system.requested_checkweigh_mode == 0U);
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+    config.system.requested_checkweigh_mode = 1U;
+    assert(DeviceConfig_Validate(&config));
+    config.system.requested_checkweigh_mode = 0U;
+#endif
     assert(DeviceConfig_Validate(&config));
     config.system.requested_checkweigh_mode = 1U;
     assert(DeviceConfig_Validate(&config)); /* Preserve legacy V3 on load. */

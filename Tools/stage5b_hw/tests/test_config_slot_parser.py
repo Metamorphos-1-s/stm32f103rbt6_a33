@@ -18,6 +18,12 @@ def slot(sequence):
 
 
 class SlotTests(unittest.TestCase):
+    def test_v3_zero_range_is_encoded_before_overload(self):
+        payload = bytearray(281)
+        struct.pack_into("<q", payload, 16, 60000000)
+        self.assertEqual(decode_v3(payload)["metrology"]["zero_range_ug"],
+                         60000000)
+
     def test_valid_slot(self):
         self.assertTrue(parse_slot(slot(7), "A")["valid"])
 

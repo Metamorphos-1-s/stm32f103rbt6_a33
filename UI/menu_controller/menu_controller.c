@@ -804,10 +804,12 @@ static bool SubmitEditValue(void)
     if (s_edit_kind == MENU_EDIT_R5_DRIFT)
     {
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION == 0U)
         if (((s_value == R5_LOCAL_CHOICE_STATIC) ||
              (s_value == R5_LOCAL_CHOICE_DOSING)) &&
             s_candidate_config.system.requested_checkweigh_mode != 0U)
             return false;
+#endif
         s_candidate_config.system.requested_r5_application =
             s_value >= R5_LOCAL_CHOICE_STATIC ? 1U : 0U;
         s_candidate_config.system.requested_r5_mode =
@@ -822,9 +824,11 @@ static bool SubmitEditValue(void)
     if (s_edit_kind == MENU_EDIT_CHECKWEIGH_MODE)
     {
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION == 0U)
         if ((s_value != GUARDED_CHECKWEIGH_OFF) &&
             s_candidate_config.system.requested_r5_application != 0U)
             return false;
+#endif
         s_candidate_config.system.requested_checkweigh_mode = (uint8_t)s_value;
 #else
         CheckweighLocalControl_Confirm();

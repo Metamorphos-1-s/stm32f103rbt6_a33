@@ -32,6 +32,12 @@ typedef enum
 #define DISPLAY_BOTTOM_LED_MENU   (1U << 3)
 #define DISPLAY_BOTTOM_LED_COMM   (1U << 4)
 #define DISPLAY_BOTTOM_LED_BATTERY (1U << 5)
+#define DISPLAY_BOTTOM_LED_LOW      (1U << 0)
+#define DISPLAY_BOTTOM_LED_OK       (1U << 1)
+#define DISPLAY_BOTTOM_LED_HIGH     (1U << 2)
+#define DISPLAY_BOTTOM_LED_STAR     (1U << 3)
+#define DISPLAY_BOTTOM_LED_G_KG     (1U << 4)
+#define DISPLAY_BOTTOM_LED_LB       (1U << 5)
 
 typedef struct
 {

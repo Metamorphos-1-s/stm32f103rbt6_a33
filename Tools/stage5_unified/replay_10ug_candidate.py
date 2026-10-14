@@ -1,4 +1,4 @@
-"""Replay the opened A13 traces against the 10 ug/s long-rate candidate."""
+"""Replay opened A13 traces against a selected control-sample rate pair."""
 import argparse
 import csv
 import json
@@ -74,10 +74,16 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--runner", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--boost-ug", type=int, default=35)
+    parser.add_argument("--long-ug", type=int, default=10)
     args = parser.parse_args()
+    if not 0 < args.long_ug <= args.boost_ug <= 500_000:
+        parser.error("invalid correction rates")
     import check_parity
-    check_parity.POLICY = replace(POLICY, name="auto_static_350_5m_10ug",
-                                  baseline_ug_per_sample=10)
+    check_parity.POLICY = replace(POLICY,
+        name=f"auto_static_{args.boost_ug}_{args.long_ug}",
+        boosted_ug_per_sample=args.boost_ug,
+        baseline_ug_per_sample=args.long_ug)
     cases = (
         ("a13b", ROOT / "Results/stage5pa13b/20260927T154314Z_independent_10hz_500g/samples.csv",
          "6D11B9A3D44C6E8DC658EB1F41B99975EC339DD7DBD0D3E61791DCA75B777612"),

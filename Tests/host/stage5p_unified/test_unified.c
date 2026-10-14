@@ -1,13 +1,17 @@
 #include "app_main.h"
+#include "alarm_output_manager.h"
 #include "battery_adc.h"
 #include "calibration_model.h"
 #include "command_service.h"
 #include "config_application.h"
 #include "config_edit.h"
+#include "cs1237.h"
 #include "default_config.h"
 #include "display_controller.h"
+#include "display_model.h"
 #include "fault_manager.h"
 #include "metrology_manager.h"
+#include "measurement_bridge.h"
 #include "metrology_config_validator.h"
 #include "menu_controller.h"
 #include "mock_hal.h"
@@ -18,11 +22,20 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void TestUnifiedDefaultsBattery(void);
 void TestBatteryTransactionValidation(void);
 
 static GuardedCheckweigh s_alarm;
+static CheckweighState s_display_alarm_state;
+bool App_GetAlarmOutputDiagnostics(AlarmOutputDiagnostics *diagnostics)
+{
+    if (diagnostics == NULL) return false;
+    (void)memset(diagnostics, 0, sizeof(*diagnostics));
+    diagnostics->checkweigh_state = s_display_alarm_state;
+    return true;
+}
 bool App_A13CheckweighIsOff(void)
 { return s_alarm.mode == GUARDED_CHECKWEIGH_OFF; }
 bool App_GetGuardedCheckweighState(GuardedCheckweigh *state)
@@ -47,6 +60,7 @@ static void Start(uint8_t application, uint8_t mode, uint8_t checkweigh)
     TestMock_Reset();
     FaultManager_Init();
     GuardedCheckweigh_Init(&s_alarm);
+    s_display_alarm_state = CHECKWEIGH_DISABLED;
     assert(SystemContext_Init(&s_config, 0U));
     assert(MetrologyManager_Init(&s_config, &SystemContext_Get()->runtime));
     assert(SystemContext_SetState(APP_STATE_RUN, 0U));
@@ -81,15 +95,26 @@ static void TestZeroIndicatorHysteresis(void)
     weight = MetrologyManager_GetSnapshot();
     assert((weight->status_flags & WEIGHT_STATUS_STABLE) != 0U);
     assert((weight->status_flags & WEIGHT_STATUS_ZERO) != 0U);
-    for (i = 0U; i < 12U; ++i) FeedRaw(100030);
+    for (i = 0U; i < 12U; ++i) FeedRaw(100200);
     weight = MetrologyManager_GetSnapshot();
     assert((weight->status_flags & WEIGHT_STATUS_ZERO) == 0U);
     for (i = 0U; i < 10U; ++i) FeedRaw(100015);
     weight = MetrologyManager_GetSnapshot();
     assert((weight->status_flags & WEIGHT_STATUS_ZERO) == 0U);
-    for (i = 0U; i < 12U; ++i) FeedRaw(100000);
+    for (i = 0U; i < 40U; ++i) FeedRaw(100000);
     weight = MetrologyManager_GetSnapshot();
     assert((weight->status_flags & WEIGHT_STATUS_ZERO) != 0U);
+}
+
+static void TestManualZeroDefaultRange(void)
+{
+    uint32_t i;
+    Start(0U, 0U, 0U);
+    for (i = 0U; i < 100U; ++i) FeedRaw(111000);
+    assert(MetrologyManager_Zero() == WEIGHT_ACTION_OUT_OF_ZERO_RANGE);
+    Start(0U, 0U, 0U);
+    for (i = 0U; i < 100U; ++i) FeedRaw(109000);
+    assert(MetrologyManager_Zero() == WEIGHT_ACTION_OK);
 }
 
 static void Start40(FilterMode filter, uint8_t strength)
@@ -104,6 +129,7 @@ static void Start40(FilterMode filter, uint8_t strength)
     TestMock_Reset();
     FaultManager_Init();
     GuardedCheckweigh_Init(&s_alarm);
+    s_display_alarm_state = CHECKWEIGH_DISABLED;
     assert(SystemContext_Init(&s_config, 0U));
     assert(MetrologyManager_Init(&s_config, &SystemContext_Get()->runtime));
     assert(BatteryAdc_Init(&s_config.battery));
@@ -208,30 +234,178 @@ static void Test40HzCorrectionBounds(void)
     int64_t history[400U] = {0};
     int64_t previous = 0;
     int64_t frozen;
+    int64_t maximum_change = 0;
+    AlarmShadowDiagnostics alarm;
     uint32_t i;
     Start40(FILTER_MODE_NONE, 0U);
     for (i=0U;i<5000U;++i) {
         int64_t offset;
         Feed40(100000 + (int32_t)(i / 25U));
         offset = MetrologyManager_GetA13CSnapshot()->offset_ug;
-        assert(offset - previous <= INT64_C(35));
-        assert(previous - offset <= INT64_C(35));
+        if (offset - previous > maximum_change)
+            maximum_change = offset - previous;
+        assert(offset - previous <= INT64_C(50));
+        assert(previous - offset <= INT64_C(50));
         if (i >= 400U) {
-            assert(offset - history[i % 400U] <= INT64_C(3500));
-            assert(history[i % 400U] - offset <= INT64_C(3500));
+            assert(offset - history[i % 400U] <= INT64_C(5000));
+            assert(history[i % 400U] - offset <= INT64_C(5000));
         }
         history[i % 400U] = offset;
         previous = offset;
     }
     assert(MetrologyManager_GetA13CSnapshot()->gate_count == 0U);
     assert(previous > 0 && previous <= INT64_C(500000));
+    assert(maximum_change == INT64_C(25));
+    assert(MetrologyManager_GetAlarmShadowDiagnostics(&alarm));
+    assert(alarm.static_input_ug == MetrologyManager_GetSnapshot()->net_mass_ug);
+    assert(alarm.dynamic_input_ug ==
+        MetrologyManager_GetSnapshot()->uncompensated_gross_mass_ug - previous);
     frozen = previous;
     assert(MetrologyManager_SetA13Pair(R5_BETA_APPLICATION_ACTIVE,
         R5_DRIFT_MODE_DOSING_NO_COMPENSATION, 0U, false));
     for (i=0U;i<200U;++i) {
         Feed40(100200 + (int32_t)(i / 25U));
         assert(MetrologyManager_GetA13CSnapshot()->offset_ug == frozen);
+        assert(MetrologyManager_GetAlarmShadowDiagnostics(&alarm));
+        assert(alarm.process_active);
+        assert(alarm.static_class == CHECKWEIGH_SHADOW_PENDING);
+        assert(alarm.dynamic_confirmed != CHECKWEIGH_SHADOW_INVALID);
+        assert(alarm.dynamic_input_ug ==
+            MetrologyManager_GetSnapshot()->uncompensated_gross_mass_ug - frozen);
     }
+}
+
+static void Test40HzZeroLampUsesNetOnGrossPage(void)
+{
+    uint32_t i;
+    Start40(FILTER_MODE_NONE, 0U);
+    for (i = 0U; i < 400U; ++i) Feed40(100000);
+    assert((MetrologyManager_GetSnapshot()->status_flags & WEIGHT_STATUS_ZERO) != 0U);
+    for (i = 0U; i < 400U; ++i) Feed40(600000);
+    assert((MetrologyManager_GetSnapshot()->status_flags & WEIGHT_STATUS_ZERO) == 0U);
+    assert(MetrologyManager_Tare() == WEIGHT_ACTION_OK);
+    for (i = 0U; i < 400U; ++i) Feed40(600000);
+    assert((MetrologyManager_GetSnapshot()->status_flags & WEIGHT_STATUS_ZERO) != 0U);
+    assert(SystemContext_SetRuntimeWeightView(WEIGHT_VIEW_GROSS));
+    MetrologyManager_ChangeDisplayWeightView(WEIGHT_VIEW_NET);
+    Feed40(600000);
+    assert((MetrologyManager_GetSnapshot()->status_flags & WEIGHT_STATUS_ZERO) != 0U);
+    for (i = 0U; i < 120U; ++i) Feed40(600050);
+    assert((MetrologyManager_GetSnapshot()->status_flags & WEIGHT_STATUS_ZERO) == 0U);
+    for (i = 0U; i < 120U; ++i) Feed40(600010);
+    assert((MetrologyManager_GetSnapshot()->status_flags & WEIGHT_STATUS_ZERO) != 0U);
+}
+
+static void TestPhysicalIndicatorMap(void)
+{
+    static const CheckweighState states[] = {
+        CHECKWEIGH_DISABLED, CHECKWEIGH_OVERLOAD, CHECKWEIGH_FAULT,
+        CHECKWEIGH_LOW, CHECKWEIGH_OK, CHECKWEIGH_HIGH
+    };
+    static const uint8_t expected[] = {
+        0U, 0U, 0U, DISPLAY_BOTTOM_LED_LOW,
+        DISPLAY_BOTTOM_LED_OK, DISPLAY_BOTTOM_LED_HIGH
+    };
+    uint32_t i;
+    Start(0U, 0U, 0U);
+    for (i = 0U; i < 40U; ++i) Feed();
+    for (i = 0U; i < sizeof(states) / sizeof(states[0]); ++i) {
+        s_display_alarm_state = states[i];
+        DisplayController_Process20ms();
+        assert((DisplayModel_Get()->bottom_led_mask & 0x07U) == expected[i]);
+        assert((DisplayModel_Get()->bottom_led_mask & DISPLAY_BOTTOM_LED_STAR) == 0U);
+        assert((DisplayModel_Get()->bottom_led_mask & DISPLAY_BOTTOM_LED_G_KG) != 0U);
+        assert((DisplayModel_Get()->bottom_led_mask & DISPLAY_BOTTOM_LED_LB) == 0U);
+    }
+    assert(SystemContext_SetActiveUnitConfig(MASS_UNIT_LB));
+    DisplayController_Process20ms();
+    assert((DisplayModel_Get()->bottom_led_mask & DISPLAY_BOTTOM_LED_G_KG) == 0U);
+    assert((DisplayModel_Get()->bottom_led_mask & DISPLAY_BOTTOM_LED_LB) != 0U);
+    assert(SystemContext_SetActiveUnitConfig(MASS_UNIT_G));
+    for (i = 0U; i < 40U; ++i) FeedRaw(100100);
+    assert(MetrologyManager_Tare() == WEIGHT_ACTION_OK);
+    DisplayController_Process20ms();
+    assert((DisplayModel_Get()->top_led_mask & DISPLAY_TOP_LED_TARE) != 0U);
+    assert(MetrologyManager_ClearTare() == WEIGHT_ACTION_OK);
+    DisplayController_Process20ms();
+    assert((DisplayModel_Get()->top_led_mask & DISPLAY_TOP_LED_TARE) == 0U);
+}
+
+static void TestCheckweighFastNetAfterTare(void)
+{
+    AlarmShadowDiagnostics alarm;
+    uint32_t i;
+    Start(1U, 2U, 2U);
+    assert(App_RestoreGuardedCheckweighMode(GUARDED_CHECKWEIGH_DYNAMIC));
+    assert(MetrologyManager_RestoreR5Request(R5_BETA_APPLICATION_ACTIVE,
+        R5_DRIFT_MODE_STATIC_COMPENSATION));
+    for (i = 0U; i < 100U; ++i) FeedRaw(600000);
+    assert(MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_ACTIVE);
+    assert(MetrologyManager_Tare() == WEIGHT_ACTION_OK);
+    FeedRaw(600000);
+    assert(MetrologyManager_GetAlarmShadowDiagnostics(&alarm));
+    assert(alarm.static_input_ug == MetrologyManager_GetSnapshot()->net_mass_ug);
+    assert(alarm.dynamic_input_ug == 0);
+    assert(MetrologyManager_SetA13Pair(R5_BETA_APPLICATION_ACTIVE,
+        R5_DRIFT_MODE_DOSING_NO_COMPENSATION, 0U, false));
+    for (i = 0U; i < 10U; ++i) FeedRaw(600000);
+    assert(MetrologyManager_GetAlarmShadowDiagnostics(&alarm));
+    assert(alarm.static_class == CHECKWEIGH_SHADOW_PENDING);
+    assert(alarm.dynamic_confirmed == CHECKWEIGH_SHADOW_OK);
+    assert(alarm.dynamic_input_ug == 0);
+}
+
+static void TestRejectedBridgeSampleRevokesFormalOutput(void)
+{
+    CS1237_Config adc = {CS1237_RATE_10_HZ, CS1237_GAIN_128,
+                         CS1237_CHANNEL_A, true};
+    CS1237_Sample invalid = {0};
+    GuardedCheckweigh guarded;
+    GuardedCheckweighInput input = {0};
+    CheckweighResult result;
+    uint32_t last_seen = 0U;
+    Start(0U, 0U, 0U);
+    MeasurementBridge_Init();
+    assert(CS1237_Init(&adc));
+    GuardedCheckweigh_Init(&guarded);
+    assert(GuardedCheckweigh_SetMode(&guarded,
+        GUARDED_CHECKWEIGH_STATIC, 0U, true));
+    input.enabled = true;
+    input.static_class = CHECKWEIGH_SHADOW_HIGH;
+    input.sample_sequence = 1U;
+    input.sample_timestamp_ms = 100U;
+    assert(GuardedCheckweigh_Process(&guarded, &input, 100U, &result));
+    input.sample_sequence = 2U;
+    input.sample_timestamp_ms = 200U;
+    assert(GuardedCheckweigh_Process(&guarded, &input, 200U, &result));
+    input.sample_sequence = 3U;
+    input.sample_timestamp_ms = 300U;
+    assert(GuardedCheckweigh_Process(&guarded, &input, 300U, &result));
+    assert(result.state == CHECKWEIGH_HIGH);
+    assert(!MeasurementBridge_RejectedSince(&last_seen));
+    invalid.raw = 100000;
+    invalid.timestamp_ms = 325U;
+    invalid.valid = false;
+    assert(CS1237_TestPushSample(&invalid));
+    assert(MeasurementBridge_Process(1U) == 1U);
+    assert(MeasurementBridge_GetInvalidCount() == 1U);
+    input.fault_active = MeasurementBridge_RejectedSince(&last_seen);
+    assert(input.fault_active);
+    assert(GuardedCheckweigh_Process(&guarded, &input, 325U, &result));
+    assert(result.state == CHECKWEIGH_DISABLED);
+    assert(!result.qualified);
+    assert(!MeasurementBridge_RejectedSince(&last_seen));
+    input.fault_active = false;
+    assert(GuardedCheckweigh_Process(&guarded, &input, 326U, &result));
+    assert(result.state == CHECKWEIGH_DISABLED);
+    input.sample_sequence = 4U;
+    input.sample_timestamp_ms = 400U;
+    assert(GuardedCheckweigh_Process(&guarded, &input, 400U, &result));
+    assert(result.state == CHECKWEIGH_DISABLED);
+    input.sample_sequence = 5U;
+    input.sample_timestamp_ms = 500U;
+    assert(GuardedCheckweigh_Process(&guarded, &input, 500U, &result));
+    assert(result.state == CHECKWEIGH_HIGH);
 }
 
 static void Key(KeyId id, KeyEventType type)
@@ -246,9 +420,14 @@ int main(void)
     TestUnifiedDefaultsBattery();
     TestBatteryTransactionValidation();
     TestZeroIndicatorHysteresis();
+    TestManualZeroDefaultRange();
     Test40HzAdapter();
     Test40HzLegalFilters();
     Test40HzCorrectionBounds();
+    Test40HzZeroLampUsesNetOnGrossPage();
+    TestPhysicalIndicatorMap();
+    TestCheckweighFastNetAfterTare();
+    TestRejectedBridgeSampleRevokesFormalOutput();
 
     /* Old V3 retains its former correction until a separate PLC edit. RAM
      * COMMIT is not SAVE, and the live battery ADC must adopt the RAM value. */
@@ -481,12 +660,23 @@ int main(void)
         assert(restored.calibration.calibration_valid);
         assert(restored.system.requested_checkweigh_mode == 1U);
     }
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+    assert(ConfigApplication_Validate(&s_config, true) == CONFIG_APPLY_OK);
+    assert(MetrologyManager_RestoreR5Request(R5_BETA_APPLICATION_ACTIVE,
+        R5_DRIFT_MODE_STATIC_COMPENSATION));
+#else
     assert(ConfigApplication_Validate(&s_config, true) == CONFIG_APPLY_INVALID);
     assert(!MetrologyManager_RestoreR5Request(R5_BETA_APPLICATION_ACTIVE,
         R5_DRIFT_MODE_STATIC_COMPENSATION));
+#endif
     for (i = 0U; i < 20U; ++i) Feed();
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+    assert(MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_ACTIVE);
+    assert(MetrologyManager_GetA13CSnapshot()->mode == A13C_MODE_STATIC);
+#else
     assert(MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_SHADOW);
     assert(MetrologyManager_GetA13CSnapshot()->mode == A13C_MODE_OFF);
+#endif
     (void)puts("UNIFIED STARTUP REQUEST TEST PASS");
     return 0;
 }

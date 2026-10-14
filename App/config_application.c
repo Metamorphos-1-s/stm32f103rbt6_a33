@@ -51,10 +51,12 @@ ConfigApplyResult ConfigApplication_Validate(const DeviceConfig *candidate,
         ((candidate->system.requested_r5_mode == 0U) &&
          (candidate->system.requested_r5_application != 0U)) ||
         ((candidate->system.requested_r5_mode == 1U) &&
-         (candidate->system.requested_r5_application != 1U)) ||
-        ((candidate->system.requested_r5_application != 0U) &&
+         (candidate->system.requested_r5_application != 1U))
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION == 0U)
+        || ((candidate->system.requested_r5_application != 0U) &&
          (candidate->system.requested_r5_mode != 0U) &&
          (candidate->system.requested_checkweigh_mode != 0U))
+#endif
 #endif
         )
     {

@@ -10,6 +10,9 @@
 #include "tm1628.h"
 #include "tm1628_board_map.h"
 #include "unit_converter.h"
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+#include "app_main.h"
+#endif
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U) && \
     (A33_ENABLE_STAGE5MR5E_D1D_BETA == 0U)
 #include "directional_display_follower.h"
@@ -101,6 +104,10 @@ static void DisplayController_BuildIndicators(const WeightSnapshot *snapshot,
     /* The unified UI no longer exposes the tare-amount page. */
     if (s_page == DISPLAY_PAGE_TARE) *top |= DISPLAY_TOP_LED_TARE;
 #endif
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION != 0U)
+    if ((flags & WEIGHT_STATUS_TARE_ACTIVE) != 0U)
+        *top |= DISPLAY_TOP_LED_TARE;
+#endif
     if (s_page == DISPLAY_PAGE_BATTERY) *top |= DISPLAY_TOP_LED_BATTERY;
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
     {
@@ -114,6 +121,7 @@ static void DisplayController_BuildIndicators(const WeightSnapshot *snapshot,
 #endif
     if ((flags & WEIGHT_STATUS_STABLE) != 0U) *top |= DISPLAY_TOP_LED_STABLE;
     if ((flags & WEIGHT_STATUS_ZERO) != 0U) *top |= DISPLAY_TOP_LED_ZERO;
+#if (A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION == 0U)
     if ((flags & WEIGHT_STATUS_CALIBRATION_VALID) == 0U)
         *bottom |= DISPLAY_BOTTOM_LED_NOCAL;
     if ((flags & WEIGHT_STATUS_TARE_ACTIVE) != 0U)
@@ -123,6 +131,25 @@ static void DisplayController_BuildIndicators(const WeightSnapshot *snapshot,
     if ((s_page == DISPLAY_PAGE_MENU) || (s_page == DISPLAY_PAGE_EDIT) ||
         (s_page == DISPLAY_PAGE_CALIBRATION))
         *bottom |= DISPLAY_BOTTOM_LED_MENU;
+#else
+    {
+        AlarmOutputDiagnostics alarm = {0};
+        const SystemContext *context = SystemContext_Get();
+        if (App_GetAlarmOutputDiagnostics(&alarm))
+        {
+            if (alarm.checkweigh_state == CHECKWEIGH_LOW)
+                *bottom |= DISPLAY_BOTTOM_LED_LOW;
+            else if (alarm.checkweigh_state == CHECKWEIGH_OK)
+                *bottom |= DISPLAY_BOTTOM_LED_OK;
+            else if (alarm.checkweigh_state == CHECKWEIGH_HIGH)
+                *bottom |= DISPLAY_BOTTOM_LED_HIGH;
+        }
+        if (context != NULL && context->config.metrology.active_unit == MASS_UNIT_LB)
+            *bottom |= DISPLAY_BOTTOM_LED_LB;
+        else
+            *bottom |= DISPLAY_BOTTOM_LED_G_KG;
+    }
+#endif
 }
 
 static bool DisplayController_BuildModel(void)
