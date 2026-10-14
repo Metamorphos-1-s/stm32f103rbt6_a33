@@ -1,0 +1,11 @@
+{
+  "source": "user visual report in this conversation",
+  "observation_time_utc": "not independently timestamped",
+  "net_page_display": "0.00",
+  "gross_page_display": "0.43",
+  "net_page_top_leds_left_to_right": [3, 4],
+  "gross_page_top_leds_left_to_right": [3, 4],
+  "zero_led_left_5_net": false,
+  "zero_led_left_5_gross": false,
+  "note": "User-observed panel state; no electrical LED measurement."
+}

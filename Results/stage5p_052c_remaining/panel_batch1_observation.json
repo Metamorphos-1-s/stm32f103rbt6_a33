@@ -1,0 +1,32 @@
+{
+  "source": "user visual report in this conversation",
+  "observation_time_utc": "not independently timestamped",
+  "steps": [
+    {
+      "page": "NET",
+      "display": "0.43",
+      "top_leds_left_to_right": [1, 4],
+      "bottom_leds_left_to_right": [1, 5]
+    },
+    {
+      "page": "GROSS",
+      "display": "0.43",
+      "top_leds_left_to_right": [2, 4],
+      "bottom_leds_left_to_right": [1, 5]
+    },
+    {
+      "page": "BATTERY",
+      "display": "42P",
+      "top_leds_left_to_right": [4, 6],
+      "bottom_leds_left_to_right": [1, 5]
+    },
+    {
+      "page": "NET",
+      "display": "normal",
+      "top_leds_left_to_right": null,
+      "bottom_leds_left_to_right": null
+    }
+  ],
+  "bottom_led_4_ever_lit": false,
+  "limitation": "User-observed panel, not a direct LED electrical measurement."
+}

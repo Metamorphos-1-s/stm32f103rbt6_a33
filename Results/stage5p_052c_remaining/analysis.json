@@ -1,0 +1,49 @@
+{
+  "runs": {
+    "dynamic_same_sample": {
+      "rows": 134,
+      "sha256": "AECF0D6EA86DDD12EC14AE8A0CE10A1AA64C2047C8E2996B7ECDE6A1A63D2AEF",
+      "matched_sequence_rows": 38,
+      "nonzero_offset_matched": 38,
+      "static_net_mismatch": 0,
+      "formal_weight_equation_mismatch": 0,
+      "read_errors": 0
+    },
+    "dynamic_same_sample_staticmode": {
+      "rows": 14,
+      "sha256": "2211D3B45C239D7CA0C8ACF8CC358E4984707684F34D78550C0CF2D9B86CB890",
+      "matched_sequence_rows": 3,
+      "nonzero_offset_matched": 3,
+      "static_net_mismatch": 0,
+      "formal_weight_equation_mismatch": 0,
+      "read_errors": 0
+    },
+    "power_cycle_capture": {
+      "rows": 64346,
+      "sha256": "764DA1C9A5837A11581F3F534E933FC4C0E0C25977907B271071FC327DBCBC10",
+      "read_errors": 48,
+      "kind": "zero_status_or_power_cycle_record"
+    },
+    "power_recorder_dry_run": {
+      "rows": 31,
+      "sha256": "0D49947F8132D3FCCA6984783950D89D4A9BD6735AFE3F393866E35CAF0B58F9",
+      "read_errors": 0,
+      "kind": "zero_status_or_power_cycle_record"
+    },
+    "static_same_sample": {
+      "rows": 89,
+      "sha256": "639FA413E326151776041A76666BD634CA508A168B2106B55EBC706AC0A14AEB",
+      "matched_sequence_rows": 28,
+      "nonzero_offset_matched": 28,
+      "static_net_mismatch": 0,
+      "formal_weight_equation_mismatch": 0,
+      "read_errors": 0
+    },
+    "zero_status_gross_1": {
+      "rows": 450,
+      "sha256": "73F59CE67868E5D471C428FB00D7D6595A4494CA6DEB6E8FC12B6A9CCA634275",
+      "read_errors": 0,
+      "kind": "zero_status_or_power_cycle_record"
+    }
+  }
+}

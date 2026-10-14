@@ -1,0 +1,9 @@
+{
+  "source": "user visual report in this conversation",
+  "observation_time_utc": "not independently timestamped",
+  "action": "short TARE on empty NET weighing page",
+  "display": "0.00",
+  "top_tare_led_left_3": true,
+  "top_zero_led_left_5": false,
+  "note": "Initial observation only; subsequent read-only status showed stable, tare-active and zero bits set."
+}
