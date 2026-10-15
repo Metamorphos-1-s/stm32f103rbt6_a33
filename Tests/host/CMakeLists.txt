@@ -661,6 +661,26 @@ else()
 endif()
 add_test(NAME display_conditioner_logic COMMAND display_conditioner_tests)
 
+add_executable(stage5p_display_smooth_tests
+    test_stage5p_display_smooth.c
+    ../../Domain/measurement/display_conditioner.c
+    ../../Domain/measurement/unit_converter.c
+    ../../Domain/measurement/mass_math.c)
+target_compile_definitions(stage5p_display_smooth_tests PRIVATE
+    A33_ENABLE_STAGE5MR5_BETA=1 A33_ENABLE_STAGE5NB_BETA=1
+    A33_ENABLE_STAGE5MR5E_D1D_BETA=1 A33_ENABLE_STAGE5PA_PRODUCT=1
+    A33_ENABLE_STAGE5PA2D_CALIBRATION=1 A33_ENABLE_STAGE5PA13C_SHADOW=1
+    A33_ENABLE_STAGE5PA13E_ACTIVE=1 A33_ENABLE_STAGE5P_UNIFIED=1
+    A33_ENABLE_STAGE5P_DISPLAY_SMOOTH=1)
+target_include_directories(stage5p_display_smooth_tests PRIVATE
+    ../../Config ../../Domain/calibration ../../Domain/measurement)
+if(MSVC)
+    target_compile_options(stage5p_display_smooth_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5p_display_smooth_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+add_test(NAME stage5p_display_smooth_logic COMMAND stage5p_display_smooth_tests)
+
 add_executable(runtime_drift_tests
     test_runtime_drift_compensator.c
     ../../Domain/measurement/mass_math.c

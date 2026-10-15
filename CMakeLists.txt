@@ -66,6 +66,8 @@ option(A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION
     "Enable simultaneous R5 ACTIVE and formal checkweigh candidate" OFF)
 option(A33_ENABLE_STAGE5P_SAVE_CONTINUITY
     "Preserve guarded R5 continuity across pure SAVE" OFF)
+option(A33_ENABLE_STAGE5P_DISPLAY_SMOOTH
+    "Enable display-only transient hold and 10 Hz numeric publication" OFF)
 option(A33_ENABLE_STAGE5P_UNIFIED_RESOURCES
     "Enable cumulative target-resource diagnostics for the unified candidate" OFF)
 option(A33_ENABLE_STAGE5P_UNIFIED_RESOURCES_R3
@@ -87,6 +89,9 @@ if(A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION AND NOT A33_ENABLE_STAGE5P_UNIFI
 endif()
 if(A33_ENABLE_STAGE5P_SAVE_CONTINUITY AND NOT A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION)
     message(FATAL_ERROR "SAVE continuity requires R5/checkweigh integration")
+endif()
+if(A33_ENABLE_STAGE5P_DISPLAY_SMOOTH AND NOT A33_ENABLE_STAGE5P_UNIFIED)
+    message(FATAL_ERROR "Display smoothing requires the unified candidate")
 endif()
 if(A33_ENABLE_STAGE5P_UNIFIED_RESOURCES AND NOT A33_ENABLE_STAGE5P_UNIFIED)
     message(FATAL_ERROR "Unified resource diagnostics require the unified candidate")
@@ -376,6 +381,11 @@ if(A33_ENABLE_STAGE5P_SAVE_CONTINUITY)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5P_SAVE_CONTINUITY=1)
 else()
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5P_SAVE_CONTINUITY=0)
+endif()
+if(A33_ENABLE_STAGE5P_DISPLAY_SMOOTH)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5P_DISPLAY_SMOOTH=1)
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5P_DISPLAY_SMOOTH=0)
 endif()
 if(A33_ENABLE_STAGE5P_UNIFIED_RESOURCES)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE A33_ENABLE_STAGE5P_UNIFIED_RESOURCES=1)

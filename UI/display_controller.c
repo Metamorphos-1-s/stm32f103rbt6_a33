@@ -34,6 +34,11 @@ static bool s_text_override;
 static bool s_numeric_override;
 static bool s_message_active;
 static bool s_initialized;
+#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
+static bool s_weight_publish_initialized;
+static uint32_t s_weight_publish_ms;
+static int32_t s_weight_publish_count;
+#endif
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
 static uint32_t s_last_activity_ms;
 #define DISPLAY_IDLE_DIM_MS 600000U
@@ -278,6 +283,29 @@ static bool DisplayController_BuildModel(void)
             converted.display_count = output.display_count * division;
     }
 #endif
+#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
+    if ((s_page == DISPLAY_PAGE_NET) || (s_page == DISPLAY_PAGE_GROSS))
+    {
+        int64_t delta = (int64_t)converted.display_count -
+            (int64_t)s_weight_publish_count;
+        uint64_t magnitude = (delta < 0) ?
+            (uint64_t)(-(delta + 1)) + 1U : (uint64_t)delta;
+        uint64_t large_step = (uint64_t)unit_display->division_digit * 8U;
+        uint32_t now = BSP_TimeNowMs();
+        bool due = !s_weight_publish_initialized ||
+            (uint32_t)(now - s_weight_publish_ms) >= 100U ||
+            magnitude > large_step;
+        if (!due)
+            return true;
+        if (!DisplayModel_SetWeight(converted.display_count,
+                converted.decimal_places, true, (uint8_t)flags))
+            return false;
+        s_weight_publish_initialized = true;
+        s_weight_publish_ms = now;
+        s_weight_publish_count = converted.display_count;
+        return true;
+    }
+#endif
     return DisplayModel_SetWeight(converted.display_count,
         converted.decimal_places, true, (uint8_t)flags);
 }
@@ -325,6 +353,11 @@ bool DisplayController_Init(void)
     s_text_override = false;
     s_numeric_override = false;
     s_applied_revision = 0U;
+#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
+    s_weight_publish_initialized = false;
+    s_weight_publish_ms = 0U;
+    s_weight_publish_count = 0;
+#endif
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
     s_last_activity_ms = BSP_TimeNowMs();
 #endif
@@ -402,6 +435,10 @@ void DisplayController_SetPage(DisplayPage page)
         s_text_override = false;
         s_numeric_override = false;
         s_message_active = false;
+#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
+        if ((page == DISPLAY_PAGE_NET) || (page == DISPLAY_PAGE_GROSS))
+            s_weight_publish_initialized = false;
+#endif
     }
 }
 

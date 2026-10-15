@@ -470,11 +470,35 @@ bool DisplayConditioner_Update(DisplayConditioner *conditioner,
 
     conditioner->snapshot.display_mass_ug =
         conditioner->snapshot.anchor_mass_ug;
+#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
+    if (display_domain_valid)
+    {
+        int64_t count_delta = (int64_t)desired_display_count -
+            conditioner->snapshot.display_count;
+        uint64_t magnitude = (count_delta < 0) ?
+            (uint64_t)(-(count_delta + 1)) + 1U : (uint64_t)count_delta;
+        uint64_t large_step = (uint64_t)input->division_digit * 8U;
+        if (magnitude > large_step)
+        {
+            ForceTrackingDomain(conditioner, input, desired_display_count,
+                DISPLAY_RELEASE_LARGE_STEP);
+            conditioner->snapshot.large_step = true;
+            return true;
+        }
+    }
+#endif
     if (!input->stable &&
         (!conditioner->snapshot.operator_zero_anchor ||
          ((uint32_t)(input->now_ms - conditioner->operator_anchor_start_ms) >=
           DISPLAY_CONDITIONER_OPERATOR_UNSTABLE_TIMEOUT_MS)))
     {
+#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
+        if (conditioner->release_sample_count < UINT8_MAX)
+            ++conditioner->release_sample_count;
+        if (conditioner->release_sample_count <
+            DISPLAY_CONDITIONER_RELEASE_SAMPLES)
+            return true;
+#endif
 #if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
         ForceTrackingDomain(conditioner, input, desired_display_count,
             DISPLAY_RELEASE_UNSTABLE);
@@ -485,6 +509,9 @@ bool DisplayConditioner_Update(DisplayConditioner *conditioner,
 #endif
         return true;
     }
+#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
+    conditioner->release_sample_count = 0U;
+#endif
 #if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
     if (!conditioner->snapshot.operator_zero_anchor)
     {

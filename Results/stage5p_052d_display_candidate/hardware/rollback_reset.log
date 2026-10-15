@@ -1,0 +1,23 @@
+      -------------------------------------------------------------------
+                       STM32CubeProgrammer v2.19.0                  
+      -------------------------------------------------------------------
+
+ST-LINK SN  : E1007200D0D2139393740544
+ST-LINK FW  : V2J47S7
+Board       : --
+Voltage     : 3.29V
+SWD freq    : 4000 KHz
+Connect mode: Hot Plug
+Reset mode  : Software reset
+Device ID   : 0x410
+Revision ID : Rev X
+Device name : STM32F101/F102/F103 Medium-density
+Flash size  : 128 KBytes
+Device type : MCU
+Device CPU  : Cortex-M3
+BL Version  : --
+
+
+MCU Reset
+
+Software reset is performed
