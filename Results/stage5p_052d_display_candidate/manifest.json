@@ -161,6 +161,136 @@
       "sha256": "77BF99662083C852E6CDC84792DADC13C24C9DB4A131A08AFC065775767C6E0C"
     },
     {
+      "path": "retry_2/hardware/application_after_success.bin",
+      "bytes": 126976,
+      "sha256": "2A28EEBDA25A808732D7B1E2EDE9C057096F53820582E4BF523684E7B48A65F6"
+    },
+    {
+      "path": "retry_2/hardware/application_after_success_read.log",
+      "bytes": 1172,
+      "sha256": "19C26D55921991849E77B2F7AC7F976B928DCC70E2BF7F1C601EA5A8CFFD5781"
+    },
+    {
+      "path": "retry_2/hardware/application_before.bin",
+      "bytes": 126976,
+      "sha256": "F7FEA7553D6B3DB0D2F87B3BF92D43B17F742D6A730092D336ACB63C187AA24B"
+    },
+    {
+      "path": "retry_2/hardware/application_erase_0_123.log",
+      "bytes": 699,
+      "sha256": "0355836027DE7AFE38C46C3B48F97755A4E9F48F115242FE034D959E63DDF44E"
+    },
+    {
+      "path": "retry_2/hardware/application_erase_bracket.log",
+      "bytes": 697,
+      "sha256": "22E6377B8FEF600D64E7572FE2D764C0E7BE568F268BC5EB62BFFEBA1EBCD043"
+    },
+    {
+      "path": "retry_2/hardware/application_read.log",
+      "bytes": 484,
+      "sha256": "1DBEF9A69578F9BC8068B9F300FE2BDB69D9C38B11F2FA7060A89DA29F8E58F9"
+    },
+    {
+      "path": "retry_2/hardware/application_read_2.log",
+      "bytes": 1165,
+      "sha256": "836114AD48455385920BDE76856E8CF9DB8DAD10F4E4CAEA55A52FC8E28EB1C7"
+    },
+    {
+      "path": "retry_2/hardware/config_after_erase.bin",
+      "bytes": 4096,
+      "sha256": "05CB5BAFB2E722702F8B132F1FAC6C273BA273A7A1A3ABD50F6FDCA72CECFBC1"
+    },
+    {
+      "path": "retry_2/hardware/config_after_erase_read.log",
+      "bytes": 1163,
+      "sha256": "2B0DA1E0B372224372991508C27D60036CA71F71F80BC0B3823E5098D8BE215C"
+    },
+    {
+      "path": "retry_2/hardware/config_after_success.bin",
+      "bytes": 4096,
+      "sha256": "05CB5BAFB2E722702F8B132F1FAC6C273BA273A7A1A3ABD50F6FDCA72CECFBC1"
+    },
+    {
+      "path": "retry_2/hardware/config_after_success_read.log",
+      "bytes": 1165,
+      "sha256": "7E589460483BA31DB9D3708EC9CD7B16C39BC7C983221589F25AF481F0C148CE"
+    },
+    {
+      "path": "retry_2/hardware/config_before.bin",
+      "bytes": 4096,
+      "sha256": "05CB5BAFB2E722702F8B132F1FAC6C273BA273A7A1A3ABD50F6FDCA72CECFBC1"
+    },
+    {
+      "path": "retry_2/hardware/config_read.log",
+      "bytes": 484,
+      "sha256": "1DBEF9A69578F9BC8068B9F300FE2BDB69D9C38B11F2FA7060A89DA29F8E58F9"
+    },
+    {
+      "path": "retry_2/hardware/config_read_2.log",
+      "bytes": 1158,
+      "sha256": "E776CF5FD3979D43E7EDCAE7961359FDE74089EFE4E6FDD295DD8305FA332C98"
+    },
+    {
+      "path": "retry_2/hardware/display_analysis.json",
+      "bytes": 11022,
+      "sha256": "E5E4F212D6F078BF07B48181549D0CB802CD79D15148A9FB0A9B45B8E296C1B2"
+    },
+    {
+      "path": "retry_2/hardware/display_capture_500g/errors.jsonl",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "retry_2/hardware/display_capture_500g/frames.txt",
+      "bytes": 1589355,
+      "sha256": "AEA81FD726466CCD6A61F10C30358575B0F21F29D806CF1ABA71E8A3B8661433"
+    },
+    {
+      "path": "retry_2/hardware/display_capture_500g/samples.csv",
+      "bytes": 140817,
+      "sha256": "3D964A2B2DA547E98C0BFF46DBFC5B7666A76E0E1B5F03827A52E12655F4DEA4"
+    },
+    {
+      "path": "retry_2/hardware/display_capture_500g/summary.json",
+      "bytes": 183,
+      "sha256": "B5C2D4914483C7BB44AF7F4125E5AFA63723B171C44A30F93D1C7A3617FD5FB2"
+    },
+    {
+      "path": "retry_2/hardware/display_stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "retry_2/hardware/display_stdout.log",
+      "bytes": 168,
+      "sha256": "B8DBFFFC09CE9023531943EC3D26F720630BED9BE87BC383B93D44E8E12CBCA5"
+    },
+    {
+      "path": "retry_2/hardware/explicit_reset.log",
+      "bytes": 628,
+      "sha256": "28B0B636348ABFF91D4933EC4062AAC51830AE2BD2DEC6847C6ADA54EB6B8EA4"
+    },
+    {
+      "path": "retry_2/hardware/final_preflight/preflight.json",
+      "bytes": 1082,
+      "sha256": "BF473596A2C7D149C99C0FA07D5D3DB1F6F4A2E02FA6CCDF0C3DEBCCC8370E7C"
+    },
+    {
+      "path": "retry_2/hardware/postflash_preflight/preflight.json",
+      "bytes": 1073,
+      "sha256": "B8858C6EBC08BD42FBC420C53EC1A467D642FB0BE34BF1622E04639CAB829A71"
+    },
+    {
+      "path": "retry_2/hardware/preflight_2/preflight.json",
+      "bytes": 1075,
+      "sha256": "3696C90C0567A6EE929095E4911979523A576403C76113766B20AD7066164AAA"
+    },
+    {
+      "path": "retry_2/hardware/program_verify.log",
+      "bytes": 1675,
+      "sha256": "68676A952025253EFED326A72D29E617AB35005ABFE559FC9FB00111E5D5DD07"
+    },
+    {
       "path": "software/firmware.bin",
       "bytes": 98788,
       "sha256": "D9A5278BBAB8FE2F68F13F1C7A175A686C81F1A5101819ED65AACB816BE8EEBF"
