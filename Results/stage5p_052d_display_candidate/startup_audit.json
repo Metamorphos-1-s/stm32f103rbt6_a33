@@ -1,0 +1,16 @@
+{
+  "candidate_sha256": "D9A5278BBAB8FE2F68F13F1C7A175A686C81F1A5101819ED65AACB816BE8EEBF",
+  "candidate_bytes": 98788,
+  "candidate_vector_sp_in_ram": true,
+  "candidate_reset_vector_in_image": true,
+  "postflash_vector_prefix_matches_candidate": true,
+  "config_unchanged_after_candidate_write": true,
+  "explicit_erase_succeeded": false,
+  "program_verify_succeeded": true,
+  "program_log_confirms_mcu_reset": false,
+  "previous_052c_program_log_confirms_mcu_reset": true,
+  "full_postflash_application_readback_available": false,
+  "programming_preconditions_met": false,
+  "boot_proven": false,
+  "modbus_boot_observed": false
+}
