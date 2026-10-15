@@ -37,8 +37,43 @@ static void Lock(DisplayConditioner *conditioner)
     CHECK(DisplayConditioner_GetSnapshot(conditioner)->locked);
 }
 
+static void TestQuietUnstableNoise(void)
+{
+    DisplayConditioner conditioner;
+    const DisplayConditionSnapshot *snapshot;
+    uint32_t i;
+
+    DisplayConditioner_Init(&conditioner, 1000000, 0U);
+    for (i = 0U; i < 24U; ++i)
+    {
+        int32_t count = 100 + (int32_t)((i % 3U) == 0U ? 2 :
+            ((i % 3U) == 1U ? -1 : 1));
+        DisplayConditionInput input = Input((int64_t)count * 10000,
+            i * 25U, i + 1U, false);
+        CHECK(DisplayConditioner_Update(&conditioner, &input));
+    }
+    snapshot = DisplayConditioner_GetSnapshot(&conditioner);
+    CHECK(snapshot->locked);
+    for (i = 0U; i < 20U; ++i)
+    {
+        DisplayConditionInput input = Input((int64_t)(100 + (i & 1U)) *
+            10000, 1000U + i * 25U, 25U + i, false);
+        CHECK(DisplayConditioner_Update(&conditioner, &input));
+    }
+    CHECK(snapshot->locked);
+    for (i = 0U; i < 6U; ++i)
+    {
+        DisplayConditionInput input = Input((int64_t)(102 + i) *
+            10000, 2000U + i * 25U, 45U + i, false);
+        CHECK(DisplayConditioner_Update(&conditioner, &input));
+    }
+    CHECK(!snapshot->locked);
+    CHECK(snapshot->last_release_reason == DISPLAY_RELEASE_UNSTABLE);
+}
+
 int main(void)
 {
+    TestQuietUnstableNoise();
     DisplayConditioner conditioner;
     const DisplayConditionSnapshot *snapshot;
     DisplayConditionInput input;
@@ -55,6 +90,14 @@ int main(void)
     CHECK(snapshot->locked);
     input.now_ms = 1050U; input.sample_sequence = 12U;
     CHECK(DisplayConditioner_Update(&conditioner, &input));
+    CHECK(snapshot->locked);
+    for (uint32_t i = 0U; i < 6U; ++i)
+    {
+        input.authoritative_mass_ug = (int64_t)(102 + i) * 10000;
+        input.now_ms = 1100U + i * 25U;
+        input.sample_sequence = 13U + i;
+        CHECK(DisplayConditioner_Update(&conditioner, &input));
+    }
     CHECK(!snapshot->locked);
     CHECK(snapshot->last_release_reason == DISPLAY_RELEASE_UNSTABLE);
 

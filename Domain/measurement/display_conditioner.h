@@ -103,6 +103,9 @@ typedef struct
     uint8_t sample_index;
     uint8_t release_sample_count;
     bool initialized;
+#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
+    int32_t last_observed_display_count;
+#endif
 } DisplayConditioner;
 
 void DisplayConditioner_Init(DisplayConditioner *conditioner,

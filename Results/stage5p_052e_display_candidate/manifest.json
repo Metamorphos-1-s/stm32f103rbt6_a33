@@ -1,0 +1,24 @@
+{
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 9,
+      "sha256": "8B9C3028D6467FF3BE7C793141927841D70F47F52D0590677438F488CA154992"
+    },
+    {
+      "path": "software/firmware_0x052E.bin",
+      "bytes": 98980,
+      "sha256": "AC13730228B15E5C9EA031D64795E28CF589986EEB18F63B6F056396346ED7D9"
+    },
+    {
+      "path": "software/firmware_0x052E.elf",
+      "bytes": 201460,
+      "sha256": "6D620F8A0DEB4FE706248B615E06ED5F86B46CF93E0593464A2B063AFC626155"
+    },
+    {
+      "path": "software/firmware_0x052E.map",
+      "bytes": 512299,
+      "sha256": "6686319C8E23C2E1B6BB9A4CCCFEC951852BBB7DE450E0DA65010888B7BF2309"
+    }
+  ]
+}
