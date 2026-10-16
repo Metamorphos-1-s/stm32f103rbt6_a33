@@ -672,6 +672,8 @@ target_compile_definitions(stage5p_display_smooth_tests PRIVATE
     A33_ENABLE_STAGE5PA2D_CALIBRATION=1 A33_ENABLE_STAGE5PA13C_SHADOW=1
     A33_ENABLE_STAGE5PA13E_ACTIVE=1 A33_ENABLE_STAGE5P_UNIFIED=1
     A33_ENABLE_STAGE5P_DISPLAY_SMOOTH=1)
+target_compile_definitions(stage5p_display_smooth_tests PRIVATE
+    A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE=1)
 target_include_directories(stage5p_display_smooth_tests PRIVATE
     ../../Config ../../Domain/calibration ../../Domain/measurement)
 if(MSVC)
@@ -1137,3 +1139,22 @@ else()
         -Wall -Wextra -Werror -Wno-unused-but-set-variable)
 endif()
 add_test(NAME stage5p_save_continuity_logic COMMAND stage5p_save_continuity_tests)
+
+# Exercise the actual candidate wiring as well as the isolated display state
+# machine. Frozen executables above keep their original feature definitions.
+foreach(pair "stage5p_unified_tests|stage5p_unified_smooth_tests"
+             "stage5p_save_continuity_tests|stage5p_save_continuity_smooth_tests")
+    string(REPLACE "|" ";" targets "${pair}")
+    list(GET targets 0 original)
+    list(GET targets 1 candidate)
+    get_target_property(candidate_sources ${original} SOURCES)
+    get_target_property(candidate_includes ${original} INCLUDE_DIRECTORIES)
+    get_target_property(candidate_defs ${original} COMPILE_DEFINITIONS)
+    get_target_property(candidate_options ${original} COMPILE_OPTIONS)
+    add_executable(${candidate} ${candidate_sources})
+    target_include_directories(${candidate} PRIVATE ${candidate_includes})
+    target_compile_definitions(${candidate} PRIVATE ${candidate_defs}
+        A33_ENABLE_STAGE5P_DISPLAY_SMOOTH=1)
+    target_compile_options(${candidate} PRIVATE ${candidate_options})
+    add_test(NAME ${candidate} COMMAND ${candidate})
+endforeach()

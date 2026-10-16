@@ -67,7 +67,7 @@ option(A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION
 option(A33_ENABLE_STAGE5P_SAVE_CONTINUITY
     "Preserve guarded R5 continuity across pure SAVE" OFF)
 option(A33_ENABLE_STAGE5P_DISPLAY_SMOOTH
-    "Enable display-only transient hold and 10 Hz numeric publication" OFF)
+    "Enable display-only median anchor following and 10 Hz numeric publication" OFF)
 option(A33_ENABLE_STAGE5P_UNIFIED_RESOURCES
     "Enable cumulative target-resource diagnostics for the unified candidate" OFF)
 option(A33_ENABLE_STAGE5P_UNIFIED_RESOURCES_R3
