@@ -96,7 +96,9 @@ MedianAnchor(const DisplayConditioner *conditioner)
 #define DISPLAY_FOLLOW_LARGE_STEP_DIVISIONS 8U
 #if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
 #define DISPLAY_SMOOTH_QUIET_STEP_DIVISIONS 8U
-#define DISPLAY_SMOOTH_MOTION_EVIDENCE 5U
+#define DISPLAY_SMOOTH_FAST_DIVISIONS 3U
+#define DISPLAY_SMOOTH_FAST_HOLD_MS 300U
+#define DISPLAY_SMOOTH_SLOW_HOLD_MS 1500U
 #endif
 
 static int8_t Direction64(int64_t value)
@@ -166,6 +168,100 @@ static void ResetFollowEvidence(DisplayConditioner *conditioner)
     conditioner->snapshot.have_evidence_time = false;
 #endif
 }
+
+#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
+/* The existing clocks and nine-count ring are reused after lock. For a
+ * non-operator anchor, operator_anchor_start_ms times the >=3e fast band;
+ * candidate_start_ms times any persistent same-side median offset.
+ * Evidence describes a persistent offset from the anchor, not a sequence
+ * of nonzero derivatives. Repeated samples at a new weight keep the clock.
+ * Only fresh sample_sequence values may feed this window or advance state. */
+static bool FollowSmoothedAnchor(DisplayConditioner *conditioner,
+    const DisplayConditionInput *input, int32_t desired_display_count)
+{
+    int64_t delta = (int64_t)desired_display_count -
+        conditioner->snapshot.display_count;
+    uint64_t division = input->division_digit;
+    int32_t reference;
+    int8_t direction;
+
+    /* Check total displacement BEFORE any noise-hold return. This also
+     * bounds accumulated droplet/ramp error while official stable is false. */
+    if (Magnitude64(delta) > division * DISPLAY_FOLLOW_LARGE_STEP_DIVISIONS)
+    {
+        ForceTrackingDomain(conditioner, input, desired_display_count,
+            DISPLAY_RELEASE_LARGE_STEP);
+        conditioner->snapshot.large_step = true;
+        return true;
+    }
+    conditioner->snapshot.large_step = false;
+    conditioner->snapshot.last_sample_sequence = input->sample_sequence;
+    if (conditioner->snapshot.operator_zero_anchor)
+    {
+        if (!input->stable &&
+            ((uint32_t)(input->now_ms - conditioner->operator_anchor_start_ms)
+             >= DISPLAY_CONDITIONER_OPERATOR_UNSTABLE_TIMEOUT_MS))
+            ForceTrackingDomain(conditioner, input, desired_display_count,
+                DISPLAY_RELEASE_UNSTABLE);
+        return true;
+    }
+
+    AddSample(conditioner, desired_display_count);
+    if (conditioner->sample_count < DISPLAY_CONDITIONER_WINDOW_SIZE)
+        return true;
+    reference = MedianAnchor(conditioner);
+    delta = (int64_t)reference - conditioner->snapshot.display_count;
+    direction = Direction64(delta);
+    if (direction == 0)
+    {
+        ResetFollowEvidence(conditioner);
+        return true;
+    }
+    if (conditioner->snapshot.direction != direction ||
+        conditioner->snapshot.evidence == 0)
+    {
+        conditioner->candidate_start_ms = input->now_ms;
+        conditioner->snapshot.direction = direction;
+        conditioner->snapshot.evidence = direction;
+    }
+    if (Magnitude64(delta) >= division * DISPLAY_SMOOTH_FAST_DIVISIONS)
+    {
+        if (Magnitude64(conditioner->snapshot.evidence) !=
+            DISPLAY_SMOOTH_FAST_DIVISIONS)
+            conditioner->operator_anchor_start_ms = input->now_ms;
+        conditioner->snapshot.evidence = (int8_t)
+            (direction * (int8_t)DISPLAY_SMOOTH_FAST_DIVISIONS);
+    }
+    else
+        conditioner->snapshot.evidence = direction;
+    if ((uint32_t)(input->now_ms - conditioner->candidate_start_ms) >=
+            DISPLAY_SMOOTH_SLOW_HOLD_MS ||
+        (Magnitude64(conditioner->snapshot.evidence) ==
+            DISPLAY_SMOOTH_FAST_DIVISIONS &&
+         (uint32_t)(input->now_ms - conditioner->operator_anchor_start_ms) >=
+            DISPLAY_SMOOTH_FAST_HOLD_MS))
+    {
+        /* A median can still point to the previous side on the exact
+         * sample when its hold timer expires. Do not move the anchor so
+         * far from the current value that the 8e error bound is broken. */
+        if (Magnitude64((int64_t)reference - desired_display_count) >
+            division * DISPLAY_FOLLOW_LARGE_STEP_DIVISIONS)
+        {
+            ResetFollowEvidence(conditioner);
+            return true;
+        }
+        if (!SetDisplayCount(conditioner, input, reference))
+        {
+            ForceTrackingDomain(conditioner, input, desired_display_count,
+                DISPLAY_RELEASE_INVALID_DOMAIN);
+            return true;
+        }
+        ResetFollowEvidence(conditioner);
+        conditioner->snapshot.last_release_reason = DISPLAY_RELEASE_SLOW_FOLLOW;
+    }
+    return true;
+}
+#endif
 
 static void LeakEvidence(DisplayConditioner *conditioner)
 {
@@ -326,7 +422,13 @@ bool DisplayConditioner_Update(DisplayConditioner *conditioner,
 {
     uint32_t hold_ms;
 #if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
+#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
+    /* GCC's optimized interprocedural analysis needs a defined fallback
+     * for the new helper. Keep the frozen feature-off image unchanged. */
+    int32_t desired_display_count = 0;
+#else
     int32_t desired_display_count;
+#endif
     bool display_domain_valid;
 #endif
 
@@ -392,6 +494,11 @@ bool DisplayConditioner_Update(DisplayConditioner *conditioner,
         conditioner->snapshot.last_sample_sequence = input->sample_sequence;
         return true;
     }
+#endif
+#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
+    /* A UI poll of the same conversion is not new physical evidence. */
+    if (input->sample_sequence == conditioner->snapshot.last_sample_sequence)
+        return true;
 #endif
 
     if (conditioner->snapshot.state == DISPLAY_CONDITION_TRACKING)
@@ -486,8 +593,24 @@ bool DisplayConditioner_Update(DisplayConditioner *conditioner,
             (conditioner->sample_count >= DISPLAY_CONDITIONER_WINDOW_SIZE))
         {
 #if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
+#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
+            int32_t anchor = MedianAnchor(conditioner);
+            /* Quiet adjacent steps do not imply a quiet whole window.
+             * A moving ramp must not lock onto an outdated median. */
+            if (Magnitude64((int64_t)anchor - desired_display_count) >
+                (uint64_t)input->division_digit *
+                    DISPLAY_FOLLOW_LARGE_STEP_DIVISIONS)
+            {
+                ForceTrackingDomain(conditioner, input, desired_display_count,
+                    DISPLAY_RELEASE_LARGE_STEP);
+                conditioner->snapshot.large_step = true;
+                return true;
+            }
+            if (!SetDisplayCount(conditioner, input, anchor))
+#else
             if (!SetDisplayCount(conditioner, input,
                     MedianAnchor(conditioner)))
+#endif
             {
                 DisplayConditioner_ForceTracking(conditioner,
                     input->authoritative_mass_ug, input->now_ms,
@@ -510,76 +633,7 @@ bool DisplayConditioner_Update(DisplayConditioner *conditioner,
     conditioner->snapshot.display_mass_ug =
         conditioner->snapshot.anchor_mass_ug;
 #if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
-    {
-        int64_t observed_delta = (int64_t)desired_display_count -
-            (int64_t)conditioner->last_observed_display_count;
-        uint64_t observed_magnitude = (observed_delta < 0) ?
-            (uint64_t)(-(observed_delta + 1)) + 1U :
-            (uint64_t)observed_delta;
-        conditioner->last_observed_display_count = desired_display_count;
-        if (!input->stable && observed_magnitude <=
-            (uint64_t)input->division_digit *
-            DISPLAY_SMOOTH_QUIET_STEP_DIVISIONS)
-        {
-            int8_t direction = Direction64(observed_delta);
-            if (observed_magnitude < input->division_digit)
-                LeakEvidence(conditioner);
-            else if (direction != 0)
-            {
-                if ((conditioner->snapshot.direction != 0) &&
-                    (conditioner->snapshot.direction != direction))
-                    conditioner->snapshot.evidence = direction;
-                else
-                    AccumulateEvidence(conditioner, direction);
-                conditioner->snapshot.direction = direction;
-            }
-            conditioner->snapshot.last_sample_sequence =
-                input->sample_sequence;
-            if (Magnitude64(conditioner->snapshot.evidence) >=
-                DISPLAY_SMOOTH_MOTION_EVIDENCE)
-            {
-#if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
-                ForceTrackingDomain(conditioner, input, desired_display_count,
-                    DISPLAY_RELEASE_UNSTABLE);
-#else
-                DisplayConditioner_ForceTracking(conditioner,
-                    input->authoritative_mass_ug, input->now_ms,
-                    DISPLAY_RELEASE_UNSTABLE);
-#endif
-                return true;
-            }
-            return true;
-        }
-    }
-    if (display_domain_valid)
-    {
-        int64_t count_delta = (int64_t)desired_display_count -
-            conditioner->snapshot.display_count;
-        uint64_t magnitude = (count_delta < 0) ?
-            (uint64_t)(-(count_delta + 1)) + 1U : (uint64_t)count_delta;
-        uint64_t large_step = (uint64_t)input->division_digit * 8U;
-        if (magnitude > large_step)
-        {
-            ForceTrackingDomain(conditioner, input, desired_display_count,
-                DISPLAY_RELEASE_LARGE_STEP);
-            conditioner->snapshot.large_step = true;
-            return true;
-        }
-    }
-#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
-    if (!input->stable)
-    {
-#if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
-        ForceTrackingDomain(conditioner, input, desired_display_count,
-            DISPLAY_RELEASE_UNSTABLE);
-#else
-        DisplayConditioner_ForceTracking(conditioner,
-            input->authoritative_mass_ug, input->now_ms,
-            DISPLAY_RELEASE_UNSTABLE);
-#endif
-        return true;
-    }
-#endif
+    return FollowSmoothedAnchor(conditioner, input, desired_display_count);
 #endif
     if (!input->stable &&
         (!conditioner->snapshot.operator_zero_anchor ||

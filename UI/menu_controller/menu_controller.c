@@ -99,7 +99,6 @@ static NumericEditCursor s_edit_cursor;
 static MassUnit s_edit_unit;
 static WeighingProfileId s_edit_profile;
 static UnitDisplayConfig s_edit_display;
-static MassUnit s_original_unit;
 static MassUnit s_candidate_unit;
 static DisplayCode s_begin_error;
 static bool s_begin_warning;
@@ -612,7 +611,6 @@ static bool BeginEdit(MenuItem item, uint32_t now_ms)
     {
         case MENU_ITEM_UNIT:
             s_edit_kind = MENU_EDIT_UNIT;
-            s_original_unit = metrology->active_unit;
             s_candidate_unit = metrology->active_unit;
             if (!DisplayCodes_GetMassUnitLabel(s_candidate_unit, unit_label) ||
                 !DisplayController_SetTextPage(DISPLAY_PAGE_EDIT, unit_label))

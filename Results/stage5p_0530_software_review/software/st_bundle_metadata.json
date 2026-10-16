@@ -1,0 +1,56 @@
+{
+  "path": "g/gnu-tools-for-stm32-13.3.1+st.8-x86_64-linux.bundle",
+  "packed_size": 330119659,
+  "packed_sha256": "7d6424fe4bd8f092898feb24a3dd06191846a8bc19d61c245dcb0172dbbdab7f",
+  "unpacked_size": 1198480481,
+  "details": {
+    "name": "gnu-tools-for-stm32",
+    "version": "13.3.1+st.8",
+    "platform": "x86_64-linux",
+    "description": "GNU Tools for STM32 toolchain (GCC)",
+    "licenses": [
+      "SLA0048 Rev4/March 2018 + Third Party Content"
+    ],
+    "license_files": [
+      "LICENSE",
+      "LICENSE.THIRDPARTY"
+    ],
+    "license_is_mandatory": false,
+    "author": [
+      "STMicroelectronics",
+      "Arm",
+      "Free Software Foundation"
+    ],
+    "dependencies": [
+      {
+        "name": "gnu-tools-for-stm32-13_3_1-description",
+        "version": ">=0.0.1"
+      }
+    ],
+    "tags": [
+      "toolchain"
+    ],
+    "properties": {
+      "compiler": "GCC",
+      "target": "arm-none-eabi"
+    },
+    "variables": {
+      "PATH": {
+        "prepend": [
+          "${CUBE_BUNDLE_ROOT}/bin"
+        ],
+        "append": null
+      },
+      "TOOLCHAIN_ROOT": "${CUBE_BUNDLE_ROOT}/bin",
+      "GCC_TOOLCHAIN_ROOT": "${CUBE_BUNDLE_ROOT}/bin",
+      "GCC_TOOLCHAIN_13_3_1": "${CUBE_BUNDLE_ROOT}/bin"
+    },
+    "export": [
+      "PATH",
+      "TOOLCHAIN_ROOT",
+      "GCC_TOOLCHAIN_ROOT",
+      "GCC_TOOLCHAIN_13_3_1"
+    ],
+    "commands": []
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "classification": "SOFTWARE_ONLY_NOT_HARDWARE_QUALIFICATION",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 56,
+      "sha256": "5C596494691EEFA6B368D0009C4DB2C95E1A38350E48CFD09C6CD626A729DE1E"
+    },
+    {
+      "path": "arm_build.txt",
+      "bytes": 11704,
+      "sha256": "9EF657D1DA998F04604AFD5E1137E62C9823301B4B9BA5D4DBD715529646EF1D"
+    },
+    {
+      "path": "arm_comparison.json",
+      "bytes": 507,
+      "sha256": "434CB2CBEFD7376C7A767A2F7A734969513739F42BA902DD44C3500BCB55EC1B"
+    },
+    {
+      "path": "asan_ubsan.txt",
+      "bytes": 1685,
+      "sha256": "79508D967B3FBA4C7C4366EB89498D8BA950AABF31E1D05A55F54718E00FB035"
+    },
+    {
+      "path": "baseline_nested_stack.json",
+      "bytes": 607,
+      "sha256": "19DBA20F5EFC102F7082F18C857653CF55BC2D4B3D434EED469645E260C9E20E"
+    },
+    {
+      "path": "build_environment.json",
+      "bytes": 2547,
+      "sha256": "4335AE4C2430B5818775AF75AAC56A0FCE659FC4957C44647768C20229A74842"
+    },
+    {
+      "path": "firmware_0x052F.bin",
+      "bytes": 98948,
+      "sha256": "7D4D5EE893F5D8D3F6B1548AD91F0F0D10E13836C7877AECBEA517E5A1B0C032"
+    },
+    {
+      "path": "firmware_0x052F.elf",
+      "bytes": 195080,
+      "sha256": "FB1C271717A3B02407AE20E13BC762A7A286F86F426762FF79AC81D21E5C2AD2"
+    },
+    {
+      "path": "firmware_0x052F.map",
+      "bytes": 476309,
+      "sha256": "383CC4DEDEB51DCFCAC77D2AA6462A3313B38A413A794ED4A1CDDD72E04E3FA8"
+    },
+    {
+      "path": "frozen_behavioral_test_result.txt",
+      "bytes": 197,
+      "sha256": "AE9131C2ABF5972C80BE9285E202465079EDBA156316C4E35D54041E456A4C18"
+    },
+    {
+      "path": "frozen_host_build_failure.txt",
+      "bytes": 5666,
+      "sha256": "D4BA1F9D5819E20C96113B7279CCAB64BADB8654470F8FBFE11C041A54ABE363"
+    },
+    {
+      "path": "full_host_build_failure.txt",
+      "bytes": 49728,
+      "sha256": "339D1E8BCB7EC5563FB34CDD9E7A9165CDC3BBD9CF40B9A79AF2D40ACD4C1E7B"
+    },
+    {
+      "path": "host_debug_ctest.txt",
+      "bytes": 996,
+      "sha256": "6FA8E0B7B50EF39877FC50F62C34F10E8BEAB80774FE9A3AD33AFCCD4269091C"
+    },
+    {
+      "path": "host_debug_display.txt",
+      "bytes": 1685,
+      "sha256": "79508D967B3FBA4C7C4366EB89498D8BA950AABF31E1D05A55F54718E00FB035"
+    },
+    {
+      "path": "host_release_ctest.txt",
+      "bytes": 998,
+      "sha256": "1CE5A5282EA043DCA91B5990E0A63AABA5B96F7CFFB357053B51639F53DD5AEC"
+    },
+    {
+      "path": "host_release_display.txt",
+      "bytes": 1685,
+      "sha256": "79508D967B3FBA4C7C4366EB89498D8BA950AABF31E1D05A55F54718E00FB035"
+    },
+    {
+      "path": "nested_stack.json",
+      "bytes": 607,
+      "sha256": "19DBA20F5EFC102F7082F18C857653CF55BC2D4B3D434EED469645E260C9E20E"
+    },
+    {
+      "path": "ram_layout.json",
+      "bytes": 7802,
+      "sha256": "A0B3E588E89005252D939D43EA41FD18A84937BB889751B144A102FCA221F790"
+    },
+    {
+      "path": "replay_0_baseline.csv",
+      "bytes": 40560,
+      "sha256": "A58E3DD9DDCA5BA621D51CF43B14FBF1B299591CCF791A16AF68F4D81CF0EF20"
+    },
+    {
+      "path": "replay_0_candidate.csv",
+      "bytes": 40560,
+      "sha256": "991F21CADAF6BC1223DBB5AB3DFE02AF910A7DCCC44F83F237B4BF079C11B504"
+    },
+    {
+      "path": "replay_1_baseline.csv",
+      "bytes": 24179,
+      "sha256": "EADC1204FC7FABDD21246104F1F8D864B347E856ED054914B01B890B3D7614CC"
+    },
+    {
+      "path": "replay_1_candidate.csv",
+      "bytes": 24179,
+      "sha256": "E075229B5C8F78CD6745A9F7A587E4C4549FA7366D4F629575DCDFE6CF744911"
+    },
+    {
+      "path": "replay_2_baseline.csv",
+      "bytes": 24133,
+      "sha256": "8A94EEEAF775077A06E170A385EF1ECCD4256D4B74FFF10CF0F79D2BF818D4F0"
+    },
+    {
+      "path": "replay_2_candidate.csv",
+      "bytes": 24133,
+      "sha256": "3689285225BF211FBF2D458B96DCBC61EF87AEE51D233C0482E640E1DC3A3A20"
+    },
+    {
+      "path": "replay_summary.json",
+      "bytes": 5493,
+      "sha256": "18363028B9C37670C6CF72068C773850D1EDD5673895993324915F009C15740C"
+    },
+    {
+      "path": "source_hashes.json",
+      "bytes": 743,
+      "sha256": "8D69E3833B3AB6D8DF39265E3522B49DA809B71AF85DF8F2F7FC1C3B3B183B26"
+    },
+    {
+      "path": "stack_analysis.json",
+      "bytes": 40822,
+      "sha256": "0E8F80684ACAA5AA10808607E8AD10159FF64CEC080C32E74C1AC2FA7589A70A"
+    }
+  ]
+}

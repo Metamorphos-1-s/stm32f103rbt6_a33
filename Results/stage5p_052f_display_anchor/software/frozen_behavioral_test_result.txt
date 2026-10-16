@@ -1,0 +1,2 @@
+New 66-scenario core suite against frozen 0x052E, before adding two noisy-droplet scenarios. Expected failure reproduced.
+Display anchor follow: 66 scenarios, 27056 failures; conditioner=128 bytes

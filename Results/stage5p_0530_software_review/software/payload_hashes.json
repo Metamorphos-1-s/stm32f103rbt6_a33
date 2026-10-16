@@ -1,0 +1,10 @@
+{
+  "firmware_0x0530.elf.gz": {
+    "uncompressed_bytes": 201496,
+    "uncompressed_sha256": "01C01635B3B7208E0A52E42AE9A567AD26B9DCB57968DCFCE9814D44B8FA2B22"
+  },
+  "firmware_0x0530.map.gz": {
+    "uncompressed_bytes": 514485,
+    "uncompressed_sha256": "A5D98C465F6C3FAF6EC4625A80DE397FEECFAB6BAB4EBB389C88F7C1C56B8597"
+  }
+}

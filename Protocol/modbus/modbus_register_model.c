@@ -163,12 +163,14 @@ static void RefreshStaging(const DeviceConfig *config)
 #endif
 }
 
+#if (A33_ENABLE_STAGE5P_BATTERY_TRANSACTION != 0U)
 static uint32_t Join32(const uint16_t *words, ModbusWordOrder order)
 {
     if (order == MODBUS_WORD_ORDER_HIGH_WORD_FIRST)
         return ((uint32_t)words[0] << 16U) | words[1];
     return ((uint32_t)words[1] << 16U) | words[0];
 }
+#endif
 
 static bool DecodeStaging(const DeviceConfig *active,DeviceConfig *candidate)
 {

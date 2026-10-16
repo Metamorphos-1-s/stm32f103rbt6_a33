@@ -1,0 +1,5 @@
+R1, before fix:
+Display anchor follow: 69 scenarios, 1 failures; conditioner=128 bytes
+R2, after R1 but before candidate-window fix:
+Display anchor follow: 78 scenarios, 387 failures; conditioner=128 bytes
+Final corrected result: 78 scenarios, 0 failures.
