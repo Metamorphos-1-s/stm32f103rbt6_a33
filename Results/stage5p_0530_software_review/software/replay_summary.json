@@ -1,0 +1,140 @@
+{
+  "baseline_commit": "3937faa46d5b2433fedc8b44f8b4d3328c80b8ee",
+  "config": {
+    "unit": "g",
+    "decimals": 2,
+    "division": 1
+  },
+  "compiler_commands": {
+    "baseline": [
+      "cc",
+      "-std=c11",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-DA33_ENABLE_STAGE5MR5_BETA=1",
+      "-DA33_ENABLE_STAGE5NB_BETA=1",
+      "-DA33_ENABLE_STAGE5MR5E_D1D_BETA=1",
+      "-DA33_ENABLE_STAGE5PA_PRODUCT=1",
+      "-DA33_ENABLE_STAGE5PA2D_CALIBRATION=1",
+      "-DA33_ENABLE_STAGE5PA13C_SHADOW=1",
+      "-DA33_ENABLE_STAGE5PA13E_ACTIVE=1",
+      "-DA33_ENABLE_STAGE5P_UNIFIED=1",
+      "-DA33_ENABLE_STAGE5P_DISPLAY_SMOOTH=1",
+      "-DA33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE=1",
+      "-I/workspace/scratch/ef1a79115f64/a33-display-follow/Config",
+      "-I/workspace/scratch/ef1a79115f64/a33-display-follow/Domain/measurement",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/review-replay/display_conditioner_052e.c",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/Domain/measurement/unit_converter.c",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/Domain/measurement/mass_math.c",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/Tests/host/stage5p_display_replay.c",
+      "-o",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/review-replay/baseline"
+    ],
+    "candidate": [
+      "cc",
+      "-std=c11",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-DA33_ENABLE_STAGE5MR5_BETA=1",
+      "-DA33_ENABLE_STAGE5NB_BETA=1",
+      "-DA33_ENABLE_STAGE5MR5E_D1D_BETA=1",
+      "-DA33_ENABLE_STAGE5PA_PRODUCT=1",
+      "-DA33_ENABLE_STAGE5PA2D_CALIBRATION=1",
+      "-DA33_ENABLE_STAGE5PA13C_SHADOW=1",
+      "-DA33_ENABLE_STAGE5PA13E_ACTIVE=1",
+      "-DA33_ENABLE_STAGE5P_UNIFIED=1",
+      "-DA33_ENABLE_STAGE5P_DISPLAY_SMOOTH=1",
+      "-DA33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE=1",
+      "-I/workspace/scratch/ef1a79115f64/a33-display-follow/Config",
+      "-I/workspace/scratch/ef1a79115f64/a33-display-follow/Domain/measurement",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/Domain/measurement/display_conditioner.c",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/Domain/measurement/unit_converter.c",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/Domain/measurement/mass_math.c",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/Tests/host/stage5p_display_replay.c",
+      "-o",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/review-replay/candidate"
+    ]
+  },
+  "captures": [
+    {
+      "capture": "Results/stage5p_052c_display_diag/quiet_run_1/samples.csv",
+      "sha256": "da770589c2695a92e25e6436bf66a4a6acc79fd38bef230b231318eb991c5ce5",
+      "classification": "DECIMATED_NON_ATOMIC_HOST_SNAPSHOT_REPLAY",
+      "rows": 1517,
+      "elapsed_ms": 176319,
+      "observed_rows_per_second": 8.598052393672832,
+      "duplicate_sequences": 0,
+      "skipped_conversions": 5524,
+      "recorded_changes": 277,
+      "results": {
+        "baseline": {
+          "changes": 51,
+          "count_min": 4,
+          "count_max": 50654,
+          "output_sha256": "a58e3dd9ddca5ba621d51cf43b14fbf1b299591ccf791a16af68f4d81cf0ef20"
+        },
+        "candidate": {
+          "changes": 67,
+          "count_min": 4,
+          "count_max": 50654,
+          "output_sha256": "991f21cadaf6bc1223dbb5ab3dfe02af910a7dccc44f83f237b4bf079c11b504"
+        }
+      }
+    },
+    {
+      "capture": "Results/stage5p_052d_display_candidate/retry_2/hardware/display_capture_500g/samples.csv",
+      "sha256": "3d964a2b2da547e98c0bff46dbfc5b7666a76e0e1b5f03827a52e12655f4dea4",
+      "classification": "DECIMATED_NON_ATOMIC_HOST_SNAPSHOT_REPLAY",
+      "rows": 965,
+      "elapsed_ms": 119945,
+      "observed_rows_per_second": 8.037016966109467,
+      "duplicate_sequences": 0,
+      "skipped_conversions": 3826,
+      "recorded_changes": 818,
+      "results": {
+        "baseline": {
+          "changes": 53,
+          "count_min": 50055,
+          "count_max": 50067,
+          "output_sha256": "eadc1204fc7fabdd21246104f1f8d864b347e856ed054914b01b890b3d7614cc"
+        },
+        "candidate": {
+          "changes": 37,
+          "count_min": 50058,
+          "count_max": 50065,
+          "output_sha256": "e075229b5c8f78cd6745a9f7a587e4c4549fa7366d4f629575dcdfe6cf744911"
+        }
+      }
+    },
+    {
+      "capture": "Results/stage5p_052e_display_candidate/hardware/display_capture_500g/samples.csv",
+      "sha256": "2d25865dc1566e3795b7b5b96d13fc3a4ae9f77e0012be35b837dd42866da14e",
+      "classification": "DECIMATED_NON_ATOMIC_HOST_SNAPSHOT_REPLAY",
+      "rows": 979,
+      "elapsed_ms": 119836,
+      "observed_rows_per_second": 8.161153576554625,
+      "duplicate_sequences": 0,
+      "skipped_conversions": 3808,
+      "recorded_changes": 39,
+      "results": {
+        "baseline": {
+          "changes": 31,
+          "count_min": 50057,
+          "count_max": 50068,
+          "output_sha256": "8a94eeeaf775077a06e170a385ef1eccd4256d4b74fff10cf0f79d2bf818d4f0"
+        },
+        "candidate": {
+          "changes": 26,
+          "count_min": 50061,
+          "count_max": 50067,
+          "output_sha256": "3689285225bf211fbf2d458b96dcbc61ef87aee51d233c0482e640e1dc3a3a20"
+        }
+      }
+    }
+  ],
+  "limitation": "No interpolation or inference of missing 40 Hz conversions; host fields were read in separate Modbus requests; software counts only, not LED/panel qualification."
+}

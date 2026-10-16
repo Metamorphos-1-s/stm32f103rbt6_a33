@@ -1,0 +1,8 @@
+.................
+----------------------------------------------------------------------
+Ran 17 tests in 0.008s
+
+OK
+{"rows": 0, "read_errors": 1, "ended_utc": "2026-10-16T07:36:22.826943+00:00", "snapshot_atomic": false, "stopped_reason": "IDENTITY_CHANGED", "classification": "DECIMATED_NON_ATOMIC_HOST_SNAPSHOTS", "port": "COM77", "word_order": "high", "samples_sha256": "844421511D86A60721B36F8AF12976BB1B0277E16B8C67152568D8DF4C3BFBA3"}
+{"rows": 1, "read_errors": 0, "ended_utc": "2026-10-16T07:36:22.829182+00:00", "snapshot_atomic": false, "stopped_reason": "DURATION_OR_STOP_FILE", "classification": "DECIMATED_NON_ATOMIC_HOST_SNAPSHOTS", "port": "COM77", "word_order": "high", "samples_sha256": "A64026E24728695548F7532B4EF87E73AF7EEFF4F4284C13787472A54DC904DC"}
+{"rows": 1, "read_errors": 0, "ended_utc": "2026-10-16T07:36:22.831556+00:00", "snapshot_atomic": false, "stopped_reason": "DURATION_OR_STOP_FILE", "classification": "DECIMATED_NON_ATOMIC_HOST_SNAPSHOTS", "port": "COM77", "word_order": "low", "samples_sha256": "54ED7A2C396CCFD3F6211869B59FEB3CA02F72B218C672E875B6E7AC8A757B33"}

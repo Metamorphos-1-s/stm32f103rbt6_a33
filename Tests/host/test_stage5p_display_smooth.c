@@ -212,6 +212,56 @@ static void TestPriority(void)
     ++scenarios;
 }
 
+static void TestCandidateAndWalkErrorBound(void)
+{
+    const uint8_t divisions[] = {1U, 2U, 5U};
+    for (unsigned d = 0U; d < 3U; ++d) {
+        for (int sign = -1; sign <= 1; sign += 2) {
+            Stream s;
+            Start(&s, 50000, divisions[d], 25U);
+            DisplayConditioner_ForceTracking(&s.dc,
+                s.input.authoritative_mass_ug, s.input.now_ms,
+                DISPLAY_RELEASE_FORCED);
+            for (unsigned i = 0U; i < 80U; ++i) {
+                int32_t target = 50000 + sign * (int32_t)i * 8 * divisions[d];
+                Step(&s, target, false);
+                CHECK(abs(target - s.dc.snapshot.display_count) <= 8 * divisions[d]);
+            }
+            ++scenarios;
+        }
+        Stream walk;
+        Start(&walk, 50000, divisions[d], 25U);
+        uint32_t random = 0x0530U;
+        int32_t target = 50000;
+        for (unsigned i = 0U; i < 5000U; ++i) {
+            random = random * 1664525U + 1013904223U;
+            target += ((int32_t)(random % 17U) - 8) * divisions[d];
+            Step(&walk, target, (i % 17U) == 0U);
+            CHECK(abs(target - walk.dc.snapshot.display_count) <= 8 * divisions[d]);
+        }
+        ++scenarios;
+    }
+}
+
+static void TestMedianReversalGuard(void)
+{
+    Stream s;
+    Start(&s, 50060, 1U, 25U);
+    /* The fast median timer is 25 ms short of release. Current weight
+     * then changes to the opposite 8e boundary before the median moves. */
+    for (unsigned i = 0U; i < 16U; ++i)
+        Step(&s, 50068, false);
+    CHECK(s.dc.snapshot.display_count == 50060);
+    Step(&s, 50052, false);
+    CHECK(abs(50052 - s.dc.snapshot.display_count) <= 8);
+    for (unsigned i = 0U; i < 40U; ++i) {
+        Step(&s, 50052, false);
+        CHECK(abs(50052 - s.dc.snapshot.display_count) <= 8);
+    }
+    CHECK(s.dc.snapshot.display_count == 50052);
+    ++scenarios;
+}
+
 static void TestOperatorZeroAndView(void)
 {
     Stream s;
@@ -273,6 +323,8 @@ int main(void)
     TestNoisyDroplets();
     TestDuplicateWrapAndReversal();
     TestPriority();
+    TestCandidateAndWalkErrorBound();
+    TestMedianReversalGuard();
     TestOperatorZeroAndView();
     TestUnits();
     (void)printf("Display anchor follow: %u scenarios, %u failures; conditioner=%zu bytes\n",

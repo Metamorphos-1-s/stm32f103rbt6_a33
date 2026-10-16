@@ -241,6 +241,15 @@ static bool FollowSmoothedAnchor(DisplayConditioner *conditioner,
          (uint32_t)(input->now_ms - conditioner->operator_anchor_start_ms) >=
             DISPLAY_SMOOTH_FAST_HOLD_MS))
     {
+        /* A median can still point to the previous side on the exact
+         * sample when its hold timer expires. Do not move the anchor so
+         * far from the current value that the 8e error bound is broken. */
+        if (Magnitude64((int64_t)reference - desired_display_count) >
+            division * DISPLAY_FOLLOW_LARGE_STEP_DIVISIONS)
+        {
+            ResetFollowEvidence(conditioner);
+            return true;
+        }
         if (!SetDisplayCount(conditioner, input, reference))
         {
             ForceTrackingDomain(conditioner, input, desired_display_count,
@@ -584,8 +593,24 @@ bool DisplayConditioner_Update(DisplayConditioner *conditioner,
             (conditioner->sample_count >= DISPLAY_CONDITIONER_WINDOW_SIZE))
         {
 #if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
+#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
+            int32_t anchor = MedianAnchor(conditioner);
+            /* Quiet adjacent steps do not imply a quiet whole window.
+             * A moving ramp must not lock onto an outdated median. */
+            if (Magnitude64((int64_t)anchor - desired_display_count) >
+                (uint64_t)input->division_digit *
+                    DISPLAY_FOLLOW_LARGE_STEP_DIVISIONS)
+            {
+                ForceTrackingDomain(conditioner, input, desired_display_count,
+                    DISPLAY_RELEASE_LARGE_STEP);
+                conditioner->snapshot.large_step = true;
+                return true;
+            }
+            if (!SetDisplayCount(conditioner, input, anchor))
+#else
             if (!SetDisplayCount(conditioner, input,
                     MedianAnchor(conditioner)))
+#endif
             {
                 DisplayConditioner_ForceTracking(conditioner,
                     input->authoritative_mass_ug, input->now_ms,

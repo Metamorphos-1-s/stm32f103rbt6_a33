@@ -1,0 +1,25 @@
+drop=0.02g interval=1000ms rate=40Hz final=500.80g display=500.80g
+drop=0.02g interval=2000ms rate=40Hz final=500.80g display=500.80g
+drop=0.02g interval=5000ms rate=40Hz final=500.80g display=500.80g
+drop=0.02g interval=10000ms rate=40Hz final=500.80g display=500.80g
+drop=0.05g interval=1000ms rate=40Hz final=501.10g display=501.10g
+drop=0.05g interval=2000ms rate=40Hz final=501.10g display=501.10g
+drop=0.05g interval=5000ms rate=40Hz final=501.10g display=501.10g
+drop=0.05g interval=10000ms rate=40Hz final=501.10g display=501.10g
+drop=0.10g interval=1000ms rate=40Hz final=501.60g display=501.60g
+drop=0.10g interval=2000ms rate=40Hz final=501.60g display=501.60g
+drop=0.10g interval=5000ms rate=40Hz final=501.60g display=501.60g
+drop=0.10g interval=10000ms rate=40Hz final=501.60g display=501.60g
+drop=0.02g interval=1000ms rate=10Hz final=500.80g display=500.80g
+drop=0.02g interval=2000ms rate=10Hz final=500.80g display=500.80g
+drop=0.02g interval=5000ms rate=10Hz final=500.80g display=500.80g
+drop=0.02g interval=10000ms rate=10Hz final=500.80g display=500.80g
+drop=0.05g interval=1000ms rate=10Hz final=501.10g display=501.10g
+drop=0.05g interval=2000ms rate=10Hz final=501.10g display=501.10g
+drop=0.05g interval=5000ms rate=10Hz final=501.10g display=501.10g
+drop=0.05g interval=10000ms rate=10Hz final=501.10g display=501.10g
+drop=0.10g interval=1000ms rate=10Hz final=501.60g display=501.60g
+drop=0.10g interval=2000ms rate=10Hz final=501.60g display=501.60g
+drop=0.10g interval=5000ms rate=10Hz final=501.60g display=501.60g
+drop=0.10g interval=10000ms rate=10Hz final=501.60g display=501.60g
+Display anchor follow: 78 scenarios, 0 failures; conditioner=128 bytes

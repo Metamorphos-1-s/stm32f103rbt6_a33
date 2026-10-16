@@ -1106,7 +1106,6 @@ if(MSVC)
     target_compile_options(stage5p_unified_tests PRIVATE /W4 /WX)
 else()
     target_compile_options(stage5p_unified_tests PRIVATE -Wall -Wextra -Werror)
-    target_compile_options(stage5p_unified_tests PRIVATE -Wno-unused-but-set-variable)
 endif()
 add_test(NAME stage5p_unified_defaults_and_startup COMMAND stage5p_unified_tests)
 
@@ -1136,7 +1135,7 @@ if(MSVC)
     target_compile_options(stage5p_save_continuity_tests PRIVATE /W4 /WX)
 else()
     target_compile_options(stage5p_save_continuity_tests PRIVATE
-        -Wall -Wextra -Werror -Wno-unused-but-set-variable)
+        -Wall -Wextra -Werror)
 endif()
 add_test(NAME stage5p_save_continuity_logic COMMAND stage5p_save_continuity_tests)
 

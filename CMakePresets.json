@@ -6,9 +6,8 @@
             "hidden": true,
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/${presetName}",
-		    "toolchainFile": "${sourceDir}/cmake/gcc-arm-none-eabi.cmake",
-            "cacheVariables": {
-            }
+            "toolchainFile": "${sourceDir}/cmake/gcc-arm-none-eabi.cmake",
+            "cacheVariables": {}
         },
         {
             "name": "Debug",
@@ -154,6 +153,23 @@
             "cacheVariables": {
                 "A33_ENABLE_STAGE5PA2D_CALIBRATION": "ON"
             }
+        },
+        {
+            "name": "Stage5PDisplayReview",
+            "inherits": "Stage5PA2DCalibration",
+            "displayName": "Stage 5P 0x0530 display software review",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_C_FLAGS": "-Wall -Wextra -Werror -fstack-usage -fcallgraph-info=su",
+                "A33_ENABLE_STAGE5PA13C_SHADOW": "ON",
+                "A33_ENABLE_STAGE5PA13E_ACTIVE": "ON",
+                "A33_ENABLE_STAGE5P_UNIFIED": "ON",
+                "A33_ENABLE_STAGE5P_BATTERY_TRANSACTION": "ON",
+                "A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE": "ON",
+                "A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION": "ON",
+                "A33_ENABLE_STAGE5P_SAVE_CONTINUITY": "ON",
+                "A33_ENABLE_STAGE5P_DISPLAY_SMOOTH": "ON"
+            }
         }
     ],
     "buildPresets": [
@@ -224,6 +240,10 @@
         {
             "name": "Stage5PA2DCalibration",
             "configurePreset": "Stage5PA2DCalibration"
+        },
+        {
+            "name": "Stage5PDisplayReview",
+            "configurePreset": "Stage5PDisplayReview"
         }
     ]
 }

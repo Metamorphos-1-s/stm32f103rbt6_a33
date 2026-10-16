@@ -1,0 +1,189 @@
+{
+  "classification": "SOFTWARE_ONLY_NO_DEVICE_ACCESS",
+  "compiler": "arm-none-eabi-gcc (GNU Tools for STM32 13.3.rel1.20240926-1715) 13.3.1 20240614",
+  "host_compiler": "x86_64-linux-gnu-gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+  "cmake": "cmake version 4.4.4",
+  "source_base_commit": "65ad337a81b39c50eea6cda5a4614eed11a179e1",
+  "commands": [
+    [
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/tool-python/cmake/data/bin/cmake",
+      "-S",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/Tests/host",
+      "-B",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/host_debug",
+      "-G",
+      "Ninja",
+      "-DCMAKE_MAKE_PROGRAM=/workspace/scratch/ef1a79115f64/a33-display-follow/build/tool-python/bin/ninja",
+      "-DCMAKE_C_COMPILER=/usr/bin/x86_64-linux-gnu-gcc-13",
+      "-DCMAKE_BUILD_TYPE=Debug",
+      "-DCMAKE_C_FLAGS=-Wall -Wextra -Werror"
+    ],
+    [
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/tool-python/cmake/data/bin/cmake",
+      "--build",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/host_debug",
+      "-j",
+      "6"
+    ],
+    [
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/tool-python/cmake/data/bin/ctest",
+      "--test-dir",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/host_debug",
+      "--output-on-failure"
+    ],
+    [
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/tool-python/cmake/data/bin/cmake",
+      "-S",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/Tests/host",
+      "-B",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/host_release",
+      "-G",
+      "Ninja",
+      "-DCMAKE_MAKE_PROGRAM=/workspace/scratch/ef1a79115f64/a33-display-follow/build/tool-python/bin/ninja",
+      "-DCMAKE_C_COMPILER=/usr/bin/x86_64-linux-gnu-gcc-13",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_C_FLAGS=-Wall -Wextra -Werror"
+    ],
+    [
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/tool-python/cmake/data/bin/cmake",
+      "--build",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/host_release",
+      "-j",
+      "6"
+    ],
+    [
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/tool-python/cmake/data/bin/ctest",
+      "--test-dir",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/host_release",
+      "--output-on-failure"
+    ],
+    [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "Tools/stage5_unified",
+      "-p",
+      "test_*.py"
+    ],
+    [
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/tool-python/cmake/data/bin/cmake",
+      "--preset",
+      "Stage5PDisplayReview",
+      "-B",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/arm_a",
+      "-DCMAKE_MAKE_PROGRAM=/workspace/scratch/ef1a79115f64/a33-display-follow/build/tool-python/bin/ninja"
+    ],
+    [
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/tool-python/cmake/data/bin/cmake",
+      "--build",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/arm_a",
+      "-j",
+      "6"
+    ],
+    [
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/st-gcc/bin/arm-none-eabi-objcopy",
+      "-O",
+      "binary",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/arm_a/stm32f103rbt6_a33.elf",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/arm_a/firmware_0x0530.bin"
+    ],
+    [
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/tool-python/cmake/data/bin/cmake",
+      "--preset",
+      "Stage5PDisplayReview",
+      "-B",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/arm_b",
+      "-DCMAKE_MAKE_PROGRAM=/workspace/scratch/ef1a79115f64/a33-display-follow/build/tool-python/bin/ninja"
+    ],
+    [
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/tool-python/cmake/data/bin/cmake",
+      "--build",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/arm_b",
+      "-j",
+      "6"
+    ],
+    [
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/st-gcc/bin/arm-none-eabi-objcopy",
+      "-O",
+      "binary",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/arm_b/stm32f103rbt6_a33.elf",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/arm_b/firmware_0x0530.bin"
+    ],
+    [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/Tools/stage5mr5c/analyze_ram_stack.py",
+      "--elf",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/arm_a/stm32f103rbt6_a33.elf",
+      "--map",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/arm_a/stm32f103rbt6_a33.map",
+      "--callgraph-root",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/arm_a",
+      "--output",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/analysis"
+    ],
+    [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/Tools/stage5pa13d/nested_stack_gate.py",
+      "--analysis",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/analysis",
+      "--callgraph-root",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/arm_a",
+      "--output",
+      "/workspace/scratch/ef1a79115f64/a33-display-follow/build/qualification-0530-frozen/analysis/nested_stack.json"
+    ]
+  ],
+  "host": {
+    "Debug": {
+      "passed": 51
+    },
+    "Release": {
+      "passed": 51
+    }
+  },
+  "arm": {
+    "a": {
+      "bytes": 98796,
+      "sha256": "8ADB103085629F9A0F645CA25F324C6B53DDB395C714E62D1C0306ED7CBCBA34"
+    },
+    "b": {
+      "bytes": 98796,
+      "sha256": "8ADB103085629F9A0F645CA25F324C6B53DDB395C714E62D1C0306ED7CBCBA34"
+    }
+  },
+  "resources": {
+    "classification": "STATIC_NOT_RUNTIME_WATERMARK",
+    "legacy_one_irq_bound_bytes": 1424,
+    "extra_nested_systick_bytes": 40,
+    "systick_chain": {
+      "function": "SysTick_Handler",
+      "local_stack_bytes": 0,
+      "static_chain_bytes": 0,
+      "path": [
+        "SysTick_Handler"
+      ]
+    },
+    "extra_exception_alignment_padding_bytes": 8,
+    "complete_conservative_stack_bytes": 1464,
+    "collision_margin_bytes": 608,
+    "required_margin_bytes": 512,
+    "static_ram_bytes": 19432,
+    "result": "PASS",
+    "irq_priority_basis": "UART/DMA/TIM4 priority5; SysTick priority15; no other enabled nonfatal priorities"
+  },
+  "runtime_libraries": {
+    "-print-libgcc-file-name": {
+      "path": "/workspace/scratch/ef1a79115f64/a33-display-follow/build/st-gcc/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp/libgcc.a",
+      "sha256": "F534F32EFEF1881953AFC6B0944E723C371B111BBBD640D1FA7A8E830AC00109"
+    },
+    "-print-file-name=libg_nano.a": {
+      "path": "/workspace/scratch/ef1a79115f64/a33-display-follow/build/st-gcc/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp/libg_nano.a",
+      "sha256": "2FDBA99D2907AD8B9552E7B1385ABC77558B03050903DD3B79E221210C9C5097"
+    },
+    "-print-file-name=nano.specs": {
+      "path": "/workspace/scratch/ef1a79115f64/a33-display-follow/build/st-gcc/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/nofp/nano.specs",
+      "sha256": "E5990C86EF6BF1920280680DB8627595E1210AABD5321906BB4DBF07650BF703"
+    }
+  }
+}
