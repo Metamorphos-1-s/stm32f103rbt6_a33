@@ -134,12 +134,24 @@ long-duration efficacy, cross-sensor qualification or formal metrology.
 
 Final read-only state at closeout: 0x0530/0x010F, 40 Hz/filt1/strength3,
 R5 ACTIVE+STATIC, checkweigh STATIC, slot A sequence 23,
-revision/saved 23/23, dirty/fault/overrun 0. The volatile offset was
-approximately -219,089 ug at the final snapshot; it is not persistent
-configuration. The final load state was the third 500 g load remaining on
-the platform when the static capture ended. The owner subsequently removed
-that load before the droplet test was skipped; the final closeout read was
-an empty platform at approximately 0.37 g.
+revision/saved 23/23, dirty/fault/overrun 0. The final closeout snapshot at
+`2026-10-16T14:40:43.777593+00:00` records an empty platform:
+net/gross 385,789 ug (0.385789 g), display count 39 with two decimals
+(0.39 g), and volatile R5 offset -219,089 ug. This offset is not persistent
+configuration.
+
+The earlier empty-platform snapshot at
+`2026-10-16T10:02:19.922533+00:00`, after the owner removed the third
+500 g load and before the droplet tests were skipped, records net/gross
+367,786 ug (approximately 0.37 g), display count 37, and offset +53,419 ug.
+The 0.37 g reading and the final -219,089 ug offset therefore belong to
+different snapshots.
+
+The initial 0x052E preflight already recorded net/gross +355,071 ug
+(0.355071 g). A positive near-zero reading was present before installing
+0x0530; these sparse snapshots do not establish a new display-firmware
+zero-return regression, nor do they qualify zero return or drift.
+The residual remains a separate metrology observation.
 
 Raw frames, CSV files, event markers, backups, readbacks, programmer logs,
 edge analysis and SHA manifests are under
