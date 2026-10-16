@@ -1,0 +1,146 @@
+{
+  "source": "config_before.bin",
+  "slots": [
+    {
+      "slot": "A",
+      "slot_sha256": "D6670DE199C220F276847A6A2B1B5E2665EA36CAEF83214A4574F4B41ED196D5",
+      "payload_sha256": "27C3DB2F20B5050E134BD8268005A7D7E2330D7700DCD5ACBF3A6B635845A5BA",
+      "persistent": {
+        "metrology": {
+          "zero_range_ug": 60000000
+        },
+        "alarm": {
+          "lower_limit_ug": 100000000,
+          "upper_limit_ug": 400000000,
+          "hysteresis_ug": 10000,
+          "weight_source": 0,
+          "internal_buzzer_enable": false,
+          "external_buzzer_enable": false,
+          "qualified_beep_enable": false,
+          "limit_function_enable": true
+        },
+        "battery": {
+          "calibration_offset_mv": 400,
+          "low_warning_mv": 13600,
+          "critical_low_mv": 13200,
+          "recovery_mv": 13900,
+          "low_voltage_alarm_enable": true
+        },
+        "requests": {
+          "r5_mode": 2,
+          "r5_application": 1,
+          "checkweigh_mode": 1
+        },
+        "communication": {
+          "baud_rate": 115200,
+          "parity": 0,
+          "stop_bits": 0,
+          "modbus_address": 1,
+          "protocol_mode": 1,
+          "word_order": 0
+        },
+        "display": {
+          "brightness": 3
+        },
+        "system": {
+          "tare_power_loss_retention": false,
+          "watchdog_enable": false,
+          "startup_auto_zero_enable": false
+        },
+        "runtime": {
+          "weight_view": 0,
+          "current_tare_ug": 0,
+          "tare_active": false
+        }
+      },
+      "magic": "0x41333343",
+      "record_format_version": 3,
+      "payload_schema_version": 3,
+      "header_size": 32,
+      "payload_length": 281,
+      "sequence": 23,
+      "record_flags": "0x00000000",
+      "stored_crc32": "0x7689ED78",
+      "calculated_crc32": "0x7689ED78",
+      "crc_valid": true,
+      "commit_marker": "0x434F4D54",
+      "committed": true,
+      "supported": true,
+      "valid": true
+    },
+    {
+      "slot": "B",
+      "slot_sha256": "25BA476255BE9C19471422B5BD2CCDA13563CFDA1E0D57CBD1DD0C38BD25BBE4",
+      "payload_sha256": "C750404919E9F9BBEFCCD9EF308374EAD0F61AA24B62A7845CC54EE439FFA9A2",
+      "persistent": {
+        "metrology": {
+          "zero_range_ug": 60000000
+        },
+        "alarm": {
+          "lower_limit_ug": 0,
+          "upper_limit_ug": 0,
+          "hysteresis_ug": 0,
+          "weight_source": 0,
+          "internal_buzzer_enable": false,
+          "external_buzzer_enable": false,
+          "qualified_beep_enable": false,
+          "limit_function_enable": false
+        },
+        "battery": {
+          "calibration_offset_mv": 400,
+          "low_warning_mv": 13600,
+          "critical_low_mv": 13200,
+          "recovery_mv": 13900,
+          "low_voltage_alarm_enable": true
+        },
+        "requests": {
+          "r5_mode": 2,
+          "r5_application": 1,
+          "checkweigh_mode": 0
+        },
+        "communication": {
+          "baud_rate": 115200,
+          "parity": 0,
+          "stop_bits": 0,
+          "modbus_address": 1,
+          "protocol_mode": 1,
+          "word_order": 0
+        },
+        "display": {
+          "brightness": 3
+        },
+        "system": {
+          "tare_power_loss_retention": false,
+          "watchdog_enable": false,
+          "startup_auto_zero_enable": false
+        },
+        "runtime": {
+          "weight_view": 0,
+          "current_tare_ug": 0,
+          "tare_active": false
+        }
+      },
+      "magic": "0x41333343",
+      "record_format_version": 3,
+      "payload_schema_version": 3,
+      "header_size": 32,
+      "payload_length": 281,
+      "sequence": 22,
+      "record_flags": "0x00000000",
+      "stored_crc32": "0x4CCE5D99",
+      "calculated_crc32": "0x4CCE5D99",
+      "crc_valid": true,
+      "commit_marker": "0x434F4D54",
+      "committed": true,
+      "supported": true,
+      "valid": true
+    }
+  ],
+  "active_slot": "A",
+  "modbus_comparison": {
+    "active_slot": "A",
+    "sequence": 23,
+    "active_slot_matches": true,
+    "sequence_matches": true
+  }
+}

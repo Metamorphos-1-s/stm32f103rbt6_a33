@@ -1,0 +1,60 @@
+{
+  "created_utc": "2026-10-16T08:37:10Z",
+  "local_timezone": "Asia/Shanghai (UTC+08:00)",
+  "repository": "https://github.com/Metamorphos-1-s/stm32f103rbt6_a33.git",
+  "source_branch": "stage5p-display-anchor-follow-v3",
+  "fixed_source_head": "a2174ede65a1927ae491e73289c95bdcaa97deb5",
+  "hardware_branch": "stage5p-0530-hardware-acceptance",
+  "handoff_zip_sha256": "6C7AE26EC855A633B6F89AF8BE34F7236C82EE9905266C76CBA2A5B0D34ADAAF",
+  "firmware_bin_sha256": "8ADB103085629F9A0F645CA25F324C6B53DDB395C714E62D1C0306ED7CBCBA34",
+  "firmware_bin_bytes": 98796,
+  "serial": {
+    "instrument_port": "COM5",
+    "adapter_description": "USB-SERIAL CH340",
+    "vid": "1A86",
+    "pid": "7523",
+    "adapter_serial_number": "",
+    "other_detected_port": "COM1 (system ACPI PNP0501)",
+    "historical_com3_detected": false,
+    "baud": 115200,
+    "parity": "N",
+    "stop_bits": 1,
+    "modbus_unit_id": 1
+  },
+  "swd": {
+    "st_link_serial": "E1007200D0D2139393740544",
+    "st_link_firmware": "V2J47S7",
+    "probe_count": 1,
+    "target_device_id": "0x410",
+    "target_flash_bytes": 131072,
+    "target_vref_volts": 3.29
+  },
+  "tools": {
+    "python": "3.8.10",
+    "arm_gcc": "GNU Tools for STM32 13.3.rel1.20240926-1715, GCC 13.3.1 20240614",
+    "arm_gcc_path": "E:/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-gcc.exe",
+    "stm32_cube_programmer": "2.19.0",
+    "stm32_cube_programmer_path": "E:/ST/STM32CubeCLT_1.18.0/STM32CubeProgrammer/bin/STM32_Programmer_CLI.exe",
+    "cmake": "3.28.1",
+    "ninja": "1.11.1"
+  },
+  "preflight": {
+    "firmware": "0x052E",
+    "map": "0x010F",
+    "profile": "40 Hz / filt1 / strength3",
+    "r5": "ACTIVE+STATIC",
+    "checkweigh": "STATIC",
+    "slot": "A",
+    "slot_sequence": 23,
+    "revision": 23,
+    "saved_revision": 23,
+    "dirty": 0,
+    "fault": 0,
+    "overrun": 0,
+    "load": "unconfirmed by owner; first preflight measured about 0.355 g"
+  },
+  "link_gate": "100/100 valid FC03; zero open failures, timeouts, CRC errors and exceptions",
+  "preflash_application_sha256": "F8EAB8D554E8163F55DD41DFC85EC445DDF6237E4B2242422AAD6823B6168730",
+  "preflash_v3_sha256": "05CB5BAFB2E722702F8B132F1FAC6C273BA273A7A1A3ABD50F6FDCA72CECFBC1",
+  "note": "The initial SWD attempts returned SWD_TARGET_UNAVAILABLE before the owner reconnected the target. They are preserved in preflash logs and were not interpreted as a firmware failure."
+}

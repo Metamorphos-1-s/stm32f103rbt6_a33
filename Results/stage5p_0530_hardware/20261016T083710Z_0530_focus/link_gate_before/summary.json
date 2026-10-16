@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-16T08:39:18.777463+00:00",
+  "port": "COM5",
+  "requested_attempts": 100,
+  "counts": {
+    "VALID": 100,
+    "PORT_OPEN_FAILURE": 0,
+    "MODBUS_TIMEOUT": 0,
+    "CRC_ERROR": 0,
+    "MODBUS_EXCEPTION": 0,
+    "PROTOCOL_OR_IO_ERROR": 0,
+    "IDENTITY_MISMATCH": 0
+  },
+  "pass": true
+}

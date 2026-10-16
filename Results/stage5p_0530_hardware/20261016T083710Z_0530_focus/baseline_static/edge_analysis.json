@@ -1,0 +1,15 @@
+{
+  "input": "Results\\stage5p_0530_hardware\\20261016T083710Z_0530_focus\\baseline_static\\samples.csv",
+  "sha256": "6CA03CEC341F86CA309EC8E1D9BEF4CFCC61C0606E1FA9EC4F6BA49A6060A9AB",
+  "rows": 1150,
+  "snapshot_atomic": false,
+  "threshold_net_ug": 250000000,
+  "threshold_display_count": 25000,
+  "host_poll_sequence_gaps": 1149,
+  "device_sequence_regressions": 0,
+  "fault_rows": 0,
+  "overrun_rows": 0,
+  "display_count_changes": 38,
+  "crossings": [],
+  "limit": "Each row joins separate FC03 requests; brackets are observations, not exact physical edge times."
+}

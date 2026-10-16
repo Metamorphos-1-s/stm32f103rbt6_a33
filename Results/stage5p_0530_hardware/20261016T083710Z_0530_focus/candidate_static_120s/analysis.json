@@ -1,0 +1,91 @@
+{
+  "source": "Results\\stage5p_0530_hardware\\20261016T083710Z_0530_focus\\candidate_static_120s\\samples.csv",
+  "sha256": "A59FB222050626CBBE366A5D205240AD363465883C2483B4200188746F3BC6C8",
+  "rows": 1144,
+  "display_count_changes": 3,
+  "unique_display_counts": 3,
+  "states": [
+    2
+  ],
+  "release_reasons": [
+    9
+  ],
+  "stable_rows": 1144,
+  "read_errors": 0,
+  "first_changes": [
+    {
+      "utc": "2026-10-16T09:18:20.201306+00:00",
+      "sequence": 3739,
+      "old": 50042,
+      "new": 50041,
+      "state": 2,
+      "reason": 9,
+      "stable": 1,
+      "raw": 486134,
+      "filtered": 486134,
+      "net": 500398728
+    },
+    {
+      "utc": "2026-10-16T09:18:43.451120+00:00",
+      "sequence": 4667,
+      "old": 50041,
+      "new": 50042,
+      "state": 2,
+      "reason": 9,
+      "stable": 1,
+      "raw": 486099,
+      "filtered": 486149,
+      "net": 500415623
+    },
+    {
+      "utc": "2026-10-16T09:18:54.169220+00:00",
+      "sequence": 5095,
+      "old": 50042,
+      "new": 50043,
+      "state": 2,
+      "reason": 9,
+      "stable": 1,
+      "raw": 486189,
+      "filtered": 486157,
+      "net": 500424634
+    }
+  ],
+  "last_changes": [
+    {
+      "utc": "2026-10-16T09:18:20.201306+00:00",
+      "sequence": 3739,
+      "old": 50042,
+      "new": 50041,
+      "state": 2,
+      "reason": 9,
+      "stable": 1,
+      "raw": 486134,
+      "filtered": 486134,
+      "net": 500398728
+    },
+    {
+      "utc": "2026-10-16T09:18:43.451120+00:00",
+      "sequence": 4667,
+      "old": 50041,
+      "new": 50042,
+      "state": 2,
+      "reason": 9,
+      "stable": 1,
+      "raw": 486099,
+      "filtered": 486149,
+      "net": 500415623
+    },
+    {
+      "utc": "2026-10-16T09:18:54.169220+00:00",
+      "sequence": 5095,
+      "old": 50042,
+      "new": 50043,
+      "state": 2,
+      "reason": 9,
+      "stable": 1,
+      "raw": 486189,
+      "filtered": 486157,
+      "net": 500424634
+    }
+  ]
+}

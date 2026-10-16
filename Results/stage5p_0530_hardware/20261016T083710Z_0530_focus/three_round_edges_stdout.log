@@ -1,0 +1,1 @@
+{"rows": 15125, "read_errors": 0, "ended_utc": "2026-10-16T09:59:29.202459+00:00", "snapshot_atomic": false, "stopped_reason": "DURATION_OR_STOP_FILE", "classification": "DECIMATED_NON_ATOMIC_HOST_SNAPSHOTS", "port": "COM5", "word_order": "high", "samples_sha256": "9D35C0235E0FE58D9B4E998C6E3BDB6C6BAE6B8B73D5A0FFACE5DB2B24F002BD"}

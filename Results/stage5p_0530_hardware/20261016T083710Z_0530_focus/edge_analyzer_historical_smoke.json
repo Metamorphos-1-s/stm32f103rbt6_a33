@@ -1,0 +1,36 @@
+{
+  "input": "D:\\Documents\\stm32f103rbt6_a33_stage5p_052c_save\\Results\\stage5p_052c_display_diag\\quiet_run_1\\samples.csv",
+  "sha256": "36AF7EAE50B8B1B6E767B5855AE0B2DE4F3F8DA220B12FF3556CF47CA2FB525E",
+  "rows": 1517,
+  "snapshot_atomic": false,
+  "threshold_net_ug": 250000000,
+  "threshold_display_count": 25000,
+  "host_poll_sequence_gaps": 1516,
+  "device_sequence_regressions": 0,
+  "fault_rows": 0,
+  "overrun_rows": 0,
+  "display_count_changes": 277,
+  "crossings": [
+    {
+      "direction": "LOAD",
+      "weight_bracket": {
+        "before_utc": "2026-10-15T16:40:58.868831+00:00",
+        "after_utc": "2026-10-15T16:40:58.982656+00:00",
+        "before_monotonic_ns": 11071531000000,
+        "after_monotonic_ns": 11071656000000,
+        "before_sequence": 442416,
+        "after_sequence": 442421,
+        "before_net_ug": 221905468,
+        "after_net_ug": 490124169
+      },
+      "first_observed_display_crossing": {
+        "utc": "2026-10-15T16:40:58.982656+00:00",
+        "monotonic_ns": 11071656000000,
+        "sequence": 442421,
+        "display_count": 49012,
+        "relative_to_weight_after_ms": 0.0
+      }
+    }
+  ],
+  "limit": "Each row joins separate FC03 requests; brackets are observations, not exact physical edge times."
+}

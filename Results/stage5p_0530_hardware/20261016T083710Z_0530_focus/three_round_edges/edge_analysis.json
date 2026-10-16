@@ -1,0 +1,136 @@
+{
+  "input": "Results\\stage5p_0530_hardware\\20261016T083710Z_0530_focus\\three_round_edges\\samples.csv",
+  "sha256": "9D35C0235E0FE58D9B4E998C6E3BDB6C6BAE6B8B73D5A0FFACE5DB2B24F002BD",
+  "rows": 15125,
+  "snapshot_atomic": false,
+  "threshold_net_ug": 250000000,
+  "threshold_display_count": 25000,
+  "host_poll_sequence_gaps": 15124,
+  "device_sequence_regressions": 0,
+  "fault_rows": 0,
+  "overrun_rows": 0,
+  "display_count_changes": 246,
+  "crossings": [
+    {
+      "direction": "UNLOAD",
+      "weight_bracket": {
+        "before_utc": "2026-10-16T09:42:37.808381+00:00",
+        "after_utc": "2026-10-16T09:42:37.907802+00:00",
+        "before_monotonic_ns": 19419468000000,
+        "after_monotonic_ns": 19419578000000,
+        "before_sequence": 61955,
+        "after_sequence": 61959,
+        "before_net_ug": 500455820,
+        "after_net_ug": 171311755
+      },
+      "first_observed_display_crossing": {
+        "utc": "2026-10-16T09:42:37.907802+00:00",
+        "monotonic_ns": 19419578000000,
+        "sequence": 61959,
+        "display_count": 17131,
+        "relative_to_weight_after_ms": 0.0
+      }
+    },
+    {
+      "direction": "LOAD",
+      "weight_bracket": {
+        "before_utc": "2026-10-16T09:45:54.788144+00:00",
+        "after_utc": "2026-10-16T09:45:54.896013+00:00",
+        "before_monotonic_ns": 19616453000000,
+        "after_monotonic_ns": 19616562000000,
+        "before_sequence": 69822,
+        "after_sequence": 69827,
+        "before_net_ug": 143692919,
+        "after_net_ug": 377719032
+      },
+      "first_observed_display_crossing": {
+        "utc": "2026-10-16T09:45:54.896013+00:00",
+        "monotonic_ns": 19616562000000,
+        "sequence": 69827,
+        "display_count": 37772,
+        "relative_to_weight_after_ms": 0.0
+      }
+    },
+    {
+      "direction": "UNLOAD",
+      "weight_bracket": {
+        "before_utc": "2026-10-16T09:49:14.609013+00:00",
+        "after_utc": "2026-10-16T09:49:14.709775+00:00",
+        "before_monotonic_ns": 19816281000000,
+        "after_monotonic_ns": 19816375000000,
+        "before_sequence": 77803,
+        "after_sequence": 77807,
+        "before_net_ug": 318839808,
+        "after_net_ug": 390431
+      },
+      "first_observed_display_crossing": {
+        "utc": "2026-10-16T09:49:14.709775+00:00",
+        "monotonic_ns": 19816375000000,
+        "sequence": 77807,
+        "display_count": 39,
+        "relative_to_weight_after_ms": 0.0
+      }
+    },
+    {
+      "direction": "LOAD",
+      "weight_bracket": {
+        "before_utc": "2026-10-16T09:51:29.564887+00:00",
+        "after_utc": "2026-10-16T09:51:29.666385+00:00",
+        "before_monotonic_ns": 19951234000000,
+        "after_monotonic_ns": 19951328000000,
+        "before_sequence": 83192,
+        "after_sequence": 83196,
+        "before_net_ug": 64879137,
+        "after_net_ug": 450311385
+      },
+      "first_observed_display_crossing": {
+        "utc": "2026-10-16T09:51:29.666385+00:00",
+        "monotonic_ns": 19951328000000,
+        "sequence": 83196,
+        "display_count": 45031,
+        "relative_to_weight_after_ms": 0.0
+      }
+    },
+    {
+      "direction": "UNLOAD",
+      "weight_bracket": {
+        "before_utc": "2026-10-16T09:55:03.667530+00:00",
+        "after_utc": "2026-10-16T09:55:03.768494+00:00",
+        "before_monotonic_ns": 20165328000000,
+        "after_monotonic_ns": 20165437000000,
+        "before_sequence": 91743,
+        "after_sequence": 91747,
+        "before_net_ug": 353368913,
+        "after_net_ug": 339484
+      },
+      "first_observed_display_crossing": {
+        "utc": "2026-10-16T09:55:03.768494+00:00",
+        "monotonic_ns": 20165437000000,
+        "sequence": 91747,
+        "display_count": 34,
+        "relative_to_weight_after_ms": 0.0
+      }
+    },
+    {
+      "direction": "LOAD",
+      "weight_bracket": {
+        "before_utc": "2026-10-16T09:57:49.235910+00:00",
+        "after_utc": "2026-10-16T09:57:49.337570+00:00",
+        "before_monotonic_ns": 20330906000000,
+        "after_monotonic_ns": 20331000000000,
+        "before_sequence": 98355,
+        "after_sequence": 98359,
+        "before_net_ug": 77728834,
+        "after_net_ug": 457270274
+      },
+      "first_observed_display_crossing": {
+        "utc": "2026-10-16T09:57:49.337570+00:00",
+        "monotonic_ns": 20331000000000,
+        "sequence": 98359,
+        "display_count": 45727,
+        "relative_to_weight_after_ms": 0.0
+      }
+    }
+  ],
+  "limit": "Each row joins separate FC03 requests; brackets are observations, not exact physical edge times."
+}
