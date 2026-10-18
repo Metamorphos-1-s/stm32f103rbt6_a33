@@ -1,0 +1,3296 @@
+{
+  "evidence_commit": "5913167f904a8783b3547ea33ab0d471bd80789d",
+  "firmware_commit": "a2174ede65a1927ae491e73289c95bdcaa97deb5",
+  "hardware_manifest_files_verified": 66,
+  "runs": {
+    "baseline_static": {
+      "quality": {
+        "rows": 1150,
+        "duration_s": 119.891,
+        "frames_verified": 9200,
+        "csv_fields_checked_per_row": 22,
+        "max_host_gap_ms": 125.0,
+        "sequence_duplicates": 0,
+        "sequence_regressions": 0,
+        "uptime_regressions": 0,
+        "omitted_conversion_estimate": 3639,
+        "faults": 0,
+        "overruns": 0,
+        "r5_equation_mismatches": 0,
+        "r5_application_mode_limited": [
+          [
+            1,
+            2,
+            0
+          ]
+        ],
+        "tare_values": [
+          0
+        ],
+        "save_counts": [
+          0
+        ],
+        "same_block_r5_arithmetic": true,
+        "cross_request_snapshot_atomic": false
+      },
+      "stats": {
+        "rows": 1150,
+        "first_utc": "2026-10-16T09:01:05.374061+00:00",
+        "last_utc": "2026-10-16T09:03:05.273366+00:00",
+        "stable_fraction": 0.19304347826086957,
+        "r5_states": [
+          5
+        ],
+        "display_states": [
+          0,
+          1,
+          2
+        ],
+        "stats": {
+          "raw_adc": {
+            "median": 486152.0,
+            "mean": 486151.5408695652,
+            "min": 485990,
+            "max": 486330,
+            "p05": 486049.45,
+            "p95": 486249.0
+          },
+          "filtered_raw": {
+            "median": 486153.0,
+            "mean": 486152.7634782609,
+            "min": 486086,
+            "max": 486220,
+            "p05": 486118.0,
+            "p95": 486188.0
+          },
+          "net_ug": {
+            "median": 500392928.5,
+            "mean": 500392853.3278261,
+            "min": 500316577,
+            "max": 500460890,
+            "p05": 500353932.5,
+            "p95": 500431353.95
+          },
+          "display_count": {
+            "median": 50040.0,
+            "mean": 50039.72347826087,
+            "min": 50034,
+            "max": 50045,
+            "p05": 50038.0,
+            "p95": 50040.0
+          },
+          "display_minus_net_ug": {
+            "median": 4183.5,
+            "mean": 4381.4547826086955,
+            "min": -64659,
+            "max": 83423,
+            "p05": -33620.4,
+            "p95": 41234.25
+          },
+          "r5_uncompensated_ug": {
+            "median": 500420128.0,
+            "mean": 500419790.39652175,
+            "min": 500340158,
+            "max": 500510236,
+            "p05": 500380706.0,
+            "p95": 500459551.0
+          },
+          "r5_corrected_ug": {
+            "median": 500393380.5,
+            "mean": 500392778.6026087,
+            "min": 500318507,
+            "max": 500472817,
+            "p05": 500354440.45,
+            "p95": 500431976.25
+          },
+          "r5_offset_ug": {
+            "median": 27123.5,
+            "mean": 27011.79391304348,
+            "min": 14392,
+            "max": 37419,
+            "p05": 15903.25,
+            "p95": 37419.0
+          },
+          "r5_reference_ug": {
+            "median": 500380030.0,
+            "mean": 500380030.0,
+            "min": 500380030,
+            "max": 500380030,
+            "p05": 500380030.0,
+            "p95": 500380030.0
+          }
+        }
+      },
+      "source_csv_sha256": "6CA03CEC341F86CA309EC8E1D9BEF4CFCC61C0606E1FA9EC4F6BA49A6060A9AB",
+      "source_frames_sha256": "13428127DDD3ACD6F60495332C4CE29DE54C0B20EEA2EE7139F2A257DA3C9ECB"
+    },
+    "candidate_static_120s": {
+      "quality": {
+        "rows": 1144,
+        "duration_s": 119.86,
+        "frames_verified": 9152,
+        "csv_fields_checked_per_row": 22,
+        "max_host_gap_ms": 125.0,
+        "sequence_duplicates": 0,
+        "sequence_regressions": 0,
+        "uptime_regressions": 0,
+        "omitted_conversion_estimate": 3645,
+        "faults": 0,
+        "overruns": 0,
+        "r5_equation_mismatches": 0,
+        "r5_application_mode_limited": [
+          [
+            1,
+            2,
+            0
+          ]
+        ],
+        "tare_values": [
+          0
+        ],
+        "save_counts": [
+          0
+        ],
+        "same_block_r5_arithmetic": true,
+        "cross_request_snapshot_atomic": false
+      },
+      "stats": {
+        "rows": 1144,
+        "first_utc": "2026-10-16T09:17:33.348640+00:00",
+        "last_utc": "2026-10-16T09:19:33.217443+00:00",
+        "stable_fraction": 1.0,
+        "r5_states": [
+          3,
+          4,
+          5
+        ],
+        "display_states": [
+          2
+        ],
+        "stats": {
+          "raw_adc": {
+            "median": 486155.0,
+            "mean": 486155.3321678322,
+            "min": 486067,
+            "max": 486236,
+            "p05": 486112.0,
+            "p95": 486201.0
+          },
+          "filtered_raw": {
+            "median": 486154.0,
+            "mean": 486154.8645104895,
+            "min": 486103,
+            "max": 486202,
+            "p05": 486128.0,
+            "p95": 486181.0
+          },
+          "net_ug": {
+            "median": 500421255.0,
+            "mean": 500421563.94842654,
+            "min": 500362547,
+            "max": 500473042,
+            "p05": 500390843.0,
+            "p95": 500451645.45
+          },
+          "display_count": {
+            "median": 50042.0,
+            "mean": 50042.131118881116,
+            "min": 50041,
+            "max": 50043,
+            "p05": 50041.0,
+            "p95": 50043.0
+          },
+          "display_minus_net_ug": {
+            "median": -265.0,
+            "mean": -252.7596153846154,
+            "min": -50677,
+            "max": 67453,
+            "p05": -29392.45,
+            "p95": 30747.249999999964
+          },
+          "r5_uncompensated_ug": {
+            "median": 500423507.0,
+            "mean": 500422702.9685315,
+            "min": 500361558,
+            "max": 500486583,
+            "p05": 500393096.0,
+            "p95": 500452623.1
+          },
+          "r5_corrected_ug": {
+            "median": 500422381.0,
+            "mean": 500422038.0201049,
+            "min": 500361558,
+            "max": 500486583,
+            "p05": 500393096.0,
+            "p95": 500451666.0
+          },
+          "r5_offset_ug": {
+            "median": 0.0,
+            "mean": 664.9484265734266,
+            "min": 0,
+            "max": 3517,
+            "p05": 0.0,
+            "p95": 3517.0
+          },
+          "r5_reference_ug": {
+            "median": 500420128.0,
+            "mean": 499545267.6363636,
+            "min": 0,
+            "max": 500420128,
+            "p05": 500420128.0,
+            "p95": 500420128.0
+          }
+        }
+      },
+      "source_csv_sha256": "A59FB222050626CBBE366A5D205240AD363465883C2483B4200188746F3BC6C8",
+      "source_frames_sha256": "C18954BA1C8CBBE0E82CB276F423312006E5FBADED6D2136DA7B1DF453B4803B"
+    },
+    "candidate_static_600s": {
+      "quality": {
+        "rows": 5660,
+        "duration_s": 599.922,
+        "frames_verified": 45280,
+        "csv_fields_checked_per_row": 22,
+        "max_host_gap_ms": 125.0,
+        "sequence_duplicates": 0,
+        "sequence_regressions": 0,
+        "uptime_regressions": 0,
+        "omitted_conversion_estimate": 18303,
+        "faults": 0,
+        "overruns": 0,
+        "r5_equation_mismatches": 0,
+        "r5_application_mode_limited": [
+          [
+            1,
+            2,
+            0
+          ]
+        ],
+        "tare_values": [
+          0
+        ],
+        "save_counts": [
+          0
+        ],
+        "same_block_r5_arithmetic": true,
+        "cross_request_snapshot_atomic": false
+      },
+      "stats": {
+        "rows": 5660,
+        "first_utc": "2026-10-16T09:21:08.362606+00:00",
+        "last_utc": "2026-10-16T09:31:08.285707+00:00",
+        "stable_fraction": 0.930035335689046,
+        "r5_states": [
+          5
+        ],
+        "display_states": [
+          1,
+          2
+        ],
+        "stats": {
+          "raw_adc": {
+            "median": 486183.0,
+            "mean": 486182.7339222615,
+            "min": 485930,
+            "max": 486347,
+            "p05": 486137.0,
+            "p95": 486227.0
+          },
+          "filtered_raw": {
+            "median": 486182.0,
+            "mean": 486182.0316254417,
+            "min": 486121,
+            "max": 486275,
+            "p05": 486156.0,
+            "p95": 486208.0
+          },
+          "net_ug": {
+            "median": 500427175.0,
+            "mean": 500427124.00441694,
+            "min": 500365363,
+            "max": 500528120,
+            "p05": 500398027.0,
+            "p95": 500456010.25
+          },
+          "display_count": {
+            "median": 50043.0,
+            "mean": 50042.7406360424,
+            "min": 50040,
+            "max": 50053,
+            "p05": 50042.0,
+            "p95": 50044.0
+          },
+          "display_minus_net_ug": {
+            "median": 435.0,
+            "mean": 282.3560070671378,
+            "min": -75186,
+            "max": 64637,
+            "p05": -28576.0,
+            "p95": 28882.45000000005
+          },
+          "r5_uncompensated_ug": {
+            "median": 500452792.0,
+            "mean": 500453021.4934629,
+            "min": 500382959,
+            "max": 500526005,
+            "p05": 500423507.0,
+            "p95": 500483204.0
+          },
+          "r5_corrected_ug": {
+            "median": 500427180.5,
+            "mean": 500427316.60265017,
+            "min": 500354663,
+            "max": 500491959,
+            "p05": 500398590.0,
+            "p95": 500457212.2
+          },
+          "r5_offset_ug": {
+            "median": 25929.5,
+            "mean": 25704.89081272085,
+            "min": 8017,
+            "max": 34628,
+            "p05": 12570.75,
+            "p95": 34628.0
+          },
+          "r5_reference_ug": {
+            "median": 500420128.0,
+            "mean": 500420128.0,
+            "min": 500420128,
+            "max": 500420128,
+            "p05": 500420128.0,
+            "p95": 500420128.0
+          }
+        }
+      },
+      "source_csv_sha256": "1FD6C53A56B0B5E666CBCDBA3909A84F0FA1D48998C3C7E24FF7176CE12BA82E",
+      "source_frames_sha256": "58C53803E5C006B760BAFDCCD3C8D37E2A1702108E5A80C7889ED71E3B4C2166"
+    },
+    "three_round_edges": {
+      "quality": {
+        "rows": 15125,
+        "duration_s": 1588.656,
+        "frames_verified": 121000,
+        "csv_fields_checked_per_row": 22,
+        "max_host_gap_ms": 156.0,
+        "sequence_duplicates": 0,
+        "sequence_regressions": 0,
+        "uptime_regressions": 0,
+        "omitted_conversion_estimate": 48323,
+        "faults": 0,
+        "overruns": 0,
+        "r5_equation_mismatches": 0,
+        "r5_application_mode_limited": [
+          [
+            1,
+            2,
+            0
+          ]
+        ],
+        "tare_values": [
+          0
+        ],
+        "save_counts": [
+          0
+        ],
+        "same_block_r5_arithmetic": true,
+        "cross_request_snapshot_atomic": false
+      },
+      "stats": {
+        "rows": 15125,
+        "first_utc": "2026-10-16T09:33:00.490364+00:00",
+        "last_utc": "2026-10-16T09:59:29.147465+00:00",
+        "stable_fraction": 0.9216528925619835,
+        "r5_states": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "display_states": [
+          0,
+          1,
+          2
+        ],
+        "stats": {
+          "raw_adc": {
+            "median": 486171,
+            "mean": 346574.67259504134,
+            "min": 42158,
+            "max": 505706,
+            "p05": 42221.0,
+            "p95": 486231.0
+          },
+          "filtered_raw": {
+            "median": 486175,
+            "mean": 346585.163107438,
+            "min": 42175,
+            "max": 487067,
+            "p05": 42225.2,
+            "p95": 486215.0
+          },
+          "net_ug": {
+            "median": 500403522,
+            "mean": 343174646.5104132,
+            "min": 305831,
+            "max": 501416109,
+            "p05": 356379.0,
+            "p95": 500445897.0
+          },
+          "display_count": {
+            "median": 50041,
+            "mean": 34317.56905785124,
+            "min": 34,
+            "max": 50142,
+            "p05": 36.0,
+            "p95": 50043.0
+          },
+          "display_minus_net_ug": {
+            "median": 1135,
+            "mean": 1044.0680991735537,
+            "min": -65619,
+            "max": 84032,
+            "p05": -29777.0,
+            "p95": 31771.0
+          },
+          "r5_uncompensated_ug": {
+            "median": 500446034,
+            "mean": 343201431.850314,
+            "min": 359305,
+            "max": 506951828,
+            "p05": 403233.0,
+            "p95": 500489962.0
+          },
+          "r5_corrected_ug": {
+            "median": 500404008,
+            "mean": 343158094.5545785,
+            "min": 307946,
+            "max": 506900606,
+            "p05": 356379.0,
+            "p95": 500446461.0
+          },
+          "r5_offset_ug": {
+            "median": 45754,
+            "mean": 43337.29573553719,
+            "min": 19123,
+            "max": 53351,
+            "p05": 21583.000000000004,
+            "p95": 53351.0
+          },
+          "r5_reference_ug": {
+            "median": 500396762,
+            "mean": 290403484.9449256,
+            "min": 0,
+            "max": 500420128,
+            "p05": 0.0,
+            "p95": 500420128.0
+          }
+        }
+      },
+      "source_csv_sha256": "9D35C0235E0FE58D9B4E998C6E3BDB6C6BAE6B8B73D5A0FFACE5DB2B24F002BD",
+      "source_frames_sha256": "2C72BA86AE29AB5B602C6258136A933771A22BF27C1D4FBBE6AACF7F41D9075B",
+      "edges": {
+        "events": [
+          {
+            "direction": "UNLOAD",
+            "row_index": 5463,
+            "bracket_utc": [
+              "2026-10-16T09:42:37.808381+00:00",
+              "2026-10-16T09:42:37.907802+00:00"
+            ],
+            "origin_ns": 19419578000000,
+            "pre": {
+              "relative_interval_s": [
+                -45,
+                -15
+              ],
+              "rows": 282,
+              "complete": true,
+              "first_utc": "2026-10-16T09:41:52.915193+00:00",
+              "last_utc": "2026-10-16T09:42:22.834299+00:00",
+              "stable_fraction": 0.7836879432624113,
+              "r5_states": [
+                5
+              ],
+              "display_states": [
+                1,
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 486196.5,
+                  "mean": 486195.92907801416,
+                  "min": 486027,
+                  "max": 486297,
+                  "p05": 486145.1,
+                  "p95": 486245.95
+                },
+                "filtered_raw": {
+                  "median": 486195.0,
+                  "mean": 486194.57092198584,
+                  "min": 486116,
+                  "max": 486235,
+                  "p05": 486169.1,
+                  "p95": 486218.0
+                },
+                "net_ug": {
+                  "median": 500424282.0,
+                  "mean": 500423798.69503546,
+                  "min": 500335300,
+                  "max": 500469336,
+                  "p05": 500395109.65,
+                  "p95": 500450188.0
+                },
+                "display_count": {
+                  "median": 50043.0,
+                  "mean": 50042.40425531915,
+                  "min": 50034,
+                  "max": 50046,
+                  "p05": 50040.0,
+                  "p95": 50044.0
+                },
+                "display_minus_net_ug": {
+                  "median": 1213.0,
+                  "mean": 243.8581560283688,
+                  "min": -49199,
+                  "max": 54014,
+                  "p05": -32501.1,
+                  "p95": 31617.149999999998
+                },
+                "r5_uncompensated_ug": {
+                  "median": 500468561.0,
+                  "mean": 500467135.3900709,
+                  "min": 500412244,
+                  "max": 500518121,
+                  "p05": 500434771.0,
+                  "p95": 500495594.0
+                },
+                "r5_corrected_ug": {
+                  "median": 500425408.0,
+                  "mean": 500423982.3900709,
+                  "min": 500369091,
+                  "max": 500474968,
+                  "p05": 500391618.0,
+                  "p95": 500452441.0
+                },
+                "r5_offset_ug": {
+                  "median": 43153.0,
+                  "mean": 43153.0,
+                  "min": 43153,
+                  "max": 43153,
+                  "p05": 43153.0,
+                  "p95": 43153.0
+                },
+                "r5_reference_ug": {
+                  "median": 500420128.0,
+                  "mean": 500420128.0,
+                  "min": 500420128,
+                  "max": 500420128,
+                  "p05": 500420128.0,
+                  "p95": 500420128.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_15_45": {
+              "relative_interval_s": [
+                15,
+                45
+              ],
+              "rows": 290,
+              "complete": true,
+              "first_utc": "2026-10-16T09:42:52.969039+00:00",
+              "last_utc": "2026-10-16T09:43:22.892834+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                2,
+                3
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 42258.0,
+                  "mean": 42259.35172413793,
+                  "min": 42195,
+                  "max": 42315,
+                  "p05": 42223.45,
+                  "p95": 42295.0
+                },
+                "filtered_raw": {
+                  "median": 42258.0,
+                  "mean": 42259.2,
+                  "min": 42224,
+                  "max": 42297,
+                  "p05": 42234.45,
+                  "p95": 42286.0
+                },
+                "net_ug": {
+                  "median": 396123.0,
+                  "mean": 397474.87586206896,
+                  "min": 357827,
+                  "max": 440051,
+                  "p05": 369597.7,
+                  "p95": 427661.0
+                },
+                "display_count": {
+                  "median": 39.0,
+                  "mean": 39.33793103448276,
+                  "min": 39,
+                  "max": 43,
+                  "p05": 39.0,
+                  "p95": 41.0
+                },
+                "display_minus_net_ug": {
+                  "median": -2744.0,
+                  "mean": -4095.5655172413794,
+                  "min": -50051,
+                  "max": 62173,
+                  "p05": -37661.0,
+                  "p95": 24014.0
+                },
+                "r5_uncompensated_ug": {
+                  "median": 440403.0,
+                  "mean": 440165.6896551724,
+                  "min": 394222,
+                  "max": 491088,
+                  "p05": 411624.7,
+                  "p95": 467435.0
+                },
+                "r5_corrected_ug": {
+                  "median": 397250.0,
+                  "mean": 397012.6896551724,
+                  "min": 351069,
+                  "max": 447935,
+                  "p05": 368471.7,
+                  "p95": 424282.0
+                },
+                "r5_offset_ug": {
+                  "median": 43153.0,
+                  "mean": 43153.0,
+                  "min": 43153,
+                  "max": 43153,
+                  "p05": 43153.0,
+                  "p95": 43153.0
+                },
+                "r5_reference_ug": {
+                  "median": 0.0,
+                  "mean": 0.0,
+                  "min": 0,
+                  "max": 0,
+                  "p05": 0.0,
+                  "p95": 0.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_60_90": {
+              "relative_interval_s": [
+                60,
+                90
+              ],
+              "rows": 285,
+              "complete": true,
+              "first_utc": "2026-10-16T09:43:37.980111+00:00",
+              "last_utc": "2026-10-16T09:44:07.808963+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                4,
+                5
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 42263,
+                  "mean": 42263.03859649123,
+                  "min": 42201,
+                  "max": 42324,
+                  "p05": 42229.0,
+                  "p95": 42299.8
+                },
+                "filtered_raw": {
+                  "median": 42261,
+                  "mean": 42260.761403508775,
+                  "min": 42218,
+                  "max": 42298,
+                  "p05": 42235.2,
+                  "p95": 42285.0
+                },
+                "net_ug": {
+                  "median": 399502,
+                  "mean": 399233.5403508772,
+                  "min": 351069,
+                  "max": 441177,
+                  "p05": 370442.4,
+                  "p95": 426535.0
+                },
+                "display_count": {
+                  "median": 40,
+                  "mean": 39.708771929824564,
+                  "min": 39,
+                  "max": 40,
+                  "p05": 39.0,
+                  "p95": 40.0
+                },
+                "display_minus_net_ug": {
+                  "median": -2744,
+                  "mean": -2145.821052631579,
+                  "min": -46672,
+                  "max": 48931,
+                  "p05": -27661.0,
+                  "p95": 26513.600000000002
+                },
+                "r5_uncompensated_ug": {
+                  "median": 442655,
+                  "mean": 442880.5754385965,
+                  "min": 398728,
+                  "max": 493341,
+                  "p05": 415623.0,
+                  "p95": 471940.0
+                },
+                "r5_corrected_ug": {
+                  "median": 399502,
+                  "mean": 399727.5754385965,
+                  "min": 355575,
+                  "max": 450188,
+                  "p05": 372470.0,
+                  "p95": 428787.0
+                },
+                "r5_offset_ug": {
+                  "median": 43153,
+                  "mean": 43153.0,
+                  "min": 43153,
+                  "max": 43153,
+                  "p05": 43153.0,
+                  "p95": 43153.0
+                },
+                "r5_reference_ug": {
+                  "median": 397250,
+                  "mean": 397250.0,
+                  "min": 397250,
+                  "max": 397250,
+                  "p05": 397250.0,
+                  "p95": 397250.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_90_120": {
+              "relative_interval_s": [
+                90,
+                120
+              ],
+              "rows": 284,
+              "complete": true,
+              "first_utc": "2026-10-16T09:44:07.912779+00:00",
+              "last_utc": "2026-10-16T09:44:37.872282+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                5
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 42252.5,
+                  "mean": 42252.869718309856,
+                  "min": 42192,
+                  "max": 42312,
+                  "p05": 42218.15,
+                  "p95": 42291.7
+                },
+                "filtered_raw": {
+                  "median": 42252.0,
+                  "mean": 42251.59859154929,
+                  "min": 42207,
+                  "max": 42292,
+                  "p05": 42227.0,
+                  "p95": 42274.0
+                },
+                "net_ug": {
+                  "median": 389365.0,
+                  "mean": 388913.0176056338,
+                  "min": 338679,
+                  "max": 434419,
+                  "p05": 361206.0,
+                  "p95": 414145.0
+                },
+                "display_count": {
+                  "median": 40.0,
+                  "mean": 39.20774647887324,
+                  "min": 37,
+                  "max": 41,
+                  "p05": 37.0,
+                  "p95": 41.0
+                },
+                "display_minus_net_ug": {
+                  "median": 3025.0,
+                  "mean": 3164.4471830985917,
+                  "min": -53156,
+                  "max": 50057,
+                  "p05": -30766.0,
+                  "p95": 35245.94999999996
+                },
+                "r5_uncompensated_ug": {
+                  "median": 432518.0,
+                  "mean": 432446.77464788733,
+                  "min": 389717,
+                  "max": 479825,
+                  "p05": 406612.0,
+                  "p95": 459551.0
+                },
+                "r5_corrected_ug": {
+                  "median": 389365.0,
+                  "mean": 389293.77464788733,
+                  "min": 346564,
+                  "max": 436672,
+                  "p05": 363459.0,
+                  "p95": 416398.0
+                },
+                "r5_offset_ug": {
+                  "median": 43153.0,
+                  "mean": 43153.0,
+                  "min": 43153,
+                  "max": 43153,
+                  "p05": 43153.0,
+                  "p95": 43153.0
+                },
+                "r5_reference_ug": {
+                  "median": 397250.0,
+                  "mean": 397250.0,
+                  "min": 397250,
+                  "max": 397250,
+                  "p05": 397250.0,
+                  "p95": 397250.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "step_15_45": {
+              "status": "OBSERVED_DIFFERENCE_NOT_METROLOGY_PASS",
+              "delta": {
+                "raw_adc": {
+                  "median": -443938.5,
+                  "mean": -443936.5773538762
+                },
+                "filtered_raw": {
+                  "median": -443937.0,
+                  "mean": -443935.3709219858
+                },
+                "net_ug": {
+                  "median": -500028159.0,
+                  "mean": -500026323.8191734
+                },
+                "display_count": {
+                  "median": -50004.0,
+                  "mean": -50003.066324284664
+                },
+                "display_minus_net_ug": {
+                  "median": -3957.0,
+                  "mean": -4339.423673269748
+                },
+                "r5_uncompensated_ug": {
+                  "median": -500028158.0,
+                  "mean": -500026969.70041573
+                },
+                "r5_corrected_ug": {
+                  "median": -500028158.0,
+                  "mean": -500026969.70041573
+                },
+                "r5_offset_ug": {
+                  "median": 0.0,
+                  "mean": 0.0
+                },
+                "r5_reference_ug": {
+                  "median": -500420128.0,
+                  "mean": -500420128.0
+                }
+              },
+              "r5_mean_decomposition_error_ug": 0.0
+            }
+          },
+          {
+            "direction": "LOAD",
+            "row_index": 7343,
+            "bracket_utc": [
+              "2026-10-16T09:45:54.788144+00:00",
+              "2026-10-16T09:45:54.896013+00:00"
+            ],
+            "origin_ns": 19616562000000,
+            "pre": {
+              "relative_interval_s": [
+                -45,
+                -15
+              ],
+              "rows": 286,
+              "complete": true,
+              "first_utc": "2026-10-16T09:45:09.903490+00:00",
+              "last_utc": "2026-10-16T09:45:39.804932+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                5
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 42236.0,
+                  "mean": 42235.53496503497,
+                  "min": 42165,
+                  "max": 42289,
+                  "p05": 42199.5,
+                  "p95": 42269.75
+                },
+                "filtered_raw": {
+                  "median": 42235.0,
+                  "mean": 42235.56293706294,
+                  "min": 42175,
+                  "max": 42275,
+                  "p05": 42209.25,
+                  "p95": 42259.0
+                },
+                "net_ug": {
+                  "median": 382554.0,
+                  "mean": 382872.9300699301,
+                  "min": 317866,
+                  "max": 427172,
+                  "p05": 353609.0,
+                  "p95": 409026.0
+                },
+                "display_count": {
+                  "median": 39.0,
+                  "mean": 39.0,
+                  "min": 39,
+                  "max": 39,
+                  "p05": 39.0,
+                  "p95": 39.0
+                },
+                "display_minus_net_ug": {
+                  "median": 7446.0,
+                  "mean": 7127.06993006993,
+                  "min": -37172,
+                  "max": 72134,
+                  "p05": -19026.0,
+                  "p95": 36391.0
+                },
+                "r5_uncompensated_ug": {
+                  "median": 413370.0,
+                  "mean": 413003.986013986,
+                  "min": 359305,
+                  "max": 459551,
+                  "p05": 386338.0,
+                  "p95": 438150.0
+                },
+                "r5_corrected_ug": {
+                  "median": 382744.5,
+                  "mean": 381876.88811188814,
+                  "min": 331382,
+                  "max": 428299,
+                  "p05": 358477.5,
+                  "p95": 405382.0
+                },
+                "r5_offset_ug": {
+                  "median": 32315.0,
+                  "mean": 31127.097902097903,
+                  "min": 25523,
+                  "max": 34005,
+                  "p05": 26285.5,
+                  "p95": 34005.0
+                },
+                "r5_reference_ug": {
+                  "median": 397250.0,
+                  "mean": 397250.0,
+                  "min": 397250,
+                  "max": 397250,
+                  "p05": 397250.0,
+                  "p95": 397250.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_15_45": {
+              "relative_interval_s": [
+                15,
+                45
+              ],
+              "rows": 291,
+              "complete": true,
+              "first_utc": "2026-10-16T09:46:09.935938+00:00",
+              "last_utc": "2026-10-16T09:46:39.826490+00:00",
+              "stable_fraction": 0.8384879725085911,
+              "r5_states": [
+                2,
+                3
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 486164,
+                  "mean": 486163.5017182131,
+                  "min": 486078,
+                  "max": 486246,
+                  "p05": 486122.5,
+                  "p95": 486207.5
+                },
+                "filtered_raw": {
+                  "median": 486161,
+                  "mean": 486161.15120274917,
+                  "min": 486125,
+                  "max": 486203,
+                  "p05": 486137.0,
+                  "p95": 486186.0
+                },
+                "net_ug": {
+                  "median": 500410016,
+                  "mean": 500410186.42268044,
+                  "min": 500369468,
+                  "max": 500457323,
+                  "p05": 500382983.5,
+                  "p95": 500438175.0
+                },
+                "display_count": {
+                  "median": 50042,
+                  "mean": 50041.3264604811,
+                  "min": 50039,
+                  "max": 50043,
+                  "p05": 50039.0,
+                  "p95": 50043.0
+                },
+                "display_minus_net_ug": {
+                  "median": 3637,
+                  "mean": 3078.1821305841922,
+                  "min": -49301,
+                  "max": 51522,
+                  "p05": -33738.0,
+                  "p95": 36384.5
+                },
+                "r5_uncompensated_ug": {
+                  "median": 500428013,
+                  "mean": 500428752.05498284,
+                  "min": 500379580,
+                  "max": 500477572,
+                  "p05": 500400417.0,
+                  "p95": 500456734.5
+                },
+                "r5_corrected_ug": {
+                  "median": 500408890,
+                  "mean": 500409629.05498284,
+                  "min": 500360457,
+                  "max": 500458449,
+                  "p05": 500381294.0,
+                  "p95": 500437611.5
+                },
+                "r5_offset_ug": {
+                  "median": 19123,
+                  "mean": 19123.0,
+                  "min": 19123,
+                  "max": 19123,
+                  "p05": 19123.0,
+                  "p95": 19123.0
+                },
+                "r5_reference_ug": {
+                  "median": 0,
+                  "mean": 0.0,
+                  "min": 0,
+                  "max": 0,
+                  "p05": 0.0,
+                  "p95": 0.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_60_90": {
+              "relative_interval_s": [
+                60,
+                90
+              ],
+              "rows": 286,
+              "complete": true,
+              "first_utc": "2026-10-16T09:46:54.929162+00:00",
+              "last_utc": "2026-10-16T09:47:24.854832+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                4,
+                5
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 486180.0,
+                  "mean": 486182.74475524476,
+                  "min": 486108,
+                  "max": 486280,
+                  "p05": 486139.25,
+                  "p95": 486227.0
+                },
+                "filtered_raw": {
+                  "median": 486179.5,
+                  "mean": 486179.5,
+                  "min": 486113,
+                  "max": 486216,
+                  "p05": 486154.25,
+                  "p95": 486205.0
+                },
+                "net_ug": {
+                  "median": 500425877.0,
+                  "mean": 500426185.33916086,
+                  "min": 500355951,
+                  "max": 500467463,
+                  "p05": 500399287.25,
+                  "p95": 500456608.25
+                },
+                "display_count": {
+                  "median": 50043.0,
+                  "mean": 50043.0,
+                  "min": 50043,
+                  "max": 50043,
+                  "p05": 50043.0,
+                  "p95": 50043.0
+                },
+                "display_minus_net_ug": {
+                  "median": 4123.0,
+                  "mean": 3814.6608391608393,
+                  "min": -37463,
+                  "max": 74049,
+                  "p05": -26608.25,
+                  "p95": 30712.75
+                },
+                "r5_uncompensated_ug": {
+                  "median": 500451666.0,
+                  "mean": 500451232.87762237,
+                  "min": 500406612,
+                  "max": 500501225,
+                  "p05": 500420128.0,
+                  "p95": 500478416.5
+                },
+                "r5_corrected_ug": {
+                  "median": 500428144.5,
+                  "mean": 500427434.8496503,
+                  "min": 500386874,
+                  "max": 500476397,
+                  "p05": 500399636.0,
+                  "p95": 500454173.75
+                },
+                "r5_offset_ug": {
+                  "median": 23448.0,
+                  "mean": 23798.027972027972,
+                  "min": 19123,
+                  "max": 30874,
+                  "p05": 19123.0,
+                  "p95": 30210.5
+                },
+                "r5_reference_ug": {
+                  "median": 500411142.0,
+                  "mean": 500411142.0,
+                  "min": 500411142,
+                  "max": 500411142,
+                  "p05": 500411142.0,
+                  "p95": 500411142.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_90_120": {
+              "relative_interval_s": [
+                90,
+                120
+              ],
+              "rows": 284,
+              "complete": true,
+              "first_utc": "2026-10-16T09:47:24.971321+00:00",
+              "last_utc": "2026-10-16T09:47:54.866611+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                5
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 486188.0,
+                  "mean": 486188.23943661974,
+                  "min": 486089,
+                  "max": 486301,
+                  "p05": 486138.0,
+                  "p95": 486242.85
+                },
+                "filtered_raw": {
+                  "median": 486188.0,
+                  "mean": 486188.0669014084,
+                  "min": 486139,
+                  "max": 486239,
+                  "p05": 486162.3,
+                  "p95": 486214.85
+                },
+                "net_ug": {
+                  "median": 500425302.0,
+                  "mean": 500425401.46478873,
+                  "min": 500372709,
+                  "max": 500482341,
+                  "p05": 500397473.7,
+                  "p95": 500456379.8
+                },
+                "display_count": {
+                  "median": 50043.0,
+                  "mean": 50042.704225352114,
+                  "min": 50040,
+                  "max": 50043,
+                  "p05": 50040.0,
+                  "p95": 50043.0
+                },
+                "display_minus_net_ug": {
+                  "median": 2450.0,
+                  "mean": 1640.7887323943662,
+                  "min": -58538,
+                  "max": 57291,
+                  "p05": -30943.4,
+                  "p95": 32149.99999999997
+                },
+                "r5_uncompensated_ug": {
+                  "median": 500458987.5,
+                  "mean": 500458923.90140843,
+                  "min": 500412244,
+                  "max": 500533890,
+                  "p05": 500429139.0,
+                  "p95": 500487709.0
+                },
+                "r5_corrected_ug": {
+                  "median": 500424822.0,
+                  "mean": 500424694.54577464,
+                  "min": 500380425,
+                  "max": 500496687,
+                  "p05": 500395597.15,
+                  "p95": 500453678.0
+                },
+                "r5_offset_ug": {
+                  "median": 33775.0,
+                  "mean": 34229.355633802814,
+                  "min": 30974,
+                  "max": 40303,
+                  "p05": 31274.0,
+                  "p95": 39545.5
+                },
+                "r5_reference_ug": {
+                  "median": 500411142.0,
+                  "mean": 500411142.0,
+                  "min": 500411142,
+                  "max": 500411142,
+                  "p05": 500411142.0,
+                  "p95": 500411142.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "step_15_45": {
+              "status": "OBSERVED_DIFFERENCE_NOT_METROLOGY_PASS",
+              "delta": {
+                "raw_adc": {
+                  "median": 443928.0,
+                  "mean": 443927.9667531781
+                },
+                "filtered_raw": {
+                  "median": 443926.0,
+                  "mean": 443925.58826568624
+                },
+                "net_ug": {
+                  "median": 500027462.0,
+                  "mean": 500027313.4926105
+                },
+                "display_count": {
+                  "median": 50003.0,
+                  "mean": 50002.3264604811
+                },
+                "display_minus_net_ug": {
+                  "median": -3809.0,
+                  "mean": -4048.8877994857376
+                },
+                "r5_uncompensated_ug": {
+                  "median": 500014643.0,
+                  "mean": 500015748.06896883
+                },
+                "r5_corrected_ug": {
+                  "median": 500026145.5,
+                  "mean": 500027752.16687095
+                },
+                "r5_offset_ug": {
+                  "median": -13192.0,
+                  "mean": -12004.097902097903
+                },
+                "r5_reference_ug": {
+                  "median": -397250.0,
+                  "mean": -397250.0
+                }
+              },
+              "r5_mean_decomposition_error_ug": 2.125671016983688e-08
+            }
+          },
+          {
+            "direction": "UNLOAD",
+            "row_index": 9252,
+            "bracket_utc": [
+              "2026-10-16T09:49:14.609013+00:00",
+              "2026-10-16T09:49:14.709775+00:00"
+            ],
+            "origin_ns": 19816375000000,
+            "pre": {
+              "relative_interval_s": [
+                -45,
+                -15
+              ],
+              "rows": 284,
+              "complete": true,
+              "first_utc": "2026-10-16T09:48:29.724081+00:00",
+              "last_utc": "2026-10-16T09:48:59.672313+00:00",
+              "stable_fraction": 0.8309859154929577,
+              "r5_states": [
+                5
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 486198.5,
+                  "mean": 486197.71830985916,
+                  "min": 486091,
+                  "max": 486288,
+                  "p05": 486153.15,
+                  "p95": 486240.7
+                },
+                "filtered_raw": {
+                  "median": 486197.0,
+                  "mean": 486197.2711267606,
+                  "min": 486152,
+                  "max": 486244,
+                  "p05": 486173.15,
+                  "p95": 486220.85
+                },
+                "net_ug": {
+                  "median": 500416337.0,
+                  "mean": 500416642.056338,
+                  "min": 500365651,
+                  "max": 500469275,
+                  "p05": 500389473.05,
+                  "p95": 500443200.1
+                },
+                "display_count": {
+                  "median": 50041.0,
+                  "mean": 50041.0,
+                  "min": 50041,
+                  "max": 50041,
+                  "p05": 50041.0,
+                  "p95": 50041.0
+                },
+                "display_minus_net_ug": {
+                  "median": -6337.0,
+                  "mean": -6642.056338028169,
+                  "min": -59275,
+                  "max": 44349,
+                  "p05": -33200.1,
+                  "p95": 20526.94999999996
+                },
+                "r5_uncompensated_ug": {
+                  "median": 500469688.0,
+                  "mean": 500470584.01760566,
+                  "min": 500430265,
+                  "max": 500537269,
+                  "p05": 500441697.9,
+                  "p95": 500498803.95
+                },
+                "r5_corrected_ug": {
+                  "median": 500416337.0,
+                  "mean": 500417233.01760566,
+                  "min": 500376914,
+                  "max": 500483918,
+                  "p05": 500388346.9,
+                  "p95": 500445452.95
+                },
+                "r5_offset_ug": {
+                  "median": 53351.0,
+                  "mean": 53351.0,
+                  "min": 53351,
+                  "max": 53351,
+                  "p05": 53351.0,
+                  "p95": 53351.0
+                },
+                "r5_reference_ug": {
+                  "median": 500411142.0,
+                  "mean": 500411142.0,
+                  "min": 500411142,
+                  "max": 500411142,
+                  "p05": 500411142.0,
+                  "p95": 500411142.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_15_45": {
+              "relative_interval_s": [
+                15,
+                45
+              ],
+              "rows": 290,
+              "complete": true,
+              "first_utc": "2026-10-16T09:49:29.769788+00:00",
+              "last_utc": "2026-10-16T09:49:59.696958+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                2,
+                3
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 42262.0,
+                  "mean": 42260.38275862069,
+                  "min": 42197,
+                  "max": 42300,
+                  "p05": 42228.0,
+                  "p95": 42292.0
+                },
+                "filtered_raw": {
+                  "median": 42260.0,
+                  "mean": 42260.43103448276,
+                  "min": 42226,
+                  "max": 42295,
+                  "p05": 42240.0,
+                  "p95": 42283.55
+                },
+                "net_ug": {
+                  "median": 388178.0,
+                  "mean": 388663.4448275862,
+                  "min": 349882,
+                  "max": 427600,
+                  "p05": 365651.0,
+                  "p95": 414703.3
+                },
+                "display_count": {
+                  "median": 39.0,
+                  "mean": 39.08965517241379,
+                  "min": 37,
+                  "max": 41,
+                  "p05": 37.0,
+                  "p95": 41.0
+                },
+                "display_minus_net_ug": {
+                  "median": 2948.0,
+                  "mean": 2233.1068965517243,
+                  "min": -48589,
+                  "max": 51107,
+                  "p05": -28315.0,
+                  "p95": 30970.0
+                },
+                "r5_uncompensated_ug": {
+                  "median": 443218.5,
+                  "mean": 441719.2551724138,
+                  "min": 398728,
+                  "max": 486583,
+                  "p05": 412750.7,
+                  "p95": 468054.3
+                },
+                "r5_corrected_ug": {
+                  "median": 389867.5,
+                  "mean": 388368.2551724138,
+                  "min": 345377,
+                  "max": 433232,
+                  "p05": 359399.7,
+                  "p95": 414703.3
+                },
+                "r5_offset_ug": {
+                  "median": 53351.0,
+                  "mean": 53351.0,
+                  "min": 53351,
+                  "max": 53351,
+                  "p05": 53351.0,
+                  "p95": 53351.0
+                },
+                "r5_reference_ug": {
+                  "median": 0.0,
+                  "mean": 0.0,
+                  "min": 0,
+                  "max": 0,
+                  "p05": 0.0,
+                  "p95": 0.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_60_90": {
+              "relative_interval_s": [
+                60,
+                90
+              ],
+              "rows": 283,
+              "complete": true,
+              "first_utc": "2026-10-16T09:50:14.794078+00:00",
+              "last_utc": "2026-10-16T09:50:44.643762+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                4,
+                5
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 42243,
+                  "mean": 42243.925795053,
+                  "min": 42179,
+                  "max": 42306,
+                  "p05": 42207.0,
+                  "p95": 42278.0
+                },
+                "filtered_raw": {
+                  "median": 42244,
+                  "mean": 42244.42756183745,
+                  "min": 42203,
+                  "max": 42287,
+                  "p05": 42220.1,
+                  "p95": 42272.0
+                },
+                "net_ug": {
+                  "median": 374943,
+                  "mean": 374962.4487632509,
+                  "min": 334695,
+                  "max": 418589,
+                  "p05": 346554.1,
+                  "p95": 402776.1
+                },
+                "display_count": {
+                  "median": 37,
+                  "mean": 37.45583038869258,
+                  "min": 37,
+                  "max": 40,
+                  "p05": 37.0,
+                  "p95": 39.89999999999998
+                },
+                "display_minus_net_ug": {
+                  "median": -1338,
+                  "mean": -404.1448763250883,
+                  "min": -47621,
+                  "max": 43497,
+                  "p05": -28178.8,
+                  "p95": 30975.699999999993
+                },
+                "r5_uncompensated_ug": {
+                  "median": 423507,
+                  "mean": 423547.1731448763,
+                  "min": 375074,
+                  "max": 473067,
+                  "p05": 392082.6,
+                  "p95": 449413.0
+                },
+                "r5_corrected_ug": {
+                  "median": 375023,
+                  "mean": 374527.73498233216,
+                  "min": 328992,
+                  "max": 422253,
+                  "p05": 342859.0,
+                  "p95": 400538.8
+                },
+                "r5_offset_ug": {
+                  "median": 49464,
+                  "mean": 49019.43816254417,
+                  "min": 41982,
+                  "max": 53351,
+                  "p05": 42737.0,
+                  "p95": 53351.0
+                },
+                "r5_reference_ug": {
+                  "median": 388178,
+                  "mean": 388178.0,
+                  "min": 388178,
+                  "max": 388178,
+                  "p05": 388178.0,
+                  "p95": 388178.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_90_120": {
+              "relative_interval_s": [
+                90,
+                120
+              ],
+              "rows": 283,
+              "complete": true,
+              "first_utc": "2026-10-16T09:50:44.746281+00:00",
+              "last_utc": "2026-10-16T09:51:14.603303+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                5
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 42238,
+                  "mean": 42238.455830388695,
+                  "min": 42158,
+                  "max": 42313,
+                  "p05": 42203.1,
+                  "p95": 42275.9
+                },
+                "filtered_raw": {
+                  "median": 42238,
+                  "mean": 42237.67137809187,
+                  "min": 42186,
+                  "max": 42281,
+                  "p05": 42214.0,
+                  "p95": 42260.9
+                },
+                "net_ug": {
+                  "median": 376788,
+                  "mean": 376631.04240282683,
+                  "min": 319468,
+                  "max": 427737,
+                  "p05": 349162.6,
+                  "p95": 402394.0
+                },
+                "display_count": {
+                  "median": 38,
+                  "mean": 37.86572438162544,
+                  "min": 37,
+                  "max": 39,
+                  "p05": 37.0,
+                  "p95": 39.0
+                },
+                "display_minus_net_ug": {
+                  "median": 2248,
+                  "mean": 2026.2014134275619,
+                  "min": -47737,
+                  "max": 60532,
+                  "p05": -26290.0,
+                  "p95": 31803.899999999994
+                },
+                "r5_uncompensated_ug": {
+                  "median": 416749,
+                  "mean": 416116.41696113074,
+                  "min": 367190,
+                  "max": 469688,
+                  "p05": 386338.0,
+                  "p95": 444908.0
+                },
+                "r5_corrected_ug": {
+                  "median": 376826,
+                  "mean": 376371.89399293286,
+                  "min": 329795,
+                  "max": 427988,
+                  "p05": 346648.7,
+                  "p95": 404590.7
+                },
+                "r5_offset_ug": {
+                  "median": 40261,
+                  "mean": 39744.52296819788,
+                  "min": 36595,
+                  "max": 41950,
+                  "p05": 37350.0,
+                  "p95": 41950.0
+                },
+                "r5_reference_ug": {
+                  "median": 388178,
+                  "mean": 388178.0,
+                  "min": 388178,
+                  "max": 388178,
+                  "p05": 388178.0,
+                  "p95": 388178.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "step_15_45": {
+              "status": "OBSERVED_DIFFERENCE_NOT_METROLOGY_PASS",
+              "delta": {
+                "raw_adc": {
+                  "median": -443936.5,
+                  "mean": -443937.3355512385
+                },
+                "filtered_raw": {
+                  "median": -443937.0,
+                  "mean": -443936.8400922778
+                },
+                "net_ug": {
+                  "median": -500028159.0,
+                  "mean": -500027978.61151046
+                },
+                "display_count": {
+                  "median": -50002.0,
+                  "mean": -50001.910344827586
+                },
+                "display_minus_net_ug": {
+                  "median": 9285.0,
+                  "mean": 8875.163234579893
+                },
+                "r5_uncompensated_ug": {
+                  "median": -500026469.5,
+                  "mean": -500028864.76243323
+                },
+                "r5_corrected_ug": {
+                  "median": -500026469.5,
+                  "mean": -500028864.76243323
+                },
+                "r5_offset_ug": {
+                  "median": 0.0,
+                  "mean": 0.0
+                },
+                "r5_reference_ug": {
+                  "median": -500411142.0,
+                  "mean": -500411142.0
+                }
+              },
+              "r5_mean_decomposition_error_ug": 0.0
+            }
+          },
+          {
+            "direction": "LOAD",
+            "row_index": 10540,
+            "bracket_utc": [
+              "2026-10-16T09:51:29.564887+00:00",
+              "2026-10-16T09:51:29.666385+00:00"
+            ],
+            "origin_ns": 19951328000000,
+            "pre": {
+              "relative_interval_s": [
+                -45,
+                -15
+              ],
+              "rows": 283,
+              "complete": true,
+              "first_utc": "2026-10-16T09:50:44.746281+00:00",
+              "last_utc": "2026-10-16T09:51:14.603303+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                5
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 42238,
+                  "mean": 42238.455830388695,
+                  "min": 42158,
+                  "max": 42313,
+                  "p05": 42203.1,
+                  "p95": 42275.9
+                },
+                "filtered_raw": {
+                  "median": 42238,
+                  "mean": 42237.67137809187,
+                  "min": 42186,
+                  "max": 42281,
+                  "p05": 42214.0,
+                  "p95": 42260.9
+                },
+                "net_ug": {
+                  "median": 376788,
+                  "mean": 376631.04240282683,
+                  "min": 319468,
+                  "max": 427737,
+                  "p05": 349162.6,
+                  "p95": 402394.0
+                },
+                "display_count": {
+                  "median": 38,
+                  "mean": 37.86572438162544,
+                  "min": 37,
+                  "max": 39,
+                  "p05": 37.0,
+                  "p95": 39.0
+                },
+                "display_minus_net_ug": {
+                  "median": 2248,
+                  "mean": 2026.2014134275619,
+                  "min": -47737,
+                  "max": 60532,
+                  "p05": -26290.0,
+                  "p95": 31803.899999999994
+                },
+                "r5_uncompensated_ug": {
+                  "median": 416749,
+                  "mean": 416116.41696113074,
+                  "min": 367190,
+                  "max": 469688,
+                  "p05": 386338.0,
+                  "p95": 444908.0
+                },
+                "r5_corrected_ug": {
+                  "median": 376826,
+                  "mean": 376371.89399293286,
+                  "min": 329795,
+                  "max": 427988,
+                  "p05": 346648.7,
+                  "p95": 404590.7
+                },
+                "r5_offset_ug": {
+                  "median": 40261,
+                  "mean": 39744.52296819788,
+                  "min": 36595,
+                  "max": 41950,
+                  "p05": 37350.0,
+                  "p95": 41950.0
+                },
+                "r5_reference_ug": {
+                  "median": 388178,
+                  "mean": 388178.0,
+                  "min": 388178,
+                  "max": 388178,
+                  "p05": 388178.0,
+                  "p95": 388178.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_15_45": {
+              "relative_interval_s": [
+                15,
+                45
+              ],
+              "rows": 288,
+              "complete": true,
+              "first_utc": "2026-10-16T09:51:44.687038+00:00",
+              "last_utc": "2026-10-16T09:52:14.595849+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                2,
+                3
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 486163.0,
+                  "mean": 486162.8958333333,
+                  "min": 486081,
+                  "max": 486231,
+                  "p05": 486129.35,
+                  "p95": 486199.3
+                },
+                "filtered_raw": {
+                  "median": 486163.0,
+                  "mean": 486163.0138888889,
+                  "min": 486131,
+                  "max": 486200,
+                  "p05": 486140.0,
+                  "p95": 486187.0
+                },
+                "net_ug": {
+                  "median": 500397889.0,
+                  "mean": 500397904.4618056,
+                  "min": 500361846,
+                  "max": 500439564,
+                  "p05": 500371983.0,
+                  "p95": 500424921.0
+                },
+                "display_count": {
+                  "median": 50040.0,
+                  "mean": 50040.0,
+                  "min": 50040,
+                  "max": 50040,
+                  "p05": 50040.0,
+                  "p95": 50040.0
+                },
+                "display_minus_net_ug": {
+                  "median": 2111.0,
+                  "mean": 2095.5381944444443,
+                  "min": -39564,
+                  "max": 38154,
+                  "p05": -24921.0,
+                  "p95": 28017.0
+                },
+                "r5_uncompensated_ug": {
+                  "median": 500431392.0,
+                  "mean": 500430801.2673611,
+                  "min": 500386338,
+                  "max": 500474193,
+                  "p05": 500404359.0,
+                  "p95": 500458424.0
+                },
+                "r5_corrected_ug": {
+                  "median": 500397889.0,
+                  "mean": 500397298.2673611,
+                  "min": 500352835,
+                  "max": 500440690,
+                  "p05": 500370856.0,
+                  "p95": 500424921.0
+                },
+                "r5_offset_ug": {
+                  "median": 33503.0,
+                  "mean": 33503.0,
+                  "min": 33503,
+                  "max": 33503,
+                  "p05": 33503.0,
+                  "p95": 33503.0
+                },
+                "r5_reference_ug": {
+                  "median": 0.0,
+                  "mean": 0.0,
+                  "min": 0,
+                  "max": 0,
+                  "p05": 0.0,
+                  "p95": 0.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_60_90": {
+              "relative_interval_s": [
+                60,
+                90
+              ],
+              "rows": 284,
+              "complete": true,
+              "first_utc": "2026-10-16T09:52:29.673327+00:00",
+              "last_utc": "2026-10-16T09:52:59.555056+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                4,
+                5
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 486172.0,
+                  "mean": 486171.4190140845,
+                  "min": 486106,
+                  "max": 486239,
+                  "p05": 486133.0,
+                  "p95": 486209.85
+                },
+                "filtered_raw": {
+                  "median": 486170.5,
+                  "mean": 486170.3732394366,
+                  "min": 486122,
+                  "max": 486215,
+                  "p05": 486148.0,
+                  "p95": 486194.85
+                },
+                "net_ug": {
+                  "median": 500404623.5,
+                  "mean": 500404572.16549295,
+                  "min": 500351258,
+                  "max": 500454159,
+                  "p05": 500378716.5,
+                  "p95": 500432806.0
+                },
+                "display_count": {
+                  "median": 50041.0,
+                  "mean": 50040.77464788732,
+                  "min": 50038,
+                  "max": 50042,
+                  "p05": 50038.0,
+                  "p95": 50041.0
+                },
+                "display_minus_net_ug": {
+                  "median": 4274.0,
+                  "mean": 3174.31338028169,
+                  "min": -53332,
+                  "max": 49328,
+                  "p05": -28361.8,
+                  "p95": 29854.699999999968
+                },
+                "r5_uncompensated_ug": {
+                  "median": 500441529.0,
+                  "mean": 500439653.03521127,
+                  "min": 500389717,
+                  "max": 500483204,
+                  "p05": 500413539.05,
+                  "p95": 500466139.95
+                },
+                "r5_corrected_ug": {
+                  "median": 500405874.5,
+                  "mean": 500404527.5,
+                  "min": 500355764,
+                  "max": 500449701,
+                  "p05": 500378817.45,
+                  "p95": 500430545.95
+                },
+                "r5_offset_ug": {
+                  "median": 35803.0,
+                  "mean": 35125.535211267605,
+                  "min": 33503,
+                  "max": 35803,
+                  "p05": 33503.0,
+                  "p95": 35803.0
+                },
+                "r5_reference_ug": {
+                  "median": 500396762.0,
+                  "mean": 500396762.0,
+                  "min": 500396762,
+                  "max": 500396762,
+                  "p05": 500396762.0,
+                  "p95": 500396762.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_90_120": {
+              "relative_interval_s": [
+                90,
+                120
+              ],
+              "rows": 282,
+              "complete": true,
+              "first_utc": "2026-10-16T09:52:59.657054+00:00",
+              "last_utc": "2026-10-16T09:53:29.602841+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                5
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 486184.0,
+                  "mean": 486184.41489361704,
+                  "min": 486130,
+                  "max": 486269,
+                  "p05": 486149.05,
+                  "p95": 486220.0
+                },
+                "filtered_raw": {
+                  "median": 486181.0,
+                  "mean": 486180.76241134753,
+                  "min": 486136,
+                  "max": 486225,
+                  "p05": 486153.0,
+                  "p95": 486206.0
+                },
+                "net_ug": {
+                  "median": 500412394.0,
+                  "mean": 500412204.23758864,
+                  "min": 500365087,
+                  "max": 500459782,
+                  "p05": 500383133.1,
+                  "p95": 500441750.8
+                },
+                "display_count": {
+                  "median": 50042.0,
+                  "mean": 50041.705673758865,
+                  "min": 50041,
+                  "max": 50044,
+                  "p05": 50041.0,
+                  "p95": 50043.9
+                },
+                "display_minus_net_ug": {
+                  "median": 3641.0,
+                  "mean": 4852.5,
+                  "min": -46848,
+                  "max": 50623,
+                  "p05": -24482.55,
+                  "p95": 35137.899999999994
+                },
+                "r5_uncompensated_ug": {
+                  "median": 500452229.0,
+                  "mean": 500451813.8475177,
+                  "min": 500412244,
+                  "max": 500497846,
+                  "p05": 500423507.0,
+                  "p95": 500478641.7
+                },
+                "r5_corrected_ug": {
+                  "median": 500411836.0,
+                  "mean": 500412612.8687943,
+                  "min": 500369801,
+                  "max": 500461953,
+                  "p05": 500383251.55,
+                  "p95": 500439426.0
+                },
+                "r5_offset_ug": {
+                  "median": 38368.0,
+                  "mean": 39200.97872340425,
+                  "min": 35803,
+                  "max": 45843,
+                  "p05": 35803.0,
+                  "p95": 45090.5
+                },
+                "r5_reference_ug": {
+                  "median": 500396762.0,
+                  "mean": 500396762.0,
+                  "min": 500396762,
+                  "max": 500396762,
+                  "p05": 500396762.0,
+                  "p95": 500396762.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "step_15_45": {
+              "status": "OBSERVED_DIFFERENCE_NOT_METROLOGY_PASS",
+              "delta": {
+                "raw_adc": {
+                  "median": 443925.0,
+                  "mean": 443924.4400029446
+                },
+                "filtered_raw": {
+                  "median": 443925.0,
+                  "mean": 443925.342510797
+                },
+                "net_ug": {
+                  "median": 500021101.0,
+                  "mean": 500021273.4194028
+                },
+                "display_count": {
+                  "median": 50002.0,
+                  "mean": 50002.13427561837
+                },
+                "display_minus_net_ug": {
+                  "median": -137.0,
+                  "mean": 69.33678101688247
+                },
+                "r5_uncompensated_ug": {
+                  "median": 500014643.0,
+                  "mean": 500014684.8504
+                },
+                "r5_corrected_ug": {
+                  "median": 500021063.0,
+                  "mean": 500020926.37336814
+                },
+                "r5_offset_ug": {
+                  "median": -6758.0,
+                  "mean": -6241.522968197882
+                },
+                "r5_reference_ug": {
+                  "median": -388178.0,
+                  "mean": -388178.0
+                }
+              },
+              "r5_mean_decomposition_error_ug": -2.4854671210050583e-08
+            }
+          },
+          {
+            "direction": "UNLOAD",
+            "row_index": 12571,
+            "bracket_utc": [
+              "2026-10-16T09:55:03.667530+00:00",
+              "2026-10-16T09:55:03.768494+00:00"
+            ],
+            "origin_ns": 20165437000000,
+            "pre": {
+              "relative_interval_s": [
+                -45,
+                -15
+              ],
+              "rows": 286,
+              "complete": true,
+              "first_utc": "2026-10-16T09:54:18.768743+00:00",
+              "last_utc": "2026-10-16T09:54:48.753646+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                5
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 486184.0,
+                  "mean": 486184.16083916085,
+                  "min": 486116,
+                  "max": 486243,
+                  "p05": 486147.75,
+                  "p95": 486225.75
+                },
+                "filtered_raw": {
+                  "median": 486181.0,
+                  "mean": 486182.0804195804,
+                  "min": 486137,
+                  "max": 486219,
+                  "p05": 486159.25,
+                  "p95": 486209.5
+                },
+                "net_ug": {
+                  "median": 500401607.0,
+                  "mean": 500403188.38461536,
+                  "min": 500353174,
+                  "max": 500445534,
+                  "p05": 500376371.25,
+                  "p95": 500433977.0
+                },
+                "display_count": {
+                  "median": 50040.0,
+                  "mean": 50040.381118881116,
+                  "min": 50040,
+                  "max": 50041,
+                  "p05": 50040.0,
+                  "p95": 50041.0
+                },
+                "display_minus_net_ug": {
+                  "median": 902.0,
+                  "mean": 622.8041958041958,
+                  "min": -45534,
+                  "max": 46826,
+                  "p05": -28639.0,
+                  "p95": 29144.0
+                },
+                "r5_uncompensated_ug": {
+                  "median": 500454482.0,
+                  "mean": 500454029.04195803,
+                  "min": 500407738,
+                  "max": 500502352,
+                  "p05": 500428013.0,
+                  "p95": 500480951.0
+                },
+                "r5_corrected_ug": {
+                  "median": 500404398.0,
+                  "mean": 500404333.2027972,
+                  "min": 500358805,
+                  "max": 500453419,
+                  "p05": 500377953.0,
+                  "p95": 500431536.5
+                },
+                "r5_offset_ug": {
+                  "median": 49409.0,
+                  "mean": 49695.83916083916,
+                  "min": 48933,
+                  "max": 51359,
+                  "p05": 48933.0,
+                  "p95": 51359.0
+                },
+                "r5_reference_ug": {
+                  "median": 500396762.0,
+                  "mean": 500396762.0,
+                  "min": 500396762,
+                  "max": 500396762,
+                  "p05": 500396762.0,
+                  "p95": 500396762.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_15_45": {
+              "relative_interval_s": [
+                15,
+                45
+              ],
+              "rows": 291,
+              "complete": true,
+              "first_utc": "2026-10-16T09:55:18.777494+00:00",
+              "last_utc": "2026-10-16T09:55:48.664082+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                2
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 42238,
+                  "mean": 42239.06529209622,
+                  "min": 42180,
+                  "max": 42309,
+                  "p05": 42204.0,
+                  "p95": 42275.0
+                },
+                "filtered_raw": {
+                  "median": 42239,
+                  "mean": 42237.481099656354,
+                  "min": 42198,
+                  "max": 42278,
+                  "p05": 42213.0,
+                  "p95": 42262.5
+                },
+                "net_ug": {
+                  "median": 366517,
+                  "mean": 364805.8109965636,
+                  "min": 320336,
+                  "max": 410444,
+                  "p05": 337232.0,
+                  "p95": 392986.0
+                },
+                "display_count": {
+                  "median": 36,
+                  "mean": 36.56357388316151,
+                  "min": 34,
+                  "max": 39,
+                  "p05": 34.0,
+                  "p95": 39.0
+                },
+                "display_minus_net_ug": {
+                  "median": 104,
+                  "mean": 829.9278350515464,
+                  "min": -56928,
+                  "max": 57274,
+                  "p05": -31022.0,
+                  "p95": 33194.5
+                },
+                "r5_uncompensated_ug": {
+                  "median": 415623,
+                  "mean": 415909.3470790378,
+                  "min": 370569,
+                  "max": 462930,
+                  "p05": 389717.0,
+                  "p95": 442655.0
+                },
+                "r5_corrected_ug": {
+                  "median": 364264,
+                  "mean": 364550.3470790378,
+                  "min": 319210,
+                  "max": 411571,
+                  "p05": 338358.0,
+                  "p95": 391296.0
+                },
+                "r5_offset_ug": {
+                  "median": 51359,
+                  "mean": 51359.0,
+                  "min": 51359,
+                  "max": 51359,
+                  "p05": 51359.0,
+                  "p95": 51359.0
+                },
+                "r5_reference_ug": {
+                  "median": 0,
+                  "mean": 0.0,
+                  "min": 0,
+                  "max": 0,
+                  "p05": 0.0,
+                  "p95": 0.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_60_90": {
+              "relative_interval_s": [
+                60,
+                90
+              ],
+              "rows": 290,
+              "complete": true,
+              "first_utc": "2026-10-16T09:56:03.788183+00:00",
+              "last_utc": "2026-10-16T09:56:33.694742+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                3,
+                4
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 42235.5,
+                  "mean": 42235.81034482759,
+                  "min": 42170,
+                  "max": 42308,
+                  "p05": 42199.9,
+                  "p95": 42275.0
+                },
+                "filtered_raw": {
+                  "median": 42236.0,
+                  "mean": 42235.372413793106,
+                  "min": 42193,
+                  "max": 42275,
+                  "p05": 42209.0,
+                  "p95": 42260.0
+                },
+                "net_ug": {
+                  "median": 363138.0,
+                  "mean": 362430.71034482756,
+                  "min": 314705,
+                  "max": 407065,
+                  "p05": 332726.0,
+                  "p95": 390170.0
+                },
+                "display_count": {
+                  "median": 36.0,
+                  "mean": 36.0,
+                  "min": 36,
+                  "max": 36,
+                  "p05": 36.0,
+                  "p95": 36.0
+                },
+                "display_minus_net_ug": {
+                  "median": -3138.0,
+                  "mean": -2430.710344827586,
+                  "min": -47065,
+                  "max": 45295,
+                  "p05": -30170.0,
+                  "p95": 27274.0
+                },
+                "r5_uncompensated_ug": {
+                  "median": 412244.0,
+                  "mean": 413972.23793103447,
+                  "min": 366064,
+                  "max": 458424,
+                  "p05": 382226.55,
+                  "p95": 442148.3
+                },
+                "r5_corrected_ug": {
+                  "median": 360885.0,
+                  "mean": 362613.23793103447,
+                  "min": 314705,
+                  "max": 407065,
+                  "p05": 330867.55,
+                  "p95": 390789.3
+                },
+                "r5_offset_ug": {
+                  "median": 51359.0,
+                  "mean": 51359.0,
+                  "min": 51359,
+                  "max": 51359,
+                  "p05": 51359.0,
+                  "p95": 51359.0
+                },
+                "r5_reference_ug": {
+                  "median": 0.0,
+                  "mean": 166315.44827586206,
+                  "min": 0,
+                  "max": 365390,
+                  "p05": 0.0,
+                  "p95": 365390.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_90_120": {
+              "relative_interval_s": [
+                90,
+                120
+              ],
+              "rows": 285,
+              "complete": true,
+              "first_utc": "2026-10-16T09:56:33.797505+00:00",
+              "last_utc": "2026-10-16T09:57:03.666985+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                4,
+                5
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 42232,
+                  "mean": 42232.8701754386,
+                  "min": 42180,
+                  "max": 42282,
+                  "p05": 42197.4,
+                  "p95": 42268.0
+                },
+                "filtered_raw": {
+                  "median": 42231,
+                  "mean": 42230.635087719296,
+                  "min": 42187,
+                  "max": 42269,
+                  "p05": 42207.2,
+                  "p95": 42253.0
+                },
+                "net_ug": {
+                  "median": 357506,
+                  "mean": 357094.8140350877,
+                  "min": 307946,
+                  "max": 400307,
+                  "p05": 330698.4,
+                  "p95": 382286.0
+                },
+                "display_count": {
+                  "median": 36,
+                  "mean": 36.0,
+                  "min": 36,
+                  "max": 36,
+                  "p05": 36.0,
+                  "p95": 36.0
+                },
+                "display_minus_net_ug": {
+                  "median": 2494,
+                  "mean": 2905.1859649122807,
+                  "min": -40307,
+                  "max": 52054,
+                  "p05": -22286.0,
+                  "p95": 29301.600000000013
+                },
+                "r5_uncompensated_ug": {
+                  "median": 408865,
+                  "mean": 409082.18947368424,
+                  "min": 366064,
+                  "max": 460677,
+                  "p05": 385436.4,
+                  "p95": 436798.60000000003
+                },
+                "r5_corrected_ug": {
+                  "median": 357506,
+                  "mean": 357723.18947368424,
+                  "min": 314705,
+                  "max": 409318,
+                  "p05": 334077.4,
+                  "p95": 385439.60000000003
+                },
+                "r5_offset_ug": {
+                  "median": 51359,
+                  "mean": 51359.0,
+                  "min": 51359,
+                  "max": 51359,
+                  "p05": 51359.0,
+                  "p95": 51359.0
+                },
+                "r5_reference_ug": {
+                  "median": 365390,
+                  "mean": 365390.0,
+                  "min": 365390,
+                  "max": 365390,
+                  "p05": 365390.0,
+                  "p95": 365390.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "step_15_45": {
+              "status": "OBSERVED_DIFFERENCE_NOT_METROLOGY_PASS",
+              "delta": {
+                "raw_adc": {
+                  "median": -443946.0,
+                  "mean": -443945.0955470646
+                },
+                "filtered_raw": {
+                  "median": -443942.0,
+                  "mean": -443944.599319924
+                },
+                "net_ug": {
+                  "median": -500035090.0,
+                  "mean": -500038382.57361877
+                },
+                "display_count": {
+                  "median": -50004.0,
+                  "mean": -50003.81754499795
+                },
+                "display_minus_net_ug": {
+                  "median": -798.0,
+                  "mean": 207.12363924735052
+                },
+                "r5_uncompensated_ug": {
+                  "median": -500038859.0,
+                  "mean": -500038119.694879
+                },
+                "r5_corrected_ug": {
+                  "median": -500040134.0,
+                  "mean": -500039782.85571814
+                },
+                "r5_offset_ug": {
+                  "median": 1950.0,
+                  "mean": 1663.1608391608388
+                },
+                "r5_reference_ug": {
+                  "median": -500396762.0,
+                  "mean": -500396762.0
+                }
+              },
+              "r5_mean_decomposition_error_ug": 2.0423613023012877e-08
+            }
+          },
+          {
+            "direction": "LOAD",
+            "row_index": 14159,
+            "bracket_utc": [
+              "2026-10-16T09:57:49.235910+00:00",
+              "2026-10-16T09:57:49.337570+00:00"
+            ],
+            "origin_ns": 20331000000000,
+            "pre": {
+              "relative_interval_s": [
+                -45,
+                -15
+              ],
+              "rows": 284,
+              "complete": true,
+              "first_utc": "2026-10-16T09:57:04.430135+00:00",
+              "last_utc": "2026-10-16T09:57:34.304244+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                5
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 42234.5,
+                  "mean": 42233.95070422535,
+                  "min": 42176,
+                  "max": 42299,
+                  "p05": 42196.0,
+                  "p95": 42270.85
+                },
+                "filtered_raw": {
+                  "median": 42231.0,
+                  "mean": 42231.355633802814,
+                  "min": 42185,
+                  "max": 42274,
+                  "p05": 42206.15,
+                  "p95": 42253.85
+                },
+                "net_ug": {
+                  "median": 357643.0,
+                  "mean": 357936.2147887324,
+                  "min": 305831,
+                  "max": 405939,
+                  "p05": 329515.9,
+                  "p95": 383243.1
+                },
+                "display_count": {
+                  "median": 36.0,
+                  "mean": 36.0,
+                  "min": 36,
+                  "max": 36,
+                  "p05": 36.0,
+                  "p95": 36.0
+                },
+                "display_minus_net_ug": {
+                  "median": 2357.0,
+                  "mean": 2063.7852112676055,
+                  "min": -45939,
+                  "max": 54169,
+                  "p05": -23243.1,
+                  "p95": 30484.099999999962
+                },
+                "r5_uncompensated_ug": {
+                  "median": 408865.0,
+                  "mean": 409360.5809859155,
+                  "min": 363811,
+                  "max": 453919,
+                  "p05": 384085.0,
+                  "p95": 435897.0
+                },
+                "r5_corrected_ug": {
+                  "median": 357643.0,
+                  "mean": 358031.6690140845,
+                  "min": 312452,
+                  "max": 402560,
+                  "p05": 332863.0,
+                  "p95": 384654.45
+                },
+                "r5_offset_ug": {
+                  "median": 51359.0,
+                  "mean": 51328.91197183099,
+                  "min": 51222,
+                  "max": 51359,
+                  "p05": 51222.0,
+                  "p95": 51359.0
+                },
+                "r5_reference_ug": {
+                  "median": 365390.0,
+                  "mean": 365390.0,
+                  "min": 365390,
+                  "max": 365390,
+                  "p05": 365390.0,
+                  "p95": 365390.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_15_45": {
+              "relative_interval_s": [
+                15,
+                45
+              ],
+              "rows": 291,
+              "complete": true,
+              "first_utc": "2026-10-16T09:58:04.335300+00:00",
+              "last_utc": "2026-10-16T09:58:34.234292+00:00",
+              "stable_fraction": 0.9140893470790378,
+              "r5_states": [
+                2
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 486175,
+                  "mean": 486175.6804123711,
+                  "min": 486019,
+                  "max": 486333,
+                  "p05": 486130.5,
+                  "p95": 486220.0
+                },
+                "filtered_raw": {
+                  "median": 486174,
+                  "mean": 486172.9381443299,
+                  "min": 486106,
+                  "max": 486216,
+                  "p05": 486144.0,
+                  "p95": 486201.5
+                },
+                "net_ug": {
+                  "median": 500392560,
+                  "mean": 500391363.6323024,
+                  "min": 500315968,
+                  "max": 500439866,
+                  "p05": 500358769.0,
+                  "p95": 500423534.0
+                },
+                "display_count": {
+                  "median": 50040,
+                  "mean": 50039.61512027492,
+                  "min": 50039,
+                  "max": 50040,
+                  "p05": 50039.0,
+                  "p95": 50040.0
+                },
+                "display_minus_net_ug": {
+                  "median": 5188,
+                  "mean": 4787.570446735395,
+                  "min": -39866,
+                  "max": 84032,
+                  "p05": -27971.0,
+                  "p95": 37357.5
+                },
+                "r5_uncompensated_ug": {
+                  "median": 500443782,
+                  "mean": 500442918.52577317,
+                  "min": 500377327,
+                  "max": 500521500,
+                  "p05": 500411118.0,
+                  "p95": 500476446.0
+                },
+                "r5_corrected_ug": {
+                  "median": 500392560,
+                  "mean": 500391696.52577317,
+                  "min": 500326105,
+                  "max": 500470278,
+                  "p05": 500359896.0,
+                  "p95": 500425224.0
+                },
+                "r5_offset_ug": {
+                  "median": 51222,
+                  "mean": 51222.0,
+                  "min": 51222,
+                  "max": 51222,
+                  "p05": 51222.0,
+                  "p95": 51222.0
+                },
+                "r5_reference_ug": {
+                  "median": 0,
+                  "mean": 0.0,
+                  "min": 0,
+                  "max": 0,
+                  "p05": 0.0,
+                  "p95": 0.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_60_90": {
+              "relative_interval_s": [
+                60,
+                90
+              ],
+              "rows": 290,
+              "complete": true,
+              "first_utc": "2026-10-16T09:58:49.336118+00:00",
+              "last_utc": "2026-10-16T09:59:19.286338+00:00",
+              "stable_fraction": 1.0,
+              "r5_states": [
+                3,
+                4
+              ],
+              "display_states": [
+                2
+              ],
+              "stats": {
+                "raw_adc": {
+                  "median": 486191.0,
+                  "mean": 486191.06551724137,
+                  "min": 486122,
+                  "max": 486276,
+                  "p05": 486149.0,
+                  "p95": 486233.0
+                },
+                "filtered_raw": {
+                  "median": 486188.0,
+                  "mean": 486187.9724137931,
+                  "min": 486152,
+                  "max": 486227,
+                  "p05": 486164.0,
+                  "p95": 486213.0
+                },
+                "net_ug": {
+                  "median": 500408329.0,
+                  "mean": 500408297.4413793,
+                  "min": 500367780,
+                  "max": 500452256,
+                  "p05": 500381296.0,
+                  "p95": 500436487.0
+                },
+                "display_count": {
+                  "median": 50040.0,
+                  "mean": 50040.36551724138,
+                  "min": 50039,
+                  "max": 50043,
+                  "p05": 50039.0,
+                  "p95": 50043.0
+                },
+                "display_minus_net_ug": {
+                  "median": -4949.0,
+                  "mean": -4642.268965517242,
+                  "min": -54372,
+                  "max": 41946,
+                  "p05": -35361.0,
+                  "p95": 27715.0
+                },
+                "r5_uncompensated_ug": {
+                  "median": 500458424.0,
+                  "mean": 500459802.98275864,
+                  "min": 500413370,
+                  "max": 500505731,
+                  "p05": 500431392.0,
+                  "p95": 500490581.3
+                },
+                "r5_corrected_ug": {
+                  "median": 500407202.0,
+                  "mean": 500408580.98275864,
+                  "min": 500362148,
+                  "max": 500454509,
+                  "p05": 500380170.0,
+                  "p95": 500439359.3
+                },
+                "r5_offset_ug": {
+                  "median": 51222.0,
+                  "mean": 51222.0,
+                  "min": 51222,
+                  "max": 51222,
+                  "p05": 51222.0,
+                  "p95": 51222.0
+                },
+                "r5_reference_ug": {
+                  "median": 0.0,
+                  "mean": 227768990.4827586,
+                  "min": 0,
+                  "max": 500401570,
+                  "p05": 0.0,
+                  "p95": 500401570.0
+                }
+              },
+              "status": "OBSERVED_WINDOW"
+            },
+            "post_90_120": {
+              "relative_interval_s": [
+                90,
+                120
+              ],
+              "rows": 94,
+              "complete": false,
+              "status": "INCOMPLETE_WINDOW"
+            },
+            "step_15_45": {
+              "status": "OBSERVED_DIFFERENCE_NOT_METROLOGY_PASS",
+              "delta": {
+                "raw_adc": {
+                  "median": 443940.5,
+                  "mean": 443941.7297081458
+                },
+                "filtered_raw": {
+                  "median": 443943.0,
+                  "mean": 443941.58251052705
+                },
+                "net_ug": {
+                  "median": 500034917.0,
+                  "mean": 500033427.41751367
+                },
+                "display_count": {
+                  "median": 50004.0,
+                  "mean": 50003.61512027492
+                },
+                "display_minus_net_ug": {
+                  "median": 2831.0,
+                  "mean": 2723.78523546779
+                },
+                "r5_uncompensated_ug": {
+                  "median": 500034917.0,
+                  "mean": 500033557.94478726
+                },
+                "r5_corrected_ug": {
+                  "median": 500034917.0,
+                  "mean": 500033664.8567591
+                },
+                "r5_offset_ug": {
+                  "median": -137.0,
+                  "mean": -106.91197183098848
+                },
+                "r5_reference_ug": {
+                  "median": -365390.0,
+                  "mean": -365390.0
+                }
+              },
+              "r5_mean_decomposition_error_ug": -2.350861905142665e-08
+            }
+          }
+        ],
+        "complete_empty_load_empty_cycles": [
+          {
+            "load_edge": 2,
+            "unload_edge": 3,
+            "return_15_45": {
+              "status": "OBSERVED_DIFFERENCE_NOT_METROLOGY_PASS",
+              "delta": {
+                "raw_adc": {
+                  "median": 26.0,
+                  "mean": 24.847793585722684
+                },
+                "filtered_raw": {
+                  "median": 25.0,
+                  "mean": 24.868097419821424
+                },
+                "net_ug": {
+                  "median": 5624.0,
+                  "mean": 5790.514757656085
+                },
+                "display_count": {
+                  "median": 0.0,
+                  "mean": 0.08965517241379217
+                },
+                "display_minus_net_ug": {
+                  "median": -4498.0,
+                  "mean": -4893.9630335182055
+                },
+                "r5_uncompensated_ug": {
+                  "median": 29848.5,
+                  "mean": 28715.269158427778
+                },
+                "r5_corrected_ug": {
+                  "median": 7123.0,
+                  "mean": 6491.367060525634
+                },
+                "r5_offset_ug": {
+                  "median": 21036.0,
+                  "mean": 22223.902097902097
+                },
+                "r5_reference_ug": {
+                  "median": -397250.0,
+                  "mean": -397250.0
+                }
+              },
+              "r5_mean_decomposition_error_ug": -4.729372449219227e-11
+            },
+            "return_60_90": {
+              "status": "OBSERVED_DIFFERENCE_NOT_METROLOGY_PASS",
+              "delta": {
+                "raw_adc": {
+                  "median": 7.0,
+                  "mean": 8.39083001803374
+                },
+                "filtered_raw": {
+                  "median": 9.0,
+                  "mean": 8.864624774512777
+                },
+                "net_ug": {
+                  "median": -7611.0,
+                  "mean": -7910.481306679198
+                },
+                "display_count": {
+                  "median": -2.0,
+                  "mean": -1.5441696113074173
+                },
+                "display_minus_net_ug": {
+                  "median": -8784.0,
+                  "mean": -7531.214806395018
+                },
+                "r5_uncompensated_ug": {
+                  "median": 10137.0,
+                  "mean": 10543.187130890321
+                },
+                "r5_corrected_ug": {
+                  "median": -7721.5,
+                  "mean": -7349.1531295559835
+                },
+                "r5_offset_ug": {
+                  "median": 17149.0,
+                  "mean": 17892.340260446264
+                },
+                "r5_reference_ug": {
+                  "median": -9072.0,
+                  "mean": -9072.0
+                }
+              },
+              "r5_mean_decomposition_error_ug": -4.001776687800884e-11
+            },
+            "return_90_120": {
+              "status": "OBSERVED_DIFFERENCE_NOT_METROLOGY_PASS",
+              "delta": {
+                "raw_adc": {
+                  "median": 2.0,
+                  "mean": 2.9208653537280043
+                },
+                "filtered_raw": {
+                  "median": 3.0,
+                  "mean": 2.108441028933157
+                },
+                "net_ug": {
+                  "median": -5766.0,
+                  "mean": -6241.887667103263
+                },
+                "display_count": {
+                  "median": -1.0,
+                  "mean": -1.1342756183745593
+                },
+                "display_minus_net_ug": {
+                  "median": -5198.0,
+                  "mean": -5100.8685166423675
+                },
+                "r5_uncompensated_ug": {
+                  "median": 3379.0,
+                  "mean": 3112.4309471447486
+                },
+                "r5_corrected_ug": {
+                  "median": -5918.5,
+                  "mean": -5504.994118955277
+                },
+                "r5_offset_ug": {
+                  "median": 7946.0,
+                  "mean": 8617.425066099979
+                },
+                "r5_reference_ug": {
+                  "median": -9072.0,
+                  "mean": -9072.0
+                }
+              },
+              "r5_mean_decomposition_error_ug": -4.729372449219227e-11
+            },
+            "same_post_unload_age_15_45": {
+              "status": "OBSERVED_DIFFERENCE_NOT_METROLOGY_PASS",
+              "delta": {
+                "raw_adc": {
+                  "median": 4.0,
+                  "mean": 1.0310344827594236
+                },
+                "filtered_raw": {
+                  "median": 2.0,
+                  "mean": 1.2310344827637891
+                },
+                "net_ug": {
+                  "median": -7945.0,
+                  "mean": -8811.431034482783
+                },
+                "display_count": {
+                  "median": 0.0,
+                  "mean": -0.24827586206896513
+                },
+                "display_minus_net_ug": {
+                  "median": 5692.0,
+                  "mean": 6328.672413793103
+                },
+                "r5_uncompensated_ug": {
+                  "median": 2815.5,
+                  "mean": 1553.565517241368
+                },
+                "r5_corrected_ug": {
+                  "median": -7382.5,
+                  "mean": -8644.434482758632
+                },
+                "r5_offset_ug": {
+                  "median": 10198.0,
+                  "mean": 10198.0
+                },
+                "r5_reference_ug": {
+                  "median": 0.0,
+                  "mean": 0.0
+                }
+              },
+              "r5_mean_decomposition_error_ug": 0.0
+            }
+          },
+          {
+            "load_edge": 4,
+            "unload_edge": 5,
+            "return_15_45": {
+              "status": "OBSERVED_DIFFERENCE_NOT_METROLOGY_PASS",
+              "delta": {
+                "raw_adc": {
+                  "median": 0,
+                  "mean": 0.6094617075214046
+                },
+                "filtered_raw": {
+                  "median": 1,
+                  "mean": -0.1902784355188487
+                },
+                "net_ug": {
+                  "median": -10271,
+                  "mean": -11825.23140626325
+                },
+                "display_count": {
+                  "median": -2,
+                  "mean": -1.3021504984639307
+                },
+                "display_minus_net_ug": {
+                  "median": -2144,
+                  "mean": -1196.2735783760154
+                },
+                "r5_uncompensated_ug": {
+                  "median": -1126,
+                  "mean": -207.06988209293922
+                },
+                "r5_corrected_ug": {
+                  "median": -12562,
+                  "mean": -11821.546913895058
+                },
+                "r5_offset_ug": {
+                  "median": 11098,
+                  "mean": 11614.477031802118
+                },
+                "r5_reference_ug": {
+                  "median": -388178,
+                  "mean": -388178.0
+                }
+              },
+              "r5_mean_decomposition_error_ug": 0.0
+            },
+            "return_60_90": {
+              "status": "OBSERVED_DIFFERENCE_NOT_METROLOGY_PASS",
+              "delta": {
+                "raw_adc": {
+                  "median": -2.5,
+                  "mean": -2.6454855611082166
+                },
+                "filtered_raw": {
+                  "median": -2.0,
+                  "mean": -2.298964298766805
+                },
+                "net_ug": {
+                  "median": -13650.0,
+                  "mean": -14200.332057999272
+                },
+                "display_count": {
+                  "median": -2.0,
+                  "mean": -1.8657243816254407
+                },
+                "display_minus_net_ug": {
+                  "median": -5386.0,
+                  "mean": -4456.911758255148
+                },
+                "r5_uncompensated_ug": {
+                  "median": -4505.0,
+                  "mean": -2144.179030096275
+                },
+                "r5_corrected_ug": {
+                  "median": -15941.0,
+                  "mean": -13758.656061898393
+                },
+                "r5_offset_ug": {
+                  "median": 11098.0,
+                  "mean": 11614.477031802118
+                },
+                "r5_reference_ug": {
+                  "median": -388178.0,
+                  "mean": -221862.55172413794
+                }
+              },
+              "r5_mean_decomposition_error_ug": 0.0
+            },
+            "return_90_120": {
+              "status": "OBSERVED_DIFFERENCE_NOT_METROLOGY_PASS",
+              "delta": {
+                "raw_adc": {
+                  "median": -6,
+                  "mean": -5.585654950096796
+                },
+                "filtered_raw": {
+                  "median": -7,
+                  "mean": -7.036290372576332
+                },
+                "net_ug": {
+                  "median": -19282,
+                  "mean": -19536.228367739124
+                },
+                "display_count": {
+                  "median": -2,
+                  "mean": -1.8657243816254407
+                },
+                "display_minus_net_ug": {
+                  "median": 246,
+                  "mean": 878.9845514847188
+                },
+                "r5_uncompensated_ug": {
+                  "median": -7884,
+                  "mean": -7034.227487446507
+                },
+                "r5_corrected_ug": {
+                  "median": -19320,
+                  "mean": -18648.704519248626
+                },
+                "r5_offset_ug": {
+                  "median": 11098,
+                  "mean": 11614.477031802118
+                },
+                "r5_reference_ug": {
+                  "median": -22788,
+                  "mean": -22788.0
+                }
+              },
+              "r5_mean_decomposition_error_ug": 0.0
+            },
+            "same_post_unload_age_15_45": {
+              "status": "OBSERVED_DIFFERENCE_NOT_METROLOGY_PASS",
+              "delta": {
+                "raw_adc": {
+                  "median": -24.0,
+                  "mean": -21.317466524473275
+                },
+                "filtered_raw": {
+                  "median": -21.0,
+                  "mean": -22.949934826407116
+                },
+                "net_ug": {
+                  "median": -21661.0,
+                  "mean": -23857.6338310226
+                },
+                "display_count": {
+                  "median": -3.0,
+                  "mean": -2.526081289252282
+                },
+                "display_minus_net_ug": {
+                  "median": -2844.0,
+                  "mean": -1403.1790615001778
+                },
+                "r5_uncompensated_ug": {
+                  "median": -27595.5,
+                  "mean": -25809.90809337597
+                },
+                "r5_corrected_ug": {
+                  "median": -25603.5,
+                  "mean": -23817.90809337597
+                },
+                "r5_offset_ug": {
+                  "median": -1992.0,
+                  "mean": -1992.0
+                },
+                "r5_reference_ug": {
+                  "median": 0.0,
+                  "mean": 0.0
+                }
+              },
+              "r5_mean_decomposition_error_ug": 0.0
+            }
+          }
+        ],
+        "threshold_ug": 250000000,
+        "boundary": "Starts loaded and ends loaded; first UNLOAD and last LOAD do not form additional empty/load/empty cycles."
+      }
+    }
+  },
+  "hardware_manifest_sha256": "8609292F336166EBE594185DE22BFADFCB0E0410D01F0D2197114454521B264A",
+  "classification": "OFFLINE_OBSERVATIONS_HARDWARE_CAUSALITY_PENDING",
+  "limits": [
+    "Not a replay of omitted 40 Hz conversions.",
+    "R5-block arithmetic is coherent; CSV requests are not a single snapshot.",
+    "Differences of means decompose exactly; differences of medians need not.",
+    "No calibrated weight certificate, temperature or R5-OFF control is available."
+  ]
+}

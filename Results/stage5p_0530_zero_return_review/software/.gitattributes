@@ -1,0 +1,4 @@
+* -text -diff
+.gitattributes text diff
+*.json text diff
+*.txt text diff

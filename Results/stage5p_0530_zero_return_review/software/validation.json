@@ -1,0 +1,31 @@
+{
+  "classification": "OFFLINE_REVIEW_COMPLETE_HARDWARE_PENDING",
+  "evidence_commit": "5913167f904a8783b3547ea33ab0d471bd80789d",
+  "firmware_commit": "a2174ede65a1927ae491e73289c95bdcaa97deb5",
+  "host_debug_ctest": {
+    "passed": 52,
+    "total": 52
+  },
+  "host_release_ctest": {
+    "passed": 52,
+    "total": 52
+  },
+  "python_tests": {
+    "passed": 36,
+    "total": 36,
+    "new_contracts": 19,
+    "transport": "FAKE_ONLY"
+  },
+  "synthetic_r5_scenarios": {
+    "passed": 4,
+    "total": 4,
+    "strict_O2": true,
+    "asan_ubsan": true,
+    "leak_sanitizer": false,
+    "note": "Native Host synthetic inputs, not target or sparse-record replay."
+  },
+  "compiler": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+  "hardware_access": false,
+  "new_arm_build": false,
+  "frozen_bin_sha256": "8ADB103085629F9A0F645CA25F324C6B53DDB395C714E62D1C0306ED7CBCBA34"
+}

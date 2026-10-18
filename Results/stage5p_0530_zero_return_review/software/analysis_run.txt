@@ -1,0 +1,118 @@
+{
+  "baseline_static": {
+    "rows": 1150,
+    "duration_s": 119.891,
+    "frames_verified": 9200,
+    "csv_fields_checked_per_row": 22,
+    "max_host_gap_ms": 125.0,
+    "sequence_duplicates": 0,
+    "sequence_regressions": 0,
+    "uptime_regressions": 0,
+    "omitted_conversion_estimate": 3639,
+    "faults": 0,
+    "overruns": 0,
+    "r5_equation_mismatches": 0,
+    "r5_application_mode_limited": [
+      [
+        1,
+        2,
+        0
+      ]
+    ],
+    "tare_values": [
+      0
+    ],
+    "save_counts": [
+      0
+    ],
+    "same_block_r5_arithmetic": true,
+    "cross_request_snapshot_atomic": false
+  },
+  "candidate_static_120s": {
+    "rows": 1144,
+    "duration_s": 119.86,
+    "frames_verified": 9152,
+    "csv_fields_checked_per_row": 22,
+    "max_host_gap_ms": 125.0,
+    "sequence_duplicates": 0,
+    "sequence_regressions": 0,
+    "uptime_regressions": 0,
+    "omitted_conversion_estimate": 3645,
+    "faults": 0,
+    "overruns": 0,
+    "r5_equation_mismatches": 0,
+    "r5_application_mode_limited": [
+      [
+        1,
+        2,
+        0
+      ]
+    ],
+    "tare_values": [
+      0
+    ],
+    "save_counts": [
+      0
+    ],
+    "same_block_r5_arithmetic": true,
+    "cross_request_snapshot_atomic": false
+  },
+  "candidate_static_600s": {
+    "rows": 5660,
+    "duration_s": 599.922,
+    "frames_verified": 45280,
+    "csv_fields_checked_per_row": 22,
+    "max_host_gap_ms": 125.0,
+    "sequence_duplicates": 0,
+    "sequence_regressions": 0,
+    "uptime_regressions": 0,
+    "omitted_conversion_estimate": 18303,
+    "faults": 0,
+    "overruns": 0,
+    "r5_equation_mismatches": 0,
+    "r5_application_mode_limited": [
+      [
+        1,
+        2,
+        0
+      ]
+    ],
+    "tare_values": [
+      0
+    ],
+    "save_counts": [
+      0
+    ],
+    "same_block_r5_arithmetic": true,
+    "cross_request_snapshot_atomic": false
+  },
+  "three_round_edges": {
+    "rows": 15125,
+    "duration_s": 1588.656,
+    "frames_verified": 121000,
+    "csv_fields_checked_per_row": 22,
+    "max_host_gap_ms": 156.0,
+    "sequence_duplicates": 0,
+    "sequence_regressions": 0,
+    "uptime_regressions": 0,
+    "omitted_conversion_estimate": 48323,
+    "faults": 0,
+    "overruns": 0,
+    "r5_equation_mismatches": 0,
+    "r5_application_mode_limited": [
+      [
+        1,
+        2,
+        0
+      ]
+    ],
+    "tare_values": [
+      0
+    ],
+    "save_counts": [
+      0
+    ],
+    "same_block_r5_arithmetic": true,
+    "cross_request_snapshot_atomic": false
+  }
+}

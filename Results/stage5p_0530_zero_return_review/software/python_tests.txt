@@ -1,0 +1,47 @@
+test_final_peaks_win_over_intermediate_values (test_audit_cross_record_resources.CrossRecordAuditTests.test_final_peaks_win_over_intermediate_values) ... ok
+test_masks_union_to_all_paths (test_audit_cross_record_resources.CrossRecordAuditTests.test_masks_union_to_all_paths) ... ok
+test_modes_are_not_relabelled (test_audit_cross_record_resources.CrossRecordAuditTests.test_modes_are_not_relabelled) ... ok
+test_identity_change_stops_instead_of_repeated_polling (test_display_recorder_contract.RecorderContract.test_identity_change_stops_instead_of_repeated_polling) ... ok
+test_port_word_order_signed_weights_and_unsigned_sequence (test_display_recorder_contract.RecorderContract.test_port_word_order_signed_weights_and_unsigned_sequence) ... ok
+test_current_profile_returns_ok (test_profile_switch_contract.ProfileSwitchContractTests.test_current_profile_returns_ok) ... ok
+test_expected_ram_profile_revision_is_not_a_save (test_profile_switch_contract.ProfileSwitchContractTests.test_expected_ram_profile_revision_is_not_a_save) ... ok
+test_external_mailbox_id_is_not_internal_enum_id (test_profile_switch_contract.ProfileSwitchContractTests.test_external_mailbox_id_is_not_internal_enum_id) ... ok
+test_other_profile_requires_accepted (test_profile_switch_contract.ProfileSwitchContractTests.test_other_profile_requires_accepted) ... ok
+test_acceptance_is_not_completion (test_r9_save_transaction.SaveTransactionTests.test_acceptance_is_not_completion) ... ok
+test_busy_never_reaches_save (test_r9_save_transaction.SaveTransactionTests.test_busy_never_reaches_save) ... ok
+test_only_successful_pair_allows_save (test_r9_save_transaction.SaveTransactionTests.test_only_successful_pair_allows_save) ... ok
+test_dosing_pair_changes_once (test_revision_ledger.RevisionLedgerTests.test_dosing_pair_changes_once) ... ok
+test_profile_and_pair_each_increment_once (test_revision_ledger.RevisionLedgerTests.test_profile_and_pair_each_increment_once) ... ok
+test_repeated_pair_does_not_increment (test_revision_ledger.RevisionLedgerTests.test_repeated_pair_does_not_increment) ... ok
+test_save_revision_must_remain_saved_baseline (test_revision_ledger.RevisionLedgerTests.test_save_revision_must_remain_saved_baseline) ... ok
+test_unrelated_revision_is_rejected (test_revision_ledger.RevisionLedgerTests.test_unrelated_revision_is_rejected) ... ok
+test_corrupted_crc_is_rejected (test_zero_return_audit.AuditTests.test_corrupted_crc_is_rejected) ... ok
+test_crc_valid_write_is_rejected (test_zero_return_audit.AuditTests.test_crc_valid_write_is_rejected) ... ok
+test_known_modbus_request_crc (test_zero_return_audit.AuditTests.test_known_modbus_request_crc) ... ok
+test_long_poll_gap_is_not_hidden_by_sample_count (test_zero_return_audit.AuditTests.test_long_poll_gap_is_not_hidden_by_sample_count) ... ok
+test_means_decompose_without_claiming_medians_are_additive (test_zero_return_audit.AuditTests.test_means_decompose_without_claiming_medians_are_additive) ... ok
+test_mixed_plateau_is_not_a_complete_comparison (test_zero_return_audit.AuditTests.test_mixed_plateau_is_not_a_complete_comparison) ... ok
+test_only_two_complete_cycles_and_partial_tail_not_promoted (test_zero_return_audit.AuditTests.test_only_two_complete_cycles_and_partial_tail_not_promoted) ... ok
+test_raw_and_csv_values_are_joined_and_tampering_is_rejected (test_zero_return_audit.AuditTests.test_raw_and_csv_values_are_joined_and_tampering_is_rejected) ... ok
+test_request_order_is_required (test_zero_return_audit.AuditTests.test_request_order_is_required) ... ok
+test_signed_offsets_and_unsigned_ticks_and_nonatomic_requests (test_zero_return_audit.AuditTests.test_signed_offsets_and_unsigned_ticks_and_nonatomic_requests) ... ok
+test_unpaired_request_or_response_is_rejected (test_zero_return_audit.AuditTests.test_unpaired_request_or_response_is_rejected) ... ok
+test_apply_false_does_not_subtract_retained_offset (test_zero_return_capture.CaptureTests.test_apply_false_does_not_subtract_retained_offset) ... ok
+test_atomic_authority_signed_offset_and_unsigned_time (test_zero_return_capture.CaptureTests.test_atomic_authority_signed_offset_and_unsigned_time) ... ok
+test_fixed_reads_only_and_separate_sequence_labels (test_zero_return_capture.CaptureTests.test_fixed_reads_only_and_separate_sequence_labels) ... ok
+test_identity_change_stops (test_zero_return_capture.CaptureTests.test_identity_change_stops) ... ok
+test_invalid_authority_equation_is_rejected (test_zero_return_capture.CaptureTests.test_invalid_authority_equation_is_rejected) ... ok
+test_low_word_order_is_refused_before_collecting (test_zero_return_capture.CaptureTests.test_low_word_order_is_refused_before_collecting) ... ok
+test_main_configuration_change_retains_evidence_and_fails (test_zero_return_capture.CaptureTests.test_main_configuration_change_retains_evidence_and_fails) ... ok
+test_main_preserves_rows_and_declares_atomicity_scope (test_zero_return_capture.CaptureTests.test_main_preserves_rows_and_declares_atomicity_scope) ... ok
+
+----------------------------------------------------------------------
+Ran 36 tests in 0.044s
+
+OK
+{"rows": 0, "read_errors": 1, "ended_utc": "2026-10-18T06:13:38.591204+00:00", "snapshot_atomic": false, "stopped_reason": "IDENTITY_CHANGED", "classification": "DECIMATED_NON_ATOMIC_HOST_SNAPSHOTS", "port": "COM77", "word_order": "high", "samples_sha256": "844421511D86A60721B36F8AF12976BB1B0277E16B8C67152568D8DF4C3BFBA3"}
+{"rows": 1, "read_errors": 0, "ended_utc": "2026-10-18T06:13:38.592838+00:00", "snapshot_atomic": false, "stopped_reason": "DURATION_OR_STOP_FILE", "classification": "DECIMATED_NON_ATOMIC_HOST_SNAPSHOTS", "port": "COM77", "word_order": "high", "samples_sha256": "F05436D60D412E8458381A191EE67168AF1680797C4C91F3C3C78C4DBBB45F4A"}
+{"rows": 1, "read_errors": 0, "ended_utc": "2026-10-18T06:13:38.595193+00:00", "snapshot_atomic": false, "stopped_reason": "DURATION_OR_STOP_FILE", "classification": "DECIMATED_NON_ATOMIC_HOST_SNAPSHOTS", "port": "COM77", "word_order": "low", "samples_sha256": "0B1AB04E4845DF7DA65099F15AE11A5E10B9D9E053C580DF7DA0E165B4270785"}
+{"rows": 0, "read_errors": 1, "stopped_reason": "STOPPED_ERROR", "port": "COM77", "classification": "READONLY_CAPTURE_NO_AUTOMATIC_METROLOGY_PASS", "authority_snapshot_atomic": true, "cross_request_snapshot_atomic": false, "samples_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855", "frames_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"}
+{"rows": 1, "read_errors": 1, "stopped_reason": "STOPPED_ERROR", "port": "COM77", "classification": "READONLY_CAPTURE_NO_AUTOMATIC_METROLOGY_PASS", "authority_snapshot_atomic": true, "cross_request_snapshot_atomic": false, "samples_sha256": "531A4C1AD8CC663AD99FD7E76D41244A8D27536CB9EEC8DB705EB114CF88BAD8", "frames_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"}
+{"rows": 1, "read_errors": 0, "stopped_reason": "DURATION_OR_STOP_FILE", "port": "COM77", "classification": "READONLY_CAPTURE_NO_AUTOMATIC_METROLOGY_PASS", "authority_snapshot_atomic": true, "cross_request_snapshot_atomic": false, "samples_sha256": "531A4C1AD8CC663AD99FD7E76D41244A8D27536CB9EEC8DB705EB114CF88BAD8", "frames_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"}

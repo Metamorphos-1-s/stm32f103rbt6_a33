@@ -4,6 +4,22 @@ project(stage4b_host_tests C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
+# Frozen 0x0530 controller semantics used by the offline zero-return audit.
+add_executable(stage5p_zero_return_contract_tests
+    test_stage5p_zero_return_contract.c
+    ../../Domain/measurement/a13c_shadow_compensator.c)
+target_include_directories(stage5p_zero_return_contract_tests PRIVATE
+    ../../Domain/measurement ../../Config)
+target_compile_definitions(stage5p_zero_return_contract_tests PRIVATE
+    A33_ENABLE_STAGE5PA13C_SHADOW=1 A33_ENABLE_STAGE5PA13E_ACTIVE=1
+    A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION=1 A33_ENABLE_STAGE5P_UNIFIED=1
+    A33_ENABLE_STAGE5P_SAVE_CONTINUITY=1)
+if(MSVC)
+    target_compile_options(stage5p_zero_return_contract_tests PRIVATE /W4 /WX)
+else()
+    target_compile_options(stage5p_zero_return_contract_tests PRIVATE -Wall -Wextra -Werror)
+endif()
+
 # Release host tests must still execute assertions; otherwise NDEBUG removes
 # test expressions and leaves their inputs unused under /W4 /WX.
 if(MSVC)
@@ -110,6 +126,7 @@ else()
 endif()
 
 enable_testing()
+add_test(NAME stage5p_zero_return_contract COMMAND stage5p_zero_return_contract_tests)
 add_test(NAME stage4a_host_logic COMMAND stage4a_host_tests)
 
 # Execute the calibration workflow against the real command service and
