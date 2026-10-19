@@ -1,0 +1,52 @@
+{
+  "created_utc": "2026-10-19T03:38:15Z",
+  "local_timezone": "Asia/Shanghai (UTC+08:00)",
+  "repository": "https://github.com/Metamorphos-1-s/stm32f103rbt6_a33.git",
+  "source_branch": "stage5p-zero-return-r5-review",
+  "fixed_source_head": "fbdffa59e55d3fcb7efc08bee3eb90edd4f1d7ac",
+  "task_branch": "stage5p-zero-return-r5-review-hardware",
+  "simulated_tests": "19/19 PASS; fake transport only, no device access",
+  "manifest_git_blob_checks": {
+    "production_and_helper_source_blobs": 1197,
+    "mismatches": 0,
+    "evidence_entries": 25,
+    "entry_mismatches": 0
+  },
+  "serial": {
+    "instrument_port": "COM5",
+    "description": "USB-SERIAL CH340",
+    "vid": "1A86",
+    "pid": "7523",
+    "serial_number": "",
+    "other_port": "COM1 (system ACPI PNP0501)",
+    "historical_com3_detected": false,
+    "baud": 115200,
+    "parity": "N",
+    "stop_bits": 1,
+    "modbus_unit_id": 1
+  },
+  "initial_preflight": {
+    "utc": "2026-10-19T03:38:39.131471Z",
+    "firmware": "0x0530",
+    "map": "0x010F",
+    "word_order": "high",
+    "profile": "40 Hz / filt1 / strength3 / gain3",
+    "calibration_raw_zero": 41868,
+    "calibration_raw_span": 485780,
+    "calibration_span_ug": 500000000,
+    "r5": "ACTIVE+STATIC, non-LIMITED",
+    "r5_offset_ug": 10680,
+    "checkweigh": "STATIC",
+    "slot": "A",
+    "slot_sequence": 23,
+    "revision": 23,
+    "saved_revision": 23,
+    "dirty": 0,
+    "fault": 0,
+    "overrun": 0,
+    "authority_weight_ug": 376784,
+    "physical_empty_confirmation": "OWNER_CONFIRMED_2026-10-19T03:41:11Z"
+  },
+  "temperature": "not measured",
+  "power_on_warmup_duration": "not confirmed"
+}

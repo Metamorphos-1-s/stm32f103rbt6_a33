@@ -1,0 +1,13 @@
+{"utc_received": "2026-10-19T03:41:11.654079+00:00", "host_monotonic_ns": 215590281000000, "event": "EMPTY_INITIAL_CONFIRMED", "operator_message": "空载已确认", "time_role": "message_received_not_physical_edge"}
+{"utc_received": "2026-10-19T03:46:30.414647+00:00", "host_monotonic_ns": 215909031000000, "event": "LOAD_1_PROMPT", "operator_message": "请平稳放置500g砝码并保持不动；完成后回复第1轮已放好", "time_role": "message_received_not_physical_edge"}
+{"utc_received": "2026-10-19T03:49:34.586034+00:00", "host_monotonic_ns": 216093203000000, "event": "LOAD_1_CONFIRMED", "operator_message": "第1轮已放好", "time_role": "message_received_not_physical_edge"}
+{"utc_received": "2026-10-19T03:51:31.715637+00:00", "host_monotonic_ns": 216210343000000, "event": "UNLOAD_1_PROMPT", "operator_message": "请平稳取下500g砝码并保持空载；完成后回复第1轮已移除", "time_role": "message_received_not_physical_edge"}
+{"utc_received": "2026-10-19T03:53:12.218508+00:00", "host_monotonic_ns": 216310843000000, "event": "UNLOAD_1_CONFIRMED", "operator_message": "第1轮已移除", "time_role": "message_received_not_physical_edge"}
+{"utc_received": "2026-10-19T04:01:59.560828+00:00", "host_monotonic_ns": 216838187000000, "event": "LOAD_2_PROMPT", "operator_message": "请平稳放回同一个500g砝码并保持不动；完成后回复第2轮已放好", "time_role": "message_received_not_physical_edge"}
+{"utc_received": "2026-10-19T04:26:13.083638+00:00", "host_monotonic_ns": 218291703000000, "event": "LOAD_2_CONFIRMED", "operator_message": "第2轮已放好", "time_role": "message_received_not_physical_edge"}
+{"utc_received": "2026-10-19T04:29:11.645152+00:00", "host_monotonic_ns": 218470265000000, "event": "UNLOAD_2_PROMPT", "operator_message": "请平稳取下500g砝码并保持空载；完成后回复第2轮已移除", "time_role": "message_received_not_physical_edge"}
+{"utc_received": "2026-10-19T04:30:22.146863+00:00", "host_monotonic_ns": 218540765000000, "event": "UNLOAD_2_CONFIRMED", "operator_message": "第2轮已移除", "time_role": "message_received_not_physical_edge"}
+{"utc_received": "2026-10-19T04:32:51.233822+00:00", "host_monotonic_ns": 218689859000000, "event": "LOAD_3_PROMPT", "operator_message": "请平稳放回同一个500g砝码并保持不动；完成后回复第3轮已放好", "time_role": "message_received_not_physical_edge"}
+{"utc_received": "2026-10-19T04:33:58.100911+00:00", "host_monotonic_ns": 218756718000000, "event": "LOAD_3_CONFIRMED", "operator_message": "第3轮已放好", "time_role": "message_received_not_physical_edge"}
+{"utc_received": "2026-10-19T04:36:26.011960+00:00", "host_monotonic_ns": 218904640000000, "event": "UNLOAD_3_PROMPT", "operator_message": "请平稳取下500g砝码并保持空载；完成后回复第3轮已移除；随后空载持续600秒", "time_role": "message_received_not_physical_edge"}
+{"utc_received": "2026-10-19T04:37:54.148788+00:00", "host_monotonic_ns": 218992765000000, "event": "UNLOAD_3_CONFIRMED", "operator_message": "第3轮已移除", "time_role": "message_received_not_physical_edge"}

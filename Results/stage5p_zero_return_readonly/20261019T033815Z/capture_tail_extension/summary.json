@@ -1,0 +1,11 @@
+{
+  "rows": 1272,
+  "read_errors": 0,
+  "stopped_reason": "DURATION_OR_STOP_FILE",
+  "port": "COM5",
+  "classification": "READONLY_CAPTURE_NO_AUTOMATIC_METROLOGY_PASS",
+  "authority_snapshot_atomic": true,
+  "cross_request_snapshot_atomic": false,
+  "samples_sha256": "D0BE4DA3E3017CEF538435E1B88D2F55B64AE73D84155BD75D387F244252CE51",
+  "frames_sha256": "57CC07389224EE03DA5362EC88153C1E7CA903F236C4A9FEC7075D16E6242612"
+}
