@@ -1,0 +1,71 @@
+{
+  "classification": "OFFLINE_SCREEN_COMPLETE_NO_NEW_FIRMWARE",
+  "base_commit": "e4a0b5161688a4ada95880befc2fb33013407536",
+  "production_source_unchanged": true,
+  "firmware_source": "a2174ede65a1927ae491e73289c95bdcaa97deb5",
+  "firmware": "0x0530",
+  "map": "0x010F",
+  "hardware_access": false,
+  "new_arm_firmware": false,
+  "host_ctest": {
+    "passed": 52,
+    "total": 52,
+    "build_type": "Release"
+  },
+  "python_tests": {
+    "passed": 42,
+    "total": 42,
+    "prior_zero_return": 33,
+    "new_study": 9
+  },
+  "sanitizer_cases": 6,
+  "physical_hz": 40,
+  "physical_samples_per_case": 48000,
+  "scenarios": 16,
+  "policies": 4,
+  "runs": 64,
+  "total_physical_samples": 3072000,
+  "final_saved_run_verification": "64/64 inputs/output hashes/numeric metrics match final generator; all five core pins match",
+  "screen": {
+    "hold60": {
+      "status": "REJECTED_SCREEN_REGRESSION",
+      "regressions": 18,
+      "improvements": 8
+    },
+    "hold120": {
+      "status": "REJECTED_SCREEN_REGRESSION",
+      "regressions": 20,
+      "improvements": 14
+    },
+    "paired_reference": {
+      "status": "REJECTED_SCREEN_REGRESSION",
+      "regressions": 12,
+      "improvements": 28
+    }
+  },
+  "source_pin_check": "recorded after run; original preregistration unchanged",
+  "source_pins": {
+    "Domain/measurement/a13c_shadow_compensator.c": "BF0F828E5DB4E9837EC051E14E8D39F78D8885159061F91CDEB278A6DEA1DE2F",
+    "App/metrology_manager.c": "3160225B13071F018BA3CACECDE6FAFE66F43D078BE274F4AFD5A3C389E6DF98",
+    "Domain/measurement/weight_engine.c": "358A69C94718924C82F1D9515BF34033A4D52FBD46164B20C279AE49033334A4",
+    "Domain/filter/weight_filter.c": "F1FACE407EAD83D3D97895AA07AB44CB12E16245CC8E5A625B065E903A19C42E",
+    "Domain/calibration/calibration_model.c": "E149773F940688582921744DE2D7B73A08DF154FBEA4D1DBA9A93531B545E375"
+  },
+  "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "hardware_entry": "NOT_READY_NO_ACCEPTABLE_AUTOMATIC_CANDIDATE",
+  "next_requirement": "Independent known-empty context or an explicit limit on automatic correction",
+  "archive_scope": "Selected full 40 Hz traces and build logs only; all 64 run numerical results and hashes are archived; other raw synthetic CSVs are reproducible",
+  "publication": {
+    "status": "EXPLICIT_USER_AUTHORIZATION_GRANTED_ARCHIVE_UPLOADED",
+    "repository": "Metamorphos-1-s/stm32f103rbt6_a33",
+    "branch": "stage5p-r5-transition-research",
+    "authorization_date": "2026-10-19 Asia/Shanghai",
+    "scope": "Current research code, reports and 210657-byte synthetic evidence archive; no hardware actions or product integration",
+    "archive_bytes": 210657,
+    "archive_sha256": "817A2312877C4CC18820B45C79CBBFCA0B7469E47BE199D30EC0A0AD8D249511",
+    "archive_git_blob_sha": "33ba418aa564c51646ea49f4a517664052266479",
+    "earlier_rejection": "Initial archive upload rejected by automatic approval review; explicit user authorization subsequently granted."
+  }
+}

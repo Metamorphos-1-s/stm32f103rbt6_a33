@@ -1,0 +1,31 @@
+{
+  "evidence_commit": "f5137c0f1eb6171d4f2e459bd28539f51fb8896f",
+  "sha256": "20574BEC82C8F5154E3CB7A4D07D2CBA2C43781ED51A877D4B736BBF7E33D9A2",
+  "scope": "observed fixed trace plus arithmetic offset substitution, not an OFF experiment or replay",
+  "cycles": [
+    {
+      "load_edge_offset_ug": -13653,
+      "unload_edge_offset_ug": 24780,
+      "offset_accumulated_between_edges_ug": 38433,
+      "pre_offset_mean_ug": -12579.197183098591,
+      "observed_early_return_mean_ug": 10160.885737850505,
+      "same_input_restore_pre_mean_offset_residual_ug": 47520.08292094909
+    },
+    {
+      "load_edge_offset_ug": 20412,
+      "unload_edge_offset_ug": 59337,
+      "offset_accumulated_between_edges_ug": 38925,
+      "pre_offset_mean_ug": 17746.79906542056,
+      "observed_early_return_mean_ug": 42090.602678010124,
+      "same_input_restore_pre_mean_offset_residual_ug": 83680.80361258955
+    },
+    {
+      "load_edge_offset_ug": 46147,
+      "unload_edge_offset_ug": 69968,
+      "offset_accumulated_between_edges_ug": 23821,
+      "pre_offset_mean_ug": 47190.231132075474,
+      "observed_early_return_mean_ug": -7808.9630395451095,
+      "same_input_restore_pre_mean_offset_residual_ug": 14968.805828379409
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+test_authority_signature_and_short_response_are_refused (test_zero_return_atomic_audit.AtomicEvidenceTests.test_authority_signature_and_short_response_are_refused) ... ok
+test_candidate_signature_is_checked (test_zero_return_atomic_audit.AtomicEvidenceTests.test_candidate_signature_is_checked) ... ok
+test_corrupted_equation_is_refused (test_zero_return_atomic_audit.AtomicEvidenceTests.test_corrupted_equation_is_refused) ... ok
+test_disabled_application_does_not_subtract_offset (test_zero_return_atomic_audit.AtomicEvidenceTests.test_disabled_application_does_not_subtract_offset) ... ok
+test_full_window_covers_endpoints (test_zero_return_atomic_audit.AtomicEvidenceTests.test_full_window_covers_endpoints) ... ok
+test_gap_cannot_create_an_observed_edge (test_zero_return_atomic_audit.AtomicEvidenceTests.test_gap_cannot_create_an_observed_edge) ... ok
+test_incomplete_comparison_does_not_return_numeric_deltas (test_zero_return_atomic_audit.AtomicEvidenceTests.test_incomplete_comparison_does_not_return_numeric_deltas) ... ok
+test_means_decompose_even_when_medians_do_not (test_zero_return_atomic_audit.AtomicEvidenceTests.test_means_decompose_even_when_medians_do_not) ... ok
+test_middle_gap_is_not_hidden_by_endpoint_coverage (test_zero_return_atomic_audit.AtomicEvidenceTests.test_middle_gap_is_not_hidden_by_endpoint_coverage) ... ok
+test_next_load_is_not_an_empty_window (test_zero_return_atomic_audit.AtomicEvidenceTests.test_next_load_is_not_an_empty_window) ... ok
+test_one_sample_is_not_a_complete_30_second_window (test_zero_return_atomic_audit.AtomicEvidenceTests.test_one_sample_is_not_a_complete_30_second_window) ... ok
+test_partial_tail_is_incomplete (test_zero_return_atomic_audit.AtomicEvidenceTests.test_partial_tail_is_incomplete) ... ok
+test_signed_32_and_64_bit_weights (test_zero_return_atomic_audit.AtomicEvidenceTests.test_signed_32_and_64_bit_weights) ... ok
+test_wrong_dataset_is_refused_before_analysis (test_zero_return_atomic_audit.AtomicEvidenceTests.test_wrong_dataset_is_refused_before_analysis) ... ok
+test_corrupted_crc_is_rejected (test_zero_return_audit.AuditTests.test_corrupted_crc_is_rejected) ... ok
+test_crc_valid_write_is_rejected (test_zero_return_audit.AuditTests.test_crc_valid_write_is_rejected) ... ok
+test_known_modbus_request_crc (test_zero_return_audit.AuditTests.test_known_modbus_request_crc) ... ok
+test_long_poll_gap_is_not_hidden_by_sample_count (test_zero_return_audit.AuditTests.test_long_poll_gap_is_not_hidden_by_sample_count) ... ok
+test_means_decompose_without_claiming_medians_are_additive (test_zero_return_audit.AuditTests.test_means_decompose_without_claiming_medians_are_additive) ... ok
+test_mixed_plateau_is_not_a_complete_comparison (test_zero_return_audit.AuditTests.test_mixed_plateau_is_not_a_complete_comparison) ... ok
+test_only_two_complete_cycles_and_partial_tail_not_promoted (test_zero_return_audit.AuditTests.test_only_two_complete_cycles_and_partial_tail_not_promoted) ... ok
+test_raw_and_csv_values_are_joined_and_tampering_is_rejected (test_zero_return_audit.AuditTests.test_raw_and_csv_values_are_joined_and_tampering_is_rejected) ... ok
+test_request_order_is_required (test_zero_return_audit.AuditTests.test_request_order_is_required) ... ok
+test_signed_offsets_and_unsigned_ticks_and_nonatomic_requests (test_zero_return_audit.AuditTests.test_signed_offsets_and_unsigned_ticks_and_nonatomic_requests) ... ok
+test_unpaired_request_or_response_is_rejected (test_zero_return_audit.AuditTests.test_unpaired_request_or_response_is_rejected) ... ok
+test_apply_false_does_not_subtract_retained_offset (test_zero_return_capture.CaptureTests.test_apply_false_does_not_subtract_retained_offset) ... ok
+test_atomic_authority_signed_offset_and_unsigned_time (test_zero_return_capture.CaptureTests.test_atomic_authority_signed_offset_and_unsigned_time) ... ok
+test_fixed_reads_only_and_separate_sequence_labels (test_zero_return_capture.CaptureTests.test_fixed_reads_only_and_separate_sequence_labels) ... ok
+test_identity_change_stops (test_zero_return_capture.CaptureTests.test_identity_change_stops) ... ok
+test_invalid_authority_equation_is_rejected (test_zero_return_capture.CaptureTests.test_invalid_authority_equation_is_rejected) ... ok
+test_low_word_order_is_refused_before_collecting (test_zero_return_capture.CaptureTests.test_low_word_order_is_refused_before_collecting) ... ok
+test_main_configuration_change_retains_evidence_and_fails (test_zero_return_capture.CaptureTests.test_main_configuration_change_retains_evidence_and_fails) ... ok
+test_main_preserves_rows_and_declares_atomicity_scope (test_zero_return_capture.CaptureTests.test_main_preserves_rows_and_declares_atomicity_scope) ... ok
+test_absolute_mass_error_cannot_be_ranked_as_a_zero_improvement (test_r5_transition_research.TransitionStudyTests.test_absolute_mass_error_cannot_be_ranked_as_a_zero_improvement) ... ok
+test_changed_core_source_cannot_be_reported_as_frozen_baseline (test_r5_transition_research.TransitionStudyTests.test_changed_core_source_cannot_be_reported_as_frozen_baseline) ... ok
+test_every_droplet_size_has_a_matched_static_and_dosing_control (test_r5_transition_research.TransitionStudyTests.test_every_droplet_size_has_a_matched_static_and_dosing_control) ... ok
+test_identical_policy_is_not_promoted_without_improvement (test_r5_transition_research.TransitionStudyTests.test_identical_policy_is_not_promoted_without_improvement) ... ok
+test_improvement_elsewhere_cannot_hide_a_dose_regression (test_r5_transition_research.TransitionStudyTests.test_improvement_elsewhere_cannot_hide_a_dose_regression) ... ok
+test_missing_physical_samples_are_refused (test_r5_transition_research.TransitionStudyTests.test_missing_physical_samples_are_refused) ... ok
+test_pause2_and_pause10_really_contain_no_new_drops (test_r5_transition_research.TransitionStudyTests.test_pause2_and_pause10_really_contain_no_new_drops) ... ok
+test_real_residue_and_mechanical_residual_have_identical_adc (test_r5_transition_research.TransitionStudyTests.test_real_residue_and_mechanical_residual_have_identical_adc) ... ok
+test_simulated_dosing_spans_both_pauses_and_does_not_exit_on_quiet (test_r5_transition_research.TransitionStudyTests.test_simulated_dosing_spans_both_pauses_and_does_not_exit_on_quiet) ... ok
+
+----------------------------------------------------------------------
+Ran 42 tests in 0.043s
+
+OK
+{"rows": 0, "read_errors": 1, "stopped_reason": "STOPPED_ERROR", "port": "COM77", "classification": "READONLY_CAPTURE_NO_AUTOMATIC_METROLOGY_PASS", "authority_snapshot_atomic": true, "cross_request_snapshot_atomic": false, "samples_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855", "frames_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"}
+{"rows": 1, "read_errors": 1, "stopped_reason": "STOPPED_ERROR", "port": "COM77", "classification": "READONLY_CAPTURE_NO_AUTOMATIC_METROLOGY_PASS", "authority_snapshot_atomic": true, "cross_request_snapshot_atomic": false, "samples_sha256": "531A4C1AD8CC663AD99FD7E76D41244A8D27536CB9EEC8DB705EB114CF88BAD8", "frames_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"}
+{"rows": 1, "read_errors": 0, "stopped_reason": "DURATION_OR_STOP_FILE", "port": "COM77", "classification": "READONLY_CAPTURE_NO_AUTOMATIC_METROLOGY_PASS", "authority_snapshot_atomic": true, "cross_request_snapshot_atomic": false, "samples_sha256": "531A4C1AD8CC663AD99FD7E76D41244A8D27536CB9EEC8DB705EB114CF88BAD8", "frames_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"}

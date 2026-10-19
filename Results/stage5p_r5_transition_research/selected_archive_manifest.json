@@ -1,0 +1,79 @@
+{
+  "files": [
+    {
+      "path": "README.txt",
+      "bytes": 373,
+      "sha256": "6D58A546D090046D51273C6BA3B971D7EAC8935702770254777E04CC5D5B9EC9"
+    },
+    {
+      "path": "logs/build.txt",
+      "bytes": 44426,
+      "sha256": "713BBE8C34F4BF9A12DED5AA68B9E43235B922996C7249EE9D7EB95A23CB5BF7"
+    },
+    {
+      "path": "logs/configure.txt",
+      "bytes": 415,
+      "sha256": "6257BF5221107BD3CC9C3A319C458A96605F3D459C786DD0CC39ACD72A135289"
+    },
+    {
+      "path": "logs/final-runner-build.txt",
+      "bytes": 742,
+      "sha256": "E524CA206C83512D5B3A53132E8B1343BEC369711DCCEAF65DF41E3103C58A89"
+    },
+    {
+      "path": "logs/full-host-build.txt",
+      "bytes": 115207,
+      "sha256": "A6158C83449CE98199F1CEAC02FE4CF9EBC5642C6C9BFF69C490871937953CCE"
+    },
+    {
+      "path": "logs/sanitize-build.txt",
+      "bytes": 22601,
+      "sha256": "BE809A9A61FC90B33060EF66FBF9AC565CD3164AC3F1875A0C3E6C2288DB2BB4"
+    },
+    {
+      "path": "logs/sanitize-configure.txt",
+      "bytes": 413,
+      "sha256": "A4B7E9F056D69CA6C115B6560C23906053023356AD389A5ED45895F8097AD96C"
+    },
+    {
+      "path": "logs/sanitize-runs.txt",
+      "bytes": 1639,
+      "sha256": "0D517FF35321E577C6C1ED69255ED72B6EF22CB54BD93C6CD73BC602524D6C9E"
+    },
+    {
+      "path": "traces/drops_20000_dosing/baseline.csv.gz",
+      "bytes": 135858,
+      "sha256": "0B911894B8806FBE3FB67D4C321B0624EA37572D44668D314DB287D8A4A55AC9"
+    },
+    {
+      "path": "traces/drops_20000_dosing/input.csv.gz",
+      "bytes": 2888,
+      "sha256": "9EB5D9AC4DA25B6EF37034FE509B14122A58997C7D9690AEC1DBB471DDC2B384"
+    },
+    {
+      "path": "traces/drops_20000_static/baseline.csv.gz",
+      "bytes": 156213,
+      "sha256": "29B67A6478ED8B2B7659DB397CFFF21C21207BF6036073C1BB4CACC75EAD3D4A"
+    },
+    {
+      "path": "traces/drops_20000_static/input.csv.gz",
+      "bytes": 2860,
+      "sha256": "1B5CF679D7D3414EB13602B232315B11E3856993E59E2D1665BC13878C3E4B0D"
+    },
+    {
+      "path": "traces/mechanical_residual_40000/baseline.csv.gz",
+      "bytes": 133594,
+      "sha256": "3558798382A6FA8F33CDA438F6F3BBDA594069C94224C6FA74E00B33881C3FD6"
+    },
+    {
+      "path": "traces/mechanical_residual_40000/input.csv.gz",
+      "bytes": 1263,
+      "sha256": "FD46B87D27C3996FCE0744A00F95F59AB6712AEF77258BF82FB12C37A1FC8DB9"
+    },
+    {
+      "path": "traces/mechanical_residual_40000/paired_reference.csv.gz",
+      "bytes": 139175,
+      "sha256": "6D40C445A009454FF6B8897393C5331FF5D7D3D271380A72BE41472798DAB825"
+    }
+  ]
+}

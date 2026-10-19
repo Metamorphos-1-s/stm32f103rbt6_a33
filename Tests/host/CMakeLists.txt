@@ -1174,3 +1174,9 @@ foreach(pair "stage5p_unified_tests|stage5p_unified_smooth_tests"
     target_compile_options(${candidate} PRIVATE ${candidate_options})
     add_test(NAME ${candidate} COMMAND ${candidate})
 endforeach()
+
+# Opt in explicitly: counterexample policies never enter ordinary host or MCU builds.
+option(A33_BUILD_R5_TRANSITION_RESEARCH "Build host-only R5 transition policies" OFF)
+if(A33_BUILD_R5_TRANSITION_RESEARCH)
+    add_subdirectory(stage5p_r5_transition)
+endif()

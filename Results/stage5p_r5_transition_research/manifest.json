@@ -1,0 +1,110 @@
+{
+  "base_commit": "e4a0b5161688a4ada95880befc2fb33013407536",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 5380,
+      "sha256": "6340ABCACF6D1CF053B94B372163CF4511EC5E9A0ECE3510E9CE83BE798BF281"
+    },
+    {
+      "path": "Docs/STAGE5P_R5_EMPTY_CONTEXT_CONTRACT_DRAFT.md",
+      "bytes": 2919,
+      "sha256": "10A4EF1D954DF9B93C7DD76EC3B722E60FD260F256686FC90D154A04696D41B6"
+    },
+    {
+      "path": "Docs/STAGE5P_R5_TRANSITION_LOCAL_CODEX_PROMPT.md",
+      "bytes": 4205,
+      "sha256": "30B63CD39012DB076BF460EE83403E1C4BF0892B1C9C4A0C8BDB0D53B96140DA"
+    },
+    {
+      "path": "Docs/STAGE5P_R5_TRANSITION_RESEARCH.md",
+      "bytes": 9707,
+      "sha256": "1CEFD84076A034CDC23DC3C6AD2536E3EBB0E93FC154171402DFCC2D5B97FE50"
+    },
+    {
+      "path": "Results/stage5p_r5_transition_research/.gitattributes",
+      "bytes": 13,
+      "sha256": "7DB6A4594CA028C9756C1C6F838E247424A086289BC4516147589EFDAF27380C"
+    },
+    {
+      "path": "Results/stage5p_r5_transition_research/analysis.json",
+      "bytes": 213789,
+      "sha256": "A5617D483A0CDC5015511E87777C66DD3BEEB0F5FA3DBE9C8F9D6A4F48BBD35F"
+    },
+    {
+      "path": "Results/stage5p_r5_transition_research/historical_carry.json",
+      "bytes": 1233,
+      "sha256": "71678B74355B9196A6A9458E25F4C9BF3A28E03AE87C1FE05CE5CC7E6A98679F"
+    },
+    {
+      "path": "Results/stage5p_r5_transition_research/host_ctest.txt",
+      "bytes": 6471,
+      "sha256": "9B7E01355DE72EC009E3E65B1C95E6079B4CF00A9FFADC90076943607AD9E930"
+    },
+    {
+      "path": "Results/stage5p_r5_transition_research/preregistered.json",
+      "bytes": 2473,
+      "sha256": "4B99F1F7D64B1B1985457750620689B7497186CA568611E37DB5BD244AB50559"
+    },
+    {
+      "path": "Results/stage5p_r5_transition_research/python_tests.txt",
+      "bytes": 7554,
+      "sha256": "FB2ADD14D9216589B5DE48ED4ADA54174471043BF4DF6B2D78E8E8B467EB849F"
+    },
+    {
+      "path": "Results/stage5p_r5_transition_research/sanitizer_results.json",
+      "bytes": 1509,
+      "sha256": "2210601C9D8504AF46CF8B4FE67E1AF103A24878E0C9546BA08B08D7DA230C51"
+    },
+    {
+      "path": "Results/stage5p_r5_transition_research/selected_archive_manifest.json",
+      "bytes": 2525,
+      "sha256": "6686CB6B1AD83F91F96FDBADCFC144BCADC951ABADF17EB707F3A40B682E47B1"
+    },
+    {
+      "path": "Results/stage5p_r5_transition_research/selected_traces_and_build_logs.tar.gz",
+      "bytes": 210657,
+      "sha256": "817A2312877C4CC18820B45C79CBBFCA0B7469E47BE199D30EC0A0AD8D249511"
+    },
+    {
+      "path": "Results/stage5p_r5_transition_research/summary.csv",
+      "bytes": 37277,
+      "sha256": "F92AEF24E9933C0FEE3E2A9A8F3E412C405D86065554BB72AB7D9A3FAF6DF2FD"
+    },
+    {
+      "path": "Results/stage5p_r5_transition_research/validation.json",
+      "bytes": 3043,
+      "sha256": "BB9290B53289111DF1CBAE67550F9356BACBB9193B0024A8C220D36C27F9B872"
+    },
+    {
+      "path": "Tests/host/CMakeLists.txt",
+      "bytes": 50770,
+      "sha256": "B2412EC858C16DCC5E8491D0729A93D00CB8EBDB33D4B34D1269559B7908E1F1"
+    },
+    {
+      "path": "Tests/host/stage5p_r5_transition/CMakeLists.txt",
+      "bytes": 2631,
+      "sha256": "9A508064AC000C5495788E189E202467C4103F5C8B10C07B8558A3715FD4F006"
+    },
+    {
+      "path": "Tests/host/stage5p_r5_transition/paired_reference_policy.c",
+      "bytes": 2164,
+      "sha256": "C2E76087BD161D7FE65191252A9B6FBA322250EBAE1F6B2F7F3BCC8E6D2C7888"
+    },
+    {
+      "path": "Tests/host/stage5p_r5_transition/runner.c",
+      "bytes": 4152,
+      "sha256": "B3DE57C0D435015E22701B3AE7AC2E6EB59E53E2D21ACA7D71B73DF5AA75F83E"
+    },
+    {
+      "path": "Tools/stage5_unified/research_r5_transition.py",
+      "bytes": 14422,
+      "sha256": "EC5A900096CCA2DE9C9DF61C386DD7E14D6955C09DEDB2904D78A5F2F532EF6C"
+    },
+    {
+      "path": "Tools/stage5_unified/test_r5_transition_research.py",
+      "bytes": 4266,
+      "sha256": "8E8BAA0D4B29FD743796017169B781FD3E39703CF8281D3D25CCBA4222DD3324"
+    }
+  ]
+}

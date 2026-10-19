@@ -1,0 +1,109 @@
+{
+  "base_commit": "e4a0b5161688a4ada95880befc2fb33013407536",
+  "protocol_revision": 2,
+  "revision_note": "Initial 14-scenario screen expanded with matched DOSING controls for 20/100 mg drops; no screening threshold changed.",
+  "physical_hz": 40,
+  "sample_period_ms": 25,
+  "controller_admission": "actual MetrologyManager 40-to-10 Hz adapter",
+  "policies": [
+    "baseline",
+    "hold60",
+    "hold120",
+    "paired_reference"
+  ],
+  "load_s": 240,
+  "unload_s": 600,
+  "duration_s": 1200,
+  "tolerance_ug": 2253,
+  "tolerance_scope": "two raw counts; research comparison only, not metrology acceptance",
+  "scenario_count": 16,
+  "scenarios": [
+    {
+      "name": "global_drift_-1",
+      "kind": "drift",
+      "sign": -1
+    },
+    {
+      "name": "global_drift_1",
+      "kind": "drift",
+      "sign": 1
+    },
+    {
+      "name": "load_creep_-1",
+      "kind": "creep",
+      "sign": -1
+    },
+    {
+      "name": "load_creep_1",
+      "kind": "creep",
+      "sign": 1
+    },
+    {
+      "name": "mechanical_residual_20000",
+      "kind": "mechanical_residual",
+      "residual_ug": 20000
+    },
+    {
+      "name": "real_residue_20000",
+      "kind": "real_residue",
+      "residual_ug": 20000
+    },
+    {
+      "name": "mechanical_residual_40000",
+      "kind": "mechanical_residual",
+      "residual_ug": 40000
+    },
+    {
+      "name": "real_residue_40000",
+      "kind": "real_residue",
+      "residual_ug": 40000
+    },
+    {
+      "name": "mechanical_residual_80000",
+      "kind": "mechanical_residual",
+      "residual_ug": 80000
+    },
+    {
+      "name": "real_residue_80000",
+      "kind": "real_residue",
+      "residual_ug": 80000
+    },
+    {
+      "name": "drops_20000_static",
+      "kind": "drops",
+      "drop_ug": 20000,
+      "dosing": false
+    },
+    {
+      "name": "drops_20000_dosing",
+      "kind": "drops",
+      "drop_ug": 20000,
+      "dosing": true
+    },
+    {
+      "name": "drops_50000_static",
+      "kind": "drops",
+      "drop_ug": 50000,
+      "dosing": false
+    },
+    {
+      "name": "drops_50000_dosing",
+      "kind": "drops",
+      "drop_ug": 50000,
+      "dosing": true
+    },
+    {
+      "name": "drops_100000_static",
+      "kind": "drops",
+      "drop_ug": 100000,
+      "dosing": false
+    },
+    {
+      "name": "drops_100000_dosing",
+      "kind": "drops",
+      "drop_ug": 100000,
+      "dosing": true
+    }
+  ],
+  "drop_sizes_scope": "synthetic 20/50/100 mg steps; no assertion of physical droplet mass"
+}

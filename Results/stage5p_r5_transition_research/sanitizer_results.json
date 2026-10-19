@@ -1,0 +1,49 @@
+{
+  "address_undefined_sanitizers": "PASS",
+  "leak_detection": false,
+  "leak_scope": "unsupported host leak tracking; ASan/UBSan remain enabled",
+  "runs": [
+    {
+      "scenario": "real_residue_40000",
+      "policy": "baseline",
+      "rows": 48000,
+      "result": "PASS",
+      "executable_sha256": "849CBAE96CF37295FA60E2F8F4F6BE7E0D6848270F6B868CE433CA7D93D775BA"
+    },
+    {
+      "scenario": "real_residue_40000",
+      "policy": "paired_reference",
+      "rows": 48000,
+      "result": "PASS",
+      "executable_sha256": "195C591B9D9FFEEA5CC46D94AB5B7934C163CD4E201D1E436742B02BDFC5605E"
+    },
+    {
+      "scenario": "drops_20000_static",
+      "policy": "baseline",
+      "rows": 48000,
+      "result": "PASS",
+      "executable_sha256": "849CBAE96CF37295FA60E2F8F4F6BE7E0D6848270F6B868CE433CA7D93D775BA"
+    },
+    {
+      "scenario": "drops_20000_static",
+      "policy": "paired_reference",
+      "rows": 48000,
+      "result": "PASS",
+      "executable_sha256": "195C591B9D9FFEEA5CC46D94AB5B7934C163CD4E201D1E436742B02BDFC5605E"
+    },
+    {
+      "scenario": "drops_20000_dosing",
+      "policy": "baseline",
+      "rows": 48000,
+      "result": "PASS",
+      "executable_sha256": "849CBAE96CF37295FA60E2F8F4F6BE7E0D6848270F6B868CE433CA7D93D775BA"
+    },
+    {
+      "scenario": "drops_20000_dosing",
+      "policy": "paired_reference",
+      "rows": 48000,
+      "result": "PASS",
+      "executable_sha256": "195C591B9D9FFEEA5CC46D94AB5B7934C163CD4E201D1E436742B02BDFC5605E"
+    }
+  ]
+}

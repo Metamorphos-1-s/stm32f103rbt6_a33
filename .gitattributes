@@ -127,3 +127,6 @@ Docs/STAGE5PA13D*.md text eol=lf
 Tools/stage5pa13cr/*.py text eol=lf
 Docs/STAGE5PA13CR_FOCUSED_HARDWARE_RETEST.md text eol=lf
 Docs/STAGE5PA13B_*.md text eol=lf
+Docs/STAGE5P_R5_*.md text eol=lf
+Tests/host/stage5p_r5_transition/* text eol=lf
+Tests/host/CMakeLists.txt text eol=lf
