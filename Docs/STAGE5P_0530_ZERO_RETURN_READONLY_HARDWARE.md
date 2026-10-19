@@ -27,8 +27,9 @@ errors.
 
 ## Capture integrity
 
-The primary read-only recorder ran from 03:42:26 UTC for its 3,600-second
-limit and produced 25,771 JSONL rows. The tail extension produced a further
+The primary read-only recorder's first and last JSONL observations were
+03:42:02.911 and 04:42:02.779 UTC, spanning 3,599.869 s within its
+3,600-second limit, and produced 25,771 JSONL rows. The tail extension produced a further
 1,272 rows from 04:46:01 to 04:49:01 UTC after the primary process ended.
 Both segments had zero read errors. Across all 27,043 rows:
 
@@ -64,8 +65,8 @@ physical edge timestamps.
 
 All requested 120-second load and unload waits were covered in the primary
 record. The final 600-second post-Unload-3 requirement was **not continuous**:
-the primary recorder ended after roughly five minutes and the extension
-started around 04:46:01, leaving a multi-minute gap. The extension continued
+the primary recorder ended 283.563 s after the observed Unload-3 edge and the
+extension started at 04:46:01.138, leaving a 238.359 s inter-observation gap. The extension continued
 past 600 seconds from the physical unload, but this gap makes the complete
 continuous-tail item **INCOMPLETE**.
 
@@ -87,14 +88,25 @@ For the same early windows, the means decompose as follows:
 
 | Cycle | Change before compensation | Change in offset | Change after compensation |
 | --- | ---: | ---: | ---: |
-| 1 | +0.028715 g | +0.022224 g | +0.006491 g |
-| 2 | −0.000207 g | +0.011614 g | −0.011822 g |
-| 3 | not promoted to a causal claim without a fixed independent OFF control | | |
+| 1 | +0.047520 g | +0.037359 g | +0.010161 g |
+| 2 | +0.083681 g | +0.041590 g | +0.042091 g |
+| 3 | +0.014969 g | +0.022778 g | −0.007809 g |
 
-The arithmetic is valid within each atomic R5 response, but there was no
-OFF control and no synchronized temperature/mechanical reference. The data
+**Correction after independent review:** the original Cycle 1/2 decomposition
+mistakenly repeated the October 16 dataset. The table above is recomputed from
+this capture's atomic authority block, for all three cycles. Means decompose;
+separately calculated medians need not. No OFF control is needed for this
+arithmetic, but there was no OFF control or synchronized temperature/mechanical
+reference for causal comparison. The data
 cannot establish whether the return differences arise from R5, mechanical
 recovery, temperature, or a shared platform drift.
+
+In the early `[15,45)` post-unload windows, applied offsets were constant at
+24,780 / 59,337 / 69,968 ug respectively. New reference locks were first
+observed around 46.4 / 46.4 / 48.0 s after the unload edges. The A13C source
+rebuilds a step's reference from `mass - offset`; it does not retain the
+original empty-platform value as a mandatory return target. This describes
+the implemented mechanism and does not identify the physical source of drift.
 
 ## Final state
 
@@ -122,3 +134,18 @@ measured. No firmware, configuration, or mode change was made.
 Raw JSONL, RTU frames, operator markers, pre/post snapshots, analyses and
 SHA manifest are under
 `Results/stage5p_zero_return_readonly/20261019T033815Z/`.
+
+Independent verification at evidence commit
+`f5137c0f1eb6171d4f2e459bd28539f51fb8896f` matched all available 19 of the
+manifest's 24 files, and matched six FC03 payloads for each of 27,043 rows
+against 324,572 CRC-checked TX/RX frames. Five manifest-listed logs were not
+committed: `capture_stdout.log`, `capture_stderr.log`,
+`capture_tail_extension_stdout.log`, `capture_tail_extension_stderr.log`, and
+`host_simulation_19_tests.log`. The core JSONL, frames and snapshots are
+available; complete historical log archival is still pending. The reported
+historical 19-test log cannot be independently checked from this commit.
+The subsequent offline rerun passed all 33 zero-return tests (19 existing,
+14 new), using fake clients only. Reproduction and corrected decompositions
+are in `Docs/STAGE5P_0530_ZERO_RETURN_INDEPENDENT_REVIEW.md` and
+`Results/stage5p_0530_zero_return_independent/analysis.json`. Original raw
+evidence and its manifest were preserved unchanged.

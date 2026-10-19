@@ -1,0 +1,1413 @@
+{
+  "edges": 6,
+  "cycles": [
+    {
+      "load_interval_utc": [
+        "2026-10-19T03:48:34.676658+00:00",
+        "2026-10-19T03:48:34.804600+00:00"
+      ],
+      "unload_interval_utc": [
+        "2026-10-19T03:52:05.045582+00:00",
+        "2026-10-19T03:52:05.180947+00:00"
+      ],
+      "load_pre": {
+        "interval_s": [
+          -45,
+          -15
+        ],
+        "rows": 213,
+        "complete": true,
+        "first_utc": "2026-10-19T03:47:49.875854+00:00",
+        "last_utc": "2026-10-19T03:48:19.730341+00:00",
+        "max_gap_ms": 157.0,
+        "status": "OBSERVED_WINDOW",
+        "stats": {
+          "uncompensated_ug": {
+            "mean_ug": 346783.39906103286,
+            "median_ug": 346916,
+            "min_ug": 296230,
+            "max_ug": 404359
+          },
+          "applied_offset_ug": {
+            "mean_ug": -12579.197183098591,
+            "median_ug": -12485,
+            "min_ug": -13252,
+            "max_ug": -12485
+          },
+          "gross_ug": {
+            "mean_ug": 359362.59624413145,
+            "median_ug": 359401,
+            "min_ug": 308715,
+            "max_ug": 417461
+          },
+          "net_ug": {
+            "mean_ug": 359362.59624413145,
+            "median_ug": 359401,
+            "min_ug": 308715,
+            "max_ug": 417461
+          },
+          "tare_ug": {
+            "mean_ug": 0,
+            "median_ug": 0,
+            "min_ug": 0,
+            "max_ug": 0
+          }
+        }
+      },
+      "loaded": {
+        "interval_s": [
+          15,
+          45
+        ],
+        "rows": 222,
+        "complete": true,
+        "first_utc": "2026-10-19T03:48:49.792606+00:00",
+        "last_utc": "2026-10-19T03:49:19.717350+00:00",
+        "max_gap_ms": 157.0,
+        "status": "OBSERVED_WINDOW",
+        "stats": {
+          "uncompensated_ug": {
+            "mean_ug": 500333237.045045,
+            "median_ug": 500333399.0,
+            "min_ug": 500281587,
+            "max_ug": 500384085
+          },
+          "applied_offset_ug": {
+            "mean_ug": -13653,
+            "median_ug": -13653.0,
+            "min_ug": -13653,
+            "max_ug": -13653
+          },
+          "gross_ug": {
+            "mean_ug": 500346890.045045,
+            "median_ug": 500347052.0,
+            "min_ug": 500295240,
+            "max_ug": 500397738
+          },
+          "net_ug": {
+            "mean_ug": 500346890.045045,
+            "median_ug": 500347052.0,
+            "min_ug": 500295240,
+            "max_ug": 500397738
+          },
+          "tare_ug": {
+            "mean_ug": 0,
+            "median_ug": 0.0,
+            "min_ug": 0,
+            "max_ug": 0
+          }
+        }
+      },
+      "post": {
+        "15_45": {
+          "interval_s": [
+            15,
+            45
+          ],
+          "rows": 222,
+          "complete": true,
+          "first_utc": "2026-10-19T03:52:20.187107+00:00",
+          "last_utc": "2026-10-19T03:52:50.075594+00:00",
+          "max_gap_ms": 157.0,
+          "status": "OBSERVED_WINDOW",
+          "stats": {
+            "uncompensated_ug": {
+              "mean_ug": 394303.48198198195,
+              "median_ug": 394785.5,
+              "min_ug": 355926,
+              "max_ug": 442655
+            },
+            "applied_offset_ug": {
+              "mean_ug": 24780,
+              "median_ug": 24780.0,
+              "min_ug": 24780,
+              "max_ug": 24780
+            },
+            "gross_ug": {
+              "mean_ug": 369523.48198198195,
+              "median_ug": 370005.5,
+              "min_ug": 331146,
+              "max_ug": 417875
+            },
+            "net_ug": {
+              "mean_ug": 369523.48198198195,
+              "median_ug": 370005.5,
+              "min_ug": 331146,
+              "max_ug": 417875
+            },
+            "tare_ug": {
+              "mean_ug": 0,
+              "median_ug": 0.0,
+              "min_ug": 0,
+              "max_ug": 0
+            }
+          }
+        },
+        "60_90": {
+          "interval_s": [
+            60,
+            90
+          ],
+          "rows": 215,
+          "complete": true,
+          "first_utc": "2026-10-19T03:53:05.290607+00:00",
+          "last_utc": "2026-10-19T03:53:35.072826+00:00",
+          "max_gap_ms": 157.0,
+          "status": "OBSERVED_WINDOW",
+          "stats": {
+            "uncompensated_ug": {
+              "mean_ug": 392907.3348837209,
+              "median_ug": 395349,
+              "min_ug": 349168,
+              "max_ug": 441529
+            },
+            "applied_offset_ug": {
+              "mean_ug": 24780,
+              "median_ug": 24780,
+              "min_ug": 24780,
+              "max_ug": 24780
+            },
+            "gross_ug": {
+              "mean_ug": 368127.3348837209,
+              "median_ug": 370569,
+              "min_ug": 324388,
+              "max_ug": 416749
+            },
+            "net_ug": {
+              "mean_ug": 368127.3348837209,
+              "median_ug": 370569,
+              "min_ug": 324388,
+              "max_ug": 416749
+            },
+            "tare_ug": {
+              "mean_ug": 0,
+              "median_ug": 0,
+              "min_ug": 0,
+              "max_ug": 0
+            }
+          }
+        },
+        "90_120": {
+          "interval_s": [
+            90,
+            120
+          ],
+          "rows": 214,
+          "complete": true,
+          "first_utc": "2026-10-19T03:53:35.217666+00:00",
+          "last_utc": "2026-10-19T03:54:05.146172+00:00",
+          "max_gap_ms": 157.0,
+          "status": "OBSERVED_WINDOW",
+          "stats": {
+            "uncompensated_ug": {
+              "mean_ug": 375000.65887850465,
+              "median_ug": 375074.0,
+              "min_ug": 330020,
+              "max_ug": 417876
+            },
+            "applied_offset_ug": {
+              "mean_ug": 21622.10280373832,
+              "median_ug": 22568.0,
+              "min_ug": 15382,
+              "max_ug": 24780
+            },
+            "gross_ug": {
+              "mean_ug": 353378.5560747664,
+              "median_ug": 354705.0,
+              "min_ug": 305240,
+              "max_ug": 395651
+            },
+            "net_ug": {
+              "mean_ug": 353378.5560747664,
+              "median_ug": 354705.0,
+              "min_ug": 305240,
+              "max_ug": 395651
+            },
+            "tare_ug": {
+              "mean_ug": 0,
+              "median_ug": 0.0,
+              "min_ug": 0,
+              "max_ug": 0
+            }
+          }
+        },
+        "120_150": {
+          "interval_s": [
+            120,
+            150
+          ],
+          "rows": 215,
+          "complete": true,
+          "first_utc": "2026-10-19T03:54:05.286230+00:00",
+          "last_utc": "2026-10-19T03:54:35.123685+00:00",
+          "max_gap_ms": 157.0,
+          "status": "OBSERVED_WINDOW",
+          "stats": {
+            "uncompensated_ug": {
+              "mean_ug": 369746.4186046512,
+              "median_ug": 368316,
+              "min_ug": 336778,
+              "max_ug": 407738
+            },
+            "applied_offset_ug": {
+              "mean_ug": 12315.837209302326,
+              "median_ug": 12606,
+              "min_ug": 7277,
+              "max_ug": 15332
+            },
+            "gross_ug": {
+              "mean_ug": 357430.5813953488,
+              "median_ug": 356063,
+              "min_ug": 325375,
+              "max_ug": 394082
+            },
+            "net_ug": {
+              "mean_ug": 357430.5813953488,
+              "median_ug": 356063,
+              "min_ug": 325375,
+              "max_ug": 394082
+            },
+            "tare_ug": {
+              "mean_ug": 0,
+              "median_ug": 0,
+              "min_ug": 0,
+              "max_ug": 0
+            }
+          }
+        },
+        "270_300": {
+          "interval_s": [
+            270,
+            300
+          ],
+          "rows": 214,
+          "complete": true,
+          "first_utc": "2026-10-19T03:56:35.285895+00:00",
+          "last_utc": "2026-10-19T03:57:05.139637+00:00",
+          "max_gap_ms": 157.0,
+          "status": "OBSERVED_WINDOW",
+          "stats": {
+            "uncompensated_ug": {
+              "mean_ug": 345294.5046728972,
+              "median_ug": 345789.0,
+              "min_ug": 293977,
+              "max_ug": 384085
+            },
+            "applied_offset_ug": {
+              "mean_ug": -12302.06074766355,
+              "median_ug": -11750.0,
+              "min_ug": -14203,
+              "max_ug": -11750
+            },
+            "gross_ug": {
+              "mean_ug": 357596.5654205608,
+              "median_ug": 357651.0,
+              "min_ug": 305727,
+              "max_ug": 395835
+            },
+            "net_ug": {
+              "mean_ug": 357596.5654205608,
+              "median_ug": 357651.0,
+              "min_ug": 305727,
+              "max_ug": 395835
+            },
+            "tare_ug": {
+              "mean_ug": 0,
+              "median_ug": 0.0,
+              "min_ug": 0,
+              "max_ug": 0
+            }
+          }
+        }
+      },
+      "loaded_0_120": {
+        "interval_s": [
+          0,
+          120
+        ],
+        "rows": 875,
+        "complete": true,
+        "first_utc": "2026-10-19T03:48:34.804600+00:00",
+        "last_utc": "2026-10-19T03:50:34.761671+00:00",
+        "max_gap_ms": 157.0,
+        "status": "OBSERVED_WINDOW",
+        "stats": {
+          "uncompensated_ug": {
+            "mean_ug": 500267764.776,
+            "median_ug": 500342410,
+            "min_ug": 435875804,
+            "max_ug": 500416749
+          },
+          "applied_offset_ug": {
+            "mean_ug": -9778.211428571429,
+            "median_ug": -13653,
+            "min_ug": -13653,
+            "max_ug": 7945
+          },
+          "gross_ug": {
+            "mean_ug": 500277542.98742855,
+            "median_ug": 500353223,
+            "min_ug": 435889457,
+            "max_ug": 500421157
+          },
+          "net_ug": {
+            "mean_ug": 500277542.98742855,
+            "median_ug": 500353223,
+            "min_ug": 435889457,
+            "max_ug": 500421157
+          },
+          "tare_ug": {
+            "mean_ug": 0,
+            "median_ug": 0,
+            "min_ug": 0,
+            "max_ug": 0
+          }
+        }
+      },
+      "unloaded_0_120": {
+        "interval_s": [
+          0,
+          120
+        ],
+        "rows": 873,
+        "complete": true,
+        "first_utc": "2026-10-19T03:52:05.180947+00:00",
+        "last_utc": "2026-10-19T03:54:05.146172+00:00",
+        "max_gap_ms": 157.0,
+        "status": "OBSERVED_WINDOW",
+        "stats": {
+          "uncompensated_ug": {
+            "mean_ug": 390483.2760595647,
+            "median_ug": 391970,
+            "min_ug": 330020,
+            "max_ug": 447161
+          },
+          "applied_offset_ug": {
+            "mean_ug": 24005.89919816724,
+            "median_ug": 24780,
+            "min_ug": 15382,
+            "max_ug": 24780
+          },
+          "gross_ug": {
+            "mean_ug": 366477.37686139747,
+            "median_ug": 367190,
+            "min_ug": 305240,
+            "max_ug": 422381
+          },
+          "net_ug": {
+            "mean_ug": 366477.37686139747,
+            "median_ug": 367190,
+            "min_ug": 305240,
+            "max_ug": 422381
+          },
+          "tare_ug": {
+            "mean_ug": 0,
+            "median_ug": 0,
+            "min_ug": 0,
+            "max_ug": 0
+          }
+        }
+      },
+      "comparisons": {
+        "15_45": {
+          "status": "OBSERVED_ARITHMETIC_NOT_OFF_CONTROL",
+          "mean_delta_ug": {
+            "uncompensated_ug": 47520.08292094909,
+            "applied_offset_ug": 37359.19718309859,
+            "gross_ug": 10160.885737850505,
+            "net_ug": 10160.885737850505,
+            "tare_ug": 0
+          },
+          "equation_residual_ug": -7.275957614183426e-12,
+          "net_median_delta_ug": 10604.5
+        },
+        "60_90": {
+          "status": "OBSERVED_ARITHMETIC_NOT_OFF_CONTROL",
+          "mean_delta_ug": {
+            "uncompensated_ug": 46123.93582268804,
+            "applied_offset_ug": 37359.19718309859,
+            "gross_ug": 8764.738639589457,
+            "net_ug": 8764.738639589457,
+            "tare_ug": 0
+          },
+          "equation_residual_ug": -7.275957614183426e-12,
+          "net_median_delta_ug": 11168
+        },
+        "90_120": {
+          "status": "OBSERVED_ARITHMETIC_NOT_OFF_CONTROL",
+          "mean_delta_ug": {
+            "uncompensated_ug": 28217.259817471786,
+            "applied_offset_ug": 34201.29998683691,
+            "gross_ug": -5984.040169365064,
+            "net_ug": -5984.040169365064,
+            "tare_ug": 0
+          },
+          "equation_residual_ug": -5.820766091346741e-11,
+          "net_median_delta_ug": -4696.0
+        },
+        "120_150": {
+          "status": "OBSERVED_ARITHMETIC_NOT_OFF_CONTROL",
+          "mean_delta_ug": {
+            "uncompensated_ug": 22963.019543618313,
+            "applied_offset_ug": 24895.034392400918,
+            "gross_ug": -1932.0148487826227,
+            "net_ug": -1932.0148487826227,
+            "tare_ug": 0
+          },
+          "equation_residual_ug": 1.8189894035458565e-11,
+          "net_median_delta_ug": -3338
+        },
+        "270_300": {
+          "status": "OBSERVED_ARITHMETIC_NOT_OFF_CONTROL",
+          "mean_delta_ug": {
+            "uncompensated_ug": -1488.894388135639,
+            "applied_offset_ug": 277.13643543504077,
+            "gross_ug": -1766.0308235706761,
+            "net_ug": -1766.0308235706761,
+            "tare_ug": 0
+          },
+          "equation_residual_ug": -3.637978807091713e-12,
+          "net_median_delta_ug": -1750.0
+        }
+      },
+      "early_offset_values_ug": [
+        24780
+      ],
+      "first_observed_post_unload_offset_change_s": 99.782,
+      "first_observed_new_reference_lock_s": 46.407
+    },
+    {
+      "load_interval_utc": [
+        "2026-10-19T04:25:35.248017+00:00",
+        "2026-10-19T04:25:35.390913+00:00"
+      ],
+      "unload_interval_utc": [
+        "2026-10-19T04:29:47.647771+00:00",
+        "2026-10-19T04:29:47.784820+00:00"
+      ],
+      "load_pre": {
+        "interval_s": [
+          -45,
+          -15
+        ],
+        "rows": 214,
+        "complete": true,
+        "first_utc": "2026-10-19T04:24:50.494735+00:00",
+        "last_utc": "2026-10-19T04:25:20.306913+00:00",
+        "max_gap_ms": 157.0,
+        "status": "OBSERVED_WINDOW",
+        "stats": {
+          "uncompensated_ug": {
+            "mean_ug": 397785.5327102804,
+            "median_ug": 397601.0,
+            "min_ug": 355926,
+            "max_ug": 453919
+          },
+          "applied_offset_ug": {
+            "mean_ug": 17746.79906542056,
+            "median_ug": 17833.0,
+            "min_ug": 17033,
+            "max_ug": 18209
+          },
+          "gross_ug": {
+            "mean_ug": 380038.7336448598,
+            "median_ug": 379768.0,
+            "min_ug": 338093,
+            "max_ug": 436061
+          },
+          "net_ug": {
+            "mean_ug": 380038.7336448598,
+            "median_ug": 379768.0,
+            "min_ug": 338093,
+            "max_ug": 436061
+          },
+          "tare_ug": {
+            "mean_ug": 0,
+            "median_ug": 0.0,
+            "min_ug": 0,
+            "max_ug": 0
+          }
+        }
+      },
+      "loaded": {
+        "interval_s": [
+          15,
+          45
+        ],
+        "rows": 223,
+        "complete": true,
+        "first_utc": "2026-10-19T04:25:50.511906+00:00",
+        "last_utc": "2026-10-19T04:26:20.347793+00:00",
+        "max_gap_ms": 141.0,
+        "status": "OBSERVED_WINDOW",
+        "stats": {
+          "uncompensated_ug": {
+            "mean_ug": 500373528.76233184,
+            "median_ug": 500371695,
+            "min_ug": 500291724,
+            "max_ug": 500438150
+          },
+          "applied_offset_ug": {
+            "mean_ug": 20412,
+            "median_ug": 20412,
+            "min_ug": 20412,
+            "max_ug": 20412
+          },
+          "gross_ug": {
+            "mean_ug": 500353116.76233184,
+            "median_ug": 500351283,
+            "min_ug": 500271312,
+            "max_ug": 500417738
+          },
+          "net_ug": {
+            "mean_ug": 500353116.76233184,
+            "median_ug": 500351283,
+            "min_ug": 500271312,
+            "max_ug": 500417738
+          },
+          "tare_ug": {
+            "mean_ug": 0,
+            "median_ug": 0,
+            "min_ug": 0,
+            "max_ug": 0
+          }
+        }
+      },
+      "post": {
+        "15_45": {
+          "interval_s": [
+            15,
+            45
+          ],
+          "rows": 223,
+          "complete": true,
+          "first_utc": "2026-10-19T04:30:02.796211+00:00",
+          "last_utc": "2026-10-19T04:30:32.768312+00:00",
+          "max_gap_ms": 141.0,
+          "status": "OBSERVED_WINDOW",
+          "stats": {
+            "uncompensated_ug": {
+              "mean_ug": 481466.33632286993,
+              "median_ug": 482078,
+              "min_ug": 432518,
+              "max_ug": 542900
+            },
+            "applied_offset_ug": {
+              "mean_ug": 59337,
+              "median_ug": 59337,
+              "min_ug": 59337,
+              "max_ug": 59337
+            },
+            "gross_ug": {
+              "mean_ug": 422129.33632286993,
+              "median_ug": 422741,
+              "min_ug": 373181,
+              "max_ug": 483563
+            },
+            "net_ug": {
+              "mean_ug": 422129.33632286993,
+              "median_ug": 422741,
+              "min_ug": 373181,
+              "max_ug": 483563
+            },
+            "tare_ug": {
+              "mean_ug": 0,
+              "median_ug": 0,
+              "min_ug": 0,
+              "max_ug": 0
+            }
+          }
+        },
+        "60_90": {
+          "interval_s": [
+            60,
+            90
+          ],
+          "rows": 214,
+          "complete": true,
+          "first_utc": "2026-10-19T04:30:47.902490+00:00",
+          "last_utc": "2026-10-19T04:31:17.660264+00:00",
+          "max_gap_ms": 157.0,
+          "status": "OBSERVED_WINDOW",
+          "stats": {
+            "uncompensated_ug": {
+              "mean_ug": 470829.8224299065,
+              "median_ug": 470814.0,
+              "min_ug": 429139,
+              "max_ug": 507984
+            },
+            "applied_offset_ug": {
+              "mean_ug": 59045.32242990654,
+              "median_ug": 59150.0,
+              "min_ug": 58637,
+              "max_ug": 59337
+            },
+            "gross_ug": {
+              "mean_ug": 411784.5,
+              "median_ug": 411689.0,
+              "min_ug": 369802,
+              "max_ug": 448647
+            },
+            "net_ug": {
+              "mean_ug": 411784.5,
+              "median_ug": 411689.0,
+              "min_ug": 369802,
+              "max_ug": 448647
+            },
+            "tare_ug": {
+              "mean_ug": 0,
+              "median_ug": 0.0,
+              "min_ug": 0,
+              "max_ug": 0
+            }
+          }
+        },
+        "90_120": {
+          "interval_s": [
+            90,
+            120
+          ],
+          "rows": 214,
+          "complete": true,
+          "first_utc": "2026-10-19T04:31:17.800675+00:00",
+          "last_utc": "2026-10-19T04:31:47.713612+00:00",
+          "max_gap_ms": 157.0,
+          "status": "OBSERVED_WINDOW",
+          "stats": {
+            "uncompensated_ug": {
+              "mean_ug": 470335.07476635516,
+              "median_ug": 470814.0,
+              "min_ug": 426886,
+              "max_ug": 510236
+            },
+            "applied_offset_ug": {
+              "mean_ug": 57621.378504672895,
+              "median_ug": 57510.0,
+              "min_ug": 57510,
+              "max_ug": 58637
+            },
+            "gross_ug": {
+              "mean_ug": 412713.69626168226,
+              "median_ug": 413304.0,
+              "min_ug": 369376,
+              "max_ug": 452549
+            },
+            "net_ug": {
+              "mean_ug": 412713.69626168226,
+              "median_ug": 413304.0,
+              "min_ug": 369376,
+              "max_ug": 452549
+            },
+            "tare_ug": {
+              "mean_ug": 0,
+              "median_ug": 0.0,
+              "min_ug": 0,
+              "max_ug": 0
+            }
+          }
+        },
+        "120_150": {
+          "interval_s": [
+            120,
+            150
+          ],
+          "rows": 213,
+          "complete": true,
+          "first_utc": "2026-10-19T04:31:47.854090+00:00",
+          "last_utc": "2026-10-19T04:32:17.650149+00:00",
+          "max_gap_ms": 172.0,
+          "status": "OBSERVED_WINDOW",
+          "stats": {
+            "uncompensated_ug": {
+              "mean_ug": 467482.54460093897,
+              "median_ug": 466309,
+              "min_ug": 429139,
+              "max_ug": 506857
+            },
+            "applied_offset_ug": {
+              "mean_ug": 55663.77464788732,
+              "median_ug": 56384,
+              "min_ug": 52918,
+              "max_ug": 57510
+            },
+            "gross_ug": {
+              "mean_ug": 411818.76995305164,
+              "median_ug": 411051,
+              "min_ug": 372755,
+              "max_ug": 453939
+            },
+            "net_ug": {
+              "mean_ug": 411818.76995305164,
+              "median_ug": 411051,
+              "min_ug": 372755,
+              "max_ug": 453939
+            },
+            "tare_ug": {
+              "mean_ug": 0,
+              "median_ug": 0,
+              "min_ug": 0,
+              "max_ug": 0
+            }
+          }
+        },
+        "270_300": {
+          "interval_s": [
+            270,
+            300
+          ],
+          "rows": 216,
+          "complete": false,
+          "first_utc": "2026-10-19T04:34:17.904625+00:00",
+          "last_utc": "2026-10-19T04:34:47.747382+00:00",
+          "max_gap_ms": 157.0,
+          "status": "MIXED_LOAD_STATES"
+        }
+      },
+      "loaded_0_120": {
+        "interval_s": [
+          0,
+          120
+        ],
+        "rows": 883,
+        "complete": true,
+        "first_utc": "2026-10-19T04:25:35.390913+00:00",
+        "last_utc": "2026-10-19T04:27:35.253736+00:00",
+        "max_gap_ms": 157.0,
+        "status": "OBSERVED_WINDOW",
+        "stats": {
+          "uncompensated_ug": {
+            "mean_ug": 500361712.50962627,
+            "median_ug": 500400980,
+            "min_ug": 466479843,
+            "max_ug": 500541774
+          },
+          "applied_offset_ug": {
+            "mean_ug": 20973.381653454133,
+            "median_ug": 20412,
+            "min_ug": 20412,
+            "max_ug": 26287
+          },
+          "gross_ug": {
+            "mean_ug": 500340739.12797284,
+            "median_ug": 500380568,
+            "min_ug": 466459431,
+            "max_ug": 500521362
+          },
+          "net_ug": {
+            "mean_ug": 500340739.12797284,
+            "median_ug": 500380568,
+            "min_ug": 466459431,
+            "max_ug": 500521362
+          },
+          "tare_ug": {
+            "mean_ug": 0,
+            "median_ug": 0,
+            "min_ug": 0,
+            "max_ug": 0
+          }
+        }
+      },
+      "unloaded_0_120": {
+        "interval_s": [
+          0,
+          120
+        ],
+        "rows": 873,
+        "complete": true,
+        "first_utc": "2026-10-19T04:29:47.784820+00:00",
+        "last_utc": "2026-10-19T04:31:47.713612+00:00",
+        "max_gap_ms": 157.0,
+        "status": "OBSERVED_WINDOW",
+        "stats": {
+          "uncompensated_ug": {
+            "mean_ug": 572555.7617411226,
+            "median_ug": 476446,
+            "min_ug": 414497,
+            "max_ug": 84050442
+          },
+          "applied_offset_ug": {
+            "mean_ug": 58844.947308132876,
+            "median_ug": 59337,
+            "min_ug": 57510,
+            "max_ug": 59337
+          },
+          "gross_ug": {
+            "mean_ug": 513710.8144329897,
+            "median_ug": 418235,
+            "min_ug": 355160,
+            "max_ug": 83991105
+          },
+          "net_ug": {
+            "mean_ug": 513710.8144329897,
+            "median_ug": 418235,
+            "min_ug": 355160,
+            "max_ug": 83991105
+          },
+          "tare_ug": {
+            "mean_ug": 0,
+            "median_ug": 0,
+            "min_ug": 0,
+            "max_ug": 0
+          }
+        }
+      },
+      "comparisons": {
+        "15_45": {
+          "status": "OBSERVED_ARITHMETIC_NOT_OFF_CONTROL",
+          "mean_delta_ug": {
+            "uncompensated_ug": 83680.80361258955,
+            "applied_offset_ug": 41590.200934579436,
+            "gross_ug": 42090.602678010124,
+            "net_ug": 42090.602678010124,
+            "tare_ug": 0
+          },
+          "equation_residual_ug": -1.4551915228366852e-11,
+          "net_median_delta_ug": 42973.0
+        },
+        "60_90": {
+          "status": "OBSERVED_ARITHMETIC_NOT_OFF_CONTROL",
+          "mean_delta_ug": {
+            "uncompensated_ug": 73044.28971962613,
+            "applied_offset_ug": 41298.52336448598,
+            "gross_ug": 31745.766355140193,
+            "net_ug": 31745.766355140193,
+            "tare_ug": 0
+          },
+          "equation_residual_ug": -4.3655745685100555e-11,
+          "net_median_delta_ug": 31921.0
+        },
+        "90_120": {
+          "status": "OBSERVED_ARITHMETIC_NOT_OFF_CONTROL",
+          "mean_delta_ug": {
+            "uncompensated_ug": 72549.54205607477,
+            "applied_offset_ug": 39874.57943925234,
+            "gross_ug": 32674.96261682245,
+            "net_ug": 32674.96261682245,
+            "tare_ug": 0
+          },
+          "equation_residual_ug": -1.4551915228366852e-11,
+          "net_median_delta_ug": 33536.0
+        },
+        "120_150": {
+          "status": "OBSERVED_ARITHMETIC_NOT_OFF_CONTROL",
+          "mean_delta_ug": {
+            "uncompensated_ug": 69697.01189065858,
+            "applied_offset_ug": 37916.975582466766,
+            "gross_ug": 31780.036308191833,
+            "net_ug": 31780.036308191833,
+            "tare_ug": 0
+          },
+          "equation_residual_ug": -1.4551915228366852e-11,
+          "net_median_delta_ug": 31283.0
+        },
+        "270_300": {
+          "status": "INCOMPLETE_COMPARISON"
+        }
+      },
+      "early_offset_values_ug": [
+        59337
+      ],
+      "first_observed_post_unload_offset_change_s": 68.781,
+      "first_observed_new_reference_lock_s": 46.359
+    },
+    {
+      "load_interval_utc": [
+        "2026-10-19T04:33:22.512382+00:00",
+        "2026-10-19T04:33:22.650709+00:00"
+      ],
+      "unload_interval_utc": [
+        "2026-10-19T04:37:19.075430+00:00",
+        "2026-10-19T04:37:19.213844+00:00"
+      ],
+      "load_pre": {
+        "interval_s": [
+          -45,
+          -15
+        ],
+        "rows": 212,
+        "complete": true,
+        "first_utc": "2026-10-19T04:32:37.688004+00:00",
+        "last_utc": "2026-10-19T04:33:07.573673+00:00",
+        "max_gap_ms": 157.0,
+        "status": "OBSERVED_WINDOW",
+        "stats": {
+          "uncompensated_ug": {
+            "mean_ug": 461250.6462264151,
+            "median_ug": 461803.0,
+            "min_ug": 390843,
+            "max_ug": 510236
+          },
+          "applied_offset_ug": {
+            "mean_ug": 47190.231132075474,
+            "median_ug": 46147.0,
+            "min_ug": 46147,
+            "max_ug": 51568
+          },
+          "gross_ug": {
+            "mean_ug": 414060.41509433964,
+            "median_ug": 414480.0,
+            "min_ug": 339525,
+            "max_ug": 464089
+          },
+          "net_ug": {
+            "mean_ug": 414060.41509433964,
+            "median_ug": 414480.0,
+            "min_ug": 339525,
+            "max_ug": 464089
+          },
+          "tare_ug": {
+            "mean_ug": 0,
+            "median_ug": 0.0,
+            "min_ug": 0,
+            "max_ug": 0
+          }
+        }
+      },
+      "loaded": {
+        "interval_s": [
+          15,
+          45
+        ],
+        "rows": 218,
+        "complete": true,
+        "first_utc": "2026-10-19T04:33:37.670115+00:00",
+        "last_utc": "2026-10-19T04:34:07.562993+00:00",
+        "max_gap_ms": 156.0,
+        "status": "OBSERVED_WINDOW",
+        "stats": {
+          "uncompensated_ug": {
+            "mean_ug": 500435602.7155963,
+            "median_ug": 500434771.0,
+            "min_ug": 500386338,
+            "max_ug": 500483204
+          },
+          "applied_offset_ug": {
+            "mean_ug": 46147,
+            "median_ug": 46147.0,
+            "min_ug": 46147,
+            "max_ug": 46147
+          },
+          "gross_ug": {
+            "mean_ug": 500389455.7155963,
+            "median_ug": 500388624.0,
+            "min_ug": 500340191,
+            "max_ug": 500437057
+          },
+          "net_ug": {
+            "mean_ug": 500389455.7155963,
+            "median_ug": 500388624.0,
+            "min_ug": 500340191,
+            "max_ug": 500437057
+          },
+          "tare_ug": {
+            "mean_ug": 0,
+            "median_ug": 0.0,
+            "min_ug": 0,
+            "max_ug": 0
+          }
+        }
+      },
+      "post": {
+        "15_45": {
+          "interval_s": [
+            15,
+            45
+          ],
+          "rows": 219,
+          "complete": true,
+          "first_utc": "2026-10-19T04:37:34.230972+00:00",
+          "last_utc": "2026-10-19T04:38:04.114507+00:00",
+          "max_gap_ms": 157.0,
+          "status": "OBSERVED_WINDOW",
+          "stats": {
+            "uncompensated_ug": {
+              "mean_ug": 476219.4520547945,
+              "median_ug": 475319,
+              "min_ug": 435897,
+              "max_ug": 527132
+            },
+            "applied_offset_ug": {
+              "mean_ug": 69968,
+              "median_ug": 69968,
+              "min_ug": 69968,
+              "max_ug": 69968
+            },
+            "gross_ug": {
+              "mean_ug": 406251.4520547945,
+              "median_ug": 405351,
+              "min_ug": 365929,
+              "max_ug": 457164
+            },
+            "net_ug": {
+              "mean_ug": 406251.4520547945,
+              "median_ug": 405351,
+              "min_ug": 365929,
+              "max_ug": 457164
+            },
+            "tare_ug": {
+              "mean_ug": 0,
+              "median_ug": 0,
+              "min_ug": 0,
+              "max_ug": 0
+            }
+          }
+        },
+        "60_90": {
+          "interval_s": [
+            60,
+            90
+          ],
+          "rows": 213,
+          "complete": true,
+          "first_utc": "2026-10-19T04:38:19.342947+00:00",
+          "last_utc": "2026-10-19T04:38:49.151768+00:00",
+          "max_gap_ms": 157.0,
+          "status": "OBSERVED_WINDOW",
+          "stats": {
+            "uncompensated_ug": {
+              "mean_ug": 459656.28169014084,
+              "median_ug": 459551,
+              "min_ug": 417876,
+              "max_ug": 501225
+            },
+            "applied_offset_ug": {
+              "mean_ug": 68523.33333333333,
+              "median_ug": 69831,
+              "min_ug": 63518,
+              "max_ug": 69968
+            },
+            "gross_ug": {
+              "mean_ug": 391132.9483568075,
+              "median_ug": 391030,
+              "min_ug": 348608,
+              "max_ug": 431257
+            },
+            "net_ug": {
+              "mean_ug": 391132.9483568075,
+              "median_ug": 391030,
+              "min_ug": 348608,
+              "max_ug": 431257
+            },
+            "tare_ug": {
+              "mean_ug": 0,
+              "median_ug": 0,
+              "min_ug": 0,
+              "max_ug": 0
+            }
+          }
+        },
+        "90_120": {
+          "interval_s": [
+            90,
+            120
+          ],
+          "rows": 212,
+          "complete": true,
+          "first_utc": "2026-10-19T04:38:49.296611+00:00",
+          "last_utc": "2026-10-19T04:39:19.192850+00:00",
+          "max_gap_ms": 157.0,
+          "status": "OBSERVED_WINDOW",
+          "stats": {
+            "uncompensated_ug": {
+              "mean_ug": 453387.4716981132,
+              "median_ug": 453919.0,
+              "min_ug": 416749,
+              "max_ug": 500099
+            },
+            "applied_offset_ug": {
+              "mean_ug": 59470.78301886792,
+              "median_ug": 58718.0,
+              "min_ug": 58417,
+              "max_ug": 63468
+            },
+            "gross_ug": {
+              "mean_ug": 393916.6886792453,
+              "median_ug": 394225.5,
+              "min_ug": 358031,
+              "max_ug": 441381
+            },
+            "net_ug": {
+              "mean_ug": 393916.6886792453,
+              "median_ug": 394225.5,
+              "min_ug": 358031,
+              "max_ug": 441381
+            },
+            "tare_ug": {
+              "mean_ug": 0,
+              "median_ug": 0.0,
+              "min_ug": 0,
+              "max_ug": 0
+            }
+          }
+        },
+        "120_150": {
+          "interval_s": [
+            120,
+            150
+          ],
+          "rows": 212,
+          "complete": true,
+          "first_utc": "2026-10-19T04:39:19.341210+00:00",
+          "last_utc": "2026-10-19T04:39:49.165337+00:00",
+          "max_gap_ms": 157.0,
+          "status": "OBSERVED_WINDOW",
+          "stats": {
+            "uncompensated_ug": {
+              "mean_ug": 449774.6462264151,
+              "median_ug": 449413.0,
+              "min_ug": 408865,
+              "max_ug": 505731
+            },
+            "applied_offset_ug": {
+              "mean_ug": 52526.8962264151,
+              "median_ug": 50892.0,
+              "min_ug": 50383,
+              "max_ug": 58367
+            },
+            "gross_ug": {
+              "mean_ug": 397247.75,
+              "median_ug": 396778.0,
+              "min_ug": 353774,
+              "max_ug": 455348
+            },
+            "net_ug": {
+              "mean_ug": 397247.75,
+              "median_ug": 396778.0,
+              "min_ug": 353774,
+              "max_ug": 455348
+            },
+            "tare_ug": {
+              "mean_ug": 0,
+              "median_ug": 0.0,
+              "min_ug": 0,
+              "max_ug": 0
+            }
+          }
+        },
+        "270_300": {
+          "interval_s": [
+            270,
+            300
+          ],
+          "rows": 96,
+          "complete": false,
+          "first_utc": "2026-10-19T04:41:49.314770+00:00",
+          "last_utc": "2026-10-19T04:42:02.779382+00:00",
+          "max_gap_ms": 157.0,
+          "status": "INCOMPLETE_WINDOW"
+        }
+      },
+      "loaded_0_120": {
+        "interval_s": [
+          0,
+          120
+        ],
+        "rows": 862,
+        "complete": true,
+        "first_utc": "2026-10-19T04:33:22.650709+00:00",
+        "last_utc": "2026-10-19T04:35:22.611817+00:00",
+        "max_gap_ms": 157.0,
+        "status": "OBSERVED_WINDOW",
+        "stats": {
+          "uncompensated_ug": {
+            "mean_ug": 500324001.82830626,
+            "median_ug": 500449413.0,
+            "min_ug": 366429608,
+            "max_ug": 527475040
+          },
+          "applied_offset_ug": {
+            "mean_ug": 49087.94547563805,
+            "median_ug": 46147.0,
+            "min_ug": 46147,
+            "max_ug": 60550
+          },
+          "gross_ug": {
+            "mean_ug": 500274913.8828306,
+            "median_ug": 500399887.0,
+            "min_ug": 366383461,
+            "max_ug": 527428893
+          },
+          "net_ug": {
+            "mean_ug": 500274913.8828306,
+            "median_ug": 500399887.0,
+            "min_ug": 366383461,
+            "max_ug": 527428893
+          },
+          "tare_ug": {
+            "mean_ug": 0,
+            "median_ug": 0.0,
+            "min_ug": 0,
+            "max_ug": 0
+          }
+        }
+      },
+      "unloaded_0_120": {
+        "interval_s": [
+          0,
+          120
+        ],
+        "rows": 863,
+        "complete": true,
+        "first_utc": "2026-10-19T04:37:19.213844+00:00",
+        "last_utc": "2026-10-19T04:39:19.192850+00:00",
+        "max_gap_ms": 157.0,
+        "status": "OBSERVED_WINDOW",
+        "stats": {
+          "uncompensated_ug": {
+            "mean_ug": 605405.5816917729,
+            "median_ug": 466309,
+            "min_ug": 416749,
+            "max_ug": 120506992
+          },
+          "applied_offset_ug": {
+            "mean_ug": 67032.7462340672,
+            "median_ug": 69968,
+            "min_ug": 58417,
+            "max_ug": 69968
+          },
+          "gross_ug": {
+            "mean_ug": 538372.8354577057,
+            "median_ug": 398593,
+            "min_ug": 348608,
+            "max_ug": 120437024
+          },
+          "net_ug": {
+            "mean_ug": 538372.8354577057,
+            "median_ug": 398593,
+            "min_ug": 348608,
+            "max_ug": 120437024
+          },
+          "tare_ug": {
+            "mean_ug": 0,
+            "median_ug": 0,
+            "min_ug": 0,
+            "max_ug": 0
+          }
+        }
+      },
+      "comparisons": {
+        "15_45": {
+          "status": "OBSERVED_ARITHMETIC_NOT_OFF_CONTROL",
+          "mean_delta_ug": {
+            "uncompensated_ug": 14968.805828379409,
+            "applied_offset_ug": 22777.768867924526,
+            "gross_ug": -7808.9630395451095,
+            "net_ug": -7808.9630395451095,
+            "tare_ug": 0
+          },
+          "equation_residual_ug": -7.275957614183426e-12,
+          "net_median_delta_ug": -9129.0
+        },
+        "60_90": {
+          "status": "OBSERVED_ARITHMETIC_NOT_OFF_CONTROL",
+          "mean_delta_ug": {
+            "uncompensated_ug": -1594.3645362742827,
+            "applied_offset_ug": 21333.102201257854,
+            "gross_ug": -22927.466737532115,
+            "net_ug": -22927.466737532115,
+            "tare_ug": 0
+          },
+          "equation_residual_ug": -2.1827872842550278e-11,
+          "net_median_delta_ug": -23450.0
+        },
+        "90_120": {
+          "status": "OBSERVED_ARITHMETIC_NOT_OFF_CONTROL",
+          "mean_delta_ug": {
+            "uncompensated_ug": -7863.174528301926,
+            "applied_offset_ug": 12280.551886792447,
+            "gross_ug": -20143.726415094337,
+            "net_ug": -20143.726415094337,
+            "tare_ug": 0
+          },
+          "equation_residual_ug": -3.637978807091713e-11,
+          "net_median_delta_ug": -20254.5
+        },
+        "120_150": {
+          "status": "OBSERVED_ARITHMETIC_NOT_OFF_CONTROL",
+          "mean_delta_ug": {
+            "uncompensated_ug": -11476.0,
+            "applied_offset_ug": 5336.6650943396235,
+            "gross_ug": -16812.665094339638,
+            "net_ug": -16812.665094339638,
+            "tare_ug": 0
+          },
+          "equation_residual_ug": 1.4551915228366852e-11,
+          "net_median_delta_ug": -17702.0
+        },
+        "270_300": {
+          "status": "INCOMPLETE_COMPARISON"
+        }
+      },
+      "early_offset_values_ug": [
+        69968
+      ],
+      "first_observed_post_unload_offset_change_s": 73.297,
+      "first_observed_new_reference_lock_s": 48.047
+    }
+  ],
+  "final_600s": {
+    "interval_s": [
+      0,
+      600
+    ],
+    "rows": 2569,
+    "complete": false,
+    "first_utc": "2026-10-19T04:37:19.213844+00:00",
+    "last_utc": "2026-10-19T04:47:19.158058+00:00",
+    "max_gap_ms": 238359.0,
+    "status": "INCOMPLETE_WINDOW"
+  },
+  "source_manifest_sha256": "7418C4A420C7C620FA1FD8087D9D0AE8CD08B9247B560EDD2161D1171DCA4A8D",
+  "evidence_commit": "f5137c0f1eb6171d4f2e459bd28539f51fb8896f",
+  "firmware_source_commit": "a2174ede65a1927ae491e73289c95bdcaa97deb5",
+  "verified_manifest_entries": [
+    ".gitattributes",
+    "analysis_local.json",
+    "capture/errors.jsonl",
+    "capture/frames.txt",
+    "capture/postflight.json",
+    "capture/preflight.json",
+    "capture/samples.jsonl",
+    "capture/summary.json",
+    "capture_tail_extension/errors.jsonl",
+    "capture_tail_extension/frames.txt",
+    "capture_tail_extension/postflight.json",
+    "capture_tail_extension/preflight.json",
+    "capture_tail_extension/samples.jsonl",
+    "capture_tail_extension/summary.json",
+    "environment.json",
+    "final_preflight/preflight.json",
+    "final_preflight_after_capture/preflight.json",
+    "initial_probe/preflight.json",
+    "operator_events.jsonl"
+  ],
+  "missing_manifest_entries": [
+    "capture_stderr.log",
+    "capture_stdout.log",
+    "capture_tail_extension_stderr.log",
+    "capture_tail_extension_stdout.log",
+    "host_simulation_19_tests.log"
+  ],
+  "runs": {
+    "capture": {
+      "rows": 25771,
+      "validated_exchanges": 154640,
+      "validated_frames": 309280,
+      "first_utc": "2026-10-19T03:42:02.910515+00:00",
+      "last_utc": "2026-10-19T04:42:02.779382+00:00",
+      "max_poll_gap_ms": 172.0
+    },
+    "capture_tail_extension": {
+      "rows": 1272,
+      "validated_exchanges": 7646,
+      "validated_frames": 15292,
+      "first_utc": "2026-10-19T04:46:01.138291+00:00",
+      "last_utc": "2026-10-19T04:49:01.043551+00:00",
+      "max_poll_gap_ms": 157.0
+    }
+  },
+  "inter_segment_gap_s": 238.359,
+  "total_rows": 27043,
+  "equation_errors": 0,
+  "scope": "All six FC03 responses matched; only authority fields are used for weight decomposition; no interpolation."
+}

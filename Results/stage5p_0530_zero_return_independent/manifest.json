@@ -1,0 +1,45 @@
+{
+  "evidence_commit": "f5137c0f1eb6171d4f2e459bd28539f51fb8896f",
+  "files": [
+    {
+      "path": "Docs/STAGE5P_0530_ZERO_RETURN_READONLY_HARDWARE.md",
+      "bytes": 7499,
+      "sha256": "36C5F91A09545D048561EB17EE191708978C391EAB57420501728D28FC7E9DE8"
+    },
+    {
+      "path": "Docs/STAGE5P_0530_ZERO_RETURN_INDEPENDENT_REVIEW.md",
+      "bytes": 6514,
+      "sha256": "D6EC1090A14DA92299C0652FC8032B471BF950B352BEA40122D92A2E21B31E4F"
+    },
+    {
+      "path": "Docs/STAGE5P_0530_ZERO_RETURN_ARCHIVE_LOCAL_PROMPT.md",
+      "bytes": 3543,
+      "sha256": "6E603C421CBDA651AD8D4E508F3FEF9B5442070EA7CAED16E84EC1C10D59E5E6"
+    },
+    {
+      "path": "Tools/stage5_unified/audit_zero_return_atomic_0530.py",
+      "bytes": 13261,
+      "sha256": "B4A0DAC921BF4BD4EABEB9B9BD6964C1D310DD2B030F846D166F564A8FD9A6B4"
+    },
+    {
+      "path": "Tools/stage5_unified/test_zero_return_atomic_audit.py",
+      "bytes": 4820,
+      "sha256": "1E8CE3B857FFDD571412F7E6DAE3EAA2851CF1E6FEA209E28A38306E6785D0F0"
+    },
+    {
+      "path": "Results/stage5p_0530_zero_return_independent/analysis.json",
+      "bytes": 41174,
+      "sha256": "2DCB88E931ED147468FE39A79888E53360B7E01E78A1C6515A7B204C19C5DA04"
+    },
+    {
+      "path": "Results/stage5p_0530_zero_return_independent/python_tests.txt",
+      "bytes": 5976,
+      "sha256": "E81760433A23CE99459401DCDC2DCE1095C27A15D48030BED72ECE10710E3DFA"
+    },
+    {
+      "path": "Results/stage5p_0530_zero_return_independent/validation.json",
+      "bytes": 1068,
+      "sha256": "14E5CC741CC94697E78918588A8904F29E0D896833951F112D583954AC789D16"
+    }
+  ]
+}
