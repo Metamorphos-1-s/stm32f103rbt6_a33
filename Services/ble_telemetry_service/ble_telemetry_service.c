@@ -1,3 +1,5 @@
+#include "metrology_standard_validator.h"
+
 #include "ble_telemetry_service.h"
 
 #include "app_main.h"
@@ -87,7 +89,11 @@ static bool CaptureSnapshot(uint32_t now_ms)
     s_snapshot.compensated_gross_mass_ug = weight->gross_mass_ug;
     s_snapshot.runtime_drift_offset_ug = (drift != NULL) ? drift->offset_ug : 0;
     s_snapshot.capacity_ug = context->config.metrology.capacity_ug;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    s_snapshot.overload_threshold_ug = MetrologyStandardValidator_GetDisplayOverload(&context->config.metrology);
+#else
     s_snapshot.overload_threshold_ug = context->config.metrology.overload_threshold_ug;
+#endif
     s_snapshot.measurement_sequence = weight->sample_sequence;
     s_snapshot.status_flags = weight->status_flags;
     s_snapshot.timestamp_ms = (weight->sample_timestamp_ms != 0U) ?

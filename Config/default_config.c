@@ -16,6 +16,13 @@
 #define HIGH_PRECISION_ENTER_UG INT64_C(50000)
 #define HIGH_PRECISION_EXIT_UG INT64_C(100000)
 #define HIGH_PRECISION_HOLD_MS 1000U
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+#define PROFILE_PRECISION_HOLD_MS 300U
+#define PROFILE_SPEED_HOLD_MS 300U
+#else
+#define PROFILE_PRECISION_HOLD_MS HIGH_PRECISION_HOLD_MS
+#define PROFILE_SPEED_HOLD_MS 500U
+#endif
 
 void DefaultConfig_Load(DeviceConfig *config)
 {
@@ -55,13 +62,15 @@ void DefaultConfig_Load(DeviceConfig *config)
 #endif
         8U,
         HIGH_PRECISION_ENTER_UG, HIGH_PRECISION_EXIT_UG,
-        HIGH_PRECISION_HOLD_MS};
+        PROFILE_PRECISION_HOLD_MS};
     config->metrology.profiles[WEIGHING_PROFILE_HIGH_SPEED] =
         (WeighingProfileConfig){DEVICE_CS1237_DATA_RATE_40_HZ,
         DEVICE_CS1237_GAIN_128, FILTER_MODE_NONE, 0U, 8U,
-        INT64_C(2000000), INT64_C(4000000), 500U};
+        INT64_C(2000000), INT64_C(4000000), PROFILE_SPEED_HOLD_MS};
+#if (A33_ENABLE_STAGE5P_FEEDBACK == 0U)
     config->metrology.load_cell.rated_capacity_known = true;
     config->metrology.load_cell.rated_capacity_ug = TARGET_SENSOR_CAPACITY_UG;
+#endif
     config->calibration.scale_denominator = 1;
     config->calibration.calibration_valid = false;
 
@@ -85,6 +94,7 @@ void DefaultConfig_Load(DeviceConfig *config)
     config->bluetooth.w02_configured = false;
 
     config->alarm.weight_source = ALARM_WEIGHT_NET;
+    config->alarm.stable_delay_ms = ALARM_STABLE_DELAY_DEFAULT_MS;
     config->alarm.limit_function_enable = false;
     config->alarm.lower_limit_ug = 0;
     config->alarm.upper_limit_ug = 0;

@@ -16,6 +16,7 @@ void DisplayController_Process20ms(void);
 void DisplayController_NotifyActivity(void);
 #endif
 void DisplayController_SetPage(DisplayPage page);
+void DisplayController_ClearMessage(void);
 void DisplayController_ShowMessage(const char text[6], uint32_t duration_ms);
 bool DisplayController_SetTextPage(DisplayPage page, const char text[6]);
 bool DisplayController_SetNumericPage(DisplayPage page, int32_t display_count,

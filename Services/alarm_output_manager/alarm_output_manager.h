@@ -2,6 +2,7 @@
 #define ALARM_OUTPUT_MANAGER_H
 
 #include "device_config.h"
+#include "project_config.h"
 #include "limit_checker.h"
 
 #include <stdbool.h>
@@ -20,6 +21,10 @@ typedef struct
     AlarmBuzzerMode buzzer_mode;
     uint32_t phase_start_ms;
     bool logical_buzzer_on;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    bool key_beep_active;
+    uint32_t key_beep_started_ms;
+#endif
     bool green_active;
     bool yellow_active;
     bool red_active;
@@ -29,6 +34,10 @@ typedef struct
 
 typedef AlarmOutputManager AlarmOutputDiagnostics;
 
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+void AlarmOutputManager_RequestKeyBeep(AlarmOutputManager *manager,
+    const AlarmConfig *config, uint32_t now_ms);
+#endif
 void AlarmOutputManager_Init(AlarmOutputManager *manager);
 bool AlarmOutputManager_Update(AlarmOutputManager *manager,
                                const CheckweighResult *result,

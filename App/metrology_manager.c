@@ -639,6 +639,10 @@ static bool MetrologyManager_ProcessAlarmShadow(void)
         snapshot->gross_mass_ug : snapshot->net_mass_ug;
 #endif
     input.dynamic_weight_ug = fast_weight;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    input.static_delay_ms = context->config.alarm.stable_delay_ms;
+    input.hysteresis_ug = context->config.alarm.hysteresis_ug;
+#endif
     input.low_limit_ug = s_alarm_shadow_low_ug;
     input.high_limit_ug = s_alarm_shadow_high_ug;
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
@@ -686,6 +690,14 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
     AppState state;
     if (!s_initialized || (sample == NULL) || !sample->valid)
     {
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+        if (s_initialized)
+        {
+            StabilityDetector_Reset(&s_engine.stability);
+            s_engine.snapshot.status_flags &= ~WEIGHT_STATUS_STABLE;
+            CheckweighShadow_RequestReset(&s_alarm_shadow, ALARM_SHADOW_RESET_FILTER);
+        }
+#endif
 #if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
         if (s_initialized)
             (void)A13C_Feed(&s_r5_drift, s_r5_drift.last_sequence,

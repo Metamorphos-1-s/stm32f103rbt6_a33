@@ -81,6 +81,9 @@ static const char s_labels[MENU_ITEM_COUNT][6] = {
     {'H','i',' ',' ',' ',' '}, {'H','y','S',' ',' ',' '},
     {'S','r','c',' ',' ',' '}, {'b','I','n',' ',' ',' '},
     {'b','E','H',' ',' ',' '}, {'b','O','K',' ',' ',' '},
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    {'A','r','E','A',' ',' '}, {'A','d','L','y',' ',' '},
+#endif
 #endif
     {'S','A','U','E',' ',' '}, {'r','E','S','E','t',' '},
     {'E','H','I','t',' ',' '}
@@ -120,6 +123,10 @@ static uint32_t s_message_until_ms;
 static bool s_entry_ownership_allowed;
 static bool s_save_waiting;
 static bool s_exit_after_save;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+static bool s_cal_after_save;
+static bool s_timeout_consumed;
+#endif
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
 #define s_original_config (*UiConfigWorkspace_Original())
 #define s_candidate_config (*UiConfigWorkspace_Candidate())
@@ -238,6 +245,14 @@ static void Render(void)
     }
 #endif
 #if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    if (s_item == MENU_ITEM_ALARM_REGION)
+    {
+        static const char choices[3][7] = {"    Hi", "   oUt", "    In"};
+        (void)DisplayController_SetTextPage(DISPLAY_PAGE_EDIT, choices[s_value]);
+        return;
+    }
+#endif
     if (s_edit_kind == MENU_EDIT_ALARM_SOURCE)
     {
         (void)DisplayController_SetTextPage(DISPLAY_PAGE_EDIT,
@@ -324,6 +339,31 @@ static void DiscardCandidate(void)
     s_candidate_changed = false;
 }
 
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+static void FinishSave(void)
+{
+    if (s_cal_after_save || !s_exit_after_save)
+    {
+        s_expected_revision = SystemContext_GetConfigRevision();
+        s_original_config = SystemContext_Get()->config;
+        s_candidate_config = s_original_config;
+    }
+    if (s_cal_after_save)
+    {
+        s_cal_after_save = false;
+        s_exit_after_save = false;
+        s_calibration_request = true;
+        DisplayController_ClearMessage();
+        Render();
+    }
+    else if (s_exit_after_save)
+    {
+        s_exit_after_save = false;
+        ExitMenu();
+    }
+}
+#endif
+
 static void RequestSave(uint32_t now_ms)
 {
     CommandResult result;
@@ -333,9 +373,13 @@ static void RequestSave(uint32_t now_ms)
         if (SystemContext_GetConfigRevision() ==
             SystemContext_GetSavedRevision())
         {
-            ShowCode(DISPLAY_CODE_NO_CHANGE);
             s_exit_after_save = true;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+            FinishSave();
+#else
+            ShowCode(DISPLAY_CODE_NO_CHANGE);
             s_message_until_ms = now_ms + UI_MESSAGE_DEFAULT_MS;
+#endif
             return;
         }
         if (!s_existing_dirty_owned ||
@@ -500,6 +544,9 @@ static void Navigate(KeyId key)
         while (
 #if (A33_ENABLE_STAGE5PA2C_PRODUCT == 0U)
                (s_item == MENU_ITEM_SAMPLE_RATE) ||
+#endif
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+               (s_item == MENU_ITEM_OVERLOAD) ||
 #endif
                (s_item == MENU_ITEM_GAIN) ||
                (s_item == MENU_ITEM_SAVE) ||
@@ -713,6 +760,18 @@ static bool BeginEdit(MenuItem item, uint32_t now_ms)
 #endif
 #endif
 #if (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+        case MENU_ITEM_ALARM_REGION:
+            s_edit_kind = MENU_EDIT_INTEGER;
+            s_integer_field = CONFIG_FIELD_ALARM_REGION;
+            s_value = s_candidate_config.alarm.region;
+            break;
+        case MENU_ITEM_ALARM_STABLE_DELAY:
+            s_edit_kind = MENU_EDIT_INTEGER;
+            s_integer_field = CONFIG_FIELD_ALARM_STABLE_DELAY_MS;
+            s_value = s_candidate_config.alarm.stable_delay_ms;
+            break;
+#endif
         case MENU_ITEM_LIMIT_ENABLE:
             s_edit_kind = MENU_EDIT_BOOL;
             s_integer_field = CONFIG_FIELD_LIMIT_ENABLE;
@@ -893,6 +952,20 @@ static void AdjustEdit(KeyId key)
 {
     int64_t delta;
     int64_t next;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U) && (ENABLE_STAGE5E_A3_LOCAL_MENU != 0U)
+    if (s_item == MENU_ITEM_ALARM_REGION)
+    {
+        s_value = (s_value + ((key == KEY_ID_HASH) ? 1 : 2)) % 3;
+        return;
+    }
+    if (s_item == MENU_ITEM_ALARM_STABLE_DELAY)
+    {
+        next = s_value + ((key == KEY_ID_HASH) ?
+            (int64_t)ALARM_STABLE_DELAY_STEP_MS : -(int64_t)ALARM_STABLE_DELAY_STEP_MS);
+        if ((next >= 0) && (next <= ALARM_STABLE_DELAY_MAX_MS)) s_value = next;
+        return;
+    }
+#endif
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     if (s_edit_kind == MENU_EDIT_R5_DRIFT)
     {
@@ -1111,6 +1184,10 @@ bool MenuController_Enter(void)
     s_brightness_previewed = false;
     s_save_waiting = false;
     s_exit_after_save = false;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    s_cal_after_save = false;
+    s_timeout_consumed = false;
+#endif
     s_last_activity_ms = BSP_TimeNowMs(); Render(); return true;
 }
 
@@ -1130,18 +1207,30 @@ void MenuController_Process10ms(void)
             s_candidate_changed = false;
             s_brightness_previewed = false;
             s_existing_dirty_owned = false;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+            FinishSave();
+#else
             ShowCode(status == PERSISTENCE_STATUS_SUCCESS ?
                 DISPLAY_CODE_DONE : DISPLAY_CODE_NO_CHANGE);
             if (s_exit_after_save)
                 s_message_until_ms = now + UI_MESSAGE_DEFAULT_MS;
+#endif
         }
         else if (status == PERSISTENCE_STATUS_REBOOT_REQUIRED)
         {
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+            s_cal_after_save = false;
+            s_timeout_consumed = true;
+#endif
             s_exit_after_save = false;
             ShowCode(DISPLAY_CODE_SAVE_ERROR);
         }
         else if (status == PERSISTENCE_STATUS_FAILED)
         {
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+            s_cal_after_save = false;
+            s_timeout_consumed = true;
+#endif
             s_save_waiting = false; s_exit_after_save = false;
             RestoreOriginalBrightness();
             ShowCode(DISPLAY_CODE_SAVE_ERROR);
@@ -1151,6 +1240,10 @@ void MenuController_Process10ms(void)
         {
             /* Result is uncertain: retain ownership and block every key. The
                same operation may still finish, but it must never be retried. */
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+            s_cal_after_save = false;
+            s_timeout_consumed = true;
+#endif
             s_exit_after_save = false;
             ShowCode(DISPLAY_CODE_SAVE_ERROR);
         }
@@ -1175,9 +1268,20 @@ void MenuController_Process10ms(void)
     {
         if (s_factory_confirmation) (void)MenuController_Command(
             COMMAND_FACTORY_RESET_CANCEL, 0, 0, 0U, 0);
-        DiscardCandidate();
         s_factory_confirmation = false;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+        if (!s_timeout_consumed)
+        {
+            s_timeout_consumed = true;
+            CancelUnconfirmedEdit();
+            Render();
+            if (s_candidate_changed) RequestSave(now);
+            else ExitMenu();
+        }
+#else
+        DiscardCandidate();
         ExitMenu();
+#endif
     }
 }
 
@@ -1191,6 +1295,9 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
     if (s_save_waiting || s_exit_after_save)
         return true;
     s_last_activity_ms = event->timestamp_ms;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    s_timeout_consumed = false;
+#endif
     if (HandleAdvancedSequence(event)) return true;
     if (s_factory_confirmation)
     {
@@ -1407,11 +1514,24 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         ((event->type == KEY_EVENT_SHORT) ||
          (event->type == KEY_EVENT_REPEAT)))
         Navigate(event->key);
-    else if ((event->key == KEY_ID_TARE) &&
-             (event->type == KEY_EVENT_SHORT))
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    else if ((event->key == KEY_ID_TARE) && (event->type == KEY_EVENT_LONG))
     {
         DiscardCandidate();
         ExitMenu();
+        return true;
+    }
+#endif
+    else if ((event->key == KEY_ID_TARE) &&
+             (event->type == KEY_EVENT_SHORT))
+    {
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+        if (s_candidate_changed) RequestSave(event->timestamp_ms);
+        else ExitMenu();
+#else
+        DiscardCandidate();
+        ExitMenu();
+#endif
         return true;
     }
     else if ((event->key == KEY_ID_FUNCTION) &&
@@ -1427,6 +1547,15 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
         }
         else if (s_item == MENU_ITEM_CALIBRATION)
         {
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+            if (s_candidate_changed)
+            {
+                s_cal_after_save = true;
+                RequestSave(event->timestamp_ms);
+                if (!s_save_waiting) s_cal_after_save = false;
+                return true;
+            }
+#endif
 #if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
             /* Calibrate only from a clean snapshot. Never discard a pending
                local edit or write another owner's dirty config to Flash. */

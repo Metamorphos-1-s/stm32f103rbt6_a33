@@ -106,6 +106,83 @@ StabilityState StabilityDetector_Process(StabilityDetector *detector,
     return StabilityDetector_ProcessMass(detector, value, timestamp_ms);
 }
 
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+#define MOTION_BLOCK_MS 125U
+#define MOTION_MAX_SAMPLE_GAP_MS 250U
+#define MOTION_MIN_TOTAL_UG 6000
+#define MOTION_MAX_TOTAL_UG 7000
+#define MOTION_RAW_RESIDUAL_FLOOR_UG 100000
+
+static bool MonotonicMotion(const StabilityDetector *detector)
+{
+    MassValueUg drift;
+    MassValueUg threshold = detector->enter_threshold_ug / 8;
+    const MassValueUg *m = detector->motion_means;
+    if (threshold < MOTION_MIN_TOTAL_UG) threshold = MOTION_MIN_TOTAL_UG;
+    if (threshold > MOTION_MAX_TOTAL_UG) threshold = MOTION_MAX_TOTAL_UG;
+    if (!MassMath_Subtract(m[3], m[0], &drift)) return true;
+    return ((drift >= threshold) && (m[0] < m[1]) && (m[1] < m[2]) &&
+             (m[2] < m[3])) ||
+           ((drift <= -threshold) && (m[0] > m[1]) && (m[1] > m[2]) &&
+             (m[2] > m[3]));
+}
+
+StabilityState StabilityDetector_ProcessWithMotion(StabilityDetector *detector,
+    MassValueUg net, MassValueUg filtered_gross, MassValueUg raw_gross,
+    uint32_t timestamp_ms)
+{
+    MassValueUg residual;
+    uint64_t residual_magnitude;
+    StabilityState state;
+    uint32_t elapsed;
+    if ((detector == NULL) || !detector->initialized)
+        return STABILITY_STATE_UNAVAILABLE;
+    elapsed = (uint32_t)(timestamp_ms - detector->motion_last_sample_ms);
+    if ((detector->motion_block_samples != 0U) && (elapsed == 0U))
+        return detector->state;
+    if ((detector->motion_block_samples != 0U) && (elapsed > MOTION_MAX_SAMPLE_GAP_MS))
+        StabilityDetector_Reset(detector);
+    detector->motion_last_sample_ms = timestamp_ms;
+    if (detector->motion_block_samples == 0U)
+        detector->motion_block_start_ms = timestamp_ms;
+    else if ((uint32_t)(timestamp_ms - detector->motion_block_start_ms) >= MOTION_BLOCK_MS)
+    {
+        for (uint8_t i = 0U; i < 3U; ++i)
+            detector->motion_means[i] = detector->motion_means[i + 1U];
+        detector->motion_means[3] = detector->motion_sum / detector->motion_block_samples;
+        if (detector->motion_count < 4U) ++detector->motion_count;
+        detector->motion_detected = (detector->motion_count == 4U) &&
+            MonotonicMotion(detector);
+        detector->motion_sum = 0;
+        detector->motion_block_samples = 0U;
+        detector->motion_block_start_ms = timestamp_ms;
+    }
+    if (!MassMath_Add(detector->motion_sum, filtered_gross, &detector->motion_sum) ||
+        !MassMath_Subtract(raw_gross, filtered_gross, &residual) ||
+        !MassMath_Abs(residual, &residual_magnitude))
+    {
+        StabilityDetector_Reset(detector);
+        return STABILITY_STATE_UNAVAILABLE;
+    }
+    ++detector->motion_block_samples;
+    state = StabilityDetector_ProcessMass(detector, net, timestamp_ms);
+    if (detector->motion_detected ||
+        (residual_magnitude > (uint64_t)((detector->enter_threshold_ug >
+            MOTION_RAW_RESIDUAL_FLOOR_UG) ? detector->enter_threshold_ug :
+            MOTION_RAW_RESIDUAL_FLOOR_UG)))
+    {
+        detector->state = STABILITY_STATE_UNSTABLE;
+        return detector->state;
+    }
+    if ((detector->motion_count < 4U) && (state == STABILITY_STATE_STABLE))
+    {
+        detector->state = STABILITY_STATE_CANDIDATE;
+        return detector->state;
+    }
+    return state;
+}
+#endif
+
 StabilityState StabilityDetector_GetState(const StabilityDetector *detector)
 {
     return ((detector != NULL) && detector->initialized) ? detector->state :

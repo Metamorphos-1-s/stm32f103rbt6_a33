@@ -55,8 +55,34 @@ static uint8_t Suppression(const CheckweighShadowInput *input,
 }
 
 static uint8_t Hysteresis(const CheckweighShadow *shadow,
-    int64_t weight, int64_t low, int64_t high)
+    int64_t weight, int64_t low, int64_t high
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    , uint64_t hysteresis
+#endif
+    )
 {
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    if (shadow->dynamic_confirmed == CHECKWEIGH_SHADOW_LOW)
+    {
+        if (weight > high) return CHECKWEIGH_SHADOW_HIGH;
+        return ((weight >= low) && ((uint64_t)weight - (uint64_t)low >= hysteresis)) ?
+            CHECKWEIGH_SHADOW_OK : CHECKWEIGH_SHADOW_LOW;
+    }
+    if (shadow->dynamic_confirmed == CHECKWEIGH_SHADOW_HIGH)
+    {
+        if (weight < low) return CHECKWEIGH_SHADOW_LOW;
+        return ((weight <= high) && ((uint64_t)high - (uint64_t)weight >= hysteresis)) ?
+            CHECKWEIGH_SHADOW_OK : CHECKWEIGH_SHADOW_HIGH;
+    }
+    if (shadow->dynamic_confirmed == CHECKWEIGH_SHADOW_OK)
+    {
+        if ((weight < low) && ((uint64_t)low - (uint64_t)weight > hysteresis))
+            return CHECKWEIGH_SHADOW_LOW;
+        if ((weight > high) && ((uint64_t)weight - (uint64_t)high > hysteresis))
+            return CHECKWEIGH_SHADOW_HIGH;
+        return CHECKWEIGH_SHADOW_OK;
+    }
+#else
     if (shadow->dynamic_confirmed == CHECKWEIGH_SHADOW_LOW)
     {
         if (weight > high) return CHECKWEIGH_SHADOW_HIGH;
@@ -77,6 +103,7 @@ static uint8_t Hysteresis(const CheckweighShadow *shadow,
             return CHECKWEIGH_SHADOW_HIGH;
         return CHECKWEIGH_SHADOW_OK;
     }
+#endif
     return CheckweighShadow_Classify(weight, low, high);
 }
 
@@ -147,8 +174,16 @@ bool CheckweighShadow_Process(CheckweighShadow *shadow,
     else
     {
 #if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
-        if (!shadow->static_confirming)
+        if (!shadow->static_confirming
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+            || (shadow->static_candidate != output->static_immediate)
+#endif
+        )
         {
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+            shadow->static_candidate = output->static_immediate;
+            shadow->static_stable_count = 0U;
+#endif
             shadow->static_confirm_start_ms = input->timestamp_ms;
             shadow->static_confirming = true;
         }
@@ -158,7 +193,12 @@ bool CheckweighShadow_Process(CheckweighShadow *shadow,
 #if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
         if ((shadow->static_stable_count >= STATIC_STABLE_SAMPLES) &&
             ((uint32_t)(input->timestamp_ms -
-             shadow->static_confirm_start_ms) >= 200U))
+             shadow->static_confirm_start_ms) >=
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+             input->static_delay_ms))
+#else
+             200U))
+#endif
 #else
         if (shadow->static_stable_count >= STATIC_STABLE_SAMPLES)
 #endif
@@ -189,7 +229,11 @@ bool CheckweighShadow_Process(CheckweighShadow *shadow,
     else
     {
         target = Hysteresis(shadow, input->dynamic_weight_ug,
-            input->low_limit_ug, input->high_limit_ug);
+            input->low_limit_ug, input->high_limit_ug
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+            , (uint64_t)input->hysteresis_ug
+#endif
+        );
         if (target != shadow->dynamic_candidate)
         {
             shadow->dynamic_candidate = target;

@@ -1,6 +1,7 @@
 #include "persistent_codec.h"
 
 #include "default_config.h"
+#include "alarm_config_validation.h"
 #include "device_config_validator.h"
 #include "persistent_schema.h"
 
@@ -174,6 +175,10 @@ static bool PersistentCodec_SemanticEqual(const DeviceConfig *a,
         (a->bluetooth.uart_baud_rate == b->bluetooth.uart_baud_rate) &&
         (a->bluetooth.protocol_version == b->bluetooth.protocol_version) &&
         (a->bluetooth.w02_configured == b->bluetooth.w02_configured) &&
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+        (a->alarm.region == b->alarm.region) &&
+        (a->alarm.stable_delay_ms == b->alarm.stable_delay_ms) &&
+#endif
         (a->alarm.lower_limit_ug == b->alarm.lower_limit_ug) &&
         (a->alarm.upper_limit_ug == b->alarm.upper_limit_ug) &&
         (a->alarm.hysteresis_ug == b->alarm.hysteresis_ug) &&
@@ -229,3 +234,63 @@ bool PersistentCodec_DeviceConfigEqual(const DeviceConfig *left,const DeviceConf
 
 PersistentCodecResult PersistentCodec_Decode(uint16_t schema_version,const uint8_t *buffer,uint16_t length,DeviceConfig *config,RuntimeState *runtime)
 {(void)schema_version;(void)buffer;(void)length;(void)config;(void)runtime;return PERSISTENT_CODEC_UNSUPPORTED_SCHEMA;}
+
+PersistentCodecResult PersistentCodec_EncodeCurrent(
+    const DeviceConfig *config, const RuntimeState *runtime,
+    uint8_t *buffer, uint16_t capacity, uint16_t *encoded_length)
+{
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    PersistentCodecResult result;
+    CodecWriter w = {buffer, capacity, PERSISTENT_V3_PAYLOAD_SIZE, false};
+    if (capacity < PERSISTENT_V4_PAYLOAD_SIZE)
+        return PERSISTENT_CODEC_BUFFER_TOO_SMALL;
+    result = PersistentCodec_EncodeV3(config, runtime, buffer, capacity,
+        encoded_length);
+    if (result != PERSISTENT_CODEC_OK) return result;
+    PutU8(&w, config->alarm.region);
+    PutU16(&w, config->alarm.stable_delay_ms);
+    *encoded_length = w.position;
+    return PERSISTENT_CODEC_OK;
+#else
+    return PersistentCodec_EncodeV3(config, runtime, buffer, capacity, encoded_length);
+#endif
+}
+
+PersistentCodecResult PersistentCodec_DecodeRecord(
+    uint16_t schema, const uint8_t *buffer, uint16_t length,
+    DeviceConfig *config, RuntimeState *runtime)
+{
+    if (schema == CONFIG_STORE_SCHEMA_V3)
+    {
+        PersistentCodecResult result = PersistentCodec_DecodeV3(buffer, length,
+            config, runtime);
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+        if (result == PERSISTENT_CODEC_OK)
+        {
+            /* Upgrade legacy default holds only; keep non-default settings. */
+            if (config->metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION].stability_hold_ms == 1000U)
+                config->metrology.profiles[WEIGHING_PROFILE_HIGH_PRECISION].stability_hold_ms = 300U;
+            if (config->metrology.profiles[WEIGHING_PROFILE_HIGH_SPEED].stability_hold_ms == 500U)
+                config->metrology.profiles[WEIGHING_PROFILE_HIGH_SPEED].stability_hold_ms = 300U;
+        }
+#endif
+        return result;
+    }
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    if (schema == CONFIG_STORE_SCHEMA_V4)
+    {
+        PersistentCodecResult result;
+        CodecReader r = {buffer, length, PERSISTENT_V3_PAYLOAD_SIZE, false};
+        if (length != PERSISTENT_V4_PAYLOAD_SIZE)
+            return PERSISTENT_CODEC_INVALID_VALUE;
+        result = PersistentCodec_DecodeV3(buffer, PERSISTENT_V3_PAYLOAD_SIZE,
+            config, runtime);
+        if (result != PERSISTENT_CODEC_OK) return result;
+        config->alarm.region = GetU8(&r);
+        config->alarm.stable_delay_ms = GetU16(&r);
+        return AlarmConfig_Validate(&config->alarm) ? PERSISTENT_CODEC_OK :
+            PERSISTENT_CODEC_VALIDATION_FAILED;
+    }
+#endif
+    return PERSISTENT_CODEC_UNSUPPORTED_SCHEMA;
+}

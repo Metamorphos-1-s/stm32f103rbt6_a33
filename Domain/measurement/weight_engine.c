@@ -152,8 +152,19 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
     if (engine->zero_tare.tare_active)
         engine->snapshot.status_flags |= WEIGHT_STATUS_TARE_ACTIVE;
     if (process_stability)
+    {
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+        MassValueUg raw_gross;
+        if (CalibrationModel_ConvertMass(&engine->calibration,
+            engine->snapshot.raw_value, engine->zero_tare.zero_offset_raw,
+            &raw_gross) != CALIBRATION_RESULT_OK) return false;
+        stability_state = StabilityDetector_ProcessWithMotion(&engine->stability,
+            net, uncompensated_gross, raw_gross, engine->snapshot.sample_timestamp_ms);
+#else
         stability_state = StabilityDetector_ProcessMass(&engine->stability,
             net, engine->snapshot.sample_timestamp_ms);
+#endif
+    }
     engine->snapshot.stability_spread_ug =
         StabilityDetector_GetSpreadMass(&engine->stability);
     if (stability_state == STABILITY_STATE_STABLE)

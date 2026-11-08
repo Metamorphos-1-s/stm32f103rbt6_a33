@@ -1157,3 +1157,16 @@ foreach(pair "stage5p_unified_tests|stage5p_unified_smooth_tests"
     target_compile_options(${candidate} PRIVATE ${candidate_options})
     add_test(NAME ${candidate} COMMAND ${candidate})
 endforeach()
+
+# Run the integrated feedback candidate against real persistence and host I/O.
+get_target_property(feedback_sources stage5p_save_continuity_tests SOURCES)
+get_target_property(feedback_includes stage5p_save_continuity_tests INCLUDE_DIRECTORIES)
+get_target_property(feedback_defs stage5p_save_continuity_tests COMPILE_DEFINITIONS)
+get_target_property(feedback_options stage5p_save_continuity_tests COMPILE_OPTIONS)
+add_executable(stage5p_feedback_tests ${feedback_sources}
+    ../../Services/alarm_output_manager/alarm_output_manager.c)
+target_include_directories(stage5p_feedback_tests PRIVATE ${feedback_includes})
+target_compile_definitions(stage5p_feedback_tests PRIVATE ${feedback_defs}
+    A33_ENABLE_STAGE5P_DISPLAY_SMOOTH=1 A33_ENABLE_STAGE5P_FEEDBACK=1)
+target_compile_options(stage5p_feedback_tests PRIVATE ${feedback_options})
+add_test(NAME stage5p_feedback_integration COMMAND stage5p_feedback_tests)

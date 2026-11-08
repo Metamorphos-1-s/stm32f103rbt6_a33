@@ -66,6 +66,13 @@ option(A33_ENABLE_STAGE5P_R5_CHECKWEIGH_INTEGRATION
     "Enable simultaneous R5 ACTIVE and formal checkweigh candidate" OFF)
 option(A33_ENABLE_STAGE5P_SAVE_CONTINUITY
     "Preserve guarded R5 continuity across pure SAVE" OFF)
+option(A33_ENABLE_STAGE5P_FEEDBACK "Enable integrated A33 panel feedback candidate" OFF)
+if(A33_ENABLE_STAGE5P_FEEDBACK)
+    if(NOT A33_ENABLE_STAGE5P_DISPLAY_SMOOTH)
+        message(FATAL_ERROR "Feedback candidate requires the 0x0530 display baseline")
+    endif()
+    add_compile_definitions(A33_ENABLE_STAGE5P_FEEDBACK=1)
+endif()
 option(A33_ENABLE_STAGE5P_DISPLAY_SMOOTH
     "Enable display-only median anchor following and 10 Hz numeric publication" OFF)
 option(A33_ENABLE_STAGE5P_UNIFIED_RESOURCES

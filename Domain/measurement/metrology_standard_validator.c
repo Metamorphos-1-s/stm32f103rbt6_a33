@@ -1,6 +1,7 @@
 #include "metrology_standard_validator.h"
 
 #include "mass_math.h"
+#include "project_config.h"
 #include "unit_converter.h"
 
 #include <stddef.h>
@@ -67,8 +68,18 @@ MassValueUg MetrologyStandardValidator_GetDisplayOverload(
     MassValueUg result;
     if (config == NULL) return 0;
     if (config->compliance_mode != METROLOGY_COMPLIANCE_CLASS_III_REFERENCE)
+    {
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+        const UnitDisplayConfig *display = &config->unit_display[MASS_UNIT_G];
+        return UnitConverter_CountToMass(display->division_digit, MASS_UNIT_G,
+                   display->decimal_places, &division) && (division > 0) &&
+               MassMath_MulDivRound(division, 10, 1, &addition) &&
+               MassMath_Add(config->capacity_ug, addition, &result) ? result : 0;
+#else
         return (config->overload_threshold_ug > 0) ?
             config->overload_threshold_ug : config->capacity_ug;
+#endif
+    }
     return DisplayDivisionMass(config, &division) &&
            MassMath_MulDivRound(division, 9, 1, &addition) &&
            MassMath_Add(config->capacity_ug, addition, &result) ? result : 0;

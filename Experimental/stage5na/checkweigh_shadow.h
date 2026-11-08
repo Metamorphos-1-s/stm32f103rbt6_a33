@@ -33,6 +33,9 @@ typedef struct
     uint8_t flags;
 #if (A33_ENABLE_STAGE5PA_PRODUCT != 0U)
     bool static_confirming;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    uint8_t static_candidate;
+#endif
 #endif
 } CheckweighShadow;
 
@@ -45,6 +48,10 @@ typedef struct
     int64_t low_limit_ug;
     int64_t high_limit_ug;
     uint8_t reset_reason;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    uint16_t static_delay_ms;
+    int64_t hysteresis_ug;
+#endif
     bool stable;
     bool process_active;
     bool valid;

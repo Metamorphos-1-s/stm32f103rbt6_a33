@@ -2,6 +2,7 @@
 #define STABILITY_DETECTOR_H
 
 #include "device_config.h"
+#include "project_config.h"
 #include "weight_types.h"
 
 #include <stdbool.h>
@@ -32,6 +33,16 @@ typedef struct
     StabilityState state;
     uint32_t candidate_start_ms;
     bool initialized;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    /* Recent 125 ms block means of the uncompensated, filtered weight. */
+    MassValueUg motion_means[4];
+    MassValueUg motion_sum;
+    uint32_t motion_block_start_ms;
+    uint32_t motion_last_sample_ms;
+    uint8_t motion_count;
+    uint8_t motion_block_samples;
+    bool motion_detected;
+#endif
 } StabilityDetector;
 
 bool StabilityDetector_Init(StabilityDetector *detector,
@@ -48,6 +59,11 @@ StabilityState StabilityDetector_Process(StabilityDetector *detector,
 StabilityState StabilityDetector_ProcessMass(StabilityDetector *detector,
                                              MassValueUg value,
                                              uint32_t timestamp_ms);
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+StabilityState StabilityDetector_ProcessWithMotion(StabilityDetector *detector,
+    MassValueUg net, MassValueUg filtered_gross, MassValueUg raw_gross,
+    uint32_t timestamp_ms);
+#endif
 StabilityState StabilityDetector_GetState(const StabilityDetector *detector);
 uint32_t StabilityDetector_GetSpread(const StabilityDetector *detector);
 MassValueUg StabilityDetector_GetSpreadMass(const StabilityDetector *detector);

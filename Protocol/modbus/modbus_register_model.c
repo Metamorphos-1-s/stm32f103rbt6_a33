@@ -27,13 +27,18 @@
 #include "communication_manager.h"
 #include "system_context.h"
 #include "unit_converter.h"
+#include "metrology_standard_validator.h"
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
 
 #define STAGING_REGISTER_COUNT 64U
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+#define ALARM_STAGING_REGISTER_COUNT 19U
+#else
 #define ALARM_STAGING_REGISTER_COUNT 17U
+#endif
 
 static uint16_t s_staging[STAGING_REGISTER_COUNT];
 static uint16_t s_alarm_staging[ALARM_STAGING_REGISTER_COUNT];
@@ -146,6 +151,10 @@ static void RefreshStaging(const DeviceConfig *config)
     s_alarm_staging[14]=config->alarm.internal_buzzer_enable?1U:0U;
     s_alarm_staging[15]=config->alarm.external_buzzer_enable?1U:0U;
     s_alarm_staging[16]=config->alarm.qualified_beep_enable?1U:0U;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    s_alarm_staging[17]=config->alarm.region;
+    s_alarm_staging[18]=config->alarm.stable_delay_ms;
+#endif
     s_staging_dirty=false; s_staging_validation=0U;
 #if (A33_ENABLE_STAGE5P_BATTERY_TRANSACTION != 0U)
     s_battery_staging[0] = Word32((uint32_t)config->battery.calibration_offset_mv, 0U, order);
@@ -240,6 +249,10 @@ static bool DecodeStaging(const DeviceConfig *active,DeviceConfig *candidate)
     candidate->alarm.internal_buzzer_enable=s_alarm_staging[14]!=0U;
     candidate->alarm.external_buzzer_enable=s_alarm_staging[15]!=0U;
     candidate->alarm.qualified_beep_enable=s_alarm_staging[16]!=0U;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    candidate->alarm.region=(uint8_t)s_alarm_staging[17];
+    candidate->alarm.stable_delay_ms=s_alarm_staging[18];
+#endif
     if ((uint32_t)candidate->metrology.active_unit>=MASS_UNIT_COUNT)return false;
     return true;
 }
@@ -382,6 +395,15 @@ static ModbusRegisterResult ReadOne(uint16_t address,
     (void)UnitConverter_MassToDisplay(panel_mass,config->metrology.active_unit,display,&panel);
 #endif
     *value=0U;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    if ((address>=MODBUS_ACTIVE_EFFECTIVE_OL_FIRST) &&
+        (address<=MODBUS_ACTIVE_EFFECTIVE_OL_LAST))
+    {
+        *value=Word64((uint64_t)MetrologyStandardValidator_GetDisplayOverload(&config->metrology),
+            (uint8_t)(address-MODBUS_ACTIVE_EFFECTIVE_OL_FIRST),order);
+        return MODBUS_REGISTER_OK;
+    }
+#endif
     if ((address>=MODBUS_MAILBOX_FIRST)&&(address<=MODBUS_MAILBOX_LAST))
         return ModbusCommandMailbox_Read(address,value);
     if ((address>=MODBUS_ACTIVE_CONFIG_FIRST)&&(address<=MODBUS_ACTIVE_CONFIG_LAST))
@@ -425,6 +447,10 @@ static ModbusRegisterResult ReadOne(uint16_t address,
         else if(address>=MODBUS_ALARM_CONFIG_REVISION_FIRST&&address<=0x023AU)
             *value=Word32(context->config_revision,(uint8_t)(address-MODBUS_ALARM_CONFIG_REVISION_FIRST),order);
         else if(address==MODBUS_ALARM_CONFIG_DIRTY)*value=context->runtime.config_dirty?1U:0U;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+        else if(address==MODBUS_ALARM_REGION)*value=alarm->region;
+        else if(address==MODBUS_ALARM_STABLE_DELAY_MS)*value=alarm->stable_delay_ms;
+#endif
         return MODBUS_REGISTER_OK;
     }
     if ((address>=MODBUS_ALARM_STAGING_FIRST)&&(address<=MODBUS_ALARM_STAGING_LAST))
@@ -432,6 +458,10 @@ static ModbusRegisterResult ReadOne(uint16_t address,
         if(address<=0x0250U)*value=s_alarm_staging[address-MODBUS_ALARM_STAGING_FIRST];
         else if(address==MODBUS_ALARM_STAGING_VALIDATION)*value=s_staging_validation;
         else if(address==MODBUS_ALARM_STAGING_DIRTY)*value=s_staging_dirty?1U:0U;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+        else if(address==MODBUS_ALARM_STAGING_REGION)*value=s_alarm_staging[17];
+        else if(address==MODBUS_ALARM_STAGING_STABLE_DELAY_MS)*value=s_alarm_staging[18];
+#endif
         return MODBUS_REGISTER_OK;
     }
     if (address<=0x001FU)
@@ -1104,6 +1134,14 @@ static ModbusRegisterResult ValidateWriteAddress(uint16_t address,uint16_t value
     if(address==0x017CU)
         return value<=1U?MODBUS_REGISTER_OK:MODBUS_REGISTER_ILLEGAL_VALUE;
     if((address>=0x0140U)&&(address<=0x017DU))return MODBUS_REGISTER_OK;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    if(address==MODBUS_ALARM_STAGING_REGION)
+        return value<=ALARM_REGION_INSIDE?MODBUS_REGISTER_OK:MODBUS_REGISTER_ILLEGAL_VALUE;
+    if(address==MODBUS_ALARM_STAGING_STABLE_DELAY_MS)
+        return ((value<=ALARM_STABLE_DELAY_MAX_MS) &&
+                ((value%ALARM_STABLE_DELAY_STEP_MS)==0U))?
+            MODBUS_REGISTER_OK:MODBUS_REGISTER_ILLEGAL_VALUE;
+#endif
     if(address==0x0240U || address==0x024EU || address==0x024FU ||
        address==0x0250U)
         return value<=1U?MODBUS_REGISTER_OK:MODBUS_REGISTER_ILLEGAL_VALUE;
@@ -1166,10 +1204,20 @@ static ModbusRegisterResult WriteOne(uint16_t address,uint16_t value,
 #endif
     if((address>=0x0242U)&&(address<=0x024DU)&&!allow_alarm_mass)
         return MODBUS_REGISTER_ILLEGAL_VALUE;
-    if(address>=0x0240U&&address<=0x0250U)
+    if((address>=0x0240U&&address<=0x0250U)
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+       || (address==MODBUS_ALARM_STAGING_REGION)
+       || (address==MODBUS_ALARM_STAGING_STABLE_DELAY_MS)
+#endif
+    )
     {
         if(CommandService_ReserveConfigOwner(source)!=
            COMMAND_RESULT_OK)return MODBUS_REGISTER_BUSY;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+        if (address >= MODBUS_ALARM_STAGING_REGION)
+            s_alarm_staging[17U + address - MODBUS_ALARM_STAGING_REGION]=value;
+        else
+#endif
         s_alarm_staging[address-0x0240U]=value;
         s_staging_dirty=true;
         s_staging_validation=0xFFFFU;

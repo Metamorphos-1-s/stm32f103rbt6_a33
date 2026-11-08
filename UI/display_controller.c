@@ -442,6 +442,11 @@ void DisplayController_SetPage(DisplayPage page)
     }
 }
 
+void DisplayController_ClearMessage(void)
+{
+    s_message_active = false;
+}
+
 void DisplayController_ShowMessage(const char text[6], uint32_t duration_ms)
 {
     uint16_t segments[6];

@@ -612,6 +612,13 @@ static void App_UpdateAlarmOutputs(uint32_t now_ms)
   guarded_input.dynamic_class = shadow.dynamic_confirmed;
   guarded_input.enabled = context->config.alarm.limit_function_enable &&
       AlarmConfig_Validate(&context->config.alarm);
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+  if (shadow.revision != (uint16_t)context->config_revision)
+  {
+    guarded_input.static_class = CHECKWEIGH_SHADOW_PENDING;
+    guarded_input.dynamic_class = CHECKWEIGH_SHADOW_PENDING;
+  }
+#endif
   guarded_input.calibration_active = state == APP_STATE_CALIBRATION;
   guarded_input.fault_active = (FaultManager_GetActiveMask() != 0U) ||
       (state == APP_STATE_FAULT);
@@ -897,7 +904,12 @@ static void App_ShowCommandResult(CommandResult result, bool tare_action)
 
   if ((result == COMMAND_RESULT_OK) || (result == COMMAND_RESULT_ACCEPTED))
   {
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    DisplayController_ClearMessage();
+    return;
+#else
     code = DISPLAY_CODE_DONE;
+#endif
   }
   else if (result == COMMAND_RESULT_NOT_CALIBRATED)
   {
@@ -947,6 +959,20 @@ static void App_ProcessKeyEvent(const KeyEvent *event)
   }
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
   DisplayController_NotifyActivity();
+#endif
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U) && (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
+  if ((event->type == KEY_EVENT_PRESSED) && s_alarm_runtime_active &&
+      ((state == APP_STATE_RUN) || (state == APP_STATE_MENU) ||
+       (state == APP_STATE_CALIBRATION)) &&
+      (FaultManager_GetActiveMask() == 0U) &&
+      !DeviceManager_IsInStorageMaintenance() &&
+      !MetrologyManager_IsStorageReacquiring())
+  {
+    const SystemContext *context = SystemContext_Get();
+    if (context != NULL)
+      AlarmOutputManager_RequestKeyBeep(&s_alarm_output_manager,
+          &context->config.alarm, BSP_TimeNowMs());
+  }
 #endif
   /* STATUS owns RELEASED as well as action events for its entry-key gate. */
   if (StatusController_IsActive())

@@ -155,6 +155,13 @@
             }
         },
         {
+            "name": "Stage5PFeedback",
+            "inherits": "Stage5PDisplayReview",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5P_FEEDBACK": "ON"
+            }
+        },
+        {
             "name": "Stage5PDisplayReview",
             "inherits": "Stage5PA2DCalibration",
             "displayName": "Stage 5P 0x0530 display software review",
@@ -244,6 +251,10 @@
         {
             "name": "Stage5PDisplayReview",
             "configurePreset": "Stage5PDisplayReview"
+        },
+        {
+            "name": "Stage5PFeedback",
+            "configurePreset": "Stage5PFeedback"
         }
     ]
 }

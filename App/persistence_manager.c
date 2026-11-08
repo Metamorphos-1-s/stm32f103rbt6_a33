@@ -432,6 +432,9 @@ void PersistenceManager_Process(void)
         s_status = PERSISTENCE_STATUS_SUCCESS;
         if (s_operation == CONFIG_OPERATION_FACTORY_RESET)
             s_factory_result = FACTORY_RESET_RESULT_COMPLETED;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+        if (!s_candidate_save)
+#endif
         Show(DISPLAY_CODE_DONE);
         Publish((s_operation == CONFIG_OPERATION_SAVE) ?
             EVENT_CONFIG_SAVE_COMPLETED : EVENT_FACTORY_RESET_COMPLETED,
@@ -440,6 +443,9 @@ void PersistenceManager_Process(void)
     else if ((result == CONFIG_STORE_OPERATION_NO_CHANGE) && runtime_ok)
     {
         s_status = PERSISTENCE_STATUS_NO_CHANGE;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+        if (!s_candidate_save)
+#endif
         Show(DISPLAY_CODE_NO_CHANGE);
         Publish(EVENT_CONFIG_SAVE_NO_CHANGE, s_requested_revision,
                 ConfigStore_GetActiveSequence());

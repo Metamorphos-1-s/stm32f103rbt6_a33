@@ -1,3 +1,5 @@
+#include "metrology_standard_validator.h"
+
 #include "ble_command_service.h"
 
 #include "ble_command_protocol.h"
@@ -142,7 +144,11 @@ static uint16_t BuildActiveConfig(uint8_t *data)
     BleFrameCodec_PutU8(data, &offset, display->division_digit);
     BleFrameCodec_PutU8(data, &offset, (uint8_t)metrology->active_profile);
     BleFrameCodec_PutI64(data, &offset, metrology->capacity_ug);
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    BleFrameCodec_PutI64(data, &offset, MetrologyStandardValidator_GetDisplayOverload(metrology));
+#else
     BleFrameCodec_PutI64(data, &offset, metrology->overload_threshold_ug);
+#endif
     BleFrameCodec_PutI64(data, &offset, metrology->zero_range_ug);
     BleFrameCodec_PutU8(data, &offset, (uint8_t)profile->filter_mode);
     BleFrameCodec_PutU8(data, &offset, profile->filter_strength);

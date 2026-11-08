@@ -200,7 +200,8 @@ static SlotStatus ReadSlot(uint32_t address, SlotRecord *record,
         return SLOT_CORRUPT;
     }
     record->schema = ReadU16(header + 6U);
-    if (record->schema != CONFIG_STORE_SCHEMA_V3)
+    if ((record->schema != CONFIG_STORE_SCHEMA_V3) &&
+        (record->schema != CONFIG_STORE_WRITE_SCHEMA))
     {
         return SLOT_UNSUPPORTED;
     }
@@ -208,7 +209,8 @@ static SlotStatus ReadSlot(uint32_t address, SlotRecord *record,
     record->sequence = ReadU32(header + 12U);
     record->flags = ReadU32(header + 16U);
     record->payload_length = payload_length;
-    if ((payload_length != PERSISTENT_V3_PAYLOAD_SIZE) ||
+    if ((payload_length != (record->schema == CONFIG_STORE_SCHEMA_V3 ?
+         PERSISTENT_V3_PAYLOAD_SIZE : CONFIG_STORE_PAYLOAD_BUFFER_SIZE)) ||
         ((uint32_t)CONFIG_STORE_HEADER_SIZE + payload_length > CONFIG_COMMIT_OFFSET) ||
         (record->sequence == 0xFFFFFFFFUL))
     {
@@ -238,7 +240,7 @@ static SlotStatus ReadSlot(uint32_t address, SlotRecord *record,
         ++s_statistics.crc_error_count;
         return SLOT_CORRUPT;
     }
-    codec = PersistentCodec_DecodeV3(payload_out, payload_length,
+    codec = PersistentCodec_DecodeRecord(record->schema, payload_out, payload_length,
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
                                    scratch_config, scratch_runtime);
 #else
@@ -335,7 +337,7 @@ ConfigLoadResult ConfigStore_Load(DeviceConfig *config, RuntimeState *runtime,
     if (selected == &b)
         (void)memcpy(s_active_payload, s_slot_payload, b.payload_length);
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
-    if (PersistentCodec_DecodeV3(s_active_payload, selected->payload_length,
+    if (PersistentCodec_DecodeRecord(selected->schema, s_active_payload, selected->payload_length,
         config, runtime) != PERSISTENT_CODEC_OK)
         return CONFIG_LOAD_VALIDATION_FAILED;
 #else
@@ -345,6 +347,14 @@ ConfigLoadResult ConfigStore_Load(DeviceConfig *config, RuntimeState *runtime,
     s_active_slot = (selected == &a) ? CONFIG_STORE_SLOT_A : CONFIG_STORE_SLOT_B;
     s_active_sequence = selected->sequence;
     s_active_payload_length = selected->payload_length;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    /* The Flash CRC was checked against the original bytes. Cache the migrated
+       RAM form for no-change comparison so reading V3 never forces a write. */
+    if ((selected->schema == CONFIG_STORE_SCHEMA_V3) &&
+        (PersistentCodec_EncodeV3(config, runtime, s_active_payload,
+            sizeof(s_active_payload), &s_active_payload_length) != PERSISTENT_CODEC_OK))
+        return CONFIG_LOAD_VALIDATION_FAILED;
+#endif
     s_active_payload_valid = true;
     info->active_slot = s_active_slot;
     info->active_sequence = selected->sequence;
@@ -371,11 +381,11 @@ static bool Request(const DeviceConfig *config, const RuntimeState *runtime,
         return false;
     }
     ++s_statistics.save_request_count;
-    codec = PersistentCodec_EncodeV3(config, runtime,
+    codec = PersistentCodec_EncodeCurrent(config, runtime,
         s_body + CONFIG_STORE_HEADER_SIZE, CONFIG_STORE_PAYLOAD_BUFFER_SIZE,
         &s_payload_length);
     if ((codec != PERSISTENT_CODEC_OK) ||
-        (s_payload_length != PERSISTENT_V3_PAYLOAD_SIZE))
+        (s_payload_length != CONFIG_STORE_PAYLOAD_BUFFER_SIZE))
     {
         s_result = CONFIG_STORE_OPERATION_INVALID;
         s_last_error = (uint32_t)codec;
@@ -386,9 +396,15 @@ static bool Request(const DeviceConfig *config, const RuntimeState *runtime,
     s_source_revision = revision;
     s_operation = operation;
     if ((operation == CONFIG_OPERATION_SAVE) && s_active_payload_valid &&
-        (s_payload_length == s_active_payload_length) &&
+        ((s_payload_length == s_active_payload_length)
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+         || ((s_active_payload_length == PERSISTENT_V3_PAYLOAD_SIZE) &&
+             (config->alarm.region == ALARM_REGION_LEGACY_HIGH) &&
+             (config->alarm.stable_delay_ms == ALARM_STABLE_DELAY_DEFAULT_MS))
+#endif
+        ) &&
         (memcmp(s_body + CONFIG_STORE_HEADER_SIZE, s_active_payload,
-                s_payload_length) == 0))
+                s_active_payload_length) == 0))
     {
         s_result = CONFIG_STORE_OPERATION_NO_CHANGE;
         s_state = CONFIG_STORE_STATE_COMPLETE;
@@ -399,7 +415,7 @@ static bool Request(const DeviceConfig *config, const RuntimeState *runtime,
     (void)memset(s_body, 0, CONFIG_STORE_HEADER_SIZE);
     WriteU32(s_body, CONFIG_STORE_MAGIC);
     WriteU16(s_body + 4U, CONFIG_STORE_FORMAT_V3);
-    WriteU16(s_body + 6U, CONFIG_STORE_SCHEMA_V3);
+    WriteU16(s_body + 6U, CONFIG_STORE_WRITE_SCHEMA);
     WriteU16(s_body + 8U, CONFIG_STORE_HEADER_SIZE);
     WriteU16(s_body + 10U, s_payload_length);
     WriteU32(s_body + 12U, s_record_sequence);

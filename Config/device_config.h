@@ -176,6 +176,17 @@ typedef struct
     uint8_t reserved[5];
 } BluetoothConfig;
 
+typedef enum
+{
+    ALARM_REGION_LEGACY_HIGH = 0,
+    ALARM_REGION_OUTSIDE,
+    ALARM_REGION_INSIDE
+} AlarmRegion;
+
+#define ALARM_STABLE_DELAY_DEFAULT_MS 200U
+#define ALARM_STABLE_DELAY_STEP_MS 100U
+#define ALARM_STABLE_DELAY_MAX_MS 10000U
+
 typedef struct
 {
     int32_t lower_limit;
@@ -186,6 +197,8 @@ typedef struct
     bool external_buzzer_enable;
     bool qualified_beep_enable;
     bool limit_function_enable;
+    uint16_t stable_delay_ms;
+    uint8_t region;
     MassValueUg lower_limit_ug;
     MassValueUg upper_limit_ug;
     MassValueUg hysteresis_ug;

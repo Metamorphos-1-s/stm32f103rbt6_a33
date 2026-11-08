@@ -104,6 +104,18 @@ bool ConfigEdit_SetIntegerField(ConfigFieldId field, int32_t value)
         case CONFIG_FIELD_STABILITY_ENTER:
         case CONFIG_FIELD_STABILITY_EXIT:
         case CONFIG_FIELD_STABILITY_HOLD_MS:
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+        case CONFIG_FIELD_ALARM_REGION:
+            if ((value < 0) || (value > ALARM_REGION_INSIDE)) return false;
+            s_working.alarm.region = (uint8_t)value;
+            break;
+        case CONFIG_FIELD_ALARM_STABLE_DELAY_MS:
+            if ((value < 0) || ((uint32_t)value > ALARM_STABLE_DELAY_MAX_MS) ||
+                ((uint32_t)value % ALARM_STABLE_DELAY_STEP_MS != 0U))
+                return false;
+            s_working.alarm.stable_delay_ms = (uint16_t)value;
+            break;
+#endif
         case CONFIG_FIELD_ZERO_RANGE:
         case CONFIG_FIELD_OVERLOAD_THRESHOLD:
         case CONFIG_FIELD_COUNT:
@@ -129,9 +141,13 @@ bool ConfigEdit_SetMassField(ConfigMassFieldId field, MassValueUg value_ug)
             s_working.metrology.zero_range_ug = value_ug;
             break;
         case CONFIG_MASS_FIELD_OVERLOAD_THRESHOLD:
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+            return false;
+#else
             if (value_ug < 0) return false;
             s_working.metrology.overload_threshold_ug = value_ug;
             break;
+#endif
         case CONFIG_MASS_FIELD_ALARM_LOWER_LIMIT:
             s_working.alarm.lower_limit_ug = value_ug;
             break;

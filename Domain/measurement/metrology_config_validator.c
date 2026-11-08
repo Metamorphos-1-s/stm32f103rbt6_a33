@@ -75,9 +75,14 @@ MetrologyConfigResult MetrologyConfig_ValidateCanonical(
     if ((metrology->zero_range_ug < 0) ||
         (metrology->zero_range_ug > metrology->capacity_ug))
         return METROLOGY_CONFIG_INVALID_ZERO_RANGE;
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+    if (MetrologyStandardValidator_GetDisplayOverload(metrology) <=
+        metrology->capacity_ug) return METROLOGY_CONFIG_INVALID_OVERLOAD;
+#else
     if ((metrology->overload_threshold_ug != 0) &&
         (metrology->overload_threshold_ug < metrology->capacity_ug))
         return METROLOGY_CONFIG_INVALID_OVERLOAD;
+#endif
     if (metrology->load_cell.rated_capacity_known &&
         ((metrology->load_cell.rated_capacity_ug <= 0) ||
          (metrology->capacity_ug > metrology->load_cell.rated_capacity_ug)))
@@ -127,10 +132,12 @@ MetrologyConfigResult MetrologyConfig_ValidateProductHardware(
 #else
     (void)index;
 #endif
+#if (A33_ENABLE_STAGE5P_FEEDBACK == 0U)
     if ((metrology->overload_threshold_ug <= 0) ||
         (metrology->overload_threshold_ug >
          (MassValueUg)A33_SENSOR_RATED_CAPACITY_UG))
         return METROLOGY_CONFIG_INVALID_OVERLOAD;
+#endif
     return METROLOGY_CONFIG_OK;
 }
 
