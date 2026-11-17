@@ -64,6 +64,10 @@ bool CommandService_LocalCalibrationActive(uint16_t session_id);
 bool CommandService_LocalCalibrationApplied(uint16_t session_id);
 bool CommandService_TouchLocalCalibration(uint16_t session_id,
     uint32_t now_ms);
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+bool CommandService_StartLocalZeroWindow(uint16_t session_id, uint32_t now_ms);
+bool CommandService_LocalCalibrationReady(uint16_t session_id, bool zero);
+#endif
 #endif
 bool CommandService_SetStagedConfig(const DeviceConfig *candidate);
 bool CommandService_SetStagedConfigForSource(const DeviceConfig *candidate,

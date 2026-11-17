@@ -39,6 +39,10 @@
 #if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
 #include "display_formatter.h"
 #endif
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+#include "cs1237.h"
+#include "measurement_bridge.h"
+#endif
 
 static GuardedCheckweigh s_check;
 static bool s_storage_maintenance;
@@ -1385,6 +1389,116 @@ static void TestCapacityChangesOverloadImmediately(void)
 }
 #endif
 
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+static void CalSample(int32_t raw, bool valid)
+{
+    CS1237_Sample sample = {0};
+    sample.raw = raw;
+    sample.valid = valid;
+    sample.timestamp_ms = ++s_tick * s_sample_period_ms;
+    TestMock_SetTimeMs(sample.timestamp_ms);
+    assert(CS1237_TestPushSample(&sample));
+    assert(MeasurementBridge_Process(1U) == 1U);
+    CommandService_Process(sample.timestamp_ms);
+    CalibrationController_Process10ms();
+}
+
+static void CalSetUp(FilterMode filter, Cs1237DataRate rate)
+{
+    SetupRate(GUARDED_CHECKWEIGH_OFF, rate);
+    DeviceConfig config = SystemContext_Get()->config;
+    const WeighingProfileId active = config.metrology.active_profile;
+    config.metrology.profiles[active].filter_mode = filter;
+    assert(ConfigApplication_Apply(&config) == CONFIG_APPLY_OK);
+    CommandResult saved = PersistenceManager_RequestSave();
+    assert(saved == COMMAND_RESULT_ACCEPTED || saved == COMMAND_RESULT_OK);
+    RunSaveUntilDone();
+    MeasurementBridge_Init();
+    CommandService_Init();
+    assert(DisplayController_Init());
+}
+
+static void CalCheckCapture(CalibrationState waiting, CalibrationState next,
+    int32_t raw)
+{
+    static const int32_t noise[8] = {-12, 8, -8, 12, -4, 4, -6, 6};
+    const uint32_t samples = CAL_RAW_WINDOW_SIZE +
+        (CAL_RAW_STABLE_HOLD_MS + s_sample_period_ms - 1U) / s_sample_period_ms;
+    for (uint32_t i = 0; i < samples; ++i)
+    {
+        assert(CalibrationController_GetState() == waiting);
+        CalSample(raw + noise[i % 8U], true);
+    }
+    assert(CalibrationController_GetState() == next);
+}
+
+static void TestCalTiming(FilterMode filter, Cs1237DataRate rate)
+{
+    CalSetUp(filter, rate);
+    for (uint32_t i = 0; i < 40U; ++i) CalSample(600000, true);
+    const uint32_t now = s_tick * s_sample_period_ms;
+    assert(SystemContext_SetState(APP_STATE_MENU, now));
+    assert(CalibrationController_Begin());
+    assert(SystemContext_SetState(APP_STATE_CALIBRATION, now));
+    /* An already stable pre-key platform must not be captured. */
+    for (uint32_t i = 0; i < 28U; ++i) CalSample(600000, true);
+    assert(CalibrationController_GetState() == CAL_STATE_CONFIRM_EMPTY);
+    KeyEvent confirm = {KEY_ID_FUNCTION, KEY_EVENT_SHORT, s_tick * s_sample_period_ms, 0U};
+    assert(CalibrationController_HandleKeyEvent(&confirm));
+    CalibrationController_Process10ms();
+    assert(CalibrationController_GetState() == CAL_STATE_WAIT_ZERO_STABLE);
+    CalCheckCapture(CAL_STATE_WAIT_ZERO_STABLE, CAL_STATE_INPUT_SPAN_WEIGHT, 100000);
+    assert(CalibrationController_GetSession()->captured_raw_zero == 100000);
+    confirm.timestamp_ms = s_tick * s_sample_period_ms;
+    assert(CalibrationController_HandleKeyEvent(&confirm));
+    for (uint32_t i = 0; i < 40U; ++i) CalSample(100000, true);
+    assert(CalibrationController_GetState() == CAL_STATE_WAIT_SPAN_STABLE);
+    const int32_t span = filter == FILTER_MODE_IIR ? -400000 : 600000;
+    CalCheckCapture(CAL_STATE_WAIT_SPAN_STABLE, CAL_STATE_COMMIT_RAM, span);
+    assert(CalibrationController_GetSession()->captured_raw_span == span);
+    CalibrationController_Process10ms();
+    assert(CalibrationController_GetState() == CAL_STATE_SAVE_WAIT);
+    RunSaveUntilDone();
+    CalibrationController_Process10ms();
+    assert(CalibrationController_GetState() == CAL_STATE_COMPLETE);
+    const DeviceConfig *saved = &SystemContext_Get()->config;
+    assert(saved->calibration.raw_span == span && saved->calibration.raw_zero == 100000);
+    assert(saved->metrology.profiles[saved->metrology.active_profile].filter_mode == filter);
+    assert(SystemContext_GetSavedRevision() == SystemContext_GetConfigRevision());
+}
+
+static void TestCalStaleOrInvalidSamples(void)
+{
+    CalSetUp(FILTER_MODE_IIR, DEVICE_CS1237_DATA_RATE_10_HZ);
+    CommandService_Process(s_tick * s_sample_period_ms);
+    CommandRequest request = {.id = COMMAND_CALIBRATION_BEGIN, .source = COMMAND_SOURCE_MODBUS};
+    CommandResponse response;
+    assert(CommandService_Execute(&request, &response) == COMMAND_RESULT_OK);
+    request.flags = (uint16_t)response.value0;
+    request.id = COMMAND_CALIBRATION_CAPTURE_ZERO;
+    CalibrationSessionSnapshot snap;
+    for (uint32_t i = 0; i < 12U; ++i) CalSample(100000, true);
+    CalSample(100000, false);
+    assert(CommandService_GetCalibrationSnapshot(&snap) && snap.sample_count == 0U);
+    for (uint32_t i = 0; i < 15U; ++i) CalSample(8388607, true);
+    assert(CommandService_Execute(&request, &response) == COMMAND_RESULT_NOT_STABLE);
+    for (uint32_t i = 0; i < 12U; ++i) CalSample(100000, true);
+    s_tick += 3U;
+    CalSample(100000, true);
+    assert(CommandService_GetCalibrationSnapshot(&snap) && snap.sample_count == 1U);
+    for (uint32_t i = 0; i < 12U; ++i) CalSample(100000, true);
+    assert(CommandService_GetCalibrationSnapshot(&snap) && snap.stable);
+    s_tick += 3U;
+    CommandService_Process(s_tick * s_sample_period_ms);
+    assert(CommandService_Execute(&request, &response) == COMMAND_RESULT_NOT_STABLE);
+    for (uint32_t i = 0; i < 13U; ++i) CalSample(100000, true);
+    assert(CommandService_Execute(&request, &response) == COMMAND_RESULT_OK);
+    assert(response.value0 == 100000);
+    request.id = COMMAND_CALIBRATION_CANCEL;
+    assert(CommandService_Execute(&request, &response) == COMMAND_RESULT_OK);
+}
+#endif
+
 int main(void)
 {
     TestPureSaveKeepsLiveR5();
@@ -1429,6 +1543,14 @@ int main(void)
     TestMenuChangeKeepsWeight(MENU_ITEM_INTERNAL_BUZZER, KEY_ID_HASH);
     TestRateChangeStillReacquires();
     TestCapacityChangesOverloadImmediately();
+#endif
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+    for (FilterMode filter = FILTER_MODE_NONE; filter < FILTER_MODE_COUNT; ++filter)
+    {
+        TestCalTiming(filter, DEVICE_CS1237_DATA_RATE_10_HZ);
+        TestCalTiming(filter, DEVICE_CS1237_DATA_RATE_40_HZ);
+    }
+    TestCalStaleOrInvalidSamples();
 #endif
     (void)puts("Stage 5P SAVE continuity PASS");
     return 0;

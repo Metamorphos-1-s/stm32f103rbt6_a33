@@ -155,6 +155,13 @@
             }
         },
         {
+            "name": "Stage5PRawCalibration",
+            "inherits": "Stage5PMenuContinuity",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5P_RAW_CALIBRATION": "ON"
+            }
+        },
+        {
             "name": "Stage5PMenuContinuity",
             "inherits": "Stage5PFilterRecovery",
             "cacheVariables": {
@@ -310,6 +317,10 @@
         {
             "name": "Stage5PMenuContinuity",
             "configurePreset": "Stage5PMenuContinuity"
+        },
+        {
+            "name": "Stage5PRawCalibration",
+            "configurePreset": "Stage5PRawCalibration"
         }
     ]
 }

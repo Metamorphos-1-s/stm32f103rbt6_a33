@@ -18,8 +18,10 @@
 #include <string.h>
 
 static CalibrationSession s_session;
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION == 0U)
 static RawCalibrationStability s_raw_stability;
 static uint32_t s_last_sample_sequence;
+#endif
 static bool s_unit_hint_active;
 
 static CommandResult CalibrationController_Command(CommandId id, int32_t value)
@@ -126,6 +128,7 @@ bool CalibrationController_Begin(void)
     {
         return false;
     }
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION == 0U)
     if (!RawCalibrationStability_Init(&s_raw_stability,
             CAL_RAW_WINDOW_SIZE, CAL_RAW_ENTER_THRESHOLD_COUNTS,
             CAL_RAW_STABLE_HOLD_MS))
@@ -138,6 +141,7 @@ bool CalibrationController_Begin(void)
         (void)CommandService_Execute(&cancel, &response);
         return false;
     }
+#endif
     (void)memset(&s_session, 0, sizeof(s_session));
     s_session.session_id = session_id;
 #if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
@@ -174,7 +178,9 @@ bool CalibrationController_Begin(void)
     s_session.input_division_digit = display->division_digit;
     NumericEditCursor_Init(&s_session.edit_cursor, BSP_TimeNowMs());
     s_session.result = CALIBRATION_RESULT_INCONSISTENT;
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION == 0U)
     s_last_sample_sequence = 0U;
+#endif
     CalibrationController_SetState(CAL_STATE_CONFIRM_EMPTY,
                                    DISPLAY_CODE_UNLOAD);
     return true;
@@ -216,22 +222,25 @@ static void CalibrationController_CommitAndSave(void)
 }
 #endif
 
-static void CalibrationController_CaptureStable(bool zero_capture,
-                                                const WeightSnapshot *snapshot)
+static void CalibrationController_CaptureStable(bool zero_capture)
 {
     CalibrationSessionSnapshot calibration;
     const CalibrationConfig *candidate;
     CommandResult result;
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION == 0U)
     int32_t average;
-
     if (!RawCalibrationStability_GetAverage(&s_raw_stability,
             &average))
         return;
     (void)average;
+#endif
     if (zero_capture)
     {
         result = CalibrationController_Command(
             COMMAND_CALIBRATION_CAPTURE_ZERO, 0);
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+        if (result == COMMAND_RESULT_NOT_STABLE) return;
+#endif
         if ((result != COMMAND_RESULT_OK) ||
             !CommandService_GetCalibrationSnapshot(&calibration))
         {
@@ -251,6 +260,9 @@ static void CalibrationController_CaptureStable(bool zero_capture,
     {
         result = CalibrationController_Command(
             COMMAND_CALIBRATION_CAPTURE_SPAN, 0);
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+        if (result == COMMAND_RESULT_NOT_STABLE) return;
+#endif
         candidate = CommandService_GetCalibrationCandidate();
         if ((result == COMMAND_RESULT_OK) && (candidate != NULL) &&
             CommandService_GetCalibrationSnapshot(&calibration))
@@ -276,12 +288,13 @@ static void CalibrationController_CaptureStable(bool zero_capture,
                                            DISPLAY_CODE_ERROR);
         }
     }
-    (void)snapshot;
 }
 
 void CalibrationController_Process10ms(void)
 {
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION == 0U)
     const WeightSnapshot *snapshot;
+#endif
 
 #if (A33_ENABLE_STAGE5PA2D_CALIBRATION != 0U)
     if (s_session.state == CAL_STATE_COMMIT_RAM)
@@ -348,6 +361,11 @@ void CalibrationController_Process10ms(void)
         ((s_session.state != CAL_STATE_WAIT_ZERO_STABLE) &&
          (s_session.state != CAL_STATE_WAIT_SPAN_STABLE)))
         return;
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+    const bool zero = s_session.state == CAL_STATE_WAIT_ZERO_STABLE;
+    if (CommandService_LocalCalibrationReady(s_session.session_id, zero))
+        CalibrationController_CaptureStable(zero);
+#else
     snapshot = MetrologyManager_GetSnapshot();
     if ((snapshot == NULL) ||
         ((snapshot->status_flags & WEIGHT_STATUS_FILTER_READY) == 0U) ||
@@ -358,8 +376,9 @@ void CalibrationController_Process10ms(void)
             snapshot->filtered_raw, snapshot->sample_timestamp_ms))
     {
         CalibrationController_CaptureStable(
-            s_session.state == CAL_STATE_WAIT_ZERO_STABLE, snapshot);
+            s_session.state == CAL_STATE_WAIT_ZERO_STABLE);
     }
+#endif
 }
 
 bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
@@ -393,8 +412,18 @@ bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
             if ((event->key == KEY_ID_FUNCTION) &&
                 (event->type == KEY_EVENT_SHORT))
             {
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+                if (!CommandService_StartLocalZeroWindow(s_session.session_id,
+                        event->timestamp_ms))
+                {
+                    CalibrationController_SetState(CAL_STATE_ERROR,
+                        DISPLAY_CODE_CALIBRATION_ERROR);
+                    break;
+                }
+#else
                 RawCalibrationStability_Reset(&s_raw_stability);
                 s_last_sample_sequence = 0U;
+#endif
                 CalibrationController_SetState(CAL_STATE_WAIT_ZERO_STABLE,
                                                DISPLAY_CODE_CAL_ZERO);
             }
@@ -450,8 +479,10 @@ bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
                        keep the later physical key timestamp. */
                     (void)CommandService_TouchLocalCalibration(
                         s_session.session_id, event->timestamp_ms);
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION == 0U)
                     RawCalibrationStability_Reset(&s_raw_stability);
                     s_last_sample_sequence = 0U;
+#endif
                     CalibrationController_SetState(CAL_STATE_WAIT_SPAN_STABLE,
                                                    DISPLAY_CODE_CAL_SPAN);
                 }
@@ -468,8 +499,10 @@ bool CalibrationController_HandleKeyEvent(const KeyEvent *event)
             if ((event->key == KEY_ID_FUNCTION) &&
                 (event->type == KEY_EVENT_SHORT))
             {
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION == 0U)
                 RawCalibrationStability_Reset(&s_raw_stability);
                 s_last_sample_sequence = 0U;
+#endif
                 CalibrationController_SetState(CAL_STATE_WAIT_SPAN_STABLE,
                                                DISPLAY_CODE_CAL_SPAN);
             }

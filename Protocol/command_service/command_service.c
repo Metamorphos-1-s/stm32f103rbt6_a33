@@ -9,6 +9,10 @@
 #include "persistence_manager.h"
 #include "project_config.h"
 #include "raw_calibration_stability.h"
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+#include "fault_manager.h"
+#include "raw_measurement.h"
+#endif
 #include "system_context.h"
 #include "unit_converter.h"
 #include "weighing_profile_manager.h"
@@ -37,6 +41,10 @@ typedef struct
     CommandResult last_result;
     uint32_t last_activity_ms;
     uint32_t last_sample_sequence;
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+    uint32_t last_sample_ms;
+    uint32_t last_invalid_count;
+#endif
     uint32_t capture_sample_sequence;
     uint16_t session_id;
     bool active;
@@ -141,6 +149,72 @@ static bool CommandService_CalibrationConfigMatches(void)
         (profile->gain == s_calibration.gain_locked);
 }
 
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+static void CommandService_ResetCalibrationWindow(void)
+{
+    const RawMeasurementState *raw = RawMeasurement_GetState();
+    RawCalibrationStability_Reset(&s_calibration.stability);
+    s_calibration.last_sample_sequence = raw->accepted_sample_count;
+    s_calibration.last_invalid_count = raw->invalid_sample_count;
+}
+
+static uint32_t CommandService_CalibrationMaxSampleGapMs(void)
+{
+    return s_calibration.sample_rate_locked == DEVICE_CS1237_DATA_RATE_40_HZ ?
+        80U : 250U;
+}
+
+static bool CommandService_CalibrationSampleUsable(const RawMeasurementState *raw,
+    uint32_t now_ms)
+{
+    return raw->has_sample && raw->latest.valid &&
+        (uint32_t)(now_ms - raw->latest.timestamp_ms) <=
+            CommandService_CalibrationMaxSampleGapMs() &&
+        raw->latest.raw_value > -8323072 && raw->latest.raw_value < 8323072 &&
+        SystemContext_GetState() != APP_STATE_FAULT &&
+        !FaultManager_IsActive(FAULT_ADC_ERROR) &&
+        !FaultManager_IsActive(FAULT_CS1237_NOT_READY) &&
+        !FaultManager_IsActive(FAULT_CS1237_CONFIG_ERROR) &&
+        !FaultManager_IsActive(FAULT_CS1237_DATA_ERROR) &&
+        !FaultManager_IsActive(FAULT_CS1237_BUFFER_OVERRUN);
+}
+
+static bool CommandService_CalibrationCaptureFresh(void)
+{
+    const RawMeasurementState *raw = RawMeasurement_GetState();
+    return raw->accepted_sample_count == s_calibration.last_sample_sequence &&
+        raw->invalid_sample_count == s_calibration.last_invalid_count &&
+        CommandService_CalibrationSampleUsable(raw, s_now_ms);
+}
+
+static bool CommandService_UpdateCalibrationWindow(uint32_t now_ms, bool zero)
+{
+    const RawMeasurementState *raw = RawMeasurement_GetState();
+    const int64_t delta = (int64_t)raw->latest.raw_value - s_calibration.raw_zero;
+    if (!CommandService_CalibrationSampleUsable(raw, now_ms) ||
+        raw->invalid_sample_count != s_calibration.last_invalid_count ||
+        (!zero && delta >= -(int64_t)CALIBRATION_MIN_RAW_SPAN_COUNTS &&
+         delta <= (int64_t)CALIBRATION_MIN_RAW_SPAN_COUNTS))
+    {
+        CommandService_ResetCalibrationWindow();
+        return false;
+    }
+    const uint32_t count = raw->accepted_sample_count;
+    if (count == s_calibration.last_sample_sequence)
+        return s_calibration.stability.stable;
+    if (s_calibration.stability.count != 0U &&
+        (count - s_calibration.last_sample_sequence != 1U ||
+         raw->latest.timestamp_ms == s_calibration.last_sample_ms ||
+         (uint32_t)(raw->latest.timestamp_ms - s_calibration.last_sample_ms) >
+             CommandService_CalibrationMaxSampleGapMs()))
+        RawCalibrationStability_Reset(&s_calibration.stability);
+    s_calibration.last_sample_sequence = count;
+    s_calibration.last_sample_ms = raw->latest.timestamp_ms;
+    return RawCalibrationStability_Process(&s_calibration.stability,
+        raw->latest.raw_value, raw->latest.timestamp_ms);
+}
+#endif
+
 static bool CommandService_CalibrationMassValid(MassValueUg mass)
 {
     DisplayWeightValue display_value;
@@ -225,7 +299,9 @@ void CommandService_Init(void)
 
 void CommandService_Process(uint32_t now_ms)
 {
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION == 0U)
     const WeightSnapshot *snapshot;
+#endif
     bool stable;
 
     s_now_ms = now_ms;
@@ -252,6 +328,11 @@ void CommandService_Process(uint32_t now_ms)
     {
         return;
     }
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+    stable = CommandService_UpdateCalibrationWindow(now_ms,
+        s_calibration.state == CAL_WORKFLOW_WAIT_ZERO_STABLE ||
+        s_calibration.state == CAL_WORKFLOW_ZERO_READY);
+#else
     snapshot = MetrologyManager_GetSnapshot();
     if ((snapshot == NULL) ||
         ((snapshot->status_flags & WEIGHT_STATUS_FILTER_READY) == 0U) ||
@@ -262,6 +343,7 @@ void CommandService_Process(uint32_t now_ms)
     s_calibration.last_sample_sequence = snapshot->sample_sequence;
     stable = RawCalibrationStability_Process(&s_calibration.stability,
         snapshot->filtered_raw, snapshot->sample_timestamp_ms);
+#endif
     if ((s_calibration.state == CAL_WORKFLOW_WAIT_ZERO_STABLE) ||
         (s_calibration.state == CAL_WORKFLOW_ZERO_READY))
     {
@@ -643,6 +725,9 @@ CommandResult CommandService_Execute(const CommandRequest *request,
                     result = COMMAND_RESULT_INTERNAL_ERROR;
                     break;
                 }
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+                CommandService_ResetCalibrationWindow();
+#endif
                 response->value0 = s_calibration.session_id;
                 response->value1 = (int32_t)s_calibration.owner;
                 MetrologyManager_ForceDisplayTracking(
@@ -662,6 +747,10 @@ CommandResult CommandService_Execute(const CommandRequest *request,
                     result = COMMAND_RESULT_NOT_STABLE;
                 else if (s_calibration.state != CAL_WORKFLOW_ZERO_READY)
                     result = COMMAND_RESULT_INVALID_STATE;
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+                else if (!CommandService_CalibrationCaptureFresh())
+                    result = COMMAND_RESULT_NOT_STABLE;
+#endif
                 else if (!RawCalibrationStability_GetAverage(
                              &s_calibration.stability, &average))
                     result = COMMAND_RESULT_NOT_STABLE;
@@ -674,8 +763,12 @@ CommandResult CommandService_Execute(const CommandRequest *request,
                     s_calibration.state = CAL_WORKFLOW_ZERO_CAPTURED;
                     if (s_calibration.have_weight)
                     {
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+                        CommandService_ResetCalibrationWindow();
+#else
                         RawCalibrationStability_Reset(
                             &s_calibration.stability);
+#endif
                         s_calibration.state = CAL_WORKFLOW_WAIT_LOAD_STABLE;
                     }
                     response->value0 = average;
@@ -704,8 +797,12 @@ CommandResult CommandService_Execute(const CommandRequest *request,
                         (s_calibration.state ==
                          CAL_WORKFLOW_ZERO_CAPTURED))
                     {
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+                        CommandService_ResetCalibrationWindow();
+#else
                         RawCalibrationStability_Reset(
                             &s_calibration.stability);
+#endif
                         s_calibration.state = CAL_WORKFLOW_WAIT_LOAD_STABLE;
                     }
                 }
@@ -727,6 +824,10 @@ CommandResult CommandService_Execute(const CommandRequest *request,
                     result = COMMAND_RESULT_NOT_STABLE;
                 else if (s_calibration.state != CAL_WORKFLOW_LOAD_READY)
                     result = COMMAND_RESULT_INVALID_STATE;
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+                else if (!CommandService_CalibrationCaptureFresh())
+                    result = COMMAND_RESULT_NOT_STABLE;
+#endif
                 else if (!RawCalibrationStability_GetAverage(
                              &s_calibration.stability, &average))
                     result = COMMAND_RESULT_NOT_STABLE;
@@ -1101,6 +1202,25 @@ bool CommandService_TouchLocalCalibration(uint16_t session_id,
     s_calibration.last_activity_ms = now_ms;
     return true;
 }
+
+#if (A33_ENABLE_STAGE5P_RAW_CALIBRATION != 0U)
+bool CommandService_StartLocalZeroWindow(uint16_t session_id, uint32_t now_ms)
+{
+    if (!CommandService_TouchLocalCalibration(session_id, now_ms) ||
+        (s_calibration.state != CAL_WORKFLOW_WAIT_ZERO_STABLE &&
+         s_calibration.state != CAL_WORKFLOW_ZERO_READY))
+        return false;
+    CommandService_ResetCalibrationWindow();
+    s_calibration.state = CAL_WORKFLOW_WAIT_ZERO_STABLE;
+    return true;
+}
+
+bool CommandService_LocalCalibrationReady(uint16_t session_id, bool zero)
+{
+    return CommandService_LocalCalibrationActive(session_id) &&
+        s_calibration.state == (zero ? CAL_WORKFLOW_ZERO_READY : CAL_WORKFLOW_LOAD_READY);
+}
+#endif
 #endif
 
 bool CommandService_SetStagedConfig(const DeviceConfig *candidate)
