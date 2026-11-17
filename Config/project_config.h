@@ -148,7 +148,7 @@
 #if (A33_ENABLE_STAGE5P_FEEDBACK == 0U) || (A33_ENABLE_STAGE5P_SAVE_CONTINUITY == 0U)
 #error "The fast follow candidate requires the Stage 5P feedback baseline"
 #endif
-#define FW_RELEASE_VERSION            0x0533U
+#define FW_RELEASE_VERSION            0x0534U
 #elif (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
 #define FW_RELEASE_VERSION            0x0532U
 #elif (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)

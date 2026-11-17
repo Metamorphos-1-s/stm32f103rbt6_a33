@@ -384,10 +384,26 @@ static void TryFollowLargeStep(WeightEngine *engine,
     int32_t seed;
     MassValueUg gross;
     MassValueUg overload;
-    if (filter->mode != FILTER_MODE_AVERAGE) return;
-    /* AVG does not use the median filter's history. Reuse two slots for
-       the previous plateau and one pending raw sample. */
-    if (!allow || (filter->strength < 3U) ||
+    int32_t *step_pair;
+    uint8_t *step_pending;
+    /* Reuse the history not used by the active mode. FILT3 must keep its
+       median history separate from the two-sample step confirmation. */
+    switch (filter->mode)
+    {
+        case FILTER_MODE_AVERAGE:
+            step_pair = filter->median_history;
+            step_pending = &filter->median_count;
+            break;
+        case FILTER_MODE_IIR:
+        case FILTER_MODE_MEDIAN3_IIR:
+            step_pair = filter->average_buffer;
+            step_pending = &filter->average_count;
+            break;
+        default:
+            return;
+    }
+    if (!allow ||
+        ((filter->mode == FILTER_MODE_AVERAGE) && (filter->strength < 3U)) ||
         (engine->metrology.profiles[engine->metrology.active_profile].sample_rate !=
          DEVICE_CS1237_DATA_RATE_10_HZ) ||
         !WeightFilter_IsReady(filter) || (engine->stability.count == 0U) ||
@@ -395,24 +411,24 @@ static void TryFollowLargeStep(WeightEngine *engine,
         !engine->calibration.calibration_valid ||
         (raw <= -FAST_FOLLOW_NEAR_RAIL) || (raw >= FAST_FOLLOW_NEAR_RAIL))
     {
-        filter->median_count = 0U;
+        *step_pending = 0U;
         return;
     }
-    if (filter->median_count == 0U)
+    if (*step_pending == 0U)
     {
         if (((engine->snapshot.status_flags &
              (WEIGHT_STATUS_STABLE | WEIGHT_STATUS_OVERLOAD)) != WEIGHT_STATUS_STABLE) ||
             (raw == filter->output) ||
             !RawMassDistance(&engine->calibration, filter->output, raw, &magnitude) ||
             (magnitude < FAST_FOLLOW_STEP_UG)) return;
-        filter->median_history[0] = filter->output;
-        filter->median_history[1] = raw;
-        filter->median_count = 1U;
+        step_pair[0] = filter->output;
+        step_pair[1] = raw;
+        *step_pending = 1U;
         return;
     }
-    anchor = filter->median_history[0];
-    first = filter->median_history[1];
-    filter->median_count = 0U;
+    anchor = step_pair[0];
+    first = step_pair[1];
+    *step_pending = 0U;
     if ((raw == anchor) || ((raw > anchor) != (first > anchor)) ||
         !RawMassDistance(&engine->calibration, first, raw, &magnitude) ||
         (magnitude > FAST_FOLLOW_PAIR_UG)) return;
@@ -433,9 +449,22 @@ static void TryFollowLargeStep(WeightEngine *engine,
         !MassMath_Abs(gross, &magnitude) || (magnitude > (uint64_t)overload))
         return;
 
-    for (uint8_t i = 0U; i < filter->strength; ++i)
-        filter->average_buffer[i] = seed;
-    filter->average_sum = (int64_t)seed * filter->strength;
+    if (filter->mode == FILTER_MODE_AVERAGE)
+    {
+        for (uint8_t i = 0U; i < filter->strength; ++i)
+            filter->average_buffer[i] = seed;
+        filter->average_sum = (int64_t)seed * filter->strength;
+    }
+    else
+    {
+        filter->output = seed;
+        if (filter->mode == FILTER_MODE_MEDIAN3_IIR)
+        {
+            filter->median_history[0] = seed;
+            filter->median_history[1] = seed;
+            filter->median_history[2] = seed;
+        }
+    }
     /* The filter can follow now, but STABLE must earn a new window of real
        samples. No synthetic filter seeds enter the stability detector. */
     StabilityDetector_Reset(&engine->stability);

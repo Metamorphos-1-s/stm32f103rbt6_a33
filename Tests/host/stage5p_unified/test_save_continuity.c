@@ -898,7 +898,7 @@ static void FeedEngine(WeightEngine *engine, int32_t raw, uint32_t stamp, bool f
     WeightEngine_FinalizeZeroIndicator(engine);
 }
 
-static void TestFastFollowAndParallelZero(void)
+static void TestFastFollowAndParallelZero(FilterMode mode)
 {
     DeviceConfig config;
     WeightEngine fast, slow;
@@ -906,6 +906,7 @@ static void TestFastFollowAndParallelZero(void)
     const int32_t empty = 100000;
     const int32_t loaded = 600000;
     DefaultConfig_Load(&config);
+    config.metrology.profiles[0].filter_mode = mode;
     assert(CalibrationModel_BuildMass(empty, loaded, INT64_C(500000000),
         1U, &config.calibration) == CALIBRATION_RESULT_OK);
     assert(WeightEngine_ReinitializeMassBeta(&fast, &config.metrology,
@@ -917,7 +918,7 @@ static void TestFastFollowAndParallelZero(void)
         FeedEngine(&slow, empty, i * 100U, false);
     }
     assert((fast.snapshot.status_flags & WEIGHT_STATUS_STABLE) != 0U);
-    for (uint32_t i = 0U; i < 20U; ++i)
+    for (uint32_t i = 0U; i < 100U; ++i)
     {
         FeedEngine(&fast, loaded, 2000U + i * 100U, true);
         FeedEngine(&slow, loaded, 2000U + i * 100U, false);
@@ -933,37 +934,37 @@ static void TestFastFollowAndParallelZero(void)
         if (!slow_stable && (slow.snapshot.status_flags & WEIGHT_STATUS_STABLE))
             slow_stable = i * 100U;
     }
-    assert(fast_stable > 0U && fast_stable < slow_stable);
+    assert(fast_stable == 1100U && fast_stable < slow_stable);
     for (uint32_t i = 0U; i < 20U; ++i)
     {
-        FeedEngine(&fast, empty, 4000U + i * 100U, true);
+        FeedEngine(&fast, empty, 12000U + i * 100U, true);
         if (!unload_stable && (fast.snapshot.status_flags & WEIGHT_STATUS_STABLE))
             unload_stable = i * 100U;
         if (!zero && (fast.snapshot.status_flags & WEIGHT_STATUS_ZERO))
             zero = i * 100U;
     }
     assert(unload_stable > 0U && unload_stable == zero);
-    printf("10 Hz simulated 500 g: STABLE %lu vs %lu ms, unload STABLE/ZERO %lu/%lu ms\n",
-        (unsigned long)fast_stable, (unsigned long)slow_stable,
+    printf("10 Hz FILT%u simulated 500 g: STABLE %lu vs %lu ms, unload STABLE/ZERO %lu/%lu ms\n",
+        (unsigned)mode, (unsigned long)fast_stable, (unsigned long)slow_stable,
         (unsigned long)unload_stable, (unsigned long)zero);
 
     /* An isolated impulse or two distinct points on a ramp cannot reseed. */
     slow = fast;
-    FeedEngine(&fast, loaded, 6000U, true);
-    FeedEngine(&slow, loaded, 6000U, false);
-    FeedEngine(&fast, empty, 6100U, true);
-    FeedEngine(&slow, empty, 6100U, false);
+    FeedEngine(&fast, loaded, 14000U, true);
+    FeedEngine(&slow, loaded, 14000U, false);
+    FeedEngine(&fast, empty, 14100U, true);
+    FeedEngine(&slow, empty, 14100U, false);
     assert(fast.snapshot.filtered_raw == slow.snapshot.filtered_raw);
     assert((fast.snapshot.status_flags & (WEIGHT_STATUS_STABLE | WEIGHT_STATUS_ZERO)) == 0U);
     for (uint32_t i = 0U; i < 20U; ++i)
     {
-        FeedEngine(&fast, empty, 6200U + i * 100U, true);
-        FeedEngine(&slow, empty, 6200U + i * 100U, false);
+        FeedEngine(&fast, empty, 14200U + i * 100U, true);
+        FeedEngine(&slow, empty, 14200U + i * 100U, false);
     }
-    FeedEngine(&fast, loaded, 8200U, true);
-    FeedEngine(&slow, loaded, 8200U, false);
-    FeedEngine(&fast, loaded + 1000, 8300U, true);
-    FeedEngine(&slow, loaded + 1000, 8300U, false);
+    FeedEngine(&fast, loaded, 16200U, true);
+    FeedEngine(&slow, loaded, 16200U, false);
+    FeedEngine(&fast, loaded + 1000, 16300U, true);
+    FeedEngine(&slow, loaded + 1000, 16300U, false);
     assert(fast.snapshot.filtered_raw == slow.snapshot.filtered_raw);
 }
 #endif
@@ -986,7 +987,9 @@ int main(void)
     TestFeedbackStability();
 #endif
 #if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
-    TestFastFollowAndParallelZero();
+    TestFastFollowAndParallelZero(FILTER_MODE_AVERAGE);
+    TestFastFollowAndParallelZero(FILTER_MODE_IIR);
+    TestFastFollowAndParallelZero(FILTER_MODE_MEDIAN3_IIR);
 #endif
     (void)puts("Stage 5P SAVE continuity PASS");
     return 0;
