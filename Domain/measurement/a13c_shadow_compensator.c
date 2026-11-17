@@ -317,6 +317,11 @@ void A13C_Reset(A13CCompensator *c, A13CReason reason)
     if (c == NULL) return;
     c->offset_ug = 0;
     c->boost_until = 0U;
+#if (A33_ENABLE_STAGE5P_R5_RESET_EPOCH != 0U)
+    /* A weighing rebuild may restart its sequence at one. The old
+     * sample-based deadline must not freeze the new reference epoch. */
+    c->freeze_until = 0U;
+#endif
     c->limited = false;
     c->have_last = false;
     c->event_pending = false;

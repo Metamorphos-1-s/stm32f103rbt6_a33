@@ -155,6 +155,13 @@
             }
         },
         {
+            "name": "Stage5PR5ResetEpoch",
+            "inherits": "Stage5PKeyBeepContinuity",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5P_R5_RESET_EPOCH": "ON"
+            }
+        },
+        {
             "name": "Stage5PKeyBeepContinuity",
             "inherits": "Stage5PMotionFilter",
             "cacheVariables": {
@@ -343,6 +350,10 @@
         {
             "name": "Stage5PKeyBeepContinuity",
             "configurePreset": "Stage5PKeyBeepContinuity"
+        },
+        {
+            "name": "Stage5PR5ResetEpoch",
+            "configurePreset": "Stage5PR5ResetEpoch"
         }
     ]
 }

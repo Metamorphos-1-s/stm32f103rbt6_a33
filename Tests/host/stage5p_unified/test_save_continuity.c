@@ -236,6 +236,40 @@ static void Setup(GuardedCheckweighMode check_mode)
     SetupRate(check_mode, DEVICE_CS1237_DATA_RATE_40_HZ);
 }
 
+#if (A33_ENABLE_STAGE5P_R5_RESET_EPOCH != 0U)
+static void TestR5RestartsAfterFilterChange(Cs1237DataRate rate)
+{
+    SetupRateWithRating(GUARDED_CHECKWEIGH_OFF, rate, 0, FILTER_MODE_AVERAGE);
+    const uint32_t samples_per_second = 1000U / s_sample_period_ms;
+    const A13CSnapshot *r5 = MetrologyManager_GetA13CSnapshot();
+
+    for (uint32_t i = 0U; i < 80U * samples_per_second; ++i) Feed(600000);
+    assert(r5->state == A13C_STATE_TRACKING);
+    Feed(609000);
+    assert(r5->state == A13C_STATE_STEP_PENDING || r5->state == A13C_STATE_STEP_SETTLING);
+    /* Let the old deadline pass: even an expired deadline must not leak
+     * into the next epoch when the weighing sequence restarts at one. */
+    for (uint32_t i = 0U; i < 10U * samples_per_second; ++i) Feed(609000);
+    assert(r5->state != A13C_STATE_STEP_PENDING);
+
+    DeviceConfig candidate = SystemContext_Get()->config;
+    candidate.metrology.profiles[candidate.metrology.active_profile].filter_mode =
+        FILTER_MODE_MEDIAN3_IIR;
+    assert(ConfigApplication_Apply(&candidate) == CONFIG_APPLY_OK);
+    assert(MetrologyManager_GetSnapshot()->sample_sequence <= 1U);
+    for (uint32_t i = 0U; i < 70U * samples_per_second; ++i) Feed(609000);
+    assert(MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_ACTIVE);
+    assert(r5->state == A13C_STATE_TRACKING &&
+        r5->reference_lock_sequence > 0U && r5->offset_ug == 0);
+
+    for (uint32_t i = 0U; i < 130U * samples_per_second; ++i) Feed(609100);
+    /* The nominal 0.1 g input is below the step detector threshold after
+     * IIR quantization; check that correction really resumes. */
+    assert(r5->state == A13C_STATE_TRACKING && r5->offset_ug > 0);
+    assert(FaultManager_GetActiveMask() == 0U);
+}
+#endif
+
 static void Test10HzPureSave(void)
 {
     DeviceConfig changed;
@@ -1689,6 +1723,10 @@ int main(void)
 {
     TestPureSaveKeepsLiveR5();
     Test10HzPureSave();
+#if (A33_ENABLE_STAGE5P_R5_RESET_EPOCH != 0U)
+    TestR5RestartsAfterFilterChange(DEVICE_CS1237_DATA_RATE_10_HZ);
+    TestR5RestartsAfterFilterChange(DEVICE_CS1237_DATA_RATE_40_HZ);
+#endif
     TestFlashPauseRebuildsReferenceWithoutLosingOffset();
     TestSavedPairRestoresWithoutVolatileState();
     TestDosingAndDynamicSave();

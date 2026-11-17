@@ -1233,3 +1233,12 @@ target_compile_definitions(stage5p_motion_filter_tests PRIVATE ${raw_calibration
     A33_ENABLE_STAGE5P_RAW_CALIBRATION=1 A33_ENABLE_STAGE5P_MOTION_FILTER=1)
 target_compile_options(stage5p_motion_filter_tests PRIVATE ${feedback_options})
 add_test(NAME stage5p_motion_filter_integration COMMAND stage5p_motion_filter_tests)
+
+get_target_property(motion_filter_defs stage5p_motion_filter_tests COMPILE_DEFINITIONS)
+add_executable(stage5p_r5_reset_epoch_tests ${feedback_sources}
+    ../../Services/alarm_output_manager/alarm_output_manager.c)
+target_include_directories(stage5p_r5_reset_epoch_tests PRIVATE ${feedback_includes})
+target_compile_definitions(stage5p_r5_reset_epoch_tests PRIVATE ${motion_filter_defs}
+    A33_ENABLE_STAGE5P_KEY_BEEP_CONTINUITY=1 A33_ENABLE_STAGE5P_R5_RESET_EPOCH=1)
+target_compile_options(stage5p_r5_reset_epoch_tests PRIVATE ${feedback_options})
+add_test(NAME stage5p_r5_reset_epoch_integration COMMAND stage5p_r5_reset_epoch_tests)
