@@ -16,3 +16,23 @@
 ## 现场补证
 
 现场证据强烈支持旧冻结截止点残留，但没有直接记录切换前的阶跃、旧序号或 `freeze_until`。若设备仍处于同一次运行，可单次 FC03 读 `0x0300` 起 35 个寄存器，查看状态 `0x0302`、原因 `0x0303`、参考锁定序号 `0x0321–0322`。复现中的旧版为 `3 / INITIAL(1) / 0`，可辅助比对。后续候选上板验收应在同一次开机内完成“正常跟踪 → 大阶跃 → 切换滤波 → 保持静载”，确认能重新锁定参考并进入状态 7；静载期间不要求补偿量非零。
+
+## 本地构建与烧录验收
+
+在已导入候选分支的 STM32 仓库根目录，使用 CMake ≥ 3.22、Ninja 和 GNU Arm Embedded GCC（包含 newlib-nano）。如使用 STM32CubeCLT，将其 GCC 和 CMake/Ninja 目录加入 PATH。以下命令只构建和检查文件：
+
+```powershell
+cmake --preset Stage5PR5ResetEpoch -B build/arm-0542 -DCMAKE_BUILD_TYPE=Release '-DCMAKE_C_FLAGS=-Wall -Wextra -Werror -fstack-usage -fcallgraph-info=su'
+cmake --build build/arm-0542
+arm-none-eabi-objcopy -O binary build/arm-0542/stm32f103rbt6_a33.elf build/arm-0542/A33_0542_MAP0110.bin
+arm-none-eabi-objdump -h build/arm-0542/stm32f103rbt6_a33.elf
+python Tools/stage5mr5c/analyze_ram_stack.py --elf build/arm-0542/stm32f103rbt6_a33.elf --map build/arm-0542/stm32f103rbt6_a33.map --callgraph-root build/arm-0542 --output build/arm-0542/ram
+python Tools/stage5pa13d/nested_stack_gate.py --analysis build/arm-0542/ram --callgraph-root build/arm-0542 --output build/arm-0542/ram/nested_stack.json
+Get-FileHash build/arm-0542/A33_0542_MAP0110.bin -Algorithm SHA256
+```
+
+核对 Flash 可加载段均落在应用区 `0x08000000–0x0801EFFF`，BIN 不超过 126,976 B，静态保守栈余量至少 512 B。独立运行 Host 专项时，使用本机 C 编译器配置 `cmake -S Tests/host -B build/host-0542 -G Ninja -DCMAKE_BUILD_TYPE=Debug`，构建 `stage5p_r5_reset_epoch_tests`，再运行 `ctest --test-dir build/host-0542 -R '^stage5p_r5_reset_epoch_integration$' --output-on-failure`。
+
+测试仪上板时先备份 `0x0801F000–0x0801FFFF` 的完整 4 KiB 配置区，擦应用页 0–123，从 `0x08000000` 写入并 Verify。复位后先通过 COM5 确认 `0x0542 / 0x0110`，在任何菜单保存前回读配置并与备份逐字节比较。
+
+在 10 Hz、FILT1、R5 ACTIVE + STATIC 下保持静载至少两分钟并读到跟踪状态。快放砝码，确认出现阶跃，再切换至 FILT3 并保持载荷。记录 `0x034A–034D` 的序号和时间戳、`0x0302` 的状态、`0x0321–0322` 的参考锁定序号；以切换生效后 90 秒内重新锁定参考且 `0x0302=7` 为验收目标。期间不重启、不置零、不去皮、不重新标定，以免绕过待验证的场景。
