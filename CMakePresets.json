@@ -155,6 +155,13 @@
             }
         },
         {
+            "name": "Stage5PKeyBeepContinuity",
+            "inherits": "Stage5PMotionFilter",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5P_KEY_BEEP_CONTINUITY": "ON"
+            }
+        },
+        {
             "name": "Stage5PMotionFilter",
             "inherits": "Stage5PRawCalibration",
             "cacheVariables": {
@@ -332,6 +339,10 @@
         {
             "name": "Stage5PMotionFilter",
             "configurePreset": "Stage5PMotionFilter"
+        },
+        {
+            "name": "Stage5PKeyBeepContinuity",
+            "configurePreset": "Stage5PKeyBeepContinuity"
         }
     ]
 }

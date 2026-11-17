@@ -597,11 +597,24 @@ static void App_UpdateAlarmOutputs(uint32_t now_ms)
 
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
   (void)memset(&shadow, 0, sizeof(shadow));
+#if (A33_ENABLE_STAGE5P_KEY_BEEP_CONTINUITY != 0U)
+  const bool shadow_available = MetrologyManager_GetAlarmShadowDiagnostics(&shadow);
+  if (!shadow_available)
+  {
+    /* noCAL (or no weight yet): disarm checkweigh without cancelling UI
+       feedback or skipping the end-of-storage acknowledgement. */
+    shadow.sample_sequence = snapshot->sample_sequence;
+    shadow.timestamp_ms = snapshot->sample_timestamp_ms;
+    shadow.static_class = CHECKWEIGH_SHADOW_INVALID;
+    shadow.dynamic_confirmed = CHECKWEIGH_SHADOW_INVALID;
+  }
+#else
   if (!MetrologyManager_GetAlarmShadowDiagnostics(&shadow))
   {
     AlarmOutputManager_AllOff(&s_alarm_output_manager);
     return;
   }
+#endif
   (void)memset(&guarded_input, 0, sizeof(guarded_input));
   guarded_input.sample_sequence = shadow.sample_sequence;
   guarded_input.sample_timestamp_ms = shadow.timestamp_ms;
@@ -613,7 +626,11 @@ static void App_UpdateAlarmOutputs(uint32_t now_ms)
   guarded_input.enabled = context->config.alarm.limit_function_enable &&
       AlarmConfig_Validate(&context->config.alarm);
 #if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
-  if (shadow.revision != (uint16_t)context->config_revision)
+  if (
+#if (A33_ENABLE_STAGE5P_KEY_BEEP_CONTINUITY != 0U)
+      shadow_available &&
+#endif
+      shadow.revision != (uint16_t)context->config_revision)
   {
     guarded_input.static_class = CHECKWEIGH_SHADOW_PENDING;
     guarded_input.dynamic_class = CHECKWEIGH_SHADOW_PENDING;
@@ -622,7 +639,12 @@ static void App_UpdateAlarmOutputs(uint32_t now_ms)
   guarded_input.calibration_active = state == APP_STATE_CALIBRATION;
   guarded_input.fault_active = (FaultManager_GetActiveMask() != 0U) ||
       (state == APP_STATE_FAULT);
-#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+#if (A33_ENABLE_STAGE5P_KEY_BEEP_CONTINUITY != 0U)
+  const bool storage_active = DeviceManager_IsInStorageMaintenance();
+  const bool force_all_off = guarded_input.fault_active || storage_active;
+  if (force_all_off || MetrologyManager_IsStorageReacquiring())
+      guarded_input.fault_active = true;
+#elif (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
   if (DeviceManager_IsInStorageMaintenance() ||
       MetrologyManager_IsStorageReacquiring())
       guarded_input.fault_active = true;
@@ -632,12 +654,20 @@ static void App_UpdateAlarmOutputs(uint32_t now_ms)
       guarded_input.fault_active = true;
 #endif
   if (GuardedCheckweigh_Process(&s_guarded_checkweigh, &guarded_input,
-      now_ms, &result))
+      now_ms, &result)
+#if (A33_ENABLE_STAGE5P_KEY_BEEP_CONTINUITY != 0U)
+      && !force_all_off
+#endif
+      )
     (void)AlarmOutputManager_Update(&s_alarm_output_manager, &result,
                                     &context->config.alarm, now_ms);
   else AlarmOutputManager_AllOff(&s_alarm_output_manager);
 #if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+#if (A33_ENABLE_STAGE5P_KEY_BEEP_CONTINUITY != 0U)
+  if (!storage_active)
+#else
   if (!DeviceManager_IsInStorageMaintenance())
+#endif
       MetrologyManager_AcknowledgeStorageReacquisition();
 #endif
   return;
@@ -881,6 +911,10 @@ static void App_RunStateMachine(void)
     StatusController_Cancel();
     CalibrationController_Cancel();
     DisplayController_SetPage(DISPLAY_PAGE_FAULT);
+#if (A33_ENABLE_STAGE5P_KEY_BEEP_CONTINUITY != 0U) && (ENABLE_STAGE2B_BOARD_DIAGNOSTICS == 0U)
+    /* Clear the software pulse too; the 1 ms task must not reapply it. */
+    AlarmOutputManager_AllOff(&s_alarm_output_manager);
+#endif
     DeviceManager_EnterSafeState();
     s_fault_entry_applied = true;
   }
