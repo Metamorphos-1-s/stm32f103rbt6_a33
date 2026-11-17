@@ -155,6 +155,13 @@
             }
         },
         {
+            "name": "Stage5PAdaptiveDisplay",
+            "inherits": "Stage5PFastFollow",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY": "ON"
+            }
+        },
+        {
             "name": "Stage5PFastFollow",
             "inherits": "Stage5PFeedback",
             "cacheVariables": {
@@ -266,6 +273,10 @@
         {
             "name": "Stage5PFastFollow",
             "configurePreset": "Stage5PFastFollow"
+        },
+        {
+            "name": "Stage5PAdaptiveDisplay",
+            "configurePreset": "Stage5PAdaptiveDisplay"
         }
     ]
 }

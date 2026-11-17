@@ -30,6 +30,10 @@ bool WeightFilter_Init(WeightFilter *filter, FilterMode mode,
 bool WeightFilter_InitForRate(WeightFilter *filter, FilterMode mode,
     uint8_t strength, Cs1237DataRate rate);
 void WeightFilter_Reset(WeightFilter *filter);
+#if defined(A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY) && (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+/* Seed internal state only; accepted_count remains zero until real input. */
+void WeightFilter_Prime(WeightFilter *filter, int32_t filtered_raw);
+#endif
 bool WeightFilter_Process(WeightFilter *filter, int32_t raw,
                           int32_t *filtered);
 bool WeightFilter_IsReady(const WeightFilter *filter);

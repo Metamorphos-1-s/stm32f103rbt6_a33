@@ -135,6 +135,9 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
     if (!WeightFilter_IsReady(&engine->filter))
     {
         ClearDerived(engine);
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+        engine->snapshot.status_flags |= WEIGHT_STATUS_CALIBRATION_VALID;
+#endif
         return true;
     }
     if (CalibrationModel_ConvertMass(&engine->calibration,
@@ -338,6 +341,10 @@ bool WeightEngine_InitMass(WeightEngine *engine,
     UpdateCompatibility(&engine->snapshot, metrology);
     if (engine->zero_tare.tare_active)
         engine->snapshot.status_flags = WEIGHT_STATUS_TARE_ACTIVE;
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+    if (calibration->calibration_valid)
+        engine->snapshot.status_flags |= WEIGHT_STATUS_CALIBRATION_VALID;
+#endif
     engine->initialized = true;
     return true;
 }
@@ -757,6 +764,10 @@ bool WeightEngine_ReinitializeMassBeta(WeightEngine *engine,
     UpdateCompatibility(&engine->snapshot, metrology);
     if (engine->zero_tare.tare_active)
         engine->snapshot.status_flags = WEIGHT_STATUS_TARE_ACTIVE;
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+    if (calibration->calibration_valid)
+        engine->snapshot.status_flags |= WEIGHT_STATUS_CALIBRATION_VALID;
+#endif
     engine->initialized = true;
     return true;
 }

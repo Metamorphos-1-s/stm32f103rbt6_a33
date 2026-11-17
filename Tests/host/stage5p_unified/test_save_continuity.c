@@ -29,6 +29,10 @@
 #include "persistent_schema.h"
 #include "weight_engine.h"
 #endif
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+#include "display_conditioner.h"
+#include "display_model.h"
+#endif
 
 static GuardedCheckweigh s_check;
 static bool s_storage_maintenance;
@@ -969,6 +973,117 @@ static void TestFastFollowAndParallelZero(FilterMode mode)
 }
 #endif
 
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+static void TestFilterWarmupThroughSave(void)
+{
+    DeviceConfig candidate;
+    uint16_t digits[6];
+    int32_t previous;
+    uint32_t sequence;
+    const WeightSnapshot *weight;
+    SetupRate(GUARDED_CHECKWEIGH_OFF, DEVICE_CS1237_DATA_RATE_10_HZ);
+    for (uint32_t i = 0U; i < 30U; ++i) Feed(600000);
+    weight = MetrologyManager_GetSnapshot();
+    assert((weight->status_flags & WEIGHT_STATUS_STABLE) != 0U);
+    assert(DisplayController_Init());
+    DisplayController_Process20ms();
+    memcpy(digits, DisplayModel_Get()->digit_segments, sizeof(digits));
+
+    sequence = ConfigStore_GetActiveSequence();
+    EnterMenu();
+    SelectMenuItem(MENU_ITEM_FILTER);
+    MenuKey(KEY_ID_FUNCTION, KEY_EVENT_SHORT);
+    MenuKey(KEY_ID_HASH, KEY_EVENT_SHORT);
+    MenuKey(KEY_ID_FUNCTION, KEY_EVENT_SHORT);
+    assert(MenuController_GetCandidate(&candidate));
+    assert(candidate.metrology.profiles[candidate.metrology.active_profile].
+        filter_mode == FILTER_MODE_IIR);
+    assert(ConfigStore_GetActiveSequence() == sequence);
+    for (uint32_t i = 0U; i < 30U; ++i) Feed(600000);
+    previous = weight->filtered_raw;
+    MenuKey(KEY_ID_TARE, KEY_EVENT_SHORT);
+    assert(PersistenceManager_IsBusy());
+    RunSaveUntilDone();
+    MenuController_Process10ms();
+    assert(MenuController_TakeExitRequest());
+    assert(ConfigStore_GetActiveSequence() == sequence + 1U);
+    assert(MetrologyManager_FilterWarmupPending(s_tick * s_sample_period_ms));
+    assert((weight->status_flags & (WEIGHT_STATUS_WEIGHT_VALID |
+        WEIGHT_STATUS_STABLE | WEIGHT_STATUS_ZERO)) == 0U);
+    assert((weight->status_flags & WEIGHT_STATUS_CALIBRATION_VALID) != 0U);
+    assert(weight->filter_sample_count == 0U);
+    assert(SystemContext_SetState(APP_STATE_RUN, s_tick * s_sample_period_ms));
+    assert(DisplayController_GetPage() == DISPLAY_PAGE_NET);
+    DisplayController_Process20ms();
+    assert(memcmp(digits, DisplayModel_Get()->digit_segments, sizeof(digits)) == 0);
+
+    Feed(previous + 80);
+    assert(!MetrologyManager_FilterWarmupPending(s_tick * s_sample_period_ms));
+    assert(weight->filter_sample_count == 1U);
+    assert(weight->filtered_raw == previous + 10);
+    assert((weight->status_flags & WEIGHT_STATUS_WEIGHT_VALID) != 0U);
+    assert((weight->status_flags & WEIGHT_STATUS_STABLE) == 0U);
+}
+
+static void DisplaySample(DisplayConditioner *conditioner,
+    DisplayConditionInput *input, MassValueUg mass)
+{
+    ++input->sample_sequence;
+    input->now_ms += 100U;
+    input->authoritative_mass_ug = mass;
+    assert(DisplayConditioner_Update(conditioner, input));
+}
+
+static void TestAdaptiveNoiseAndMotion(void)
+{
+    DisplayConditioner conditioner;
+    DisplayConditionInput input = {
+        .display_division_ug = 100000, .capacity_ug = INT64_C(3000000000),
+        .hold_ms = 300U, .stable = true, .allow_lock = true,
+        .unit = MASS_UNIT_G, .decimal_places = 1U, .division_digit = 1U
+    };
+    const DisplayConditionSnapshot *display = &conditioner.snapshot;
+    DisplayConditioner_Init(&conditioner, 0, 0U);
+    for (unsigned i = 0U; i < 15U; ++i) DisplaySample(&conditioner, &input, 0);
+    assert(display->locked);
+    for (unsigned i = 0U; i < 40U; ++i)
+        DisplaySample(&conditioner, &input, i % 2U ? 20000 : -20000);
+    assert(display->release_threshold_ug >= 18000 &&
+        display->release_threshold_ug <= 20000);
+    for (unsigned i = 0U; i < 12U; ++i)
+        DisplaySample(&conditioner, &input, i % 2U ? 55000 : 45000);
+    assert(display->display_count == 0);
+
+    /* A real 0.2 g addition moves the panel before STABLE returns. */
+    input.stable = false;
+    DisplaySample(&conditioner, &input, 200000);
+    assert(DisplayConditioner_Update(&conditioner, &input));
+    assert(display->display_count == 0);
+    DisplaySample(&conditioner, &input, 200000);
+    assert(display->display_count == 0);
+    DisplaySample(&conditioner, &input, 200000);
+    assert(display->display_count == 2);
+
+    input.stable = true;
+    for (unsigned i = 0U; i < 16U; ++i) DisplaySample(&conditioner, &input, 200000);
+    assert(display->locked);
+    /* Persistent slow movement still crosses a rounding boundary. */
+    for (unsigned i = 0U; i < 7U; ++i) DisplaySample(&conditioner, &input, 250100);
+    assert(display->display_count == 3);
+
+    input.display_division_ug = 10000;
+    input.decimal_places = 2U;
+    for (unsigned i = 0U; i < 15U; ++i) DisplaySample(&conditioner, &input, 0);
+    assert(display->locked);
+    for (unsigned i = 0U; i < 40U; ++i)
+        DisplaySample(&conditioner, &input, i % 2U ? 20000 : -20000);
+    assert(display->display_count == 0 && display->release_threshold_ug >= 18000);
+    input.stable = false;
+    DisplaySample(&conditioner, &input, 200000);
+    assert(display->display_count == 20);
+}
+#endif
+
 int main(void)
 {
     TestPureSaveKeepsLiveR5();
@@ -990,6 +1105,10 @@ int main(void)
     TestFastFollowAndParallelZero(FILTER_MODE_AVERAGE);
     TestFastFollowAndParallelZero(FILTER_MODE_IIR);
     TestFastFollowAndParallelZero(FILTER_MODE_MEDIAN3_IIR);
+#endif
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+    TestFilterWarmupThroughSave();
+    TestAdaptiveNoiseAndMotion();
 #endif
     (void)puts("Stage 5P SAVE continuity PASS");
     return 0;

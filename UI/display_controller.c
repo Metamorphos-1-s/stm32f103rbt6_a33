@@ -35,7 +35,8 @@ static bool s_numeric_override;
 static bool s_message_active;
 static bool s_initialized;
 #if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
-static bool s_weight_publish_initialized;
+/* Bit 0 is the refresh gate; higher bits identify the last valid page. */
+static uint8_t s_weight_publish_state;
 static uint32_t s_weight_publish_ms;
 static int32_t s_weight_publish_count;
 #endif
@@ -238,6 +239,19 @@ static bool DisplayController_BuildModel(void)
     if (context == NULL) return false;
     unit_display = &context->config.metrology.unit_display[
         context->config.metrology.active_unit];
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+    if (((s_page == DISPLAY_PAGE_NET) || (s_page == DISPLAY_PAGE_GROSS)) &&
+        ((flags & (WEIGHT_STATUS_CALIBRATION_VALID | WEIGHT_STATUS_WEIGHT_VALID)) ==
+          WEIGHT_STATUS_CALIBRATION_VALID))
+    {
+        if ((s_weight_publish_state >> 1U) == (uint8_t)s_page &&
+            MetrologyManager_FilterWarmupPending(BSP_TimeNowMs()))
+            return DisplayModel_SetWeight(s_weight_publish_count,
+                unit_display->decimal_places, true, (uint8_t)flags);
+        s_weight_publish_state = 0U;
+        return DisplayModel_SetText6(" buSY ");
+    }
+#endif
     if (!UnitConverter_MassToDisplay(mass,
             context->config.metrology.active_unit, unit_display, &converted))
         return DisplayModel_SetText6("  Lo  ");
@@ -292,7 +306,7 @@ static bool DisplayController_BuildModel(void)
             (uint64_t)(-(delta + 1)) + 1U : (uint64_t)delta;
         uint64_t large_step = (uint64_t)unit_display->division_digit * 8U;
         uint32_t now = BSP_TimeNowMs();
-        bool due = !s_weight_publish_initialized ||
+        bool due = (s_weight_publish_state & 1U) == 0U ||
             (uint32_t)(now - s_weight_publish_ms) >= 100U ||
             magnitude > large_step;
         if (!due)
@@ -300,9 +314,14 @@ static bool DisplayController_BuildModel(void)
         if (!DisplayModel_SetWeight(converted.display_count,
                 converted.decimal_places, true, (uint8_t)flags))
             return false;
-        s_weight_publish_initialized = true;
+        s_weight_publish_state = 1U;
         s_weight_publish_ms = now;
         s_weight_publish_count = converted.display_count;
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+        if ((flags & (WEIGHT_STATUS_WEIGHT_VALID | WEIGHT_STATUS_OVERLOAD)) ==
+            WEIGHT_STATUS_WEIGHT_VALID)
+            s_weight_publish_state |= (uint8_t)((uint8_t)s_page << 1U);
+#endif
         return true;
     }
 #endif
@@ -354,7 +373,7 @@ bool DisplayController_Init(void)
     s_numeric_override = false;
     s_applied_revision = 0U;
 #if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
-    s_weight_publish_initialized = false;
+    s_weight_publish_state = 0U;
     s_weight_publish_ms = 0U;
     s_weight_publish_count = 0;
 #endif
@@ -437,7 +456,7 @@ void DisplayController_SetPage(DisplayPage page)
         s_message_active = false;
 #if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
         if ((page == DISPLAY_PAGE_NET) || (page == DISPLAY_PAGE_GROSS))
-            s_weight_publish_initialized = false;
+            s_weight_publish_state &= (uint8_t)~1U;
 #endif
     }
 }

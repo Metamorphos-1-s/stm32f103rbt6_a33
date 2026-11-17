@@ -169,7 +169,143 @@ static void ResetFollowEvidence(DisplayConditioner *conditioner)
 #endif
 }
 
-#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+#define DISPLAY_NOISE_DEFAULT_UG UINT64_C(20000)
+#define DISPLAY_NOISE_MAX_UG UINT64_C(100000)
+#define DISPLAY_NOISE_FLOOR_UG UINT64_C(2000)
+#define DISPLAY_PERSISTENT_STEP_MS 600U
+
+static uint64_t NoiseLimit(uint64_t value, uint64_t limit)
+{
+    if (value > limit) value = limit;
+    return value != 0U ? value : 1U;
+}
+
+static void LearnDisplayNoise(DisplayConditioner *conditioner,
+    const DisplayConditionInput *input, bool permit_update)
+{
+    const MassValueUg anchor = conditioner->snapshot.anchor_mass_ug;
+    const uint64_t offset = MassDistance(input->authoritative_mass_ug, anchor);
+    int32_t low = INT32_MAX, low2 = INT32_MAX;
+    int32_t high = INT32_MIN, high2 = INT32_MIN;
+    bool rising = false, falling = false;
+    if (offset > INT32_MAX)
+    {
+        conditioner->sample_count = 0U;
+        conditioner->sample_index = 0U;
+        return;
+    }
+    /* In LOCKED, the ring holds physical offsets, not rounded counts. */
+    AddSample(conditioner, input->authoritative_mass_ug < anchor ?
+        -(int32_t)offset : (int32_t)offset);
+    if (!permit_update || conditioner->sample_count < DISPLAY_CONDITIONER_WINDOW_SIZE)
+        return;
+    uint8_t index = conditioner->sample_index;
+    const int32_t oldest = conditioner->sample_buffer[index];
+    int32_t previous = oldest;
+    for (unsigned i = 0U; i < DISPLAY_CONDITIONER_WINDOW_SIZE; ++i)
+    {
+        const int32_t value = conditioner->sample_buffer[index];
+        if (value < low) { low2 = low; low = value; }
+        else if (value < low2) low2 = value;
+        if (value > high) { high2 = high; high = value; }
+        else if (value > high2) high2 = value;
+        rising |= value > previous;
+        falling |= value < previous;
+        previous = value;
+        index = (uint8_t)((index + 1U) % DISPLAY_CONDITIONER_WINDOW_SIZE);
+    }
+    /* Monotonic motion is not a noise observation. Trim both extremes. */
+    const uint64_t spread = (uint64_t)((int64_t)high2 - low2);
+    if (rising != falling || MassDistance(previous, oldest) > spread / 2U)
+        return;
+    const uint64_t division = (uint64_t)input->display_division_ug;
+    const uint64_t ceiling = NoiseLimit((uint64_t)PositiveMultiplySaturated(
+        input->display_division_ug, 3U), DISPLAY_NOISE_MAX_UG);
+    const uint64_t floor = NoiseLimit(division / 8U, DISPLAY_NOISE_FLOOR_UG);
+    uint64_t noise = NoiseLimit(spread / 2U, ceiling);
+    if (noise < floor) noise = floor;
+    const uint64_t previous_noise = (uint64_t)conditioner->snapshot.release_threshold_ug;
+    conditioner->snapshot.release_threshold_ug =
+        (MassValueUg)((previous_noise * 3U + noise + 2U) / 4U);
+}
+
+static bool FollowAdaptiveAnchor(DisplayConditioner *conditioner,
+    const DisplayConditionInput *input, int32_t desired)
+{
+    DisplayConditionSnapshot *snapshot = &conditioner->snapshot;
+    const int64_t delta = (int64_t)desired - snapshot->display_count;
+    const int8_t direction = Direction64(delta);
+    const uint64_t margin = (uint64_t)snapshot->release_threshold_ug;
+    const uint64_t distance = MassDistance(input->authoritative_mass_ug,
+        snapshot->anchor_mass_ug);
+    const bool clear_step = (direction != 0) &&
+        (distance > (uint64_t)input->display_division_ug / 2U + margin);
+
+    snapshot->last_sample_sequence = input->sample_sequence;
+    if (Magnitude64(delta) >
+        (uint64_t)input->division_digit * DISPLAY_FOLLOW_LARGE_STEP_DIVISIONS)
+    {
+        ForceTrackingDomain(conditioner, input, desired, DISPLAY_RELEASE_LARGE_STEP);
+        snapshot->large_step = true;
+        return true;
+    }
+    snapshot->large_step = false;
+    if (snapshot->have_evidence_time &&
+        ((uint32_t)(input->now_ms - snapshot->last_evidence_ms) > 250U))
+    {
+        ResetFollowEvidence(conditioner);
+        ClearCandidate(conditioner);
+    }
+    snapshot->last_evidence_ms = input->now_ms;
+    snapshot->have_evidence_time = true;
+    if (!input->stable)
+    {
+        conditioner->sample_count = 0U;
+        conditioner->sample_index = 0U;
+    }
+    else if (input->display_division_ug > 0)
+        LearnDisplayNoise(conditioner, input,
+            direction == 0 || direction != snapshot->direction);
+    if (direction == 0)
+    {
+        snapshot->direction = 0;
+        snapshot->evidence = 0;
+        snapshot->candidate_elapsed_ms = 0U;
+        conditioner->release_sample_count = 0U;
+        return true;
+    }
+    if (snapshot->direction != direction)
+    {
+        snapshot->direction = direction;
+        conditioner->candidate_start_ms = input->now_ms;
+        conditioner->release_sample_count = 0U;
+    }
+    if (clear_step)
+        ++conditioner->release_sample_count;
+    else
+        conditioner->release_sample_count = 0U;
+    snapshot->evidence = (int8_t)(direction *
+        (int8_t)conditioner->release_sample_count);
+    snapshot->candidate_elapsed_ms = input->now_ms - conditioner->candidate_start_ms;
+    if ((conditioner->release_sample_count >= DISPLAY_CONDITIONER_RELEASE_SAMPLES) ||
+        (snapshot->candidate_elapsed_ms >= DISPLAY_PERSISTENT_STEP_MS))
+    {
+        /* Persistent same-side motion cannot be held indefinitely. */
+        if (!SetDisplayCount(conditioner, input, desired))
+        {
+            ForceTrackingDomain(conditioner, input, desired,
+                DISPLAY_RELEASE_INVALID_DOMAIN);
+            return true;
+        }
+        snapshot->operator_zero_anchor = false;
+        snapshot->last_release_reason = DISPLAY_RELEASE_SLOW_FOLLOW;
+        ResetFollowEvidence(conditioner);
+        ClearCandidate(conditioner);
+    }
+    return true;
+}
+#elif (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
 /* The existing clocks and nine-count ring are reused after lock. For a
  * non-operator anchor, operator_anchor_start_ms times the >=3e fast band;
  * candidate_start_ms times any persistent same-side median offset.
@@ -339,6 +475,9 @@ void DisplayConditioner_ForceTracking(DisplayConditioner *conditioner,
     conditioner->snapshot.state = DISPLAY_CONDITION_TRACKING;
     conditioner->snapshot.display_mass_ug = current_mass_ug;
     conditioner->snapshot.anchor_mass_ug = 0;
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+    conditioner->snapshot.release_threshold_ug = 0;
+#endif
     conditioner->snapshot.locked = false;
     conditioner->snapshot.operator_zero_anchor = false;
     conditioner->snapshot.last_release_reason = reason;
@@ -408,6 +547,9 @@ bool DisplayConditioner_TransferWeightView(DisplayConditioner *conditioner,
         return false;
     conditioner->snapshot.desired_display_count = new_count;
     conditioner->snapshot.source = next->source;
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+    conditioner->snapshot.release_threshold_ug = 0;
+#endif
     conditioner->snapshot.last_sample_sequence = next->sample_sequence;
     conditioner->snapshot.last_release_reason = DISPLAY_RELEASE_SOURCE_CHANGE;
     conditioner->release_sample_count = 0U;
@@ -438,9 +580,16 @@ bool DisplayConditioner_Update(DisplayConditioner *conditioner,
         return false;
     }
     conditioner->last_update_ms = input->now_ms;
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+    if (conditioner->snapshot.release_threshold_ug == 0 &&
+        input->display_division_ug > 0)
+        conditioner->snapshot.release_threshold_ug = (MassValueUg)NoiseLimit(
+            (uint64_t)input->display_division_ug / 4U, DISPLAY_NOISE_DEFAULT_UG);
+#else
     conditioner->snapshot.release_threshold_ug =
         DisplayConditioner_ComputeReleaseThreshold(input->display_division_ug,
             input->capacity_ug);
+#endif
 #if (A33_ENABLE_STAGE5MR5E_D1D_BETA != 0U)
     display_domain_valid = DisplayDomain(input, &desired_display_count);
 #endif
@@ -625,14 +774,20 @@ bool DisplayConditioner_Update(DisplayConditioner *conditioner,
 #endif
             conditioner->snapshot.state = DISPLAY_CONDITION_LOCKED;
             conditioner->snapshot.locked = true;
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+            ClearCandidate(conditioner); /* Ring now holds physical offsets. */
+#else
             conditioner->release_sample_count = 0U;
+#endif
         }
         return true;
     }
 
     conditioner->snapshot.display_mass_ug =
         conditioner->snapshot.anchor_mass_ug;
-#if (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+    return FollowAdaptiveAnchor(conditioner, input, desired_display_count);
+#elif (A33_ENABLE_STAGE5P_DISPLAY_SMOOTH != 0U)
     return FollowSmoothedAnchor(conditioner, input, desired_display_count);
 #endif
     if (!input->stable &&

@@ -46,7 +46,11 @@ static bool WeightFilter_ProcessIir(WeightFilter *filter, int32_t input,
     int64_t adjustment;
     int64_t updated;
 
-    if (filter->accepted_count == 0U)
+    if (filter->accepted_count == 0U
+#if defined(A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY) && (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+        && !filter->ready
+#endif
+        )
     {
         filter->output = input;
     }
@@ -122,6 +126,27 @@ void WeightFilter_Reset(WeightFilter *filter)
     filter->strength = strength;
     filter->initialized = true;
 }
+
+#if defined(A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY) && (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+void WeightFilter_Prime(WeightFilter *filter, int32_t filtered_raw)
+{
+    filter->output = filtered_raw;
+    if (filter->mode == FILTER_MODE_AVERAGE)
+    {
+        for (uint8_t i = 0U; i < filter->strength; ++i)
+            filter->average_buffer[i] = filtered_raw;
+        filter->average_count = filter->strength;
+        filter->average_sum = (int64_t)filtered_raw * filter->strength;
+    }
+    else if (filter->mode == FILTER_MODE_MEDIAN3_IIR)
+    {
+        for (uint8_t i = 0U; i < 3U; ++i)
+            filter->median_history[i] = filtered_raw;
+        filter->median_count = 3U;
+    }
+    filter->ready = true;
+}
+#endif
 
 bool WeightFilter_Process(WeightFilter *filter, int32_t raw,
                           int32_t *filtered)

@@ -16,6 +16,9 @@
 #include "system_context.h"
 #include "unit_converter.h"
 #include "weight_engine.h"
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+#include "bsp_time.h"
+#endif
 #if (A33_ENABLE_STAGE5PA13DR_RESOURCES != 0U)
 #include "bsp_time.h"
 #include "stage5pa13dr_stats.h"
@@ -695,9 +698,31 @@ static bool AllowFastFollow(AppState state)
 }
 #endif
 
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+#define FILTER_PRIME_MAX_AGE_MS 250U
+
+static bool FilterIsPrimed(void)
+{
+    return s_initialized && !s_engine.has_raw_sample &&
+        WeightFilter_IsReady(&s_engine.filter);
+}
+
+bool MetrologyManager_FilterWarmupPending(uint32_t now_ms)
+{
+    return FilterIsPrimed() && ((uint32_t)(now_ms -
+        s_engine.snapshot.sample_timestamp_ms) <= FILTER_PRIME_MAX_AGE_MS);
+}
+#endif
+
 bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
 {
     AppState state;
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+    if (FilterIsPrimed() && ((sample == NULL) || !sample->valid ||
+        !MetrologyManager_FilterWarmupPending(sample->timestamp_ms) ||
+        (FaultManager_GetActiveMask() != 0U)))
+        WeightFilter_Reset(&s_engine.filter);
+#endif
     if (!s_initialized || (sample == NULL) || !sample->valid)
     {
 #if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
@@ -1210,6 +1235,39 @@ typedef enum
     METROLOGY_REBUILD_REPLAY_RAW
 } MetrologyRebuildMode;
 
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+static bool IsFilterOnlyChange(const DeviceConfig *config)
+{
+    const SystemContext *context = SystemContext_Get();
+    const MetrologyConfig *previous = &s_engine.metrology;
+    const MetrologyConfig *next = &config->metrology;
+    const WeighingProfileConfig *old_profile = &previous->profiles[previous->active_profile];
+    const WeighingProfileConfig *new_profile = &next->profiles[next->active_profile];
+    const size_t stable_offset = offsetof(WeighingProfileConfig, stability_window);
+    if (context == NULL ||
+        context->config.system.requested_r5_mode != config->system.requested_r5_mode ||
+        context->config.system.requested_r5_application != config->system.requested_r5_application ||
+        previous->active_profile != next->active_profile ||
+        (old_profile->filter_mode == new_profile->filter_mode &&
+         old_profile->filter_strength == new_profile->filter_strength) ||
+        memcmp(previous, next, offsetof(MetrologyConfig, profiles)) != 0 ||
+        old_profile->sample_rate != new_profile->sample_rate ||
+        old_profile->gain != new_profile->gain ||
+        memcmp((const uint8_t *)old_profile + stable_offset,
+               (const uint8_t *)new_profile + stable_offset,
+               sizeof(*old_profile) - stable_offset) != 0 ||
+        memcmp(&s_engine.stability_config, &config->stability,
+               sizeof(config->stability)) != 0)
+        return false;
+    for (unsigned i = 0U; i < WEIGHING_PROFILE_COUNT; ++i)
+        if (i != (unsigned)previous->active_profile &&
+            memcmp(&previous->profiles[i], &next->profiles[i],
+                   sizeof(*old_profile)) != 0)
+            return false;
+    return true;
+}
+#endif
+
 static bool MetrologyManager_RebuildEngine(const DeviceConfig *config,
                                            MetrologyRebuildMode mode)
 {
@@ -1223,6 +1281,9 @@ static bool MetrologyManager_RebuildEngine(const DeviceConfig *config,
     bool replay_raw;
 #endif
     int32_t zero_offset;
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+    bool prime;
+#endif
 
     if (!s_initialized || (config == NULL) ||
         (MetrologyConfig_ValidateCanonical(&config->metrology) !=
@@ -1235,6 +1296,15 @@ static bool MetrologyManager_RebuildEngine(const DeviceConfig *config,
     }
     calibration_changed = MetrologyManager_CalibrationChanged(
         &config->calibration, &s_engine.calibration);
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+    const uint32_t prime_flags = WEIGHT_STATUS_STABLE | WEIGHT_STATUS_WEIGHT_VALID;
+    prime = (mode == METROLOGY_REBUILD_REPLAY_RAW) && !calibration_changed &&
+        (s_engine.snapshot.status_flags & (prime_flags | WEIGHT_STATUS_OVERLOAD)) ==
+            prime_flags &&
+        (FaultManager_GetActiveMask() == 0U) &&
+        ((uint32_t)(BSP_TimeNowMs() - s_engine.snapshot.sample_timestamp_ms) <=
+            FILTER_PRIME_MAX_AGE_MS) && IsFilterOnlyChange(config);
+#endif
 #if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
     A13E_Stop(A13C_REASON_PROFILE);
 #endif
@@ -1245,7 +1315,11 @@ static bool MetrologyManager_RebuildEngine(const DeviceConfig *config,
                  s_engine.has_raw_sample;
     if (replay_raw)
     {
-        sample.raw_value = s_engine.snapshot.raw_value;
+        sample.raw_value =
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+            prime ? s_engine.snapshot.filtered_raw :
+#endif
+            s_engine.snapshot.raw_value;
         sample.timestamp_ms = s_engine.snapshot.sample_timestamp_ms;
         sample.valid = true;
     }
@@ -1270,6 +1344,14 @@ static bool MetrologyManager_RebuildEngine(const DeviceConfig *config,
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
     if (replay_raw)
     {
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+        if (prime)
+        {
+            WeightFilter_Prime(&s_engine.filter, sample.raw_value);
+            s_engine.snapshot.sample_timestamp_ms = sample.timestamp_ms;
+        }
+        else
+#endif
         if (!WeightEngine_ProcessRawSample(&s_engine, &sample))
         {
             return false;
@@ -1351,6 +1433,16 @@ bool MetrologyManager_ReconfigureDiagnosticRate(Cs1237DataRate rate)
 bool MetrologyManager_RestartAfterStorage(const DeviceConfig *config)
 {
 #if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+    /* A filter-only apply already rebuilt and seeded the filter. No sample
+       has been acquired under that state yet, so do not rebuild it again. */
+    if (FilterIsPrimed())
+    {
+        if (!MetrologyManager_FilterWarmupPending(BSP_TimeNowMs()))
+            WeightFilter_Reset(&s_engine.filter);
+    }
+    else
+#endif
     if (!MetrologyManager_RebuildEngine(config, METROLOGY_REBUILD_KEEP_RAW))
         return false;
     s_storage_resume_flags = STORAGE_RESUME_ALARM;

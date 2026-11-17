@@ -50,6 +50,9 @@ bool MetrologyManager_Init(const DeviceConfig *config,
 bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample);
 void MetrologyManager_Process20ms(void);
 const WeightSnapshot *MetrologyManager_GetSnapshot(void);
+#if defined(A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY) && (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+bool MetrologyManager_FilterWarmupPending(uint32_t now_ms);
+#endif
 const MassSnapshot *MetrologyManager_GetMassSnapshot(void);
 const DisplayConditionSnapshot *MetrologyManager_GetDisplayConditionSnapshot(void);
 void MetrologyManager_ForceDisplayTracking(DisplayConditionReleaseReason reason);
