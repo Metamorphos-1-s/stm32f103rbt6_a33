@@ -378,6 +378,58 @@ static bool RawMassDistance(const CalibrationConfig *calibration,
         calibration->raw_zero, &mass) && MassMath_Abs(mass, distance);
 }
 
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+#define FAST_FOLLOW_RETRY_WINDOW_MS 1000U
+enum { IIR_STEP_WATCH = 1U, IIR_STEP_UP, IIR_STEP_DOWN };
+
+static bool IirStepCandidate(WeightEngine *engine, int32_t raw, uint32_t now)
+{
+    WeightFilter *filter = &engine->filter;
+    const uint32_t flags = engine->snapshot.status_flags;
+    uint64_t magnitude;
+    /* IIR modes do not use the averaging storage. Keep the last stable
+       anchor and its timestamp without growing the metrology state. */
+    if ((flags & WEIGHT_STATUS_OVERLOAD) == 0U &&
+        (flags & WEIGHT_STATUS_STABLE) != 0U &&
+        filter->average_count <= IIR_STEP_WATCH)
+    {
+        filter->average_buffer[0] = filter->output;
+        filter->average_sum = engine->snapshot.sample_timestamp_ms;
+        filter->average_count = IIR_STEP_WATCH;
+    }
+    if ((filter->average_count == 0U) ||
+        ((flags & WEIGHT_STATUS_OVERLOAD) != 0U) ||
+        ((uint32_t)(now - (uint32_t)filter->average_sum) > FAST_FOLLOW_RETRY_WINDOW_MS))
+    {
+        filter->average_count = 0U;
+        return false;
+    }
+    const int32_t anchor = filter->average_buffer[0];
+    const uint8_t side = raw > anchor ? IIR_STEP_UP : IIR_STEP_DOWN;
+    if (filter->average_count == IIR_STEP_WATCH)
+    {
+        /* A fast raw edge must precede the retry; a slow ramp alone cannot
+           arm it, even when the IIR accumulates a large tracking error. */
+        if (RawMassDistance(&engine->calibration, engine->snapshot.raw_value,
+                raw, &magnitude) && magnitude >= FAST_FOLLOW_STEP_UG &&
+            RawMassDistance(&engine->calibration, anchor, raw, &magnitude) &&
+                magnitude >= FAST_FOLLOW_STEP_UG)
+            filter->average_count = side;
+        return false;
+    }
+    if (side != filter->average_count ||
+        !RawMassDistance(&engine->calibration, anchor, raw, &magnitude) ||
+        magnitude < FAST_FOLLOW_STEP_UG)
+    {
+        /* An impulse returned toward the old platform; do not re-arm
+           until the official stability detector qualifies a new anchor. */
+        filter->average_count = 0U;
+        return false;
+    }
+    return true;
+}
+#endif
+
 static void TryFollowLargeStep(WeightEngine *engine,
     const RawMeasurementSample *sample, bool allow)
 {
@@ -421,24 +473,36 @@ static void TryFollowLargeStep(WeightEngine *engine,
         *step_pending = 0U;
         return;
     }
-    if (*step_pending == 0U)
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+    if (filter->mode != FILTER_MODE_AVERAGE)
     {
-        if (((engine->snapshot.status_flags &
-             (WEIGHT_STATUS_STABLE | WEIGHT_STATUS_OVERLOAD)) != WEIGHT_STATUS_STABLE) ||
-            (raw == filter->output) ||
-            !RawMassDistance(&engine->calibration, filter->output, raw, &magnitude) ||
-            (magnitude < FAST_FOLLOW_STEP_UG)) return;
-        step_pair[0] = filter->output;
-        step_pair[1] = raw;
-        *step_pending = 1U;
-        return;
+        if (!IirStepCandidate(engine, raw, sample->timestamp_ms)) return;
+        anchor = step_pair[0];
+        first = engine->snapshot.raw_value;
     }
-    anchor = step_pair[0];
-    first = step_pair[1];
-    *step_pending = 0U;
+    else
+#endif
+    {
+        if (*step_pending == 0U)
+        {
+            if (((engine->snapshot.status_flags &
+                 (WEIGHT_STATUS_STABLE | WEIGHT_STATUS_OVERLOAD)) != WEIGHT_STATUS_STABLE) ||
+                (raw == filter->output) ||
+                !RawMassDistance(&engine->calibration, filter->output, raw, &magnitude) ||
+                (magnitude < FAST_FOLLOW_STEP_UG)) return;
+            step_pair[0] = filter->output;
+            step_pair[1] = raw;
+            *step_pending = 1U;
+            return;
+        }
+        anchor = step_pair[0];
+        first = step_pair[1];
+        *step_pending = 0U;
+    }
     if ((raw == anchor) || ((raw > anchor) != (first > anchor)) ||
         !RawMassDistance(&engine->calibration, first, raw, &magnitude) ||
         (magnitude > FAST_FOLLOW_PAIR_UG)) return;
+    *step_pending = 0U;
 
     /* Median of anchor and both agreeing samples: the value closer to the
        old plateau. Both samples must clear the large step threshold. */

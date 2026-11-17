@@ -155,6 +155,13 @@
             }
         },
         {
+            "name": "Stage5PFilterRecovery",
+            "inherits": "Stage5PCapOnly",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5P_FILTER_RECOVERY": "ON"
+            }
+        },
+        {
             "name": "Stage5PCapOnly",
             "inherits": "Stage5PAdaptiveDisplay",
             "cacheVariables": {
@@ -288,6 +295,10 @@
         {
             "name": "Stage5PCapOnly",
             "configurePreset": "Stage5PCapOnly"
+        },
+        {
+            "name": "Stage5PFilterRecovery",
+            "configurePreset": "Stage5PFilterRecovery"
         }
     ]
 }

@@ -30,7 +30,8 @@ static uint32_t s_last_battery_error_count;
 static uint8_t s_last_raw_key_mask;
 static uint8_t s_tm_error_streak;
 static uint8_t s_battery_error_streak;
-static bool s_storage_maintenance;
+enum { STORAGE_IDLE = 0U, STORAGE_ADC_PAUSED, STORAGE_ADC_LIVE };
+static uint8_t s_storage_maintenance;
 static DeviceConfig s_device_config;
 
 static void DeviceManager_PushEvent(EventType type, uint32_t arg0,
@@ -57,7 +58,7 @@ bool DeviceManager_Init(const DeviceConfig *config)
     s_last_raw_key_mask = 0U;
     s_tm_error_streak = 0U;
     s_battery_error_streak = 0U;
-    s_storage_maintenance = false;
+    s_storage_maintenance = STORAGE_IDLE;
     s_device_config = *config;
 
     OutputGpio_Init();
@@ -95,12 +96,16 @@ bool DeviceManager_Init(const DeviceConfig *config)
 
 void DeviceManager_ProcessFast(void)
 {
-    if (!s_initialized || s_storage_maintenance)
+    if (!s_initialized || s_storage_maintenance == STORAGE_ADC_PAUSED)
     {
         return;
     }
 
     CS1237_Process();
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+    if (s_storage_maintenance == STORAGE_ADC_LIVE)
+        CS1237_DiscardBufferedSamples();
+#endif
     if (CS1237_GetState() == CS1237_STATE_ERROR)
     {
         s_error_mask |= DEVICE_ERROR_CS1237_CONFIG;
@@ -236,7 +241,7 @@ bool DeviceManager_IsReady(void)
 #endif
 }
 
-bool DeviceManager_EnterStorageMaintenance(void)
+static bool EnterStorageMaintenance(bool keep_adc)
 {
     W02PwrKeyState w02_state;
 
@@ -251,10 +256,32 @@ bool DeviceManager_EnterStorageMaintenance(void)
     }
     BSP_RS485_SetTransmit(false);
     W02PwrKey_Init();
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+    if (keep_adc && CS1237_IsReady() && FaultManager_GetActiveMask() == 0U)
+    {
+        CS1237_DiscardBufferedSamples();
+        s_storage_maintenance = STORAGE_ADC_LIVE;
+        return true;
+    }
+#else
+    (void)keep_adc;
+#endif
     CS1237_EnterSafeState();
-    s_storage_maintenance = true;
+    s_storage_maintenance = STORAGE_ADC_PAUSED;
     return true;
 }
+
+bool DeviceManager_EnterStorageMaintenance(void)
+{
+    return EnterStorageMaintenance(false);
+}
+
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+bool DeviceManager_EnterFilterStorageMaintenance(void)
+{
+    return EnterStorageMaintenance(true);
+}
+#endif
 
 bool DeviceManager_ExitStorageMaintenance(void)
 {
@@ -271,11 +298,20 @@ bool DeviceManager_ExitStorageMaintenance(void)
         s_device_config = context->config;
     }
     cs_config = DeviceManager_MakeCs1237Config(&s_device_config);
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+    if (s_storage_maintenance == STORAGE_ADC_LIVE && CS1237_IsReady() &&
+        CS1237_VerifyConfig(&cs_config))
+    {
+        CS1237_DiscardBufferedSamples();
+        s_storage_maintenance = STORAGE_IDLE;
+        return true;
+    }
+#endif
     if (!CS1237_Init(&cs_config))
     {
         return false;
     }
-    s_storage_maintenance = false;
+    s_storage_maintenance = STORAGE_IDLE;
     return true;
 }
 

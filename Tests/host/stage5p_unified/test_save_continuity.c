@@ -42,6 +42,9 @@ static bool s_storage_maintenance;
 static uint32_t s_tick;
 static uint32_t s_save_enter_count;
 static uint32_t s_sample_period_ms;
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+static uint32_t s_filter_storage_count;
+#endif
 
 bool BSP_PvdInit(void) { return true; }
 bool BSP_PvdIsSupplySafe(void) { return true; }
@@ -52,6 +55,14 @@ bool DeviceManager_EnterStorageMaintenance(void)
     ++s_save_enter_count;
     return true;
 }
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+bool DeviceManager_EnterFilterStorageMaintenance(void)
+{
+    if (!DeviceManager_EnterStorageMaintenance()) return false;
+    ++s_filter_storage_count;
+    return true;
+}
+#endif
 bool DeviceManager_ExitStorageMaintenance(void)
 {
     if (!s_storage_maintenance) return false;
@@ -174,6 +185,9 @@ static void SetupRateWithRating(GuardedCheckweighMode check_mode,
     assert(StoragePowerGuard_CanStartFlashOperation());
     s_storage_maintenance = false;
     s_save_enter_count = 0U;
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+    s_filter_storage_count = 0U;
+#endif
     s_tick = 0U;
     s_sample_period_ms = sample_rate == DEVICE_CS1237_DATA_RATE_40_HZ ?
         25U : 100U;
@@ -1022,6 +1036,13 @@ static void TestFilterWarmupThroughSave(void)
     previous = weight->filtered_raw;
     MenuKey(KEY_ID_TARE, KEY_EVENT_SHORT);
     assert(PersistenceManager_IsBusy());
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+    assert(s_filter_storage_count == 1U);
+    assert(DeviceManager_IsInStorageMaintenance());
+    /* Model a 200 ms save plus the wait for the first new 10 Hz sample. */
+    s_tick += 2U;
+    TestMock_SetTimeMs(s_tick * s_sample_period_ms);
+#endif
     RunSaveUntilDone();
     MenuController_Process10ms();
     assert(MenuController_TakeExitRequest());
@@ -1103,6 +1124,82 @@ static void TestAdaptiveNoiseAndMotion(void)
 }
 #endif
 
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+static void InitStableReplay(WeightEngine *engine, FilterMode mode, int32_t raw)
+{
+    DeviceConfig config;
+    DefaultConfig_Load(&config);
+    config.metrology.profiles[0].filter_mode = mode;
+    assert(CalibrationModel_BuildMass(42818, 486918, INT64_C(500000000),
+        1U, &config.calibration) == CALIBRATION_RESULT_OK);
+    assert(WeightEngine_ReinitializeMassBeta(engine, &config.metrology,
+        &config.calibration, &config.stability, 0, false, 0));
+    for (uint32_t i = 0U; i < 20U; ++i) FeedEngine(engine, raw, i * 102U, true);
+    assert((engine->snapshot.status_flags & WEIGHT_STATUS_STABLE) != 0U);
+}
+
+static void TestIirReplays(void)
+{
+    /* Captured 0x0535 edges. Missing poll rows are filled with representative
+       raw values consistent with the observed IIR, not measured values. */
+    static const struct {FilterMode mode; int32_t start; uint8_t count; int32_t samples[8];} edges[] = {
+        {FILTER_MODE_IIR, 42790, 7U, {43147, 78956, 253692, 441166, 484921, 486909, 486897}},
+        {FILTER_MODE_IIR, 486979, 5U, {470187, 269658, 57644, 42865, 42862}},
+        {FILTER_MODE_MEDIAN3_IIR, 42798, 8U, {82398, 291309, 436861, 483685, 486907, 486908, 486909, 486909}},
+        {FILTER_MODE_MEDIAN3_IIR, 486943, 7U, {486952, 485128, 342077, 74929, 42869, 42852, 42854}}
+    };
+    for (unsigned e = 0U; e < sizeof(edges) / sizeof(edges[0]); ++e)
+    {
+        WeightEngine fast, normal;
+        InitStableReplay(&fast, edges[e].mode, edges[e].start);
+        normal = fast;
+        uint32_t followed_ms = 0U;
+        for (uint8_t i = 0U; i < edges[e].count; ++i)
+        {
+            const uint32_t stamp = (20U + i) * 102U;
+            const int32_t raw = edges[e].samples[i];
+            FeedEngine(&fast, raw, stamp, true);
+            FeedEngine(&normal, raw, stamp, false);
+            if (followed_ms == 0U && fast.snapshot.filtered_raw != normal.snapshot.filtered_raw)
+            {
+                followed_ms = (i + 1U) * 102U;
+                assert((fast.snapshot.status_flags & WEIGHT_STATUS_STABLE) == 0U);
+            }
+        }
+        const int32_t last = edges[e].samples[edges[e].count - 1U];
+        assert(followed_ms > 0U && followed_ms < 1000U);
+        assert(fast.snapshot.filtered_raw >= last - 89 && fast.snapshot.filtered_raw <= last + 89);
+        assert(normal.snapshot.filtered_raw >= last + 100000 || normal.snapshot.filtered_raw <= last - 100000);
+        printf("FILT%u replay %s: follows %lu ms from last pre-edge sample\n",
+            (unsigned)edges[e].mode, last > edges[e].start ? "load" : "unload",
+            (unsigned long)followed_ms);
+    }
+}
+
+static void TestIirRejectsRampAndExpiredEdge(FilterMode mode)
+{
+    WeightEngine fast, normal;
+    InitStableReplay(&fast, mode, 42818);
+    normal = fast;
+    for (uint32_t i = 0U; i < 42U; ++i)
+    {
+        const int32_t raw = 42818 + (int32_t)(i < 35U ? i : 35U) * 888;
+        FeedEngine(&fast, raw, 2000U + i * 100U, true);
+        FeedEngine(&normal, raw, 2000U + i * 100U, false);
+        assert(fast.snapshot.filtered_raw == normal.snapshot.filtered_raw);
+    }
+    InitStableReplay(&fast, mode, 42818);
+    normal = fast;
+    for (uint32_t i = 0U; i < 16U; ++i)
+    {
+        const int32_t raw = 142818 + (int32_t)(i < 13U ? i : 13U) * 1000;
+        FeedEngine(&fast, raw, 2000U + i * 100U, true);
+        FeedEngine(&normal, raw, 2000U + i * 100U, false);
+        assert(fast.snapshot.filtered_raw == normal.snapshot.filtered_raw);
+    }
+}
+#endif
+
 #if (A33_ENABLE_STAGE5P_CAP_ONLY != 0U)
 static void TestCapOnlyMenu(bool enter_calibration)
 {
@@ -1141,6 +1238,9 @@ static void TestCapOnlyMenu(bool enter_calibration)
     }
     else MenuKey(KEY_ID_TARE, KEY_EVENT_SHORT);
     assert(PersistenceManager_IsBusy());
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+    assert(s_filter_storage_count == 0U);
+#endif
     RunSaveUntilDone();
     MenuController_Process10ms();
     assert(MenuController_TakeExitRequest() == !enter_calibration);
@@ -1205,6 +1305,11 @@ int main(void)
 #if (A33_ENABLE_STAGE5P_CAP_ONLY != 0U)
     TestCapOnlyMenu(false);
     TestCapOnlyMenu(true);
+#endif
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+    TestIirReplays();
+    TestIirRejectsRampAndExpiredEdge(FILTER_MODE_IIR);
+    TestIirRejectsRampAndExpiredEdge(FILTER_MODE_MEDIAN3_IIR);
 #endif
     (void)puts("Stage 5P SAVE continuity PASS");
     return 0;

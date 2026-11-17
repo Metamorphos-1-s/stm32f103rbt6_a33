@@ -290,7 +290,12 @@ CommandResult PersistenceManager_RequestCandidateSave(
     s_requested_revision = next;
     if (!ConfigStore_RequestSave(candidate, &context->runtime, next))
         return COMMAND_RESULT_INTERNAL_ERROR;
-    if (!DeviceManager_EnterStorageMaintenance())
+    if (!(
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+          MetrologyManager_IsFilterOnlyChange(candidate) ?
+          DeviceManager_EnterFilterStorageMaintenance() :
+#endif
+          DeviceManager_EnterStorageMaintenance()))
     {
         (void)ConfigStore_CancelPending();
         return COMMAND_RESULT_INVALID_STATE;

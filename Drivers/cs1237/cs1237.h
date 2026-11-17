@@ -10,6 +10,9 @@ bool CS1237_Init(const CS1237_Config *config);
 void CS1237_Process(void);
 bool CS1237_IsReady(void);
 bool CS1237_TryPopSample(CS1237_Sample *sample);
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+void CS1237_DiscardBufferedSamples(void);
+#endif
 uint16_t CS1237_GetBufferedSampleCount(void);
 uint32_t CS1237_GetSampleCount(void);
 uint32_t CS1237_GetBufferOverrunCount(void);

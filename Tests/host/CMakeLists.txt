@@ -1199,3 +1199,12 @@ target_compile_definitions(stage5p_cap_only_tests PRIVATE ${feedback_defs}
     A33_ENABLE_STAGE5P_CAP_ONLY=1)
 target_compile_options(stage5p_cap_only_tests PRIVATE ${feedback_options})
 add_test(NAME stage5p_cap_only_integration COMMAND stage5p_cap_only_tests)
+
+get_target_property(cap_only_defs stage5p_cap_only_tests COMPILE_DEFINITIONS)
+add_executable(stage5p_filter_recovery_tests ${feedback_sources}
+    ../../Services/alarm_output_manager/alarm_output_manager.c)
+target_include_directories(stage5p_filter_recovery_tests PRIVATE ${feedback_includes})
+target_compile_definitions(stage5p_filter_recovery_tests PRIVATE ${cap_only_defs}
+    A33_ENABLE_STAGE5P_FILTER_RECOVERY=1)
+target_compile_options(stage5p_filter_recovery_tests PRIVATE ${feedback_options})
+add_test(NAME stage5p_filter_recovery_integration COMMAND stage5p_filter_recovery_tests)

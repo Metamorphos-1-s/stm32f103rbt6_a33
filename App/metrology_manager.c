@@ -700,6 +700,13 @@ static bool AllowFastFollow(AppState state)
 
 #if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
 #define FILTER_PRIME_MAX_AGE_MS 250U
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+/* Allow the bounded Flash transaction plus a new conversion. The seed must
+   still be recent when captured and is never an authoritative sample. */
+#define FILTER_PRIME_MAX_LIFETIME_MS 500U
+#else
+#define FILTER_PRIME_MAX_LIFETIME_MS FILTER_PRIME_MAX_AGE_MS
+#endif
 
 static bool FilterIsPrimed(void)
 {
@@ -710,7 +717,7 @@ static bool FilterIsPrimed(void)
 bool MetrologyManager_FilterWarmupPending(uint32_t now_ms)
 {
     return FilterIsPrimed() && ((uint32_t)(now_ms -
-        s_engine.snapshot.sample_timestamp_ms) <= FILTER_PRIME_MAX_AGE_MS);
+        s_engine.snapshot.sample_timestamp_ms) <= FILTER_PRIME_MAX_LIFETIME_MS);
 }
 #endif
 
@@ -1236,18 +1243,27 @@ typedef enum
 } MetrologyRebuildMode;
 
 #if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
-static bool IsFilterOnlyChange(const DeviceConfig *config)
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY == 0U)
+static
+#endif
+bool MetrologyManager_IsFilterOnlyChange(const DeviceConfig *config)
 {
     const SystemContext *context = SystemContext_Get();
     const MetrologyConfig *previous = &s_engine.metrology;
+    if (!s_initialized || config == NULL || context == NULL ||
+        config->metrology.active_profile != previous->active_profile)
+        return false;
     const MetrologyConfig *next = &config->metrology;
     const WeighingProfileConfig *old_profile = &previous->profiles[previous->active_profile];
     const WeighingProfileConfig *new_profile = &next->profiles[next->active_profile];
     const size_t stable_offset = offsetof(WeighingProfileConfig, stability_window);
-    if (context == NULL ||
-        context->config.system.requested_r5_mode != config->system.requested_r5_mode ||
+    if (context->config.system.requested_r5_mode != config->system.requested_r5_mode ||
         context->config.system.requested_r5_application != config->system.requested_r5_application ||
-        previous->active_profile != next->active_profile ||
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+        MetrologyManager_CalibrationChanged(&s_engine.calibration, &config->calibration) ||
+        memcmp(&context->config.communication, &config->communication,
+               sizeof(DeviceConfig) - offsetof(DeviceConfig, communication)) != 0 ||
+#endif
         (old_profile->filter_mode == new_profile->filter_mode &&
          old_profile->filter_strength == new_profile->filter_strength) ||
         memcmp(previous, next, offsetof(MetrologyConfig, profiles)) != 0 ||
@@ -1303,7 +1319,7 @@ static bool MetrologyManager_RebuildEngine(const DeviceConfig *config,
             prime_flags &&
         (FaultManager_GetActiveMask() == 0U) &&
         ((uint32_t)(BSP_TimeNowMs() - s_engine.snapshot.sample_timestamp_ms) <=
-            FILTER_PRIME_MAX_AGE_MS) && IsFilterOnlyChange(config);
+            FILTER_PRIME_MAX_AGE_MS) && MetrologyManager_IsFilterOnlyChange(config);
 #endif
 #if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
     A13E_Stop(A13C_REASON_PROFILE);

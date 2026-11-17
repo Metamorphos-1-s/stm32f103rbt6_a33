@@ -70,6 +70,12 @@
 #ifndef A33_ENABLE_STAGE5P_CAP_ONLY
 #define A33_ENABLE_STAGE5P_CAP_ONLY 0U
 #endif
+#ifndef A33_ENABLE_STAGE5P_FILTER_RECOVERY
+#define A33_ENABLE_STAGE5P_FILTER_RECOVERY 0U
+#endif
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U) && (A33_ENABLE_STAGE5P_CAP_ONLY == 0U)
+#error "Filter recovery requires the CAP-only baseline"
+#endif
 #if (A33_ENABLE_STAGE5P_CAP_ONLY != 0U) && (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY == 0U)
 #error "CAP-only configuration requires the adaptive display baseline"
 #endif
@@ -157,7 +163,9 @@
 #if (A33_ENABLE_STAGE5P_FEEDBACK == 0U) || (A33_ENABLE_STAGE5P_SAVE_CONTINUITY == 0U)
 #error "The fast follow candidate requires the Stage 5P feedback baseline"
 #endif
-#if (A33_ENABLE_STAGE5P_CAP_ONLY != 0U)
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+#define FW_RELEASE_VERSION            0x0537U
+#elif (A33_ENABLE_STAGE5P_CAP_ONLY != 0U)
 #define FW_RELEASE_VERSION            0x0536U
 #elif (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
 #define FW_RELEASE_VERSION            0x0535U

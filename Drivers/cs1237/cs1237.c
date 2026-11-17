@@ -601,6 +601,13 @@ static void CS1237_ClearBuffer(void)
     s_sample_event_sent = false;
 }
 
+#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+void CS1237_DiscardBufferedSamples(void)
+{
+    CS1237_ClearBuffer();
+}
+#endif
+
 static bool CS1237_PushSample(const CS1237_Sample *sample)
 {
     if ((sample == NULL) || (s_count >= CS1237_SAMPLE_BUFFER_CAPACITY))
