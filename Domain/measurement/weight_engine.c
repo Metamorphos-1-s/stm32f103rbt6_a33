@@ -206,6 +206,15 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
         stability_state = StabilityDetector_ProcessMass(&engine->stability,
             net, engine->snapshot.sample_timestamp_ms);
 #endif
+#if (A33_ENABLE_STAGE5P_MOTION_FILTER != 0U)
+        /* A boosted filter can closely follow a moving input. It must still
+           earn the regular stable hold once the motion path lets go. */
+        if (engine->filter.motion_active)
+        {
+            engine->stability.state = STABILITY_STATE_UNSTABLE;
+            stability_state = STABILITY_STATE_UNSTABLE;
+        }
+#endif
     }
     engine->snapshot.stability_spread_ug =
         StabilityDetector_GetSpreadMass(&engine->stability);
@@ -407,6 +416,114 @@ static bool RawMassDistance(const CalibrationConfig *calibration,
         calibration->raw_zero, &mass) && MassMath_Abs(mass, distance);
 }
 
+#if (A33_ENABLE_STAGE5P_MOTION_FILTER != 0U)
+#define IIR_MOTION_ENTER_UG UINT64_C(120000)
+#define IIR_MOTION_EXIT_UG UINT64_C(60000)
+#define IIR_MOTION_WITNESS_UG UINT64_C(50000)
+
+static void ResetIirMotion(WeightFilter *filter)
+{
+    filter->motion_evidence = 0;
+    filter->motion_history_count = 0U;
+    filter->motion_active = false;
+}
+
+static bool IirMotionInRange(const WeightEngine *engine, int32_t raw,
+    uint64_t limit)
+{
+    MassValueUg gross;
+    uint64_t magnitude;
+    return CalibrationModel_ConvertMass(&engine->calibration, raw,
+        engine->zero_tare.zero_offset_raw, &gross) == CALIBRATION_RESULT_OK &&
+        MassMath_Abs(gross, &magnitude) && magnitude <= limit;
+}
+
+static uint8_t UpdateIirMotion(WeightEngine *engine,
+    const RawMeasurementSample *sample, bool allow, int32_t *clean)
+{
+    WeightFilter *filter = &engine->filter;
+    if (filter->mode != FILTER_MODE_IIR &&
+        filter->mode != FILTER_MODE_MEDIAN3_IIR) return 0U;
+
+    const bool high_rate = engine->metrology.profiles[
+        engine->metrology.active_profile].sample_rate == DEVICE_CS1237_DATA_RATE_40_HZ;
+    /* 40 Hz may start at the configured shift or use +2 after a filter
+       rebuild. Give shift 3 a faster path in either initialization. */
+    const uint8_t fast_strength = high_rate ? (filter->strength > 3U ? 3U : 2U) : 1U;
+    const int8_t required = high_rate ? 5 : 3;
+    const uint32_t elapsed = sample->timestamp_ms -
+        engine->snapshot.sample_timestamp_ms;
+    const int32_t raw = sample->raw_value;
+    if (!allow || !engine->has_raw_sample || !filter->ready ||
+        !engine->calibration.calibration_valid || engine->stability.count == 0U ||
+        ((engine->snapshot.status_flags & WEIGHT_STATUS_OVERLOAD) != 0U) ||
+        filter->strength <= fast_strength || elapsed == 0U ||
+        elapsed > (high_rate ? 40U : FAST_FOLLOW_MAX_GAP_MS) ||
+        raw <= -FAST_FOLLOW_NEAR_RAIL || raw >= FAST_FOLLOW_NEAR_RAIL)
+    {
+        ResetIirMotion(filter);
+        return 0U;
+    }
+
+    /* IIR modes have no averaging ring. Slot 0 belongs to the large-step
+       anchor; slots 1/2 hold motion samples and slot 3 holds their reference. */
+    int32_t *const history = &filter->average_buffer[1];
+    int32_t *const anchor = &filter->average_buffer[3];
+    if (filter->motion_history_count < 2U)
+    {
+        history[filter->motion_history_count++] = raw;
+        *anchor = raw;
+        return 0U;
+    }
+    const int32_t low = history[0] < history[1] ? history[0] : history[1];
+    const int32_t high = history[0] > history[1] ? history[0] : history[1];
+    *clean = raw < low ? low : (raw > high ? high : raw);
+    history[0] = history[1];
+    history[1] = raw;
+
+    const int8_t direction = *clean >= filter->output ? 1 : -1;
+    const int8_t previous = filter->motion_evidence;
+    const bool same_side = (direction > 0 && previous > 0) ||
+        (direction < 0 && previous < 0);
+    const bool continuing = filter->motion_active && same_side;
+    uint64_t residual;
+    filter->motion_active = false;
+    filter->motion_evidence = 0;
+    if (*clean == filter->output ||
+        !RawMassDistance(&engine->calibration, filter->output, *clean, &residual) ||
+        residual < (continuing ? IIR_MOTION_EXIT_UG : IIR_MOTION_ENTER_UG))
+    {
+        *anchor = *clean;
+        return 0U;
+    }
+
+    /* A spike can move FILT2 away from a stationary input. Demand movement
+       in the median itself before entry, so the resulting tail cannot arm it. */
+    if (!continuing &&
+        (((direction > 0) ? *clean <= *anchor : *clean >= *anchor) ||
+         !RawMassDistance(&engine->calibration, *anchor, *clean, &residual) ||
+         residual < IIR_MOTION_WITNESS_UG)) return 0U;
+
+    /* The clean sample drives acceleration, but neither it nor a hidden
+       over-limit raw sample may activate it. Normal protection stays intact. */
+    const MassValueUg limit = MetrologyStandardValidator_GetDisplayOverload(
+        &engine->metrology);
+    if (limit <= 0 || !IirMotionInRange(engine, raw, (uint64_t)limit) ||
+        (*clean != raw && !IirMotionInRange(engine, *clean, (uint64_t)limit)))
+    {
+        ResetIirMotion(filter);
+        return 0U;
+    }
+
+    filter->motion_evidence = continuing ? previous :
+        (int8_t)((same_side ? previous : 0) + direction);
+    filter->motion_active = filter->motion_evidence == required ||
+        filter->motion_evidence == -required;
+    if (filter->motion_active) *anchor = *clean;
+    return filter->motion_active ? fast_strength : 0U;
+}
+#endif
+
 #if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
 #define FAST_FOLLOW_RETRY_WINDOW_MS 1000U
 enum { IIR_STEP_WATCH = 1U, IIR_STEP_UP, IIR_STEP_DOWN };
@@ -565,6 +682,9 @@ static void TryFollowLargeStep(WeightEngine *engine,
             filter->median_history[2] = seed;
         }
     }
+#if (A33_ENABLE_STAGE5P_MOTION_FILTER != 0U)
+    ResetIirMotion(filter);
+#endif
     /* The filter can follow now, but STABLE must earn a new window of real
        samples. No synthetic filter seeds enter the stability detector. */
     StabilityDetector_Reset(&engine->stability);
@@ -624,15 +744,34 @@ bool WeightEngine_ProcessRawSample(WeightEngine *engine,
 #endif
 {
     int32_t filtered;
-    if ((engine == NULL) || !engine->initialized || (sample == NULL) ||
-        !sample->valid) return false;
+    if ((engine == NULL) || !engine->initialized) return false;
+    if ((sample == NULL) || !sample->valid)
+    {
+#if (A33_ENABLE_STAGE5P_MOTION_FILTER != 0U)
+        ResetIirMotion(&engine->filter);
+#endif
+        return false;
+    }
 #if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
     TryFollowLargeStep(engine, sample, allow_fast_follow);
+#endif
+#if (A33_ENABLE_STAGE5P_MOTION_FILTER != 0U)
+    int32_t clean;
+    const uint8_t fast_strength = UpdateIirMotion(engine, sample,
+        allow_fast_follow, &clean);
 #endif
     engine->snapshot.raw_value = sample->raw_value;
     engine->snapshot.sample_timestamp_ms = sample->timestamp_ms;
     engine->snapshot.status_flags |= WEIGHT_STATUS_RAW_VALID;
     engine->has_raw_sample = true;
+#if (A33_ENABLE_STAGE5P_MOTION_FILTER != 0U)
+    if (fast_strength != 0U)
+    {
+        if (!WeightFilter_ProcessIirMotion(&engine->filter, sample->raw_value,
+            clean, fast_strength, &filtered)) return false;
+    }
+    else
+#endif
     if (!WeightFilter_Process(&engine->filter, sample->raw_value, &filtered))
         return false;
     engine->snapshot.filtered_raw = filtered;

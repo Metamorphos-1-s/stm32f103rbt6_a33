@@ -41,7 +41,7 @@ static int32_t WeightFilter_Median3(int32_t first, int32_t second,
 }
 
 static bool WeightFilter_ProcessIir(WeightFilter *filter, int32_t input,
-                                    int32_t *filtered)
+                                    uint8_t strength, int32_t *filtered)
 {
     int64_t adjustment;
     int64_t updated;
@@ -57,7 +57,7 @@ static bool WeightFilter_ProcessIir(WeightFilter *filter, int32_t input,
     else
     {
         int64_t delta = (int64_t)input - (int64_t)filter->output;
-        int64_t divisor = (int64_t)1 << filter->strength;
+        int64_t divisor = (int64_t)1 << strength;
 
         if (!WeightMath_DivideRoundNearest(delta, divisor, &adjustment))
         {
@@ -148,6 +148,14 @@ void WeightFilter_Prime(WeightFilter *filter, int32_t filtered_raw)
 }
 #endif
 
+static void PushMedianSample(WeightFilter *filter, int32_t raw)
+{
+    filter->median_history[filter->median_head] = raw;
+    filter->median_head = (uint8_t)((filter->median_head + 1U) % 3U);
+    if (filter->median_count < 3U)
+        ++filter->median_count;
+}
+
 bool WeightFilter_Process(WeightFilter *filter, int32_t raw,
                           int32_t *filtered)
 {
@@ -191,7 +199,7 @@ bool WeightFilter_Process(WeightFilter *filter, int32_t raw,
             break;
         }
         case FILTER_MODE_IIR:
-            if (!WeightFilter_ProcessIir(filter, raw, filtered))
+            if (!WeightFilter_ProcessIir(filter, raw, filter->strength, filtered))
             {
                 return false;
             }
@@ -201,12 +209,7 @@ bool WeightFilter_Process(WeightFilter *filter, int32_t raw,
         {
             int32_t median_input = raw;
 
-            filter->median_history[filter->median_head] = raw;
-            filter->median_head = (uint8_t)((filter->median_head + 1U) % 3U);
-            if (filter->median_count < 3U)
-            {
-                ++filter->median_count;
-            }
+            PushMedianSample(filter, raw);
             if (filter->median_count < 3U)
             {
                 if (filter->accepted_count == 0U)
@@ -222,7 +225,8 @@ bool WeightFilter_Process(WeightFilter *filter, int32_t raw,
                 median_input = WeightFilter_Median3(filter->median_history[0],
                     filter->median_history[1], filter->median_history[2]);
             }
-            if (!WeightFilter_ProcessIir(filter, median_input, filtered))
+            if (!WeightFilter_ProcessIir(filter, median_input, filter->strength,
+                                         filtered))
             {
                 return false;
             }
@@ -237,6 +241,23 @@ bool WeightFilter_Process(WeightFilter *filter, int32_t raw,
     ++filter->accepted_count;
     return true;
 }
+
+#if defined(A33_ENABLE_STAGE5P_MOTION_FILTER) && (A33_ENABLE_STAGE5P_MOTION_FILTER != 0U)
+bool WeightFilter_ProcessIirMotion(WeightFilter *filter, int32_t raw,
+    int32_t clean, uint8_t strength, int32_t *filtered)
+{
+    if (!WeightFilter_IsReady(filter) || (filtered == NULL) ||
+        (strength == 0U) || (strength >= filter->strength)) return false;
+    if (filter->mode == FILTER_MODE_MEDIAN3_IIR)
+        PushMedianSample(filter, raw);
+    else if (filter->mode != FILTER_MODE_IIR)
+        return false;
+    if (!WeightFilter_ProcessIir(filter, clean, strength, filtered))
+        return false;
+    ++filter->accepted_count;
+    return true;
+}
+#endif
 
 bool WeightFilter_IsReady(const WeightFilter *filter)
 {

@@ -1225,3 +1225,11 @@ target_compile_definitions(stage5p_raw_calibration_tests PRIVATE ${raw_calibrati
     A33_ENABLE_STAGE5P_RAW_CALIBRATION=1)
 target_compile_options(stage5p_raw_calibration_tests PRIVATE ${feedback_options})
 add_test(NAME stage5p_raw_calibration_integration COMMAND stage5p_raw_calibration_tests)
+
+add_executable(stage5p_motion_filter_tests ${feedback_sources}
+    ../../Services/alarm_output_manager/alarm_output_manager.c)
+target_include_directories(stage5p_motion_filter_tests PRIVATE ${feedback_includes})
+target_compile_definitions(stage5p_motion_filter_tests PRIVATE ${raw_calibration_defs}
+    A33_ENABLE_STAGE5P_RAW_CALIBRATION=1 A33_ENABLE_STAGE5P_MOTION_FILTER=1)
+target_compile_options(stage5p_motion_filter_tests PRIVATE ${feedback_options})
+add_test(NAME stage5p_motion_filter_integration COMMAND stage5p_motion_filter_tests)

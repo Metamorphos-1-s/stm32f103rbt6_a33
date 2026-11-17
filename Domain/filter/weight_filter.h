@@ -23,6 +23,11 @@ typedef struct
     uint32_t accepted_count;
     bool initialized;
     bool ready;
+#if defined(A33_ENABLE_STAGE5P_MOTION_FILTER) && (A33_ENABLE_STAGE5P_MOTION_FILTER != 0U)
+    int8_t motion_evidence;
+    uint8_t motion_history_count;
+    bool motion_active;
+#endif
 } WeightFilter;
 
 bool WeightFilter_Init(WeightFilter *filter, FilterMode mode,
@@ -36,6 +41,11 @@ void WeightFilter_Prime(WeightFilter *filter, int32_t filtered_raw);
 #endif
 bool WeightFilter_Process(WeightFilter *filter, int32_t raw,
                           int32_t *filtered);
+#if defined(A33_ENABLE_STAGE5P_MOTION_FILTER) && (A33_ENABLE_STAGE5P_MOTION_FILTER != 0U)
+/* One real conversion; only this IIR update uses the deglitched input and gain. */
+bool WeightFilter_ProcessIirMotion(WeightFilter *filter, int32_t raw,
+    int32_t clean, uint8_t strength, int32_t *filtered);
+#endif
 bool WeightFilter_IsReady(const WeightFilter *filter);
 uint32_t WeightFilter_GetAcceptedCount(const WeightFilter *filter);
 

@@ -163,7 +163,7 @@ static void Feed(int32_t raw)
 }
 
 static void SetupRateWithRating(GuardedCheckweighMode check_mode,
-    Cs1237DataRate sample_rate, MassValueUg legacy_rating_ug)
+    Cs1237DataRate sample_rate, MassValueUg legacy_rating_ug, FilterMode filter)
 {
     DeviceConfig config;
     RuntimeState runtime = {0};
@@ -181,6 +181,8 @@ static void SetupRateWithRating(GuardedCheckweighMode check_mode,
     }
     config.metrology.profiles[config.metrology.active_profile].sample_rate =
         sample_rate;
+    if (filter != FILTER_MODE_COUNT)
+        config.metrology.profiles[config.metrology.active_profile].filter_mode = filter;
     assert(CalibrationModel_BuildMass(100000, 600000, INT64_C(500000000),
         1U, &config.calibration) == CALIBRATION_RESULT_OK);
     config.system.requested_r5_application = 1U;
@@ -226,7 +228,7 @@ static void SetupRateWithRating(GuardedCheckweighMode check_mode,
 static void SetupRate(GuardedCheckweighMode check_mode,
     Cs1237DataRate sample_rate)
 {
-    SetupRateWithRating(check_mode, sample_rate, 0);
+    SetupRateWithRating(check_mode, sample_rate, 0, FILTER_MODE_COUNT);
 }
 
 static void Setup(GuardedCheckweighMode check_mode)
@@ -1207,6 +1209,7 @@ static void TestIirReplays(void)
     }
 }
 
+#if (A33_ENABLE_STAGE5P_MOTION_FILTER == 0U)
 static void TestIirRejectsRampAndExpiredEdge(FilterMode mode)
 {
     WeightEngine fast, normal;
@@ -1230,6 +1233,189 @@ static void TestIirRejectsRampAndExpiredEdge(FilterMode mode)
     }
 }
 #endif
+#endif
+
+#if (A33_ENABLE_STAGE5P_MOTION_FILTER != 0U)
+static void InitMotionReplay(WeightEngine *engine, FilterMode mode,
+    Cs1237DataRate rate, int32_t load, uint32_t period, bool rebuilt)
+{
+    DeviceConfig config;
+    DefaultConfig_Load(&config);
+    config.metrology.profiles[0].filter_mode = mode;
+    config.metrology.profiles[0].sample_rate = rate;
+    assert(CalibrationModel_BuildMass(100000, 600000, INT64_C(500000000),
+        1U, &config.calibration) == CALIBRATION_RESULT_OK);
+    assert(WeightEngine_InitMass(engine, &config.metrology,
+        &config.calibration, &config.stability, 0, false));
+    if (rebuilt) assert(WeightEngine_ReconfigureFilter(engine, mode, 3U));
+    for (uint32_t t = period; t <= 2000U; t += period)
+        FeedEngine(engine, 100000 + load, t, true);
+    assert((engine->snapshot.status_flags & WEIGHT_STATUS_STABLE) != 0U);
+}
+
+static void TestIirMotionRamp(FilterMode mode, Cs1237DataRate rate,
+    int32_t from, int32_t to, uint32_t duration, bool spike, bool rebuilt)
+{
+    const uint32_t period = rate == DEVICE_CS1237_DATA_RATE_10_HZ ? 100U : 25U;
+    uint32_t fast_stable = UINT32_MAX, normal_stable = UINT32_MAX;
+    uint32_t fast_zero = UINT32_MAX, normal_zero = UINT32_MAX;
+    uint32_t fast_close = UINT32_MAX, normal_close = UINT32_MAX;
+    uint32_t boosted = 0U;
+    WeightEngine fast, normal;
+    InitMotionReplay(&fast, mode, rate, from, period, rebuilt);
+    normal = fast;
+    const uint8_t configured = fast.filter.strength;
+    for (uint32_t t = period; t <= duration + 12000U; t += period)
+    {
+        const int32_t raw = 100000 + from + (int32_t)(
+            (int64_t)(to - from) * (t < duration ? t : duration) / duration);
+        if (spike && t == duration / 2U)
+        {
+            /* The acceleration path uses the three-point median, not raw. */
+            WeightEngine with_spike = fast;
+            assert(with_spike.filter.motion_active);
+            const int32_t impulse = to > from ? 8000 : -8000;
+            FeedEngine(&with_spike, raw + impulse, 2000U + t, true);
+            FeedEngine(&fast, raw, 2000U + t, true);
+            assert(with_spike.filter.motion_active &&
+                with_spike.snapshot.filtered_raw == fast.snapshot.filtered_raw);
+        }
+        else FeedEngine(&fast, raw, 2000U + t, true);
+        FeedEngine(&normal, raw, 2000U + t, false);
+        assert(fast.filter.strength == configured);
+        assert(fast.snapshot.filter_sample_count == normal.snapshot.filter_sample_count);
+        if (fast.filter.motion_active)
+        {
+            ++boosted;
+            assert((fast.snapshot.status_flags &
+                (WEIGHT_STATUS_STABLE | WEIGHT_STATUS_ZERO)) == 0U);
+        }
+        if (t < duration) continue;
+        const int32_t fast_error = fast.snapshot.filtered_raw - (100000 + to);
+        const int32_t normal_error = normal.snapshot.filtered_raw - (100000 + to);
+        if (fast_close == UINT32_MAX && fast_error >= -100 && fast_error <= 100)
+            fast_close = t - duration;
+        if (normal_close == UINT32_MAX && normal_error >= -100 && normal_error <= 100)
+            normal_close = t - duration;
+        if (fast_stable == UINT32_MAX && (fast.snapshot.status_flags & WEIGHT_STATUS_STABLE))
+            fast_stable = t - duration;
+        if (normal_stable == UINT32_MAX && (normal.snapshot.status_flags & WEIGHT_STATUS_STABLE))
+            normal_stable = t - duration;
+        if (fast_zero == UINT32_MAX && (fast.snapshot.status_flags & WEIGHT_STATUS_ZERO))
+            fast_zero = t - duration;
+        if (normal_zero == UINT32_MAX && (normal.snapshot.status_flags & WEIGHT_STATUS_ZERO))
+            normal_zero = t - duration;
+    }
+    assert(boosted > 0U && !fast.filter.motion_active);
+    assert(fast_close < normal_close && fast_stable < normal_stable &&
+        normal_stable != UINT32_MAX && fast_stable <= 3000U);
+    if (to == 0)
+        assert(fast_zero < normal_zero && normal_zero != UINT32_MAX);
+    printf("%u Hz FILT%u shift%u %ld->%ld g in %lu ms: lag 0.1g %lu/%lu ms, STABLE %lu/%lu ms",
+        1000U / period, (unsigned)mode, (unsigned)configured, (long)(from / 1000), (long)(to / 1000),
+        (unsigned long)duration, (unsigned long)fast_close, (unsigned long)normal_close,
+        (unsigned long)fast_stable, (unsigned long)normal_stable);
+    if (to == 0)
+        printf(", ZERO %lu/%lu ms", (unsigned long)fast_zero, (unsigned long)normal_zero);
+    puts(" (motion/normal, from end of ramp)");
+}
+
+static void TestIirMotionQuietAndRearm(FilterMode mode, Cs1237DataRate rate)
+{
+    static const int32_t noise[] = {-20, 14, -11, 20, -16, 0, 17, -9};
+    const uint32_t period = rate == DEVICE_CS1237_DATA_RATE_10_HZ ? 100U : 25U;
+    WeightEngine fast, normal;
+    InitMotionReplay(&fast, mode, rate, 500000, period, false);
+    normal = fast;
+    for (uint32_t i = 1U; i <= 30000U / period; ++i)
+    {
+        /* Add 0.04 g creep to static noise; no boosted samples are allowed. */
+        const int32_t raw = 600000 + noise[i % 8U] +
+            (int32_t)(i * period / 750U);
+        FeedEngine(&fast, raw, 2000U + i * period, true);
+        FeedEngine(&normal, raw, 2000U + i * period, false);
+        assert(!fast.filter.motion_active);
+        assert(fast.snapshot.filtered_raw == normal.snapshot.filtered_raw &&
+            fast.snapshot.status_flags == normal.snapshot.status_flags);
+    }
+    InitMotionReplay(&fast, mode, rate, 0, period, false);
+    normal = fast;
+    for (uint32_t i = 1U; i <= 30000U / period; ++i)
+    {
+        /* 0.05 g once per second, plus an isolated 5 g impulse. */
+        const int32_t raw = 100000 + (int32_t)(i * period / 1000U) * 50 +
+            (i == 20U ? 5000 : 0);
+        FeedEngine(&fast, raw, 2000U + i * period, true);
+        FeedEngine(&normal, raw, 2000U + i * period, false);
+        assert(!fast.filter.motion_active &&
+            fast.snapshot.filtered_raw == normal.snapshot.filtered_raw);
+    }
+
+    uint32_t time = 32000U;
+    int32_t raw = 101500;
+    for (unsigned i = 0; i < 18U; ++i)
+    {
+        raw += 500;
+        time += period;
+        FeedEngine(&fast, raw, time, true);
+    }
+    assert(fast.filter.motion_active);
+    for (unsigned i = 0U; i < 4U; ++i)
+    {
+        WeightEngine guarded = fast;
+        normal = fast;
+        const uint32_t stamp = i == 0U ? time + 2U * period : time + period;
+        const int32_t value = i == 1U ? 8323072 : (i == 2U ? 4000000 : raw + 500);
+        FeedEngine(&guarded, value, stamp, i != 3U);
+        FeedEngine(&normal, value, stamp, false);
+        assert(!guarded.filter.motion_active && guarded.filter.motion_evidence == 0 &&
+            guarded.snapshot.filtered_raw == normal.snapshot.filtered_raw);
+    }
+    RawMeasurementSample invalid = {raw, time + period, false};
+    assert(!WeightEngine_ProcessDeferredRawSample(&fast, &invalid, true));
+    assert(!fast.filter.motion_active && fast.filter.motion_history_count == 0U);
+    FeedEngine(&fast, raw + 500, time + period, true);
+    assert(!fast.filter.motion_active && fast.filter.motion_history_count == 1U);
+}
+
+static void TestIirMotionWithActiveR5(FilterMode mode, Cs1237DataRate rate)
+{
+    SetupRateWithRating(GUARDED_CHECKWEIGH_OFF, rate, 0, mode);
+    const uint32_t period = s_sample_period_ms;
+    const uint32_t per_second = 1000U / period;
+    const uint32_t before = ConfigStore_GetActiveSequence();
+    const WeightSnapshot *weight = MetrologyManager_GetSnapshot();
+    int64_t previous = MetrologyManager_GetA13CSnapshot()->offset_ug;
+    for (uint32_t t = 1U; t <= per_second * 92U; ++t)
+    {
+        /* Start from the warmed pre-load plateau. Hold the load through R5
+           reference acquisition, add small creep, then unload gradually. */
+        int32_t load;
+        if (t < per_second * 10U)
+            load = (int32_t)(500U * t * period / 10U);
+        else if (t < per_second * 80U)
+            load = 500000 + (int32_t)((t * period - 10000U) / 2000U);
+        else if (t < per_second * 90U)
+            load = (int32_t)(500U * (90000U - t * period) / 10U);
+        else load = 0;
+        Feed(100200 + load);
+        const A13CSnapshot *r5 = MetrologyManager_GetA13CSnapshot();
+        assert(MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_ACTIVE &&
+            r5->mode == A13C_MODE_STATIC && !r5->limited);
+        const int64_t offset_change = r5->offset_ug - previous;
+        assert(offset_change >= -50 && offset_change <= 50);
+        previous = r5->offset_ug;
+        if (t == per_second * 11U || t == per_second * 91U)
+        {
+            const int32_t target = t == per_second * 11U ? 600200 : 100200;
+            assert(weight->filtered_raw >= target - 100 &&
+                weight->filtered_raw <= target + 100);
+        }
+    }
+    assert(ConfigStore_GetActiveSequence() == before &&
+        FaultManager_GetActiveMask() == 0U);
+}
+#endif
 
 #if (A33_ENABLE_STAGE5P_CAP_ONLY != 0U)
 static void TestCapOnlyMenu(bool enter_calibration)
@@ -1241,7 +1427,7 @@ static void TestCapOnlyMenu(bool enter_calibration)
     RuntimeState runtime;
     ConfigLoadInfo info;
     SetupRateWithRating(GUARDED_CHECKWEIGH_OFF, DEVICE_CS1237_DATA_RATE_10_HZ,
-        old_rating);
+        old_rating, FILTER_MODE_COUNT);
     const uint32_t sequence = ConfigStore_GetActiveSequence();
     const uint32_t revision = SystemContext_GetConfigRevision();
     EnterMenu();
@@ -1531,8 +1717,29 @@ int main(void)
 #endif
 #if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
     TestIirReplays();
+#if (A33_ENABLE_STAGE5P_MOTION_FILTER == 0U)
     TestIirRejectsRampAndExpiredEdge(FILTER_MODE_IIR);
     TestIirRejectsRampAndExpiredEdge(FILTER_MODE_MEDIAN3_IIR);
+#endif
+#endif
+#if (A33_ENABLE_STAGE5P_MOTION_FILTER != 0U)
+    for (FilterMode mode = FILTER_MODE_IIR; mode <= FILTER_MODE_MEDIAN3_IIR; ++mode)
+    {
+        const Cs1237DataRate rates[] = {
+            DEVICE_CS1237_DATA_RATE_10_HZ, DEVICE_CS1237_DATA_RATE_40_HZ
+        };
+        for (unsigned i = 0U; i < sizeof(rates) / sizeof(rates[0]); ++i)
+        {
+            TestIirMotionRamp(mode, rates[i], 0, 500000, 10000U, true, false);
+            TestIirMotionRamp(mode, rates[i], 500000, 0, 10000U, false, false);
+            TestIirMotionRamp(mode, rates[i], 0, 20000, 2000U, false, false);
+            TestIirMotionRamp(mode, rates[i], 20000, 0, 1000U, false, false);
+            TestIirMotionQuietAndRearm(mode, rates[i]);
+            TestIirMotionWithActiveR5(mode, rates[i]);
+        }
+        TestIirMotionRamp(mode, DEVICE_CS1237_DATA_RATE_40_HZ,
+            500000, 0, 10000U, false, true);
+    }
 #endif
 #if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
     TestMenuChangeKeepsWeight(MENU_ITEM_CAPACITY, KEY_ID_HASH);

@@ -155,6 +155,13 @@
             }
         },
         {
+            "name": "Stage5PMotionFilter",
+            "inherits": "Stage5PRawCalibration",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5P_MOTION_FILTER": "ON"
+            }
+        },
+        {
             "name": "Stage5PRawCalibration",
             "inherits": "Stage5PMenuContinuity",
             "cacheVariables": {
@@ -321,6 +328,10 @@
         {
             "name": "Stage5PRawCalibration",
             "configurePreset": "Stage5PRawCalibration"
+        },
+        {
+            "name": "Stage5PMotionFilter",
+            "configurePreset": "Stage5PMotionFilter"
         }
     ]
 }
