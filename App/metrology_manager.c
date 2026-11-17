@@ -1242,7 +1242,28 @@ typedef enum
     METROLOGY_REBUILD_REPLAY_RAW
 } MetrologyRebuildMode;
 
-#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+static bool SameActiveAdc(const DeviceConfig *config)
+{
+    const WeighingProfileId active = s_engine.metrology.active_profile;
+    return config->metrology.active_profile == active &&
+        config->metrology.profiles[active].sample_rate ==
+            s_engine.metrology.profiles[active].sample_rate &&
+        config->metrology.profiles[active].gain ==
+            s_engine.metrology.profiles[active].gain;
+}
+
+bool MetrologyManager_CanUpdateConfigInPlace(const DeviceConfig *config)
+{
+    if (!s_initialized || config == NULL || !SameActiveAdc(config) ||
+        MetrologyManager_CalibrationChanged(&s_engine.calibration, &config->calibration))
+        return false;
+    const WeighingProfileId active = s_engine.metrology.active_profile;
+    return memcmp(&config->metrology.profiles[active], &s_engine.metrology.profiles[active],
+                  sizeof(WeighingProfileConfig)) == 0 &&
+        memcmp(&s_engine.stability_config, &config->stability, sizeof(config->stability)) == 0;
+}
+#elif (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
 #if (A33_ENABLE_STAGE5P_FILTER_RECOVERY == 0U)
 static
 #endif
@@ -1319,7 +1340,16 @@ static bool MetrologyManager_RebuildEngine(const DeviceConfig *config,
             prime_flags &&
         (FaultManager_GetActiveMask() == 0U) &&
         ((uint32_t)(BSP_TimeNowMs() - s_engine.snapshot.sample_timestamp_ms) <=
-            FILTER_PRIME_MAX_AGE_MS) && MetrologyManager_IsFilterOnlyChange(config);
+            FILTER_PRIME_MAX_AGE_MS) &&
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+        SameActiveAdc(config) &&
+        config->metrology.capacity_ug == s_engine.metrology.capacity_ug &&
+        config->metrology.active_unit == s_engine.metrology.active_unit &&
+        memcmp(config->metrology.unit_display, s_engine.metrology.unit_display,
+               sizeof(s_engine.metrology.unit_display)) == 0;
+#else
+        MetrologyManager_IsFilterOnlyChange(config);
+#endif
 #endif
 #if (A33_ENABLE_STAGE5PA13E_ACTIVE != 0U)
     A13E_Stop(A13C_REASON_PROFILE);
@@ -1404,6 +1434,20 @@ static bool MetrologyManager_RebuildEngine(const DeviceConfig *config,
 
 bool MetrologyManager_Reconfigure(const DeviceConfig *config)
 {
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+    if (MetrologyManager_CanUpdateConfigInPlace(config))
+    {
+        if (MetrologyConfig_ValidateCanonical(&config->metrology) != METROLOGY_CONFIG_OK ||
+            !WeightEngine_UpdateRuntimeConfig(&s_engine, &config->metrology))
+            return false;
+        if ((s_engine.snapshot.status_flags & WEIGHT_STATUS_OVERLOAD) != 0U &&
+            s_r5_application == R5_BETA_APPLICATION_ACTIVE)
+            A13E_Stop(A13C_REASON_OVERLOAD);
+        CheckweighShadow_RequestReset(&s_alarm_shadow, ALARM_SHADOW_RESET_RECONFIGURE);
+        MetrologyManager_ForceDisplayTracking(DISPLAY_RELEASE_FORCED);
+        return true;
+    }
+#endif
     bool result = MetrologyManager_RebuildEngine(config,
         METROLOGY_REBUILD_REPLAY_RAW);
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)

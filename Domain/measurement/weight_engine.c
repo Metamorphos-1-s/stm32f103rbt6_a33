@@ -81,6 +81,35 @@ bool WeightEngine_UpdateDisplayConfig(WeightEngine *engine,
     return true;
 }
 
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+bool WeightEngine_UpdateRuntimeConfig(WeightEngine *engine,
+    const MetrologyConfig *metrology)
+{
+    const MassUnit unit = metrology->active_unit;
+    const UnitDisplayConfig *before = &engine->metrology.unit_display[unit];
+    const UnitDisplayConfig *after = &metrology->unit_display[unit];
+    const bool division_changed = (engine->metrology.active_unit != unit) ||
+        (before->decimal_places != after->decimal_places) ||
+        (before->division_digit != after->division_digit);
+    const MassValueUg overload = MetrologyStandardValidator_GetDisplayOverload(metrology);
+    uint64_t magnitude;
+    if (!MassMath_Abs(engine->snapshot.gross_mass_ug, &magnitude)) return false;
+    engine->metrology = *metrology;
+    engine->snapshot.status_flags &= ~WEIGHT_STATUS_OVERLOAD;
+    if (((engine->snapshot.status_flags & WEIGHT_STATUS_WEIGHT_VALID) != 0U) &&
+        (overload > 0) && (magnitude > (uint64_t)overload))
+        engine->snapshot.status_flags |= WEIGHT_STATUS_OVERLOAD;
+    if (division_changed || (engine->snapshot.status_flags & WEIGHT_STATUS_OVERLOAD) != 0U)
+    {
+        /* ZERO uses the division of the active view, not the drift thresholds. */
+        engine->snapshot.status_flags &= ~WEIGHT_STATUS_ZERO;
+        engine->zero_indicator_candidate_active = false;
+    }
+    UpdateCompatibility(&engine->snapshot, metrology);
+    return true;
+}
+#endif
+
 static void ClearDerived(WeightEngine *engine)
 {
 #if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)

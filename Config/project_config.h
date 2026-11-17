@@ -73,6 +73,12 @@
 #ifndef A33_ENABLE_STAGE5P_FILTER_RECOVERY
 #define A33_ENABLE_STAGE5P_FILTER_RECOVERY 0U
 #endif
+#ifndef A33_ENABLE_STAGE5P_MENU_CONTINUITY
+#define A33_ENABLE_STAGE5P_MENU_CONTINUITY 0U
+#endif
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U) && (A33_ENABLE_STAGE5P_FILTER_RECOVERY == 0U)
+#error "Menu continuity requires the filter recovery baseline"
+#endif
 #if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U) && (A33_ENABLE_STAGE5P_CAP_ONLY == 0U)
 #error "Filter recovery requires the CAP-only baseline"
 #endif
@@ -163,7 +169,9 @@
 #if (A33_ENABLE_STAGE5P_FEEDBACK == 0U) || (A33_ENABLE_STAGE5P_SAVE_CONTINUITY == 0U)
 #error "The fast follow candidate requires the Stage 5P feedback baseline"
 #endif
-#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+#define FW_RELEASE_VERSION            0x0538U
+#elif (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
 #define FW_RELEASE_VERSION            0x0537U
 #elif (A33_ENABLE_STAGE5P_CAP_ONLY != 0U)
 #define FW_RELEASE_VERSION            0x0536U

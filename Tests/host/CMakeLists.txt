@@ -1208,3 +1208,11 @@ target_compile_definitions(stage5p_filter_recovery_tests PRIVATE ${cap_only_defs
     A33_ENABLE_STAGE5P_FILTER_RECOVERY=1)
 target_compile_options(stage5p_filter_recovery_tests PRIVATE ${feedback_options})
 add_test(NAME stage5p_filter_recovery_integration COMMAND stage5p_filter_recovery_tests)
+
+add_executable(stage5p_menu_continuity_tests ${feedback_sources}
+    ../../Services/alarm_output_manager/alarm_output_manager.c)
+target_include_directories(stage5p_menu_continuity_tests PRIVATE ${feedback_includes})
+target_compile_definitions(stage5p_menu_continuity_tests PRIVATE ${cap_only_defs}
+    A33_ENABLE_STAGE5P_FILTER_RECOVERY=1 A33_ENABLE_STAGE5P_MENU_CONTINUITY=1)
+target_compile_options(stage5p_menu_continuity_tests PRIVATE ${feedback_options})
+add_test(NAME stage5p_menu_continuity_integration COMMAND stage5p_menu_continuity_tests)

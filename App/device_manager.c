@@ -276,7 +276,13 @@ bool DeviceManager_EnterStorageMaintenance(void)
     return EnterStorageMaintenance(false);
 }
 
-#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+bool DeviceManager_EnterConfigStorageMaintenance(const DeviceConfig *target)
+{
+    const CS1237_Config adc = DeviceManager_MakeCs1237Config(target);
+    return EnterStorageMaintenance(CS1237_VerifyConfig(&adc));
+}
+#elif (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
 bool DeviceManager_EnterFilterStorageMaintenance(void)
 {
     return EnterStorageMaintenance(true);

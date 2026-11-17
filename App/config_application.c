@@ -83,6 +83,9 @@ static ConfigApplyResult ConfigApplication_ApplyInternal(
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
     bool needs_metrology_rebuild;
     bool needs_battery_reconfigure;
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+    bool needs_r5_rearm;
+#endif
 #endif
 #if (A33_ENABLE_STAGE5MR5_BETA == 0U)
     DeviceConfig normalized;
@@ -96,6 +99,10 @@ static ConfigApplyResult ConfigApplication_ApplyInternal(
 #if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
     needs_metrology_rebuild = RequiresMetrologyRebuild(&context->config,
         candidate);
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+    needs_r5_rearm = needs_metrology_rebuild &&
+        !MetrologyManager_CanUpdateConfigInPlace(candidate);
+#endif
     needs_battery_reconfigure = memcmp(&context->config.battery,
         &candidate->battery, sizeof(candidate->battery)) != 0;
 #endif
@@ -161,7 +168,12 @@ static ConfigApplyResult ConfigApplication_ApplyInternal(
         FaultManager_Set(FAULT_METROLOGY_CONFIG_INVALID);
         return CONFIG_APPLY_METROLOGY_ERROR;
     }
-    if (needs_metrology_rebuild &&
+    if (
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+        needs_r5_rearm &&
+#else
+        needs_metrology_rebuild &&
+#endif
         !MetrologyManager_RestoreR5Request(
             (R5BetaApplication)candidate->system.requested_r5_application,
             (R5DriftMode)candidate->system.requested_r5_mode))

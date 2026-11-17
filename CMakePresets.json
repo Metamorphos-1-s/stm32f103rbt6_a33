@@ -155,6 +155,13 @@
             }
         },
         {
+            "name": "Stage5PMenuContinuity",
+            "inherits": "Stage5PFilterRecovery",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5P_MENU_CONTINUITY": "ON"
+            }
+        },
+        {
             "name": "Stage5PFilterRecovery",
             "inherits": "Stage5PCapOnly",
             "cacheVariables": {
@@ -299,6 +306,10 @@
         {
             "name": "Stage5PFilterRecovery",
             "configurePreset": "Stage5PFilterRecovery"
+        },
+        {
+            "name": "Stage5PMenuContinuity",
+            "configurePreset": "Stage5PMenuContinuity"
         }
     ]
 }

@@ -53,7 +53,9 @@ const WeightSnapshot *MetrologyManager_GetSnapshot(void);
 #if defined(A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY) && (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
 bool MetrologyManager_FilterWarmupPending(uint32_t now_ms);
 #endif
-#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+bool MetrologyManager_CanUpdateConfigInPlace(const DeviceConfig *config);
+#elif (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
 bool MetrologyManager_IsFilterOnlyChange(const DeviceConfig *config);
 #endif
 const MassSnapshot *MetrologyManager_GetMassSnapshot(void);

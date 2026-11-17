@@ -36,6 +36,9 @@
 #if (A33_ENABLE_STAGE5P_CAP_ONLY != 0U)
 #include "calibration_controller.h"
 #endif
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+#include "display_formatter.h"
+#endif
 
 static GuardedCheckweigh s_check;
 static bool s_storage_maintenance;
@@ -44,6 +47,10 @@ static uint32_t s_save_enter_count;
 static uint32_t s_sample_period_ms;
 #if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
 static uint32_t s_filter_storage_count;
+#endif
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+static bool s_menu_live_sampling;
+static bool s_adc_ready_after_storage;
 #endif
 
 bool BSP_PvdInit(void) { return true; }
@@ -55,7 +62,20 @@ bool DeviceManager_EnterStorageMaintenance(void)
     ++s_save_enter_count;
     return true;
 }
-#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+bool DeviceManager_EnterConfigStorageMaintenance(const DeviceConfig *target)
+{
+    if (!DeviceManager_EnterStorageMaintenance()) return false;
+    const MetrologyConfig *current = &SystemContext_Get()->config.metrology;
+    const WeighingProfileConfig *old = &current->profiles[current->active_profile];
+    const WeighingProfileConfig *next = &target->metrology.profiles[target->metrology.active_profile];
+    s_adc_ready_after_storage = old->sample_rate == next->sample_rate && old->gain == next->gain;
+    if (s_adc_ready_after_storage)
+        ++s_filter_storage_count;
+    return true;
+}
+bool DeviceManager_IsReady(void) { return s_adc_ready_after_storage; }
+#elif (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
 bool DeviceManager_EnterFilterStorageMaintenance(void)
 {
     if (!DeviceManager_EnterStorageMaintenance()) return false;
@@ -556,6 +576,13 @@ static void MenuKey(KeyId key, KeyEventType type)
     KeyEvent event = {key, type, ++s_tick * s_sample_period_ms, 0U};
     TestMock_SetTimeMs(event.timestamp_ms);
     assert(MenuController_HandleKeyEvent(&event));
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+    if (s_menu_live_sampling)
+    {
+        --s_tick;
+        Feed(100200);
+    }
+#endif
 }
 
 static void EnterMenu(void)
@@ -1238,7 +1265,9 @@ static void TestCapOnlyMenu(bool enter_calibration)
     }
     else MenuKey(KEY_ID_TARE, KEY_EVENT_SHORT);
     assert(PersistenceManager_IsBusy());
-#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+    assert(s_filter_storage_count == 1U);
+#elif (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
     assert(s_filter_storage_count == 0U);
 #endif
     RunSaveUntilDone();
@@ -1276,6 +1305,86 @@ static void TestCapOnlyMenu(bool enter_calibration)
 }
 #endif
 
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+static void TestMenuChangeKeepsWeight(MenuItem item, KeyId increment)
+{
+    SetupRate(GUARDED_CHECKWEIGH_OFF, DEVICE_CS1237_DATA_RATE_10_HZ);
+    assert(DisplayController_Init());
+    s_menu_live_sampling = true;
+    EnterMenu();
+    SelectMenuItem(item);
+    MenuKey(KEY_ID_FUNCTION, KEY_EVENT_SHORT);
+    MenuKey(increment, KEY_EVENT_SHORT);
+    MenuKey(KEY_ID_FUNCTION, KEY_EVENT_SHORT);
+    s_menu_live_sampling = false;
+    const WeightSnapshot *weight = MetrologyManager_GetSnapshot();
+    const uint32_t sequence = weight->sample_sequence;
+    const int64_t gross = weight->gross_mass_ug;
+    const int64_t offset = MetrologyManager_GetA13CSnapshot()->offset_ug;
+    const uint32_t saves = ConfigStore_GetStatistics()->save_request_count;
+    assert(offset != 0);
+    assert((weight->status_flags & WEIGHT_STATUS_WEIGHT_VALID) != 0U);
+    MenuKey(KEY_ID_TARE, KEY_EVENT_SHORT);
+    assert(PersistenceManager_IsBusy());
+    assert(s_filter_storage_count == 1U);
+    s_tick += 2U;
+    TestMock_SetTimeMs(s_tick * s_sample_period_ms);
+    RunSaveUntilDone();
+    MenuController_Process10ms();
+    assert(MenuController_TakeExitRequest());
+    assert(ConfigStore_GetStatistics()->save_request_count == saves + 1U);
+    assert(weight->sample_sequence == sequence && weight->gross_mass_ug == gross);
+    assert((weight->status_flags & WEIGHT_STATUS_WEIGHT_VALID) != 0U);
+    assert(MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_ACTIVE);
+    assert(MetrologyManager_GetA13CSnapshot()->offset_ug == offset);
+    uint16_t busy[6];
+    assert(DisplayFormatter_FormatText6(" buSY ", busy));
+    assert(SystemContext_SetState(APP_STATE_RUN, s_tick * s_sample_period_ms));
+    DisplayController_Process20ms();
+    assert(memcmp(busy, DisplayModel_Get()->digit_segments, sizeof(busy)) != 0);
+    Feed(100200);
+    assert(weight->sample_sequence == sequence + 1U);
+    assert(MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_ACTIVE);
+    assert(MetrologyManager_GetA13CSnapshot()->offset_ug - offset <= 50);
+    assert(offset - MetrologyManager_GetA13CSnapshot()->offset_ug <= 50);
+}
+
+static void TestRateChangeStillReacquires(void)
+{
+    SetupRate(GUARDED_CHECKWEIGH_OFF, DEVICE_CS1237_DATA_RATE_10_HZ);
+    const DeviceConfig *original = &SystemContext_Get()->config;
+    DeviceConfig candidate = *original;
+    candidate.metrology.profiles[candidate.metrology.active_profile].sample_rate =
+        DEVICE_CS1237_DATA_RATE_40_HZ;
+    assert(PersistenceManager_RequestCandidateSave(&candidate, original, true,
+        SystemContext_GetConfigRevision()) == COMMAND_RESULT_ACCEPTED);
+    assert(s_filter_storage_count == 0U);
+    RunSaveUntilDone();
+    assert(PersistenceManager_GetStatus() == PERSISTENCE_STATUS_SUCCESS);
+    assert((MetrologyManager_GetSnapshot()->status_flags & WEIGHT_STATUS_WEIGHT_VALID) == 0U);
+}
+
+static void TestCapacityChangesOverloadImmediately(void)
+{
+    SetupRate(GUARDED_CHECKWEIGH_OFF, DEVICE_CS1237_DATA_RATE_10_HZ);
+    for (uint32_t i = 0; i < 35U; ++i) Feed(700000);
+    const WeightSnapshot *weight = MetrologyManager_GetSnapshot();
+    const uint32_t sequence = weight->sample_sequence;
+    assert((weight->status_flags & WEIGHT_STATUS_OVERLOAD) == 0U);
+    const DeviceConfig *original = &SystemContext_Get()->config;
+    DeviceConfig candidate = *original;
+    candidate.metrology.capacity_ug = INT64_C(500000000);
+    assert(PersistenceManager_RequestCandidateSave(&candidate, original, true,
+        SystemContext_GetConfigRevision()) == COMMAND_RESULT_ACCEPTED);
+    RunSaveUntilDone();
+    assert(PersistenceManager_GetStatus() == PERSISTENCE_STATUS_SUCCESS);
+    assert(s_filter_storage_count == 1U && weight->sample_sequence == sequence);
+    assert((weight->status_flags & WEIGHT_STATUS_OVERLOAD) != 0U);
+    assert((weight->status_flags & WEIGHT_STATUS_ZERO) == 0U);
+    assert(MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_SHADOW);
+}
+#endif
+
 int main(void)
 {
     TestPureSaveKeepsLiveR5();
@@ -1310,6 +1419,16 @@ int main(void)
     TestIirReplays();
     TestIirRejectsRampAndExpiredEdge(FILTER_MODE_IIR);
     TestIirRejectsRampAndExpiredEdge(FILTER_MODE_MEDIAN3_IIR);
+#endif
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+    TestMenuChangeKeepsWeight(MENU_ITEM_CAPACITY, KEY_ID_HASH);
+    TestMenuChangeKeepsWeight(MENU_ITEM_DECIMALS, KEY_ID_STAR);
+    TestMenuChangeKeepsWeight(MENU_ITEM_DIVISION, KEY_ID_HASH);
+    TestMenuChangeKeepsWeight(MENU_ITEM_ZERO_RANGE, KEY_ID_HASH);
+    TestMenuChangeKeepsWeight(MENU_ITEM_BRIGHTNESS, KEY_ID_HASH);
+    TestMenuChangeKeepsWeight(MENU_ITEM_INTERNAL_BUZZER, KEY_ID_HASH);
+    TestRateChangeStillReacquires();
+    TestCapacityChangesOverloadImmediately();
 #endif
     (void)puts("Stage 5P SAVE continuity PASS");
     return 0;

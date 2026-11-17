@@ -81,6 +81,11 @@ bool WeightEngine_ReconfigureFilter(WeightEngine *engine, FilterMode mode,
                                     uint8_t strength);
 bool WeightEngine_UpdateDisplayConfig(WeightEngine *engine,
     const MetrologyConfig *metrology);
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+/* Caller guarantees that the calibrated signal pipeline is unchanged. */
+bool WeightEngine_UpdateRuntimeConfig(WeightEngine *engine,
+    const MetrologyConfig *metrology);
+#endif
 bool WeightEngine_SetRuntimeDriftEnabled(WeightEngine *engine, bool enabled);
 void WeightEngine_SetRuntimeDriftLearningAllowed(WeightEngine *engine,
     bool allowed);

@@ -54,7 +54,7 @@ static bool s_candidate_metrology_rebuilt;
 static bool ApplyRequestedModes(const DeviceConfig *from,
     const DeviceConfig *to)
 {
-#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U) && (A33_ENABLE_STAGE5P_MENU_CONTINUITY == 0U)
     bool metrology_rebuilt =
         memcmp(&from->metrology, &to->metrology, sizeof(from->metrology)) != 0 ||
         memcmp(&from->calibration, &to->calibration, sizeof(from->calibration)) != 0 ||
@@ -70,7 +70,7 @@ static bool ApplyRequestedModes(const DeviceConfig *from,
     if ((from->system.requested_r5_application !=
          to->system.requested_r5_application) ||
         (from->system.requested_r5_mode != to->system.requested_r5_mode)
-#if (A33_ENABLE_STAGE5P_UNIFIED != 0U)
+#if (A33_ENABLE_STAGE5P_UNIFIED != 0U) && (A33_ENABLE_STAGE5P_MENU_CONTINUITY == 0U)
         || metrology_rebuilt
 #endif
         )
@@ -219,7 +219,12 @@ static CommandResult Start(ConfigOperationType operation,
         Publish(EVENT_CONFIG_SAVE_STARTED, s_requested_revision, 0U);
         return COMMAND_RESULT_ACCEPTED;
     }
-    if (!DeviceManager_EnterStorageMaintenance())
+    if (!(
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+          (operation == CONFIG_OPERATION_SAVE && !allow_calibration) ?
+          DeviceManager_EnterConfigStorageMaintenance(&context->config) :
+#endif
+          DeviceManager_EnterStorageMaintenance()))
     {
         (void)ConfigStore_CancelPending();
         s_operation = CONFIG_OPERATION_NONE;
@@ -278,7 +283,9 @@ CommandResult PersistenceManager_RequestCandidateSave(
     s_candidate_original_revision = expected_revision;
     s_candidate_original_saved_revision = SystemContext_GetSavedRevision();
     s_candidate_allow_cs1237_change = allow_cs1237_change;
-#if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+    s_candidate_metrology_rebuilt = !MetrologyManager_CanUpdateConfigInPlace(candidate);
+#elif (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
     s_candidate_metrology_rebuilt =
         memcmp(&original->metrology, &candidate->metrology,
             sizeof(original->metrology)) != 0 ||
@@ -291,7 +298,10 @@ CommandResult PersistenceManager_RequestCandidateSave(
     if (!ConfigStore_RequestSave(candidate, &context->runtime, next))
         return COMMAND_RESULT_INTERNAL_ERROR;
     if (!(
-#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+          (SystemContext_GetState() != APP_STATE_CALIBRATION) ?
+          DeviceManager_EnterConfigStorageMaintenance(candidate) :
+#elif (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
           MetrologyManager_IsFilterOnlyChange(candidate) ?
           DeviceManager_EnterFilterStorageMaintenance() :
 #endif
@@ -411,7 +421,11 @@ void PersistenceManager_Process(void)
     }
 #if (A33_ENABLE_STAGE5P_SAVE_CONTINUITY != 0U)
     else if (maintenance_active && runtime_ok && ((SystemContext_Get() == NULL) ||
-             !(rebuild_after_storage ?
+             !((rebuild_after_storage
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+                || (s_candidate_save && !DeviceManager_IsReady())
+#endif
+                ) ?
                MetrologyManager_RestartAfterStorage(
                    &SystemContext_Get()->config) :
                MetrologyManager_ResumeAfterStorage(

@@ -30,7 +30,9 @@ uint32_t DeviceManager_GetRecordedOverrunCount(void);
 void DeviceManager_EnterSafeState(void);
 uint8_t DeviceManager_GetLastRawKeyMask(void);
 bool DeviceManager_EnterStorageMaintenance(void);
-#if (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
+#if (A33_ENABLE_STAGE5P_MENU_CONTINUITY != 0U)
+bool DeviceManager_EnterConfigStorageMaintenance(const DeviceConfig *target);
+#elif (A33_ENABLE_STAGE5P_FILTER_RECOVERY != 0U)
 bool DeviceManager_EnterFilterStorageMaintenance(void);
 #endif
 bool DeviceManager_ExitStorageMaintenance(void);
