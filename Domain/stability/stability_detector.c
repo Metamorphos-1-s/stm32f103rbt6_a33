@@ -129,7 +129,7 @@ static bool MonotonicMotion(const StabilityDetector *detector)
 
 StabilityState StabilityDetector_ProcessWithMotion(StabilityDetector *detector,
     MassValueUg net, MassValueUg filtered_gross, MassValueUg raw_gross,
-    uint32_t timestamp_ms)
+    uint32_t timestamp_ms, bool check_slow_trend)
 {
     MassValueUg residual;
     uint64_t residual_magnitude;
@@ -138,35 +138,44 @@ StabilityState StabilityDetector_ProcessWithMotion(StabilityDetector *detector,
     if ((detector == NULL) || !detector->initialized)
         return STABILITY_STATE_UNAVAILABLE;
     elapsed = (uint32_t)(timestamp_ms - detector->motion_last_sample_ms);
-    if ((detector->motion_block_samples != 0U) && (elapsed == 0U))
+    if ((detector->count != 0U) && (elapsed == 0U))
         return detector->state;
-    if ((detector->motion_block_samples != 0U) && (elapsed > MOTION_MAX_SAMPLE_GAP_MS))
+    if ((detector->count != 0U) && (elapsed > MOTION_MAX_SAMPLE_GAP_MS))
         StabilityDetector_Reset(detector);
     detector->motion_last_sample_ms = timestamp_ms;
-    if (detector->motion_block_samples == 0U)
-        detector->motion_block_start_ms = timestamp_ms;
-    else if ((uint32_t)(timestamp_ms - detector->motion_block_start_ms) >= MOTION_BLOCK_MS)
+    if (check_slow_trend)
     {
-        for (uint8_t i = 0U; i < 3U; ++i)
-            detector->motion_means[i] = detector->motion_means[i + 1U];
-        detector->motion_means[3] = detector->motion_sum / detector->motion_block_samples;
-        if (detector->motion_count < 4U) ++detector->motion_count;
-        detector->motion_detected = (detector->motion_count == 4U) &&
-            MonotonicMotion(detector);
-        detector->motion_sum = 0;
-        detector->motion_block_samples = 0U;
-        detector->motion_block_start_ms = timestamp_ms;
+        if (detector->motion_block_samples == 0U)
+            detector->motion_block_start_ms = timestamp_ms;
+        else if ((uint32_t)(timestamp_ms - detector->motion_block_start_ms) >=
+                 MOTION_BLOCK_MS)
+        {
+            for (uint8_t i = 0U; i < 3U; ++i)
+                detector->motion_means[i] = detector->motion_means[i + 1U];
+            detector->motion_means[3] =
+                detector->motion_sum / detector->motion_block_samples;
+            if (detector->motion_count < 4U) ++detector->motion_count;
+            detector->motion_detected = (detector->motion_count == 4U) &&
+                MonotonicMotion(detector);
+            detector->motion_sum = 0;
+            detector->motion_block_samples = 0U;
+            detector->motion_block_start_ms = timestamp_ms;
+        }
+        if (!MassMath_Add(detector->motion_sum, filtered_gross, &detector->motion_sum))
+        {
+            StabilityDetector_Reset(detector);
+            return STABILITY_STATE_UNAVAILABLE;
+        }
+        ++detector->motion_block_samples;
     }
-    if (!MassMath_Add(detector->motion_sum, filtered_gross, &detector->motion_sum) ||
-        !MassMath_Subtract(raw_gross, filtered_gross, &residual) ||
+    if (!MassMath_Subtract(raw_gross, filtered_gross, &residual) ||
         !MassMath_Abs(residual, &residual_magnitude))
     {
         StabilityDetector_Reset(detector);
         return STABILITY_STATE_UNAVAILABLE;
     }
-    ++detector->motion_block_samples;
     state = StabilityDetector_ProcessMass(detector, net, timestamp_ms);
-    if (detector->motion_detected ||
+    if ((check_slow_trend && detector->motion_detected) ||
         (residual_magnitude > (uint64_t)((detector->enter_threshold_ug >
             MOTION_RAW_RESIDUAL_FLOOR_UG) ? detector->enter_threshold_ug :
             MOTION_RAW_RESIDUAL_FLOOR_UG)))
@@ -174,7 +183,8 @@ StabilityState StabilityDetector_ProcessWithMotion(StabilityDetector *detector,
         detector->state = STABILITY_STATE_UNSTABLE;
         return detector->state;
     }
-    if ((detector->motion_count < 4U) && (state == STABILITY_STATE_STABLE))
+    if (check_slow_trend && (detector->motion_count < 4U) &&
+        (state == STABILITY_STATE_STABLE))
     {
         detector->state = STABILITY_STATE_CANDIDATE;
         return detector->state;

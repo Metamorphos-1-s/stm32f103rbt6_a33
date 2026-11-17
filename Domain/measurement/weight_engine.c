@@ -158,8 +158,13 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
         if (CalibrationModel_ConvertMass(&engine->calibration,
             engine->snapshot.raw_value, engine->zero_tare.zero_offset_raw,
             &raw_gross) != CALIBRATION_RESULT_OK) return false;
+        /* At 10 Hz, 125 ms buckets complete every two samples. Small
+           static fluctuations can then look like sustained slow motion. */
+        const bool check_slow_trend = engine->metrology.profiles[
+            engine->metrology.active_profile].sample_rate != DEVICE_CS1237_DATA_RATE_10_HZ;
         stability_state = StabilityDetector_ProcessWithMotion(&engine->stability,
-            net, uncompensated_gross, raw_gross, engine->snapshot.sample_timestamp_ms);
+            net, uncompensated_gross, raw_gross,
+            engine->snapshot.sample_timestamp_ms, check_slow_trend);
 #else
         stability_state = StabilityDetector_ProcessMass(&engine->stability,
             net, engine->snapshot.sample_timestamp_ms);

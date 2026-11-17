@@ -62,7 +62,7 @@ StabilityState StabilityDetector_ProcessMass(StabilityDetector *detector,
 #if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
 StabilityState StabilityDetector_ProcessWithMotion(StabilityDetector *detector,
     MassValueUg net, MassValueUg filtered_gross, MassValueUg raw_gross,
-    uint32_t timestamp_ms);
+    uint32_t timestamp_ms, bool check_slow_trend);
 #endif
 StabilityState StabilityDetector_GetState(const StabilityDetector *detector);
 uint32_t StabilityDetector_GetSpread(const StabilityDetector *detector);
