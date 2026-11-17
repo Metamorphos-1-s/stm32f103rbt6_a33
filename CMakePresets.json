@@ -155,6 +155,13 @@
             }
         },
         {
+            "name": "Stage5PCapOnly",
+            "inherits": "Stage5PAdaptiveDisplay",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5P_CAP_ONLY": "ON"
+            }
+        },
+        {
             "name": "Stage5PAdaptiveDisplay",
             "inherits": "Stage5PFastFollow",
             "cacheVariables": {
@@ -277,6 +284,10 @@
         {
             "name": "Stage5PAdaptiveDisplay",
             "configurePreset": "Stage5PAdaptiveDisplay"
+        },
+        {
+            "name": "Stage5PCapOnly",
+            "configurePreset": "Stage5PCapOnly"
         }
     ]
 }

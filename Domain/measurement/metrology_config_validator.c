@@ -83,10 +83,14 @@ MetrologyConfigResult MetrologyConfig_ValidateCanonical(
         (metrology->overload_threshold_ug < metrology->capacity_ug))
         return METROLOGY_CONFIG_INVALID_OVERLOAD;
 #endif
+    /* CAP-only treats the legacy rating as metadata for record and wire
+       compatibility. It must not reject a CAP edit or a stored record. */
+#if (A33_ENABLE_STAGE5P_CAP_ONLY == 0U)
     if (metrology->load_cell.rated_capacity_known &&
         ((metrology->load_cell.rated_capacity_ug <= 0) ||
          (metrology->capacity_ug > metrology->load_cell.rated_capacity_ug)))
         return METROLOGY_CONFIG_INVALID_LOAD_CELL;
+#endif
     if (metrology->load_cell.sensitivity_known &&
         (metrology->load_cell.sensitivity_uv_per_v == 0U))
         return METROLOGY_CONFIG_INVALID_LOAD_CELL;

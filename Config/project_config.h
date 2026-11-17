@@ -67,6 +67,12 @@
 #ifndef A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY
 #define A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY 0U
 #endif
+#ifndef A33_ENABLE_STAGE5P_CAP_ONLY
+#define A33_ENABLE_STAGE5P_CAP_ONLY 0U
+#endif
+#if (A33_ENABLE_STAGE5P_CAP_ONLY != 0U) && (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY == 0U)
+#error "CAP-only configuration requires the adaptive display baseline"
+#endif
 #ifndef A33_ENABLE_STAGE5P_FAST_FOLLOW
 #define A33_ENABLE_STAGE5P_FAST_FOLLOW 0U
 #endif
@@ -151,7 +157,9 @@
 #if (A33_ENABLE_STAGE5P_FEEDBACK == 0U) || (A33_ENABLE_STAGE5P_SAVE_CONTINUITY == 0U)
 #error "The fast follow candidate requires the Stage 5P feedback baseline"
 #endif
-#if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
+#if (A33_ENABLE_STAGE5P_CAP_ONLY != 0U)
+#define FW_RELEASE_VERSION            0x0536U
+#elif (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
 #define FW_RELEASE_VERSION            0x0535U
 #else
 #define FW_RELEASE_VERSION            0x0534U

@@ -33,6 +33,9 @@
 #include "display_conditioner.h"
 #include "display_model.h"
 #endif
+#if (A33_ENABLE_STAGE5P_CAP_ONLY != 0U)
+#include "calibration_controller.h"
+#endif
 
 static GuardedCheckweigh s_check;
 static bool s_storage_maintenance;
@@ -124,8 +127,8 @@ static void Feed(int32_t raw)
          MetrologyManager_GetA13CSnapshot()->offset_ug : 0));
 }
 
-static void SetupRate(GuardedCheckweighMode check_mode,
-    Cs1237DataRate sample_rate)
+static void SetupRateWithRating(GuardedCheckweighMode check_mode,
+    Cs1237DataRate sample_rate, MassValueUg legacy_rating_ug)
 {
     DeviceConfig config;
     RuntimeState runtime = {0};
@@ -136,6 +139,11 @@ static void SetupRate(GuardedCheckweighMode check_mode,
     TestMock_Reset();
     FaultManager_Init();
     DefaultConfig_Load(&config);
+    if (legacy_rating_ug > 0)
+    {
+        config.metrology.load_cell.rated_capacity_known = true;
+        config.metrology.load_cell.rated_capacity_ug = legacy_rating_ug;
+    }
     config.metrology.profiles[config.metrology.active_profile].sample_rate =
         sample_rate;
     assert(CalibrationModel_BuildMass(100000, 600000, INT64_C(500000000),
@@ -175,6 +183,12 @@ static void SetupRate(GuardedCheckweighMode check_mode,
     assert(MetrologyManager_GetR5Application() == R5_BETA_APPLICATION_ACTIVE);
     for (i = 0U; i < 5000U; ++i) Feed(100000 + (int32_t)(i / 25U));
     assert(MetrologyManager_GetA13CSnapshot()->offset_ug != 0);
+}
+
+static void SetupRate(GuardedCheckweighMode check_mode,
+    Cs1237DataRate sample_rate)
+{
+    SetupRateWithRating(check_mode, sample_rate, 0);
 }
 
 static void Setup(GuardedCheckweighMode check_mode)
@@ -749,9 +763,14 @@ static void TestFeedbackStorageAndCapacity(void)
         INT64_C(5001000000));
     loaded.metrology.load_cell.rated_capacity_known = true;
     loaded.metrology.load_cell.rated_capacity_ug = INT64_C(4000000000);
+#if (A33_ENABLE_STAGE5P_CAP_ONLY != 0U)
+    assert(MetrologyConfig_ValidateProductHardware(&loaded.metrology) ==
+        METROLOGY_CONFIG_OK);
+#else
     assert(MetrologyConfig_ValidateProductHardware(&loaded.metrology) ==
         METROLOGY_CONFIG_INVALID_LOAD_CELL);
     loaded.metrology.load_cell.rated_capacity_ug = INT64_C(6000000000);
+#endif
     loaded.alarm.region = ALARM_REGION_INSIDE;
     loaded.alarm.stable_delay_ms = 1200U;
     assert(ConfigStore_RequestSave(&loaded, &loaded_runtime, 2U));
@@ -1084,6 +1103,79 @@ static void TestAdaptiveNoiseAndMotion(void)
 }
 #endif
 
+#if (A33_ENABLE_STAGE5P_CAP_ONLY != 0U)
+static void TestCapOnlyMenu(bool enter_calibration)
+{
+    const int64_t old_rating = INT64_C(3000000000);
+    const int64_t new_cap = INT64_C(6000000000);
+    const uint8_t dp = enter_calibration ? 2U : 1U;
+    DeviceConfig loaded;
+    RuntimeState runtime;
+    ConfigLoadInfo info;
+    SetupRateWithRating(GUARDED_CHECKWEIGH_OFF, DEVICE_CS1237_DATA_RATE_10_HZ,
+        old_rating);
+    const uint32_t sequence = ConfigStore_GetActiveSequence();
+    const uint32_t revision = SystemContext_GetConfigRevision();
+    EnterMenu();
+    if (dp == 1U)
+    {
+        SelectMenuItem(MENU_ITEM_DECIMALS);
+        MenuKey(KEY_ID_FUNCTION, KEY_EVENT_SHORT);
+        MenuKey(KEY_ID_STAR, KEY_EVENT_SHORT);
+        MenuKey(KEY_ID_FUNCTION, KEY_EVENT_SHORT);
+    }
+    SelectMenuItem(MENU_ITEM_CAPACITY);
+    MenuKey(KEY_ID_FUNCTION, KEY_EVENT_SHORT);
+    for (unsigned i = 0U; i < 3U + dp; ++i) MenuKey(KEY_ID_ZERO, KEY_EVENT_SHORT);
+    for (unsigned i = 0U; i < 3U; ++i) MenuKey(KEY_ID_HASH, KEY_EVENT_SHORT);
+    MenuKey(KEY_ID_FUNCTION, KEY_EVENT_SHORT);
+    assert(MenuController_GetCandidate(&loaded));
+    assert(loaded.metrology.capacity_ug == new_cap);
+    assert(SystemContext_Get()->config.metrology.capacity_ug == old_rating);
+    assert(ConfigStore_GetActiveSequence() == sequence);
+    if (enter_calibration)
+    {
+        SelectMenuItem(MENU_ITEM_CALIBRATION);
+        MenuKey(KEY_ID_FUNCTION, KEY_EVENT_SHORT);
+        assert(!MenuController_TakeCalibrationRequest());
+    }
+    else MenuKey(KEY_ID_TARE, KEY_EVENT_SHORT);
+    assert(PersistenceManager_IsBusy());
+    RunSaveUntilDone();
+    MenuController_Process10ms();
+    assert(MenuController_TakeExitRequest() == !enter_calibration);
+    assert(MenuController_TakeCalibrationRequest() == enter_calibration);
+    assert(SystemContext_GetConfigRevision() == revision + 1U);
+    assert(SystemContext_GetSavedRevision() == revision + 1U);
+    if (enter_calibration)
+    {
+        CommandService_Init();
+        assert(CalibrationController_Begin());
+        assert(CalibrationController_GetState() == CAL_STATE_CONFIRM_EMPTY);
+        CalibrationController_Cancel();
+    }
+    MenuController_Cancel();
+
+    ConfigStore_Init(FakeFlash_GetBackend());
+    assert(ConfigStore_Load(&loaded, &runtime, &info) == CONFIG_LOAD_BOTH_VALID);
+    assert(info.active_sequence == sequence + 1U);
+    assert(loaded.metrology.capacity_ug == new_cap);
+    assert(loaded.metrology.unit_display[MASS_UNIT_G].decimal_places == dp);
+    assert(loaded.metrology.load_cell.rated_capacity_known);
+    assert(loaded.metrology.load_cell.rated_capacity_ug == old_rating);
+    assert(loaded.calibration.calibration_valid);
+    assert(loaded.calibration.span_mass_ug == INT64_C(500000000));
+    assert(MetrologyStandardValidator_GetDisplayOverload(&loaded.metrology) ==
+        new_cap + (dp == 1U ? 1000000 : 100000));
+    loaded.metrology.unit_display[MASS_UNIT_G].decimal_places = 2U;
+    loaded.metrology.capacity_ug = INT64_C(11000000000);
+    assert(MetrologyConfig_ValidateCanonical(&loaded.metrology) ==
+        METROLOGY_CONFIG_INVALID_UNIT);
+    loaded.metrology.capacity_ug = INT64_C(400000000);
+    assert(ConfigApplication_Validate(&loaded, true) == CONFIG_APPLY_INVALID);
+}
+#endif
+
 int main(void)
 {
     TestPureSaveKeepsLiveR5();
@@ -1109,6 +1201,10 @@ int main(void)
 #if (A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY != 0U)
     TestFilterWarmupThroughSave();
     TestAdaptiveNoiseAndMotion();
+#endif
+#if (A33_ENABLE_STAGE5P_CAP_ONLY != 0U)
+    TestCapOnlyMenu(false);
+    TestCapOnlyMenu(true);
 #endif
     (void)puts("Stage 5P SAVE continuity PASS");
     return 0;

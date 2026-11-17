@@ -1189,3 +1189,13 @@ target_compile_definitions(stage5p_adaptive_display_tests PRIVATE ${feedback_def
     A33_ENABLE_STAGE5P_FAST_FOLLOW=1 A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY=1)
 target_compile_options(stage5p_adaptive_display_tests PRIVATE ${feedback_options})
 add_test(NAME stage5p_adaptive_display_integration COMMAND stage5p_adaptive_display_tests)
+
+add_executable(stage5p_cap_only_tests ${feedback_sources}
+    ../../Services/alarm_output_manager/alarm_output_manager.c)
+target_include_directories(stage5p_cap_only_tests PRIVATE ${feedback_includes})
+target_compile_definitions(stage5p_cap_only_tests PRIVATE ${feedback_defs}
+    A33_ENABLE_STAGE5P_DISPLAY_SMOOTH=1 A33_ENABLE_STAGE5P_FEEDBACK=1
+    A33_ENABLE_STAGE5P_FAST_FOLLOW=1 A33_ENABLE_STAGE5P_ADAPTIVE_DISPLAY=1
+    A33_ENABLE_STAGE5P_CAP_ONLY=1)
+target_compile_options(stage5p_cap_only_tests PRIVATE ${feedback_options})
+add_test(NAME stage5p_cap_only_integration COMMAND stage5p_cap_only_tests)
