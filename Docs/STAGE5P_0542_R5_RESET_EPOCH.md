@@ -1,6 +1,6 @@
 # A33 0x0542 候选：修复 R5 重建后一直等待阶跃结束
 
-基线：`0x0541`（`5e93ef2`）。构建预设 `Stage5PR5ResetEpoch`，Modbus Map 仍为 `0x0110`，沿用 V4 配置。当前为源码候选，已做 Host 验证，尚未构建 ARM BIN 或上板。
+基线：`0x0541`（`5e93ef2`）。构建预设 `Stage5PR5ResetEpoch`，Modbus Map 仍为 `0x0110`，沿用 V4 配置。Host 和本地 ARM Release 构建已通过，尚未烧录或完成实板验收。
 
 ## 现场证据与复现
 
@@ -19,6 +19,8 @@
 
 ## 本地构建与烧录验收
 
+本地构建报告（2026-11-12）：由 `bfb349c755102a25a11bc96b26508eb59f4d4e0d` 构建 `A33_0542_MAP0110.bin`，104,444 B，SHA-256 `b2dbb76acf22f1ffecdea4432d4fe602ff30f62c2bd26455276fc1284e5264e5`。Flash 占用 `0x08000000–0x080197FB`（含末字节），应用区余 22,532 B；静态保守栈需求 1,448 B，余量 688 B，达到 512 B 门槛；Host 专项 1/1 通过。实板尚未写入。
+
 在已导入候选分支的 STM32 仓库根目录，使用 CMake ≥ 3.22、Ninja 和 GNU Arm Embedded GCC（包含 newlib-nano）。如使用 STM32CubeCLT，将其 GCC 和 CMake/Ninja 目录加入 PATH。以下命令只构建和检查文件：
 
 ```powershell
@@ -33,6 +35,6 @@ Get-FileHash build/arm-0542/A33_0542_MAP0110.bin -Algorithm SHA256
 
 核对 Flash 可加载段均落在应用区 `0x08000000–0x0801EFFF`，BIN 不超过 126,976 B，静态保守栈余量至少 512 B。独立运行 Host 专项时，使用本机 C 编译器配置 `cmake -S Tests/host -B build/host-0542 -G Ninja -DCMAKE_BUILD_TYPE=Debug`，构建 `stage5p_r5_reset_epoch_tests`，再运行 `ctest --test-dir build/host-0542 -R '^stage5p_r5_reset_epoch_integration$' --output-on-failure`。
 
-测试仪上板时先备份 `0x0801F000–0x0801FFFF` 的完整 4 KiB 配置区，擦应用页 0–123，从 `0x08000000` 写入并 Verify。复位后先通过 COM5 确认 `0x0542 / 0x0110`，在任何菜单保存前回读配置并与备份逐字节比较。
+测试仪上板时先核对目标和 BIN SHA-256，备份应用区（用于回退）和 `0x0801F000–0x0801FFFF` 的完整 4 KiB 配置区。擦应用页 0–123，从 `0x08000000` 写入并 Verify。复位后先通过 COM5 确认 `0x0542 / 0x0110`，在任何菜单保存前回读配置并与备份逐字节比较。
 
-在 10 Hz、FILT1、R5 ACTIVE + STATIC 下保持静载至少两分钟并读到跟踪状态。快放砝码，确认出现阶跃，再切换至 FILT3 并保持载荷。记录 `0x034A–034D` 的序号和时间戳、`0x0302` 的状态、`0x0321–0322` 的参考锁定序号；以切换生效后 90 秒内重新锁定参考且 `0x0302=7` 为验收目标。期间不重启、不置零、不去皮、不重新标定，以免绕过待验证的场景。
+在 10 Hz、FILT1、R5 ACTIVE + STATIC 下保持静载至少两分钟并读到跟踪状态。快放砝码，记录阶跃和 R5 状态，保持载荷约 10 秒后从面板切换至 FILT3，随后保持载荷不动。用 FC03 读取 `0x0300` 起 35 个寄存器和 `0x0340` 起 40 个寄存器，记录切换前后序号、设备时间戳、R5 状态、原因和参考锁定序号。验收目标：看到样本序号重置而设备时间戳继续增长，且切换生效后 90 秒内在 R5 ACTIVE + STATIC 下重新锁定参考并进入状态 7。期间不重启、不置零、不去皮、不重新标定，以免绕过待验证的场景。
