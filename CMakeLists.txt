@@ -73,6 +73,10 @@ if(A33_ENABLE_STAGE5P_FEEDBACK)
     endif()
     add_compile_definitions(A33_ENABLE_STAGE5P_FEEDBACK=1)
 endif()
+option(A33_ENABLE_STAGE5P_FAST_FOLLOW "Enable guarded fast follow and parallel zero qualification" OFF)
+if(A33_ENABLE_STAGE5P_FAST_FOLLOW)
+    add_compile_definitions(A33_ENABLE_STAGE5P_FAST_FOLLOW=1)
+endif()
 option(A33_ENABLE_STAGE5P_DISPLAY_SMOOTH
     "Enable display-only median anchor following and 10 Hz numeric publication" OFF)
 option(A33_ENABLE_STAGE5P_UNIFIED_RESOURCES

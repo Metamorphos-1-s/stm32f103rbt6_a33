@@ -111,6 +111,9 @@ void ConfigStore_AcknowledgeResult(void);
 bool ConfigStore_CancelPending(void);
 bool ConfigStore_IsSequenceNewer(uint32_t candidate, uint32_t reference);
 bool ConfigStore_IsActivePayloadValid(void);
+#if defined(A33_ENABLE_STAGE5P_FAST_FOLLOW) && (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+bool ConfigStore_NeedsSchemaUpgrade(void);
+#endif
 uint16_t ConfigStore_AlignedProgramLength(uint16_t logical_length);
 bool ConfigStore_GetProgramHalfword(const uint8_t *body,
                                     uint16_t logical_length,

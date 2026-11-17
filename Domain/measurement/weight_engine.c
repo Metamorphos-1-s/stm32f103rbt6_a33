@@ -105,7 +105,8 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
     MassValueUg net;
     uint64_t magnitude;
     MassValueUg overload;
-#if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
+#if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U) && \
+    (A33_ENABLE_STAGE5P_FAST_FOLLOW == 0U)
     MassValueUg zero_indicator_range_ug;
     const UnitDisplayConfig *unit_display;
     bool zero_indicator_was_on =
@@ -118,7 +119,11 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
     StabilityState stability_state = StabilityDetector_GetState(&engine->stability);
 
     engine->snapshot.status_flags &=
-        (WEIGHT_STATUS_RAW_VALID | WEIGHT_STATUS_FILTER_READY);
+        (WEIGHT_STATUS_RAW_VALID | WEIGHT_STATUS_FILTER_READY
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+        | WEIGHT_STATUS_ZERO /* Only the final, compensated sample updates ZERO. */
+#endif
+        );
     engine->snapshot.tare_mass_ug = engine->zero_tare.tare_mass_ug;
     if (!engine->calibration.calibration_valid ||
         (CalibrationModel_Validate(&engine->calibration) != CALIBRATION_RESULT_OK))
@@ -195,6 +200,13 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
     engine->snapshot.gross_mass_ug = gross;
     engine->snapshot.net_mass_ug = net;
 #endif
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+    if (stability_state == STABILITY_STATE_UNAVAILABLE)
+    {
+        engine->snapshot.status_flags &= ~WEIGHT_STATUS_ZERO;
+        engine->zero_indicator_candidate_active = false;
+    }
+#else
     if (!MassMath_Abs(net, &magnitude)) return false;
 #if (A33_ENABLE_STAGE5P_PANEL_BATTERY_ZERO_LONGRATE != 0U)
     unit_display = &engine->metrology.unit_display[
@@ -280,6 +292,7 @@ static bool UpdateDerived(WeightEngine *engine, bool process_stability)
     if (magnitude <= (uint64_t)engine->metrology.zero_range_ug)
         engine->snapshot.status_flags |= WEIGHT_STATUS_ZERO;
 #endif
+#endif
     if (!MassMath_Abs(gross, &magnitude)) return false;
     if ((overload > 0) && (magnitude > (uint64_t)overload))
         engine->snapshot.status_flags |= WEIGHT_STATUS_OVERLOAD;
@@ -342,12 +355,151 @@ bool WeightEngine_Init(WeightEngine *engine,
     return true;
 }
 
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+#define FAST_FOLLOW_STEP_UG INT64_C(10000000)
+#define FAST_FOLLOW_PAIR_UG UINT64_C(100000)
+#define FAST_FOLLOW_MAX_GAP_MS 150U
+#define FAST_FOLLOW_NEAR_RAIL 8323072
+#define ZERO_CONFIRM_MS 300U
+
+static bool RawMassDistance(const CalibrationConfig *calibration,
+    int32_t first, int32_t second, uint64_t *distance)
+{
+    MassValueUg mass;
+    return MassMath_MulDivRound((int64_t)second - first,
+        calibration->span_mass_ug, (int64_t)calibration->raw_span -
+        calibration->raw_zero, &mass) && MassMath_Abs(mass, distance);
+}
+
+static void TryFollowLargeStep(WeightEngine *engine,
+    const RawMeasurementSample *sample, bool allow)
+{
+    WeightFilter *filter = &engine->filter;
+    const int32_t raw = sample->raw_value;
+    const uint32_t elapsed = sample->timestamp_ms -
+        engine->snapshot.sample_timestamp_ms;
+    uint64_t magnitude;
+    int32_t anchor;
+    int32_t first;
+    int32_t seed;
+    MassValueUg gross;
+    MassValueUg overload;
+    if (filter->mode != FILTER_MODE_AVERAGE) return;
+    /* AVG does not use the median filter's history. Reuse two slots for
+       the previous plateau and one pending raw sample. */
+    if (!allow || (filter->strength < 3U) ||
+        (engine->metrology.profiles[engine->metrology.active_profile].sample_rate !=
+         DEVICE_CS1237_DATA_RATE_10_HZ) ||
+        !WeightFilter_IsReady(filter) || (engine->stability.count == 0U) ||
+        (elapsed == 0U) || (elapsed > FAST_FOLLOW_MAX_GAP_MS) ||
+        !engine->calibration.calibration_valid ||
+        (raw <= -FAST_FOLLOW_NEAR_RAIL) || (raw >= FAST_FOLLOW_NEAR_RAIL))
+    {
+        filter->median_count = 0U;
+        return;
+    }
+    if (filter->median_count == 0U)
+    {
+        if (((engine->snapshot.status_flags &
+             (WEIGHT_STATUS_STABLE | WEIGHT_STATUS_OVERLOAD)) != WEIGHT_STATUS_STABLE) ||
+            (raw == filter->output) ||
+            !RawMassDistance(&engine->calibration, filter->output, raw, &magnitude) ||
+            (magnitude < FAST_FOLLOW_STEP_UG)) return;
+        filter->median_history[0] = filter->output;
+        filter->median_history[1] = raw;
+        filter->median_count = 1U;
+        return;
+    }
+    anchor = filter->median_history[0];
+    first = filter->median_history[1];
+    filter->median_count = 0U;
+    if ((raw == anchor) || ((raw > anchor) != (first > anchor)) ||
+        !RawMassDistance(&engine->calibration, first, raw, &magnitude) ||
+        (magnitude > FAST_FOLLOW_PAIR_UG)) return;
+
+    /* Median of anchor and both agreeing samples: the value closer to the
+       old plateau. Both samples must clear the large step threshold. */
+    seed = ((raw < first) == (first > anchor)) ? raw : first;
+    if (!RawMassDistance(&engine->calibration, anchor, seed, &magnitude) ||
+        (magnitude < FAST_FOLLOW_STEP_UG)) return;
+    overload = MetrologyStandardValidator_GetDisplayOverload(&engine->metrology);
+    /* Check both edges of the observed pair against the normal gross limit. */
+    if ((overload <= 0) ||
+        (CalibrationModel_ConvertMass(&engine->calibration, raw,
+         engine->zero_tare.zero_offset_raw, &gross) != CALIBRATION_RESULT_OK) ||
+        !MassMath_Abs(gross, &magnitude) || (magnitude > (uint64_t)overload) ||
+        (CalibrationModel_ConvertMass(&engine->calibration, first,
+         engine->zero_tare.zero_offset_raw, &gross) != CALIBRATION_RESULT_OK) ||
+        !MassMath_Abs(gross, &magnitude) || (magnitude > (uint64_t)overload))
+        return;
+
+    for (uint8_t i = 0U; i < filter->strength; ++i)
+        filter->average_buffer[i] = seed;
+    filter->average_sum = (int64_t)seed * filter->strength;
+    /* The filter can follow now, but STABLE must earn a new window of real
+       samples. No synthetic filter seeds enter the stability detector. */
+    StabilityDetector_Reset(&engine->stability);
+    engine->zero_indicator_candidate_active = false;
+}
+
+void WeightEngine_FinalizeZeroIndicator(WeightEngine *engine)
+{
+    const uint32_t flags = engine->snapshot.status_flags;
+    const uint32_t now = engine->snapshot.sample_timestamp_ms;
+    const bool stable = (flags & WEIGHT_STATUS_STABLE) != 0U;
+    const MassUnit unit = engine->metrology.active_unit;
+    const UnitDisplayConfig *display = &engine->metrology.unit_display[unit];
+    MassValueUg division;
+    uint64_t magnitude;
+    engine->snapshot.status_flags &= ~WEIGHT_STATUS_ZERO;
+    if (engine->zero_indicator_candidate_active &&
+        ((uint32_t)(now - engine->zero_indicator_last_sample_ms) > 250U))
+        engine->zero_indicator_candidate_active = false;
+    engine->zero_indicator_last_sample_ms = now;
+    if (((flags & (WEIGHT_STATUS_WEIGHT_VALID | WEIGHT_STATUS_OVERLOAD)) !=
+            WEIGHT_STATUS_WEIGHT_VALID) ||
+        (!stable && (engine->stability.state != STABILITY_STATE_CANDIDATE)) ||
+        !UnitConverter_CountToMass(display->division_digit, unit,
+            display->decimal_places, &division) || (division <= 0) ||
+        !MassMath_Abs(engine->snapshot.net_mass_ug, &magnitude))
+    {
+        engine->zero_indicator_candidate_active = false;
+        return;
+    }
+    if (stable && ((flags & WEIGHT_STATUS_ZERO) != 0U) &&
+        (magnitude <= (uint64_t)division * 3U))
+    {
+        engine->zero_indicator_candidate_active = false;
+        engine->snapshot.status_flags |= WEIGHT_STATUS_ZERO;
+    }
+    else if (magnitude > (uint64_t)division * 2U)
+        engine->zero_indicator_candidate_active = false;
+    else if (!engine->zero_indicator_candidate_active)
+    {
+        engine->zero_indicator_candidate_active = true;
+        engine->zero_indicator_candidate_since_ms = now;
+    }
+    else if (stable &&
+        ((uint32_t)(now - engine->zero_indicator_candidate_since_ms) >= ZERO_CONFIRM_MS))
+    {
+        engine->zero_indicator_candidate_active = false;
+        engine->snapshot.status_flags |= WEIGHT_STATUS_ZERO;
+    }
+}
+
+bool WeightEngine_ProcessDeferredRawSample(WeightEngine *engine,
+    const RawMeasurementSample *sample, bool allow_fast_follow)
+#else
 bool WeightEngine_ProcessRawSample(WeightEngine *engine,
                                    const RawMeasurementSample *sample)
+#endif
 {
     int32_t filtered;
     if ((engine == NULL) || !engine->initialized || (sample == NULL) ||
         !sample->valid) return false;
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+    TryFollowLargeStep(engine, sample, allow_fast_follow);
+#endif
     engine->snapshot.raw_value = sample->raw_value;
     engine->snapshot.sample_timestamp_ms = sample->timestamp_ms;
     engine->snapshot.status_flags |= WEIGHT_STATUS_RAW_VALID;
@@ -363,6 +515,17 @@ bool WeightEngine_ProcessRawSample(WeightEngine *engine,
     ++engine->snapshot.sample_sequence;
     return true;
 }
+
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+bool WeightEngine_ProcessRawSample(WeightEngine *engine,
+    const RawMeasurementSample *sample)
+{
+    if (!WeightEngine_ProcessDeferredRawSample(engine, sample, false))
+        return false;
+    WeightEngine_FinalizeZeroIndicator(engine);
+    return true;
+}
+#endif
 
 const WeightSnapshot *WeightEngine_GetSnapshot(const WeightEngine *engine)
 {

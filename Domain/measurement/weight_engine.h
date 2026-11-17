@@ -3,6 +3,7 @@
 
 #include "calibration_model.h"
 #include "device_config.h"
+#include "project_config.h"
 #include "raw_measurement.h"
 #include "runtime_drift_compensator.h"
 #include "stability_detector.h"
@@ -61,6 +62,12 @@ bool WeightEngine_ReinitializeMassBeta(WeightEngine *engine,
 #endif
 bool WeightEngine_ProcessRawSample(WeightEngine *engine,
                                    const RawMeasurementSample *sample);
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+/* The manager calls this before R5, then qualifies ZERO on the final sample. */
+bool WeightEngine_ProcessDeferredRawSample(WeightEngine *engine,
+    const RawMeasurementSample *sample, bool allow_fast_follow);
+void WeightEngine_FinalizeZeroIndicator(WeightEngine *engine);
+#endif
 const WeightSnapshot *WeightEngine_GetSnapshot(const WeightEngine *engine);
 bool WeightEngine_GetFastCalibratedMass(const WeightEngine *engine,
     MassValueUg *mass_ug);

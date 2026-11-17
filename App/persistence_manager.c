@@ -160,6 +160,9 @@ static CommandResult Start(ConfigOperationType operation,
                                              COMMAND_RESULT_INVALID_STATE;
     }
     if ((operation == CONFIG_OPERATION_SAVE) &&
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+        !ConfigStore_NeedsSchemaUpgrade() &&
+#endif
         !context->runtime.config_dirty && SystemContext_HasStorageRecord())
     {
         s_status = PERSISTENCE_STATUS_NO_CHANGE;

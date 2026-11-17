@@ -85,6 +85,14 @@ bool App_RestoreGuardedCheckweighMode(GuardedCheckweighMode mode)
         s_check.generation, true);
 }
 
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+const StartupAutoZeroSnapshot *App_GetStartupAutoZeroSnapshot(void)
+{
+    static const StartupAutoZeroSnapshot startup = {.terminal = true};
+    return &startup;
+}
+#endif
+
 static void StoreUntilDone(void)
 {
     uint32_t count = 0U;
@@ -640,6 +648,12 @@ static void TestFeedbackStorageAndCapacity(void)
     DefaultConfig_Load(&legacy);
     legacy.metrology.profiles[0].stability_hold_ms = 1000U;
     legacy.metrology.profiles[1].stability_hold_ms = 500U;
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+    legacy.metrology.load_cell.rated_capacity_known = true;
+    legacy.metrology.load_cell.rated_capacity_ug = INT64_C(3000000000);
+    assert(CalibrationModel_BuildMass(100000, 600000, INT64_C(500000000),
+        1U, &legacy.calibration) == CALIBRATION_RESULT_OK);
+#endif
     assert(PersistentCodec_EncodeV3(&legacy, &runtime,
         record + CONFIG_STORE_HEADER_SIZE, PERSISTENT_V3_PAYLOAD_SIZE, &size)
         == PERSISTENT_CODEC_OK);
@@ -664,11 +678,62 @@ static void TestFeedbackStorageAndCapacity(void)
     assert(loaded.alarm.region == ALARM_REGION_LEGACY_HIGH);
     assert(loaded.alarm.stable_delay_ms == 200U);
     assert(loaded.metrology.profiles[0].stability_hold_ms == 300U);
+    assert(FakeFlash_GetMutationCount() == mutations);
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+    uint8_t original[sizeof(record)];
+    assert(ConfigStore_NeedsSchemaUpgrade());
+    TestMock_Reset();
+    FaultManager_Init();
+    assert(SystemContext_InitRestored(&loaded, &loaded_runtime, 23U, true, 0U));
+    assert(MetrologyManager_Init(&loaded, &loaded_runtime));
+    assert(SystemContext_SetState(APP_STATE_RUN, 0U));
+    assert(PersistenceManager_Init());
+    StoragePowerGuard_Init();
+    StoragePowerGuard_Process100ms();
+    TestMock_SetTimeMs(500U);
+    StoragePowerGuard_Process100ms();
+    ConfigStore_SetPowerCheck(StoragePowerGuard_CanContinueFlashOperation);
+    s_tick = 5U;
+    s_sample_period_ms = 100U;
+    assert(SystemContext_SetState(APP_STATE_MENU, 500U));
+    MenuController_Init();
+    assert(MenuController_Enter());
+    MenuKey(KEY_ID_TARE, KEY_EVENT_SHORT);
+    assert(MenuController_TakeExitRequest());
+    assert(!PersistenceManager_IsBusy());
+    assert(FakeFlash_GetMutationCount() == mutations);
+    assert(MenuController_Enter());
+    MenuKey(KEY_ID_FUNCTION, KEY_EVENT_LONG);
+    assert(PersistenceManager_IsBusy());
+    RunSaveUntilDone();
+    MenuController_Process10ms();
+    assert(MenuController_TakeExitRequest());
+    assert(PersistenceManager_GetStatus() == PERSISTENCE_STATUS_SUCCESS);
+    assert(!ConfigStore_NeedsSchemaUpgrade());
+    assert(SystemContext_GetConfigRevision() == 23U);
+    assert(SystemContext_GetSavedRevision() == 23U);
+    assert(flash->read(CONFIG_FLASH_SLOT_A_ADDRESS, original, sizeof(original)) ==
+        FLASH_BACKEND_OK);
+    assert(memcmp(record, original, sizeof(record)) == 0);
+    mutations = FakeFlash_GetMutationCount();
+    assert(PersistenceManager_RequestSave() == COMMAND_RESULT_OK);
+    assert(FakeFlash_GetMutationCount() == mutations);
+    ConfigStore_Init(flash);
+    assert(ConfigStore_Load(&loaded, &loaded_runtime, &info) == CONFIG_LOAD_BOTH_VALID);
+    assert(info.active_sequence == 24U);
+    assert(info.active_slot == CONFIG_STORE_SLOT_B);
+    assert(!ConfigStore_NeedsSchemaUpgrade());
+    assert(loaded.metrology.load_cell.rated_capacity_known);
+    assert(loaded.metrology.load_cell.rated_capacity_ug == INT64_C(3000000000));
+    assert(loaded.calibration.span_mass_ug == legacy.calibration.span_mass_ug);
+    loaded.metrology.load_cell.rated_capacity_known = false;
+#else
     assert(ConfigStore_RequestSave(&loaded, &loaded_runtime, 1U));
     StoreUntilDone();
     assert(ConfigStore_GetLastOperationResult() == CONFIG_STORE_OPERATION_NO_CHANGE);
     assert(FakeFlash_GetMutationCount() == mutations);
     ConfigStore_AcknowledgeResult();
+#endif
 
     loaded.metrology.capacity_ug = INT64_C(5000000000);
     loaded.metrology.unit_display[MASS_UNIT_G].decimal_places = 1U;
@@ -690,7 +755,7 @@ static void TestFeedbackStorageAndCapacity(void)
     assert(ConfigStore_GetLastOperationResult() == CONFIG_STORE_OPERATION_SUCCESS);
     ConfigStore_Init(flash);
     assert(ConfigStore_Load(&loaded, &loaded_runtime, &info) == CONFIG_LOAD_BOTH_VALID);
-    assert(info.active_sequence == 24U);
+    assert(info.active_sequence == (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U ? 25U : 24U));
     assert(loaded.alarm.region == ALARM_REGION_INSIDE);
     assert(loaded.alarm.stable_delay_ms == 1200U);
 }
@@ -825,6 +890,84 @@ static void TestFeedbackStability(void)
 }
 #endif
 
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+static void FeedEngine(WeightEngine *engine, int32_t raw, uint32_t stamp, bool fast)
+{
+    RawMeasurementSample sample = {raw, stamp, true};
+    assert(WeightEngine_ProcessDeferredRawSample(engine, &sample, fast));
+    WeightEngine_FinalizeZeroIndicator(engine);
+}
+
+static void TestFastFollowAndParallelZero(void)
+{
+    DeviceConfig config;
+    WeightEngine fast, slow;
+    uint32_t fast_stable = 0U, slow_stable = 0U, zero = 0U, unload_stable = 0U;
+    const int32_t empty = 100000;
+    const int32_t loaded = 600000;
+    DefaultConfig_Load(&config);
+    assert(CalibrationModel_BuildMass(empty, loaded, INT64_C(500000000),
+        1U, &config.calibration) == CALIBRATION_RESULT_OK);
+    assert(WeightEngine_ReinitializeMassBeta(&fast, &config.metrology,
+        &config.calibration, &config.stability, 0, false, 0));
+    slow = fast;
+    for (uint32_t i = 0U; i < 20U; ++i)
+    {
+        FeedEngine(&fast, empty, i * 100U, true);
+        FeedEngine(&slow, empty, i * 100U, false);
+    }
+    assert((fast.snapshot.status_flags & WEIGHT_STATUS_STABLE) != 0U);
+    for (uint32_t i = 0U; i < 20U; ++i)
+    {
+        FeedEngine(&fast, loaded, 2000U + i * 100U, true);
+        FeedEngine(&slow, loaded, 2000U + i * 100U, false);
+        if (i == 0U) assert(fast.snapshot.filtered_raw == slow.snapshot.filtered_raw);
+        if (i == 1U)
+        {
+            assert(fast.snapshot.filtered_raw == loaded);
+            assert(slow.snapshot.filtered_raw != loaded);
+            assert((fast.snapshot.status_flags & WEIGHT_STATUS_STABLE) == 0U);
+        }
+        if (!fast_stable && (fast.snapshot.status_flags & WEIGHT_STATUS_STABLE))
+            fast_stable = i * 100U;
+        if (!slow_stable && (slow.snapshot.status_flags & WEIGHT_STATUS_STABLE))
+            slow_stable = i * 100U;
+    }
+    assert(fast_stable > 0U && fast_stable < slow_stable);
+    for (uint32_t i = 0U; i < 20U; ++i)
+    {
+        FeedEngine(&fast, empty, 4000U + i * 100U, true);
+        if (!unload_stable && (fast.snapshot.status_flags & WEIGHT_STATUS_STABLE))
+            unload_stable = i * 100U;
+        if (!zero && (fast.snapshot.status_flags & WEIGHT_STATUS_ZERO))
+            zero = i * 100U;
+    }
+    assert(unload_stable > 0U && unload_stable == zero);
+    printf("10 Hz simulated 500 g: STABLE %lu vs %lu ms, unload STABLE/ZERO %lu/%lu ms\n",
+        (unsigned long)fast_stable, (unsigned long)slow_stable,
+        (unsigned long)unload_stable, (unsigned long)zero);
+
+    /* An isolated impulse or two distinct points on a ramp cannot reseed. */
+    slow = fast;
+    FeedEngine(&fast, loaded, 6000U, true);
+    FeedEngine(&slow, loaded, 6000U, false);
+    FeedEngine(&fast, empty, 6100U, true);
+    FeedEngine(&slow, empty, 6100U, false);
+    assert(fast.snapshot.filtered_raw == slow.snapshot.filtered_raw);
+    assert((fast.snapshot.status_flags & (WEIGHT_STATUS_STABLE | WEIGHT_STATUS_ZERO)) == 0U);
+    for (uint32_t i = 0U; i < 20U; ++i)
+    {
+        FeedEngine(&fast, empty, 6200U + i * 100U, true);
+        FeedEngine(&slow, empty, 6200U + i * 100U, false);
+    }
+    FeedEngine(&fast, loaded, 8200U, true);
+    FeedEngine(&slow, loaded, 8200U, false);
+    FeedEngine(&fast, loaded + 1000, 8300U, true);
+    FeedEngine(&slow, loaded + 1000, 8300U, false);
+    assert(fast.snapshot.filtered_raw == slow.snapshot.filtered_raw);
+}
+#endif
+
 int main(void)
 {
     TestPureSaveKeepsLiveR5();
@@ -841,6 +984,9 @@ int main(void)
     TestFeedbackMenu();
     TestFeedbackAlarm();
     TestFeedbackStability();
+#endif
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+    TestFastFollowAndParallelZero();
 #endif
     (void)puts("Stage 5P SAVE continuity PASS");
     return 0;

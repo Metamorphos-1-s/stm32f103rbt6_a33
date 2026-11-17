@@ -397,7 +397,7 @@ static bool Request(const DeviceConfig *config, const RuntimeState *runtime,
     s_operation = operation;
     if ((operation == CONFIG_OPERATION_SAVE) && s_active_payload_valid &&
         ((s_payload_length == s_active_payload_length)
-#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
+#if (A33_ENABLE_STAGE5P_FEEDBACK != 0U) && (A33_ENABLE_STAGE5P_FAST_FOLLOW == 0U)
          || ((s_active_payload_length == PERSISTENT_V3_PAYLOAD_SIZE) &&
              (config->alarm.region == ALARM_REGION_LEGACY_HIGH) &&
              (config->alarm.stable_delay_ms == ALARM_STABLE_DELAY_DEFAULT_MS))
@@ -614,6 +614,13 @@ uint8_t ConfigStore_GetActiveSlot(void) { return s_active_slot; }
 uint32_t ConfigStore_GetLastError(void) { return s_last_error; }
 const ConfigStoreStatistics *ConfigStore_GetStatistics(void) { return &s_statistics; }
 bool ConfigStore_IsActivePayloadValid(void) { return s_active_payload_valid; }
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+bool ConfigStore_NeedsSchemaUpgrade(void)
+{
+    return s_active_payload_valid &&
+        (s_active_payload_length == PERSISTENT_V3_PAYLOAD_SIZE);
+}
+#endif
 FlashBackendResult ConfigStore_GetLastPrimaryFlashError(void) { return s_last_primary_flash_error; }
 FlashBackendResult ConfigStore_GetLastLockError(void) { return s_last_lock_error; }
 uint32_t ConfigStore_GetLastFlashAddress(void) { return s_last_flash_address; }

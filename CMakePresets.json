@@ -155,6 +155,13 @@
             }
         },
         {
+            "name": "Stage5PFastFollow",
+            "inherits": "Stage5PFeedback",
+            "cacheVariables": {
+                "A33_ENABLE_STAGE5P_FAST_FOLLOW": "ON"
+            }
+        },
+        {
             "name": "Stage5PFeedback",
             "inherits": "Stage5PDisplayReview",
             "cacheVariables": {
@@ -255,6 +262,10 @@
         {
             "name": "Stage5PFeedback",
             "configurePreset": "Stage5PFeedback"
+        },
+        {
+            "name": "Stage5PFastFollow",
+            "configurePreset": "Stage5PFastFollow"
         }
     ]
 }

@@ -6,6 +6,9 @@
 #include "command_service.h"
 #include "config_application.h"
 #include "config_edit.h"
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+#include "config_store.h"
+#endif
 #include "display_controller.h"
 #include "display_codes.h"
 #include "mass_math.h"
@@ -364,14 +367,22 @@ static void FinishSave(void)
 }
 #endif
 
-static void RequestSave(uint32_t now_ms)
+static void RequestSave(uint32_t now_ms, bool explicit_save)
 {
     CommandResult result;
     CancelUnconfirmedEdit();
     if (!s_candidate_changed)
     {
-        if (SystemContext_GetConfigRevision() ==
-            SystemContext_GetSavedRevision())
+        const uint32_t revision = SystemContext_GetConfigRevision();
+        const bool clean = revision == SystemContext_GetSavedRevision();
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+        const bool migrate = explicit_save && clean &&
+            (revision == s_expected_revision) && ConfigStore_NeedsSchemaUpgrade();
+#else
+        const bool migrate = false;
+        (void)explicit_save;
+#endif
+        if (clean && !migrate)
         {
             s_exit_after_save = true;
 #if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
@@ -382,8 +393,8 @@ static void RequestSave(uint32_t now_ms)
 #endif
             return;
         }
-        if (!s_existing_dirty_owned ||
-            (SystemContext_GetConfigRevision() != s_existing_dirty_revision))
+        if (!migrate && (!s_existing_dirty_owned ||
+            (revision != s_existing_dirty_revision)))
         {
             RestoreOriginalBrightness();
             ShowCode(DISPLAY_CODE_BUSY);
@@ -396,7 +407,7 @@ static void RequestSave(uint32_t now_ms)
             ShowCode(DISPLAY_CODE_SAVE_ERROR);
             return;
         }
-        s_save_revision = s_existing_dirty_revision;
+        s_save_revision = revision;
         s_save_started_ms = now_ms;
         s_save_waiting = true;
         s_exit_after_save = true;
@@ -512,7 +523,7 @@ static void RequestR5CandidateSave(uint32_t now_ms)
     }
     s_candidate_changed = !PersistentCodec_DeviceConfigEqual(
         &s_candidate_config, &s_original_config);
-    RequestSave(now_ms);
+    RequestSave(now_ms, false);
 #endif
 }
 #if (A33_ENABLE_STAGE5NB_BETA != 0U)
@@ -528,7 +539,7 @@ static void RequestCheckweighCandidateSave(uint32_t now_ms)
         (uint8_t)CheckweighLocalControl_GetChoice();
     s_candidate_changed = !PersistentCodec_DeviceConfigEqual(
         &s_candidate_config, &s_original_config);
-    RequestSave(now_ms);
+    RequestSave(now_ms, false);
 }
 #endif
 #endif
@@ -1275,7 +1286,7 @@ void MenuController_Process10ms(void)
             s_timeout_consumed = true;
             CancelUnconfirmedEdit();
             Render();
-            if (s_candidate_changed) RequestSave(now);
+            if (s_candidate_changed) RequestSave(now, false);
             else ExitMenu();
         }
 #else
@@ -1407,7 +1418,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
             return true;
         }
 #endif
-        RequestSave(event->timestamp_ms);
+        RequestSave(event->timestamp_ms, true);
         return true;
     }
 #if (A33_ENABLE_STAGE5MR5_BETA != 0U)
@@ -1526,7 +1537,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
              (event->type == KEY_EVENT_SHORT))
     {
 #if (A33_ENABLE_STAGE5P_FEEDBACK != 0U)
-        if (s_candidate_changed) RequestSave(event->timestamp_ms);
+        if (s_candidate_changed) RequestSave(event->timestamp_ms, false);
         else ExitMenu();
 #else
         DiscardCandidate();
@@ -1551,7 +1562,7 @@ bool MenuController_HandleKeyEvent(const KeyEvent *event)
             if (s_candidate_changed)
             {
                 s_cal_after_save = true;
-                RequestSave(event->timestamp_ms);
+                RequestSave(event->timestamp_ms, false);
                 if (!s_save_waiting) s_cal_after_save = false;
                 return true;
             }

@@ -685,6 +685,16 @@ static bool MetrologyManager_ProcessAlarmShadow(void)
 }
 #endif
 
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+static bool AllowFastFollow(AppState state)
+{
+    const StartupAutoZeroSnapshot *startup = App_GetStartupAutoZeroSnapshot();
+    return (state == APP_STATE_RUN) && (FaultManager_GetActiveMask() == 0U) &&
+        !MetrologyManager_IsStorageReacquiring() &&
+        (startup != NULL) && startup->terminal;
+}
+#endif
+
 bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
 {
     AppState state;
@@ -695,6 +705,10 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
         {
             StabilityDetector_Reset(&s_engine.stability);
             s_engine.snapshot.status_flags &= ~WEIGHT_STATUS_STABLE;
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+            s_engine.snapshot.status_flags &= ~WEIGHT_STATUS_ZERO;
+            s_engine.zero_indicator_candidate_active = false;
+#endif
             CheckweighShadow_RequestReset(&s_alarm_shadow, ALARM_SHADOW_RESET_FILTER);
         }
 #endif
@@ -738,7 +752,12 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
         return false;
     }
 #endif
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+    if (!WeightEngine_ProcessDeferredRawSample(&s_engine, sample,
+        AllowFastFollow(state)))
+#else
     if (!WeightEngine_ProcessRawSample(&s_engine, sample))
+#endif
     {
 #if (A33_ENABLE_STAGE5PA13C_SHADOW != 0U)
         /* A rejected measurement invalidates the candidate's history;
@@ -814,6 +833,9 @@ bool MetrologyManager_AcceptRawSample(const RawMeasurementSample *sample)
 r5_sample_complete:
         (void)0;
     }
+#if (A33_ENABLE_STAGE5P_FAST_FOLLOW != 0U)
+    WeightEngine_FinalizeZeroIndicator(&s_engine);
+#endif
     (void)MetrologyManager_ProcessAlarmShadow();
 #endif
     if (!MetrologyManager_UpdateDisplayConditioner())
